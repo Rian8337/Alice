@@ -21,7 +21,10 @@ export class GuildTag extends Manager implements DatabaseGuildTag {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseGuildTag = DatabaseManager.aliceDb?.collections.guildTags.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseGuildTag = DatabaseManager.aliceDb?.collections.guildTags
+            .defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -36,14 +39,14 @@ export class GuildTag extends Manager implements DatabaseGuildTag {
 
     /**
      * Updates this tag in the tag database.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     updateTag(): Promise<OperationResult> {
         return DatabaseManager.aliceDb.collections.guildTags.update(
             {
                 guildid: this.guildid,
-                name: this.name
+                name: this.name,
             },
             {
                 $set: {
@@ -52,8 +55,8 @@ export class GuildTag extends Manager implements DatabaseGuildTag {
                     date: this.date,
                     content: this.content,
                     attachment_message: this.attachment_message,
-                    attachments: this.attachments
-                }
+                    attachments: this.attachments,
+                },
             }
         );
     }

@@ -32,5 +32,5 @@ export enum TriviaQuestionCategory {
     VEHICLES,
     ENTERTAINMENT_VIDEO_GAMES,
     ENGLISH_LANGUAGE,
-    LOGICAL_REASONING
+    LOGICAL_REASONING,
 }

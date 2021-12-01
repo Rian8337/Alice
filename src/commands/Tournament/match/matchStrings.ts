@@ -32,5 +32,5 @@ export enum matchStrings {
     unbindMatchFailed = "I'm sorry, I couldn't unbind the match: %s.",
     unbindMatchSuccessful = "Successfully unbinded match `%s`.",
     submitMatchFailed = "I'm sorry, I couldn't submit the match result: %s.",
-    submitMatchSuccessful = "Successfully updated match result."
+    submitMatchSuccessful = "Successfully updated match result.",
 }

@@ -7,17 +7,24 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
-        { content: MessageCreator.createWarn(clanStrings.leaveClanConfirmation) },
+        {
+            content: MessageCreator.createWarn(
+                clanStrings.leaveClanConfirmation
+            ),
+        },
         [interaction.user.id],
         20
     );
@@ -26,13 +33,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const firstResult: OperationResult = await clan.removeMember(interaction.user);
+    const firstResult: OperationResult = await clan.removeMember(
+        interaction.user
+    );
 
     if (!firstResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.leaveClanFailed, firstResult.reason!
-            )
+                clanStrings.leaveClanFailed,
+                firstResult.reason!
+            ),
         });
     }
 
@@ -41,18 +51,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.leaveClanFailed, finalResult.reason!
-            )
+                clanStrings.leaveClanFailed,
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.leaveClanSuccessful, clan.name
-        )
+            clanStrings.leaveClanSuccessful,
+            clan.name
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

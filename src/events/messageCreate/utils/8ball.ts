@@ -10,14 +10,19 @@ import { EightBallFilter } from "@alice-database/utils/aliceDb/EightBallFilter";
 
 /**
  * Gets the response type to a message.
- * 
+ *
  * @param message The message to get the response type of.
  * @param filter The filter for 8ball.
  * @returns The response type.
  */
-function getResponseType(message: Message, filter: DatabaseEightBallFilter): EightBallResponseType {
+function getResponseType(
+    message: Message,
+    filter: DatabaseEightBallFilter
+): EightBallResponseType {
     function containsWord(words: string[]): boolean {
-        return words.some(w => message.content.search(new RegExp(w, "i")) !== -1);
+        return words.some(
+            (w) => message.content.search(new RegExp(w, "i")) !== -1
+        );
     }
 
     let returnValue: EightBallResponseType = EightBallResponseType.UNDECIDED;
@@ -43,16 +48,28 @@ function getResponseType(message: Message, filter: DatabaseEightBallFilter): Eig
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (
-        (!message.content.startsWith("Alice, ") && !(message.author.id === '386742340968120321' && message.content.startsWith("Dear, "))) ||
-        !message.content.endsWith("?") || Config.maintenance || message.author.bot
+        (!message.content.startsWith("Alice, ") &&
+            !(
+                message.author.id === "386742340968120321" &&
+                message.content.startsWith("Dear, ")
+            )) ||
+        !message.content.endsWith("?") ||
+        Config.maintenance ||
+        message.author.bot
     ) {
         return;
     }
 
-    const res: EightBallFilter =
-        (await DatabaseManager.aliceDb.collections.eightBallFilter.get("name", { name: "response" })).first()!;
+    const res: EightBallFilter = (
+        await DatabaseManager.aliceDb.collections.eightBallFilter.get("name", {
+            name: "response",
+        })
+    ).first()!;
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({ author: message.author, color: message.member?.displayColor });
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: message.author,
+        color: message.member?.displayColor,
+    });
     const responseType: EightBallResponseType = getResponseType(message, res);
 
     let answer: string = "";
@@ -76,16 +93,19 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     embed.setDescription(`**Q**: ${message.content}\n**A**: ${answer}`);
 
     message.channel.send({
-        embeds: [embed]
+        embeds: [embed],
     });
 
     DatabaseManager.aliceDb.collections.askCount.update(
-        { discordid: message.author.id }, { $inc: { count: 1 } }, { upsert: true }
+        { discordid: message.author.id },
+        { $inc: { count: 1 } },
+        { upsert: true }
     );
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for responding to questions prefixed with \"Alice, \".",
+    description:
+        'Responsible for responding to questions prefixed with "Alice, ".',
     togglePermissions: ["MANAGE_CHANNELS"],
-    toggleScope: ["GLOBAL", "GUILD", "CHANNEL"]
-}
+    toggleScope: ["GLOBAL", "GUILD", "CHANNEL"],
+};

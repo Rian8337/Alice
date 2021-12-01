@@ -9,38 +9,63 @@ import { VideoSearchResult } from "yt-search";
 import { musicStrings } from "../musicStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const musicInformation: MusicInfo | undefined = MusicManager.musicInformations.get(interaction.guildId!);
+    const musicInformation: MusicInfo | undefined =
+        MusicManager.musicInformations.get(interaction.guildId!);
 
     if (!musicInformation) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.botIsNotInVoiceChannel)
+            content: MessageCreator.createReject(
+                musicStrings.botIsNotInVoiceChannel
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
 
-    embed.setTitle("Music Information")
+    embed
+        .setTitle("Music Information")
         .addField("Playing Since", musicInformation.createdAt.toUTCString());
 
-    const information: VideoSearchResult | undefined = musicInformation.currentlyPlaying?.information;
+    const information: VideoSearchResult | undefined =
+        musicInformation.currentlyPlaying?.information;
 
     if (information) {
-        embed.addField("Currently Playing", `[${information.title}](${information.url})\n\nChannel: ${information.author.name}\n\nDuration: ${information.duration.toString()}\n\nQueued/requested by <@${musicInformation.currentlyPlaying!.queuer}>`)
+        embed
+            .addField(
+                "Currently Playing",
+                `[${information.title}](${information.url})\n\nChannel: ${
+                    information.author.name
+                }\n\nDuration: ${information.duration.toString()}\n\nQueued/requested by <@${
+                    musicInformation.currentlyPlaying!.queuer
+                }>`
+            )
             .setThumbnail(information.thumbnail);
     } else {
         embed.addField("Currently Playing", "None");
     }
 
-    embed.addField("Playback Settings", `${Symbols.repeatSingleButton} Repeat mode: ${musicInformation.repeat ? "Enabled" : "Disabled"}`)
-        .addField("Queue", musicInformation.queue.map((v, i) => `${i + 1}. ${v.information.title}`).join("\n") || "None");
+    embed
+        .addField(
+            "Playback Settings",
+            `${Symbols.repeatSingleButton} Repeat mode: ${
+                musicInformation.repeat ? "Enabled" : "Disabled"
+            }`
+        )
+        .addField(
+            "Queue",
+            musicInformation.queue
+                .map((v, i) => `${i + 1}. ${v.information.title}`)
+                .join("\n") || "None"
+        );
 
     interaction.editReply({
-        embeds: [ embed ]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

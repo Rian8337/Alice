@@ -7,13 +7,19 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
 /**
  * A manager for the `profilebackgrounds` collection.
  */
-export class ProfileBackgroundCollectionManager extends DatabaseCollectionManager<DatabaseProfileBackground, ProfileBackground> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseProfileBackground, ProfileBackground>;
+export class ProfileBackgroundCollectionManager extends DatabaseCollectionManager<
+    DatabaseProfileBackground,
+    ProfileBackground
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseProfileBackground,
+        ProfileBackground
+    >;
 
     override get defaultDocument(): DatabaseProfileBackground {
         return {
             id: "bg",
-            name: "Default"
+            name: "Default",
         };
     }
 
@@ -23,6 +29,11 @@ export class ProfileBackgroundCollectionManager extends DatabaseCollectionManage
     constructor(collection: MongoDBCollection<DatabaseProfileBackground>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseProfileBackground, ProfileBackground>> new ProfileBackground().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<
+                DatabaseProfileBackground,
+                ProfileBackground
+            >
+        >new ProfileBackground().constructor;
     }
 }

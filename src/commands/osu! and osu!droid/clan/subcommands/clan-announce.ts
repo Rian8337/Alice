@@ -7,32 +7,44 @@ import { Role } from "discord.js";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const announcementMessage: string = interaction.options.getString("message", true);
+    const announcementMessage: string = interaction.options.getString(
+        "message",
+        true
+    );
 
     if (announcementMessage.length > 1750) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.announcementMessageTooLong)
+            content: MessageCreator.createReject(
+                clanStrings.announcementMessageTooLong
+            ),
         });
     }
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
         {
-            content: MessageCreator.createWarn(clanStrings.announcementMessageConfirmation)
+            content: MessageCreator.createWarn(
+                clanStrings.announcementMessageConfirmation
+            ),
         },
         [interaction.user.id],
         20
@@ -44,12 +56,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     let finalMessage: string = "";
 
-    const clanRole: Role | undefined = interaction.guild!.roles.cache.find(r => r.name === clan.name);
+    const clanRole: Role | undefined = interaction.guild!.roles.cache.find(
+        (r) => r.name === clan.name
+    );
 
     if (clanRole) {
         finalMessage += clanRole.toString();
     } else {
-        finalMessage += clan.member_list.map(v => `<@${v.id}>`).join("");
+        finalMessage += clan.member_list.map((v) => `<@${v.id}>`).join("");
     }
 
     finalMessage += `\n\n${announcementMessage}\n\n- ${interaction.user}`;
@@ -57,11 +71,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.followUp({
         content: finalMessage,
         allowedMentions: {
-            parse: ["everyone"]
-        }
+            parse: ["everyone"],
+        },
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

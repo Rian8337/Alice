@@ -9,23 +9,25 @@ import { matchStrings } from "../matchStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const id: string | null = interaction.options.getString("id");
 
-    const match: TournamentMatch | null = id ?
-        await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id) :
-        await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(interaction.channelId);
+    const match: TournamentMatch | null = id
+        ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
+        : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
+              interaction.channelId
+          );
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist)
+            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
         });
     }
 
     const embed: MessageEmbed = EmbedCreator.createMatchSummaryEmbed(match);
 
     interaction.editReply({
-        embeds: [ embed ]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

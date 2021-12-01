@@ -23,5 +23,5 @@ export enum coinsStrings {
     addCoinFailed = "I'm sorry, I couldn't add Alice coins to the user: %s.",
     removeAmountInvalid = "Hey, I need a valid amount of coins to remove!",
     removeCoinFailed = "I'm sorry, I cannot remove the user's Alice coins: %s.",
-    removeCoinSuccess = "Successfully removed `%s` Alice coins from user. The user now has `%s` Alice coins."
+    removeCoinSuccess = "Successfully removed `%s` Alice coins from user. The user now has `%s` Alice coins.",
 }

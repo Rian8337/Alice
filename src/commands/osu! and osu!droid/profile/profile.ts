@@ -21,56 +21,58 @@ export const config: Command["config"] = {
                 {
                     name: "uid",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the osu!droid account."
+                    description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "username",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The username the osu!droid account."
+                    description: "The username the osu!droid account.",
                 },
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user."
-                }
-            ]
+                    description: "The Discord user.",
+                },
+            ],
         },
         {
             name: "view",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "View your osu!droid account's profile or someone else's.",
+            description:
+                "View your osu!droid account's profile or someone else's.",
             options: [
                 {
                     name: "uid",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the osu!droid account."
+                    description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "username",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The username the osu!droid account."
+                    description: "The username the osu!droid account.",
                 },
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user."
+                    description: "The Discord user.",
                 },
                 {
                     name: "type",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The type of the profile to show. Defaults to simplified.",
+                    description:
+                        "The type of the profile to show. Defaults to simplified.",
                     choices: [
                         {
                             name: "Simplified Profile",
-                            value: "simplified"
+                            value: "simplified",
                         },
                         {
                             name: "Detailed Profile",
-                            value: "detailed"
-                        }
-                    ]
-                }
-            ]
+                            value: "detailed",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "customize",
@@ -80,68 +82,72 @@ export const config: Command["config"] = {
                 {
                     name: "background",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Customize your profile card's background."
+                    description: "Customize your profile card's background.",
                 },
                 {
                     name: "badge",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Customize your profile card's badge."
+                    description: "Customize your profile card's badge.",
                 },
                 {
                     name: "infobox",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Customize your profile card's information box."
-                }
-            ]
-        }
+                    description:
+                        "Customize your profile card's information box.",
+                },
+            ],
+        },
     ],
     example: [
         {
             command: "profile view",
-            description: "will view your currently binded osu!droid account's profile."
+            description:
+                "will view your currently binded osu!droid account's profile.",
         },
         {
             command: "profile bindinfo",
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
-                }
+                    value: "@Rian8337#0001",
+                },
             ],
-            description: "will view Rian8337's bind information."
+            description: "will view Rian8337's bind information.",
         },
         {
             command: "profile view",
             arguments: [
                 {
                     name: "user",
-                    value: "132783516176875520"
-                }
+                    value: "132783516176875520",
+                },
             ],
-            description: "will view the currently binded osu!droid account's profile of the user with that Discord ID."
+            description:
+                "will view the currently binded osu!droid account's profile of the user with that Discord ID.",
         },
         {
             command: "profile bindinfo",
             arguments: [
                 {
                     name: "username",
-                    value: "dgsrz"
-                }
+                    value: "dgsrz",
+                },
             ],
-            description: "will view the bind information of the osu!droid account with that username."
+            description:
+                "will view the bind information of the osu!droid account with that username.",
         },
         {
             command: "profile view",
             arguments: [
                 {
                     name: "uid",
-                    value: 11678
-                }
+                    value: 11678,
+                },
             ],
-            description: "will view that uid's profile."
-        }
+            description: "will view that uid's profile.",
+        },
     ],
     cooldown: 10,
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

@@ -27,34 +27,36 @@ export const config: Command["config"] = {
                             name: "command",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The command to set the cooldown for."
+                            description: "The command to set the cooldown for.",
                         },
                         {
                             name: "duration",
                             required: true,
                             type: ApplicationCommandOptionTypes.NUMBER,
-                            description: "The duration of the cooldown in seconds, ranging from 5 to 3600."
+                            description:
+                                "The duration of the cooldown in seconds, ranging from 5 to 3600.",
                         },
                         {
                             name: "scope",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The scope at which to disable the command. Defaults to channel.",
+                            description:
+                                "The scope at which to disable the command. Defaults to channel.",
                             choices: [
                                 {
                                     name: "Channel",
-                                    value: "channel"
+                                    value: "channel",
                                 },
                                 {
                                     name: "Guild",
-                                    value: "guild"
+                                    value: "guild",
                                 },
                                 {
                                     name: "Global",
-                                    value: "global"
-                                }
-                            ]
-                        }
-                    ]
+                                    value: "global",
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     name: "disable",
@@ -65,28 +67,29 @@ export const config: Command["config"] = {
                             name: "command",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The command to disable."
+                            description: "The command to disable.",
                         },
                         {
                             name: "scope",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The scope at which to disable the command. Defaults to channel.",
+                            description:
+                                "The scope at which to disable the command. Defaults to channel.",
                             choices: [
                                 {
                                     name: "Channel",
-                                    value: "channel"
+                                    value: "channel",
                                 },
                                 {
                                     name: "Guild",
-                                    value: "guild"
+                                    value: "guild",
                                 },
                                 {
                                     name: "Global",
-                                    value: "global"
-                                }
-                            ]
-                        }
-                    ]
+                                    value: "global",
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     name: "enable",
@@ -97,28 +100,29 @@ export const config: Command["config"] = {
                             name: "command",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The command to enable."
+                            description: "The command to enable.",
                         },
                         {
                             name: "scope",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The scope at which to disable the command. Defaults to channel.",
+                            description:
+                                "The scope at which to disable the command. Defaults to channel.",
                             choices: [
                                 {
                                     name: "Channel",
-                                    value: "channel"
+                                    value: "channel",
                                 },
                                 {
                                     name: "Guild",
-                                    value: "guild"
+                                    value: "guild",
                                 },
                                 {
                                     name: "Global",
-                                    value: "global"
-                                }
-                            ]
-                        }
-                    ]
+                                    value: "global",
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     name: "globalcooldown",
@@ -129,11 +133,12 @@ export const config: Command["config"] = {
                             name: "duration",
                             required: true,
                             type: ApplicationCommandOptionTypes.NUMBER,
-                            description: "The duration of the cooldown, ranging from 5 to 3600."
-                        }
-                    ]
-                }
-            ]
+                            description:
+                                "The duration of the cooldown, ranging from 5 to 3600.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "utility",
@@ -149,34 +154,35 @@ export const config: Command["config"] = {
                             name: "event",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the event."
+                            description: "The name of the event.",
                         },
                         {
                             name: "utility",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the utility."
+                            description: "The name of the utility.",
                         },
                         {
                             name: "scope",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The scope at which to disable the command. Defaults to channel.",
+                            description:
+                                "The scope at which to disable the command. Defaults to channel.",
                             choices: [
                                 {
                                     name: "Channel",
-                                    value: "channel"
+                                    value: "channel",
                                 },
                                 {
                                     name: "Guild",
-                                    value: "guild"
+                                    value: "guild",
                                 },
                                 {
                                     name: "Global",
-                                    value: "global"
-                                }
-                            ]
-                        }
-                    ]
+                                    value: "global",
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     name: "enable",
@@ -187,41 +193,42 @@ export const config: Command["config"] = {
                             name: "event",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the event."
+                            description: "The name of the event.",
                         },
                         {
                             name: "utility",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the utility."
+                            description: "The name of the utility.",
                         },
                         {
                             name: "scope",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The scope at which to disable the command. Defaults to channel.",
+                            description:
+                                "The scope at which to disable the command. Defaults to channel.",
                             choices: [
                                 {
                                     name: "Channel",
-                                    value: "channel"
+                                    value: "channel",
                                 },
                                 {
                                     name: "Guild",
-                                    value: "guild"
+                                    value: "guild",
                                 },
                                 {
                                     name: "Global",
-                                    value: "global"
-                                }
-                            ]
-                        }
-                    ]
+                                    value: "global",
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     name: "list",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Lists all utilities that the bot has."
-                }
-            ]
+                    description: "Lists all utilities that the bot has.",
+                },
+            ],
         },
         {
             name: "mutepermission",
@@ -237,15 +244,17 @@ export const config: Command["config"] = {
                             name: "role",
                             required: true,
                             type: ApplicationCommandOptionTypes.ROLE,
-                            description: "The role to grant mute permission to."
+                            description:
+                                "The role to grant mute permission to.",
                         },
                         {
                             name: "maxmutetime",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "Maximum mute time, in time format (e.g. 6:01:24:33 or 2d14h55m34s). For permanent mute, set to -1."
-                        }
-                    ]
+                            description:
+                                "Maximum mute time, in time format (e.g. 6:01:24:33 or 2d14h55m34s). For permanent mute, set to -1.",
+                        },
+                    ],
                 },
                 {
                     name: "revoke",
@@ -256,16 +265,17 @@ export const config: Command["config"] = {
                             name: "role",
                             required: true,
                             type: ApplicationCommandOptionTypes.ROLE,
-                            description: "The role to revoke mute permission from."
-                        }
-                    ]
+                            description:
+                                "The role to revoke mute permission from.",
+                        },
+                    ],
                 },
                 {
                     name: "list",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Lists roles that have mute permission."
-                }
-            ]
+                    description: "Lists roles that have mute permission.",
+                },
+            ],
         },
         {
             name: "muteimmunity",
@@ -281,9 +291,9 @@ export const config: Command["config"] = {
                             name: "role",
                             required: true,
                             type: ApplicationCommandOptionTypes.ROLE,
-                            description: "The role to grant mute immunity to."
-                        }
-                    ]
+                            description: "The role to grant mute immunity to.",
+                        },
+                    ],
                 },
                 {
                     name: "revoke",
@@ -294,16 +304,17 @@ export const config: Command["config"] = {
                             name: "role",
                             required: true,
                             type: ApplicationCommandOptionTypes.ROLE,
-                            description: "The role to revoke mute immunity from."
-                        }
-                    ]
+                            description:
+                                "The role to revoke mute immunity from.",
+                        },
+                    ],
                 },
                 {
                     name: "list",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Lists roles that have mute immunity."
-                }
-            ]
+                    description: "Lists roles that have mute immunity.",
+                },
+            ],
         },
         {
             name: "punishmentlog",
@@ -319,17 +330,18 @@ export const config: Command["config"] = {
                             name: "channel",
                             required: true,
                             type: ApplicationCommandOptionTypes.CHANNEL,
-                            description: "The text channel to set as the guild's punishment log channel."
-                        }
-                    ]
+                            description:
+                                "The text channel to set as the guild's punishment log channel.",
+                        },
+                    ],
                 },
                 {
                     name: "unset",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Unsets the guild's punishment log channel."
-                }
-            ]
-        }
+                    description: "Unsets the guild's punishment log channel.",
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -337,36 +349,38 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "channel",
-                    value: "#channel"
-                }
+                    value: "#channel",
+                },
             ],
-            description: "will set the current guild's punishment log channel to #channel."
+            description:
+                "will set the current guild's punishment log channel to #channel.",
         },
         {
             command: "settings muteimmunity grant",
             arguments: [
                 {
                     name: "role",
-                    value: "@Moderator"
-                }
+                    value: "@Moderator",
+                },
             ],
-            description: "will grant mute immunity for the Moderator role."
+            description: "will grant mute immunity for the Moderator role.",
         },
         {
             command: "settings command cooldown",
             arguments: [
                 {
                     name: "command",
-                    value: "recent"
+                    value: "recent",
                 },
                 {
                     name: "duration",
-                    value: "60s"
-                }
+                    value: "60s",
+                },
             ],
-            description: "will set the cooldown for \"recent\" command to 60 seconds."
-        }
+            description:
+                'will set the cooldown for "recent" command to 60 seconds.',
+        },
     ],
     permissions: [],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

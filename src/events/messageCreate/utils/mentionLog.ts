@@ -1,10 +1,22 @@
-import { Message, MessageEmbed, MessageMentions, Role, TextChannel, User } from "discord.js";
+import {
+    Message,
+    MessageEmbed,
+    MessageMentions,
+    Role,
+    TextChannel,
+    User,
+} from "discord.js";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Constants } from "@alice-core/Constants";
 
 export const run: EventUtil["run"] = async (client, message: Message) => {
-    if (message.author.bot || (message.mentions.users.size === 0 && message.mentions.roles.size === 0) || message.guildId !== Constants.mainServer) {
+    if (
+        message.author.bot ||
+        (message.mentions.users.size === 0 &&
+            message.mentions.roles.size === 0) ||
+        message.guildId !== Constants.mainServer
+    ) {
         return;
     }
 
@@ -25,30 +37,39 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
         author: message.author,
         color: "#00cb16",
         footerText: `Author ID: ${message.author.id} | Channel ID: ${message.channel.id} | Message ID: ${message.id}`,
-        timestamp: true
+        timestamp: true,
     });
 
-    embed.addField("Channel", `${message.channel} | [Go to Message](${message.url})`);
+    embed.addField(
+        "Channel",
+        `${message.channel} | [Go to Message](${message.url})`
+    );
 
     if (mentionedUsers.length > 0) {
-        embed.addField("Mentioned Users", mentionedUsers.map(v => v.toString()).join(" "));
+        embed.addField(
+            "Mentioned Users",
+            mentionedUsers.map((v) => v.toString()).join(" ")
+        );
     }
 
     if (mentionedRoles.length > 0) {
-        embed.addField("Mentioned Roles", mentionedRoles.map(v => v.toString()).join(" "));
+        embed.addField(
+            "Mentioned Roles",
+            mentionedRoles.map((v) => v.toString()).join(" ")
+        );
     }
 
     if (message.content) {
         embed.addField("Content", message.content.substring(0, 1025));
     }
 
-    (<TextChannel> await client.channels.fetch("683504788272578577")).send({
-        embeds: [ embed ]
+    (<TextChannel>await client.channels.fetch("683504788272578577")).send({
+        embeds: [embed],
     });
 };
 
 export const config: EventUtil["config"] = {
     description: "Responsible for logging mentions in main server.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

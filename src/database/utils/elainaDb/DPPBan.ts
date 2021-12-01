@@ -11,7 +11,10 @@ export class DPPBan extends Manager implements DatabaseDPPBan {
     reason: string;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseDPPBan = DatabaseManager.elainaDb?.collections.dppBan.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseDPPBan = DatabaseManager.elainaDb?.collections.dppBan
+            .defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

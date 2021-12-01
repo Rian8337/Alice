@@ -10,7 +10,12 @@ export const run: EventUtil["run"] = async (client) => {
     }
 
     setInterval(async () => {
-        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("botActivityCycle")) {
+        if (
+            Config.maintenance ||
+            CommandUtilManager.globallyDisabledEventUtils
+                .get("ready")
+                ?.includes("botActivityCycle")
+        ) {
             return;
         }
 
@@ -23,5 +28,5 @@ export const config: EventUtil["config"] = {
     description: "Responsible for periodically changing bot activity status.",
     togglePermissions: ["BOT_OWNER"],
     toggleScope: ["GLOBAL"],
-    debugEnabled: true
+    debugEnabled: true,
 };

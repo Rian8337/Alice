@@ -3,12 +3,23 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Manager } from "@alice-utils/base/Manager";
 import { Collection as DiscordCollection } from "discord.js";
-import { Collection as MongoDBCollection, Filter, FindOptions, OptionalId, UpdateFilter, UpdateOptions, WithId } from "mongodb";
+import {
+    Collection as MongoDBCollection,
+    Filter,
+    FindOptions,
+    OptionalId,
+    UpdateFilter,
+    UpdateOptions,
+    WithId,
+} from "mongodb";
 
 /**
  * A MongoDB collection manager.
  */
-export abstract class DatabaseCollectionManager<T extends BaseDocument, C extends Manager> extends Manager {
+export abstract class DatabaseCollectionManager<
+    T extends BaseDocument,
+    C extends Manager
+> extends Manager {
     /**
      * The collection that this manager is responsible for.
      */
@@ -17,7 +28,10 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * The constructor function of the utility of this collection.
      */
-    protected abstract readonly utilityInstance: DatabaseUtilityConstructor<T, C>;
+    protected abstract readonly utilityInstance: DatabaseUtilityConstructor<
+        T,
+        C
+    >;
 
     /**
      * The default document of this collection.
@@ -42,17 +56,23 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
 
     /**
      * Updates multiple documents in the collection.
-     * 
+     *
      * @param filter The filter used to select the documents to update.
      * @param query The update operations to be applied to the documents.
      * @param options Options for the update operation.
      * @returns An object containing information about the operation.
      */
-    update(filter: Filter<T>, query: UpdateFilter<T> | Partial<T>, options: UpdateOptions = {}): Promise<OperationResult> {
-        return new Promise(resolve => {
-            this.collection.updateMany(filter, query, options, err => {
+    update(
+        filter: Filter<T>,
+        query: UpdateFilter<T> | Partial<T>,
+        options: UpdateOptions = {}
+    ): Promise<OperationResult> {
+        return new Promise((resolve) => {
+            this.collection.updateMany(filter, query, options, (err) => {
                 if (err) {
-                    return resolve(this.createOperationResult(false, err.message));
+                    return resolve(
+                        this.createOperationResult(false, err.message)
+                    );
                 }
 
                 resolve(this.createOperationResult(true));
@@ -63,46 +83,63 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets multiple documents from the collection and then
      * index them based on the given key.
-     * 
+     *
      * @param key The key to index.
      * @param filter The document filter.
      * @returns The indexed documents in a discord.js collection.
      */
-    async get<K extends keyof T>(key: K, filter?: Filter<WithId<T>>): Promise<DiscordCollection<T[K], C>>;
+    async get<K extends keyof T>(
+        key: K,
+        filter?: Filter<WithId<T>>
+    ): Promise<DiscordCollection<T[K], C>>;
 
     /**
      * Gets multiple documents from the collection and then
      * index them based on the given key.
-     * 
+     *
      * @param key The key to index.
      * @param filter The document filter.
-     * @param options The options for retrieving the documents. 
+     * @param options The options for retrieving the documents.
      * @returns The indexed documents in a discord.js collection.
      */
-    async get<K extends keyof T>(key: K, filter: Filter<WithId<T>>, options?: FindOptions<T>): Promise<DiscordCollection<T[K], C>>;
+    async get<K extends keyof T>(
+        key: K,
+        filter: Filter<WithId<T>>,
+        options?: FindOptions<T>
+    ): Promise<DiscordCollection<T[K], C>>;
 
     /**
      * Gets multiple documents from the collection and then
      * index them based on the given key.
-     * 
+     *
      * @param key The key to index.
      * @param filter The document filter.
-     * @param options The options for retrieving the documents. 
+     * @param options The options for retrieving the documents.
      * @returns The indexed documents in a discord.js collection.
      */
-    async get<K extends keyof T>(key: K, filter: Filter<WithId<T>>, options: FindOptions<T>): Promise<DiscordCollection<T[K], C>>;
+    async get<K extends keyof T>(
+        key: K,
+        filter: Filter<WithId<T>>,
+        options: FindOptions<T>
+    ): Promise<DiscordCollection<T[K], C>>;
 
     /**
      * Gets multiple documents from the collection and then
      * index them based on the given key.
-     * 
+     *
      * @param key The key to index.
      * @param filter The document filter.
-     * @param options The options for retrieving the documents. 
+     * @param options The options for retrieving the documents.
      * @returns The indexed documents in a discord.js collection.
      */
-    async get<K extends keyof T>(key: K, filter: Filter<WithId<T>> = {}, options?: FindOptions<T>): Promise<DiscordCollection<T[K], C>> {
-        const res: T[] = <T[]>await this.collection.find(filter, options).toArray();
+    async get<K extends keyof T>(
+        key: K,
+        filter: Filter<WithId<T>> = {},
+        options?: FindOptions<T>
+    ): Promise<DiscordCollection<T[K], C>> {
+        const res: T[] = <T[]>(
+            await this.collection.find(filter, options).toArray()
+        );
 
         const collection: DiscordCollection<T[K], C> = new DiscordCollection();
 
@@ -116,7 +153,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets a document from the collection and convert it
      * to its utility.
-     * 
+     *
      * @param filter The document filter.
      * @returns The converted document.
      */
@@ -125,7 +162,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets a document from the collection and convert it
      * to its utility.
-     * 
+     *
      * @param filter The document filter.
      * @param options The options for retrieving the documents.
      * @returns The converted document.
@@ -135,22 +172,28 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets a document from the collection and convert it
      * to its utility.
-     * 
+     *
      * @param filter The document filter.
      * @param options The options for retrieving the documents.
      * @returns The converted document.
      */
-    async getOne(filter: Filter<T>, options?: FindOptions<T>): Promise<C | null>;
+    async getOne(
+        filter: Filter<T>,
+        options?: FindOptions<T>
+    ): Promise<C | null>;
 
     /**
      * Gets a document from the collection and convert it
      * to its utility.
-     * 
+     *
      * @param filter The document filter.
      * @param options The options for retrieving the documents.
      * @returns The converted document.
      */
-    async getOne(filter: Filter<T> = {}, options?: FindOptions<T>): Promise<C | null> {
+    async getOne(
+        filter: Filter<T> = {},
+        options?: FindOptions<T>
+    ): Promise<C | null> {
         const res: T | null = await this.collection.findOne(filter, options);
 
         return res ? new this.utilityInstance(res) : null;
@@ -158,15 +201,17 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
 
     /**
      * Delete multiple documents from the collection.
-     * 
+     *
      * @param filter The filter used to select the documents to remove.
      * @returns An object containing information about the operation.
      */
     delete(filter: Filter<T>): Promise<OperationResult> {
-        return new Promise(resolve => {
-            this.collection.deleteMany(filter, err => {
+        return new Promise((resolve) => {
+            this.collection.deleteMany(filter, (err) => {
                 if (err) {
-                    return resolve(this.createOperationResult(false, err.message));
+                    return resolve(
+                        this.createOperationResult(false, err.message)
+                    );
                 }
 
                 resolve(this.createOperationResult(true));
@@ -176,18 +221,25 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
 
     /**
      * Inserts multiple documents into the collection.
-     * 
+     *
      * @param docs The part of documents to insert. Each document will be assigned to the default document with `Object.assign()`.
      */
     insert(...docs: Partial<T>[]): Promise<OperationResult> {
-        return new Promise(resolve => {
-            this.collection.insertMany(docs.map(v => <OptionalId<T>>Object.assign(this.defaultDocument, v)), err => {
-                if (err) {
-                    return resolve(this.createOperationResult(false, err.message));
-                }
+        return new Promise((resolve) => {
+            this.collection.insertMany(
+                docs.map(
+                    (v) => <OptionalId<T>>Object.assign(this.defaultDocument, v)
+                ),
+                (err) => {
+                    if (err) {
+                        return resolve(
+                            this.createOperationResult(false, err.message)
+                        );
+                    }
 
-                resolve(this.createOperationResult(true));
-            });
+                    resolve(this.createOperationResult(true));
+                }
+            );
         });
     }
 }

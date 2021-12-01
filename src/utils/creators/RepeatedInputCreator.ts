@@ -27,14 +27,22 @@ export class RepeatedInputCreator {
 
     /**
      * Creates an input detector and returns the input received from the user.
-     * 
+     *
      * @param choiceDescription The description of the choice embed.
      * @returns The input, `undefined` if no input is given.
      */
     createInput(choiceDescription: string): Promise<string | undefined> {
         return MessageInputCreator.createInputDetector(
             this.interaction,
-            { embeds: [ EmbedCreator.createInputEmbed(this.interaction, this.choiceTitle, choiceDescription) ] },
+            {
+                embeds: [
+                    EmbedCreator.createInputEmbed(
+                        this.interaction,
+                        this.choiceTitle,
+                        choiceDescription
+                    ),
+                ],
+            },
             [],
             [this.interaction.user.id],
             20,

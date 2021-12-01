@@ -9,7 +9,7 @@ import { clanStrings } from "./clanStrings";
 export const run: Command["run"] = async (_, interaction) => {
     if (interaction.guildId! !== Constants.mainServer) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.notInMainGuild)
+            content: MessageCreator.createReject(clanStrings.notInMainGuild),
         });
     }
 
@@ -25,7 +25,7 @@ export const config: Command["config"] = {
         {
             name: "about",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "About clans."
+            description: "About clans.",
         },
         {
             name: "accept",
@@ -36,9 +36,9 @@ export const config: Command["config"] = {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to accept."
-                }
-            ]
+                    description: "The user to accept.",
+                },
+            ],
         },
         {
             name: "announce",
@@ -49,9 +49,10 @@ export const config: Command["config"] = {
                     name: "message",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The message to announce. Must be less than 1750 characters."
-                }
-            ]
+                    description:
+                        "The message to announce. Must be less than 1750 characters.",
+                },
+            ],
         },
         {
             name: "auction",
@@ -67,28 +68,30 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the auction. Must be less than 20 characters."
+                            description:
+                                "The name of the auction. Must be less than 20 characters.",
                         },
                         {
                             name: "amount",
                             required: true,
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The amount of Alice coins to bid."
-                        }
-                    ]
+                            description: "The amount of Alice coins to bid.",
+                        },
+                    ],
                 },
                 {
                     name: "cancel",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Cancels an auction, provided that no one has bid to it.",
+                    description:
+                        "Cancels an auction, provided that no one has bid to it.",
                     options: [
                         {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the auction."
-                        }
-                    ]
+                            description: "The name of the auction.",
+                        },
+                    ],
                 },
                 {
                     name: "create",
@@ -99,33 +102,36 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the auction."
+                            description: "The name of the auction.",
                         },
                         {
                             name: "powerup",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The powerup to be auctioned."
+                            description: "The powerup to be auctioned.",
                         },
                         {
                             name: "amount",
                             required: true,
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The amount of powerups to be auctioned."
+                            description:
+                                "The amount of powerups to be auctioned.",
                         },
                         {
                             name: "minimumbidamount",
                             required: true,
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The minimum bid amount for the auction."
+                            description:
+                                "The minimum bid amount for the auction.",
                         },
                         {
                             name: "duration",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The duration of the auction in time format (e.g. 6:01:24:33 or 2d14h55m34s), from 1 minute to 1 day."
-                        }
-                    ]
+                            description:
+                                "The duration of the auction in time format (e.g. 6:01:24:33 or 2d14h55m34s), from 1 minute to 1 day.",
+                        },
+                    ],
                 },
                 {
                     name: "list",
@@ -135,9 +141,9 @@ export const config: Command["config"] = {
                         {
                             name: "page",
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The page to view. Defaults to 1."
-                        }
-                    ]
+                            description: "The page to view. Defaults to 1.",
+                        },
+                    ],
                 },
                 {
                     name: "status",
@@ -148,11 +154,11 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the auction."
-                        }
-                    ]
-                }
-            ]
+                            description: "The name of the auction.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "banner",
@@ -168,9 +174,9 @@ export const config: Command["config"] = {
                             name: "url",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The URL of the new clan banner."
-                        }
-                    ]
+                            description: "The URL of the new clan banner.",
+                        },
+                    ],
                 },
                 {
                     name: "unset",
@@ -180,16 +186,18 @@ export const config: Command["config"] = {
                         {
                             name: "name",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the clan. Defaults to your own clan."
-                        }
-                    ]
-                }
-            ]
+                            description:
+                                "The name of the clan. Defaults to your own clan.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "cooldown",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Displays cooldown-related informations such as battle cooldown and join cooldown.",
+            description:
+                "Displays cooldown-related informations such as battle cooldown and join cooldown.",
             options: [
                 {
                     name: "type",
@@ -199,20 +207,20 @@ export const config: Command["config"] = {
                     choices: [
                         {
                             name: "Battle Cooldown",
-                            value: "battle"
+                            value: "battle",
                         },
                         {
                             name: "Joining Cooldown",
-                            value: "join"
-                        }
-                    ]
+                            value: "join",
+                        },
+                    ],
                 },
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to display. Defaults to yourself."
-                }
-            ]
+                    description: "The user to display. Defaults to yourself.",
+                },
+            ],
         },
         {
             name: "create",
@@ -223,9 +231,10 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the clan. Must be less than 25 characters and cannot contain unicodes."
-                }
-            ]
+                    description:
+                        "The name of the clan. Must be less than 25 characters and cannot contain unicodes.",
+                },
+            ],
         },
         {
             name: "demote",
@@ -236,9 +245,9 @@ export const config: Command["config"] = {
                     name: "member",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The clan member to demote."
-                }
-            ]
+                    description: "The clan member to demote.",
+                },
+            ],
         },
         {
             name: "disband",
@@ -248,9 +257,10 @@ export const config: Command["config"] = {
                 {
                     name: "name",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the clan. Defaults to your own clan."
-                }
-            ]
+                    description:
+                        "The name of the clan. Defaults to your own clan.",
+                },
+            ],
         },
         {
             name: "description",
@@ -265,9 +275,10 @@ export const config: Command["config"] = {
                         {
                             name: "clan",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the clan. Defaults to your own clan."
-                        }
-                    ]
+                            description:
+                                "The name of the clan. Defaults to your own clan.",
+                        },
+                    ],
                 },
                 {
                     name: "edit",
@@ -278,16 +289,18 @@ export const config: Command["config"] = {
                             name: "description",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The new description. Must be less than 2000 characters."
+                            description:
+                                "The new description. Must be less than 2000 characters.",
                         },
                         {
                             name: "name",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the clan. Defaults to your own clan."
-                        }
-                    ]
-                }
-            ]
+                            description:
+                                "The name of the clan. Defaults to your own clan.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "icon",
@@ -303,9 +316,9 @@ export const config: Command["config"] = {
                             name: "url",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The URL of the new clan icon."
-                        }
-                    ]
+                            description: "The URL of the new clan icon.",
+                        },
+                    ],
                 },
                 {
                     name: "unset",
@@ -315,11 +328,12 @@ export const config: Command["config"] = {
                         {
                             name: "name",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the clan. Defaults to your own clan."
-                        }
-                    ]
-                }
-            ]
+                            description:
+                                "The name of the clan. Defaults to your own clan.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "info",
@@ -329,9 +343,10 @@ export const config: Command["config"] = {
                 {
                     name: "name",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the clan. Defaults to your own clan, if any."
-                }
-            ]
+                    description:
+                        "The name of the clan. Defaults to your own clan, if any.",
+                },
+            ],
         },
         {
             name: "kick",
@@ -342,14 +357,14 @@ export const config: Command["config"] = {
                     name: "member",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The clan member to kick."
+                    description: "The clan member to kick.",
                 },
                 {
                     name: "name",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the clan."
-                }
-            ]
+                    description: "The name of the clan.",
+                },
+            ],
         },
         {
             name: "leaderboard",
@@ -359,14 +374,14 @@ export const config: Command["config"] = {
                 {
                     name: "page",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page to view. Defaults to 1."
-                }
-            ]
+                    description: "The page to view. Defaults to 1.",
+                },
+            ],
         },
         {
             name: "leave",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Leaves your current clan."
+            description: "Leaves your current clan.",
         },
         {
             name: "match",
@@ -377,15 +392,15 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the clan."
+                    description: "The name of the clan.",
                 },
                 {
                     name: "ismatchmode",
                     required: true,
                     type: ApplicationCommandOptionTypes.BOOLEAN,
-                    description: "Whether the clan is in match mode."
-                }
-            ]
+                    description: "Whether the clan is in match mode.",
+                },
+            ],
         },
         {
             name: "members",
@@ -395,9 +410,10 @@ export const config: Command["config"] = {
                 {
                     name: "name",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the clan. Defaults to your own clan, if any."
-                }
-            ]
+                    description:
+                        "The name of the clan. Defaults to your own clan, if any.",
+                },
+            ],
         },
         {
             name: "power",
@@ -413,15 +429,15 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the clan."
+                            description: "The name of the clan.",
                         },
                         {
                             name: "amount",
                             required: true,
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The amount of power to give."
-                        }
-                    ]
+                            description: "The amount of power to give.",
+                        },
+                    ],
                 },
                 {
                     name: "take",
@@ -432,41 +448,45 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the clan."
+                            description: "The name of the clan.",
                         },
                         {
                             name: "amount",
                             required: true,
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The amount of power to take."
-                        }
-                    ]
+                            description: "The amount of power to take.",
+                        },
+                    ],
                 },
                 {
                     name: "transfer",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Transfers clan power from one clan to another. Used after completing a clan battle.",
+                    description:
+                        "Transfers clan power from one clan to another. Used after completing a clan battle.",
                     options: [
                         {
                             name: "fromclan",
                             required: true,
                             type: ApplicationCommandOptionTypes.USER,
-                            description: "The member of the clan to transfer clan power from."
+                            description:
+                                "The member of the clan to transfer clan power from.",
                         },
                         {
                             name: "toclan",
                             required: true,
                             type: ApplicationCommandOptionTypes.USER,
-                            description: "The member of the clan to transfer clan power to."
+                            description:
+                                "The member of the clan to transfer clan power to.",
                         },
                         {
                             name: "challengepassed",
                             type: ApplicationCommandOptionTypes.BOOLEAN,
-                            description: "Whether the winning clan passed the challenge given by the losing clan."
-                        }
-                    ]
-                }
-            ]
+                            description:
+                                "Whether the winning clan passed the challenge given by the losing clan.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "powerup",
@@ -482,21 +502,21 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the powerup."
-                        }
-                    ]
+                            description: "The name of the powerup.",
+                        },
+                    ],
                 },
                 {
                     name: "activelist",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Lists your clan's active powerups."
+                    description: "Lists your clan's active powerups.",
                 },
                 {
                     name: "list",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Lists your clan's powerups."
-                }
-            ]
+                    description: "Lists your clan's powerups.",
+                },
+            ],
         },
         {
             name: "promote",
@@ -507,9 +527,9 @@ export const config: Command["config"] = {
                     name: "member",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The clan member to promote."
-                }
-            ]
+                    description: "The clan member to promote.",
+                },
+            ],
         },
         {
             name: "role",
@@ -524,9 +544,10 @@ export const config: Command["config"] = {
                         {
                             name: "url",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The URL of your new clan role icon. Omit to clear the icon."
-                        }
-                    ]
+                            description:
+                                "The URL of your new clan role icon. Omit to clear the icon.",
+                        },
+                    ],
                 },
                 {
                     name: "setcolor",
@@ -536,11 +557,12 @@ export const config: Command["config"] = {
                         {
                             name: "color",
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The new color of the role. Must be a hex code. Omit to clear the color."
-                        }
-                    ]
-                }
-            ]
+                            description:
+                                "The new color of the role. Must be a hex code. Omit to clear the color.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "shop",
@@ -550,12 +572,12 @@ export const config: Command["config"] = {
                 {
                     name: "channel",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Buys a text channel for your clan."
+                    description: "Buys a text channel for your clan.",
                 },
                 {
                     name: "powerup",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Buys powerups for your clan."
+                    description: "Buys powerups for your clan.",
                 },
                 {
                     name: "rename",
@@ -566,29 +588,32 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The new name of your clan."
-                        }
-                    ]
+                            description: "The new name of your clan.",
+                        },
+                    ],
                 },
                 {
                     name: "role",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Buys a custom role for your clan."
+                    description: "Buys a custom role for your clan.",
                 },
                 {
                     name: "rolecolor",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Unlocks the ability to change your clan role's color."
+                    description:
+                        "Unlocks the ability to change your clan role's color.",
                 },
                 {
                     name: "roleicon",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Unlocks the ability to change your clan role's icon."
+                    description:
+                        "Unlocks the ability to change your clan role's icon.",
                 },
                 {
                     name: "special",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "A shop section specifically for special events."
+                    description:
+                        "A shop section specifically for special events.",
                 },
                 {
                     name: "transferleader",
@@ -599,19 +624,20 @@ export const config: Command["config"] = {
                             name: "member",
                             required: true,
                             type: ApplicationCommandOptionTypes.USER,
-                            description: "The clan member to transfer leadership to."
-                        }
-                    ]
-                }
-            ]
+                            description:
+                                "The clan member to transfer leadership to.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "upkeep",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Views the weekly uptime pickup of your clan."
-        }
+            description: "Views the weekly uptime pickup of your clan.",
+        },
     ],
     example: [],
     permissions: [],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

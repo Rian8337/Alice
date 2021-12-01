@@ -10,19 +10,29 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason", true);
 
-    const result: OperationResult = await LoungeLockManager.unlock(user.id, reason);
+    const result: OperationResult = await LoungeLockManager.unlock(
+        user.id,
+        reason
+    );
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(fancyStrings.processFailed, "unlock", <string> result.reason)
+            content: MessageCreator.createReject(
+                fancyStrings.processFailed,
+                "unlock",
+                <string>result.reason
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(fancyStrings.processSuccessful, "unlocked")
+        content: MessageCreator.createAccept(
+            fancyStrings.processSuccessful,
+            "unlocked"
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

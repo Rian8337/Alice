@@ -11,23 +11,30 @@ import { Precision, RequestResponse } from "osu-droid";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const iconURL: string | null = interaction.options.getString("url");
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.roleIconUnlocked) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.roleIconIsNotUnlocked)
+            content: MessageCreator.createReject(
+                clanStrings.roleIconIsNotUnlocked
+            ),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
@@ -35,7 +42,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clanRole) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntHaveClanRole)
+            content: MessageCreator.createReject(
+                clanStrings.clanDoesntHaveClanRole
+            ),
         });
     }
 
@@ -46,7 +55,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         if (req.statusCode !== 200) {
             return interaction.editReply({
-                content: MessageCreator.createReject(clanStrings.cannotDownloadRoleIcon)
+                content: MessageCreator.createReject(
+                    clanStrings.cannotDownloadRoleIcon
+                ),
             });
         }
 
@@ -58,19 +69,32 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             image = await loadImage(icon);
         } catch {
             return interaction.editReply({
-                content: MessageCreator.createReject(clanStrings.invalidRoleIconURL)
+                content: MessageCreator.createReject(
+                    clanStrings.invalidRoleIconURL
+                ),
             });
         }
 
         if (Buffer.byteLength(icon) > 256e3) {
             return interaction.editReply({
-                content: MessageCreator.createReject(clanStrings.roleIconFileSizeTooBig)
+                content: MessageCreator.createReject(
+                    clanStrings.roleIconFileSizeTooBig
+                ),
             });
         }
 
-        if (image.naturalHeight < 64 || image.naturalHeight < 64 || !Precision.almostEqualsNumber(image.naturalHeight / image.naturalWidth, 1)) {
+        if (
+            image.naturalHeight < 64 ||
+            image.naturalHeight < 64 ||
+            !Precision.almostEqualsNumber(
+                image.naturalHeight / image.naturalWidth,
+                1
+            )
+        ) {
             return interaction.editReply({
-                content: MessageCreator.createReject(clanStrings.invalidRoleIconSize)
+                content: MessageCreator.createReject(
+                    clanStrings.invalidRoleIconSize
+                ),
             });
         }
     }
@@ -78,10 +102,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     await clanRole.setIcon(icon);
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.changeRoleIconSuccessful)
+        content: MessageCreator.createAccept(
+            clanStrings.changeRoleIconSuccessful
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

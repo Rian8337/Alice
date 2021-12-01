@@ -18,47 +18,61 @@ import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/Pl
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const playerInfoDbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
+    const playerInfoDbManager: PlayerInfoCollectionManager =
+        DatabaseManager.aliceDb.collections.playerInfo;
 
-    const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
+    const bindInfo: UserBind | null =
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+            interaction.user
+        );
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject)
+            content: MessageCreator.createReject(Constants.selfNotBindedReject),
         });
     }
 
-    const badgeList: Collection<string, ProfileBadge> = await DatabaseManager.aliceDb.collections.profileBadges.get("id");
+    const badgeList: Collection<string, ProfileBadge> =
+        await DatabaseManager.aliceDb.collections.profileBadges.get("id");
 
-    const badgeID: string | undefined = (await SelectMenuCreator.createSelectMenu(
-        interaction,
-        {
-            content: MessageCreator.createWarn("Choose the badge that you want to claim.")
-        },
-        badgeList.map(v => {
-            return {
-                label: v.name,
-                value: v.id
-            };
-        }),
-        [interaction.user.id],
-        30
-    ))[0];
+    const badgeID: string | undefined = (
+        await SelectMenuCreator.createSelectMenu(
+            interaction,
+            {
+                content: MessageCreator.createWarn(
+                    "Choose the badge that you want to claim."
+                ),
+            },
+            badgeList.map((v) => {
+                return {
+                    label: v.name,
+                    value: v.id,
+                };
+            }),
+            [interaction.user.id],
+            30
+        )
+    )[0];
 
     if (!badgeID) {
         return;
     }
 
-    const badge: ProfileBadge = badgeList.find(v => v.id === badgeID)!;
+    const badge: ProfileBadge = badgeList.find((v) => v.id === badgeID)!;
 
-    const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
+        interaction.user
+    );
 
     const pictureConfig: ProfileImageConfig =
-        playerInfo?.picture_config ?? playerInfoDbManager.defaultDocument.picture_config;
+        playerInfo?.picture_config ??
+        playerInfoDbManager.defaultDocument.picture_config;
 
-    if (pictureConfig.badges.find(b => b.id === badge.id)) {
+    if (pictureConfig.badges.find((b) => b.id === badge.id)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(profileStrings.badgeIsAlreadyClaimed)
+            content: MessageCreator.createReject(
+                profileStrings.badgeIsAlreadyClaimed
+            ),
         });
     }
 
@@ -66,7 +80,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(profileStrings.profileNotFound, "your")
+            content: MessageCreator.createReject(
+                profileStrings.profileNotFound,
+                "your"
+            ),
         });
     }
 
@@ -81,9 +98,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             break;
         case "score_ranked":
             for await (const uid of bindInfo.previous_bind) {
-                const rankedScoreInfo: RankedScore | null = await DatabaseManager.aliceDb.collections.rankedScore.getOne(
-                    { uid: uid }, { projection: { _id: 0, uid: 1, level: 1, playc: 1, score: 1, username: 1 } }
-                );
+                const rankedScoreInfo: RankedScore | null =
+                    await DatabaseManager.aliceDb.collections.rankedScore.getOne(
+                        { uid: uid },
+                        {
+                            projection: {
+                                _id: 0,
+                                uid: 1,
+                                level: 1,
+                                playc: 1,
+                                score: 1,
+                                username: 1,
+                            },
+                        }
+                    );
 
                 if ((rankedScoreInfo?.score ?? 0) >= badge.requirement) {
                     canUserClaimBadge = true;
@@ -92,19 +120,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             }
             break;
         case "star_fc": {
-            const beatmapIDInput: string | undefined = await MessageInputCreator.createInputDetector(
-                interaction,
-                {
-                    embeds: [EmbedCreator.createInputEmbed(
-                        interaction,
-                        "Claim a Profile Badge",
-                        `Enter the beatmap ID or link that is at least ${badge.requirement}${Symbols.star} in PC rating and you have a full combo on.\n\nThe beatmap must be a ranked or approved beatmap.`
-                    )]
-                },
-                [],
-                [interaction.user.id],
-                20
-            );
+            const beatmapIDInput: string | undefined =
+                await MessageInputCreator.createInputDetector(
+                    interaction,
+                    {
+                        embeds: [
+                            EmbedCreator.createInputEmbed(
+                                interaction,
+                                "Claim a Profile Badge",
+                                `Enter the beatmap ID or link that is at least ${badge.requirement}${Symbols.star} in PC rating and you have a full combo on.\n\nThe beatmap must be a ranked or approved beatmap.`
+                            ),
+                        ],
+                    },
+                    [],
+                    [interaction.user.id],
+                    20
+                );
 
             if (!beatmapIDInput) {
                 break;
@@ -114,26 +145,41 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
             if (isNaN(beatmapID)) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(profileStrings.beatmapToClaimBadgeNotValid)
+                    content: MessageCreator.createReject(
+                        profileStrings.beatmapToClaimBadgeNotValid
+                    ),
                 });
             }
 
-            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID, false);
+            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+                beatmapID,
+                false
+            );
 
             if (!beatmapInfo) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(profileStrings.beatmapToClaimBadgeNotFound)
+                    content: MessageCreator.createReject(
+                        profileStrings.beatmapToClaimBadgeNotFound
+                    ),
                 });
             }
 
-            if (beatmapInfo.approved !== rankedStatus.RANKED && beatmapInfo.approved !== rankedStatus.APPROVED) {
+            if (
+                beatmapInfo.approved !== rankedStatus.RANKED &&
+                beatmapInfo.approved !== rankedStatus.APPROVED
+            ) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(profileStrings.beatmapToClaimBadgeNotRankedOrApproved)
+                    content: MessageCreator.createReject(
+                        profileStrings.beatmapToClaimBadgeNotRankedOrApproved
+                    ),
                 });
             }
 
             for await (const uid of bindInfo.previous_bind) {
-                const score: Score = await Score.getFromHash({ uid: uid, hash: beatmapInfo.hash });
+                const score: Score = await Score.getFromHash({
+                    uid: uid,
+                    hash: beatmapInfo.hash,
+                });
 
                 if (!score.title) {
                     continue;
@@ -141,7 +187,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
                 await beatmapInfo.retrieveBeatmapFile();
 
-                const star: MapStars = new MapStars().calculate({ map: beatmapInfo.map!, mods: score.mods });
+                const star: MapStars = new MapStars().calculate({
+                    map: beatmapInfo.map!,
+                    mods: score.mods,
+                });
 
                 if (star.pcStars.total >= badge.requirement) {
                     canUserClaimBadge = true;
@@ -151,7 +200,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
             if (!canUserClaimBadge) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(profileStrings.userDoesntHaveScoreinBeatmap)
+                    content: MessageCreator.createReject(
+                        profileStrings.userDoesntHaveScoreinBeatmap
+                    ),
                 });
             }
 
@@ -163,31 +214,36 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
         case "unclaimable":
             return interaction.editReply({
-                content: MessageCreator.createReject(profileStrings.badgeUnclaimable)
+                content: MessageCreator.createReject(
+                    profileStrings.badgeUnclaimable
+                ),
             });
     }
 
     if (!canUserClaimBadge) {
         return interaction.editReply({
-            content: MessageCreator.createReject(profileStrings.userCannotClaimBadge)
+            content: MessageCreator.createReject(
+                profileStrings.userCannotClaimBadge
+            ),
         });
     }
 
     pictureConfig.badges.push({
         id: badge.id,
-        name: badge.name
+        name: badge.name,
     });
 
     if (playerInfo) {
         await playerInfoDbManager.update(
-            { discordid: interaction.user.id }, { $set: { picture_config: pictureConfig } }
+            { discordid: interaction.user.id },
+            { $set: { picture_config: pictureConfig } }
         );
     } else {
         await playerInfoDbManager.insert({
             discordid: interaction.user.id,
             uid: bindInfo.uid,
             username: bindInfo.username,
-            picture_config: pictureConfig
+            picture_config: pictureConfig,
         });
     }
 
@@ -196,10 +252,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             profileStrings.claimBadgeSuccess,
             interaction.user.toString(),
             badge.id
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

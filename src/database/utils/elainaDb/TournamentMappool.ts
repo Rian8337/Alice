@@ -7,13 +7,19 @@ import { ObjectId } from "bson";
 /**
  * Represents a mappool for tournament.
  */
-export class TournamentMappool extends Manager implements DatabaseTournamentMappool {
+export class TournamentMappool
+    extends Manager
+    implements DatabaseTournamentMappool
+{
     forcePR: boolean;
     poolid: string;
     map: MainBeatmapData[];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseTournamentMappool = DatabaseManager.elainaDb?.collections.tournamentMappool.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseTournamentMappool = DatabaseManager.elainaDb?.collections
+            .tournamentMappool.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

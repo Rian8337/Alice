@@ -15,16 +15,21 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { ppcompareStrings } from "./ppcompareStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
     const subcommand: string = interaction.options.getSubcommand();
 
-    const uidToCompare: number | null = interaction.options.getInteger("uidtocompare");
-    const userToCompare: User | null = interaction.options.getUser("usertocompare");
-    const usernameToCompare: string | null = interaction.options.getString("usernametocompare");
+    const uidToCompare: number | null =
+        interaction.options.getInteger("uidtocompare");
+    const userToCompare: User | null =
+        interaction.options.getUser("usertocompare");
+    const usernameToCompare: string | null =
+        interaction.options.getString("usernametocompare");
 
     const otherUid: number | null = interaction.options.getInteger("otheruid");
     const otherUser: User | null = interaction.options.getUser("otheruser");
-    const otherUsername: string | null = interaction.options.getString("otherusername");
+    const otherUsername: string | null =
+        interaction.options.getString("otherusername");
 
     let firstBindInfo: UserBind | null = null;
     let secondBindInfo: UserBind | null = null;
@@ -33,42 +38,56 @@ export const run: Command["run"] = async (_, interaction) => {
         case "uid":
             if (uidToCompare === otherUid) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(ppcompareStrings.cannotCompareSamePlayers)
+                    content: MessageCreator.createReject(
+                        ppcompareStrings.cannotCompareSamePlayers
+                    ),
                 });
             }
 
             firstBindInfo = await dbManager.getFromUid(uidToCompare!);
 
-            secondBindInfo = otherUid ? await dbManager.getFromUid(otherUid) : await dbManager.getFromUser(interaction.user);
+            secondBindInfo = otherUid
+                ? await dbManager.getFromUid(otherUid)
+                : await dbManager.getFromUser(interaction.user);
             break;
         case "user":
             if (userToCompare!.id === (otherUser ?? interaction.user).id) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(ppcompareStrings.cannotCompareSamePlayers)
+                    content: MessageCreator.createReject(
+                        ppcompareStrings.cannotCompareSamePlayers
+                    ),
                 });
             }
 
             firstBindInfo = await dbManager.getFromUser(userToCompare!);
 
-            secondBindInfo = await dbManager.getFromUser(otherUser ?? interaction.user);
+            secondBindInfo = await dbManager.getFromUser(
+                otherUser ?? interaction.user
+            );
             break;
         case "username":
             if (usernameToCompare === otherUsername) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(ppcompareStrings.cannotCompareSamePlayers)
+                    content: MessageCreator.createReject(
+                        ppcompareStrings.cannotCompareSamePlayers
+                    ),
                 });
             }
 
             firstBindInfo = await dbManager.getFromUsername(usernameToCompare!);
 
-            secondBindInfo = otherUsername ? await dbManager.getFromUsername(otherUsername) : await dbManager.getFromUser(interaction.user);
+            secondBindInfo = otherUsername
+                ? await dbManager.getFromUsername(otherUsername)
+                : await dbManager.getFromUser(interaction.user);
             break;
     }
 
     if (!firstBindInfo || !secondBindInfo) {
         if (!secondBindInfo && !otherUid && !otherUser && !otherUsername) {
             return interaction.editReply({
-                content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                content: MessageCreator.createReject(
+                    Constants.selfNotBindedReject
+                ),
             });
         }
 
@@ -76,13 +95,19 @@ export const run: Command["run"] = async (_, interaction) => {
 
         switch (subcommand) {
             case "uid":
-                comparedRejectValue = (!secondBindInfo ? otherUid : uidToCompare)!.toString();
+                comparedRejectValue = (
+                    !secondBindInfo ? otherUid : uidToCompare
+                )!.toString();
                 break;
             case "user":
-                comparedRejectValue = (!secondBindInfo ? otherUser : userToCompare)!.tag;
+                comparedRejectValue = (
+                    !secondBindInfo ? otherUser : userToCompare
+                )!.tag;
                 break;
             case "username":
-                comparedRejectValue = (!secondBindInfo ? otherUsername : usernameToCompare)!;
+                comparedRejectValue = (
+                    !secondBindInfo ? otherUsername : usernameToCompare
+                )!;
                 break;
         }
 
@@ -91,41 +116,64 @@ export const run: Command["run"] = async (_, interaction) => {
                 ppcompareStrings.playerNotBinded,
                 subcommand,
                 comparedRejectValue
-            )
+            ),
         });
     }
 
     const firstPlayerPP: Collection<string, PPEntry> = firstBindInfo.pp;
     const secondPlayerPP: Collection<string, PPEntry> = secondBindInfo.pp;
-    const ppToCompare: Collection<string, PPEntry> = firstPlayerPP.intersect(secondPlayerPP);
+    const ppToCompare: Collection<string, PPEntry> =
+        firstPlayerPP.intersect(secondPlayerPP);
 
     if (ppToCompare.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(ppcompareStrings.noSimilarPlayFound)
+            content: MessageCreator.createReject(
+                ppcompareStrings.noSimilarPlayFound
+            ),
         });
     }
 
-    const firstPlayerPPRank: number = await dbManager.getUserDPPRank(firstBindInfo.pptotal);
-    const secondPlayerPPRank: number = await dbManager.getUserDPPRank(secondBindInfo.pptotal);
-
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
+    const firstPlayerPPRank: number = await dbManager.getUserDPPRank(
+        firstBindInfo.pptotal
     );
+    const secondPlayerPPRank: number = await dbManager.getUserDPPRank(
+        secondBindInfo.pptotal
+    );
+
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember | null>interaction.member)?.displayColor,
+    });
 
     let ppDescription: string = "";
 
     if (firstBindInfo.pptotal < secondBindInfo.pptotal) {
-        ppDescription = `**${firstBindInfo.pptotal.toFixed(2)}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${Symbols.crown} ${secondBindInfo.pptotal.toFixed(2)}pp (#${secondPlayerPPRank.toLocaleString()})**`;
+        ppDescription = `**${firstBindInfo.pptotal.toFixed(
+            2
+        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${
+            Symbols.crown
+        } ${secondBindInfo.pptotal.toFixed(
+            2
+        )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
     } else if (firstBindInfo.pptotal > secondBindInfo.pptotal) {
-        ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(2)}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(2)}pp (#${secondPlayerPPRank.toLocaleString()})**`
+        ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(
+            2
+        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(
+            2
+        )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
     } else {
-        ppDescription = `**${firstBindInfo.pptotal.toFixed(2)}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(2)}pp (#${secondPlayerPPRank.toLocaleString()})**`;
+        ppDescription = `**${firstBindInfo.pptotal.toFixed(
+            2
+        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(
+            2
+        )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
     }
 
-    embed.setTitle("Top PP Plays Comparison")
+    embed
+        .setTitle("Top PP Plays Comparison")
         .setDescription(
             `Player: **${firstBindInfo.username}** vs **${secondBindInfo.username}**\n` +
-            `Total PP: ${ppDescription}`
+                `Total PP: ${ppDescription}`
         );
 
     const getModString = (pp: PPEntry): string => {
@@ -157,14 +205,26 @@ export const run: Command["run"] = async (_, interaction) => {
     };
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
-        for (let i = 5 * (page - 1); i < Math.min(ppToCompare.size, 5 + 5 * (page - 1)); ++i) {
+        for (
+            let i = 5 * (page - 1);
+            i < Math.min(ppToCompare.size, 5 + 5 * (page - 1));
+            ++i
+        ) {
             const key: string = ppToCompare.keyAt(i)!;
 
             const firstPP: PPEntry = firstPlayerPP.get(key)!;
             const secondPP: PPEntry = secondPlayerPP.get(key)!;
 
-            let firstPlayerDescription: string = `${firstPP.combo}x | ${firstPP.accuracy.toFixed(2)}% | ${firstPP.miss} ${Symbols.missIcon} | ${firstPP.pp}pp (${getModString(firstPP)})`;
-            let secondPlayerDescription: string = `${secondPP.combo}x | ${secondPP.accuracy.toFixed(2)}% | ${secondPP.miss} ${Symbols.missIcon} | ${secondPP.pp}pp (${getModString(secondPP)})`;
+            let firstPlayerDescription: string = `${
+                firstPP.combo
+            }x | ${firstPP.accuracy.toFixed(2)}% | ${firstPP.miss} ${
+                Symbols.missIcon
+            } | ${firstPP.pp}pp (${getModString(firstPP)})`;
+            let secondPlayerDescription: string = `${
+                secondPP.combo
+            }x | ${secondPP.accuracy.toFixed(2)}% | ${secondPP.miss} ${
+                Symbols.missIcon
+            } | ${secondPP.pp}pp (${getModString(secondPP)})`;
 
             if (firstPP.pp < secondPP.pp) {
                 secondPlayerDescription = `**${secondPlayerDescription}** ${Symbols.crown}`;
@@ -175,16 +235,18 @@ export const run: Command["run"] = async (_, interaction) => {
             embed.addField(
                 `${i + 1}. ${firstPP.title}`,
                 `**${firstBindInfo!.username}**: ${firstPlayerDescription}\n` +
-                `**${secondBindInfo!.username}**: ${secondPlayerDescription}`
+                    `**${
+                        secondBindInfo!.username
+                    }**: ${secondPlayerDescription}`
             );
         }
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
-        [ ...ppToCompare.values() ],
+        [...ppToCompare.values()],
         5,
         1,
         120,
@@ -196,65 +258,72 @@ export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
 
 export const config: Command["config"] = {
     name: "ppcompare",
-    description: "Compares yours or a player's droid pp (dpp) profile with another player's droid pp (dpp) profile.",
+    description:
+        "Compares yours or a player's droid pp (dpp) profile with another player's droid pp (dpp) profile.",
     options: [
         {
             name: "uid",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Compares two players' droid pp (dpp) profile using their uid.",
+            description:
+                "Compares two players' droid pp (dpp) profile using their uid.",
             options: [
                 {
                     name: "uidtocompare",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid to compare against."
+                    description: "The uid to compare against.",
                 },
                 {
                     name: "otheruid",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The other uid to compare against. If unspecified, defaults to yourself."
-                }
-            ]
+                    description:
+                        "The other uid to compare against. If unspecified, defaults to yourself.",
+                },
+            ],
         },
         {
             name: "user",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Compares two players' droid pp (dpp) profile using their binded Discord account.",
+            description:
+                "Compares two players' droid pp (dpp) profile using their binded Discord account.",
             options: [
                 {
                     name: "usertocompare",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user to compare against."
+                    description: "The Discord user to compare against.",
                 },
                 {
                     name: "otheruser",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The other Discord user to compare against. If unspecified, defaults to yourself."
-                }
-            ]
+                    description:
+                        "The other Discord user to compare against. If unspecified, defaults to yourself.",
+                },
+            ],
         },
         {
             name: "username",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Compares two players' droid pp (dpp) profile using their username.",
+            description:
+                "Compares two players' droid pp (dpp) profile using their username.",
             options: [
                 {
                     name: "usernametocompare",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The username to compare against."
+                    description: "The username to compare against.",
                 },
                 {
                     name: "otherusername",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The other username to compare against. If unspecified, defaults to yourself."
-                }
-            ]
-        }
+                    description:
+                        "The other username to compare against. If unspecified, defaults to yourself.",
+                },
+            ],
+        },
     ],
     example: [],
     cooldown: 5,
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

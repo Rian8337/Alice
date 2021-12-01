@@ -31,7 +31,7 @@ export interface DatabaseRankedScore extends BaseDocument {
 
     /**
      * The list of scores that have been submitted.
-     * 
+     *
      * The first element is the score, the second element
      * is the MD5 hash of the beatmap.
      */

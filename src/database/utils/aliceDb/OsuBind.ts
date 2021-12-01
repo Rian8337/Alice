@@ -12,7 +12,10 @@ export class OsuBind extends Manager implements DatabaseOsuBind {
     username: string;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseOsuBind = DatabaseManager.aliceDb?.collections.osuBind.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseOsuBind = DatabaseManager.aliceDb?.collections.osuBind
+            .defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

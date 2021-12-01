@@ -10,13 +10,19 @@ import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
-        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("birthdayTracking")) {
+        if (
+            Config.maintenance ||
+            CommandUtilManager.globallyDisabledEventUtils
+                .get("ready")
+                ?.includes("birthdayTracking")
+        ) {
             return;
         }
 
         const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
-        const role: Role | undefined = guild.roles.cache.get("695201338182860860");
+        const role: Role | undefined =
+            guild.roles.cache.get("695201338182860860");
 
         if (!role) {
             clearInterval(interval);
@@ -25,15 +31,26 @@ export const run: EventUtil["run"] = async (client) => {
 
         const queryDate: Date = new Date();
 
-        const birthdays: Collection<Snowflake, DatabaseBirthday> = await DatabaseManager.aliceDb.collections.birthday.get(
-            "discordid",
-            {
-                $and: [
-                    { date: { $gte: queryDate.getUTCDate() - 1, $lte: queryDate.getUTCDate() + 1 } },
-                    { month: { $gte: queryDate.getUTCMonth() - 1, $lte: queryDate.getUTCMonth() + 1 } }
-                ]
-            }
-        );
+        const birthdays: Collection<Snowflake, DatabaseBirthday> =
+            await DatabaseManager.aliceDb.collections.birthday.get(
+                "discordid",
+                {
+                    $and: [
+                        {
+                            date: {
+                                $gte: queryDate.getUTCDate() - 1,
+                                $lte: queryDate.getUTCDate() + 1,
+                            },
+                        },
+                        {
+                            month: {
+                                $gte: queryDate.getUTCMonth() - 1,
+                                $lte: queryDate.getUTCMonth() + 1,
+                            },
+                        },
+                    ],
+                }
+            );
 
         const validBirthdays: DatabaseBirthday[] = [];
 
@@ -52,10 +69,14 @@ export const run: EventUtil["run"] = async (client) => {
 
             d.setUTCHours(d.getUTCHours() + timezone);
 
-            const timezoneEntries: Collection<Snowflake, DatabaseBirthday> = birthdays.filter(v => v.timezone === timezone);
+            const timezoneEntries: Collection<Snowflake, DatabaseBirthday> =
+                birthdays.filter((v) => v.timezone === timezone);
 
             for (const timezoneEntry of timezoneEntries.values()) {
-                if (timezoneEntry.date === d.getUTCDate() && timezoneEntry.month === d.getUTCMonth()) {
+                if (
+                    timezoneEntry.date === d.getUTCDate() &&
+                    timezoneEntry.month === d.getUTCMonth()
+                ) {
                     validBirthdays.push(timezoneEntry);
                 }
             }
@@ -63,13 +84,15 @@ export const run: EventUtil["run"] = async (client) => {
 
         // Clear outdated birthday roles
         for await (const member of role.members.values()) {
-            if (!validBirthdays.find(v => v.discordid === member.id)) {
+            if (!validBirthdays.find((v) => v.discordid === member.id)) {
                 await member.roles.remove(role, "Not birthday anymore");
             }
         }
 
         for await (const birthday of validBirthdays) {
-            const user: GuildMember | null = await guild.members.fetch(birthday.discordid).catch(() => null);
+            const user: GuildMember | null = await guild.members
+                .fetch(birthday.discordid)
+                .catch(() => null);
 
             if (!user) {
                 continue;
@@ -86,13 +109,18 @@ export const run: EventUtil["run"] = async (client) => {
             }
 
             // Give coins as gift
-            await user.send(MessageCreator.createPrefixedMessage(
-                "Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.",
-                Symbols.cake
-            )).catch(client.logger.error);
+            await user
+                .send(
+                    MessageCreator.createPrefixedMessage(
+                        "Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.",
+                        Symbols.cake
+                    )
+                )
+                .catch(client.logger.error);
 
             await DatabaseManager.aliceDb.collections.playerInfo.update(
-                { discordid: user.id }, { $inc: { alicecoins: 1000 } }
+                { discordid: user.id },
+                { $inc: { alicecoins: 1000 } }
             );
         }
     }, 20 * 1000);
@@ -101,5 +129,5 @@ export const run: EventUtil["run"] = async (client) => {
 export const config: EventUtil["config"] = {
     description: "Responsible for tracking birthday.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

@@ -14,23 +14,35 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!NumberHelper.isPositive(removeAmount)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.removeAmountInvalid)
+            content: MessageCreator.createReject(
+                coinsStrings.removeAmountInvalid
+            ),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(userToRemove);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            userToRemove
+        );
 
     if (!playerInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.otherUserDoesntHaveCoinsInfo)
+            content: MessageCreator.createReject(
+                coinsStrings.otherUserDoesntHaveCoinsInfo
+            ),
         });
     }
 
-    const result: OperationResult = await playerInfo.incrementCoins(-removeAmount);
+    const result: OperationResult = await playerInfo.incrementCoins(
+        -removeAmount
+    );
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.removeCoinFailed, result.reason!)
+            content: MessageCreator.createReject(
+                coinsStrings.removeCoinFailed,
+                result.reason!
+            ),
         });
     }
 
@@ -39,10 +51,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             coinsStrings.removeCoinSuccess,
             removeAmount.toLocaleString(),
             (playerInfo.alicecoins - removeAmount).toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

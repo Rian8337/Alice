@@ -12,21 +12,26 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 25) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanNameIsTooLong)
+            content: MessageCreator.createReject(clanStrings.clanNameIsTooLong),
         });
     }
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.isLeader(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
@@ -35,12 +40,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (clan.power < powerReq) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanPowerNotEnoughToBuyItem, powerReq.toLocaleString()
-            )
+                clanStrings.clanPowerNotEnoughToBuyItem,
+                powerReq.toLocaleString()
+            ),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     const cost: number = 2500;
 
@@ -50,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 clanStrings.notEnoughCoins,
                 "buy a clan rename",
                 cost.toLocaleString()
-            )
+            ),
         });
     }
 
@@ -61,7 +70,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 clanStrings.buyShopItemConfirmation,
                 "clan rename",
                 cost.toLocaleString()
-            )
+            ),
         },
         [interaction.user.id],
         20
@@ -71,37 +80,45 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const coinDeductionResult: OperationResult = await playerInfo.incrementCoins(-cost);
+    const coinDeductionResult: OperationResult =
+        await playerInfo.incrementCoins(-cost);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, coinDeductionResult.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                coinDeductionResult.reason!
+            ),
         });
     }
 
-    const auctionRenameResult: OperationResult = await DatabaseManager.aliceDb.collections.clanAuction.update(
-        { auctioneer: clan.name }, { $set: { auctioneer: name } }
-    );
+    const auctionRenameResult: OperationResult =
+        await DatabaseManager.aliceDb.collections.clanAuction.update(
+            { auctioneer: clan.name },
+            { $set: { auctioneer: name } }
+        );
 
     if (!auctionRenameResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, auctionRenameResult.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                auctionRenameResult.reason!
+            ),
         });
     }
 
-    const bindRenameResult: OperationResult = await DatabaseManager.elainaDb.collections.userBind.update(
-        { clan: clan.name }, { $set: { clan: name } }
-    );
+    const bindRenameResult: OperationResult =
+        await DatabaseManager.elainaDb.collections.userBind.update(
+            { clan: clan.name },
+            { $set: { clan: name } }
+        );
 
     if (!bindRenameResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, bindRenameResult.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                bindRenameResult.reason!
+            ),
         });
     }
 
@@ -112,8 +129,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, finalResult.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                finalResult.reason!
+            ),
         });
     }
 
@@ -121,10 +139,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             clanStrings.buyShopItemSuccessful,
             cost.toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

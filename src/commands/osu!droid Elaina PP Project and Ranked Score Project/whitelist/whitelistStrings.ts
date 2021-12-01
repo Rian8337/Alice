@@ -12,5 +12,5 @@ export enum whitelistStrings {
     noCachedBeatmapFound = "I'm sorry, there is no cached beatmap in this channel! Please enter a beatmap ID or beatmap link!",
     beatmapNotFound = "I'm sorry, I cannot find the beatmap in osu! beatmap listing!",
     beatmapDoesntNeedWhitelist = "Hey, this beatmap doesn't need to be whitelisted!",
-    whitelistStatus = "`%s` is %s."
+    whitelistStatus = "`%s` is %s.",
 }

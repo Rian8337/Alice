@@ -6,5 +6,5 @@ export enum skinStrings {
     skinSet = "%s, successfully set your skin to <%s>.",
 
     noSkinSetForUser = "I'm sorry, this user doesn't have any skins!",
-    userSkinInfo = "%s's skin: %s"
+    userSkinInfo = "%s's skin: %s",
 }

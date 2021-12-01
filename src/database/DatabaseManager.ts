@@ -38,19 +38,19 @@ export abstract class DatabaseManager {
 
     /**
      * Initializes the manager.
-     * 
+     *
      * @param elainaDb The database that is shared with the old bot (Nero's database).
      * @param aliceDb The database that is only used by this bot (my database).
      */
     static init(elainaDb: Db, aliceDb: Db) {
         this.elainaDb = {
             instance: elainaDb,
-            collections: new ElainaDBCollection(elainaDb)
+            collections: new ElainaDBCollection(elainaDb),
         };
 
         this.aliceDb = {
             instance: aliceDb,
-            collections: new AliceDBCollection(aliceDb)
+            collections: new AliceDBCollection(aliceDb),
         };
     }
 }

@@ -8,11 +8,14 @@ import { dailyStrings } from "../dailyStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const id: string = interaction.options.getString("challengeid", true);
 
-    const challenge: Challenge | null = await DatabaseManager.aliceDb.collections.challenge.getById(id);
+    const challenge: Challenge | null =
+        await DatabaseManager.aliceDb.collections.challenge.getById(id);
 
     if (!challenge) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.challengeNotFound)
+            content: MessageCreator.createReject(
+                dailyStrings.challengeNotFound
+            ),
         });
     }
 
@@ -20,17 +23,21 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.startChallengeFailed, result.reason!)
+            content: MessageCreator.createReject(
+                dailyStrings.startChallengeFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            dailyStrings.startChallengeSuccess, id
-        )
+            dailyStrings.startChallengeSuccess,
+            id
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

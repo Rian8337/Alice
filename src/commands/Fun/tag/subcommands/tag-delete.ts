@@ -16,46 +16,61 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.nameTooLong)
+            content: MessageCreator.createReject(tagStrings.nameTooLong),
         });
     }
 
-    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
+    const tag: GuildTag | null =
+        await DatabaseManager.aliceDb.collections.guildTags.getByName(
+            interaction.guildId,
+            name
+        );
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist),
         });
     }
 
     // Allow server admins to delete tags that violate rules
-    if (tag.author !== interaction.user.id && !CommandHelper.checkPermission(interaction, Permissions.FLAGS.ADMINISTRATOR)) {
+    if (
+        tag.author !== interaction.user.id &&
+        !CommandHelper.checkPermission(
+            interaction,
+            Permissions.FLAGS.ADMINISTRATOR
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.notTagOwner)
+            content: MessageCreator.createReject(tagStrings.notTagOwner),
         });
     }
 
     // Also delete attachment
     if (tag.attachment_message) {
-        const channel: TextChannel = <TextChannel> await client.channels.fetch(Constants.tagAttachmentChannel);
+        const channel: TextChannel = <TextChannel>(
+            await client.channels.fetch(Constants.tagAttachmentChannel)
+        );
 
-        const message: Message = await channel.messages.fetch(tag.attachment_message);
+        const message: Message = await channel.messages.fetch(
+            tag.attachment_message
+        );
 
         await message.delete();
     }
 
     await DatabaseManager.aliceDb.collections.guildTags.delete({
         guildid: tag.guildid,
-        name: tag.name
+        name: tag.name,
     });
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            tagStrings.deleteTagSuccessful, name
-        )
+            tagStrings.deleteTagSuccessful,
+            name
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

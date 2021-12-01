@@ -7,8 +7,14 @@ import { Collection as MongoDBCollection } from "mongodb";
 /**
  * A manager for the `responsefilter` collection.
  */
-export class EightBallFilterCollectionManager extends DatabaseCollectionManager<DatabaseEightBallFilter, EightBallFilter> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseEightBallFilter, EightBallFilter>;
+export class EightBallFilterCollectionManager extends DatabaseCollectionManager<
+    DatabaseEightBallFilter,
+    EightBallFilter
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseEightBallFilter,
+        EightBallFilter
+    >;
 
     override get defaultDocument(): DatabaseEightBallFilter {
         return {
@@ -16,7 +22,7 @@ export class EightBallFilterCollectionManager extends DatabaseCollectionManager<
             hate: [],
             like: [],
             name: "",
-            response: []
+            response: [],
         };
     }
 
@@ -26,6 +32,8 @@ export class EightBallFilterCollectionManager extends DatabaseCollectionManager<
     constructor(collection: MongoDBCollection<DatabaseEightBallFilter>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseEightBallFilter, EightBallFilter>> new EightBallFilter().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseEightBallFilter, EightBallFilter>
+        >new EightBallFilter().constructor;
     }
 }

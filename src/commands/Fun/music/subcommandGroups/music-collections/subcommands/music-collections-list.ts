@@ -12,23 +12,31 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const collections: Collection<string, MusicCollection> =
-        await DatabaseManager.aliceDb.collections.musicCollection.getUserCollections(user);
+        await DatabaseManager.aliceDb.collections.musicCollection.getUserCollections(
+            user
+        );
 
     if (collections.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.userHasNoCollection, user.id === interaction.user.id ? "you have" : "this user has"
-            )
+                musicStrings.userHasNoCollection,
+                user.id === interaction.user.id ? "you have" : "this user has"
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: user, color: (<GuildMember> interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
 
     embed.setDescription(`Total collections: ${collections.size}`);
 
-    const onPageChange: OnButtonPageChange = async (_, page, collections: MusicCollection[]) => {
+    const onPageChange: OnButtonPageChange = async (
+        _,
+        page,
+        collections: MusicCollection[]
+    ) => {
         for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
             embed.addField(
                 `${i + 1}. ${collections[i].name}`,
@@ -39,7 +47,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         [...collections.values()],
         10,
@@ -50,5 +58,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

@@ -12,7 +12,9 @@ import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { mapshareStrings } from "../mapshareStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const status: MapShareSubmissionStatus = <MapShareSubmissionStatus> interaction.options.getString("status") ?? "pending";
+    const status: MapShareSubmissionStatus =
+        <MapShareSubmissionStatus>interaction.options.getString("status") ??
+        "pending";
 
     const submissions: Collection<number, MapShare> =
         await DatabaseManager.aliceDb.collections.mapShare.getByStatus(status);
@@ -20,35 +22,53 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (submissions.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.noSubmissionWithStatus, status
-            )
+                mapshareStrings.noSubmissionWithStatus,
+                status
+            ),
         });
     }
 
-    const page: number = NumberHelper.clamp(interaction.options.getInteger("page") ?? 1, 1, Math.ceil(submissions.size / 10));
-
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+    const page: number = NumberHelper.clamp(
+        interaction.options.getInteger("page") ?? 1,
+        1,
+        Math.ceil(submissions.size / 10)
     );
 
-    embed.setTitle(`Submissions with ${StringHelper.capitalizeString(status)} status`);
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: MapShare[]) => {
-        for (let i = 10 * (page - 1); i < Math.min(contents.length, 10 + 10 * (page - 1)); ++i) {
+    embed.setTitle(
+        `Submissions with ${StringHelper.capitalizeString(status)} status`
+    );
+
+    const onPageChange: OnButtonPageChange = async (
+        _,
+        page,
+        contents: MapShare[]
+    ) => {
+        for (
+            let i = 10 * (page - 1);
+            i < Math.min(contents.length, 10 + 10 * (page - 1));
+            ++i
+        ) {
             const submission: MapShare = contents[i];
 
             embed.addField(
                 `${i + 1}. Submission from ${submission.submitter}`,
                 `**User ID**: ${submission.id}\n` +
-                `**Beatmap ID**: ${submission.beatmap_id} ([Beatmap Link](https://osu.ppy.sh/b/${submission.beatmap_id}))\n` +
-                `**Creation Date**: ${new Date(submission.date * 1000).toUTCString()}`
+                    `**Beatmap ID**: ${submission.beatmap_id} ([Beatmap Link](https://osu.ppy.sh/b/${submission.beatmap_id}))\n` +
+                    `**Creation Date**: ${new Date(
+                        submission.date * 1000
+                    ).toUTCString()}`
             );
         }
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         [...submissions.values()],
         10,
@@ -59,5 +79,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

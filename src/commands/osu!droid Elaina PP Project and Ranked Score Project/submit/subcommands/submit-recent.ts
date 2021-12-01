@@ -20,14 +20,18 @@ import { MapInfo, Player, Score } from "osu-droid";
 import { submitStrings } from "../submitStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const bindDbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
-    const rankedScoreDbManager: RankedScoreCollectionManager = DatabaseManager.aliceDb.collections.rankedScore;
+    const bindDbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
+    const rankedScoreDbManager: RankedScoreCollectionManager =
+        DatabaseManager.aliceDb.collections.rankedScore;
 
-    const bindInfo: UserBind | null = await bindDbManager.getFromUser(interaction.user);
+    const bindInfo: UserBind | null = await bindDbManager.getFromUser(
+        interaction.user
+    );
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject)
+            content: MessageCreator.createReject(Constants.selfNotBindedReject),
         });
     }
 
@@ -35,42 +39,64 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(submitStrings.profileNotFound)
+            content: MessageCreator.createReject(submitStrings.profileNotFound),
         });
     }
 
-    if (await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(player.uid)) {
+    if (
+        await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
+            player.uid
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(submitStrings.uidIsBanned)
+            content: MessageCreator.createReject(submitStrings.uidIsBanned),
         });
     }
 
-    const submissionAmount: number = NumberHelper.clamp(interaction.options.getInteger("amount") ?? 1, 1, 5);
-    const submissionOffset: number = interaction.options.getInteger("offset") ?? 1;
+    const submissionAmount: number = NumberHelper.clamp(
+        interaction.options.getInteger("amount") ?? 1,
+        1,
+        5
+    );
+    const submissionOffset: number =
+        interaction.options.getInteger("offset") ?? 1;
 
-    const scoresToSubmit: Score[] = player.recentPlays.slice(submissionOffset - 1, submissionAmount + submissionOffset - 1);
+    const scoresToSubmit: Score[] = player.recentPlays.slice(
+        submissionOffset - 1,
+        submissionAmount + submissionOffset - 1
+    );
 
     if (scoresToSubmit.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 submitStrings.noScoresInSubmittedList
-            )
+            ),
         });
     }
 
-    const rankedScoreInfo: RankedScore | null = await rankedScoreDbManager.getFromUid(bindInfo.uid);
+    const rankedScoreInfo: RankedScore | null =
+        await rankedScoreDbManager.getFromUid(bindInfo.uid);
 
-    const scoreList: Collection<string, number> = rankedScoreInfo?.scorelist ?? new Collection();
+    const scoreList: Collection<string, number> =
+        rankedScoreInfo?.scorelist ?? new Collection();
     let totalScore: number = rankedScoreInfo?.score ?? 0;
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember>interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
 
     for await (const score of scoresToSubmit) {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash, false);
-        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${score.mods.map(v => v.acronym).join(",") || "No Mod"}`;
-        let fieldContent: string = `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | **`;
+        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+            score.hash,
+            false
+        );
+        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${
+            score.mods.map((v) => v.acronym).join(",") || "No Mod"
+        }`;
+        let fieldContent: string = `${score.combo}x | ${(
+            score.accuracy.value() * 100
+        ).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | **`;
 
         if (!beatmapInfo) {
             embed.addField(fieldTitle, fieldContent + "Beatmap not found**");
@@ -78,7 +104,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
 
         // PP
-        const submissionValidity: DPPSubmissionValidity = await DPPHelper.checkSubmissionValidity(score);
+        const submissionValidity: DPPSubmissionValidity =
+            await DPPHelper.checkSubmissionValidity(score);
 
         switch (submissionValidity) {
             case DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED:
@@ -93,7 +120,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 break;
             default: {
                 const calcResult: PerformanceCalculationResult | null =
-                    await BeatmapDifficultyHelper.calculateScorePerformance(score);
+                    await BeatmapDifficultyHelper.calculateScorePerformance(
+                        score
+                    );
 
                 if (!calcResult) {
                     fieldContent += "Beatmap not found";
@@ -102,7 +131,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
                 DPPHelper.insertScore(bindInfo.pp, score, calcResult);
 
-                const dpp: number = parseFloat(calcResult.droid.total.toFixed(2));
+                const dpp: number = parseFloat(
+                    calcResult.droid.total.toFixed(2)
+                );
 
                 fieldContent += `${dpp}pp`;
             }
@@ -112,7 +143,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         // Ranked score
         if (RankedScoreHelper.isBeatmapEligible(beatmapInfo.approved)) {
-            const scoreDiff: number = RankedScoreHelper.insertScore(scoreList, score);
+            const scoreDiff: number = RankedScoreHelper.insertScore(
+                scoreList,
+                score
+            );
 
             fieldContent += `**${score.score.toLocaleString()}** | *+${scoreDiff.toLocaleString()}*`;
             totalScore += scoreDiff;
@@ -122,26 +156,41 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     // Finalization
-    const totalPP: number = DPPHelper.calculateFinalPerformancePoints(bindInfo.pp);
+    const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
+        bindInfo.pp
+    );
     const ppDiff: number = totalPP - bindInfo.pptotal;
 
     const level: number = RankedScoreHelper.calculateLevel(totalScore);
-    const levelRemain: number = parseFloat(((level - Math.floor(level)) * 100).toFixed(2));
+    const levelRemain: number = parseFloat(
+        ((level - Math.floor(level)) * 100).toFixed(2)
+    );
     const scoreDiff: number = totalScore - (rankedScoreInfo?.score ?? 0);
 
     embed.setDescription(
         `Total PP: **${totalPP.toFixed(2)}pp**\n` +
-        `PP gained: **${ppDiff.toFixed(2)}pp**\n` +
-        `Ranked score: **${totalScore.toLocaleString()}**\n` +
-        `Score gained: **${scoreDiff.toLocaleString()}**\n` +
-        `Current level: **${Math.floor(level)} (${levelRemain}%)**${(rankedScoreInfo?.level ?? 1) < Math.floor(level) ? `\n${Symbols.upIcon} Level up!` : ""}\n` +
-        `Score needed to level up: **${(RankedScoreHelper.calculateScoreRequirement(Math.floor(level) + 1) - totalScore).toLocaleString()}**`
+            `PP gained: **${ppDiff.toFixed(2)}pp**\n` +
+            `Ranked score: **${totalScore.toLocaleString()}**\n` +
+            `Score gained: **${scoreDiff.toLocaleString()}**\n` +
+            `Current level: **${Math.floor(level)} (${levelRemain}%)**${
+                (rankedScoreInfo?.level ?? 1) < Math.floor(level)
+                    ? `\n${Symbols.upIcon} Level up!`
+                    : ""
+            }\n` +
+            `Score needed to level up: **${(
+                RankedScoreHelper.calculateScoreRequirement(
+                    Math.floor(level) + 1
+                ) - totalScore
+            ).toLocaleString()}**`
     );
 
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);
 
     if (rankedScoreInfo) {
-        await rankedScoreInfo.setNewRankedScoreValue(scoreList, scoresToSubmit.length);
+        await rankedScoreInfo.setNewRankedScoreValue(
+            scoreList,
+            scoresToSubmit.length
+        );
     } else {
         await rankedScoreDbManager.insert({
             uid: bindInfo.uid,
@@ -149,16 +198,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             level: level,
             score: totalScore,
             scorelist: RankedScoreHelper.toArray(scoreList),
-            playc: 1
+            playc: 1,
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(submitStrings.submitSuccessful),
-        embeds: [embed]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

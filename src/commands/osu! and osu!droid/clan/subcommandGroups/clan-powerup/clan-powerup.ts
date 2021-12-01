@@ -7,5 +7,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
 export const config: Subcommand["config"] = {
     permissions: [],
-    replyEphemeral: true
+    replyEphemeral: true,
 };

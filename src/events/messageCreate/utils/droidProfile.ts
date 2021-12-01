@@ -15,7 +15,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const uid: number = parseInt(<string> arg.split("=").pop());
+        const uid: number = parseInt(<string>arg.split("=").pop());
 
         if (!NumberHelper.isNumeric(arg)) {
             continue;
@@ -27,13 +27,17 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const profileImage: Buffer = <Buffer> await ProfileManager.getProfileStatistics(uid, player);
+        const profileImage: Buffer = <Buffer>(
+            await ProfileManager.getProfileStatistics(uid, player)
+        );
 
         message.channel.send({
             content: MessageCreator.createAccept(
-                `osu!droid profile for ${player.username}:\n<${ProfileManager.getProfileLink(uid)}>`
+                `osu!droid profile for ${
+                    player.username
+                }:\n<${ProfileManager.getProfileLink(uid)}>`
             ),
-            files: [profileImage]
+            files: [profileImage],
         });
     }
 };
@@ -41,5 +45,5 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 export const config: EventUtil["config"] = {
     description: "Responsible for linking osu!droid profile if one is sent.",
     togglePermissions: ["MANAGE_CHANNELS"],
-    toggleScope: ["GLOBAL", "GUILD", "CHANNEL"]
+    toggleScope: ["GLOBAL", "GUILD", "CHANNEL"],
 };

@@ -22,9 +22,9 @@ export const config: Command["config"] = {
                     name: "uid",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the osu!droid account."
-                }
-            ]
+                    description: "The uid of the osu!droid account.",
+                },
+            ],
         },
         {
             name: "deny",
@@ -35,15 +35,16 @@ export const config: Command["config"] = {
                     name: "uid",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the osu!droid account."
+                    description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "reason",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The reason for denying the name change request."
-                }
-            ]
+                    description:
+                        "The reason for denying the name change request.",
+                },
+            ],
         },
         {
             name: "request",
@@ -54,34 +55,37 @@ export const config: Command["config"] = {
                     name: "email",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The email that is connected to your currently binded osu!droid account."
+                    description:
+                        "The email that is connected to your currently binded osu!droid account.",
                 },
                 {
                     name: "newusername",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The username to be requested. Cannot contain unicode and must be between 2-20 characters."
-                }
-            ]
+                    description:
+                        "The username to be requested. Cannot contain unicode and must be between 2-20 characters.",
+                },
+            ],
         },
         {
             name: "history",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "View the name change history of an osu!droid account.",
+            description:
+                "View the name change history of an osu!droid account.",
             options: [
                 {
                     name: "uid",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the osu!droid account."
-                }
-            ]
+                    description: "The uid of the osu!droid account.",
+                },
+            ],
         },
         {
             name: "view",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "View currently active name change requests."
-        }
+            description: "View currently active name change requests.",
+        },
     ],
     example: [
         {
@@ -89,17 +93,18 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "email",
-                    value: "test123@gmail.com"
+                    value: "test123@gmail.com",
                 },
                 {
                     name: "newusername",
-                    value: "deni123"
-                }
+                    value: "deni123",
+                },
             ],
-            description: "will request a name change with new username \"deni123\"."
-        }
+            description:
+                'will request a name change with new username "deni123".',
+        },
     ],
     cooldown: 10,
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

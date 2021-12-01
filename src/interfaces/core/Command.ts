@@ -33,7 +33,7 @@ export interface Command {
 
         /**
          * The options of the command.
-         * 
+         *
          * This is used to define command arguments and subcommands.
          */
         readonly options: ApplicationCommandOptionData[];
@@ -75,7 +75,7 @@ export interface Command {
 
         /**
          * The permissions this command requires.
-         * 
+         *
          * This will only be enforced if the command can only be executed in a guild channel or if the command can only be executed by bot owners.
          */
         readonly permissions: Permission[];
@@ -94,5 +94,5 @@ export interface Command {
          * Whether to reply to this command execution in private (only the executor can see it).
          */
         readonly replyEphemeral?: boolean;
-    }
+    };
 }

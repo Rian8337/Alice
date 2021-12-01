@@ -9,17 +9,21 @@ import { matchStrings } from "../matchStrings";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const id: string | null = interaction.options.getString("id");
 
-    const match: TournamentMatch | null = id ?
-        await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id) :
-        await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(interaction.channelId);
+    const match: TournamentMatch | null = id
+        ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
+        : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
+              interaction.channelId
+          );
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist)
+            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
         });
     }
 
-    const thread: ThreadChannel | null = <ThreadChannel | null> (await client.channels.fetch(match.channelId))!;
+    const thread: ThreadChannel | null = <ThreadChannel | null>(
+        (await client.channels.fetch(match.channelId))!
+    );
 
     match.channelId = "";
 
@@ -28,8 +32,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.unbindMatchFailed, result.reason!
-            )
+                matchStrings.unbindMatchFailed,
+                result.reason!
+            ),
         });
     }
 
@@ -37,7 +42,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(
             matchStrings.unbindMatchSuccessful,
             match.matchid
-        )
+        ),
     });
 
     if (thread && thread.manageable) {
@@ -47,5 +52,5 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

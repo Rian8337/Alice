@@ -10,24 +10,34 @@ import { mapshareStrings } from "../mapshareStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (interaction.channelId !== Constants.mapShareChannel) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.notAvailableInChannelReject)
+            content: MessageCreator.createReject(
+                Constants.notAvailableInChannelReject
+            ),
         });
     }
 
-    const beatmapId: number = BeatmapManager.getBeatmapID(interaction.options.getString("beatmap", true))[0];
+    const beatmapId: number = BeatmapManager.getBeatmapID(
+        interaction.options.getString("beatmap", true)
+    )[0];
 
     if (!beatmapId) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mapshareStrings.noBeatmapFound)
+            content: MessageCreator.createReject(
+                mapshareStrings.noBeatmapFound
+            ),
         });
     }
 
     const submission: MapShare | null =
-        await DatabaseManager.aliceDb.collections.mapShare.getByBeatmapId(beatmapId);
+        await DatabaseManager.aliceDb.collections.mapShare.getByBeatmapId(
+            beatmapId
+        );
 
     if (!submission) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mapshareStrings.noSubmissionWithBeatmap)
+            content: MessageCreator.createReject(
+                mapshareStrings.noSubmissionWithBeatmap
+            ),
         });
     }
 
@@ -36,16 +46,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.postFailed, result.reason!
-            )
+                mapshareStrings.postFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(mapshareStrings.postSuccess)
+        content: MessageCreator.createAccept(mapshareStrings.postSuccess),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["SPECIAL"]
+    permissions: ["SPECIAL"],
 };

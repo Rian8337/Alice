@@ -23,17 +23,24 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID, false);
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+        beatmapID,
+        false
+    );
 
     if (!beatmapInfo) {
         return;
     }
 
-    BeatmapManager.setChannelLatestBeatmap(message.channel.id, beatmapInfo.hash);
+    BeatmapManager.setChannelLatestBeatmap(
+        message.channel.id,
+        beatmapInfo.hash
+    );
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for caching latest beatmap in discussion from messages from bots.",
+    description:
+        "Responsible for caching latest beatmap in discussion from messages from bots.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

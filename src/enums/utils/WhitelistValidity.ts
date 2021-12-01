@@ -5,5 +5,5 @@ export enum WhitelistValidity {
     BEATMAP_NOT_FOUND,
     DOESNT_NEED_WHITELISTING,
     OUTDATED_HASH,
-    VALID
+    VALID,
 }

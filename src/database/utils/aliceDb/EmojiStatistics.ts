@@ -25,11 +25,17 @@ export class EmojiStatistics extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseEmojiStatistics = DatabaseManager.aliceDb?.collections.emojiStatistics.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseEmojiStatistics = DatabaseManager.aliceDb?.collections
+            .emojiStatistics.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
         this.guildID = data.guildID;
-        this.emojiStats = ArrayHelper.arrayToCollection(data.emojiStats ?? [], "id");
+        this.emojiStats = ArrayHelper.arrayToCollection(
+            data.emojiStats ?? [],
+            "id"
+        );
     }
 }

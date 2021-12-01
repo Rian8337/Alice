@@ -1,18 +1,18 @@
-import { MessageAttachment } from 'discord.js';
-import { Canvas, createCanvas, NodeCanvasRenderingContext2D } from 'canvas';
-import { ApplicationCommandOptionTypes } from 'discord.js/typings/enums';
-import { CommandCategory } from '@alice-enums/core/CommandCategory';
-import { Command } from '@alice-interfaces/core/Command';
-import { MessageCreator } from '@alice-utils/creators/MessageCreator';
-import { colorStrings } from './colorStrings';
-import { StringHelper } from '@alice-utils/helpers/StringHelper';
+import { MessageAttachment } from "discord.js";
+import { Canvas, createCanvas, NodeCanvasRenderingContext2D } from "canvas";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { Command } from "@alice-interfaces/core/Command";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { colorStrings } from "./colorStrings";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const color: string = interaction.options.getString("hexcode", true);
 
     if (!StringHelper.isValidHexCode(color)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(colorStrings.invalidHexCode)
+            content: MessageCreator.createReject(colorStrings.invalidHexCode),
         });
     }
 
@@ -22,13 +22,17 @@ export const run: Command["run"] = async (_, interaction) => {
     c.fillStyle = color;
     c.fillRect(0, 0, 75, 75);
 
-    const attachment: MessageAttachment = new MessageAttachment(canvas.toBuffer());
+    const attachment: MessageAttachment = new MessageAttachment(
+        canvas.toBuffer()
+    );
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            colorStrings.showingHexColor, interaction.user.toString(), color
+            colorStrings.showingHexColor,
+            interaction.user.toString(),
+            color
         ),
-        files: [ attachment ]
+        files: [attachment],
     });
 };
 
@@ -42,8 +46,8 @@ export const config: Command["config"] = {
             name: "hexcode",
             required: true,
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The hex code of the color."
-        }
+            description: "The hex code of the color.",
+        },
     ],
     example: [
         {
@@ -51,12 +55,12 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "hexcode",
-                    value: "#ffdd00"
-                }
+                    value: "#ffdd00",
+                },
             ],
-            description: "will show the color with hex code \"#ffdd00\"."
-        }
+            description: 'will show the color with hex code "#ffdd00".',
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

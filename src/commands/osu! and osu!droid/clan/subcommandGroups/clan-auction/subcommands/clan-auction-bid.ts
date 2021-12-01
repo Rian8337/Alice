@@ -14,29 +14,40 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const amount: number = interaction.options.getInteger("amount", true);
 
-    const auction: ClanAuction | null = await DatabaseManager.aliceDb.collections.clanAuction.getFromName(name);
+    const auction: ClanAuction | null =
+        await DatabaseManager.aliceDb.collections.clanAuction.getFromName(name);
 
     if (!auction) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.auctionDoesntExist)
+            content: MessageCreator.createReject(
+                clanStrings.auctionDoesntExist
+            ),
         });
     }
 
     if (!NumberHelper.isPositive(amount)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.invalidClanAuctionBidAmount)
+            content: MessageCreator.createReject(
+                clanStrings.invalidClanAuctionBidAmount
+            ),
         });
     }
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     if (!playerInfo || playerInfo.alicecoins < amount) {
         return interaction.editReply({
@@ -44,13 +55,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 clanStrings.notEnoughCoins,
                 "bid",
                 amount.toLocaleString()
-            )
+            ),
         });
     }
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
-        { content: MessageCreator.createWarn(clanStrings.clanAuctionBidConfirmation) },
+        {
+            content: MessageCreator.createWarn(
+                clanStrings.clanAuctionBidConfirmation
+            ),
+        },
         [interaction.user.id],
         20
     );
@@ -61,13 +76,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     auction.bid(clan, amount);
 
-    const coinDeductionResult: OperationResult = await playerInfo.incrementCoins(-amount);
+    const coinDeductionResult: OperationResult =
+        await playerInfo.incrementCoins(-amount);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanAuctionBidFailed, coinDeductionResult.reason!
-            )
+                clanStrings.clanAuctionBidFailed,
+                coinDeductionResult.reason!
+            ),
         });
     }
 
@@ -76,16 +93,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanAuctionBidFailed, finalResult.reason!
-            )
+                clanStrings.clanAuctionBidFailed,
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.clanAuctionBidSuccessful)
+        content: MessageCreator.createAccept(
+            clanStrings.clanAuctionBidSuccessful
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

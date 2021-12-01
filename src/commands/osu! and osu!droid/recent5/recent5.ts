@@ -14,15 +14,17 @@ import { recent5Strings } from "./recent5Strings";
 export const run: Command["run"] = async (_, interaction) => {
     if (interaction.options.data.length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recent5Strings.tooManyOptions)
+            content: MessageCreator.createReject(recent5Strings.tooManyOptions),
         });
     }
 
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
 
@@ -42,7 +44,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
             if (!bindInfo) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.userNotBindedReject)
+                    content: MessageCreator.createReject(
+                        Constants.userNotBindedReject
+                    ),
                 });
             }
 
@@ -54,7 +58,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
             if (!bindInfo) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                    content: MessageCreator.createReject(
+                        Constants.selfNotBindedReject
+                    ),
                 });
             }
 
@@ -63,13 +69,15 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recent5Strings.playerNotFound)
+            content: MessageCreator.createReject(recent5Strings.playerNotFound),
         });
     }
 
     if (player.recentPlays.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recent5Strings.playerHasNoRecentPlays)
+            content: MessageCreator.createReject(
+                recent5Strings.playerHasNoRecentPlays
+            ),
         });
     }
 
@@ -85,60 +93,63 @@ export const config: Command["config"] = {
         {
             name: "page",
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The page to display, ranging from 1 to 10. Defaults to 1."
+            description:
+                "The page to display, ranging from 1 to 10. Defaults to 1.",
         },
         {
             name: "user",
             type: ApplicationCommandOptionTypes.USER,
-            description: "The Discord user to show."
+            description: "The Discord user to show.",
         },
         {
             name: "uid",
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The uid of the player."
+            description: "The uid of the player.",
         },
         {
             name: "username",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The username of the player."
-        }
+            description: "The username of the player.",
+        },
     ],
     example: [
         {
             command: "recent5",
-            description: "will display your 50 most recent plays."
+            description: "will display your 50 most recent plays.",
         },
         {
             command: "recent5",
             arguments: [
                 {
                     name: "uid",
-                    value: 51076
-                }
+                    value: 51076,
+                },
             ],
-            description: "will display the 50 most recent plays of an osu!droid account with uid 51076."
+            description:
+                "will display the 50 most recent plays of an osu!droid account with uid 51076.",
         },
         {
             command: "recent5",
             arguments: [
                 {
                     name: "username",
-                    value: "NeroYuki"
-                }
+                    value: "NeroYuki",
+                },
             ],
-            description: "will display the 50 most recent plays of an osu!droid account with username NeroYuki."
+            description:
+                "will display the 50 most recent plays of an osu!droid account with username NeroYuki.",
         },
         {
             command: "recent5",
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
-                }
+                    value: "@Rian8337#0001",
+                },
             ],
-            description: "will display the 50 most recent plays of Rian8337."
-        }
+            description: "will display the 50 most recent plays of Rian8337.",
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

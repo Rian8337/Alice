@@ -21,29 +21,44 @@ export const run: Command["run"] = async (_, interaction) => {
     let url: string = "https://api.sayobot.cn/beatmaplist?T=4&L=100&M=1";
 
     if (interaction.options.getString("keyword")) {
-        url += `&K=${encodeURIComponent(interaction.options.getString("keyword", true))}`;
+        url += `&K=${encodeURIComponent(
+            interaction.options.getString("keyword", true)
+        )}`;
     }
 
-    if (interaction.options.data.filter(v => v.name !== "keyword").length > 0) {
+    if (
+        interaction.options.data.filter((v) => v.name !== "keyword").length > 0
+    ) {
         const getInputRange = (mainstr: string): string => {
-            return `${interaction.options.getNumber(`min${mainstr}`) ?? 0}~${interaction.options.getNumber(`max${mainstr}`) ?? ""}`;
+            return `${interaction.options.getNumber(`min${mainstr}`) ?? 0}~${
+                interaction.options.getNumber(`max${mainstr}`) ?? ""
+            }`;
         };
 
-        url += "&R=\""
-            + `star:${getInputRange("stars")},`
-            + `AR:${getInputRange("ar")},`
-            + `OD:${getInputRange("od")},`
-            + `HP:${getInputRange("hp")},`
-            + `length:${DateTimeFormatHelper.DHMStoSeconds(interaction.options.getString("minduration") ?? "0")}~${DateTimeFormatHelper.DHMStoSeconds(interaction.options.getString("minduration") ?? "") || ""},`
-            + `BPM:${getInputRange("bpm")}`
-            + "end\"";
+        url +=
+            '&R="' +
+            `star:${getInputRange("stars")},` +
+            `AR:${getInputRange("ar")},` +
+            `OD:${getInputRange("od")},` +
+            `HP:${getInputRange("hp")},` +
+            `length:${DateTimeFormatHelper.DHMStoSeconds(
+                interaction.options.getString("minduration") ?? "0"
+            )}~${
+                DateTimeFormatHelper.DHMStoSeconds(
+                    interaction.options.getString("minduration") ?? ""
+                ) || ""
+            },` +
+            `BPM:${getInputRange("bpm")}` +
+            'end"';
     }
 
     const result: RequestResponse = await RESTManager.request(url);
 
     if (result.statusCode !== 200) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mapsearchStrings.requestFailed)
+            content: MessageCreator.createReject(
+                mapsearchStrings.requestFailed
+            ),
         });
     }
 
@@ -53,43 +68,80 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (beatmaps.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mapsearchStrings.noBeatmapsFound)
+            content: MessageCreator.createReject(
+                mapsearchStrings.noBeatmapsFound
+            ),
         });
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
-        color: (<GuildMember | null> interaction.member)?.displayColor,
-        footerText: "Service provided by Sayobot"
+        color: (<GuildMember | null>interaction.member)?.displayColor,
+        footerText: "Service provided by Sayobot",
     });
 
-    embed.setDescription(`**Beatmaps Found**: ${data.results.toLocaleString()}`);
+    embed.setDescription(
+        `**Beatmaps Found**: ${data.results.toLocaleString()}`
+    );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.spliceFields(0, embed.fields.length);
 
-        for (let i = 5 * (page - 1); i < Math.min(beatmaps.length, 5 + 5 * (page - 1)); ++i) {
+        for (
+            let i = 5 * (page - 1);
+            i < Math.min(beatmaps.length, 5 + 5 * (page - 1));
+            ++i
+        ) {
             const d: SayobotBeatmap = beatmaps[i];
 
             let status: string = "Unknown";
 
             for (const stat in rankedStatus) {
                 if (parseInt(stat) === d.approved) {
-                    status = rankedStatus[stat] !== "WIP" ? StringHelper.capitalizeString(rankedStatus[stat], true) : rankedStatus[stat];
+                    status =
+                        rankedStatus[stat] !== "WIP"
+                            ? StringHelper.capitalizeString(
+                                  rankedStatus[stat],
+                                  true
+                              )
+                            : rankedStatus[stat];
                     break;
                 }
             }
 
             embed.addField(
                 `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`,
-                `**Download**: [osu!](https://osu.ppy.sh/d/${d.sid}) [(no video)](https://osu.ppy.sh/d/${d.sid}n) - [Chimu](https://chimu.moe/en/d/${d.sid}) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${d.sid}) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid}) - [Beatconnect](https://beatconnect.io/b/${d.sid}/) - [Nerina](https://nerina.pw/d/${d.sid})${d.approved >= rankedStatus.RANKED && d.approved !== rankedStatus.QUALIFIED ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})` : ""}\n**Last Update**: ${new Date(d.lastupdate * 1000).toUTCString()} | **${status}**\n${Symbols.heart} **${d.favourite_count.toLocaleString()}** - ${Symbols.playButton} **${d.play_count.toLocaleString()}**`
+                `**Download**: [osu!](https://osu.ppy.sh/d/${
+                    d.sid
+                }) [(no video)](https://osu.ppy.sh/d/${
+                    d.sid
+                }n) - [Chimu](https://chimu.moe/en/d/${
+                    d.sid
+                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
+                    d.sid
+                }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${
+                    d.sid
+                }) - [Beatconnect](https://beatconnect.io/b/${
+                    d.sid
+                }/) - [Nerina](https://nerina.pw/d/${d.sid})${
+                    d.approved >= rankedStatus.RANKED &&
+                    d.approved !== rankedStatus.QUALIFIED
+                        ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})`
+                        : ""
+                }\n**Last Update**: ${new Date(
+                    d.lastupdate * 1000
+                ).toUTCString()} | **${status}**\n${
+                    Symbols.heart
+                } **${d.favourite_count.toLocaleString()}** - ${
+                    Symbols.playButton
+                } **${d.play_count.toLocaleString()}**`
             );
         }
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         beatmaps,
         5,
@@ -108,81 +160,83 @@ export const config: Command["config"] = {
         {
             name: "keyword",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The keyword to search for."
+            description: "The keyword to search for.",
         },
         {
             name: "minstars",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum star rating to search for."
+            description: "The minimum star rating to search for.",
         },
         {
             name: "maxstars",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum star rating to search for."
+            description: "The minimum star rating to search for.",
         },
         {
             name: "mincs",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum CS (Circle Size) to search for."
+            description: "The minimum CS (Circle Size) to search for.",
         },
         {
             name: "maxcs",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum CS (Circle Size) to search for."
+            description: "The minimum CS (Circle Size) to search for.",
         },
         {
             name: "minar",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum AR (Approach Rate) to search for."
+            description: "The minimum AR (Approach Rate) to search for.",
         },
         {
             name: "maxar",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum AR (Approach Rate) to search for."
+            description: "The minimum AR (Approach Rate) to search for.",
         },
         {
             name: "minod",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum OD (Overall Difficulty) to search for."
+            description: "The minimum OD (Overall Difficulty) to search for.",
         },
         {
             name: "maxod",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum OD (Overall Difficulty) to search for."
+            description: "The minimum OD (Overall Difficulty) to search for.",
         },
         {
             name: "minhp",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum HP (health drain rate) to search for."
+            description: "The minimum HP (health drain rate) to search for.",
         },
         {
             name: "maxhp",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum HP (health drain rate) to search for."
+            description: "The minimum HP (health drain rate) to search for.",
         },
         {
             name: "minduration",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The minimum duration to search for, in time format (e.g. 6:01:24:33 or 2d14h55m34s)."
+            description:
+                "The minimum duration to search for, in time format (e.g. 6:01:24:33 or 2d14h55m34s).",
         },
         {
             name: "maxduration",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The maximum duration to search for, in time format (e.g. 6:01:24:33 or 2d14h55m34s)."
+            description:
+                "The maximum duration to search for, in time format (e.g. 6:01:24:33 or 2d14h55m34s).",
         },
         {
             name: "minbpm",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The minimum BPM to search for."
+            description: "The minimum BPM to search for.",
         },
         {
             name: "maxbpm",
             type: ApplicationCommandOptionTypes.NUMBER,
-            description: "The maximum BPM to search for."
-        }
+            description: "The maximum BPM to search for.",
+        },
     ],
     example: [],
     permissions: [],
     cooldown: 15,
-    scope: "ALL"
+    scope: "ALL",
 };

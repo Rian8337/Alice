@@ -10,13 +10,15 @@ import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     const coin: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
 
-    const dbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
+    const dbManager: PlayerInfoCollectionManager =
+        DatabaseManager.aliceDb.collections.playerInfo;
 
     let playerInfo: PlayerInfo | null;
 
@@ -37,22 +39,32 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!playerInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.userHasNotPlayedAnyChallenge)
+            content: MessageCreator.createReject(
+                dailyStrings.userHasNotPlayedAnyChallenge
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { color: (<GuildMember>interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        color: (<GuildMember>interaction.member).displayColor,
+    });
 
-    embed.setAuthor(`Daily/Weekly Challenge Profile for ${playerInfo.username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", ProfileManager.getProfileLink(playerInfo.uid).toString())
-        .addField("Statistics", `**Points**: ${playerInfo.points}\n**Alice Coins**: ${coin}${playerInfo.alicecoins}\n**Challenges completed**: ${playerInfo.challenges.size}`);
+    embed
+        .setAuthor(
+            `Daily/Weekly Challenge Profile for ${playerInfo.username}`,
+            "https://image.frl/p/beyefgeq5m7tobjg.jpg",
+            ProfileManager.getProfileLink(playerInfo.uid).toString()
+        )
+        .addField(
+            "Statistics",
+            `**Points**: ${playerInfo.points}\n**Alice Coins**: ${coin}${playerInfo.alicecoins}\n**Challenges completed**: ${playerInfo.challenges.size}`
+        );
 
     interaction.editReply({
-        embeds: [embed]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

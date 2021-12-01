@@ -22,29 +22,32 @@ export const config: Command["config"] = {
                     name: "fromdate",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The UTC-based date to start fetching from, in <year>-<month>-<date> format."
+                    description:
+                        "The UTC-based date to start fetching from, in <year>-<month>-<date> format.",
                 },
                 {
                     name: "untildate",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The UTC-based date to stop fetching, in <year>-<month>-<date> format. Defaults to the current time."
+                    description:
+                        "The UTC-based date to stop fetching, in <year>-<month>-<date> format. Defaults to the current time.",
                 },
                 {
                     name: "scope",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The scope at which to fetch the message data. Defaults to channel.",
+                    description:
+                        "The scope at which to fetch the message data. Defaults to channel.",
                     choices: [
                         {
                             name: "Channel",
-                            value: "channel"
+                            value: "channel",
                         },
                         {
                             name: "Server",
-                            value: "server"
-                        }
-                    ]
-                }
-            ]
+                            value: "server",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "info",
@@ -54,33 +57,35 @@ export const config: Command["config"] = {
                 {
                     name: "type",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The activity interval type to view. Defaults to overall.",
+                    description:
+                        "The activity interval type to view. Defaults to overall.",
                     choices: [
                         {
                             name: "Overall",
-                            value: "overall"
+                            value: "overall",
                         },
                         {
                             name: "Monthly",
-                            value: "monthly"
+                            value: "monthly",
                         },
                         {
                             name: "Weekly",
-                            value: "weekly"
+                            value: "weekly",
                         },
                         {
                             name: "Daily",
-                            value: "daily"
-                        }
-                    ]
+                            value: "daily",
+                        },
+                    ],
                 },
                 {
                     name: "date",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The UTC-based date to view, in <year>-<month>-<date> format. Defaults on the current time."
-                }
-            ]
-        }
+                    description:
+                        "The UTC-based date to view, in <year>-<month>-<date> format. Defaults on the current time.",
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -88,30 +93,32 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "fromdate",
-                    value: "2018-1-1"
+                    value: "2018-1-1",
                 },
                 {
                     name: "scope",
-                    value: "Server"
-                }
+                    value: "Server",
+                },
             ],
-            description: "will fetch message analytics from January 1st, 2018 up to this date."
+            description:
+                "will fetch message analytics from January 1st, 2018 up to this date.",
         },
         {
             command: "messageanalytics info type:Daily date:2019-1-1",
             arguments: [
                 {
                     name: "type",
-                    value: "Daily"
+                    value: "Daily",
                 },
                 {
                     name: "date",
-                    value: "2019-1-1"
-                }
+                    value: "2019-1-1",
+                },
             ],
-            description: "will give message analytics information in January 1st, 2019."
-        }
+            description:
+                "will give message analytics information in January 1st, 2019.",
+        },
     ],
     permissions: [],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

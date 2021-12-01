@@ -10,17 +10,19 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(profileStrings.tooManyOptions)
+            content: MessageCreator.createReject(profileStrings.tooManyOptions),
         });
     }
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
 
@@ -32,7 +34,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             uid = player.uid;
             if (!uid) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(profileStrings.profileNotFound, "the player's")
+                    content: MessageCreator.createReject(
+                        profileStrings.profileNotFound,
+                        "the player's"
+                    ),
                 });
             }
             break;
@@ -41,7 +46,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             uid = player.uid;
             if (!uid) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(profileStrings.profileNotFound, "the player's")
+                    content: MessageCreator.createReject(
+                        profileStrings.profileNotFound,
+                        "the player's"
+                    ),
                 });
             }
             break;
@@ -50,7 +58,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             uid = bindInfo?.uid;
             if (!uid) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.userNotBindedReject)
+                    content: MessageCreator.createReject(
+                        Constants.userNotBindedReject
+                    ),
                 });
             }
             break;
@@ -60,7 +70,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             uid = bindInfo?.uid;
             if (!uid) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                    content: MessageCreator.createReject(
+                        Constants.selfNotBindedReject
+                    ),
                 });
             }
     }
@@ -70,23 +82,31 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!player.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.profileNotFound, uid || username || discordid ? "that account's" : "your"
-            )
+                profileStrings.profileNotFound,
+                uid || username || discordid ? "that account's" : "your"
+            ),
         });
     }
 
     const profileImage: Buffer = (await ProfileManager.getProfileStatistics(
-        uid, player, bindInfo, undefined, undefined, (interaction.options.getString("type") ?? "simplified") === "detailed"
+        uid,
+        player,
+        bindInfo,
+        undefined,
+        undefined,
+        (interaction.options.getString("type") ?? "simplified") === "detailed"
     ))!;
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            profileStrings.viewingProfile, player.username, ProfileManager.getProfileLink(player.uid).toString()
+            profileStrings.viewingProfile,
+            player.username,
+            ProfileManager.getProfileLink(player.uid).toString()
         ),
-        files: [profileImage]
+        files: [profileImage],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

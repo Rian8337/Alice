@@ -7,7 +7,9 @@ import { Guild, Message, Role, TextChannel } from "discord.js";
 export const run: EventUtil["run"] = async (client) => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
-    const channel: TextChannel = <TextChannel> await guild.channels.fetch("669221772083724318");
+    const channel: TextChannel = <TextChannel>(
+        await guild.channels.fetch("669221772083724318")
+    );
 
     const role: Role = (await guild.roles.fetch("674918022116278282"))!;
 
@@ -24,5 +26,5 @@ export const run: EventUtil["run"] = async (client) => {
 export const config: EventUtil["config"] = {
     description: "Responsible for assigning challenge watcher roles.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

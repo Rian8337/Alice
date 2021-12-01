@@ -7,11 +7,16 @@ import { Collection, TextChannel } from "discord.js";
 import { messageanalyticsStrings } from "../messageanalyticsStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const fromDateEntries: number[] = (interaction.options.getString("fromdate", true)).split("-").map(v => parseInt(v));
+    const fromDateEntries: number[] = interaction.options
+        .getString("fromdate", true)
+        .split("-")
+        .map((v) => parseInt(v));
 
     if (fromDateEntries.length !== 3 || fromDateEntries.some(Number.isNaN)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(messageanalyticsStrings.incorrectDateFormat)
+            content: MessageCreator.createReject(
+                messageanalyticsStrings.incorrectDateFormat
+            ),
         });
     }
 
@@ -30,15 +35,24 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     toDate.setUTCHours(0, 0, 0, 0);
 
     if (interaction.options.getString("untildate")) {
-        const toDateEntries: number[] = (interaction.options.getString("untildate", true)).split("-").map(v => parseInt(v));
+        const toDateEntries: number[] = interaction.options
+            .getString("untildate", true)
+            .split("-")
+            .map((v) => parseInt(v));
 
         if (toDateEntries.length !== 3 || toDateEntries.some(Number.isNaN)) {
             return interaction.editReply({
-                content: MessageCreator.createReject(messageanalyticsStrings.incorrectDateFormat)
+                content: MessageCreator.createReject(
+                    messageanalyticsStrings.incorrectDateFormat
+                ),
             });
         }
 
-        toDate.setUTCFullYear(toDateEntries[0], toDateEntries[1] - 1, toDateEntries[2]);
+        toDate.setUTCFullYear(
+            toDateEntries[0],
+            toDateEntries[1] - 1,
+            toDateEntries[2]
+        );
     }
 
     const channelsToFetch: TextChannel[] = [];
@@ -46,13 +60,17 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if ((interaction.options.getString("scope") ?? "channel") === "channel") {
         if (!(interaction.channel instanceof TextChannel)) {
             return interaction.editReply({
-                content: MessageCreator.createReject(messageanalyticsStrings.notATextChannel)
+                content: MessageCreator.createReject(
+                    messageanalyticsStrings.notATextChannel
+                ),
             });
         }
 
         if (MessageAnalyticsHelper.isChannelFiltered(interaction.channel)) {
             return interaction.editReply({
-                content: MessageCreator.createReject(messageanalyticsStrings.channelIsFiltered)
+                content: MessageCreator.createReject(
+                    messageanalyticsStrings.channelIsFiltered
+                ),
             });
         }
 
@@ -66,7 +84,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(messageanalyticsStrings.messageFetchStarted)
+        content: MessageCreator.createAccept(
+            messageanalyticsStrings.messageFetchStarted
+        ),
     });
 
     const guildMessageAnalyticsData: Collection<number, ChannelData> =
@@ -82,15 +102,21 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         client.logger.info(`Fetching messages in #${channel.name}`);
 
-        const messageData: Collection<number, number> = await MessageAnalyticsHelper.getChannelMessageCount(
-            channel,
-            fromDate.getTime(),
-            toDate.getTime()
+        const messageData: Collection<number, number> =
+            await MessageAnalyticsHelper.getChannelMessageCount(
+                channel,
+                fromDate.getTime(),
+                toDate.getTime()
+            );
+
+        client.logger.info(
+            `Channel #${channel.name} has ${messageData.reduce(
+                (a, v) => a + v,
+                0
+            )} messages`
         );
 
-        client.logger.info(`Channel #${channel.name} has ${messageData.reduce((a, v) => a + v, 0)} messages`);
-
-        for await (const [ date, count ] of messageData) {
+        for await (const [date, count] of messageData) {
             const channelData: ChannelData =
                 guildMessageAnalyticsData.get(date) ??
                 DatabaseManager.aliceDb.collections.channelData.defaultInstance;
@@ -108,8 +134,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 { timestamp: date },
                 {
                     $set: {
-                        channels: channelData.channels.map((value, key) => [ key, value ])
-                    }
+                        channels: channelData.channels.map((value, key) => [
+                            key,
+                            value,
+                        ]),
+                    },
                 },
                 { upsert: true }
             );
@@ -118,5 +147,5 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

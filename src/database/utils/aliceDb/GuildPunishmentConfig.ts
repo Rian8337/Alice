@@ -42,35 +42,44 @@ export class GuildPunishmentConfig extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseGuildPunishmentConfig = DatabaseManager.aliceDb?.collections.guildPunishmentConfig.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseGuildPunishmentConfig = DatabaseManager.aliceDb
+            ?.collections.guildPunishmentConfig.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
         this.guildID = data.guildID;
         this.logChannel = data.logChannel;
-        this.allowedMuteRoles = ArrayHelper.arrayToCollection(data.allowedMuteRoles ?? [], "id");
+        this.allowedMuteRoles = ArrayHelper.arrayToCollection(
+            data.allowedMuteRoles ?? [],
+            "id"
+        );
         this.immuneMuteRoles = data.immuneMuteRoles ?? [];
-        this.currentMutes = ArrayHelper.arrayToCollection(data.currentMutes ?? [], "userID");
+        this.currentMutes = ArrayHelper.arrayToCollection(
+            data.currentMutes ?? [],
+            "userID"
+        );
     }
 
     /**
      * Gets the guild's log channel.
-     * 
+     *
      * @param guild The guild instance.
      * @returns The guild's log channel, `null` if not found.
      */
     getGuildLogChannel(guild: Guild): GuildChannel | null {
-        return <GuildChannel | null> guild.channels.resolve(this.logChannel);
+        return <GuildChannel | null>guild.channels.resolve(this.logChannel);
     }
 
     /**
      * Grants mute immunity for a role.
-     * 
+     *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
     async grantMuteImmunity(roleId: Snowflake): Promise<OperationResult> {
-        if (this.immuneMuteRoles.find(r => r === roleId)) {
+        if (this.immuneMuteRoles.find((r) => r === roleId)) {
             return this.createOperationResult(true);
         }
 
@@ -80,20 +89,22 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $addToSet: {
-                    immuneMuteRoles: roleId
-                }
+                    immuneMuteRoles: roleId,
+                },
             }
         );
     }
 
     /**
      * Revokes mute immunity from a role.
-     * 
+     *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
     async revokeMuteImmunity(roleId: Snowflake): Promise<OperationResult> {
-        const index: number = this.immuneMuteRoles.findIndex(r => r === roleId);
+        const index: number = this.immuneMuteRoles.findIndex(
+            (r) => r === roleId
+        );
 
         if (index === -1) {
             return this.createOperationResult(true);
@@ -105,20 +116,24 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $pull: {
-                    immuneMuteRoles: roleId
-                }
+                    immuneMuteRoles: roleId,
+                },
             }
         );
     }
 
     /**
      * Grants mute permission for a role.
-     * 
+     *
      * @param roleId The ID of the role.
      * @param maxTime The maximum time the role is allowed to mute for. -1 means the role can mute indefinitely.
      */
-    async grantMutePermission(roleId: Snowflake, maxTime: number): Promise<OperationResult> {
-        const roleMutePermission: RoleMutePermission | undefined = this.allowedMuteRoles.get(roleId);
+    async grantMutePermission(
+        roleId: Snowflake,
+        maxTime: number
+    ): Promise<OperationResult> {
+        const roleMutePermission: RoleMutePermission | undefined =
+            this.allowedMuteRoles.get(roleId);
 
         if (roleMutePermission?.maxTime === maxTime) {
             return this.createOperationResult(true);
@@ -130,15 +145,15 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $set: {
-                    allowedMuteRoles: [...this.allowedMuteRoles.values()]
-                }
+                    allowedMuteRoles: [...this.allowedMuteRoles.values()],
+                },
             }
         );
     }
 
     /**
      * Revokes mute permission from a role.
-     * 
+     *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
@@ -151,8 +166,8 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $set: {
-                    allowedMuteRoles: [...this.allowedMuteRoles.values()]
-                }
+                    allowedMuteRoles: [...this.allowedMuteRoles.values()],
+                },
             }
         );
     }

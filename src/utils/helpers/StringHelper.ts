@@ -4,7 +4,7 @@
 export abstract class StringHelper {
     /**
      * Capitalizes the beginning of a string.
-     * 
+     *
      * @param string The string to capitalize.
      * @param lowercaseRest Whether to lowercase the rest of the string.
      * @returns The capitalized string.
@@ -16,15 +16,18 @@ export abstract class StringHelper {
 
         const rest: string = string.slice(1);
 
-        return string.charAt(0).toUpperCase() + (lowercaseRest ? rest.toLowerCase() : rest);
+        return (
+            string.charAt(0).toUpperCase() +
+            (lowercaseRest ? rest.toLowerCase() : rest)
+        );
     }
 
     /**
      * Tidies a string, entering a new line on a whitespace if the specified
      * length is exceeded.
-     * 
+     *
      * Note that this function will trim _any_ whitespace-related characters.
-     * 
+     *
      * @param string The string to tidy.
      * @param maxLineLength The maximum amount of characters in a line.
      * @returns The tidied string.
@@ -41,7 +44,7 @@ export abstract class StringHelper {
         // In that case, we use the longest word's length.
         let currentLineLength: number = 0;
 
-        words.forEach(word => {
+        words.forEach((word) => {
             currentLineLength += word.length + 1;
 
             if (currentLineLength > maxLineLength) {
@@ -57,15 +60,21 @@ export abstract class StringHelper {
 
     /**
      * Obtains a section of a string, sliced by whitespace.
-     * 
+     *
      * @param str The string to slice.
      * @param wordIndexStart The word index to start slicing from.
      * @param wordIndexEnd The word index to end slicing to.
      * @returns The sliced string.
      */
-    static getStringSection(str: string, wordIndexStart: number, wordIndexEnd?: number): string {
+    static getStringSection(
+        str: string,
+        wordIndexStart: number,
+        wordIndexEnd?: number
+    ): string {
         if (wordIndexEnd && wordIndexStart > wordIndexEnd) {
-            throw new Error("Start word index must be less than or equal to end word index");
+            throw new Error(
+                "Start word index must be less than or equal to end word index"
+            );
         }
 
         const split: string[] = str.split(/\s+/g);
@@ -74,14 +83,15 @@ export abstract class StringHelper {
             return "";
         }
 
-        const index: number = split.slice(wordIndexStart, wordIndexEnd).join(" ").length + 1;
+        const index: number =
+            split.slice(wordIndexStart, wordIndexEnd).join(" ").length + 1;
 
         return str.substring(index);
     }
 
     /**
      * Formats a string, replacing %s with placeholders.
-     * 
+     *
      * @param str The string to format.
      * @param replacements The replacements.
      * @returns The formatted string.
@@ -90,7 +100,9 @@ export abstract class StringHelper {
         const replacementsNeeded: number = (str.match(/%s/g) || []).length;
 
         if (replacements.length !== replacementsNeeded) {
-            throw new Error(`Amount of replacements for string "${str}" doesn't match; expected ${replacementsNeeded}, got ${replacements.length}`);
+            throw new Error(
+                `Amount of replacements for string "${str}" doesn't match; expected ${replacementsNeeded}, got ${replacements.length}`
+            );
         }
 
         let count: number = 0;
@@ -99,7 +111,7 @@ export abstract class StringHelper {
 
     /**
      * Gets the proper length of a unicode string.
-     * 
+     *
      * @param str The unicode string to get the proper length from.
      */
     static getUnicodeStringLength(str: string): number {
@@ -116,7 +128,7 @@ export abstract class StringHelper {
                 s += 2;
             }
 
-            if (code >= 0xDC00 && code <= 0xDFFF) {
+            if (code >= 0xdc00 && code <= 0xdfff) {
                 --i; //trail surrogate
             }
         }
@@ -126,7 +138,7 @@ export abstract class StringHelper {
 
     /**
      * Checks if a string is a valid hex code.
-     * 
+     *
      * @param str The string to check.
      */
     static isValidHexCode(str: string): boolean {
@@ -135,7 +147,7 @@ export abstract class StringHelper {
 
     /**
      * Checks if a link returns a valid image.
-     * 
+     *
      * @param link The link to check.
      * @returns Whether the link returns a valid image.
      */
@@ -146,15 +158,17 @@ export abstract class StringHelper {
 
         const length: number = link.length;
 
-        return link.indexOf("png", length - 3) !== -1 ||
+        return (
+            link.indexOf("png", length - 3) !== -1 ||
             link.indexOf("jpg", length - 3) !== -1 ||
             link.indexOf("jpeg", length - 4) !== -1 ||
-            link.indexOf("gif", length - 3) !== -1;
+            link.indexOf("gif", length - 3) !== -1
+        );
     }
 
     /**
      * Determines if a string is a valid URL.
-     * 
+     *
      * @param str The string to determine.
      */
     static isValidURL(str: string): boolean {
@@ -168,17 +182,17 @@ export abstract class StringHelper {
 
     /**
      * Checks if a string contains a unicode character.
-     * 
+     *
      * @param str The string.
      * @returns Whether the string contains a unicode character.
      */
     static hasUnicode(str: string): boolean {
-        return [...str].some(v => v.charCodeAt(0) > 127);
+        return [...str].some((v) => v.charCodeAt(0) > 127);
     }
 
     /**
      * Sorts a string alphabetically.
-     * 
+     *
      * @param str The string.
      * @returns The sorted string.
      */

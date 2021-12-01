@@ -13,19 +13,27 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 export const run: Command["run"] = async (_, interaction) => {
     const uid: number = interaction.options.getInteger("uid", true);
 
-    if (!NumberHelper.isNumberInRange(uid, Constants.uidMinLimit, Constants.uidMaxLimit, true)) {
+    if (
+        !NumberHelper.isNumberInRange(
+            uid,
+            Constants.uidMinLimit,
+            Constants.uidMaxLimit,
+            true
+        )
+    ) {
         return interaction.editReply({
-            content: unbindStrings.invalidUid
+            content: unbindStrings.invalidUid,
         });
     }
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     const bindInfo: UserBind | null = await dbManager.getFromUid(uid);
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(unbindStrings.uidNotBinded)
+            content: MessageCreator.createReject(unbindStrings.uidNotBinded),
         });
     }
 
@@ -34,15 +42,17 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                unbindStrings.unbindFailed, result.reason!
-            )
+                unbindStrings.unbindFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            unbindStrings.unbindSuccessful, uid.toString()
-        )
+            unbindStrings.unbindSuccessful,
+            uid.toString()
+        ),
     });
 };
 
@@ -56,8 +66,8 @@ export const config: Command["config"] = {
             name: "uid",
             required: true,
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The uid to unbind."
-        }
+            description: "The uid to unbind.",
+        },
     ],
     example: [
         {
@@ -65,12 +75,13 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "uid",
-                    value: 51076
-                }
+                    value: 51076,
+                },
             ],
-            description: "will unbind the osu!droid account with uid 51076 if it is binded to a Discord account."
-        }
+            description:
+                "will unbind the osu!droid account with uid 51076 if it is binded to a Discord account.",
+        },
     ],
     permissions: ["BOT_OWNER"],
-    scope: "ALL"
+    scope: "ALL",
 };

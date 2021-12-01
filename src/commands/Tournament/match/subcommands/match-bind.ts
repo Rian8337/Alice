@@ -13,15 +13,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!(channel instanceof TextChannel)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.invalidChannelToBind)
+            content: MessageCreator.createReject(
+                matchStrings.invalidChannelToBind
+            ),
         });
     }
 
-    const match: TournamentMatch | null = await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
+    const match: TournamentMatch | null =
+        await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist)
+            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
         });
     }
 
@@ -29,11 +32,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await channel.threads.fetchArchived();
 
-    let thread: ThreadChannel | undefined = channel.threads.cache.find(c => c.name === `${match.matchid} ${match.name}`);
+    let thread: ThreadChannel | undefined = channel.threads.cache.find(
+        (c) => c.name === `${match.matchid} ${match.name}`
+    );
 
     if (!thread) {
         thread = await channel.threads.create({
-            name: `${match.matchid} ${match.name}`
+            name: `${match.matchid} ${match.name}`,
         });
     } else if (thread.archived && thread.unarchivable) {
         await thread.setArchived(false);
@@ -49,15 +54,21 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.bindMatchFailed, result.reason!)
+            content: MessageCreator.createReject(
+                matchStrings.bindMatchFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(matchStrings.bindMatchSuccessful, id)
+        content: MessageCreator.createAccept(
+            matchStrings.bindMatchSuccessful,
+            id
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

@@ -8,7 +8,10 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     if (playerInfo) {
         let dailyCoin: number = 50;
@@ -19,11 +22,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             dailyCoin += 100;
         }
 
-        const result: OperationResult = await playerInfo.claimDailyCoins(dailyCoin);
+        const result: OperationResult = await playerInfo.claimDailyCoins(
+            dailyCoin
+        );
 
         if (!result.success) {
             return interaction.editReply({
-                content: MessageCreator.createReject(coinsStrings.dailyClaimFailed, <string>result.reason)
+                content: MessageCreator.createReject(
+                    coinsStrings.dailyClaimFailed,
+                    <string>result.reason
+                ),
             });
         }
 
@@ -34,29 +42,38 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 dailyCoin.toLocaleString(),
                 streak.toString(),
                 (playerInfo.alicecoins + dailyCoin).toLocaleString()
-            )
+            ),
         });
     } else {
-        const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getOne({ discordid: interaction.user.id });
+        const bindInfo: UserBind | null =
+            await DatabaseManager.elainaDb.collections.userBind.getOne({
+                discordid: interaction.user.id,
+            });
 
         if (!bindInfo) {
             return interaction.editReply({
-                content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                content: MessageCreator.createReject(
+                    Constants.selfNotBindedReject
+                ),
             });
         }
 
-        const result: OperationResult = await DatabaseManager.aliceDb.collections.playerInfo.insert({
-            username: bindInfo.username,
-            uid: bindInfo.uid,
-            discordid: interaction.user.id,
-            hasClaimedDaily: true,
-            alicecoins: 50,
-            streak: 1
-        });
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.playerInfo.insert({
+                username: bindInfo.username,
+                uid: bindInfo.uid,
+                discordid: interaction.user.id,
+                hasClaimedDaily: true,
+                alicecoins: 50,
+                streak: 1,
+            });
 
         if (!result.success) {
             return interaction.editReply({
-                content: MessageCreator.createReject(coinsStrings.dailyClaimFailed, result.reason!)
+                content: MessageCreator.createReject(
+                    coinsStrings.dailyClaimFailed,
+                    result.reason!
+                ),
             });
         }
 
@@ -67,11 +84,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 "50",
                 "1",
                 "50"
-            )
+            ),
         });
     }
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

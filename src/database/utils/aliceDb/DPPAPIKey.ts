@@ -11,7 +11,10 @@ export class DPPAPIKey extends Manager implements DatabaseDPPAPIKey {
     owner: string;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseDPPAPIKey = DatabaseManager.aliceDb?.collections.dppAPIKey.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseDPPAPIKey = DatabaseManager.aliceDb?.collections.dppAPIKey
+            .defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

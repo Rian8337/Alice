@@ -10,7 +10,7 @@ import { leaderboardStrings } from "../leaderboardStrings";
 
 /**
  * Retrieves the global leaderboard.
- * 
+ *
  * @param page The page to retrieve.
  * @returns The scores at that page.
  */
@@ -37,7 +37,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!NumberHelper.isPositive(page)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(leaderboardStrings.invalidPage)
+            content: MessageCreator.createReject(
+                leaderboardStrings.invalidPage
+            ),
         });
     }
 
@@ -48,26 +50,41 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         const pageRemainder: number = (page - 1) % 5;
 
-        const scores: string[] = leaderboardCache.get(actualPage) ?? await retrieveLeaderboard(actualPage);
+        const scores: string[] =
+            leaderboardCache.get(actualPage) ??
+            (await retrieveLeaderboard(actualPage));
 
         if (!leaderboardCache.has(actualPage)) {
             leaderboardCache.set(actualPage, scores);
         }
 
         const longestUsernameLength: number = Math.max(
-            ...scores.slice(20 * pageRemainder, 20 + 20 * pageRemainder)
-                .map(v => StringHelper.getUnicodeStringLength(v[1].trim())),
+            ...scores
+                .slice(20 * pageRemainder, 20 + 20 * pageRemainder)
+                .map((v) => StringHelper.getUnicodeStringLength(v[1].trim())),
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${"Username".padEnd(longestUsernameLength)} | ${"UID".padEnd(6)} | ${"Play".padEnd(5)} | Accuracy | Score\n`;
+        let output: string = `${"#".padEnd(4)} | ${"Username".padEnd(
+            longestUsernameLength
+        )} | ${"UID".padEnd(6)} | ${"Play".padEnd(5)} | Accuracy | Score\n`;
 
-        for (let i = 20 * pageRemainder; i < Math.min(scores.length, 20 + 20 * pageRemainder); ++i) {
+        for (
+            let i = 20 * pageRemainder;
+            i < Math.min(scores.length, 20 + 20 * pageRemainder);
+            ++i
+        ) {
             const c: string[] = scores[i].split(" ");
 
             c.splice(1, 1);
 
-            output += `${(actualPage * 100 + i + 1).toString().padEnd(4)} | ${c[1].padEnd(longestUsernameLength)} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${((parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%").padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
+            output += `${(actualPage * 100 + i + 1)
+                .toString()
+                .padEnd(4)} | ${c[1].padEnd(
+                longestUsernameLength
+            )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
+                (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
+            ).padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
         }
 
         options.content = "```c\n" + output + "```";
@@ -85,5 +102,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

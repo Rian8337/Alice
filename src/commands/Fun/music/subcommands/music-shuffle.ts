@@ -6,27 +6,32 @@ import { GuildMember } from "discord.js";
 import { musicStrings } from "../musicStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const shuffleMode: boolean = interaction.options.getBoolean("shuffle", true);
+    const shuffleMode: boolean = interaction.options.getBoolean(
+        "shuffle",
+        true
+    );
 
     const result: OperationResult = MusicManager.shuffle(
-        (<GuildMember> interaction.member).voice.channel!
+        (<GuildMember>interaction.member).voice.channel!
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.shuffleFailed, result.reason!
-            )
+                musicStrings.shuffleFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.shuffleSuccess, shuffleMode ? "enabled" : "disabled"
-        )
+            musicStrings.shuffleSuccess,
+            shuffleMode ? "enabled" : "disabled"
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

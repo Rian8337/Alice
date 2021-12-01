@@ -14,21 +14,27 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.nameTooLong)
+            content: MessageCreator.createReject(tagStrings.nameTooLong),
         });
     }
 
-    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
+    const tag: GuildTag | null =
+        await DatabaseManager.aliceDb.collections.guildTags.getByName(
+            interaction.guildId,
+            name
+        );
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist),
         });
     }
 
     if (!tag.content && tag.attachments.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntHaveContentAndAttachments)
+            content: MessageCreator.createReject(
+                tagStrings.tagDoesntHaveContentAndAttachments
+            ),
         });
     }
 
@@ -46,5 +52,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

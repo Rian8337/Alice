@@ -11,19 +11,28 @@ import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const uid: number = interaction.options.getInteger("uid", true);
 
-    if (!NumberHelper.isNumberInRange(uid, Constants.uidMinLimit, Constants.uidMaxLimit)) {
+    if (
+        !NumberHelper.isNumberInRange(
+            uid,
+            Constants.uidMinLimit,
+            Constants.uidMaxLimit
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.invalidUid)
+            content: MessageCreator.createReject(namechangeStrings.invalidUid),
         });
     }
 
     const reason: string = interaction.options.getString("reason", true);
 
-    const nameChange: NameChange | null = await DatabaseManager.aliceDb.collections.nameChange.getFromUid(uid);
+    const nameChange: NameChange | null =
+        await DatabaseManager.aliceDb.collections.nameChange.getFromUid(uid);
 
     if (!nameChange || nameChange.isProcessed) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.uidHasNoActiveRequest)
+            content: MessageCreator.createReject(
+                namechangeStrings.uidHasNoActiveRequest
+            ),
         });
     }
 
@@ -33,33 +42,43 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     await nameChange.deny();
 
     interaction.editReply({
-        content: MessageCreator.createAccept(namechangeStrings.denySuccess, reason)
+        content: MessageCreator.createAccept(
+            namechangeStrings.denySuccess,
+            reason
+        ),
     });
 
     if (user) {
-        const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-            { color: 16711711, timestamp: true }
-        );
+        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+            color: 16711711,
+            timestamp: true,
+        });
 
-        embed.setTitle("Request Details")
+        embed
+            .setTitle("Request Details")
             .setDescription(
                 `**Old Username**: ${nameChange.current_username}\n` +
-                `**New Username**: ${nameChange.new_username}\n` +
-                `**Creation Date**: ${new Date((nameChange.cooldown - 86400 * 30) * 1000).toUTCString()}\n\n` +
-                "**Status**: Denied\n" +
-                `**Reason**: ${reason}`
+                    `**New Username**: ${nameChange.new_username}\n` +
+                    `**Creation Date**: ${new Date(
+                        (nameChange.cooldown - 86400 * 30) * 1000
+                    ).toUTCString()}\n\n` +
+                    "**Status**: Denied\n" +
+                    `**Reason**: ${reason}`
             );
 
         try {
             user.send({
-                content: MessageCreator.createReject(namechangeStrings.denyUserNotification, reason),
-                embeds: [embed]
+                content: MessageCreator.createReject(
+                    namechangeStrings.denyUserNotification,
+                    reason
+                ),
+                embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
     }
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

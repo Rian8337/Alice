@@ -4,7 +4,9 @@ import { BaseDocument } from "../BaseDocument";
 /**
  * Represents a database profile badge.
  */
-export interface DatabaseProfileBadge extends BaseDocument, PartialProfileBackground {
+export interface DatabaseProfileBadge
+    extends BaseDocument,
+        PartialProfileBackground {
     /**
      * The description of the badge.
      */

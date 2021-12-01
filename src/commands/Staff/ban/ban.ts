@@ -9,40 +9,53 @@ import { BanManager } from "@alice-utils/managers/BanManager";
 import { banStrings } from "./banStrings";
 
 export const run: Command["run"] = async (client, interaction) => {
-    const toBan: GuildMember = await interaction.guild!.members.fetch(interaction.options.getUser("user", true));
+    const toBan: GuildMember = await interaction.guild!.members.fetch(
+        interaction.options.getUser("user", true)
+    );
 
     if (toBan.id === interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(banStrings.selfBanError)
+            content: MessageCreator.createReject(banStrings.selfBanError),
         });
     }
 
     if (!toBan.bannable) {
         return interaction.editReply({
-            content: MessageCreator.createReject(banStrings.botCannotBanError)
+            content: MessageCreator.createReject(banStrings.botCannotBanError),
         });
     }
 
-    if (PermissionHelper.comparePosition(<GuildMember> interaction.member, toBan) !== "HIGHER") {
+    if (
+        PermissionHelper.comparePosition(
+            <GuildMember>interaction.member,
+            toBan
+        ) !== "HIGHER"
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(banStrings.userCannotBanError)
+            content: MessageCreator.createReject(banStrings.userCannotBanError),
         });
     }
 
-    const reason: string = interaction.options.getString("reason") ?? "Not specified.";
+    const reason: string =
+        interaction.options.getString("reason") ?? "Not specified.";
 
-    const result: OperationResult = await BanManager.ban(interaction, toBan, reason);
+    const result: OperationResult = await BanManager.ban(
+        interaction,
+        toBan,
+        reason
+    );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                banStrings.banFailed, result.reason!
-            )
+                banStrings.banFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(banStrings.banSuccessful)
+        content: MessageCreator.createAccept(banStrings.banSuccessful),
     });
 };
 
@@ -56,13 +69,13 @@ export const config: Command["config"] = {
             name: "user",
             required: true,
             type: ApplicationCommandOptionTypes.USER,
-            description: "The user to ban."
+            description: "The user to ban.",
         },
         {
             name: "reason",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The reason for banning the user."
-        }
+            description: "The reason for banning the user.",
+        },
     ],
     example: [
         {
@@ -70,31 +83,31 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
+                    value: "@Rian8337#0001",
                 },
                 {
                     name: "reason",
-                    value: "Apple"
-                }
+                    value: "Apple",
+                },
             ],
-            description: "will ban Rian8337 for \"Apple\"."
+            description: 'will ban Rian8337 for "Apple".',
         },
         {
             command: "ban",
             arguments: [
                 {
                     name: "user",
-                    value: "132783516176875520"
+                    value: "132783516176875520",
                 },
                 {
                     name: "reason",
-                    value: "Grapes"
-                }
+                    value: "Grapes",
+                },
             ],
-            description: "will ban the user with that Discord ID for \"Grapes\"."
-        }
+            description: 'will ban the user with that Discord ID for "Grapes".',
+        },
     ],
     permissions: ["BAN_MEMBERS"],
     replyEphemeral: true,
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

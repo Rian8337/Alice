@@ -8,29 +8,37 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
 
     embed.setTitle(`Currently Owned Powerups by ${clan.name}`);
 
     for (const powerup of clan.powerups.values()) {
-        embed.addField(StringHelper.capitalizeString(powerup.name), powerup.amount.toLocaleString(), true);
+        embed.addField(
+            StringHelper.capitalizeString(powerup.name),
+            powerup.amount.toLocaleString(),
+            true
+        );
     }
 
     interaction.editReply({
-        embeds: [ embed ]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

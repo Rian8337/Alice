@@ -16,7 +16,8 @@ export const config: Command["config"] = {
         {
             name: "about",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "All you need to know about daily and weekly challenges!"
+            description:
+                "All you need to know about daily and weekly challenges!",
         },
         {
             name: "check",
@@ -26,47 +27,49 @@ export const config: Command["config"] = {
                 {
                     name: "type",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The type of the challenge. Defaults to daily.",
+                    description:
+                        "The type of the challenge. Defaults to daily.",
                     choices: [
                         {
                             name: "Daily",
-                            value: "daily"
+                            value: "daily",
                         },
                         {
                             name: "Weekly",
-                            value: "weekly"
-                        }
-                    ]
-                }
-            ]
+                            value: "weekly",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "checksubmit",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Checks if you, an osu!droid account, or Discord user has completed a challenge.",
+            description:
+                "Checks if you, an osu!droid account, or Discord user has completed a challenge.",
             options: [
                 {
                     name: "challengeid",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The ID of the challenge."
+                    description: "The ID of the challenge.",
                 },
                 {
                     name: "uid",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the osu!droid account."
+                    description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "username",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The username the osu!droid account."
+                    description: "The username the osu!droid account.",
                 },
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user."
-                }
-            ]
+                    description: "The Discord user.",
+                },
+            ],
         },
         {
             name: "challenges",
@@ -76,19 +79,20 @@ export const config: Command["config"] = {
                 {
                     name: "type",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The type of the challenge. Defaults to daily.",
+                    description:
+                        "The type of the challenge. Defaults to daily.",
                     choices: [
                         {
                             name: "Daily",
-                            value: "daily"
+                            value: "daily",
                         },
                         {
                             name: "Weekly",
-                            value: "weekly"
-                        }
-                    ]
-                }
-            ]
+                            value: "weekly",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "leaderboard",
@@ -98,44 +102,46 @@ export const config: Command["config"] = {
                 {
                     name: "page",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page to view. Defaults to 1."
-                }
-            ]
+                    description: "The page to view. Defaults to 1.",
+                },
+            ],
         },
         {
             name: "manualsubmit",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Manually submits a replay towards the current ongoing challenge.",
+            description:
+                "Manually submits a replay towards the current ongoing challenge.",
             options: [
                 {
                     name: "replayurl",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The download URL to the replay (.odr file)."
-                }
-            ]
+                    description: "The download URL to the replay (.odr file).",
+                },
+            ],
         },
         {
             name: "profile",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Checks yours or an osu!droid account's challenge profile.",
+            description:
+                "Checks yours or an osu!droid account's challenge profile.",
             options: [
                 {
                     name: "uid",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the osu!droid account."
+                    description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "username",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The username the osu!droid account."
+                    description: "The username the osu!droid account.",
                 },
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user."
-                }
-            ]
+                    description: "The Discord user.",
+                },
+            ],
         },
         {
             name: "start",
@@ -146,32 +152,34 @@ export const config: Command["config"] = {
                     name: "challengeid",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The ID of the challenge."
-                }
-            ]
+                    description: "The ID of the challenge.",
+                },
+            ],
         },
         {
             name: "submit",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Submits your 50 most recent plays towards the current ongoing challenge.",
+            description:
+                "Submits your 50 most recent plays towards the current ongoing challenge.",
             options: [
                 {
                     name: "type",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The type of the challenge. Defaults to daily.",
+                    description:
+                        "The type of the challenge. Defaults to daily.",
                     choices: [
                         {
                             name: "Daily",
-                            value: "daily"
+                            value: "daily",
                         },
                         {
                             name: "Weekly",
-                            value: "weekly"
-                        }
-                    ]
-                }
-            ]
-        }
+                            value: "weekly",
+                        },
+                    ],
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -179,27 +187,29 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "challengeid",
-                    value: "d21"
-                }
+                    value: "d21",
+                },
             ],
-            description: "will check if you have played challenge `d21`."
+            description: "will check if you have played challenge `d21`.",
         },
         {
             command: "daily manualsubmit",
             arguments: [
                 {
                     name: "replayurl",
-                    value: "https://cdn.discordapp.com/attachments/631130003441975297/888432557941739581/e2dc39ca969a739eaa711ebf431ebdda163.odr"
-                }
+                    value: "https://cdn.discordapp.com/attachments/631130003441975297/888432557941739581/e2dc39ca969a739eaa711ebf431ebdda163.odr",
+                },
             ],
-            description: "will submit the linked replay to be verified against the current daily or weekly challenge."
+            description:
+                "will submit the linked replay to be verified against the current daily or weekly challenge.",
         },
         {
             command: "daily submit",
-            description: "will submit your 50 most recent plays towards the current ongoing daily challenge."
-        }
+            description:
+                "will submit your 50 most recent plays towards the current ongoing daily challenge.",
+        },
     ],
     permissions: [],
     cooldown: 5,
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

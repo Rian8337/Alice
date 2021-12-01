@@ -1,5 +1,9 @@
 import { Readable } from "stream";
-import { AudioResource, demuxProbe, createAudioResource } from "@discordjs/voice";
+import {
+    AudioResource,
+    demuxProbe,
+    createAudioResource,
+} from "@discordjs/voice";
 import { Snowflake } from "discord.js";
 import { raw as ytdl } from "youtube-dl-exec";
 import { VideoSearchResult } from "yt-search";
@@ -31,12 +35,12 @@ export class MusicQueue {
             const process = ytdl(
                 this.information.url,
                 {
-                    o: '-',
-                    q: '',
-                    f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
-                    r: '500K',
+                    o: "-",
+                    q: "",
+                    f: "bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio",
+                    r: "500K",
                 },
-                { stdio: ['ignore', 'pipe', 'ignore'] }
+                { stdio: ["ignore", "pipe", "ignore"] }
             );
 
             if (!process.stdout) {
@@ -51,11 +55,20 @@ export class MusicQueue {
                 reject(error);
             };
 
-            process.once("spawn", () => {
-                demuxProbe(stream)
-                    .then(probe => resolve(createAudioResource(probe.stream, { metadata: this, inputType: probe.type })))
-                    .catch(onError);
-            }).catch(onError);
+            process
+                .once("spawn", () => {
+                    demuxProbe(stream)
+                        .then((probe) =>
+                            resolve(
+                                createAudioResource(probe.stream, {
+                                    metadata: this,
+                                    inputType: probe.type,
+                                })
+                            )
+                        )
+                        .catch(onError);
+                })
+                .catch(onError);
         });
     }
 }

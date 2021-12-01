@@ -121,5 +121,5 @@ export enum clanStrings {
     clanPowerTransferFailed = "I'm sorry, I couldn't perform the power points transfer: %s.",
     clanPowerTransferSuccessful = "Successfully transferred `%s` power points from `%s` clan to `%s` clan.",
     changeRoleColorSuccessful = "Successfully changed your clan's role color.",
-    changeRoleIconSuccessful = "Successfully changed your clan's role icon."
+    changeRoleIconSuccessful = "Successfully changed your clan's role icon.",
 }

@@ -16,9 +16,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const ytRegex: RegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]+).*/;
+    const ytRegex: RegExp =
+        /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]+).*/;
 
-    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromMessage(message.content);
+    const calcParams: PerformanceCalculationParameters =
+        BeatmapDifficultyHelper.getCalculationParamsFromMessage(
+            message.content
+        );
 
     for await (const arg of message.content.split(/\s+/g)) {
         const match: RegExpMatchArray | null = arg.match(ytRegex);
@@ -33,7 +37,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const data: YouTubeVideoInformation | null = await YouTubeRESTManager.getInformation(videoId);
+        const data: YouTubeVideoInformation | null =
+            await YouTubeRESTManager.getInformation(videoId);
 
         if (!data) {
             continue;
@@ -54,29 +59,38 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             }
 
             const beatmapID: number = BeatmapManager.getBeatmapID(link)[0];
-            const beatmapsetID: number = BeatmapManager.getBeatmapsetID(link)[0];
+            const beatmapsetID: number =
+                BeatmapManager.getBeatmapsetID(link)[0];
 
             // Prioritize beatmap ID over beatmapset ID
             if (beatmapID) {
-                const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID, false);
+                const beatmapInfo: MapInfo | null =
+                    await BeatmapManager.getBeatmap(beatmapID, false);
 
                 if (!beatmapInfo) {
                     continue;
                 }
 
                 // Beatmap cache
-                BeatmapManager.setChannelLatestBeatmap(message.channel.id, beatmapInfo.hash);
+                BeatmapManager.setChannelLatestBeatmap(
+                    message.channel.id,
+                    beatmapInfo.hash
+                );
 
-                const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmapInfo);
+                const embedOptions: MessageOptions =
+                    EmbedCreator.createBeatmapEmbed(beatmapInfo);
 
-                const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
+                const embed: MessageEmbed = <MessageEmbed>(
+                    embedOptions.embeds![0]
+                );
 
                 embed.spliceFields(0, embed.fields.length);
 
                 message.channel.send(embedOptions);
             } else if (beatmapsetID) {
                 // Retrieve beatmap file one by one to not overcreate requests
-                const beatmapInformations: MapInfo[] = await BeatmapManager.getBeatmaps(beatmapsetID, false);
+                const beatmapInformations: MapInfo[] =
+                    await BeatmapManager.getBeatmaps(beatmapsetID, false);
 
                 if (beatmapInformations.length === 0) {
                     return;
@@ -89,7 +103,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 let string: string = "";
 
                 if (beatmapInformations.length > 3) {
-                    string = MessageCreator.createAccept(`I found ${beatmapInformations.length} maps, but only displaying up to 3 due to my limitations.`);
+                    string = MessageCreator.createAccept(
+                        `I found ${beatmapInformations.length} maps, but only displaying up to 3 due to my limitations.`
+                    );
                 }
 
                 for await (const beatmapInfo of beatmapInformations) {
@@ -98,7 +114,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
                 const firstBeatmap: MapInfo = beatmapInformations[0];
 
-                const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(firstBeatmap);
+                const embedOptions: MessageOptions =
+                    EmbedCreator.createBeatmapEmbed(firstBeatmap);
 
                 if (string) {
                     embedOptions.content = string;
@@ -107,21 +124,29 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 // Empty files, we don't need it here.
                 embedOptions.files = [];
 
-                const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
+                const embed: MessageEmbed = <MessageEmbed>(
+                    embedOptions.embeds![0]
+                );
 
                 const stats: MapStats = new MapStats({
                     mods: calcParams.mods,
-                    speedMultiplier: calcParams.customStatistics?.speedMultiplier
+                    speedMultiplier:
+                        calcParams.customStatistics?.speedMultiplier,
                 });
 
-                embed.spliceFields(0, embed.fields.length)
-                    .setTitle(`${firstBeatmap.artist} - ${firstBeatmap.title} by ${firstBeatmap.creator}`)
+                embed
+                    .spliceFields(0, embed.fields.length)
+                    .setTitle(
+                        `${firstBeatmap.artist} - ${firstBeatmap.title} by ${firstBeatmap.creator}`
+                    )
                     .setColor(firstBeatmap.statusColor)
                     .setAuthor("Beatmap Information")
                     .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                     .setDescription(
                         `${firstBeatmap.showStatistics(1, calcParams.mods)}\n` +
-                        `**BPM**: ${firstBeatmap.convertBPM(stats)} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                            `**BPM**: ${firstBeatmap.convertBPM(
+                                stats
+                            )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                     );
 
                 for await (const beatmapInfo of beatmapInformations) {
@@ -130,16 +155,29 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     }
 
                     const calcResult: StarRatingCalculationResult | null =
-                        await BeatmapDifficultyHelper.calculateBeatmapDifficulty(beatmapInfo.hash, calcParams);
+                        await BeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                            beatmapInfo.hash,
+                            calcParams
+                        );
 
                     if (!calcResult) {
                         continue;
                     }
 
                     embed.addField(
-                        `__${beatmapInfo.version}__ (${calcResult.droid.total.toFixed(2)} ${Symbols.star} | ${calcResult.osu.total.toFixed(2)} ${Symbols.star})`,
+                        `__${
+                            beatmapInfo.version
+                        }__ (${calcResult.droid.total.toFixed(2)} ${
+                            Symbols.star
+                        } | ${calcResult.osu.total.toFixed(2)} ${
+                            Symbols.star
+                        })`,
                         `${beatmapInfo.showStatistics(2, calcParams.mods)}\n` +
-                        `**Max score**: ${beatmapInfo.maxScore(stats).toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo}x`
+                            `**Max score**: ${beatmapInfo
+                                .maxScore(stats)
+                                .toLocaleString()} - **Max combo**: ${
+                                beatmapInfo.maxCombo
+                            }x`
                     );
                 }
 
@@ -152,7 +190,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for loading beatmaps that is linked from YouTube.",
+    description:
+        "Responsible for loading beatmaps that is linked from YouTube.",
     togglePermissions: ["MANAGE_CHANNELS"],
-    toggleScope: ["GLOBAL", "GUILD", "CHANNEL"]
+    toggleScope: ["GLOBAL", "GUILD", "CHANNEL"],
 };

@@ -4,17 +4,22 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { skinStrings } from "../skinStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const link: string = <string> interaction.options.getString("url");
+    const link: string = <string>interaction.options.getString("url");
 
-    await DatabaseManager.aliceDb.collections.playerSkins.insertNewSkin(interaction.user, link);
+    await DatabaseManager.aliceDb.collections.playerSkins.insertNewSkin(
+        interaction.user,
+        link
+    );
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            skinStrings.skinSet, interaction.user.toString(), link
-        )
+            skinStrings.skinSet,
+            interaction.user.toString(),
+            link
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

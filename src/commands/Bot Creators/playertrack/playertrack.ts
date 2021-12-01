@@ -9,9 +9,16 @@ import { playertrackStrings } from "./playertrackStrings";
 export const run: Command["run"] = async (_, interaction) => {
     const uid: number = interaction.options.getInteger("uid", true);
 
-    if (!NumberHelper.isNumberInRange(uid, Constants.uidMinLimit, Constants.uidMaxLimit, true)) {
+    if (
+        !NumberHelper.isNumberInRange(
+            uid,
+            Constants.uidMinLimit,
+            Constants.uidMaxLimit,
+            true
+        )
+    ) {
         return interaction.editReply({
-            content: playertrackStrings.incorrectUid
+            content: playertrackStrings.incorrectUid,
         });
     }
 
@@ -33,9 +40,9 @@ export const config: Command["config"] = {
                     name: "uid",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the player."
-                }
-            ]
+                    description: "The uid of the player.",
+                },
+            ],
         },
         {
             name: "delete",
@@ -46,17 +53,17 @@ export const config: Command["config"] = {
                     name: "uid",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The uid of the player."
-                }
-            ]
-        }
+                    description: "The uid of the player.",
+                },
+            ],
+        },
     ],
     example: [
         {
             command: "playertrack add uid:51076",
-            description: "will add uid 51076 into player tracking list."
-        }
+            description: "will add uid 51076 into player tracking list.",
+        },
     ],
     permissions: ["BOT_OWNER"],
-    scope: "ALL"
+    scope: "ALL",
 };

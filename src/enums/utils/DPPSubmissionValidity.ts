@@ -7,5 +7,5 @@ export enum DPPSubmissionValidity {
     BEATMAP_NOT_WHITELISTED,
     SCORE_USES_FORCE_AR,
     SCORE_USES_CUSTOM_SPEED,
-    VALID
+    VALID,
 }

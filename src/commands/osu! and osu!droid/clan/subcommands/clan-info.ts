@@ -5,38 +5,70 @@ import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Canvas, createCanvas, Image, loadImage, NodeCanvasRenderingContext2D } from "canvas";
-import { GuildEmoji, GuildMember, MessageAttachment, MessageEmbed, MessageOptions } from "discord.js";
+import {
+    Canvas,
+    createCanvas,
+    Image,
+    loadImage,
+    NodeCanvasRenderingContext2D,
+} from "canvas";
+import {
+    GuildEmoji,
+    GuildMember,
+    MessageAttachment,
+    MessageEmbed,
+    MessageOptions,
+} from "discord.js";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const dbManager: ClanCollectionManager = DatabaseManager.elainaDb.collections.clan;
+    const dbManager: ClanCollectionManager =
+        DatabaseManager.elainaDb.collections.clan;
 
-    const clan: Clan | null =
-        interaction.options.getString("name") ?
-        await dbManager.getFromName(interaction.options.getString("name", true)) :
-        await dbManager.getFromUser(interaction.user);
+    const clan: Clan | null = interaction.options.getString("name")
+        ? await dbManager.getFromName(
+              interaction.options.getString("name", true)
+          )
+        : await dbManager.getFromUser(interaction.user);
 
     if (!clan) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                interaction.options.getString("name") ? clanStrings.clanDoesntExist : clanStrings.selfIsNotInClan
-            )
+                interaction.options.getString("name")
+                    ? clanStrings.clanDoesntExist
+                    : clanStrings.selfIsNotInClan
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (await clan.getClanRole())?.color ?? (<GuildMember> interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color:
+            (await clan.getClanRole())?.color ??
+            (<GuildMember>interaction.member).displayColor,
+    });
 
-    const coinEmoji: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
+    const coinEmoji: GuildEmoji = client.emojis.cache.get(
+        Constants.aliceCoinEmote
+    )!;
 
-    embed.setTitle(clan.name)
+    embed
+        .setTitle(clan.name)
         .addField("Clan Leader", `<@${clan.leader}> (${clan.leader})`, true)
         .addField("Power", clan.power.toLocaleString(), true)
         .addField("Members", `${clan.member_list.size}/25`, true)
-        .addField("Creation Date", new Date(clan.createdAt * 1000).toUTCString(), true)
-        .addField("Total Upkeep Estimation", `${coinEmoji}${clan.calculateOverallUpkeep().toLocaleString()} Alice coins`, true);
+        .addField(
+            "Creation Date",
+            new Date(clan.createdAt * 1000).toUTCString(),
+            true
+        )
+        .addField(
+            "Total Upkeep Estimation",
+            `${coinEmoji}${clan
+                .calculateOverallUpkeep()
+                .toLocaleString()} Alice coins`,
+            true
+        );
 
     if (clan.iconURL) {
         embed.setThumbnail(clan.iconURL);
@@ -47,7 +79,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     const options: MessageOptions = {
-        embeds: [ embed ]
+        embeds: [embed],
     };
 
     if (clan.bannerURL) {
@@ -57,18 +89,31 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         const c: NodeCanvasRenderingContext2D = canvas.getContext("2d");
 
-        c.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 0, 0, 900, 250);
+        c.drawImage(
+            image,
+            0,
+            0,
+            image.naturalWidth,
+            image.naturalHeight,
+            0,
+            0,
+            900,
+            250
+        );
 
-        const attachment: MessageAttachment = new MessageAttachment(canvas.toBuffer(), "banner.png");
+        const attachment: MessageAttachment = new MessageAttachment(
+            canvas.toBuffer(),
+            "banner.png"
+        );
 
         embed.setImage("attachment://banner.png");
 
-        options.files = [ attachment ];
+        options.files = [attachment];
     }
 
     interaction.editReply(options);
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

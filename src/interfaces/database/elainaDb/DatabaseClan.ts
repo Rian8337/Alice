@@ -22,7 +22,7 @@ export interface DatabaseClan extends BaseDocument {
      * The epoch time at which the clan was created.
      */
     createdAt: number;
-    
+
     /**
      * The Discord ID of the clan leader.
      */

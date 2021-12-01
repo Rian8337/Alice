@@ -10,15 +10,16 @@ import { Collection } from "discord.js";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const clans: Collection<string, Clan> = await DatabaseManager.elainaDb.collections.clan.get(
-        "name",
-        {},
-        { projection: { _id: 0, name: 1, member_list: 1, power: 1 } }
-    );
+    const clans: Collection<string, Clan> =
+        await DatabaseManager.elainaDb.collections.clan.get(
+            "name",
+            {},
+            { projection: { _id: 0, name: 1, member_list: 1, power: 1 } }
+        );
 
     if (clans.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.noAvailableClans)
+            content: MessageCreator.createReject(clanStrings.noAvailableClans),
         });
     }
 
@@ -26,24 +27,41 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return b.power - a.power;
     });
 
-    const page: number = NumberHelper.clamp(interaction.options.getInteger("page") ?? 1, 1, Math.ceil(clans.size / 20));
+    const page: number = NumberHelper.clamp(
+        interaction.options.getInteger("page") ?? 1,
+        1,
+        Math.ceil(clans.size / 20)
+    );
 
-    const onPageChange: OnButtonPageChange = async (options, page, entries: Clan[]) => {
+    const onPageChange: OnButtonPageChange = async (
+        options,
+        page,
+        entries: Clan[]
+    ) => {
         const longestNameLength: number = Math.max(
-            ...entries.slice(20 * (page - 1), 20 + 20 * (page - 1))
-                .map(v => StringHelper.getUnicodeStringLength(v.name.trim())),
+            ...entries
+                .slice(20 * (page - 1), 20 + 20 * (page - 1))
+                .map((v) => StringHelper.getUnicodeStringLength(v.name.trim())),
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${"Clan Name".padEnd(longestNameLength)} | ${"Members".padEnd(7)} | Power\n`;
+        let output: string = `${"#".padEnd(4)} | ${"Clan Name".padEnd(
+            longestNameLength
+        )} | ${"Members".padEnd(7)} | Power\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
             const clan: Clan = entries[i];
 
             if (clan) {
-                output += `${(i + 1).toString().padEnd(4)} | ${clan.name.trim().padEnd(longestNameLength)} | ${clan.member_list.size.toString().padEnd(6)} | ${clan.power.toLocaleString().padEnd(4)}`;
+                output += `${(i + 1).toString().padEnd(4)} | ${clan.name
+                    .trim()
+                    .padEnd(longestNameLength)} | ${clan.member_list.size
+                    .toString()
+                    .padEnd(6)} | ${clan.power.toLocaleString().padEnd(4)}`;
             } else {
-                output += `${"-".padEnd(4)} | ${"-".padEnd(longestNameLength)} | ${"-".padEnd(6)} | -`;
+                output += `${"-".padEnd(4)} | ${"-".padEnd(
+                    longestNameLength
+                )} | ${"-".padEnd(6)} | -`;
             }
 
             output += "\n";
@@ -65,5 +83,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

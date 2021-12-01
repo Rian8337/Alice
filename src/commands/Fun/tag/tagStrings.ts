@@ -19,5 +19,5 @@ export enum tagStrings {
     deleteTagAttachmentSuccessful = "Successfully deleted the attachment of tag `%s`.",
     transferTagSuccessful = "Successfully transferred %s's tags to %s.",
     notTagOwner = "I'm sorry, this tag doesn't belong to you!",
-    userDoesntHaveTags = "I'm sorry, %s doesn't have any saved tags in this server!"
+    userDoesntHaveTags = "I'm sorry, %s doesn't have any saved tags in this server!",
 }

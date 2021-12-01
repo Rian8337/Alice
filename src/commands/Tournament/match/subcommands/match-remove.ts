@@ -9,34 +9,39 @@ import { matchStrings } from "../matchStrings";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const id: string = interaction.options.getString("id", true);
 
-    const match: TournamentMatch | null = await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
+    const match: TournamentMatch | null =
+        await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist)
+            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
         });
     }
 
     if (match.status === "completed") {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchHasEnded)
+            content: MessageCreator.createReject(matchStrings.matchHasEnded),
         });
     }
 
-    const result: OperationResult = await DatabaseManager.elainaDb.collections.tournamentMatch.delete(
-        { matchid: match.matchid }
-    );
+    const result: OperationResult =
+        await DatabaseManager.elainaDb.collections.tournamentMatch.delete({
+            matchid: match.matchid,
+        });
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.removeMatchFailed, result.reason!
-            )
+                matchStrings.removeMatchFailed,
+                result.reason!
+            ),
         });
     }
 
     if (match.channelId) {
-        const channel: Channel | null = await client.channels.fetch(match.channelId);
+        const channel: Channel | null = await client.channels.fetch(
+            match.channelId
+        );
 
         if (channel instanceof ThreadChannel) {
             await channel.setArchived(true);
@@ -45,11 +50,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            matchStrings.removeMatchSuccessful, match.matchid
-        )
+            matchStrings.removeMatchSuccessful,
+            match.matchid
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

@@ -7,13 +7,19 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
 /**
  * A manager for the `mapblacklist` collection.
  */
-export class MapBlacklistCollectionManager extends DatabaseCollectionManager<DatabaseMapBlacklist, MapBlacklist> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapBlacklist, MapBlacklist>;
+export class MapBlacklistCollectionManager extends DatabaseCollectionManager<
+    DatabaseMapBlacklist,
+    MapBlacklist
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseMapBlacklist,
+        MapBlacklist
+    >;
 
     override get defaultDocument(): DatabaseMapBlacklist {
         return {
             beatmapID: 0,
-            reason: ""
+            reason: "",
         };
     }
 
@@ -23,6 +29,8 @@ export class MapBlacklistCollectionManager extends DatabaseCollectionManager<Dat
     constructor(collection: MongoDBCollection<DatabaseMapBlacklist>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseMapBlacklist, MapBlacklist>> new MapBlacklist().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseMapBlacklist, MapBlacklist>
+        >new MapBlacklist().constructor;
     }
 }

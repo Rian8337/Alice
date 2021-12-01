@@ -24,5 +24,5 @@ export enum profileStrings {
     beatmapToClaimBadgeNotRankedOrApproved = "I'm sorry, only ranked or approved beatmaps count!",
     userDoesntHaveScoreinBeatmap = "I'm sorry, you don't have a score in the beatmap!",
     userCannotClaimBadge = "I'm sorry, you do not fulfill the requirement to get the badge!",
-    claimBadgeSuccess = "%s, successfully claimed badge `%s`."
+    claimBadgeSuccess = "%s, successfully claimed badge `%s`.",
 }

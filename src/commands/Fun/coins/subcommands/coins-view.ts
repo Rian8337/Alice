@@ -8,15 +8,18 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(user);
 
-    interaction.editReply(MessageCreator.createAccept(
-        coinsStrings.coinAmountInfo,
-        user.id === interaction.user.id ? "You have" : "That user has",
-        (playerInfo?.alicecoins ?? 0).toLocaleString()
-    ));
+    interaction.editReply(
+        MessageCreator.createAccept(
+            coinsStrings.coinAmountInfo,
+            user.id === interaction.user.id ? "You have" : "That user has",
+            (playerInfo?.alicecoins ?? 0).toLocaleString()
+        )
+    );
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

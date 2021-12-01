@@ -23,7 +23,10 @@ export class MapShare extends Manager implements DatabaseMapShare {
     status: MapShareSubmissionStatus;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseMapShare = DatabaseManager.aliceDb?.collections.mapShare.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseMapShare = DatabaseManager.aliceDb?.collections.mapShare
+            .defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -38,7 +41,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
     /**
      * Accepts this submission.
-     * 
+     *
      * @returns An object containing the result of the operation.
      */
     accept(): Promise<OperationResult> {
@@ -48,15 +51,15 @@ export class MapShare extends Manager implements DatabaseMapShare {
             { beatmap_id: this.beatmap_id },
             {
                 $set: {
-                    status: this.status
-                }
+                    status: this.status,
+                },
             }
         );
     }
 
     /**
      * Denies this submission.
-     * 
+     *
      * @returns An object containing the result of the operation.
      */
     deny(): Promise<OperationResult> {
@@ -66,65 +69,81 @@ export class MapShare extends Manager implements DatabaseMapShare {
             { beatmap_id: this.beatmap_id },
             {
                 $set: {
-                    status: this.status
-                }
+                    status: this.status,
+                },
             }
         );
     }
 
     /**
      * Deletes this submission.
-     * 
+     *
      * This is done if a beatmap is updated after it is submitted.
-     * 
+     *
      * @returns An object containing the result of the operation.
      */
     delete(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.mapShare.delete(
-            { beatmap_id: this.beatmap_id }
-        );
+        return DatabaseManager.aliceDb.collections.mapShare.delete({
+            beatmap_id: this.beatmap_id,
+        });
     }
 
     /**
      * Posts this submission in the map share channel.
-     * 
+     *
      * @returns An object containing the result of the operation.
      */
     async post(): Promise<OperationResult> {
         if (this.status !== "accepted") {
-            return this.createOperationResult(false, "submission is not accepted yet");
+            return this.createOperationResult(
+                false,
+                "submission is not accepted yet"
+            );
         }
 
-        const embedOptions: MessageOptions | null = await EmbedCreator.createMapShareEmbed(this);
+        const embedOptions: MessageOptions | null =
+            await EmbedCreator.createMapShareEmbed(this);
 
         if (!embedOptions) {
             return this.createOperationResult(false, "beatmap not found");
         }
 
-        const coinAward: number = 200 * Math.floor(this.summary.split(" ").length / 50);
+        const coinAward: number =
+            200 * Math.floor(this.summary.split(" ").length / 50);
 
         const playerInfo: PlayerInfo | null =
-            await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(this.id);
+            await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+                this.id
+            );
 
         if (playerInfo) {
             await playerInfo.incrementCoins(coinAward);
         } else {
             const bindInfo: UserBind | null =
-                await DatabaseManager.elainaDb.collections.userBind.getFromUser(this.id);
+                await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+                    this.id
+                );
 
             if (!bindInfo) {
-                return this.createOperationResult(false, "submitter is not binded");
+                return this.createOperationResult(
+                    false,
+                    "submitter is not binded"
+                );
             }
 
             await DatabaseManager.aliceDb.collections.playerInfo.insert({
                 uid: bindInfo.uid,
                 username: bindInfo.username,
                 discordid: this.id,
-                alicecoins: coinAward
+                alicecoins: coinAward,
             });
         }
 
-        const channel: TextChannel = <TextChannel>await (await this.client.guilds.fetch(Constants.mainServer)).channels.fetch("430002296160649229");
+        const channel: TextChannel = <TextChannel>(
+            await (
+                await this.client.guilds.fetch(Constants.mainServer)
+            ).channels.fetch("430002296160649229")
+        );
 
         await channel.send(embedOptions);
 
@@ -134,8 +153,8 @@ export class MapShare extends Manager implements DatabaseMapShare {
             { beatmap_id: this.beatmap_id },
             {
                 $set: {
-                    status: this.status
-                }
+                    status: this.status,
+                },
             }
         );
     }

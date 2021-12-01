@@ -15,13 +15,18 @@ export abstract class ProfileManager extends Manager {
      * Initializes the manager.
      */
     static override init(): void {
-        registerFont(`${process.cwd()}/files/fonts/Exo-Regular.ttf`, { family: "Exo" });
-        registerFont(`${process.cwd()}/files/fonts/Exo-Bold.ttf`, { family: "Exo", weight: "bold" });
+        registerFont(`${process.cwd()}/files/fonts/Exo-Regular.ttf`, {
+            family: "Exo",
+        });
+        registerFont(`${process.cwd()}/files/fonts/Exo-Bold.ttf`, {
+            family: "Exo",
+            weight: "bold",
+        });
     }
 
     /**
      * Gets the statistics of a player.
-     * 
+     *
      * @param uid The uid of the player.
      * @param player The player instance, if available (this will save an API request towards the osu!droid server).
      * @param bindInfo The bind information, if available (this will save a request towards bot database).
@@ -29,15 +34,27 @@ export abstract class ProfileManager extends Manager {
      * @param detailed Whether to give a detailed statistics.
      * @returns An image containing the player's statistics, `null` if the player is not found.
      */
-    static async getProfileStatistics(uid: number, player?: Player, bindInfo?: UserBind | null, playerInfo?: PlayerInfo | null, rankedScoreInfo?: RankedScore | null, detailed: boolean = false): Promise<Buffer | null> {
+    static async getProfileStatistics(
+        uid: number,
+        player?: Player,
+        bindInfo?: UserBind | null,
+        playerInfo?: PlayerInfo | null,
+        rankedScoreInfo?: RankedScore | null,
+        detailed: boolean = false
+    ): Promise<Buffer | null> {
         if (bindInfo === undefined) {
-            bindInfo = await DatabaseManager.elainaDb.collections.userBind.getOne({ previous_bind: { $all: [uid] } });
+            bindInfo =
+                await DatabaseManager.elainaDb.collections.userBind.getOne({
+                    previous_bind: { $all: [uid] },
+                });
         }
 
         if (rankedScoreInfo === undefined) {
-            rankedScoreInfo = await DatabaseManager.aliceDb.collections.rankedScore.getOne(
-                { uid: uid }, { projection: { _id: 0, level: 1, score: 1 } }
-            );
+            rankedScoreInfo =
+                await DatabaseManager.aliceDb.collections.rankedScore.getOne(
+                    { uid: uid },
+                    { projection: { _id: 0, level: 1, score: 1 } }
+                );
         }
 
         if (!player) {
@@ -49,15 +66,24 @@ export abstract class ProfileManager extends Manager {
         }
 
         if (playerInfo === undefined) {
-            playerInfo = await DatabaseManager.aliceDb.collections.playerInfo.getOne({ discordid: bindInfo?.discordid });
+            playerInfo =
+                await DatabaseManager.aliceDb.collections.playerInfo.getOne({
+                    discordid: bindInfo?.discordid,
+                });
         }
 
-        return new ProfileCardCreator(player, detailed, bindInfo, rankedScoreInfo, playerInfo).generateCard();
+        return new ProfileCardCreator(
+            player,
+            detailed,
+            bindInfo,
+            rankedScoreInfo,
+            playerInfo
+        ).generateCard();
     }
 
     /**
      * Gets a link to a player's profile.
-     * 
+     *
      * @param uid The uid of the player.
      * @returns The link to the player's profile.
      */
@@ -68,15 +94,23 @@ export abstract class ProfileManager extends Manager {
 
     /**
      * Gets profile statistics template of a player for badges.
-     * 
+     *
      * @param uid The uid of the player.
      * @param bindInfo The bind information of the player.
      * @param player The player instance, if available (this will save an API request towards the osu!droid server).
      * @returns A profile statistics template.
      */
-    static async getProfileTemplate(uid: number, bindInfo: UserBind, player?: Player): Promise<Buffer> {
+    static async getProfileTemplate(
+        uid: number,
+        bindInfo: UserBind,
+        player?: Player
+    ): Promise<Buffer> {
         player ??= await Player.getInformation({ uid: uid });
 
-        return new ProfileCardCreator(player, false, bindInfo).generateTemplateCard();
+        return new ProfileCardCreator(
+            player,
+            false,
+            bindInfo
+        ).generateTemplateCard();
     }
 }

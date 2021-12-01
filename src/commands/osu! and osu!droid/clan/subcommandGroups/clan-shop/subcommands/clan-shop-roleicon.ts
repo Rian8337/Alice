@@ -9,23 +9,30 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Role } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (clan.roleIconUnlocked) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.shopItemIsUnlocked)
+            content: MessageCreator.createReject(
+                clanStrings.shopItemIsUnlocked
+            ),
         });
     }
 
     if (!clan.isLeader(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
@@ -34,8 +41,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (clan.power < powerReq) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanPowerNotEnoughToBuyItem, powerReq.toLocaleString()
-            )
+                clanStrings.clanPowerNotEnoughToBuyItem,
+                powerReq.toLocaleString()
+            ),
         });
     }
 
@@ -43,11 +51,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!clanRole) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntHaveClanRole)
+            content: MessageCreator.createReject(
+                clanStrings.clanDoesntHaveClanRole
+            ),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     const cost: number = 25000;
 
@@ -57,7 +70,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 clanStrings.notEnoughCoins,
                 "buy a clan role icon unlock ability",
                 cost.toLocaleString()
-            )
+            ),
         });
     }
 
@@ -68,7 +81,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 clanStrings.buyShopItemConfirmation,
                 "clan role icon unlock ability",
                 cost.toLocaleString()
-            )
+            ),
         },
         [interaction.user.id],
         20
@@ -83,8 +96,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!firstResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, firstResult.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                firstResult.reason!
+            ),
         });
     }
 
@@ -95,8 +109,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, finalResult.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                finalResult.reason!
+            ),
         });
     }
 
@@ -104,10 +119,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(
             clanStrings.buyShopItemSuccessful,
             cost.toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

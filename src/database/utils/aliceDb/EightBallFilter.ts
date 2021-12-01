@@ -6,7 +6,10 @@ import { ObjectId } from "bson";
 /**
  * Represents a filter for 8ball responses.
  */
-export class EightBallFilter extends Manager implements DatabaseEightBallFilter {
+export class EightBallFilter
+    extends Manager
+    implements DatabaseEightBallFilter
+{
     name: string;
     like: string[];
     hate: string[];
@@ -14,7 +17,10 @@ export class EightBallFilter extends Manager implements DatabaseEightBallFilter 
     response: string[];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseEightBallFilter = DatabaseManager.aliceDb?.collections.eightBallFilter.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseEightBallFilter = DatabaseManager.aliceDb?.collections
+            .eightBallFilter.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

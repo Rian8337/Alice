@@ -6,12 +6,18 @@ import { ObjectId } from "bson";
 /**
  * Represents a profile background that is applicable to profile commands.
  */
-export class ProfileBackground extends Manager implements DatabaseProfileBackground {
+export class ProfileBackground
+    extends Manager
+    implements DatabaseProfileBackground
+{
     readonly _id?: ObjectId;
     id: string;
     name: string;
 
-    constructor(data: DatabaseProfileBackground = DatabaseManager.aliceDb?.collections.profileBackgrounds.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseProfileBackground = DatabaseManager.aliceDb?.collections
+            .profileBackgrounds.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

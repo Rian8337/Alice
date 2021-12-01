@@ -16,7 +16,10 @@ export class Voting extends Manager implements DatabaseVoting {
     choices: VoteChoice[];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseVoting = DatabaseManager.aliceDb?.collections.voting.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseVoting = DatabaseManager.aliceDb?.collections.voting
+            .defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -28,10 +31,12 @@ export class Voting extends Manager implements DatabaseVoting {
 
     /**
      * Ends this vote.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async end(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.voting.delete({ channel: this.channel });
+        return DatabaseManager.aliceDb.collections.voting.delete({
+            channel: this.channel,
+        });
     }
 }

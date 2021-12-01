@@ -14,13 +14,17 @@ export const run: Command["run"] = async (client, interaction) => {
     if (Config.maintenance) {
         client.user!.setActivity("Maintenance mode");
     } else {
-        client.user!.setActivity(Config.activityList[0][0], { type: Config.activityList[0][1] });
+        client.user!.setActivity(Config.activityList[0][0], {
+            type: Config.activityList[0][1],
+        });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            maintenanceStrings.maintenanceToggle, String(Config.maintenance), Config.maintenanceReason
-        )
+            maintenanceStrings.maintenanceToggle,
+            String(Config.maintenance),
+            Config.maintenanceReason
+        ),
     });
 };
 
@@ -33,15 +37,17 @@ export const config: Command["config"] = {
         {
             name: "reason",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The reason to toggle maintenance mode. Defaults to \"Unknown\"."
-        }
+            description:
+                'The reason to toggle maintenance mode. Defaults to "Unknown".',
+        },
     ],
     example: [
         {
             command: "maintenance reason:Discord API problem",
-            description: "will toggle maintenance mode for \"Discord API problem\"."
-        }
+            description:
+                'will toggle maintenance mode for "Discord API problem".',
+        },
     ],
     permissions: ["BOT_OWNER"],
-    scope: "ALL"
+    scope: "ALL",
 };

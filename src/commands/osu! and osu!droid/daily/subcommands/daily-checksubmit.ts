@@ -8,19 +8,24 @@ import { Collection, Snowflake } from "discord.js";
 import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const challengeID: string = interaction.options.getString("challengeid", true);
+    const challengeID: string = interaction.options.getString(
+        "challengeid",
+        true
+    );
 
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.tooManyOptions)
+            content: MessageCreator.createReject(dailyStrings.tooManyOptions),
         });
     }
 
-    const dbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
+    const dbManager: PlayerInfoCollectionManager =
+        DatabaseManager.aliceDb.collections.playerInfo;
 
     let playerInfo: PlayerInfo | null;
 
@@ -39,9 +44,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             playerInfo = await dbManager.getFromUser(interaction.user);
     }
 
-    const challenges: Collection<string, ChallengeCompletionData> = playerInfo?.challenges ?? new Collection();
+    const challenges: Collection<string, ChallengeCompletionData> =
+        playerInfo?.challenges ?? new Collection();
 
-    const completionData: ChallengeCompletionData | undefined = challenges.get(challengeID);
+    const completionData: ChallengeCompletionData | undefined =
+        challenges.get(challengeID);
 
     if (completionData) {
         interaction.editReply({
@@ -49,18 +56,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 dailyStrings.userHasPlayedChallenge,
                 challengeID,
                 completionData.highestLevel.toString()
-            )
+            ),
         });
     } else {
         interaction.editReply({
             content: MessageCreator.createAccept(
                 dailyStrings.userHasNotPlayedChallenge,
                 challengeID
-            )
+            ),
         });
     }
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

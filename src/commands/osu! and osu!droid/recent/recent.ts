@@ -13,17 +13,19 @@ import { Player } from "osu-droid";
 import { recentStrings } from "./recentStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recentStrings.tooManyOptions)
+            content: MessageCreator.createReject(recentStrings.tooManyOptions),
         });
     }
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
 
@@ -43,7 +45,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
             if (!bindInfo) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.userNotBindedReject)
+                    content: MessageCreator.createReject(
+                        Constants.userNotBindedReject
+                    ),
                 });
             }
 
@@ -55,7 +59,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
             if (!bindInfo) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                    content: MessageCreator.createReject(
+                        Constants.selfNotBindedReject
+                    ),
                 });
             }
 
@@ -64,13 +70,15 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recentStrings.playerNotFound)
+            content: MessageCreator.createReject(recentStrings.playerNotFound),
         });
     }
 
     if (player.recentPlays.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recentStrings.playerHasNoRecentPlays)
+            content: MessageCreator.createReject(
+                recentStrings.playerHasNoRecentPlays
+            ),
         });
     }
 
@@ -78,21 +86,30 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!player.recentPlays[index - 1]) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recentStrings.playIndexOutOfBounds, index.toString())
+            content: MessageCreator.createReject(
+                recentStrings.playIndexOutOfBounds,
+                index.toString()
+            ),
         });
     }
 
-    BeatmapManager.setChannelLatestBeatmap(interaction.channel!.id, player.recentPlays[index - 1].hash);
+    BeatmapManager.setChannelLatestBeatmap(
+        interaction.channel!.id,
+        player.recentPlays[index - 1].hash
+    );
 
     const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
         player.recentPlays[index - 1],
         player.avatarURL,
-        (<GuildMember | null> interaction.member)?.displayColor
+        (<GuildMember | null>interaction.member)?.displayColor
     );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(recentStrings.recentPlayDisplay, player.username),
-        embeds: [ embed ]
+        content: MessageCreator.createAccept(
+            recentStrings.recentPlayDisplay,
+            player.username
+        ),
+        embeds: [embed],
     });
 };
 
@@ -105,68 +122,70 @@ export const config: Command["config"] = {
         {
             name: "user",
             type: ApplicationCommandOptionTypes.USER,
-            description: "The Discord user to show."
+            description: "The Discord user to show.",
         },
         {
             name: "uid",
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The uid of the player."
+            description: "The uid of the player.",
         },
         {
             name: "username",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The username of the player."
+            description: "The username of the player.",
         },
         {
             name: "index",
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The n-th play to show, ranging from 1 to 50. Defaults to the most recent play."
-        }
+            description:
+                "The n-th play to show, ranging from 1 to 50. Defaults to the most recent play.",
+        },
     ],
     example: [
         {
             command: "recent",
-            description: "will show your most recent play."
+            description: "will show your most recent play.",
         },
         {
             command: "recent",
             arguments: [
                 {
                     name: "uid",
-                    value: 51076
+                    value: 51076,
                 },
                 {
                     name: "index",
-                    value: 5
-                }
+                    value: 5,
+                },
             ],
-            description: "will show the 5th most recent play of uid 51076."
+            description: "will show the 5th most recent play of uid 51076.",
         },
         {
             command: "recent",
             arguments: [
                 {
                     name: "username",
-                    value: "NeroYuki"
+                    value: "NeroYuki",
                 },
                 {
                     name: "index",
-                    value: 2
-                }
+                    value: 2,
+                },
             ],
-            description: "will show the 2nd most recent play of username NeroYuki."
+            description:
+                "will show the 2nd most recent play of username NeroYuki.",
         },
         {
             command: "recent",
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
-                }
+                    value: "@Rian8337#0001",
+                },
             ],
-            description: "will show the most recent play of Rian8337."
-        }
+            description: "will show the most recent play of Rian8337.",
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

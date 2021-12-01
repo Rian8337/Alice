@@ -8,17 +8,22 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const url: string = interaction.options.getString("url", true);
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
@@ -26,7 +31,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!setResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.setBannerFailed, setResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.setBannerFailed,
+                setResult.reason!
+            ),
         });
     }
 
@@ -34,15 +42,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!finalResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.setBannerFailed, setResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.setBannerFailed,
+                setResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.setBannerSuccessful)
+        content: MessageCreator.createAccept(clanStrings.setBannerSuccessful),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

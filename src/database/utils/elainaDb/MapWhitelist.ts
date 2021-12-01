@@ -19,7 +19,10 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
     whitelistScanDone?: boolean;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseMapWhitelist = DatabaseManager.elainaDb?.collections.mapWhitelist.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseMapWhitelist = DatabaseManager.elainaDb?.collections
+            .mapWhitelist.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -33,7 +36,11 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
      * Checks whether this whitelisted beatmap is still valid.
      */
     async checkValidity(): Promise<WhitelistValidity> {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(this.hashid, false, true);
+        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+            this.hashid,
+            false,
+            true
+        );
 
         if (!beatmapInfo) {
             return WhitelistValidity.BEATMAP_NOT_FOUND;
@@ -56,7 +63,10 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
      * Updates the diffstat of this whitelisted beatmap.
      */
     async updateDiffstat(): Promise<void> {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(this.hashid, false);
+        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+            this.hashid,
+            false
+        );
 
         if (!beatmapInfo) {
             return;
@@ -68,7 +78,7 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
             od: beatmapInfo.od,
             hp: beatmapInfo.hp,
             sr: parseFloat(beatmapInfo.totalDifficulty.toFixed(2)),
-            bpm: beatmapInfo.bpm
+            bpm: beatmapInfo.bpm,
         };
     }
 }

@@ -15,7 +15,14 @@ import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { Collection, Snowflake } from "discord.js";
-import { DroidAPIRequestBuilder, MapInfo, Player, Precision, RequestResponse, Score } from "osu-droid";
+import {
+    DroidAPIRequestBuilder,
+    MapInfo,
+    Player,
+    Precision,
+    RequestResponse,
+    Score,
+} from "osu-droid";
 import { Clan } from "./Clan";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ObjectId, UpdateFilter } from "mongodb";
@@ -61,7 +68,7 @@ export class UserBind extends Manager {
 
     /**
      * The UID of osu!droid accounts that are binded to the user.
-     * 
+     *
      * A user can only bind up to 2 osu!droid accounts, therefore
      * the maximum length of this array will never exceed 2.
      */
@@ -107,7 +114,10 @@ export class UserBind extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseUserBind = DatabaseManager.elainaDb?.collections.userBind.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseUserBind = DatabaseManager.elainaDb?.collections.userBind
+            .defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -133,7 +143,11 @@ export class UserBind extends Manager {
      */
     async isDPPBanned(): Promise<boolean> {
         for await (const uid of this.previous_bind) {
-            if (await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(uid)) {
+            if (
+                await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
+                    uid
+                )
+            ) {
                 return true;
             }
         }
@@ -143,7 +157,7 @@ export class UserBind extends Manager {
 
     /**
      * Scans the dpp list of this player, removing those that are outdated.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async scanDPP(): Promise<OperationResult> {
@@ -158,14 +172,17 @@ export class UserBind extends Manager {
                     $set: {
                         pp: [],
                         pptotal: 0,
-                        dppScanComplete: true
-                    }
+                        dppScanComplete: true,
+                    },
                 }
             );
         }
 
         for await (const ppEntry of this.pp.values()) {
-            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(ppEntry.hash, false);
+            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+                ppEntry.hash,
+                false
+            );
 
             await HelperFunctions.sleep(0.2);
 
@@ -175,8 +192,12 @@ export class UserBind extends Manager {
             }
 
             if (
-                WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved) &&
-                await WhitelistManager.getBeatmapWhitelistStatus(beatmapInfo.hash) !== "whitelisted"
+                WhitelistManager.beatmapNeedsWhitelisting(
+                    beatmapInfo.approved
+                ) &&
+                (await WhitelistManager.getBeatmapWhitelistStatus(
+                    beatmapInfo.hash
+                )) !== "whitelisted"
             ) {
                 this.pp.delete(ppEntry.hash);
                 continue;
@@ -197,20 +218,23 @@ export class UserBind extends Manager {
                 $set: {
                     pptotal: this.pptotal,
                     pp: [...this.pp.values()],
-                    dppScanComplete: true
-                }
+                    dppScanComplete: true,
+                },
             }
         );
     }
 
     /**
      * Sets the dpp list for the player to a new list.
-     * 
+     *
      * @param list The new list.
      * @param playCountIncrement The amount to increment towards play count.
      * @returns An object containing information about the operation.
      */
-    async setNewDPPValue(list: Collection<string, PPEntry>, playCountIncrement: number): Promise<OperationResult> {
+    async setNewDPPValue(
+        list: Collection<string, PPEntry>,
+        playCountIncrement: number
+    ): Promise<OperationResult> {
         this.pp = list;
 
         this.pp.sort((a, b) => {
@@ -226,11 +250,11 @@ export class UserBind extends Manager {
             {
                 $set: {
                     pptotal: finalPP,
-                    pp: [...this.pp.values()]
+                    pp: [...this.pp.values()],
                 },
                 $inc: {
-                    playc: Math.max(0, playCountIncrement)
-                }
+                    playc: Math.max(0, playCountIncrement),
+                },
             }
         );
     }
@@ -243,13 +267,16 @@ export class UserBind extends Manager {
         const newList: Collection<string, PPEntry> = new Collection();
 
         for await (const ppEntry of this.pp.values()) {
-            const score: Score | null = await this.getScoreRelativeToPP(ppEntry);
+            const score: Score | null = await this.getScoreRelativeToPP(
+                ppEntry
+            );
 
             if (!score) {
                 continue;
             }
 
-            const submissionValidity: DPPSubmissionValidity = await DPPHelper.checkSubmissionValidity(score);
+            const submissionValidity: DPPSubmissionValidity =
+                await DPPHelper.checkSubmissionValidity(score);
 
             await HelperFunctions.sleep(0.1);
 
@@ -257,7 +284,8 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
+            const calcResult: PerformanceCalculationResult | null =
+                await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
             if (!calcResult) {
                 continue;
@@ -277,8 +305,8 @@ export class UserBind extends Manager {
                 $set: {
                     pp: [...this.pp.values()],
                     pptotal: this.pptotal,
-                    dppRecalcComplete: true
-                }
+                    dppRecalcComplete: true,
+                },
             }
         );
     }
@@ -290,13 +318,16 @@ export class UserBind extends Manager {
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
         for await (const ppEntry of this.pp.values()) {
-            const score: Score | null = await this.getScoreRelativeToPP(ppEntry);
+            const score: Score | null = await this.getScoreRelativeToPP(
+                ppEntry
+            );
 
             if (!score) {
                 continue;
             }
 
-            const submissionValidity: DPPSubmissionValidity = await DPPHelper.checkSubmissionValidity(score);
+            const submissionValidity: DPPSubmissionValidity =
+                await DPPHelper.checkSubmissionValidity(score);
 
             await HelperFunctions.sleep(0.1);
 
@@ -304,7 +335,8 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
+            const calcResult: PerformanceCalculationResult | null =
+                await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
             if (!calcResult) {
                 continue;
@@ -317,19 +349,27 @@ export class UserBind extends Manager {
                 title: calcResult.map.fullTitle,
                 pp: parseFloat(calcResult.droid.total.toFixed(2)),
                 prevPP: ppEntry.pp,
-                mods: score.mods.map(v => v.acronym).join(""),
+                mods: score.mods.map((v) => v.acronym).join(""),
                 accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
                 combo: score.combo,
                 miss: score.accuracy.nmiss,
-                scoreID: score.scoreID
+                scoreID: score.scoreID,
             };
 
-            this.client.logger.info(`${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""}: ${entry.prevPP} ⮕  ${entry.pp}`);
+            this.client.logger.info(
+                `${calcResult.map.fullTitle}${
+                    entry.mods ? ` +${entry.mods}` : ""
+                }: ${entry.prevPP} ⮕  ${entry.pp}`
+            );
 
             newList.set(ppEntry.hash, entry);
         }
 
-        this.client.logger.info(`${this.pptotal} ⮕  ${DPPHelper.calculateFinalPerformancePoints(newList).toFixed(2)}`);
+        this.client.logger.info(
+            `${this.pptotal} ⮕  ${DPPHelper.calculateFinalPerformancePoints(
+                newList
+            ).toFixed(2)}`
+        );
 
         return DatabaseManager.aliceDb.collections.prototypePP.update(
             { discordid: this.discordid },
@@ -342,8 +382,8 @@ export class UserBind extends Manager {
                     previous_bind: this.previous_bind,
                     uid: this.uid,
                     username: this.username,
-                    scanDone: true
-                }
+                    scanDone: true,
+                },
             },
             { upsert: true }
         );
@@ -351,20 +391,27 @@ export class UserBind extends Manager {
 
     /**
      * Recalculates all of the player's scores for dpp and ranked score.
-     * 
+     *
      * @param markAsSlotFulfill Whether to set `hasAskedForRecalc` to `true`.
      * @param isDPPRecalc Whether this recalculation is a part of a full recalculation triggered by bot owners.
      */
-    async recalculateAllScores(markAsSlotFulfill: boolean = true, isDPPRecalc: boolean = false): Promise<OperationResult> {
+    async recalculateAllScores(
+        markAsSlotFulfill: boolean = true,
+        isDPPRecalc: boolean = false
+    ): Promise<OperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
 
         this.playc = 0;
 
-        const getScores = async (uid: number, page: number): Promise<Score[]> => {
-            const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
-                .setEndpoint("scoresearchv2.php")
-                .addParameter("uid", uid)
-                .addParameter("page", page - 1);
+        const getScores = async (
+            uid: number,
+            page: number
+        ): Promise<Score[]> => {
+            const apiRequestBuilder: DroidAPIRequestBuilder =
+                new DroidAPIRequestBuilder()
+                    .setEndpoint("scoresearchv2.php")
+                    .addParameter("uid", uid)
+                    .addParameter("page", page - 1);
 
             const data: RequestResponse = await apiRequestBuilder.sendRequest();
 
@@ -376,15 +423,23 @@ export class UserBind extends Manager {
 
             entries.shift();
 
-            return entries.map(v => new Score().fillInformation(v));
+            return entries.map((v) => new Score().fillInformation(v));
         };
 
         for await (const uid of this.previous_bind) {
-            if (await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(uid)) {
+            if (
+                await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
+                    uid
+                )
+            ) {
                 continue;
             }
 
-            if (isDPPRecalc && this.calculationInfo && uid !== this.calculationInfo.uid) {
+            if (
+                isDPPRecalc &&
+                this.calculationInfo &&
+                uid !== this.calculationInfo.uid
+            ) {
                 continue;
             }
 
@@ -399,11 +454,20 @@ export class UserBind extends Manager {
             if (isDPPRecalc && this.calculationInfo) {
                 page = this.calculationInfo.page;
 
-                newList.concat(new Collection(this.calculationInfo.currentPPEntries.map(v => [v.hash, v])));
+                newList.concat(
+                    new Collection(
+                        this.calculationInfo.currentPPEntries.map((v) => [
+                            v.hash,
+                            v,
+                        ])
+                    )
+                );
             } else {
                 // Do manual operations to reduce memory usage (we don't need to cache
                 // submitted scores)
-                await DatabaseManager.aliceDb.collections.rankedScore.delete({ uid: uid });
+                await DatabaseManager.aliceDb.collections.rankedScore.delete({
+                    uid: uid,
+                });
             }
 
             let scores: Score[];
@@ -412,28 +476,43 @@ export class UserBind extends Manager {
                 const scoreCount: number = scores.length;
 
                 if (isDPPRecalc) {
-                    this.client.logger.info(`Calculating ${scoreCount} scores from page ${page}`);
+                    this.client.logger.info(
+                        `Calculating ${scoreCount} scores from page ${page}`
+                    );
                 }
 
                 let calculatedCount: number = 0;
 
-                const rankedScoreCollection: Collection<string, number> = new Collection();
+                const rankedScoreCollection: Collection<string, number> =
+                    new Collection();
 
                 let score: Score | undefined;
 
                 while ((score = scores.shift())) {
-                    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash, false).catch(() => null);
+                    const beatmapInfo: MapInfo | null =
+                        await BeatmapManager.getBeatmap(
+                            score.hash,
+                            false
+                        ).catch(() => null);
 
                     if (isDPPRecalc) {
-                        this.client.logger.info(`${++calculatedCount}/${scoreCount} scores calculated`);
+                        this.client.logger.info(
+                            `${++calculatedCount}/${scoreCount} scores calculated`
+                        );
                     }
 
                     if (!beatmapInfo) {
                         continue;
                     }
 
-                    if (await DPPHelper.checkSubmissionValidity(score) === DPPSubmissionValidity.VALID) {
-                        const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
+                    if (
+                        (await DPPHelper.checkSubmissionValidity(score)) ===
+                        DPPSubmissionValidity.VALID
+                    ) {
+                        const calcResult: PerformanceCalculationResult | null =
+                            await BeatmapDifficultyHelper.calculateScorePerformance(
+                                score
+                            );
 
                         if (calcResult) {
                             ++this.playc;
@@ -442,8 +521,15 @@ export class UserBind extends Manager {
                         }
                     }
 
-                    if (RankedScoreHelper.isBeatmapEligible(beatmapInfo.approved)) {
-                        rankedScoreCollection.set(beatmapInfo.hash, score.score);
+                    if (
+                        RankedScoreHelper.isBeatmapEligible(
+                            beatmapInfo.approved
+                        )
+                    ) {
+                        rankedScoreCollection.set(
+                            beatmapInfo.hash,
+                            score.score
+                        );
                     }
                 }
 
@@ -451,17 +537,22 @@ export class UserBind extends Manager {
                     { uid: uid },
                     {
                         $inc: {
-                            score: rankedScoreCollection.reduce((acc, value) => acc + value, 0),
-                            playc: rankedScoreCollection.size
+                            score: rankedScoreCollection.reduce(
+                                (acc, value) => acc + value,
+                                0
+                            ),
+                            playc: rankedScoreCollection.size,
                         },
                         $addToSet: {
                             scorelist: {
-                                $each: RankedScoreHelper.toArray(rankedScoreCollection)
-                            }
+                                $each: RankedScoreHelper.toArray(
+                                    rankedScoreCollection
+                                ),
+                            },
                         },
                         $setOnInsert: {
-                            username: player.username
-                        }
+                            username: player.username,
+                        },
                     },
                     { upsert: true }
                 );
@@ -473,9 +564,9 @@ export class UserBind extends Manager {
                             calculationInfo: {
                                 uid: uid,
                                 page: page,
-                                currentPPEntries: [...newList.values()]
-                            }
-                        }
+                                currentPPEntries: [...newList.values()],
+                            },
+                        },
                     }
                 );
             }
@@ -490,15 +581,20 @@ export class UserBind extends Manager {
                 pptotal: this.pptotal,
                 playc: this.playc,
                 // Only set to true if hasAskedForRecalc is originally false
-                hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc
+                hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc,
             },
             $unset: {
-                calculationInfo: ""
-            }
+                calculationInfo: "",
+            },
         };
 
         if (isDPPRecalc) {
-            Object.defineProperty(query.$set, "dppRecalcComplete", { value: true, writable: true, configurable: true, enumerable: true });
+            Object.defineProperty(query.$set, "dppRecalcComplete", {
+                value: true,
+                writable: true,
+                configurable: true,
+                enumerable: true,
+            });
         }
 
         return DatabaseManager.elainaDb.collections.userBind.update(
@@ -510,26 +606,36 @@ export class UserBind extends Manager {
     /**
      * Moves the bind of a binded osu!droid account in this Discord account to another
      * Discord account.
-     * 
+     *
      * @param uid The uid of the osu!droid account.
      * @param to The ID of the Discord account to move to.
      * @returns An object containing information about the operation.
      */
     async moveBind(uid: number, to: Snowflake): Promise<OperationResult> {
         if (!this.previous_bind.includes(uid)) {
-            return this.createOperationResult(false, "uid is not binded to this Discord account");
+            return this.createOperationResult(
+                false,
+                "uid is not binded to this Discord account"
+            );
         }
 
         if (this.discordid === to) {
-            return this.createOperationResult(false, "cannot rebind to the same Discord account");
+            return this.createOperationResult(
+                false,
+                "cannot rebind to the same Discord account"
+            );
         }
 
-        const otherBindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(to);
+        const otherBindInfo: UserBind | null =
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(to);
 
         const otherPreviousBind: number[] = otherBindInfo?.previous_bind ?? [];
 
         if (otherPreviousBind.length >= 2) {
-            return this.createOperationResult(false, "bind limit reached in other Discord account");
+            return this.createOperationResult(
+                false,
+                "bind limit reached in other Discord account"
+            );
         }
 
         this.previous_bind.splice(this.previous_bind.indexOf(uid), 1);
@@ -556,36 +662,38 @@ export class UserBind extends Manager {
                 $set: {
                     uid: uid,
                     username: player.username,
-                    previous_bind: otherPreviousBind
+                    previous_bind: otherPreviousBind,
                 },
                 $setOnInsert: {
                     hasAskedForRecalc: false,
                     pptotal: 0,
                     playc: 0,
                     pp: [],
-                    clan: ""
-                }
+                    clan: "",
+                },
             },
             { upsert: true }
         );
 
         if (this.previous_bind.length === 0) {
-            await DatabaseManager.elainaDb.collections.userBind.delete({ discordid: this.discordid });
+            await DatabaseManager.elainaDb.collections.userBind.delete({
+                discordid: this.discordid,
+            });
         }
 
         return DatabaseManager.aliceDb.collections.playerInfo.update(
             { uid: uid },
             {
                 $set: {
-                    discordid: to
-                }
+                    discordid: to,
+                },
             }
         );
     }
 
     /**
      * Binds an osu!droid account to this Discord account.
-     * 
+     *
      * @param uid The uid of the osu!droid account.
      * @returns An object containing information about the operation.
      */
@@ -593,7 +701,7 @@ export class UserBind extends Manager {
 
     /**
      * Binds an osu!droid account to this Discord account.
-     * 
+     *
      * @param username The username of the osu!droid account.
      * @returns An object containing information about the operation.
      */
@@ -601,24 +709,37 @@ export class UserBind extends Manager {
 
     /**
      * Binds an osu!droid account to this Discord account.
-     * 
+     *
      * @param player The `Player` instance of the osu!droid account.
      * @returns An object containing information about the operation.
      */
     async bind(player: Player): Promise<OperationResult>;
 
-    async bind(uidOrUsernameOrPlayer: string | number | Player): Promise<OperationResult> {
-        const player: Player = uidOrUsernameOrPlayer instanceof Player ?
-            uidOrUsernameOrPlayer :
-            await Player.getInformation(typeof uidOrUsernameOrPlayer === "string" ? { username: uidOrUsernameOrPlayer } : { uid: uidOrUsernameOrPlayer });
+    async bind(
+        uidOrUsernameOrPlayer: string | number | Player
+    ): Promise<OperationResult> {
+        const player: Player =
+            uidOrUsernameOrPlayer instanceof Player
+                ? uidOrUsernameOrPlayer
+                : await Player.getInformation(
+                      typeof uidOrUsernameOrPlayer === "string"
+                          ? { username: uidOrUsernameOrPlayer }
+                          : { uid: uidOrUsernameOrPlayer }
+                  );
 
         if (!player.username || !player.uid) {
-            return this.createOperationResult(false, "player with such uid or username is not found");
+            return this.createOperationResult(
+                false,
+                "player with such uid or username is not found"
+            );
         }
 
         if (!this.isUidBinded(player.uid)) {
             if (this.previous_bind.length >= 2) {
-                return this.createOperationResult(false, "account bind limit reached");
+                return this.createOperationResult(
+                    false,
+                    "account bind limit reached"
+                );
             }
 
             this.previous_bind.push(player.uid);
@@ -633,21 +754,24 @@ export class UserBind extends Manager {
                 $set: {
                     username: this.username,
                     uid: this.uid,
-                    previous_bind: this.previous_bind
-                }
+                    previous_bind: this.previous_bind,
+                },
             }
         );
     }
 
     /**
      * Unbinds an osu!droid account from this Discord account.
-     * 
+     *
      * @param uid The uid of the osu!droid account.
      * @returns An object containing information about the operation.
      */
     async unbind(uid: number): Promise<OperationResult> {
         if (!this.isUidBinded(uid)) {
-            return this.createOperationResult(false, "uid is not binded to this Discord account");
+            return this.createOperationResult(
+                false,
+                "uid is not binded to this Discord account"
+            );
         }
 
         this.previous_bind.splice(this.previous_bind.indexOf(uid), 1);
@@ -655,18 +779,25 @@ export class UserBind extends Manager {
         if (this.previous_bind.length === 0) {
             // Kick the user from any clan
             if (this.clan) {
-                const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(this.clan);
+                const clan: Clan | null =
+                    await DatabaseManager.elainaDb.collections.clan.getFromName(
+                        this.clan
+                    );
 
                 if (clan) {
                     await clan.removeMember(this.discordid);
 
                     if (!clan.exists) {
-                        await clan.notifyLeader("Hey, your Discord account has been unbinded from any osu!droid accounts! Therefore, your clan has been disbanded!");
+                        await clan.notifyLeader(
+                            "Hey, your Discord account has been unbinded from any osu!droid accounts! Therefore, your clan has been disbanded!"
+                        );
                     }
                 }
             }
 
-            return DatabaseManager.elainaDb.collections.userBind.delete({ discordid: this.discordid });
+            return DatabaseManager.elainaDb.collections.userBind.delete({
+                discordid: this.discordid,
+            });
         }
 
         if (this.uid === uid) {
@@ -678,18 +809,18 @@ export class UserBind extends Manager {
             {
                 $set: {
                     uid: this.uid,
-                    username: this.username
+                    username: this.username,
                 },
                 $pull: {
-                    previous_bind: uid
-                }
+                    previous_bind: uid,
+                },
             }
         );
     }
 
     /**
      * Sets the clan of this Discord account.
-     * 
+     *
      * @param name The name of the clan.
      */
     async setClan(name: string): Promise<OperationResult> {
@@ -699,15 +830,15 @@ export class UserBind extends Manager {
             { discordid: this.discordid },
             {
                 $set: {
-                    clan: this.clan
-                }
+                    clan: this.clan,
+                },
             }
         );
     }
 
     /**
      * Determines whether a uid has been binded to this Discord account.
-     * 
+     *
      * @param uid The uid to determine.
      */
     isUidBinded(uid: number): boolean {
@@ -716,21 +847,31 @@ export class UserBind extends Manager {
 
     /**
      * Gets a score from this binded Discord account with respect to a pp entry.
-     * 
+     *
      * @param ppEntry The pp entry to retrieve.
      * @returns The score, `null` if not found.
      */
-    private async getScoreRelativeToPP(ppEntry: PPEntry): Promise<Score | null> {
+    private async getScoreRelativeToPP(
+        ppEntry: PPEntry
+    ): Promise<Score | null> {
         for await (const uid of this.previous_bind) {
-            const score: Score = await Score.getFromHash({ uid: uid, hash: ppEntry.hash });
+            const score: Score = await Score.getFromHash({
+                uid: uid,
+                hash: ppEntry.hash,
+            });
 
             // Check for score equality.
             if (
                 score.scoreID === ppEntry.scoreID &&
                 score.combo === ppEntry.combo &&
-                Precision.almostEqualsNumber(parseFloat((score.accuracy.value() * 100).toFixed(2)), ppEntry.accuracy) &&
+                Precision.almostEqualsNumber(
+                    parseFloat((score.accuracy.value() * 100).toFixed(2)),
+                    ppEntry.accuracy
+                ) &&
                 score.accuracy.nmiss === ppEntry.miss &&
-                StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet(ppEntry.mods)
+                StringHelper.sortAlphabet(
+                    score.mods.map((v) => v.acronym).join("")
+                ) === StringHelper.sortAlphabet(ppEntry.mods)
             ) {
                 return score;
             }

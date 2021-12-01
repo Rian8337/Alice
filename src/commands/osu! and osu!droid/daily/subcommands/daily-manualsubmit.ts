@@ -23,15 +23,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!StringHelper.isValidURL(url)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.invalidReplayURL)
+            content: MessageCreator.createReject(dailyStrings.invalidReplayURL),
         });
     }
 
-    const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
+    const bindInfo: UserBind | null =
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+            interaction.user
+        );
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject)
+            content: MessageCreator.createReject(Constants.selfNotBindedReject),
         });
     }
 
@@ -39,7 +42,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (replayData.statusCode !== 200) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.replayDownloadFail)
+            content: MessageCreator.createReject(
+                dailyStrings.replayDownloadFail
+            ),
         });
     }
 
@@ -51,7 +56,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await replayAnalyzer.analyze();
     } catch {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.replayInvalid)
+            content: MessageCreator.createReject(dailyStrings.replayInvalid),
         });
     }
 
@@ -59,71 +64,93 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (data.playerName !== bindInfo.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.replayDoesntHaveSameUsername)
+            content: MessageCreator.createReject(
+                dailyStrings.replayDoesntHaveSameUsername
+            ),
         });
     }
 
     if (data.replayVersion < 3) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.replayTooOld)
+            content: MessageCreator.createReject(dailyStrings.replayTooOld),
         });
     }
 
-    const challenge: Challenge | null = await DatabaseManager.aliceDb.collections.challenge.getFromHash(data.hash);
+    const challenge: Challenge | null =
+        await DatabaseManager.aliceDb.collections.challenge.getFromHash(
+            data.hash
+        );
 
     if (!challenge) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.challengeFromReplayNotFound)
+            content: MessageCreator.createReject(
+                dailyStrings.challengeFromReplayNotFound
+            ),
         });
     }
 
     if (!challenge.isOngoing) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.challengeNotOngoing)
+            content: MessageCreator.createReject(
+                dailyStrings.challengeNotOngoing
+            ),
         });
     }
 
-    const completionStatus: OperationResult = await challenge.checkReplayCompletion(replayAnalyzer);
+    const completionStatus: OperationResult =
+        await challenge.checkReplayCompletion(replayAnalyzer);
 
     if (!completionStatus.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.challengeNotCompleted, completionStatus.reason!)
+            content: MessageCreator.createReject(
+                dailyStrings.challengeNotCompleted,
+                completionStatus.reason!
+            ),
         });
     }
 
-    const bonusLevel: number = await challenge.calculateBonusLevel(replayAnalyzer);
-
-    const playerInfoDbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
-
-    const playerInfo: PlayerInfo | null =
-        await playerInfoDbManager.getFromUser(interaction.user);
-
-    // Ask for verification from staff
-    const staffMembers: Collection<Snowflake, GuildMember> = await PermissionHelper.getMainGuildStaffMembers(client);
-
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember>interaction.member).displayColor }
+    const bonusLevel: number = await challenge.calculateBonusLevel(
+        replayAnalyzer
     );
 
-    embed.setTitle("Score Statistics")
+    const playerInfoDbManager: PlayerInfoCollectionManager =
+        DatabaseManager.aliceDb.collections.playerInfo;
+
+    const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
+        interaction.user
+    );
+
+    // Ask for verification from staff
+    const staffMembers: Collection<Snowflake, GuildMember> =
+        await PermissionHelper.getMainGuildStaffMembers(client);
+
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
+
+    embed
+        .setTitle("Score Statistics")
         .setDescription(
             `**Total Score**: ${data.score}\n` +
-            `**Max Combo**: ${data.maxCombo}x\n` +
-            `**Accuracy**: ${(data.accuracy.value() * 100).toFixed(2)}%\n` +
-            `**Rank**: ${data.rank}\n` +
-            `**Time**: ${data.time.toUTCString()}\n\n` +
-            `**Hit Great (300)**: ${data.accuracy.n300} (${data.hit300k} geki and katu)\n` +
-            `**Hit good (100)**: ${data.accuracy.n100} (${data.hit100k} katu)\n` +
-            `**Hit meh (50)**: ${data.accuracy.n50}\n` +
-            `**Misses**: ${data.accuracy.nmiss}\n\n` +
-            `**Bonus Level Reached**: ${bonusLevel}`
+                `**Max Combo**: ${data.maxCombo}x\n` +
+                `**Accuracy**: ${(data.accuracy.value() * 100).toFixed(2)}%\n` +
+                `**Rank**: ${data.rank}\n` +
+                `**Time**: ${data.time.toUTCString()}\n\n` +
+                `**Hit Great (300)**: ${data.accuracy.n300} (${data.hit300k} geki and katu)\n` +
+                `**Hit good (100)**: ${data.accuracy.n100} (${data.hit100k} katu)\n` +
+                `**Hit meh (50)**: ${data.accuracy.n50}\n` +
+                `**Misses**: ${data.accuracy.nmiss}\n\n` +
+                `**Bonus Level Reached**: ${bonusLevel}`
         );
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
         {
-            content: MessageCreator.createWarn(dailyStrings.manualSubmissionConfirmation),
-            embeds: [embed]
+            content: MessageCreator.createWarn(
+                dailyStrings.manualSubmissionConfirmation
+            ),
+            embeds: [embed],
         },
         [...staffMembers.keys()],
         30
@@ -137,33 +164,45 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     let pointsGained: number = bonusLevel * 2 + challenge.points;
 
     if (playerInfo) {
-
-        const challengeData: ChallengeCompletionData | undefined = playerInfo.challenges.get(challenge.challengeid);
+        const challengeData: ChallengeCompletionData | undefined =
+            playerInfo.challenges.get(challenge.challengeid);
 
         if (challengeData) {
             // Player has completed challenge. Subtract the challenge's original points
             // and difference from highest challenge level
-            pointsGained -= challenge.points + (challengeData.highestLevel - Math.max(0, bonusLevel - challengeData.highestLevel)) * 2;
+            pointsGained -=
+                challenge.points +
+                (challengeData.highestLevel -
+                    Math.max(0, bonusLevel - challengeData.highestLevel)) *
+                    2;
 
-            challengeData.highestLevel = Math.max(bonusLevel, challengeData.highestLevel);
+            challengeData.highestLevel = Math.max(
+                bonusLevel,
+                challengeData.highestLevel
+            );
         } else {
-            playerInfo.challenges.set(challenge.challengeid, { id: challenge.challengeid, highestLevel: bonusLevel });
+            playerInfo.challenges.set(challenge.challengeid, {
+                id: challenge.challengeid,
+                highestLevel: bonusLevel,
+            });
         }
 
         await playerInfoDbManager.update(
             { discordid: interaction.user.id },
             {
                 $set: {
-                    challenges: [...playerInfo.challenges.values()]
+                    challenges: [...playerInfo.challenges.values()],
                 },
                 $inc: {
                     alicecoins: pointsGained * 2,
-                    points: pointsGained
-                }
+                    points: pointsGained,
+                },
             }
         );
     } else {
-        const player: Player = await Player.getInformation({ uid: bindInfo.uid });
+        const player: Player = await Player.getInformation({
+            uid: bindInfo.uid,
+        });
 
         await playerInfoDbManager.insert({
             uid: player.uid,
@@ -174,14 +213,17 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             challenges: [
                 {
                     id: challenge.challengeid,
-                    highestLevel: bonusLevel
-                }
-            ]
+                    highestLevel: bonusLevel,
+                },
+            ],
         });
     }
 
     if (bindInfo.clan) {
-        const clan: Clan = (await DatabaseManager.elainaDb.collections.clan.getFromName(bindInfo.clan))!;
+        const clan: Clan =
+            (await DatabaseManager.elainaDb.collections.clan.getFromName(
+                bindInfo.clan
+            ))!;
 
         clan.incrementPower(pointsGained);
 
@@ -197,12 +239,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             pointsGained === 1 ? "" : "s",
             (pointsGained * 2).toLocaleString(),
             ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(),
-            ((playerInfo?.points ?? 0) + pointsGained) === 1 ? "" : "s",
+            (playerInfo?.points ?? 0) + pointsGained === 1 ? "" : "s",
             ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

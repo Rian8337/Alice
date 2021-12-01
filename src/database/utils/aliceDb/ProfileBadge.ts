@@ -14,7 +14,10 @@ export class ProfileBadge extends Manager implements DatabaseProfileBadge {
     requirement: number;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseProfileBadge = DatabaseManager.aliceDb?.collections.profileBadges.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseProfileBadge = DatabaseManager.aliceDb?.collections
+            .profileBadges.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

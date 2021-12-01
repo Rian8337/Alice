@@ -11,9 +11,14 @@ import { CommandInteraction, GuildMember, User } from "discord.js";
 import { recalcStrings } from "../recalcStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!CommandHelper.isExecutedByBotOwner(interaction) && !(<GuildMember> interaction.member).roles.cache.hasAny(...Config.verifyPerm)) {
+    if (
+        !CommandHelper.isExecutedByBotOwner(interaction) &&
+        !(<GuildMember>interaction.member).roles.cache.hasAny(
+            ...Config.verifyPerm
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject)
+            content: MessageCreator.createReject(Constants.noPermissionReject),
         });
     }
 
@@ -21,27 +26,30 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (CacheManager.recalculationQueue.has(user.id)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.userIsInQueue)
+            content: MessageCreator.createReject(recalcStrings.userIsInQueue),
         });
     }
 
-    const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(user);
+    const bindInfo: UserBind | null =
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(user);
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.userNotBindedReject)
+            content: MessageCreator.createReject(Constants.userNotBindedReject),
         });
     }
 
     if (bindInfo.hasAskedForRecalc) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.userHasRequestedRecalc)
+            content: MessageCreator.createReject(
+                recalcStrings.userHasRequestedRecalc
+            ),
         });
     }
 
     if (await bindInfo.isDPPBanned()) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.userIsDPPBanned)
+            content: MessageCreator.createReject(recalcStrings.userIsDPPBanned),
         });
     }
 
@@ -49,7 +57,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         CacheManager.recalculationQueue.set(user.id, interaction);
 
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.userQueued)
+            content: MessageCreator.createReject(recalcStrings.userQueued),
         });
     }
 
@@ -57,7 +65,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!interaction.replied) {
         await interaction.editReply({
-            content: MessageCreator.createAccept(recalcStrings.recalcInProgress)
+            content: MessageCreator.createAccept(
+                recalcStrings.recalcInProgress
+            ),
         });
     }
 
@@ -68,18 +78,23 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (result.success) {
         await interaction.channel!.send({
             content: MessageCreator.createAccept(
-                recalcStrings.recalcSuccess, interaction.user.toString(), user.toString()
-            )
+                recalcStrings.recalcSuccess,
+                interaction.user.toString(),
+                user.toString()
+            ),
         });
     } else {
         await interaction.channel!.send({
             content: MessageCreator.createReject(
-                recalcStrings.recalcFailed, interaction.user.toString(), result.reason!
-            )
+                recalcStrings.recalcFailed,
+                interaction.user.toString(),
+                result.reason!
+            ),
         });
     }
 
-    const nextInteraction: CommandInteraction | undefined = CacheManager.recalculationQueue.first();
+    const nextInteraction: CommandInteraction | undefined =
+        CacheManager.recalculationQueue.first();
 
     if (nextInteraction) {
         run(_, interaction);
@@ -87,5 +102,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["SPECIAL"]
+    permissions: ["SPECIAL"],
 };

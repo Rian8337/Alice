@@ -22,27 +22,29 @@ export const config: Command["config"] = {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user to set the birthday for."
+                    description: "The Discord user to set the birthday for.",
                 },
                 {
                     name: "month",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The month of birthday, ranging from 1 to 12."
+                    description: "The month of birthday, ranging from 1 to 12.",
                 },
                 {
                     name: "date",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The date of the birthday, ranging from 1 to the max date of the month."
+                    description:
+                        "The date of the birthday, ranging from 1 to the max date of the month.",
                 },
                 {
                     name: "timezone",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The timezone of the user, ranging from -12 to 14. Decimals are supported (e.g. UTC+5:30 = 5.5)."
-                }
-            ]
+                    description:
+                        "The timezone of the user, ranging from -12 to 14. Decimals are supported (e.g. UTC+5:30 = 5.5).",
+                },
+            ],
         },
         {
             name: "set",
@@ -53,21 +55,23 @@ export const config: Command["config"] = {
                     name: "month",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The month of birthday, ranging from 1 to 12."
+                    description: "The month of birthday, ranging from 1 to 12.",
                 },
                 {
                     name: "date",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The date of the birthday, ranging from 1 to the max date of the month."
+                    description:
+                        "The date of the birthday, ranging from 1 to the max date of the month.",
                 },
                 {
                     name: "timezone",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The timezone of the user, ranging from -12 to 14."
-                }
-            ]
+                    description:
+                        "The timezone of the user, ranging from -12 to 14.",
+                },
+            ],
         },
         {
             name: "view",
@@ -77,10 +81,11 @@ export const config: Command["config"] = {
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user to view. Defaults to yourself."
-                }
-            ]
-        }
+                    description:
+                        "The Discord user to view. Defaults to yourself.",
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -88,24 +93,24 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "month",
-                    value: 2
+                    value: 2,
                 },
                 {
                     name: "date",
-                    value: 8
+                    value: 8,
                 },
                 {
                     name: "timezone",
-                    value: 7
-                }
+                    value: 7,
+                },
             ],
-            description: "will set your birthday to February 8 at UTC+7."
+            description: "will set your birthday to February 8 at UTC+7.",
         },
         {
             command: "birthday view",
-            description: "will view your birthday."
-        }
+            description: "will view your birthday.",
+        },
     ],
     permissions: [],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

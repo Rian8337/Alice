@@ -16,35 +16,43 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const tags: Collection<string, GuildTag> =
-        await DatabaseManager.aliceDb.collections.guildTags.getUserGuildTags(interaction.guildId, user.id);
+        await DatabaseManager.aliceDb.collections.guildTags.getUserGuildTags(
+            interaction.guildId,
+            user.id
+        );
 
     if (tags.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 tagStrings.userDoesntHaveTags,
                 user.id === interaction.user.id ? "you" : "this user"
-            )
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: interaction.member.displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: interaction.member.displayColor,
+    });
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: GuildTag[]) => {
+    const onPageChange: OnButtonPageChange = async (
+        _,
+        page,
+        contents: GuildTag[]
+    ) => {
         embed.setDescription(
             `**Tags for ${interaction.user}**\n` +
-            `**Total tags**: ${contents.length}\n\n` +
-            contents
-                .slice(10 * (page - 1), 10 + 10 * (page - 1))
-                .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
-                .join("\n")
+                `**Total tags**: ${contents.length}\n\n` +
+                contents
+                    .slice(10 * (page - 1), 10 + 10 * (page - 1))
+                    .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
+                    .join("\n")
         );
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         [...tags.values()],
         10,
@@ -55,5 +63,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

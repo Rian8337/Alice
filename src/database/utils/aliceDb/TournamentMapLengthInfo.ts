@@ -6,12 +6,18 @@ import { ObjectId } from "bson";
 /**
  * Represents a mappool length for tournament.
  */
-export class TournamentMapLengthInfo extends Manager implements DatabaseTournamentMapLengthInfo {
+export class TournamentMapLengthInfo
+    extends Manager
+    implements DatabaseTournamentMapLengthInfo
+{
     poolid: string;
     map: [string, string | number][];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseTournamentMapLengthInfo = DatabaseManager.aliceDb?.collections.tournamentMapLengthInfo.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseTournamentMapLengthInfo = DatabaseManager.aliceDb
+            ?.collections.tournamentMapLengthInfo.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

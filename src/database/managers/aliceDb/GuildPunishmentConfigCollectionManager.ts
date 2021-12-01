@@ -9,8 +9,14 @@ import { Collection as MongoDBCollection } from "mongodb";
 /**
  * A manager for the `punishmentconfig` collection.
  */
-export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionManager<DatabaseGuildPunishmentConfig, GuildPunishmentConfig> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseGuildPunishmentConfig, GuildPunishmentConfig>;
+export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionManager<
+    DatabaseGuildPunishmentConfig,
+    GuildPunishmentConfig
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseGuildPunishmentConfig,
+        GuildPunishmentConfig
+    >;
 
     override get defaultDocument(): DatabaseGuildPunishmentConfig {
         return {
@@ -18,7 +24,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
             currentMutes: [],
             guildID: "",
             immuneMuteRoles: [],
-            logChannel: ""
+            logChannel: "",
         };
     }
 
@@ -28,12 +34,17 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
     constructor(collection: MongoDBCollection<DatabaseGuildPunishmentConfig>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseGuildPunishmentConfig, GuildPunishmentConfig>> new GuildPunishmentConfig().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<
+                DatabaseGuildPunishmentConfig,
+                GuildPunishmentConfig
+            >
+        >new GuildPunishmentConfig().constructor;
     }
 
     /**
      * Gets a guild's punishment configuration.
-     * 
+     *
      * @param guild The guild to get the punishment configuration from.
      * @returns The guild's punishment configuration. `null` if the configuration is not found.
      */
@@ -41,7 +52,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     /**
      * Gets a guild's punishment configuration.
-     * 
+     *
      * @param guildId The ID of the guild to get the punishment configuration from.
      * @returns The guild's punishment configuration. `null` if the configuration is not found.
      */
@@ -49,32 +60,42 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     /**
      * Gets a guild's punishment configuration.
-     * 
+     *
      * @param guildOrGuildId The guild to get the punishment configuration from or its ID.
      * @returns The guild's punishment configuration. `null` if the configuration is not found.
      */
-    getGuildConfig(guildOrGuildId: Snowflake | Guild): Promise<GuildPunishmentConfig | null> {
-        return this.getOne({ guildID: guildOrGuildId instanceof Guild ? guildOrGuildId.id : guildOrGuildId });
+    getGuildConfig(
+        guildOrGuildId: Snowflake | Guild
+    ): Promise<GuildPunishmentConfig | null> {
+        return this.getOne({
+            guildID:
+                guildOrGuildId instanceof Guild
+                    ? guildOrGuildId.id
+                    : guildOrGuildId,
+        });
     }
 
     /**
      * Sets a guild's punishment log channel.
-     * 
+     *
      * @param guildId The ID of the guild.
      * @param channelId The ID of the channel.
      * @returns An object containing information about the database operation.
      */
-    setGuildLogChannel(guildId: Snowflake, channelId: Snowflake): Promise<OperationResult> {
+    setGuildLogChannel(
+        guildId: Snowflake,
+        channelId: Snowflake
+    ): Promise<OperationResult> {
         return this.update(
             { guildID: guildId },
             {
                 $set: {
-                    logChannel: channelId
+                    logChannel: channelId,
                 },
                 $setOnInsert: {
                     allowedMuteRoles: [],
-                    immuneMuteRoles: []
-                }
+                    immuneMuteRoles: [],
+                },
             },
             { upsert: true }
         );
@@ -82,7 +103,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     /**
      * Unsets a guild's punishment log channel.
-     * 
+     *
      * @param guildId The ID of the guild.
      * @returns An object containing information about the database operation.
      */
@@ -91,8 +112,8 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
             { guildID: guildId },
             {
                 $unset: {
-                    logChannel: ""
-                }
+                    logChannel: "",
+                },
             }
         );
     }

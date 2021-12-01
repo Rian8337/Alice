@@ -11,12 +11,19 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    if (message.attachments.size > 1 || pictureCooldown.has(message.author.id)) {
+    if (
+        message.attachments.size > 1 ||
+        pictureCooldown.has(message.author.id)
+    ) {
         await message.delete();
 
-        return message.channel.send(MessageCreator.createWarn(
-            `${message.author}, you are only allowed to send 1 picture every 5 seconds!`
-        )).then(m => setTimeout(m.delete.bind(m), 5 * 1000));
+        return message.channel
+            .send(
+                MessageCreator.createWarn(
+                    `${message.author}, you are only allowed to send 1 picture every 5 seconds!`
+                )
+            )
+            .then((m) => setTimeout(m.delete.bind(m), 5 * 1000));
     }
 
     const images: string[] = [];
@@ -42,7 +49,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for giving thumbs up and down reactions for pictures in #cute-no-lewd.",
+    description:
+        "Responsible for giving thumbs up and down reactions for pictures in #cute-no-lewd.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

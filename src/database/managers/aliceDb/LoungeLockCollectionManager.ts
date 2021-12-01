@@ -9,14 +9,20 @@ import { Collection as MongoDBCollection } from "mongodb";
 /**
  * A manager for the `loungelock` collection.
  */
-export class LoungeLockCollectionManager extends DatabaseCollectionManager<DatabaseLoungeLock, LoungeLock> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseLoungeLock, LoungeLock>;
+export class LoungeLockCollectionManager extends DatabaseCollectionManager<
+    DatabaseLoungeLock,
+    LoungeLock
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseLoungeLock,
+        LoungeLock
+    >;
 
     override get defaultDocument(): DatabaseLoungeLock {
         return {
             discordid: "",
             expiration: Number.POSITIVE_INFINITY,
-            reason: ""
+            reason: "",
         };
     }
 
@@ -26,12 +32,14 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<Datab
     constructor(collection: MongoDBCollection<DatabaseLoungeLock>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseLoungeLock, LoungeLock>> new LoungeLock().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseLoungeLock, LoungeLock>
+        >new LoungeLock().constructor;
     }
 
     /**
      * Gets a user's lounge lock information.
-     * 
+     *
      * @param userId The ID of the user.
      * @returns The lock information, `null` if not found.
      */
@@ -41,17 +49,21 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Inserts a new lounge lock.
-     * 
+     *
      * @param userId The ID of the user to lock.
      * @param duration The duration of the lock, in seconds.
      * @param reason Reason for locking the user.
      * @returns An object containing information about the operation.
      */
-    insertNewLock(userId: Snowflake, duration: number, reason: string): Promise<OperationResult> {
+    insertNewLock(
+        userId: Snowflake,
+        duration: number,
+        reason: string
+    ): Promise<OperationResult> {
         return this.insert({
             discordid: userId,
             expiration: Date.now() + duration * 1000,
-            reason: reason
+            reason: reason,
         });
     }
 }

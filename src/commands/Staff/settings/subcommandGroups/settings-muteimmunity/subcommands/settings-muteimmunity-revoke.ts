@@ -6,14 +6,18 @@ import { Role } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const role: Role = <Role> interaction.options.getRole("role", true);
+    const role: Role = <Role>interaction.options.getRole("role", true);
 
     const guildConfig: GuildPunishmentConfig | null =
-        await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(interaction.guildId);
+        await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
+            interaction.guildId
+        );
 
     if (!guildConfig || !guildConfig.getGuildLogChannel(interaction.guild!)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.noLogChannelConfigured)
+            content: MessageCreator.createReject(
+                settingsStrings.noLogChannelConfigured
+            ),
         });
     }
 
@@ -21,11 +25,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.grantOrRevokeMuteImmunitySuccess, "revoked", role.name
-        )
+            settingsStrings.grantOrRevokeMuteImmunitySuccess,
+            "revoked",
+            role.name
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["ADMINISTRATOR"]
+    permissions: ["ADMINISTRATOR"],
 };

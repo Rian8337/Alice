@@ -15,54 +15,85 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const team2Name: string = interaction.options.getString("team2name", true);
 
-    const team1Players: string = interaction.options.getString("team1players", true);
+    const team1Players: string = interaction.options.getString(
+        "team1players",
+        true
+    );
 
-    const team2Players: string = interaction.options.getString("team2players", true);
+    const team2Players: string = interaction.options.getString(
+        "team2players",
+        true
+    );
 
     if (matchId.split(".").length !== 2) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.invalidMatchID)
+            content: MessageCreator.createReject(matchStrings.invalidMatchID),
         });
     }
 
-    const existingMatchCheck: TournamentMatch | null = await DatabaseManager.elainaDb.collections.tournamentMatch.getById(matchId);
+    const existingMatchCheck: TournamentMatch | null =
+        await DatabaseManager.elainaDb.collections.tournamentMatch.getById(
+            matchId
+        );
 
     if (existingMatchCheck) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchIDAlreadyTaken)
+            content: MessageCreator.createReject(
+                matchStrings.matchIDAlreadyTaken
+            ),
         });
     }
 
     const matchData: Partial<DatabaseTournamentMatch> = {
         matchid: matchId,
         name: name,
-        team: [[team1Name, 0], [team2Name, 0]],
+        team: [
+            [team1Name, 0],
+            [team2Name, 0],
+        ],
         player: [],
-        result: []
+        result: [],
     };
 
     const splitRegex: RegExp = /\b[\w']+(?:[^\w\n]+[\w']+){0,1}\b/g;
 
-    const team1PlayersInformation: RegExpMatchArray = team1Players.match(splitRegex) ?? [];
+    const team1PlayersInformation: RegExpMatchArray =
+        team1Players.match(splitRegex) ?? [];
 
-    const team2PlayersInformation: RegExpMatchArray = team2Players.match(splitRegex) ?? [];
+    const team2PlayersInformation: RegExpMatchArray =
+        team2Players.match(splitRegex) ?? [];
 
     // Ensure the player difference between both teams don't exceed 1
-    if (Math.abs(team1PlayersInformation.length - team2PlayersInformation.length) > 1) {
+    if (
+        Math.abs(
+            team1PlayersInformation.length - team2PlayersInformation.length
+        ) > 1
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.teamPlayerCountDoNotBalance)
+            content: MessageCreator.createReject(
+                matchStrings.teamPlayerCountDoNotBalance
+            ),
         });
     }
 
-    for (let i = 0; i < team1PlayersInformation.length + team2PlayersInformation.length; ++i) {
-        const teamInfo: [string, string] = <[string, string]> (i % 2 === 0 ? team1PlayersInformation : team2PlayersInformation)[Math.floor(i / 2)]?.split(" ") ?? [];
+    for (
+        let i = 0;
+        i < team1PlayersInformation.length + team2PlayersInformation.length;
+        ++i
+    ) {
+        const teamInfo: [string, string] =
+            <[string, string]>(
+                (i % 2 === 0
+                    ? team1PlayersInformation
+                    : team2PlayersInformation)[Math.floor(i / 2)]?.split(" ")
+            ) ?? [];
 
         if (teamInfo.length !== 2) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
                     matchStrings.invalidPlayerInformation,
                     teamInfo.join(" ")
-                )
+                ),
             });
         }
 
@@ -70,23 +101,28 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         matchData.result!.push([]);
     }
 
-    const result: OperationResult = await DatabaseManager.elainaDb.collections.tournamentMatch.insert(matchData);
+    const result: OperationResult =
+        await DatabaseManager.elainaDb.collections.tournamentMatch.insert(
+            matchData
+        );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.addMatchFailed, result.reason!
-            )
+                matchStrings.addMatchFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            matchStrings.addMatchSuccessful, matchId
-        )
+            matchStrings.addMatchSuccessful,
+            matchId
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

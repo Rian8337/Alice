@@ -6,5 +6,5 @@ export enum EightBallResponseType {
     LIKE,
     HATE,
     NEUTRAL,
-    NO_ANSWER
+    NO_ANSWER,
 }

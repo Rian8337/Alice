@@ -12,10 +12,11 @@ import { MapInfo } from "osu-droid";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const whitelistDb: MapWhitelistCollectionManager = DatabaseManager.elainaDb.collections.mapWhitelist;
+    const whitelistDb: MapWhitelistCollectionManager =
+        DatabaseManager.elainaDb.collections.mapWhitelist;
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(scanStrings.scanStarted)
+        content: MessageCreator.createAccept(scanStrings.scanStarted),
     });
 
     let scannedCount: number = 0;
@@ -36,7 +37,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 case WhitelistValidity.OUTDATED_HASH: {
                     await DPPHelper.deletePlays(entry.hashid);
 
-                    const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(entry.mapid, false))!;
+                    const beatmapInfo: MapInfo =
+                        (await BeatmapManager.getBeatmap(entry.mapid, false))!;
 
                     entry.hashid = beatmapInfo.hash;
                 }
@@ -52,8 +54,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                             $set: {
                                 diffstat: entry.diffstat,
                                 hashid: entry.hashid,
-                                whitelistScanDone: true
-                            }
+                                whitelistScanDone: true,
+                            },
                         }
                     );
             }
@@ -63,10 +65,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     await whitelistDb.update({}, { $unset: { whitelistScanDone: "" } });
 
     interaction.channel!.send({
-        content: MessageCreator.createAccept(scanStrings.scanComplete, interaction.user.toString())
+        content: MessageCreator.createAccept(
+            scanStrings.scanComplete,
+            interaction.user.toString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

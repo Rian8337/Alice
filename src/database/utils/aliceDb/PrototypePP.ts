@@ -43,7 +43,7 @@ export class PrototypePP extends Manager {
 
     /**
      * The UID of osu!droid accounts that are binded to the user.
-     * 
+     *
      * A user can only bind up to 2 osu!droid accounts, therefore
      * the maximum length of this array will never exceed 2.
      */
@@ -64,7 +64,10 @@ export class PrototypePP extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabasePrototypePP = DatabaseManager.aliceDb?.collections.prototypePP.defaultDocument ?? {}) {
+    constructor(
+        data: DatabasePrototypePP = DatabaseManager.aliceDb?.collections
+            .prototypePP.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

@@ -7,16 +7,19 @@ import { voteStrings } from "../voteStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const topic: string = interaction.options.getString("topic", true);
 
-    const choices: VoteChoice[] = interaction.options.getString("input", true).split("|").map(v => {
-        return {
-            choice: v.trim(),
-            voters: []
-        };
-    });
+    const choices: VoteChoice[] = interaction.options
+        .getString("input", true)
+        .split("|")
+        .map((v) => {
+            return {
+                choice: v.trim(),
+                voters: [],
+            };
+        });
 
     if (choices.length <= 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(voteStrings.tooFewChoices)
+            content: MessageCreator.createReject(voteStrings.tooFewChoices),
         });
     }
 
@@ -24,7 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         initiator: interaction.user.id,
         channel: interaction.channel!.id,
         topic: topic,
-        choices: choices
+        choices: choices,
     });
 
     let string: string = `**Topic: ${topic}**\n\n`;
@@ -32,14 +35,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < choices.length; ++i) {
         const choice: VoteChoice = choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length}\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${
+            choice.voters.length
+        }\`\n\n`;
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(voteStrings.voteStartSuccess) + `\n${string}`
+        content:
+            MessageCreator.createAccept(voteStrings.voteStartSuccess) +
+            `\n${string}`,
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

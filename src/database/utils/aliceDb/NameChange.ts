@@ -18,7 +18,10 @@ export class NameChange extends Manager implements DatabaseNameChange {
     previous_usernames: string[];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseNameChange = DatabaseManager.aliceDb?.collections.nameChange.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseNameChange = DatabaseManager.aliceDb?.collections
+            .nameChange.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -33,18 +36,21 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
     /**
      * Accepts the name change request if this account requests a name change.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async accept(): Promise<OperationResult> {
         if (this.isProcessed) {
-            return this.createOperationResult(false, "no active name change requset");
+            return this.createOperationResult(
+                false,
+                "no active name change requset"
+            );
         }
 
         await DatabaseManager.elainaDb.collections.userBind.update(
             { uid: this.uid },
             { $set: { username: this.new_username! } }
-            );
+        );
 
         await DatabaseManager.aliceDb.collections.playerInfo.update(
             { uid: this.uid },
@@ -58,19 +64,20 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
         this.isProcessed = true;
 
-        const result: OperationResult = await DatabaseManager.aliceDb.collections.nameChange.update(
-            { uid: this.uid },
-            {
-                $set: {
-                    current_username: this.new_username!,
-                    new_username: null,
-                    isProcessed: true
-                },
-                $push: {
-                    previous_usernames: this.current_username
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.nameChange.update(
+                { uid: this.uid },
+                {
+                    $set: {
+                        current_username: this.new_username!,
+                        new_username: null,
+                        isProcessed: true,
+                    },
+                    $push: {
+                        previous_usernames: this.current_username,
+                    },
                 }
-            }
-        );
+            );
 
         this.previous_usernames.push(this.current_username);
         this.current_username = this.new_username!;
@@ -80,12 +87,15 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
     /**
      * Accepts the name change request if this account requests a name change.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async deny(): Promise<OperationResult> {
         if (this.isProcessed) {
-            return this.createOperationResult(false, "no active name change requset");
+            return this.createOperationResult(
+                false,
+                "no active name change requset"
+            );
         }
 
         this.isProcessed = true;
@@ -94,12 +104,12 @@ export class NameChange extends Manager implements DatabaseNameChange {
             { uid: this.uid },
             {
                 $inc: {
-                    cooldown: -86400 * 30
+                    cooldown: -86400 * 30,
                 },
                 $set: {
                     new_username: null,
-                    isProcessed: true
-                }
+                    isProcessed: true,
+                },
             }
         );
     }

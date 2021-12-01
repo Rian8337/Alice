@@ -4,10 +4,12 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
-        content: MessageCreator.createReject(clanStrings.noSpecialClanShopEvent)
+        content: MessageCreator.createReject(
+            clanStrings.noSpecialClanShopEvent
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

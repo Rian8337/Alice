@@ -8,8 +8,14 @@ import { Collection as DiscordCollection } from "discord.js";
 /**
  * A manager for the `clanauction` collection.
  */
-export class ClanAuctionCollectionManager extends DatabaseCollectionManager<DatabaseClanAuction, ClanAuction> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseClanAuction, ClanAuction>;
+export class ClanAuctionCollectionManager extends DatabaseCollectionManager<
+    DatabaseClanAuction,
+    ClanAuction
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseClanAuction,
+        ClanAuction
+    >;
 
     override get defaultDocument(): DatabaseClanAuction {
         const currentTime: number = Math.floor(Date.now() / 1000);
@@ -22,7 +28,7 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<Data
             expirydate: currentTime,
             min_price: 0,
             name: "",
-            powerup: "challenge"
+            powerup: "challenge",
         };
     }
 
@@ -32,12 +38,14 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<Data
     constructor(collection: MongoDBCollection<DatabaseClanAuction>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseClanAuction, ClanAuction>> new ClanAuction().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseClanAuction, ClanAuction>
+        >new ClanAuction().constructor;
     }
 
     /**
      * Gets a clan auction from its name.
-     * 
+     *
      * @param name The name of the auction.
      */
     getFromName(name: string): Promise<ClanAuction | null> {
@@ -46,21 +54,25 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets a clan's auctions.
-     * 
+     *
      * @param clanName The name of the clan.
      * @returns The clan's auctions, mapped by their name.
      */
-    getClanAuctions(clanName: string): Promise<DiscordCollection<string, ClanAuction>> {
+    getClanAuctions(
+        clanName: string
+    ): Promise<DiscordCollection<string, ClanAuction>> {
         return this.get("name", { auctioneer: clanName });
     }
 
     /**
      * Gets clan auctions that have expired within the specified time limit.
-     * 
+     *
      * @param timelimit The time limit.
      * @returns Auctions that have expired within the time limit.
      */
-    getExpiredAuctions(timelimit: number): Promise<DiscordCollection<string, ClanAuction>> {
-        return this.get("name", { expirydate: { $lte: timelimit } })
+    getExpiredAuctions(
+        timelimit: number
+    ): Promise<DiscordCollection<string, ClanAuction>> {
+        return this.get("name", { expirydate: { $lte: timelimit } });
     }
 }

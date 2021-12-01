@@ -12,7 +12,10 @@ export class PlayerSkin extends Manager implements DatabasePlayerSkin {
     skin: string;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabasePlayerSkin = DatabaseManager.aliceDb?.collections.playerSkins.defaultDocument ?? {}) {
+    constructor(
+        data: DatabasePlayerSkin = DatabaseManager.aliceDb?.collections
+            .playerSkins.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

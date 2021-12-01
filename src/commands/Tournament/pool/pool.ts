@@ -16,36 +16,49 @@ export const run: Command["run"] = async (_, interaction) => {
     const id: string = interaction.options.getString("id", true);
 
     const mappoolMainData: TournamentMappool | null =
-        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(id);
+        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
+            id
+        );
 
     if (!mappoolMainData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(poolStrings.poolNotFound)
+            content: MessageCreator.createReject(poolStrings.poolNotFound),
         });
     }
 
     const mappoolDurationData: TournamentMapLengthInfo | null =
-        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(id);
+        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(
+            id
+        );
 
     if (!mappoolDurationData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(poolStrings.poolNotFound)
+            content: MessageCreator.createReject(poolStrings.poolNotFound),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { color: (<GuildMember | null> interaction.member)?.displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        color: (<GuildMember | null>interaction.member)?.displayColor,
+    });
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
-        for (let i = 5 * (page - 1); i < Math.min(mappoolMainData.map.length, 5 + 5 * (page - 1)); ++i) {
-            embed.addField(mappoolMainData.map[i][1], `**Length**: ${DateTimeFormatHelper.secondsToDHMS(parseInt(<string >mappoolDurationData.map[i][1]))}`);
+        for (
+            let i = 5 * (page - 1);
+            i < Math.min(mappoolMainData.map.length, 5 + 5 * (page - 1));
+            ++i
+        ) {
+            embed.addField(
+                mappoolMainData.map[i][1],
+                `**Length**: ${DateTimeFormatHelper.secondsToDHMS(
+                    parseInt(<string>mappoolDurationData.map[i][1])
+                )}`
+            );
         }
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         mappoolMainData.map,
         5,
@@ -59,14 +72,15 @@ export const category: Command["category"] = CommandCategory.TOURNAMENT;
 
 export const config: Command["config"] = {
     name: "pool",
-    description: "Retrieves a list of beatmaps from a registered tournament mappool.",
+    description:
+        "Retrieves a list of beatmaps from a registered tournament mappool.",
     options: [
         {
             name: "id",
             required: true,
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The ID of the mappool."
-        }
+            description: "The ID of the mappool.",
+        },
     ],
     example: [
         {
@@ -74,22 +88,24 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "id",
-                    value: "t11sf"
-                }
+                    value: "t11sf",
+                },
             ],
-            description: "will retrieve a list of beatmaps from tournament mappool \"t11sf\"."
+            description:
+                'will retrieve a list of beatmaps from tournament mappool "t11sf".',
         },
         {
             command: "pool t8gf",
             arguments: [
                 {
                     name: "id",
-                    value: "t8gf"
-                }
+                    value: "t8gf",
+                },
             ],
-            description: "will retrieve a list of beatmaps from tournament mappool \"t8gf\"."
-        }
+            description:
+                'will retrieve a list of beatmaps from tournament mappool "t8gf".',
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

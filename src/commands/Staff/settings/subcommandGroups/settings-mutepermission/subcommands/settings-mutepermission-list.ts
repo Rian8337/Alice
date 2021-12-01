@@ -16,33 +16,51 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const guildConfig: GuildPunishmentConfig | null =
-        await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(interaction.guildId);
+        await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
+            interaction.guildId
+        );
 
     if (!guildConfig) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.noLogChannelConfigured)
+            content: MessageCreator.createReject(
+                settingsStrings.noLogChannelConfigured
+            ),
         });
     }
 
-    const allowedMuteRoles: Collection<string, RoleMutePermission> = guildConfig.allowedMuteRoles;
+    const allowedMuteRoles: Collection<string, RoleMutePermission> =
+        guildConfig.allowedMuteRoles;
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: interaction.member.displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: interaction.member.displayColor,
+    });
 
     embed.setTitle("Roles with Mute Immunity");
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: RoleMutePermission[]) => {
-        embed.setDescription(contents
-            .slice(10 * (page - 1), 10 + 10 * (page - 1))
-            .map(v => `- <@&${v.id}> (${v.maxTime === -1 ? "Permanent" : DateTimeFormatHelper.secondsToDHMS(v.maxTime)})`)
-            .join("\n")
+    const onPageChange: OnButtonPageChange = async (
+        _,
+        page,
+        contents: RoleMutePermission[]
+    ) => {
+        embed.setDescription(
+            contents
+                .slice(10 * (page - 1), 10 + 10 * (page - 1))
+                .map(
+                    (v) =>
+                        `- <@&${v.id}> (${
+                            v.maxTime === -1
+                                ? "Permanent"
+                                : DateTimeFormatHelper.secondsToDHMS(v.maxTime)
+                        })`
+                )
+                .join("\n")
         );
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         [...allowedMuteRoles.values()],
         10,
@@ -53,5 +71,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["ADMINISTRATOR"]
+    permissions: ["ADMINISTRATOR"],
 };

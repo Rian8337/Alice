@@ -18,68 +18,89 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!StringHelper.isValidImage(url)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagAttachmentURLInvalid)
+            content: MessageCreator.createReject(
+                tagStrings.tagAttachmentURLInvalid
+            ),
         });
     }
 
-    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
+    const tag: GuildTag | null =
+        await DatabaseManager.aliceDb.collections.guildTags.getByName(
+            interaction.guildId,
+            name
+        );
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist),
         });
     }
 
     if (tag.author !== interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.notTagOwner)
+            content: MessageCreator.createReject(tagStrings.notTagOwner),
         });
     }
 
     if (tag.attachments.length >= 3) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.noTagAttachmentSlot)
+            content: MessageCreator.createReject(
+                tagStrings.noTagAttachmentSlot
+            ),
         });
     }
 
-    const image: MessageAttachment = new MessageAttachment(url, `attachment-${tag.attachments.length + 1}.png`);
+    const image: MessageAttachment = new MessageAttachment(
+        url,
+        `attachment-${tag.attachments.length + 1}.png`
+    );
 
-    const channel: TextChannel = <TextChannel> await client.channels.fetch(Constants.tagAttachmentChannel);
+    const channel: TextChannel = <TextChannel>(
+        await client.channels.fetch(Constants.tagAttachmentChannel)
+    );
 
     if (tag.attachments.length > 0) {
-        const message: Message = await channel.messages.fetch(tag.attachment_message);
+        const message: Message = await channel.messages.fetch(
+            tag.attachment_message
+        );
 
-        const finalAttachments: MessageAttachment[] = tag.attachments.map((v, i) => new MessageAttachment(v, `attachment-${i + 1}.png`));
+        const finalAttachments: MessageAttachment[] = tag.attachments.map(
+            (v, i) => new MessageAttachment(v, `attachment-${i + 1}.png`)
+        );
 
         finalAttachments.push(image);
 
         try {
             const editedMessage: Message = await message.edit({
-                attachments: finalAttachments
+                attachments: finalAttachments,
             });
 
-            tag.attachments = editedMessage.attachments.map(v => v.url);
+            tag.attachments = editedMessage.attachments.map((v) => v.url);
 
             await tag.updateTag();
 
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    tagStrings.attachToTagSuccessful, name
-                )
+                    tagStrings.attachToTagSuccessful,
+                    name
+                ),
             });
         } catch {
             interaction.editReply({
-                content: MessageCreator.createReject(tagStrings.tagAttachmentTooBig)
+                content: MessageCreator.createReject(
+                    tagStrings.tagAttachmentTooBig
+                ),
             });
         }
     } else {
         try {
             const message: Message = await channel.send({
-                content: `**Tag by ${interaction.user}**\n` +
+                content:
+                    `**Tag by ${interaction.user}**\n` +
                     `**User ID**: ${interaction.user.id}\n` +
                     `**Name**: \`${name}\`\n` +
                     `**Created at ${interaction.createdAt.toUTCString()}**`,
-                files: [ image ]
+                files: [image],
             });
 
             tag.attachment_message = message.id;
@@ -89,17 +110,20 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    tagStrings.attachToTagSuccessful, name
-                )
+                    tagStrings.attachToTagSuccessful,
+                    name
+                ),
             });
         } catch {
             interaction.editReply({
-                content: MessageCreator.createReject(tagStrings.tagAttachmentTooBig)
+                content: MessageCreator.createReject(
+                    tagStrings.tagAttachmentTooBig
+                ),
             });
         }
     }
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

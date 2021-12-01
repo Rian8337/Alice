@@ -22,21 +22,22 @@ export const config: Command["config"] = {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user to lock."
+                    description: "The Discord user to lock.",
                 },
                 {
                     name: "duration",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The duration to lock for, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Use -1 to permanent lock."
+                    description:
+                        "The duration to lock for, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Use -1 to permanent lock.",
                 },
                 {
                     name: "reason",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The reason for unlocking the user."
-                }
-            ]
+                    description: "The reason for unlocking the user.",
+                },
+            ],
         },
         {
             name: "unlock",
@@ -47,16 +48,16 @@ export const config: Command["config"] = {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user to unlock."
+                    description: "The Discord user to unlock.",
                 },
                 {
                     name: "reason",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The reason for unlocking the user."
-                }
-            ]
-        }
+                    description: "The reason for unlocking the user.",
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -64,13 +65,13 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
-                }
+                    value: "@Rian8337#0001",
+                },
             ],
-            description: "will lock Rian8337 from the lounge channel."
-        }
+            description: "will lock Rian8337 from the lounge channel.",
+        },
     ],
     permissions: ["BOT_OWNER"],
     replyEphemeral: true,
-    scope: "ALL"
+    scope: "ALL",
 };

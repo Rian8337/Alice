@@ -11,28 +11,35 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: interaction.member.displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: interaction.member.displayColor,
+    });
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
-        embed.setDescription(`**Event name: \`${client.eventUtilities.keyAt(page - 1)}\`**`);
+        embed.setDescription(
+            `**Event name: \`${client.eventUtilities.keyAt(page - 1)}\`**`
+        );
 
-        for (const [ utilName, utility ] of client.eventUtilities.at(page - 1)!) {
+        for (const [utilName, utility] of client.eventUtilities.at(page - 1)!) {
             embed.addField(
                 `- ${utilName}`,
                 `${utility.config.description}\n` +
-                `**Required Permissions**: ${PermissionHelper.getPermissionString(utility.config.togglePermissions)}\n` +
-                `**Toggleable Scope**: ${utility.config.toggleScope.map(v => StringHelper.capitalizeString(v, true)).join(", ")}`
+                    `**Required Permissions**: ${PermissionHelper.getPermissionString(
+                        utility.config.togglePermissions
+                    )}\n` +
+                    `**Toggleable Scope**: ${utility.config.toggleScope
+                        .map((v) => StringHelper.capitalizeString(v, true))
+                        .join(", ")}`
             );
         }
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
-        [ ...client.eventUtilities.values() ],
+        [...client.eventUtilities.values()],
         1,
         1,
         180,
@@ -41,5 +48,5 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

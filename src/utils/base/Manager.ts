@@ -19,7 +19,7 @@ export abstract class Manager {
 
     /**
      * Initializes the manager.
-     * 
+     *
      * @param client The instance of the bot.
      */
     static init(client: Bot) {
@@ -28,29 +28,35 @@ export abstract class Manager {
 
     /**
      * Creates an operation result object.
-     * 
+     *
      * @param success Whether the operation was successful.
      * @param reason The reason for why the operation failed.
      * @returns The operation result object.
      */
-    protected static createOperationResult(success: boolean, reason?: string): OperationResult {
+    protected static createOperationResult(
+        success: boolean,
+        reason?: string
+    ): OperationResult {
         return {
             success: success,
-            reason: reason
+            reason: reason,
         };
     }
 
     /**
      * Creates an operation result object.
-     * 
+     *
      * @param success Whether the operation was successful.
      * @param reason The reason for why the operation failed.
      * @returns The operation result object.
      */
-    protected createOperationResult(success: boolean, reason?: string): OperationResult {
+    protected createOperationResult(
+        success: boolean,
+        reason?: string
+    ): OperationResult {
         return {
             success: success,
-            reason: reason
+            reason: reason,
         };
     }
 }

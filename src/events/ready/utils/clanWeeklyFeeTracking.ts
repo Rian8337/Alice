@@ -13,12 +13,19 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
-        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("clanWeeklyFeeUpdating")) {
+        if (
+            Config.maintenance ||
+            CommandUtilManager.globallyDisabledEventUtils
+                .get("ready")
+                ?.includes("clanWeeklyFeeUpdating")
+        ) {
             return;
         }
 
         const guild: Guild = await client.guilds.fetch(Constants.mainServer);
-        const globalClanRole: Role | undefined = guild.roles.cache.find(r => r.name === "Clans");
+        const globalClanRole: Role | undefined = guild.roles.cache.find(
+            (r) => r.name === "Clans"
+        );
 
         if (!globalClanRole) {
             clearInterval(interval);
@@ -27,19 +34,25 @@ export const run: EventUtil["run"] = async (client) => {
 
         const executionTime: number = Math.floor(Date.now() / 1000);
 
-        const clans: Collection<string, Clan> = await DatabaseManager.elainaDb.collections.clan.getClansDueToWeeklyFee(executionTime);
+        const clans: Collection<string, Clan> =
+            await DatabaseManager.elainaDb.collections.clan.getClansDueToWeeklyFee(
+                executionTime
+            );
 
         let kickedCount: number = 0;
 
         for await (const clan of clans.values()) {
-            const upkeepDistribution: number[] = clan.getEqualUpkeepDistribution();
+            const upkeepDistribution: number[] =
+                clan.getEqualUpkeepDistribution();
 
             for await (const member of clan.member_list.values()) {
                 if (!clan.exists) {
                     break;
                 }
 
-                const guildMember: GuildMember | null = await guild.members.fetch(member.id).catch(() => null);
+                const guildMember: GuildMember | null = await guild.members
+                    .fetch(member.id)
+                    .catch(() => null);
 
                 // If the person is not in the server, kick the person
                 if (!guildMember) {
@@ -49,7 +62,10 @@ export const run: EventUtil["run"] = async (client) => {
                     continue;
                 }
 
-                const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(member.id);
+                const bindInfo: UserBind | null =
+                    await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+                        member.id
+                    );
 
                 if (!bindInfo) {
                     upkeepDistribution.shift();
@@ -61,7 +77,9 @@ export const run: EventUtil["run"] = async (client) => {
                 let highestRank: number = Number.POSITIVE_INFINITY;
 
                 for await (const uid of bindInfo.previous_bind) {
-                    const player: Player = await Player.getInformation({ uid: uid });
+                    const player: Player = await Player.getInformation({
+                        uid: uid,
+                    });
 
                     if (!player.username) {
                         continue;
@@ -70,13 +88,21 @@ export const run: EventUtil["run"] = async (client) => {
                     highestRank = Math.min(player.rank, highestRank);
                 }
 
-                const randomUpkeepDistribution: number = ArrayHelper.getRandomArrayElement(upkeepDistribution);
+                const randomUpkeepDistribution: number =
+                    ArrayHelper.getRandomArrayElement(upkeepDistribution);
 
-                const upkeep: number = clan.calculateUpkeep(member.id) + randomUpkeepDistribution;
+                const upkeep: number =
+                    clan.calculateUpkeep(member.id) + randomUpkeepDistribution;
 
-                upkeepDistribution.splice(upkeepDistribution.indexOf(randomUpkeepDistribution), 1);
+                upkeepDistribution.splice(
+                    upkeepDistribution.indexOf(randomUpkeepDistribution),
+                    1
+                );
 
-                const memberPlayerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(member.id);
+                const memberPlayerInfo: PlayerInfo | null =
+                    await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+                        member.id
+                    );
 
                 if (!memberPlayerInfo) {
                     // Clan member doesn't have any Alice coins info, possibly being banned from the server or the game.
@@ -92,11 +118,21 @@ export const run: EventUtil["run"] = async (client) => {
                     // Clan member doesn't have enough Alice coins to pay upkeep.
                     // If the penalized member is the leader, kick a random member.
                     let userToKick: Snowflake = member.id;
-                    let kickedGuildMember: GuildMember | undefined = await guild.members.fetch(userToKick).catch(() => { return undefined; });
+                    let kickedGuildMember: GuildMember | undefined =
+                        await guild.members.fetch(userToKick).catch(() => {
+                            return undefined;
+                        });
 
-                    while (clan.leader === userToKick && clan.member_list.size > 1) {
+                    while (
+                        clan.leader === userToKick &&
+                        clan.member_list.size > 1
+                    ) {
                         userToKick = clan.member_list.random()!.id;
-                        kickedGuildMember = await guild.members.fetch(userToKick).catch(() => { return undefined; });
+                        kickedGuildMember = await guild.members
+                            .fetch(userToKick)
+                            .catch(() => {
+                                return undefined;
+                            });
 
                         if (!kickedGuildMember) {
                             userToKick = clan.leader;
@@ -105,11 +141,14 @@ export const run: EventUtil["run"] = async (client) => {
 
                     if (clan.member_list.size === 1) {
                         // Clan only exists of the leader. Deduct clan power to the point where the clan will be disbanded.
-                        const result: OperationResult = clan.incrementPower(-100);
+                        const result: OperationResult =
+                            clan.incrementPower(-100);
 
                         if (!result.success) {
                             await clan.disband();
-                            await clan.notifyLeader("Hey, your clan has been disbanded as your clan power has reached less than 0.");
+                            await clan.notifyLeader(
+                                "Hey, your clan has been disbanded as your clan power has reached less than 0."
+                            );
                             continue;
                         }
                     }
@@ -130,7 +169,13 @@ export const run: EventUtil["run"] = async (client) => {
             clan.weeklyfee += 86400 * 7;
 
             await clan.updateClan();
-            await clan.notifyLeader(`Hey, your clan upkeep has been picked up from your members! ${clan.member_list.size} member(s) have successfully paid their upkeep. A total of ${kickedCount} member(s) were kicked. Your next clan upkeep will be picked in ${new Date(clan.weeklyfee * 1000).toUTCString()}.`)
+            await clan.notifyLeader(
+                `Hey, your clan upkeep has been picked up from your members! ${
+                    clan.member_list.size
+                } member(s) have successfully paid their upkeep. A total of ${kickedCount} member(s) were kicked. Your next clan upkeep will be picked in ${new Date(
+                    clan.weeklyfee * 1000
+                ).toUTCString()}.`
+            );
         }
     }, 60 * 10 * 1000);
 };
@@ -138,5 +183,5 @@ export const run: EventUtil["run"] = async (client) => {
 export const config: EventUtil["config"] = {
     description: "Responsible for tracking clans' weekly upkeep.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

@@ -16,20 +16,24 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.guildTags.update(
         {
             guildid: interaction.guildId,
-            author: oldUser.id
+            author: oldUser.id,
         },
         {
             $set: {
-                author: newUser.id
-            }
+                author: newUser.id,
+            },
         }
     );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(tagStrings.transferTagSuccessful, oldUser.toString(), newUser.toString())
+        content: MessageCreator.createAccept(
+            tagStrings.transferTagSuccessful,
+            oldUser.toString(),
+            newUser.toString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["ADMINISTRATOR"]
+    permissions: ["ADMINISTRATOR"],
 };

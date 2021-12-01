@@ -8,5 +8,5 @@ export enum blacklistStrings {
     blacklistFailed = "I'm sorry, I cannot blacklist the beatmap: `%s`.",
     blacklistSuccess = "Successfully blacklisted `%s`.",
     unblacklistFailed = "I'm sorry, I cannot unblacklist the beatmap: `%s`.",
-    unblacklistSuccess = "Successfully unblacklisted `%s`."
+    unblacklistSuccess = "Successfully unblacklisted `%s`.",
 }

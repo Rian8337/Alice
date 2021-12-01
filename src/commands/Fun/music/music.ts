@@ -7,9 +7,11 @@ import { GuildMember } from "discord.js";
 import { musicStrings } from "./musicStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    if (!(<GuildMember> interaction.member).voice.channelId) {
+    if (!(<GuildMember>interaction.member).voice.channelId) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.userIsNotInVoiceChannel)
+            content: MessageCreator.createReject(
+                musicStrings.userIsNotInVoiceChannel
+            ),
         });
     }
 
@@ -36,20 +38,22 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the collection."
+                            description: "The name of the collection.",
                         },
                         {
                             name: "query",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The query to search for the YouTube video."
+                            description:
+                                "The query to search for the YouTube video.",
                         },
                         {
                             name: "position",
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The position at which to insert the new YouTube URL on, ranging from 1 to 10. Defaults to latest."
-                        }
-                    ]
+                            description:
+                                "The position at which to insert the new YouTube URL on, ranging from 1 to 10. Defaults to latest.",
+                        },
+                    ],
                 },
                 {
                     name: "create",
@@ -60,15 +64,16 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the collection."
+                            description: "The name of the collection.",
                         },
                         {
                             name: "query",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The query to search for the YouTube video."
-                        }
-                    ]
+                            description:
+                                "The query to search for the YouTube video.",
+                        },
+                    ],
                 },
                 {
                     name: "delete",
@@ -79,14 +84,15 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the collection."
-                        }
-                    ]
+                            description: "The name of the collection.",
+                        },
+                    ],
                 },
                 {
                     name: "enqueue",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Enqueues this music collection into the music queue."
+                    description:
+                        "Enqueues this music collection into the music queue.",
                 },
                 {
                     name: "list",
@@ -96,28 +102,30 @@ export const config: Command["config"] = {
                         {
                             name: "user",
                             type: ApplicationCommandOptionTypes.USER,
-                            description: "The user. Defaults to yourself."
-                        }
-                    ]
+                            description: "The user. Defaults to yourself.",
+                        },
+                    ],
                 },
                 {
                     name: "remove",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Removes a YouTube URL from a music collection.",
+                    description:
+                        "Removes a YouTube URL from a music collection.",
                     options: [
                         {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the collection."
+                            description: "The name of the collection.",
                         },
                         {
                             name: "position",
                             required: true,
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The position of the YouTube URL to remove in the music collection's links list."
-                        }
-                    ]
+                            description:
+                                "The position of the YouTube URL to remove in the music collection's links list.",
+                        },
+                    ],
                 },
                 {
                     name: "view",
@@ -128,44 +136,46 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The name of the collection."
-                        }
-                    ]
-                }
-            ]
+                            description: "The name of the collection.",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "info",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Shows information about my music status."
+            description: "Shows information about my music status.",
         },
         {
             name: "leave",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Leaves the current voice channel I'm in."
+            description: "Leaves the current voice channel I'm in.",
         },
         {
             name: "nowplaying",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Shows the music that is being played."
+            description: "Shows the music that is being played.",
         },
         {
             name: "pause",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Pauses the currently played audio in a voice channel."
+            description:
+                "Pauses the currently played audio in a voice channel.",
         },
         {
             name: "play",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Plays or enqueues a YouTube video into a voice channel.",
+            description:
+                "Plays or enqueues a YouTube video into a voice channel.",
             options: [
                 {
                     name: "query",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The query to search for the YouTube video."
-                }
-            ]
+                    description: "The query to search for the YouTube video.",
+                },
+            ],
         },
         {
             name: "queue",
@@ -181,14 +191,16 @@ export const config: Command["config"] = {
                             name: "query",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
-                            description: "The query to search for the YouTube video."
+                            description:
+                                "The query to search for the YouTube video.",
                         },
                         {
                             name: "position",
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The position at which to insert this queue in, ranging from 1 to 10. Defaults to latest."
-                        }
-                    ]
+                            description:
+                                "The position at which to insert this queue in, ranging from 1 to 10. Defaults to latest.",
+                        },
+                    ],
                 },
                 {
                     name: "remove",
@@ -199,45 +211,48 @@ export const config: Command["config"] = {
                             name: "position",
                             required: true,
                             type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The position of the item to remove, ranging from 1 to 10."
-                        }
-                    ]
+                            description:
+                                "The position of the item to remove, ranging from 1 to 10.",
+                        },
+                    ],
                 },
                 {
                     name: "view",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Views the current music queue."
-                }
-            ]
+                    description: "Views the current music queue.",
+                },
+            ],
         },
         {
             name: "repeat",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Sets repeat mode (whether to repeat music during playback).",
+            description:
+                "Sets repeat mode (whether to repeat music during playback).",
             options: [
                 {
                     name: "repeat",
                     required: true,
                     type: ApplicationCommandOptionTypes.BOOLEAN,
-                    description: "Whether to enable repeat mode."
-                }
-            ]
+                    description: "Whether to enable repeat mode.",
+                },
+            ],
         },
         {
             name: "resume",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Resumes the currently played audio in a voice channel."
+            description:
+                "Resumes the currently played audio in a voice channel.",
         },
         {
             name: "shuffle",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Shuffles the current music queue."
+            description: "Shuffles the current music queue.",
         },
         {
             name: "skip",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Skips the currently played audio in a voice channel."
-        }
+            description: "Skips the currently played audio in a voice channel.",
+        },
     ],
     example: [
         {
@@ -245,23 +260,24 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "query",
-                    value: "realm of tranquil eternity"
-                }
+                    value: "realm of tranquil eternity",
+                },
             ],
-            description: "will search \"realm of tranquil eternity\" from YouTube and lets you choose which video to play."
+            description:
+                'will search "realm of tranquil eternity" from YouTube and lets you choose which video to play.',
         },
         {
             command: "music queue remove",
             arguments: [
                 {
                     name: "position",
-                    value: 3
-                }
+                    value: 3,
+                },
             ],
-            description: "will remove the 3rd music queue in queue list."
-        }
+            description: "will remove the 3rd music queue in queue list.",
+        },
     ],
     cooldown: 10,
     permissions: ["BOT_OWNER"],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

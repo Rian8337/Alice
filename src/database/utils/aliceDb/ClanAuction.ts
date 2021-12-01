@@ -60,7 +60,10 @@ export class ClanAuction extends Manager {
      */
     bids: Collection<string, AuctionBid>;
 
-    constructor(data: DatabaseClanAuction = DatabaseManager.aliceDb?.collections.clanAuction.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseClanAuction = DatabaseManager.aliceDb?.collections
+            .clanAuction.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -76,19 +79,16 @@ export class ClanAuction extends Manager {
 
     /**
      * Bids to the auction.
-     * 
+     *
      * @param clan The clan who bid.
      * @param amount The amount of Alice coins to bid.
      * @returns An object containing information about the operation.
      */
     bid(clan: Clan, amount: number): OperationResult {
-        this.bids.set(
-            clan.name,
-            {
-                clan: clan.name,
-                amount: (this.bids.get(clan.name)?.amount ?? 0) + amount
-            }
-        );
+        this.bids.set(clan.name, {
+            clan: clan.name,
+            amount: (this.bids.get(clan.name)?.amount ?? 0) + amount,
+        });
 
         this.bids.sort((a, b) => {
             return b.amount - a.amount;
@@ -99,26 +99,37 @@ export class ClanAuction extends Manager {
 
     /**
      * Ends the auction.
-     * 
+     *
      * @param force Whether to forcefully end the auction.
      * @returns An object containing information about the operation.
      */
     async end(force?: boolean): Promise<OperationResult> {
-        if (!force && DateTimeFormatHelper.getTimeDifference(this.expirydate * 1000) > 0) {
-            return this.createOperationResult(false, "not the time to end auction yet");
+        if (
+            !force &&
+            DateTimeFormatHelper.getTimeDifference(this.expirydate * 1000) > 0
+        ) {
+            return this.createOperationResult(
+                false,
+                "not the time to end auction yet"
+            );
         }
 
-        return DatabaseManager.aliceDb.collections.clanAuction.delete({ name: this.name });
+        return DatabaseManager.aliceDb.collections.clanAuction.delete({
+            name: this.name,
+        });
     }
 
     /**
      * Gets the clan who won the auction.
-     * 
+     *
      * @returns The clan who won the auction, `null` if there are none (possibly for various reasons (disbanded, database error, etc)).
      */
     async getWinnerClan(): Promise<Clan | null> {
         for await (const bid of this.bids.values()) {
-            const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(bid.clan);
+            const clan: Clan | null =
+                await DatabaseManager.elainaDb.collections.clan.getFromName(
+                    bid.clan
+                );
 
             if (clan) {
                 return clan;
@@ -130,13 +141,13 @@ export class ClanAuction extends Manager {
 
     /**
      * Gives the auctioned item into a clan.
-     * 
+     *
      * @param clan The clan. If unspecified, the winning clan will be given. This can also be used to save database requests.
      * @returns An object containing information about the operation.
      */
     async giveItemTo(clan?: Clan): Promise<OperationResult> {
         if (!clan) {
-            clan = <Clan> await this.getWinnerClan();
+            clan = <Clan>await this.getWinnerClan();
             if (!clan) {
                 return this.createOperationResult(false, "no winning clan");
             }
@@ -155,7 +166,10 @@ export class ClanAuction extends Manager {
      * Returns the auctioned item to the auctioneer.
      */
     async returnItemToAuctioneer(): Promise<OperationResult> {
-        const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(this.auctioneer);
+        const clan: Clan | null =
+            await DatabaseManager.elainaDb.collections.clan.getFromName(
+                this.auctioneer
+            );
 
         if (!clan) {
             return this.createOperationResult(false, "auctioneer not found");
@@ -172,10 +186,10 @@ export class ClanAuction extends Manager {
 
     /**
      * Updates the auction in auction database.
-     * 
+     *
      * This should only be called after changing everything needed
      * as this will perform a database operation.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async updateAuction(): Promise<OperationResult> {
@@ -189,8 +203,8 @@ export class ClanAuction extends Manager {
                     min_price: this.min_price,
                     powerup: this.powerup,
                     amount: this.amount,
-                    bids: [...this.bids.values()]
-                }
+                    bids: [...this.bids.values()],
+                },
             }
         );
     }

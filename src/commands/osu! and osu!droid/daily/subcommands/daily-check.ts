@@ -7,21 +7,30 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const type: ChallengeType = <ChallengeType> interaction.options.getString("type") ?? "daily";
+    const type: ChallengeType =
+        <ChallengeType>interaction.options.getString("type") ?? "daily";
 
-    const challenge: Challenge | null = await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(type);
+    const challenge: Challenge | null =
+        await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(
+            type
+        );
 
     if (!challenge) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.noOngoingChallenge)
+            content: MessageCreator.createReject(
+                dailyStrings.noOngoingChallenge
+            ),
         });
     }
 
     interaction.editReply(
-        await EmbedCreator.createChallengeEmbed(challenge, challenge.type === "weekly" ? "#af46db" : "#e3b32d")
+        await EmbedCreator.createChallengeEmbed(
+            challenge,
+            challenge.type === "weekly" ? "#af46db" : "#e3b32d"
+        )
     );
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

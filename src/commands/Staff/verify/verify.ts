@@ -8,49 +8,70 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { verifyStrings } from "./verifyStrings";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 
-export const run: Command["run"] = async(_, interaction) => {
-    if (!(<GuildMember> interaction.member).roles.cache.hasAny(...Config.verifyPerm)) {
+export const run: Command["run"] = async (_, interaction) => {
+    if (
+        !(<GuildMember>interaction.member).roles.cache.hasAny(
+            ...Config.verifyPerm
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject)
+            content: MessageCreator.createReject(Constants.noPermissionReject),
         });
     }
 
-    if (!(interaction.channel instanceof ThreadChannel) || interaction.channel.parentId !== Constants.verificationChannel) {
+    if (
+        !(interaction.channel instanceof ThreadChannel) ||
+        interaction.channel.parentId !== Constants.verificationChannel
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(verifyStrings.commandNotAvailableInChannel)
+            content: MessageCreator.createReject(
+                verifyStrings.commandNotAvailableInChannel
+            ),
         });
     }
 
-    const toVerify: GuildMember = await interaction.guild!.members.fetch(interaction.options.getUser("user", true));
+    const toVerify: GuildMember = await interaction.guild!.members.fetch(
+        interaction.options.getUser("user", true)
+    );
 
     await interaction.channel!.members.fetch();
 
     if (!interaction.channel!.members.cache.has(toVerify.id)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(verifyStrings.userIsNotInThread)
+            content: MessageCreator.createReject(
+                verifyStrings.userIsNotInThread
+            ),
         });
     }
 
-    const onVerificationRole: Role = interaction.guild!.roles.cache.find(v => v.name === "On Verification")!;
+    const onVerificationRole: Role = interaction.guild!.roles.cache.find(
+        (v) => v.name === "On Verification"
+    )!;
 
-    const memberRole: Role = interaction.guild!.roles.cache.find(r => r.name === "Member")!;
+    const memberRole: Role = interaction.guild!.roles.cache.find(
+        (r) => r.name === "Member"
+    )!;
 
     if (!toVerify.roles.cache.has(onVerificationRole.id)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(verifyStrings.userIsNotInVerification)
+            content: MessageCreator.createReject(
+                verifyStrings.userIsNotInVerification
+            ),
         });
     }
 
     if (toVerify.roles.cache.has(memberRole.id)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(verifyStrings.userIsAlreadyVerifiedError)
+            content: MessageCreator.createReject(
+                verifyStrings.userIsAlreadyVerifiedError
+            ),
         });
     }
 
-    await toVerify.roles.set([ memberRole ], "Verification");
+    await toVerify.roles.set([memberRole], "Verification");
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(verifyStrings.verificationSuccess)
+        content: MessageCreator.createAccept(verifyStrings.verificationSuccess),
     });
 
     await HelperFunctions.sleep(1);
@@ -59,11 +80,13 @@ export const run: Command["run"] = async(_, interaction) => {
 
     await interaction.channel.setArchived(true);
 
-    const general: TextChannel = <TextChannel> interaction.guild!.channels.cache.get(Constants.mainServer);
+    const general: TextChannel = <TextChannel>(
+        interaction.guild!.channels.cache.get(Constants.mainServer)
+    );
 
     general.send({
         content: `Welcome to ${interaction.guild!.name}, ${toVerify}!`,
-        files: [ Constants.welcomeImageLink ]
+        files: [Constants.welcomeImageLink],
     });
 };
 
@@ -71,14 +94,15 @@ export const category: Command["category"] = CommandCategory.STAFF;
 
 export const config: Command["config"] = {
     name: "verify",
-    description: "Verifies a user. This command uses a special permission that cannot be modified.",
+    description:
+        "Verifies a user. This command uses a special permission that cannot be modified.",
     options: [
         {
             name: "user",
             required: true,
             type: ApplicationCommandOptionTypes.USER,
-            description: "The user to verify."
-        }
+            description: "The user to verify.",
+        },
     ],
     example: [
         {
@@ -86,22 +110,22 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
-                }
+                    value: "@Rian8337#0001",
+                },
             ],
-            description: "will verify Rian8337."
+            description: "will verify Rian8337.",
         },
         {
             command: "verify",
             arguments: [
                 {
                     name: "user",
-                    value: "132783516176875520"
-                }
+                    value: "132783516176875520",
+                },
             ],
-            description: "will verify the user with that Discord ID."
-        }
+            description: "will verify the user with that Discord ID.",
+        },
     ],
     permissions: ["SPECIAL"],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

@@ -13,31 +13,37 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const name: string = interaction.options.getString("name", true);
 
-    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
+    const tag: GuildTag | null =
+        await DatabaseManager.aliceDb.collections.guildTags.getByName(
+            interaction.guildId,
+            name
+        );
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: interaction.member.displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: interaction.member.displayColor,
+    });
 
-    embed.setTitle("Tag Information")
+    embed
+        .setTitle("Tag Information")
         .setDescription(
             `**Name**: ${tag.name}\n` +
-            `**Author**: <@${tag.author}>\n` +
-            `**Creation Date**: ${new Date(tag.date).toUTCString()}\n` +
-            `**Attachments**: ${tag.attachments.length}`
+                `**Author**: <@${tag.author}>\n` +
+                `**Creation Date**: ${new Date(tag.date).toUTCString()}\n` +
+                `**Attachments**: ${tag.attachments.length}`
         );
 
     interaction.editReply({
-        embeds: [ embed ]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

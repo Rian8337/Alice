@@ -13,32 +13,44 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const name: string = interaction.options.getString("name", true);
 
-    const content: string = Util.removeMentions(interaction.options.getString("content") ?? "");
+    const content: string = Util.removeMentions(
+        interaction.options.getString("content") ?? ""
+    );
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.nameTooLong)
+            content: MessageCreator.createReject(tagStrings.nameTooLong),
         });
     }
 
     if (content.length > 1500) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.contentTooLong)
+            content: MessageCreator.createReject(tagStrings.contentTooLong),
         });
     }
 
-    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
+    const tag: GuildTag | null =
+        await DatabaseManager.aliceDb.collections.guildTags.getByName(
+            interaction.guildId,
+            name
+        );
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist),
         });
     }
 
     // Allow server admins to edit tags that violate rules
-    if (tag.author !== interaction.user.id && !CommandHelper.checkPermission(interaction, Permissions.FLAGS.ADMINISTRATOR)) {
+    if (
+        tag.author !== interaction.user.id &&
+        !CommandHelper.checkPermission(
+            interaction,
+            Permissions.FLAGS.ADMINISTRATOR
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.notTagOwner)
+            content: MessageCreator.createReject(tagStrings.notTagOwner),
         });
     }
 
@@ -48,11 +60,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            tagStrings.editTagSuccessful, name
-        )
+            tagStrings.editTagSuccessful,
+            name
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

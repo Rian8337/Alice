@@ -6,13 +6,19 @@ import { Manager } from "@alice-utils/base/Manager";
 /**
  * Represents a music collection.
  */
-export class MusicCollection extends Manager implements DatabaseMusicCollection {
+export class MusicCollection
+    extends Manager
+    implements DatabaseMusicCollection
+{
     createdAt: number;
     name: string;
     owner: string;
     videoIds: string[];
 
-    constructor(data: DatabaseMusicCollection = DatabaseManager.aliceDb?.collections.musicCollection.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseMusicCollection = DatabaseManager.aliceDb?.collections
+            .musicCollection.defaultDocument ?? {}
+    ) {
         super();
 
         this.createdAt = data.createdAt;
@@ -23,7 +29,7 @@ export class MusicCollection extends Manager implements DatabaseMusicCollection 
 
     /**
      * Updates this music collection into the database.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     updateCollection(): Promise<OperationResult> {
@@ -32,8 +38,8 @@ export class MusicCollection extends Manager implements DatabaseMusicCollection 
             {
                 $set: {
                     name: this.name,
-                    videoIds: this.videoIds
-                }
+                    videoIds: this.videoIds,
+                },
             }
         );
     }

@@ -7,37 +7,44 @@ export class Constants {
     /**
      * Default message to send when a user doesn't meet required permissions to use a command.
      */
-    static readonly noPermissionReject: string = "I'm sorry, you do not have the permission to execute this command.";
+    static readonly noPermissionReject: string =
+        "I'm sorry, you do not have the permission to execute this command.";
 
     /**
      * Default message to send when a database operation fails.
      */
-    static readonly databaseErrorReject: string = "I'm sorry, I'm having trouble receiving response from database. Please try again!";
+    static readonly databaseErrorReject: string =
+        "I'm sorry, I'm having trouble receiving response from database. Please try again!";
 
     /**
      * Default message to send when a Discord user doesn't have a binded osu!droid account.
      */
-    static readonly selfNotBindedReject: string = "I'm sorry, your account is not binded. You need to bind your account using `/userbind` first.";
+    static readonly selfNotBindedReject: string =
+        "I'm sorry, your account is not binded. You need to bind your account using `/userbind` first.";
 
     /**
      * Default message to send when a command is not available in a server.
      */
-    static readonly notAvailableInServerReject: string = "I'm sorry, this command is not available in this server.";
+    static readonly notAvailableInServerReject: string =
+        "I'm sorry, this command is not available in this server.";
 
     /**
      * Default message to send when a command is not available in a channel.
      */
-    static readonly notAvailableInChannelReject: string = "I'm sorry, this command is not available in this channel.";
+    static readonly notAvailableInChannelReject: string =
+        "I'm sorry, this command is not available in this channel.";
 
     /**
      * Default message to send when a user (third-person) doesn't have a binded osu!droid account.
      */
-    static readonly userNotBindedReject: string = "I'm sorry, that account is not binded. The user needs to bind his/her account using `/userbind` first.";
+    static readonly userNotBindedReject: string =
+        "I'm sorry, that account is not binded. The user needs to bind his/her account using `/userbind` first.";
 
     /**
      * Default message to send when an API request towards the osu!droid server fails.
      */
-    static readonly droidApiRequestFail: string = "I'm sorry, I'm having trouble receiving response from osu!droid server. Please try again!";
+    static readonly droidApiRequestFail: string =
+        "I'm sorry, I'm having trouble receiving response from osu!droid server. Please try again!";
 
     /**
      * The ID of main guild.
@@ -62,7 +69,8 @@ export class Constants {
     /**
      * The link to welcome image (used to welcome new members to the server).
      */
-    static readonly welcomeImageLink: string = "https://i.imgur.com/LLzteLz.jpg";
+    static readonly welcomeImageLink: string =
+        "https://i.imgur.com/LLzteLz.jpg";
 
     /**
      * The uid limit that is used to check if a uid from a user's input is too small.

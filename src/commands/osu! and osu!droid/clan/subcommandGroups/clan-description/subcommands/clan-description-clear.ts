@@ -16,11 +16,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const allowedConfirmations: Snowflake[] = [];
 
     if (interaction.options.getString("name")) {
-        const staffMembers: Collection<Snowflake, GuildMember> = await PermissionHelper.getMainGuildStaffMembers(client);
+        const staffMembers: Collection<Snowflake, GuildMember> =
+            await PermissionHelper.getMainGuildStaffMembers(client);
 
         if (!staffMembers.has(interaction.user.id)) {
             return interaction.editReply({
-                content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+                content: MessageCreator.createReject(
+                    clanStrings.selfHasNoAdministrativePermission
+                ),
             });
         }
 
@@ -28,40 +31,57 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         clanName = interaction.options.getString("name", true);
     } else {
-        const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
+        const bindInfo: UserBind | null =
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+                interaction.user
+            );
 
         if (!bindInfo) {
             return interaction.editReply({
-                content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                content: MessageCreator.createReject(
+                    Constants.selfNotBindedReject
+                ),
             });
         }
 
         if (!bindInfo.clan) {
             return interaction.editReply({
-                content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+                content: MessageCreator.createReject(
+                    clanStrings.selfIsNotInClan
+                ),
             });
         }
 
         clanName = bindInfo.clan;
     }
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(clanName);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromName(clanName);
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntExist)
+            content: MessageCreator.createReject(clanStrings.clanDoesntExist),
         });
     }
 
-    if (!clan.hasAdministrativePower(interaction.user) && allowedConfirmations.length === 1) {
+    if (
+        !clan.hasAdministrativePower(interaction.user) &&
+        allowedConfirmations.length === 1
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
-        { content: MessageCreator.createWarn(clanStrings.clearDescriptionConfirmation) },
+        {
+            content: MessageCreator.createWarn(
+                clanStrings.clearDescriptionConfirmation
+            ),
+        },
         [interaction.user.id],
         20
     );
@@ -74,7 +94,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!editDescResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clearDescriptionFailed, editDescResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.clearDescriptionFailed,
+                editDescResult.reason!
+            ),
         });
     }
 
@@ -82,15 +105,20 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!finalResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clearDescriptionFailed, finalResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.clearDescriptionFailed,
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.clearDescriptionSuccessful)
+        content: MessageCreator.createAccept(
+            clanStrings.clearDescriptionSuccessful
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

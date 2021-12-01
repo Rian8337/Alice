@@ -12,14 +12,14 @@ export const run: Command["run"] = async (client, interaction) => {
 
     if (!command) {
         return interaction.editReply({
-            content: MessageCreator.createReject(deployStrings.commandNotFound)
+            content: MessageCreator.createReject(deployStrings.commandNotFound),
         });
     }
 
     const data: ApplicationCommandData = {
         name: command.config.name,
         description: command.config.description,
-        options: command.config.options
+        options: command.config.options,
     };
 
     if (interaction.options.getBoolean("debug")) {
@@ -29,7 +29,10 @@ export const run: Command["run"] = async (client, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(deployStrings.commandDeploySuccessful, commandName)
+        content: MessageCreator.createAccept(
+            deployStrings.commandDeploySuccessful,
+            commandName
+        ),
     });
 };
 
@@ -43,13 +46,13 @@ export const config: Command["config"] = {
             name: "command",
             required: true,
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The command name."
+            description: "The command name.",
         },
         {
             name: "debug",
             type: ApplicationCommandOptionTypes.BOOLEAN,
-            description: "Whether to deploy the command in debug server."
-        }
+            description: "Whether to deploy the command in debug server.",
+        },
     ],
     example: [
         {
@@ -57,26 +60,28 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "command",
-                    value: "blacklist"
-                }
+                    value: "blacklist",
+                },
             ],
-            description: "will deploy the command with name \"blacklist\" globally."
+            description:
+                'will deploy the command with name "blacklist" globally.',
         },
         {
             command: "deploy",
             arguments: [
                 {
                     name: "command",
-                    value: "help"
+                    value: "help",
                 },
                 {
                     name: "debug",
-                    value: true
-                }
+                    value: true,
+                },
             ],
-            description: "will deploy the command with name \"help\" in debug server."
-        }
+            description:
+                'will deploy the command with name "help" in debug server.',
+        },
     ],
     permissions: ["BOT_OWNER"],
-    scope: "ALL"
+    scope: "ALL",
 };

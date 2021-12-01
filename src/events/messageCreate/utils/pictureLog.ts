@@ -5,11 +5,17 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: EventUtil["run"] = async (client, message: Message) => {
-    if (message.attachments.size === 0 || message.guild?.id !== Constants.mainServer || message.author.bot) {
+    if (
+        message.attachments.size === 0 ||
+        message.guild?.id !== Constants.mainServer ||
+        message.author.bot
+    ) {
         return;
     }
 
-    const logChannel: TextChannel = <TextChannel> await client.channels.fetch("684630015538626570");
+    const logChannel: TextChannel = <TextChannel>(
+        await client.channels.fetch("684630015538626570")
+    );
 
     for await (const attachment of message.attachments.values()) {
         if (!StringHelper.isValidImage(attachment.url)) {
@@ -20,24 +26,28 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
             author: message.author,
             color: "#cb8900",
             footerText: `Author ID: ${message.author.id} | Channel ID: ${message.channel.id} | Message ID: ${message.id}`,
-            timestamp: true
+            timestamp: true,
         });
 
-        embed.addField("Channel", `${message.channel} | [Go to Message](${message.url})`);
+        embed.addField(
+            "Channel",
+            `${message.channel} | [Go to Message](${message.url})`
+        );
 
         if (message.content) {
             embed.addField("Content", message.content.substring(0, 1025));
         }
 
         logChannel.send({
-            embeds: [ embed ],
-            files: [ attachment ]
+            embeds: [embed],
+            files: [attachment],
         });
     }
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for logging pictures and videos under 8 MB that are sent by users in main server.",
+    description:
+        "Responsible for logging pictures and videos under 8 MB that are sent by users in main server.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

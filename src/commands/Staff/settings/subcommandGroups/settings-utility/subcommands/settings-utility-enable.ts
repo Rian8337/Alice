@@ -13,13 +13,15 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const utility: string = interaction.options.getString("utility", true);
 
-    const scope: CommandUtilScope = <CommandUtilScope> interaction.options.getString("scope") ?? "channel";
+    const scope: CommandUtilScope =
+        <CommandUtilScope>interaction.options.getString("scope") ?? "channel";
 
-    const eventUtilities: Collection<string, EventUtil> | undefined = client.eventUtilities.get(event);
+    const eventUtilities: Collection<string, EventUtil> | undefined =
+        client.eventUtilities.get(event);
 
     if (!eventUtilities) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.eventNotFound)
+            content: MessageCreator.createReject(settingsStrings.eventNotFound),
         });
     }
 
@@ -27,28 +29,45 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!util) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.eventUtilityNotFound)
+            content: MessageCreator.createReject(
+                settingsStrings.eventUtilityNotFound
+            ),
         });
     }
 
-    if (!CommandHelper.userFulfillsCommandPermission(interaction, util.config.togglePermissions)) {
+    if (
+        !CommandHelper.userFulfillsCommandPermission(
+            interaction,
+            util.config.togglePermissions
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject)
+            content: MessageCreator.createReject(Constants.noPermissionReject),
         });
     }
 
     switch (scope) {
         case "channel":
-            await CommandUtilManager.enableUtilityInChannel(<TextChannel | NewsChannel> interaction.channel, event, utility);
+            await CommandUtilManager.enableUtilityInChannel(
+                <TextChannel | NewsChannel>interaction.channel,
+                event,
+                utility
+            );
             break;
         case "guild":
-            await CommandUtilManager.enableUtilityInGuild(interaction.guildId, event, utility);
+            await CommandUtilManager.enableUtilityInGuild(
+                interaction.guildId,
+                event,
+                utility
+            );
             break;
         case "global":
             // Only allow bot owners to globally enable an event utility
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.noPermissionReject)
+                    content: MessageCreator.createReject(
+                        Constants.noPermissionReject
+                    ),
                 });
             }
             CommandUtilManager.enableUtilityGlobally(event, utility);
@@ -57,11 +76,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.eventUtilityToggleSuccess, "enabled", utility, event
-        )
+            settingsStrings.eventUtilityToggleSuccess,
+            "enabled",
+            utility,
+            event
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

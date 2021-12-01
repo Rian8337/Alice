@@ -16,12 +16,12 @@ export const config: Command["config"] = {
         {
             name: "check",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Checks the ongoing vote in the channel."
+            description: "Checks the ongoing vote in the channel.",
         },
         {
             name: "end",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Ends the ongoing vote in the channel."
+            description: "Ends the ongoing vote in the channel.",
         },
         {
             name: "contribute",
@@ -32,9 +32,9 @@ export const config: Command["config"] = {
                     name: "option",
                     type: ApplicationCommandOptionTypes.INTEGER,
                     required: true,
-                    description: "The option to vote for."
-                }
-            ]
+                    description: "The option to vote for.",
+                },
+            ],
         },
         {
             name: "start",
@@ -45,16 +45,16 @@ export const config: Command["config"] = {
                     name: "topic",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The topic of the vote."
+                    description: "The topic of the vote.",
                 },
                 {
                     name: "choices",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The choices of the vote, separated by \"|\"."
-                }
-            ]
-        }
+                    description: 'The choices of the vote, separated by "|".',
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -62,27 +62,29 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "topic",
-                    value: "What is your favorite color?"
+                    value: "What is your favorite color?",
                 },
                 {
                     name: "choices",
-                    value: "Green | Blue | Red"
-                }
+                    value: "Green | Blue | Red",
+                },
             ],
-            description: "will start a vote in the channel with topic \"What is your favorite color?\" and choices \"Green\", \"Blue\", and \"Red\"."
+            description:
+                'will start a vote in the channel with topic "What is your favorite color?" and choices "Green", "Blue", and "Red".',
         },
         {
             command: "vote contribute",
             arguments: [
                 {
                     name: "option",
-                    value: 2
-                }
+                    value: 2,
+                },
             ],
-            description: "will vote for option 2 in the current ongoing vote in the channel."
-        }
+            description:
+                "will vote for option 2 in the current ongoing vote in the channel.",
+        },
     ],
     cooldown: 10,
     permissions: [],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

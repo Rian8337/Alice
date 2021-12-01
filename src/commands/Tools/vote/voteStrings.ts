@@ -8,5 +8,5 @@ export enum voteStrings {
     voteChoiceIsSameAsBefore = "I'm sorry, you have voted for that choice!",
     voteRegistered = "%s, %s!",
     tooFewChoices = "I'm sorry, you must specify at least 2 choices!",
-    voteStartSuccess = "Successfully started vote."
+    voteStartSuccess = "Successfully started vote.",
 }

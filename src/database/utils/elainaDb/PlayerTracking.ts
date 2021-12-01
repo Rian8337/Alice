@@ -10,7 +10,10 @@ export class PlayerTracking extends Manager implements DatabasePlayerTracking {
     uid: number;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabasePlayerTracking = DatabaseManager.elainaDb?.collections.playerTracking.defaultDocument ?? {}) {
+    constructor(
+        data: DatabasePlayerTracking = DatabaseManager.elainaDb?.collections
+            .playerTracking.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

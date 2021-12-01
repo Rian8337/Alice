@@ -6,11 +6,17 @@ import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { Collection, GuildMember, Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const staffMembers: Collection<Snowflake, GuildMember> = await PermissionHelper.getMainGuildStaffMembers(client);
+    const staffMembers: Collection<Snowflake, GuildMember> =
+        await PermissionHelper.getMainGuildStaffMembers(client);
 
-    if (!(<GuildMember> interaction.member).roles.cache.find(r => r.name === "Referee") && !staffMembers.has(interaction.user.id)) {
+    if (
+        !(<GuildMember>interaction.member).roles.cache.find(
+            (r) => r.name === "Referee"
+        ) &&
+        !staffMembers.has(interaction.user.id)
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject)
+            content: MessageCreator.createReject(Constants.noPermissionReject),
         });
     }
 
@@ -18,5 +24,5 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["SPECIAL"]
+    permissions: ["SPECIAL"],
 };

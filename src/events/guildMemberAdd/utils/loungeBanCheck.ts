@@ -10,7 +10,10 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
         return;
     }
 
-    const lockInfo: LoungeLock | null = await DatabaseManager.aliceDb.collections.loungeLock.getUserLockInfo(member.id);
+    const lockInfo: LoungeLock | null =
+        await DatabaseManager.aliceDb.collections.loungeLock.getUserLockInfo(
+            member.id
+        );
 
     if (!lockInfo || lockInfo.isExpired) {
         return;
@@ -20,7 +23,8 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for readding lounge locks to users who rejoined the main server.",
+    description:
+        "Responsible for readding lounge locks to users who rejoined the main server.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

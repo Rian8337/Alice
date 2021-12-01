@@ -7,28 +7,41 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
 /**
  * A manager for the `mapinfolength` collection.
  */
-export class TournamentMapLengthInfoCollectionManager extends DatabaseCollectionManager<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo>;
+export class TournamentMapLengthInfoCollectionManager extends DatabaseCollectionManager<
+    DatabaseTournamentMapLengthInfo,
+    TournamentMapLengthInfo
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseTournamentMapLengthInfo,
+        TournamentMapLengthInfo
+    >;
 
     override get defaultDocument(): DatabaseTournamentMapLengthInfo {
         return {
             map: [],
-            poolid: ""
+            poolid: "",
         };
     }
 
     /**
      * @param collection The MongoDB collection.
      */
-    constructor(collection: MongoDBCollection<DatabaseTournamentMapLengthInfo>) {
+    constructor(
+        collection: MongoDBCollection<DatabaseTournamentMapLengthInfo>
+    ) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo>> new TournamentMapLengthInfo().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<
+                DatabaseTournamentMapLengthInfo,
+                TournamentMapLengthInfo
+            >
+        >new TournamentMapLengthInfo().constructor;
     }
 
     /**
      * Gets a tournament mappool from its id.
-     * 
+     *
      * @param id The ID of the mappool.
      * @returns The mappool, `null` if not found.
      */

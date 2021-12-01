@@ -9,32 +9,46 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const nameChanges: Collection<number, NameChange> = await DatabaseManager.aliceDb.collections.nameChange.getActiveNameChangeRequests();
+    const nameChanges: Collection<number, NameChange> =
+        await DatabaseManager.aliceDb.collections.nameChange.getActiveNameChangeRequests();
 
     if (nameChanges.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.noActiveRequest)
+            content: MessageCreator.createReject(
+                namechangeStrings.noActiveRequest
+            ),
         });
     }
 
-    nameChanges.sort((a, b) => { return a.cooldown - b.cooldown });
+    nameChanges.sort((a, b) => {
+        return a.cooldown - b.cooldown;
+    });
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: "#cb9000" }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: "#cb9000",
+    });
 
     embed.setTitle("Name Change Request List");
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: NameChange[]) => {
+    const onPageChange: OnButtonPageChange = async (
+        _,
+        page,
+        contents: NameChange[]
+    ) => {
         for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
             const content: NameChange = contents[i];
 
             if (content) {
                 embed.addField(
-                    `**${i + 1}**. **${content.current_username} (${content.uid})**`,
+                    `**${i + 1}**. **${content.current_username} (${
+                        content.uid
+                    })**`,
                     `**Discord Account**: <@${content.discordid}> (${content.discordid})\n` +
-                    `**Username Requested**: ${content.new_username}\n` +
-                    `**Creation Date**: ${new Date((content.cooldown - 86400 * 30) * 1000).toUTCString()}`
+                        `**Username Requested**: ${content.new_username}\n` +
+                        `**Creation Date**: ${new Date(
+                            (content.cooldown - 86400 * 30) * 1000
+                        ).toUTCString()}`
                 );
             }
         }
@@ -53,5 +67,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

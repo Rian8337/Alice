@@ -10,19 +10,24 @@ import { mapshareStrings } from "../mapshareStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (interaction.channelId !== Constants.mapShareChannel) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.notAvailableInServerReject)
+            content: MessageCreator.createReject(
+                Constants.notAvailableInServerReject
+            ),
         });
     }
 
     const user: User = interaction.options.getUser("user", true);
 
-    const dbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
+    const dbManager: PlayerInfoCollectionManager =
+        DatabaseManager.aliceDb.collections.playerInfo;
 
     const playerInfo: PlayerInfo | null = await dbManager.getFromUser(user);
 
     if (!playerInfo || playerInfo.isBannedFromMapShare) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mapshareStrings.userIsNotBanned)
+            content: MessageCreator.createReject(
+                mapshareStrings.userIsNotBanned
+            ),
         });
     }
 
@@ -32,24 +37,25 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { discordid: user.id },
         {
             $set: {
-                isBannedFromMapShare: false
-            }
+                isBannedFromMapShare: false,
+            },
         }
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.unbanFailed, result.reason!
-            )
+                mapshareStrings.unbanFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(mapshareStrings.unbanSuccess)
+        content: MessageCreator.createAccept(mapshareStrings.unbanSuccess),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["SPECIAL"]
+    permissions: ["SPECIAL"],
 };

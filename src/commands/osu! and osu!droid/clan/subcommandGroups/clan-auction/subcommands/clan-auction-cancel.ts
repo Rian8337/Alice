@@ -11,38 +11,50 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
-    const auction: ClanAuction | null = await DatabaseManager.aliceDb.collections.clanAuction.getFromName(name);
+    const auction: ClanAuction | null =
+        await DatabaseManager.aliceDb.collections.clanAuction.getFromName(name);
 
     if (!auction) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.auctionDoesntExist)
+            content: MessageCreator.createReject(
+                clanStrings.auctionDoesntExist
+            ),
         });
     }
 
     if (auction.bids.size > 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanAuctionHasBeenBid)
+            content: MessageCreator.createReject(
+                clanStrings.clanAuctionHasBeenBid
+            ),
         });
     }
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(auction.auctioneer);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromName(
+            auction.auctioneer
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
         {
-            content: MessageCreator.createWarn(clanStrings.clanAuctionCancelConfirmation)
+            content: MessageCreator.createWarn(
+                clanStrings.clanAuctionCancelConfirmation
+            ),
         },
         [interaction.user.id],
         20
@@ -56,15 +68,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     ++clan.powerups.get(powerup)!.amount;
 
-    const cancelResult: OperationResult = await DatabaseManager.aliceDb.collections.clanAuction.delete(
-        { name: name }
-    );
+    const cancelResult: OperationResult =
+        await DatabaseManager.aliceDb.collections.clanAuction.delete({
+            name: name,
+        });
 
     if (!cancelResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.acceptClanInvitationFailed, cancelResult.reason!
-            )
+                clanStrings.acceptClanInvitationFailed,
+                cancelResult.reason!
+            ),
         });
     }
 
@@ -73,16 +87,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanAuctionCancelFailed, finalResult.reason!
-            )
+                clanStrings.clanAuctionCancelFailed,
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.clanAuctionCancelSuccessful)
+        content: MessageCreator.createAccept(
+            clanStrings.clanAuctionCancelSuccessful
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

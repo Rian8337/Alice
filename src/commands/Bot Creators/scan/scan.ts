@@ -16,15 +16,16 @@ export const config: Command["config"] = {
         {
             name: "dpp",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Scans the entire dpp database for unranked plays."
+            description: "Scans the entire dpp database for unranked plays.",
         },
         {
             name: "whitelist",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Scans the entire whitelisting and dpp database for unwhitelisted/unavailable beatmaps."
-        }
+            description:
+                "Scans the entire whitelisting and dpp database for unwhitelisted/unavailable beatmaps.",
+        },
     ],
     example: [],
     permissions: ["BOT_OWNER"],
-    scope: "ALL"
+    scope: "ALL",
 };

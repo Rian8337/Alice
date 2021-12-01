@@ -18,25 +18,33 @@ export const run: Command["run"] = async (client, interaction) => {
     );
 
     const elainaDbPing: number = await HelperFunctions.getFunctionExecutionTime(
-        DatabaseManager.elainaDb.instance.command.bind(DatabaseManager.elainaDb.instance), { ping: 1 }
+        DatabaseManager.elainaDb.instance.command.bind(
+            DatabaseManager.elainaDb.instance
+        ),
+        { ping: 1 }
     );
 
     const aliceDbPing: number = await HelperFunctions.getFunctionExecutionTime(
-        DatabaseManager.aliceDb.instance.command.bind(DatabaseManager.aliceDb.instance), { ping: 1 }
+        DatabaseManager.aliceDb.instance.command.bind(
+            DatabaseManager.aliceDb.instance
+        ),
+        { ping: 1 }
     );
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
-        author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor
+        author: interaction.user,
+        color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    embed.addField("Discord Websocket", `${Math.abs(client.ws.ping)}ms`)
+    embed
+        .addField("Discord Websocket", `${Math.abs(client.ws.ping)}ms`)
         .addField("osu!droid Server", `${Math.round(droidPing)}ms`)
         .addField("Elaina Database", `${Math.round(elainaDbPing)}ms`)
         .addField("Alice Database", `${Math.round(aliceDbPing)}ms`);
 
     interaction.editReply({
         content: MessageCreator.createAccept(pingStrings.pong),
-        embeds: [ embed ]
+        embeds: [embed],
     });
 };
 
@@ -49,9 +57,9 @@ export const config: Command["config"] = {
     example: [
         {
             command: "ping",
-            description: "will give my websocket ping to Discord."
-        }
+            description: "will give my websocket ping to Discord.",
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

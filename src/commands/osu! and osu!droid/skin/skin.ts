@@ -11,7 +11,8 @@ export const category: Command["category"] = CommandCategory.OSU;
 
 export const config: Command["config"] = {
     name: "skin",
-    description: "View a Discord account's osu! or osu!droid skin or set your own.",
+    description:
+        "View a Discord account's osu! or osu!droid skin or set your own.",
     options: [
         {
             name: "set",
@@ -22,9 +23,9 @@ export const config: Command["config"] = {
                     name: "url",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The URL to the skin."
-                }
-            ]
+                    description: "The URL to the skin.",
+                },
+            ],
         },
         {
             name: "view",
@@ -34,37 +35,37 @@ export const config: Command["config"] = {
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to view. Defaults to yourself"
-                }
-            ]
-        }
+                    description: "The user to view. Defaults to yourself",
+                },
+            ],
+        },
     ],
     example: [
         {
             command: "skin view",
-            description: "will view your own skin."
+            description: "will view your own skin.",
         },
         {
             command: "skin view",
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
-                }
+                    value: "@Rian8337#0001",
+                },
             ],
-            description: "will view Rian8337's skin."
+            description: "will view Rian8337's skin.",
         },
         {
             command: "skin set",
             arguments: [
                 {
                     name: "url",
-                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
-                }
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+                },
             ],
-            description: "will set your skin to the specified URL."
-        }
+            description: "will set your skin to the specified URL.",
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

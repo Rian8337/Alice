@@ -23,7 +23,10 @@ export class ChannelData extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseChannelData = DatabaseManager.aliceDb?.collections.channelData.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseChannelData = DatabaseManager.aliceDb?.collections
+            .channelData.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

@@ -8,17 +8,19 @@ import { Snowflake } from "discord.js";
 import { recalcStrings } from "../../../recalcStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.tooManyOptions)
+            content: MessageCreator.createReject(recalcStrings.tooManyOptions),
         });
     }
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null;
 
@@ -40,24 +42,27 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                !!uid || !!username || !!discordid ? Constants.userNotBindedReject : Constants.selfNotBindedReject
-            )
+                !!uid || !!username || !!discordid
+                    ? Constants.userNotBindedReject
+                    : Constants.selfNotBindedReject
+            ),
         });
     }
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(recalcStrings.recalcInProgress)
+        content: MessageCreator.createAccept(recalcStrings.recalcInProgress),
     });
 
     await bindInfo.calculatePrototypeDPP();
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            recalcStrings.fullRecalcSuccess, interaction.user.toString()
-        )
+            recalcStrings.fullRecalcSuccess,
+            interaction.user.toString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

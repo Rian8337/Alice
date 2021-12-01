@@ -1,13 +1,25 @@
 import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { Collection, Role, Snowflake, ThreadChannel, ThreadMember } from "discord.js";
+import {
+    Collection,
+    Role,
+    Snowflake,
+    ThreadChannel,
+    ThreadMember,
+} from "discord.js";
 
-export const run: EventUtil["run"] = async (_, oldMembers: Collection<Snowflake, ThreadMember>, newMembers: Collection<Snowflake, ThreadMember>) => {
+export const run: EventUtil["run"] = async (
+    _,
+    oldMembers: Collection<Snowflake, ThreadMember>,
+    newMembers: Collection<Snowflake, ThreadMember>
+) => {
     if (oldMembers.size < newMembers.size) {
         return;
     }
 
-    const thread: ThreadChannel | undefined = (newMembers.first() ?? oldMembers.first())?.thread;
+    const thread: ThreadChannel | undefined = (
+        newMembers.first() ?? oldMembers.first()
+    )?.thread;
 
     if (thread?.parentId !== Constants.verificationChannel) {
         return;
@@ -19,7 +31,9 @@ export const run: EventUtil["run"] = async (_, oldMembers: Collection<Snowflake,
     try {
         await thread.guild.members.fetch(memberLeft.id);
 
-        const onVerificationRole: Role = thread.guild.roles.cache.find(v => v.name === "On Verification")!;
+        const onVerificationRole: Role = thread.guild.roles.cache.find(
+            (v) => v.name === "On Verification"
+        )!;
 
         if (memberLeft.guildMember!.roles.cache.has(onVerificationRole.id)) {
             await thread.members.add(memberLeft);
@@ -30,7 +44,8 @@ export const run: EventUtil["run"] = async (_, oldMembers: Collection<Snowflake,
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for reentering a user to a verification thread if they leave from it.",
+    description:
+        "Responsible for reentering a user to a verification thread if they leave from it.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

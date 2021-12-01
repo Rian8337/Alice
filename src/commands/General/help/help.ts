@@ -1,4 +1,11 @@
-import { ApplicationCommandOptionData, ApplicationCommandSubCommandData, ApplicationCommandSubGroupData, Collection, GuildMember, MessageEmbed } from "discord.js";
+import {
+    ApplicationCommandOptionData,
+    ApplicationCommandSubCommandData,
+    ApplicationCommandSubGroupData,
+    Collection,
+    GuildMember,
+    MessageEmbed,
+} from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
@@ -13,7 +20,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**
  * Gets the list of commands that the bot has.
- * 
+ *
  * @param client The instance of the bot.
  * @returns The list of commands, mapped by their category.
  */
@@ -32,18 +39,22 @@ function getCommandList(client: Bot): Collection<string, string[]> {
 }
 
 export const run: Command["run"] = async (client, interaction) => {
-    const commandName: string | null = interaction.options.getString("commandname");
+    const commandName: string | null =
+        interaction.options.getString("commandname");
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember | null>interaction.member)?.displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember | null>interaction.member)?.displayColor,
+    });
 
     if (commandName) {
         const cmd: Command | undefined = client.commands.get(commandName);
 
         if (!cmd) {
             return interaction.editReply({
-                content: MessageCreator.createReject(helpStrings.noCommandFound)
+                content: MessageCreator.createReject(
+                    helpStrings.noCommandFound
+                ),
             });
         }
 
@@ -60,9 +71,10 @@ export const run: Command["run"] = async (client, interaction) => {
                 switch (arg.type) {
                     case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP:
                         precedingKeywords.push(arg.name);
-                        for (const localArg of (arg.options ?? [])) {
+                        for (const localArg of arg.options ?? []) {
                             precedingKeywords.push(localArg.name);
-                            for (const localLocalArg of (localArg.options ?? [])) {
+                            for (const localLocalArg of localArg.options ??
+                                []) {
                                 isOptional ||= !localLocalArg.required;
 
                                 if (isOptional) {
@@ -75,7 +87,7 @@ export const run: Command["run"] = async (client, interaction) => {
                         break;
                     case ApplicationCommandOptionTypes.SUB_COMMAND:
                         precedingKeywords.push(arg.name);
-                        for (const localArg of (arg.options ?? [])) {
+                        for (const localArg of arg.options ?? []) {
                             isOptional ||= !localArg.required;
 
                             if (isOptional) {
@@ -86,8 +98,13 @@ export const run: Command["run"] = async (client, interaction) => {
                         }
                         break;
                     default:
-                        isOptional ||=
-                            !(<Exclude<ApplicationCommandOptionData, ApplicationCommandSubGroupData | ApplicationCommandSubCommandData>>arg).required;
+                        isOptional ||= !(<
+                            Exclude<
+                                ApplicationCommandOptionData,
+                                | ApplicationCommandSubGroupData
+                                | ApplicationCommandSubCommandData
+                            >
+                        >arg).required;
 
                         if (isOptional) {
                             mappedArgs.push(`[${arg.name}]`);
@@ -96,55 +113,93 @@ export const run: Command["run"] = async (client, interaction) => {
                         }
                 }
 
-                finalMappedArgs.push(`[ ${precedingKeywords.join(" ")} ${mappedArgs.join(" ")} ]`);
+                finalMappedArgs.push(
+                    `[ ${precedingKeywords.join(" ")} ${mappedArgs.join(" ")} ]`
+                );
             }
 
-            argsString += finalMappedArgs.map(v => v.trim()).join(" | ");
+            argsString += finalMappedArgs.map((v) => v.trim()).join(" | ");
         }
 
-        embed.setTitle(cmd.config.name)
+        embed
+            .setTitle(cmd.config.name)
             .setDescription(
-                "```md\n" + `${cmd.config.description}` + "```\n" +
-                "Category: " + "`" + cmd.category + "`\n" +
-                "Required Permissions: `" + PermissionHelper.getPermissionString(cmd.config.permissions) + "`"
+                "```md\n" +
+                    `${cmd.config.description}` +
+                    "```\n" +
+                    "Category: " +
+                    "`" +
+                    cmd.category +
+                    "`\n" +
+                    "Required Permissions: `" +
+                    PermissionHelper.getPermissionString(
+                        cmd.config.permissions
+                    ) +
+                    "`"
             )
             .addField(
                 "Examples",
-                cmd.config.example.map(v =>
-                    `\`/${v.command}\`${v.arguments ? ` ${v.arguments.map(a => `\`${a.name}:${a.value}\``).join(" ")}` : ""}\n` +
-                    v.description
-                ).join("\n\n") || "None",
+                cmd.config.example
+                    .map(
+                        (v) =>
+                            `\`/${v.command}\`${
+                                v.arguments
+                                    ? ` ${v.arguments
+                                          .map(
+                                              (a) => `\`${a.name}:${a.value}\``
+                                          )
+                                          .join(" ")}`
+                                    : ""
+                            }\n` + v.description
+                    )
+                    .join("\n\n") || "None",
                 true
             )
             .addField(
                 "Usage\n" +
-                "`<...>`: required\n" +
-                "`[...]`: optional\n\n" +
-                `\`${cmd.config.name}${argsString ? ` ${argsString}` : ""}\``,
+                    "`<...>`: required\n" +
+                    "`[...]`: optional\n\n" +
+                    `\`${cmd.config.name}${
+                        argsString ? ` ${argsString}` : ""
+                    }\``,
                 "**Details**\n" +
-                cmd.config.options.map(v =>
-                    "`" + v.name + "`: *" + CommandHelper.optionTypeToString(<ApplicationCommandOptionTypes>v.type) + "*\n" +
-                    v.description
-                ).join("\n\n") || "None",
+                    cmd.config.options
+                        .map(
+                            (v) =>
+                                "`" +
+                                v.name +
+                                "`: *" +
+                                CommandHelper.optionTypeToString(
+                                    <ApplicationCommandOptionTypes>v.type
+                                ) +
+                                "*\n" +
+                                v.description
+                        )
+                        .join("\n\n") || "None",
                 true
             );
 
         interaction.editReply({ embeds: [embed] });
     } else {
-        const commandList: Collection<string, string[]> = getCommandList(client);
+        const commandList: Collection<string, string[]> =
+            getCommandList(client);
 
-        embed.setTitle("Alice Synthesis Thirty Help")
+        embed
+            .setTitle("Alice Synthesis Thirty Help")
             .setDescription(
                 "Made by <@132783516176875520> and <@386742340968120321>.\n\n" +
-                "For detailed information about a command, use `/help [command name]`.\n" +
-                "If you encounter any bugs or issues with the bot, please contact bot creators."
+                    "For detailed information about a command, use `/help [command name]`.\n" +
+                    "If you encounter any bugs or issues with the bot, please contact bot creators."
             )
             .setThumbnail(client.user!.avatarURL({ dynamic: true })!);
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             embed.addField(
                 `**Category**: ${commandList.keyAt(page - 1)}`,
-                commandList.at(page - 1)!.map(v => `\`${v}\``).join(" • ")
+                commandList
+                    .at(page - 1)!
+                    .map((v) => `\`${v}\``)
+                    .join(" • ")
             );
         };
 
@@ -170,27 +225,28 @@ export const config: Command["config"] = {
         {
             name: "commandname",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The command to see the help section from. If unspecified, lists all available commands."
-        }
+            description:
+                "The command to see the help section from. If unspecified, lists all available commands.",
+        },
     ],
     example: [
         {
             command: "help",
             arguments: [],
-            description: "will output all commands that I have."
+            description: "will output all commands that I have.",
         },
         {
             command: "help",
             arguments: [
                 {
                     name: "commandname",
-                    value: "ping"
-                }
+                    value: "ping",
+                },
             ],
-            description: "will output the help section of `ping` command."
-        }
+            description: "will output the help section of `ping` command.",
+        },
     ],
     permissions: [],
     replyEphemeral: true,
-    scope: "ALL"
+    scope: "ALL",
 };

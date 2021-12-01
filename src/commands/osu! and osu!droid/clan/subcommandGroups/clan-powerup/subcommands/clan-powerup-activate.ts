@@ -9,31 +9,42 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const powerupType: PowerupType = <PowerupType> interaction.options.getString("name", true);
+    const powerupType: PowerupType = <PowerupType>(
+        interaction.options.getString("name", true)
+    );
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
     if (clan.isMatch) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.powerupActivateInMatchMode)
+            content: MessageCreator.createReject(
+                clanStrings.powerupActivateInMatchMode
+            ),
         });
     }
 
     if (clan.active_powerups.includes(powerupType)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.powerupIsAlreadyActive)
+            content: MessageCreator.createReject(
+                clanStrings.powerupIsAlreadyActive
+            ),
         });
     }
 
@@ -43,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 clanStrings.activatePowerupConfirmation,
                 powerupType
-            )
+            ),
         },
         [interaction.user.id],
         20
@@ -57,7 +68,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!powerup || powerup.amount === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntHavePowerup)
+            content: MessageCreator.createReject(
+                clanStrings.clanDoesntHavePowerup
+            ),
         });
     }
 
@@ -69,15 +82,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.activatePowerupFailed, result.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.activatePowerupFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.activatePowerupSuccessful)
+        content: MessageCreator.createAccept(
+            clanStrings.activatePowerupSuccessful
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

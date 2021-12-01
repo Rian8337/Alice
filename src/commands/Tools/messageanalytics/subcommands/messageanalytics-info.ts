@@ -1,4 +1,10 @@
-import { Collection, Guild, GuildChannel, MessageEmbed, Snowflake } from "discord.js";
+import {
+    Collection,
+    Guild,
+    GuildChannel,
+    MessageEmbed,
+    Snowflake,
+} from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ActivityCategory } from "@alice-interfaces/commands/Tools/ActivityCategory";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
@@ -15,7 +21,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 
 /**
  * Converts days to milliseconds.
- * 
+ *
  * @param days The days to convert.
  * @returns The days converted in milliseconds.
  */
@@ -25,33 +31,47 @@ function daysToMilliseconds(days: number): number {
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
-    const dbManager: ChannelDataCollectionManager = DatabaseManager.aliceDb.collections.channelData;
+    const dbManager: ChannelDataCollectionManager =
+        DatabaseManager.aliceDb.collections.channelData;
 
     const date: Date = new Date();
 
     if (interaction.options.getString("date")) {
-        const dateEntries: number[] = (interaction.options.getString("date", true)).split("-").map(v => parseInt(v));
+        const dateEntries: number[] = interaction.options
+            .getString("date", true)
+            .split("-")
+            .map((v) => parseInt(v));
 
         if (dateEntries.length !== 3 || dateEntries.some(Number.isNaN)) {
             return interaction.editReply({
-                content: MessageCreator.createReject(messageanalyticsStrings.incorrectDateFormat)
+                content: MessageCreator.createReject(
+                    messageanalyticsStrings.incorrectDateFormat
+                ),
             });
         }
 
-        date.setUTCFullYear(dateEntries[0], dateEntries[1] - 1, dateEntries[2] - 1);
+        date.setUTCFullYear(
+            dateEntries[0],
+            dateEntries[1] - 1,
+            dateEntries[2] - 1
+        );
     }
 
     date.setUTCHours(0, 0, 0, 0);
 
     if (date.getTime() < guild.createdTimestamp) {
         return interaction.editReply({
-            content: MessageCreator.createReject(messageanalyticsStrings.dateBeforeGuildCreationError)
+            content: MessageCreator.createReject(
+                messageanalyticsStrings.dateBeforeGuildCreationError
+            ),
         });
     }
 
     if (date.getTime() > Date.now()) {
         return interaction.editReply({
-            content: MessageCreator.createReject(messageanalyticsStrings.dateHasntPassed)
+            content: MessageCreator.createReject(
+                messageanalyticsStrings.dateHasntPassed
+            ),
         });
     }
 
@@ -99,7 +119,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (activityData.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(messageanalyticsStrings.noActivityDataOnDate)
+            content: MessageCreator.createReject(
+                messageanalyticsStrings.noActivityDataOnDate
+            ),
         });
     }
 
@@ -108,7 +130,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     // Map to each channel
     for (const data of activityData.values()) {
         for (const [channelId, count] of data.channels) {
-            sortedChannelData.set(channelId, (sortedChannelData.get(channelId) ?? 0) + count);
+            sortedChannelData.set(
+                channelId,
+                (sortedChannelData.get(channelId) ?? 0) + count
+            );
         }
     }
 
@@ -121,7 +146,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     let languageDescription: string = "";
 
     for await (const [id, count] of sortedChannelData) {
-        const channel: GuildChannel | null = await guild.channels.fetch(id).catch(() => null);
+        const channel: GuildChannel | null = await guild.channels
+            .fetch(id)
+            .catch(() => null);
 
         if (!channel) {
             continue;
@@ -129,7 +156,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         const msg: string = `${channel}: ${count.toLocaleString()} messages\n`;
 
-        if ([generalParent, droidParent].includes(<Snowflake>channel.parentId)) {
+        if (
+            [generalParent, droidParent].includes(<Snowflake>channel.parentId)
+        ) {
             generalDescription += msg;
         } else if (channel.parentId === clansParent) {
             clansDescription += msg;
@@ -141,30 +170,40 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const activityCategories: ActivityCategory[] = [
         {
             category: "General Channels",
-            description: generalDescription
+            description: generalDescription,
         },
         {
             category: "Language Channels",
-            description: languageDescription
+            description: languageDescription,
         },
         {
             category: "Clan Channels",
-            description: clansDescription
-        }
+            description: clansDescription,
+        },
     ];
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: "#b58d3c" }
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: "#b58d3c",
+    });
+
+    embed.setTitle(
+        `${StringHelper.capitalizeString(
+            type
+        )} channel activity per ${DateTimeFormatHelper.dateToHumanReadable(
+            date
+        )}`
     );
 
-    embed.setTitle(`${StringHelper.capitalizeString(type)} channel activity per ${DateTimeFormatHelper.dateToHumanReadable(date)}`);
-
-    const onPageChange: OnButtonPageChange = async (_, page, contents: ActivityCategory[]) => {
+    const onPageChange: OnButtonPageChange = async (
+        _,
+        page,
+        contents: ActivityCategory[]
+    ) => {
         const content: ActivityCategory = contents[page - 1];
 
         embed.setDescription(
-            `**${content.category}**\n\n` +
-            content.description
+            `**${content.category}**\n\n` + content.description
         );
     };
 
@@ -181,5 +220,5 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

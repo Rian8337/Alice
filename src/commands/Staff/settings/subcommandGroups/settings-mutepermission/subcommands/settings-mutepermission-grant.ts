@@ -12,23 +12,43 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const role: Role = <Role> interaction.options.getRole("role", true);
+    const role: Role = <Role>interaction.options.getRole("role", true);
 
-    const durationInput: string = interaction.options.getString("duration", true);
+    const durationInput: string = interaction.options.getString(
+        "duration",
+        true
+    );
 
-    const duration: number = parseFloat(durationInput) || DateTimeFormatHelper.DHMStoSeconds(durationInput);
+    const duration: number =
+        parseFloat(durationInput) ||
+        DateTimeFormatHelper.DHMStoSeconds(durationInput);
 
-    const guildConfig: GuildPunishmentConfig | null = await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(interaction.guildId);
+    const guildConfig: GuildPunishmentConfig | null =
+        await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
+            interaction.guildId
+        );
 
     if (!guildConfig || !guildConfig.getGuildLogChannel(interaction.guild!)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.noLogChannelConfigured)
+            content: MessageCreator.createReject(
+                settingsStrings.noLogChannelConfigured
+            ),
         });
     }
 
-    if (duration !== -1 && !NumberHelper.isNumberInRange(duration, 30, Number.POSITIVE_INFINITY, true)) {
+    if (
+        duration !== -1 &&
+        !NumberHelper.isNumberInRange(
+            duration,
+            30,
+            Number.POSITIVE_INFINITY,
+            true
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.invalidMutePermissionDuration)
+            content: MessageCreator.createReject(
+                settingsStrings.invalidMutePermissionDuration
+            ),
         });
     }
 
@@ -36,11 +56,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.grantOrRevokeMutePermissionSuccess, "granted", role.name
-        )
+            settingsStrings.grantOrRevokeMutePermissionSuccess,
+            "granted",
+            role.name
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["ADMINISTRATOR"]
+    permissions: ["ADMINISTRATOR"],
 };

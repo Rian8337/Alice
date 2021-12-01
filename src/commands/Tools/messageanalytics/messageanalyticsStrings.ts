@@ -8,5 +8,5 @@ export enum messageanalyticsStrings {
     noActivityDataOnDate = "I'm sorry, there is no activity data on this date!",
     channelIsFiltered = "I'm sorry, this channel is filtered from message analytics!",
     notATextChannel = "I'm sorry, you can only execute this command in a text channel!",
-    messageFetchStarted = "Successfully started message data fetching."
+    messageFetchStarted = "Successfully started message data fetching.",
 }

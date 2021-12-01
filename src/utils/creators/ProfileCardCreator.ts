@@ -1,4 +1,10 @@
-import { Canvas, createCanvas, Image, loadImage, NodeCanvasRenderingContext2D } from "canvas";
+import {
+    Canvas,
+    createCanvas,
+    Image,
+    loadImage,
+    NodeCanvasRenderingContext2D,
+} from "canvas";
 import { Player } from "osu-droid";
 import { promises, Stats } from "fs";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
@@ -61,7 +67,13 @@ export class ProfileCardCreator {
      * @param rankedScoreInfo The ranked score information of the player.
      * @param playerInfo Information about the binded Discord account of the player.
      */
-    constructor(player: Player, detailed: boolean, bindInfo?: UserBind | null, rankedScoreInfo?: RankedScore | null, playerInfo?: PlayerInfo | null) {
+    constructor(
+        player: Player,
+        detailed: boolean,
+        bindInfo?: UserBind | null,
+        rankedScoreInfo?: RankedScore | null,
+        playerInfo?: PlayerInfo | null
+    ) {
         this.player = player;
         this.detailed = detailed;
         this.bindInfo = bindInfo;
@@ -101,7 +113,10 @@ export class ProfileCardCreator {
      * Resets the current canvas by creating a new one.
      */
     private resetCanvas(): void {
-        this.canvas = createCanvas(500, this.detailed || this.template ? 500 : 200);
+        this.canvas = createCanvas(
+            500,
+            this.detailed || this.template ? 500 : 200
+        );
     }
 
     /**
@@ -110,8 +125,11 @@ export class ProfileCardCreator {
     private async drawBackground(): Promise<void> {
         this.context.save();
 
-        const backgroundImageID: string = this.playerInfo?.picture_config.activeBackground.id ?? "bg";
-        const bg: Image = await loadImage(`${process.cwd()}/files/images/backgrounds/${backgroundImageID}.png`);
+        const backgroundImageID: string =
+            this.playerInfo?.picture_config.activeBackground.id ?? "bg";
+        const bg: Image = await loadImage(
+            `${process.cwd()}/files/images/backgrounds/${backgroundImageID}.png`
+        );
         this.context.drawImage(bg, 0, 0);
 
         this.context.restore();
@@ -186,21 +204,34 @@ export class ProfileCardCreator {
         this.context.save();
 
         try {
-            const flagPath: string = `${process.cwd()}/files/flags/${this.player.location}.png`;
+            const flagPath: string = `${process.cwd()}/files/flags/${
+                this.player.location
+            }.png`;
             const flagStats: Stats = await promises.stat(flagPath);
 
             if (flagStats.isFile()) {
                 const flagImage: Image = await loadImage(flagPath);
-                this.context.drawImage(flagImage, 440, 15, flagImage.width / 1.5, flagImage.height / 1.5);
+                this.context.drawImage(
+                    flagImage,
+                    440,
+                    15,
+                    flagImage.width / 1.5,
+                    flagImage.height / 1.5
+                );
 
                 this.context.textAlign = "center";
                 this.context.textBaseline = "middle";
-                this.context.font = this.detailed || this.template ? "18px Exo" : "16px Exo";
+                this.context.font =
+                    this.detailed || this.template ? "18px Exo" : "16px Exo";
 
-                this.context.fillText(this.player.location, 440 + flagImage.width / 3, flagImage.height + 15);
+                this.context.fillText(
+                    this.player.location,
+                    440 + flagImage.width / 3,
+                    flagImage.height + 15
+                );
             }
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
 
         this.context.restore();
     }
@@ -246,7 +277,7 @@ export class ProfileCardCreator {
 
         // Outer box
         this.context.globalAlpha = 0.9;
-        this.context.fillStyle = '#cccccc';
+        this.context.fillStyle = "#cccccc";
         if (this.detailed || this.template) {
             this.context.fillRect(77, 206, 405, 30);
         } else {
@@ -265,7 +296,9 @@ export class ProfileCardCreator {
 
         // Level progress
         if (this.rankedScoreInfo) {
-            const progress: number = this.rankedScoreInfo.level - Math.floor(this.rankedScoreInfo.level);
+            const progress: number =
+                this.rankedScoreInfo.level -
+                Math.floor(this.rankedScoreInfo.level);
             if (progress > 0) {
                 this.context.fillStyle = "#e1c800";
                 if (this.detailed || this.template) {
@@ -279,16 +312,35 @@ export class ProfileCardCreator {
         // Level text
         this.context.textAlign = "center";
         this.context.textBaseline = "middle";
-        this.context.fillStyle = this.playerInfo?.picture_config.textColor ?? "#000000";
+        this.context.fillStyle =
+            this.playerInfo?.picture_config.textColor ?? "#000000";
         const rankedScoreLevel: number = this.rankedScoreInfo?.level ?? 1;
         if (this.detailed || this.template) {
             this.context.font = "19px Exo";
-            this.context.fillText(`${((rankedScoreLevel - Math.floor(rankedScoreLevel)) * 100).toFixed(2)}%`, 279.5, 221);
+            this.context.fillText(
+                `${(
+                    (rankedScoreLevel - Math.floor(rankedScoreLevel)) *
+                    100
+                ).toFixed(2)}%`,
+                279.5,
+                221
+            );
             this.context.fillText(`Lv${Math.floor(rankedScoreLevel)}`, 43, 221);
         } else {
             this.context.font = "16px Exo";
-            this.context.fillText(`${((rankedScoreLevel - Math.floor(rankedScoreLevel)) * 100).toFixed(2)}%`, 348.5, 167);
-            this.context.fillText(`Lv${Math.floor(rankedScoreLevel)}`, 189.5, 167);
+            this.context.fillText(
+                `${(
+                    (rankedScoreLevel - Math.floor(rankedScoreLevel)) *
+                    100
+                ).toFixed(2)}%`,
+                348.5,
+                167
+            );
+            this.context.fillText(
+                `Lv${Math.floor(rankedScoreLevel)}`,
+                189.5,
+                167
+            );
         }
 
         this.context.restore();
@@ -304,8 +356,14 @@ export class ProfileCardCreator {
         const y: number = this.detailed || this.template ? 84 : 50;
 
         this.context.fillStyle = "#000000";
-        this.context.font = this.detailed || this.template ? "bold 25px Exo" : "bold 20px Exo";
-        this.context.fillText(this.player.username, x, this.detailed || this.template ? 45 : 30, 243);
+        this.context.font =
+            this.detailed || this.template ? "bold 25px Exo" : "bold 20px Exo";
+        this.context.fillText(
+            this.player.username,
+            x,
+            this.detailed || this.template ? 45 : 30,
+            243
+        );
 
         let yOffset: number = 0;
 
@@ -313,33 +371,68 @@ export class ProfileCardCreator {
             yOffset += this.detailed || this.template ? 20 : 18;
         };
 
-        this.context.font = this.detailed || this.template ? "18px Exo" : "16px Exo";
-        this.context.fillText(`Total Score: ${this.player.score.toLocaleString()}`, x, y + yOffset);
+        this.context.font =
+            this.detailed || this.template ? "18px Exo" : "16px Exo";
+        this.context.fillText(
+            `Total Score: ${this.player.score.toLocaleString()}`,
+            x,
+            y + yOffset
+        );
         increaseYOffset();
 
         if (this.rankedScoreInfo) {
-            this.context.fillText(`Ranked Score: ${this.rankedScoreInfo.score.toLocaleString()}`, x, y + yOffset);
+            this.context.fillText(
+                `Ranked Score: ${this.rankedScoreInfo.score.toLocaleString()}`,
+                x,
+                y + yOffset
+            );
             increaseYOffset();
         }
 
         if (this.bindInfo) {
-            const weightedAccuracy: number = this.getWeightedAccuracy([...this.bindInfo.pp.values()]);
-            this.context.fillText(`Accuracy: ${this.player.accuracy}% | ${weightedAccuracy.toFixed(2)}%`, x, y + yOffset);
+            const weightedAccuracy: number = this.getWeightedAccuracy([
+                ...this.bindInfo.pp.values(),
+            ]);
+            this.context.fillText(
+                `Accuracy: ${
+                    this.player.accuracy
+                }% | ${weightedAccuracy.toFixed(2)}%`,
+                x,
+                y + yOffset
+            );
         } else {
-            this.context.fillText(`Accuracy: ${this.player.accuracy}%`, x, y + yOffset);
+            this.context.fillText(
+                `Accuracy: ${this.player.accuracy}%`,
+                x,
+                y + yOffset
+            );
         }
         increaseYOffset();
 
-        this.context.fillText(`Play Count: ${this.player.playCount.toLocaleString()}`, x, y + yOffset);
+        this.context.fillText(
+            `Play Count: ${this.player.playCount.toLocaleString()}`,
+            x,
+            y + yOffset
+        );
         increaseYOffset();
 
         if (this.bindInfo) {
             const ppRank: number = await this.getPlayerPPRank(this.bindInfo);
-            this.context.fillText(`Droid pp: ${this.bindInfo.pptotal.toFixed(2)}pp (#${ppRank.toLocaleString()})`, x, y + yOffset);
+            this.context.fillText(
+                `Droid pp: ${this.bindInfo.pptotal.toFixed(
+                    2
+                )}pp (#${ppRank.toLocaleString()})`,
+                x,
+                y + yOffset
+            );
             increaseYOffset();
 
             if (this.bindInfo.clan) {
-                this.context.fillText(`Clan: ${this.bindInfo.clan}`, x, y + yOffset);
+                this.context.fillText(
+                    `Clan: ${this.bindInfo.clan}`,
+                    x,
+                    y + yOffset
+                );
                 increaseYOffset();
             }
         }
@@ -354,7 +447,8 @@ export class ProfileCardCreator {
         this.context.save();
 
         this.context.globalAlpha = 0.85;
-        this.context.fillStyle = this.playerInfo?.picture_config.bgColor ?? "rgb(0, 139, 255)";
+        this.context.fillStyle =
+            this.playerInfo?.picture_config.bgColor ?? "rgb(0, 139, 255)";
         this.context.fillRect(9, 197, 482, 294);
 
         this.context.restore();
@@ -371,7 +465,8 @@ export class ProfileCardCreator {
         this.context.fillRect(15, 312, 470, 170);
         this.context.globalAlpha = 1;
 
-        const badges: (PartialProfileBackground | null)[] = this.playerInfo?.picture_config.activeBadges ?? [];
+        const badges: (PartialProfileBackground | null)[] =
+            this.playerInfo?.picture_config.activeBadges ?? [];
 
         for (let i = 0; i < badges.length; ++i) {
             const profileBadge: PartialProfileBackground | null = badges[i];
@@ -380,11 +475,19 @@ export class ProfileCardCreator {
                 continue;
             }
 
-            const badgeImage: Image = await loadImage(`${process.cwd()}/files/images/badges/${profileBadge.id}.png`);
+            const badgeImage: Image = await loadImage(
+                `${process.cwd()}/files/images/badges/${profileBadge.id}.png`
+            );
             if (i / 5 < 1) {
                 this.context.drawImage(badgeImage, i * 94 + 19.5, 312, 85, 85);
             } else {
-                this.context.drawImage(badgeImage, (i - 5) * 94 + 19.5, 397, 85, 85);
+                this.context.drawImage(
+                    badgeImage,
+                    (i - 5) * 94 + 19.5,
+                    397,
+                    85,
+                    85
+                );
             }
         }
 
@@ -423,7 +526,11 @@ export class ProfileCardCreator {
             if (i / 5 < 1) {
                 this.context.fillText((i + 1).toString(), 54.5 + i * 94, 353.5);
             } else {
-                this.context.fillText((i + 1).toString(), 54.5 + (i - 5) * 94, 439.5);
+                this.context.fillText(
+                    (i + 1).toString(),
+                    54.5 + (i - 5) * 94,
+                    439.5
+                );
             }
         }
 
@@ -436,21 +543,31 @@ export class ProfileCardCreator {
     private async drawAliceCoinsInformation(): Promise<void> {
         this.context.save();
 
-        const coinImage: Image = await loadImage(`${process.cwd()}/files/images/alicecoin.png`);
+        const coinImage: Image = await loadImage(
+            `${process.cwd()}/files/images/alicecoin.png`
+        );
 
         this.context.drawImage(coinImage, 15, 255, 50, 50);
 
         this.context.font = "18px Exo";
         this.context.textBaseline = "middle";
 
-        this.context.fillText(`${(this.playerInfo?.alicecoins ?? 0).toLocaleString()} Alice Coins | ${(this.playerInfo?.points ?? 0).toLocaleString()} Challenge Points`, 75, 280);
+        this.context.fillText(
+            `${(
+                this.playerInfo?.alicecoins ?? 0
+            ).toLocaleString()} Alice Coins | ${(
+                this.playerInfo?.points ?? 0
+            ).toLocaleString()} Challenge Points`,
+            75,
+            280
+        );
 
         this.context.restore();
     }
 
     /**
      * Gets the weighted accuracy of a player.
-     * 
+     *
      * @param ppEntries The droid performance points (dpp) entries of the player.
      * @returns The player's weighted accuracy.
      */
@@ -474,6 +591,10 @@ export class ProfileCardCreator {
      * Gets the player's dpp rank.
      */
     private async getPlayerPPRank(bindInfo: UserBind): Promise<number> {
-        return (await DatabaseManager.elainaDb?.collections.userBind.getUserDPPRank(bindInfo.pptotal)) ?? 0;
+        return (
+            (await DatabaseManager.elainaDb?.collections.userBind.getUserDPPRank(
+                bindInfo.pptotal
+            )) ?? 0
+        );
     }
 }

@@ -10,17 +10,22 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Guild, GuildMember, Role } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.isLeader(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
@@ -29,8 +34,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (clan.power < powerReq) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanPowerNotEnoughToBuyItem, powerReq.toLocaleString()
-            )
+                clanStrings.clanPowerNotEnoughToBuyItem,
+                powerReq.toLocaleString()
+            ),
         });
     }
 
@@ -38,11 +44,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (clanRole) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanAlreadyHasClanRole)
+            content: MessageCreator.createReject(
+                clanStrings.clanAlreadyHasClanRole
+            ),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     const cost: number = 5000;
 
@@ -52,7 +63,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 clanStrings.notEnoughCoins,
                 "buy a clan role",
                 cost.toLocaleString()
-            )
+            ),
         });
     }
 
@@ -63,7 +74,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 clanStrings.buyShopItemConfirmation,
                 "clan role",
                 cost.toLocaleString()
-            )
+            ),
         },
         [interaction.user.id],
         20
@@ -78,28 +89,36 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, result.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                result.reason!
+            ),
         });
     }
 
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
-    const globalClanRole: Role = guild.roles.cache.find(r => r.name === "Clans")!;
+    const globalClanRole: Role = guild.roles.cache.find(
+        (r) => r.name === "Clans"
+    )!;
 
     clanRole = await guild.roles.create({
         name: clan.name,
         color: "DEFAULT",
         permissions: [],
         position: globalClanRole.position,
-        reason: "Clan leader bought clan role"
+        reason: "Clan leader bought clan role",
     });
 
     for await (const member of clan.member_list.values()) {
-        const guildMember: GuildMember | null = await guild.members.fetch(member.id).catch(() => null);
+        const guildMember: GuildMember | null = await guild.members
+            .fetch(member.id)
+            .catch(() => null);
 
         if (guildMember) {
-            await guildMember.roles.add([globalClanRole, clanRole], "Clan leader bought clan role");
+            await guildMember.roles.add(
+                [globalClanRole, clanRole],
+                "Clan leader bought clan role"
+            );
         }
     }
 
@@ -107,10 +126,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(
             clanStrings.buyShopItemSuccessful,
             cost.toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

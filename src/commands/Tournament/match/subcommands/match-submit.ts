@@ -14,20 +14,25 @@ import { matchStrings } from "../matchStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const id: string | null = interaction.options.getString("id");
 
-    const match: TournamentMatch | null = id ? 
-        await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id) :
-        await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(interaction.channelId);
+    const match: TournamentMatch | null = id
+        ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
+        : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
+              interaction.channelId
+          );
 
     // Need to make cross-compatibility since this command is also called from match-start
     if (!match) {
-        interaction.replied ?
-            interaction.channel!.send({
-                content: MessageCreator.createReject(matchStrings.matchDoesntExist)
-            })
-            :
-            interaction.editReply({
-                content: MessageCreator.createReject(matchStrings.matchDoesntExist)
-            });
+        interaction.replied
+            ? interaction.channel!.send({
+                  content: MessageCreator.createReject(
+                      matchStrings.matchDoesntExist
+                  ),
+              })
+            : interaction.editReply({
+                  content: MessageCreator.createReject(
+                      matchStrings.matchDoesntExist
+                  ),
+              });
 
         return;
     }
@@ -35,33 +40,43 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const poolId: string = match.matchid.split(".").shift()!;
 
     const mappoolMainData: TournamentMappool | null =
-        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(poolId);
+        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
+            poolId
+        );
 
     if (!mappoolMainData) {
-        interaction.replied ? 
-            interaction.channel!.send({
-                content: MessageCreator.createReject(matchStrings.mappoolNotFound)
-            })
-            :
-            interaction.editReply({
-                content: MessageCreator.createReject(matchStrings.mappoolNotFound)
-            });
+        interaction.replied
+            ? interaction.channel!.send({
+                  content: MessageCreator.createReject(
+                      matchStrings.mappoolNotFound
+                  ),
+              })
+            : interaction.editReply({
+                  content: MessageCreator.createReject(
+                      matchStrings.mappoolNotFound
+                  ),
+              });
 
         return;
     }
 
     const mappoolDurationData: TournamentMapLengthInfo | null =
-        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(poolId);
+        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(
+            poolId
+        );
 
     if (!mappoolDurationData) {
-        interaction.replied ?
-            interaction.channel!.send({
-                content: MessageCreator.createReject(matchStrings.mappoolNotFound)
-            })
-            :
-            interaction.editReply({
-                content: MessageCreator.createReject(matchStrings.mappoolNotFound)
-            });
+        interaction.replied
+            ? interaction.channel!.send({
+                  content: MessageCreator.createReject(
+                      matchStrings.mappoolNotFound
+                  ),
+              })
+            : interaction.editReply({
+                  content: MessageCreator.createReject(
+                      matchStrings.mappoolNotFound
+                  ),
+              });
 
         return;
     }
@@ -69,17 +84,24 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const playerList: Player[] = [];
 
     for await (const p of match.player) {
-        const player: Player = await Player.getInformation({ uid: parseInt(p[1]) });
+        const player: Player = await Player.getInformation({
+            uid: parseInt(p[1]),
+        });
 
         if (!player.username) {
-            interaction.replied ?
-                interaction.channel!.send({
-                    content: MessageCreator.createReject(matchStrings.playerNotFound, p[1])
-                })
-                :
-                interaction.editReply({
-                    content: MessageCreator.createReject(matchStrings.playerNotFound, p[1])
-                });
+            interaction.replied
+                ? interaction.channel!.send({
+                      content: MessageCreator.createReject(
+                          matchStrings.playerNotFound,
+                          p[1]
+                      ),
+                  })
+                : interaction.editReply({
+                      content: MessageCreator.createReject(
+                          matchStrings.playerNotFound,
+                          p[1]
+                      ),
+                  });
 
             return;
         }
@@ -96,14 +118,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (index === -1) {
-        interaction.replied ?
-            interaction.channel!.send({
-                content: MessageCreator.createReject(matchStrings.mapNotFound)
-            })
-            :
-            interaction.editReply({
-                content: MessageCreator.createReject(matchStrings.mapNotFound)
-            });
+        interaction.replied
+            ? interaction.channel!.send({
+                  content: MessageCreator.createReject(
+                      matchStrings.mapNotFound
+                  ),
+              })
+            : interaction.editReply({
+                  content: MessageCreator.createReject(
+                      matchStrings.mapNotFound
+                  ),
+              });
 
         return;
     }
@@ -120,18 +145,26 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < playerList.length; ++i) {
         const score: Score = playerList[i].recentPlays[0];
 
-        const verificationResult: OperationResult = match.verifyScore(score, map, mappoolMainData.forcePR);
+        const verificationResult: OperationResult = match.verifyScore(
+            score,
+            map,
+            mappoolMainData.forcePR
+        );
 
         if (verificationResult.success) {
             let scorev2: number = match.calculateScoreV2(
                 score.score,
                 score.accuracy.value(),
                 score.accuracy.nmiss,
-                parseInt(<string> map[2]),
+                parseInt(<string>map[2]),
                 map[4] ?? 0.6
             );
 
-            if (score.mods.filter(m => m instanceof ModHidden || m instanceof ModDoubleTime).length >= 2) {
+            if (
+                score.mods.filter(
+                    (m) => m instanceof ModHidden || m instanceof ModDoubleTime
+                ).length >= 2
+            ) {
                 scorev2 /= 0.59 / 0.56;
             }
 
@@ -140,7 +173,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             scoreList.push(0);
         }
 
-        const scoreString: string = `${match.player[i][0]} - (${score.mods.map(v => v.name).join(", ")}): **${scoreList.at(-1)!}** - ${score.rank} - ${(score.accuracy.value() * 100).toFixed(2)}% - ${score.accuracy.nmiss} misses\n`;
+        const scoreString: string = `${match.player[i][0]} - (${score.mods
+            .map((v) => v.name)
+            .join(", ")}): **${scoreList.at(-1)!}** - ${score.rank} - ${(
+            score.accuracy.value() * 100
+        ).toFixed(2)}% - ${score.accuracy.nmiss} misses\n`;
         const failString: string = `${match.player[i][0]} - (N/A): **0** - **${verificationResult.reason}**`;
 
         if (i % 2 === 0) {
@@ -165,7 +202,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     team1String ||= "None";
     team2String ||= "None";
 
-    let description: string = `${team1OverallScore > team2OverallScore ? match.team[0][0] : match.team[1][0]} won by ${Math.abs(team1OverallScore - team2OverallScore)}`;
+    let description: string = `${
+        team1OverallScore > team2OverallScore
+            ? match.team[0][0]
+            : match.team[1][0]
+    } won by ${Math.abs(team1OverallScore - team2OverallScore)}`;
     let embedColor: number = 0;
 
     if (team1OverallScore > team2OverallScore) {
@@ -176,11 +217,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         description = "It's a draw";
     }
 
-    const resultEmbed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { timestamp: true, color: embedColor }
-    );
+    const resultEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        timestamp: true,
+        color: embedColor,
+    });
 
-    resultEmbed.setAuthor(match.name)
+    resultEmbed
+        .setAuthor(match.name)
         .setTitle(map[1])
         .addField(`${match.team[0][0]}: ${team1OverallScore}`, team1String)
         .addField(`${match.team[1][0]}: ${team2OverallScore}`, team2String)
@@ -188,7 +231,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!interaction.replied) {
         await interaction.editReply({
-            content: MessageCreator.createAccept(matchStrings.matchDataInProcess)
+            content: MessageCreator.createAccept(
+                matchStrings.matchDataInProcess
+            ),
         });
     }
 
@@ -197,7 +242,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     // Blue team wins
     match.team[1][1] += Number(team2OverallScore > team1OverallScore);
 
-    const summaryEmbed: MessageEmbed = EmbedCreator.createMatchSummaryEmbed(match);
+    const summaryEmbed: MessageEmbed =
+        EmbedCreator.createMatchSummaryEmbed(match);
 
     for (let i = 0; i < scoreList.length; ++i) {
         match.result[i].push(scoreList[i]);
@@ -208,17 +254,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.channel!.send({
             content: MessageCreator.createReject(
-                matchStrings.submitMatchFailed, finalResult.reason!
-            )
+                matchStrings.submitMatchFailed,
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.channel!.send({
-        content: MessageCreator.createAccept(matchStrings.submitMatchSuccessful),
-        embeds: [ resultEmbed, summaryEmbed ]
+        content: MessageCreator.createAccept(
+            matchStrings.submitMatchSuccessful
+        ),
+        embeds: [resultEmbed, summaryEmbed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

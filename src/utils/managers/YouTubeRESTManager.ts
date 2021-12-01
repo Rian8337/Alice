@@ -11,12 +11,17 @@ export abstract class YouTubeRESTManager extends RESTManager {
 
     /**
      * Gets the information of a YouTube video.
-     * 
+     *
      * @param id The ID of the video.
      * @returns The information of the video, `null` if not found.
      */
-    static async getInformation(id: string): Promise<YouTubeVideoInformation | null> {
-        const result: RequestResponse = await this.request(this.host + `videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${id}`);
+    static async getInformation(
+        id: string
+    ): Promise<YouTubeVideoInformation | null> {
+        const result: RequestResponse = await this.request(
+            this.host +
+                `videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${id}`
+        );
 
         if (result.statusCode !== 200) {
             return null;
@@ -43,17 +48,22 @@ export abstract class YouTubeRESTManager extends RESTManager {
             etag: item.etag,
             id: item.id,
             url: `https://www.youtube.com/watch?v=${item.id}`,
-            snippet: item.snippet
+            snippet: item.snippet,
         };
     }
 
     /**
      * Searches for videos in YouTube.
-     * 
+     *
      * @param query The query to search for.
      */
-    static async searchVideos(query: string): Promise<YouTubeVideoInformation[]> {
-        const result: RequestResponse = await this.request(this.host + `search?key=${process.env.YOUTUBE_API_KEY}&part=snippet&q=${query}&type=video&maxResults=25`);
+    static async searchVideos(
+        query: string
+    ): Promise<YouTubeVideoInformation[]> {
+        const result: RequestResponse = await this.request(
+            this.host +
+                `search?key=${process.env.YOUTUBE_API_KEY}&part=snippet&q=${query}&type=video&maxResults=25`
+        );
 
         if (result.statusCode !== 200) {
             return [];
@@ -74,17 +84,17 @@ export abstract class YouTubeRESTManager extends RESTManager {
             return [];
         }
 
-        items.forEach(item => {
+        items.forEach((item) => {
             item.snippet.title = decode(item.snippet.title);
         });
 
-        return items.map(v => {
+        return items.map((v) => {
             return {
                 kind: v.kind,
                 etag: v.etag,
                 id: v.id.videoId,
                 url: `https://www.youtube.com/watch?v=${v.id.videoId}`,
-                snippet: v.snippet
+                snippet: v.snippet,
             };
         });
     }

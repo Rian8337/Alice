@@ -16,7 +16,10 @@ export class Birthday extends Manager implements DatabaseBirthday {
     isLeapYear: boolean;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseBirthday = DatabaseManager.aliceDb?.collections.birthday.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseBirthday = DatabaseManager.aliceDb?.collections.birthday
+            .defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -29,13 +32,17 @@ export class Birthday extends Manager implements DatabaseBirthday {
 
     /**
      * Forcefully sets the birthday of this user.
-     * 
+     *
      * @param date The new birthday date.
      * @param month The new birthday month.
      * @param timezone The new timezone of the user.
      * @returns An object containing information about the operation.
      */
-    forceSetBirthday(date: number, month: number, timezone?: number): Promise<OperationResult> {
+    forceSetBirthday(
+        date: number,
+        month: number,
+        timezone?: number
+    ): Promise<OperationResult> {
         this.date = date;
         this.month = month;
         this.timezone = timezone ?? this.timezone;

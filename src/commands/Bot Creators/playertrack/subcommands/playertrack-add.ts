@@ -10,11 +10,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            playertrackStrings.nowTrackingUid, uid.toString()
-        )
+            playertrackStrings.nowTrackingUid,
+            uid.toString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

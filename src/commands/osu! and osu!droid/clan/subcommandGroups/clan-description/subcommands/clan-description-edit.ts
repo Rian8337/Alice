@@ -7,31 +7,45 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const description: string = interaction.options.getString("description", true);
+    const description: string = interaction.options.getString(
+        "description",
+        true
+    );
 
     if (description.length >= 2000) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDescriptionTooLong)
+            content: MessageCreator.createReject(
+                clanStrings.clanDescriptionTooLong
+            ),
         });
     }
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
-        { content: MessageCreator.createWarn(clanStrings.editDescriptionConfirmation) },
+        {
+            content: MessageCreator.createWarn(
+                clanStrings.editDescriptionConfirmation
+            ),
+        },
         [interaction.user.id],
         20
     );
@@ -44,7 +58,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!editDescResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.editDescriptionFailed, editDescResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.editDescriptionFailed,
+                editDescResult.reason!
+            ),
         });
     }
 
@@ -52,15 +69,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!finalResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.editDescriptionFailed, finalResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.editDescriptionFailed,
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.editDescriptionSuccessful)
+        content: MessageCreator.createAccept(
+            clanStrings.editDescriptionSuccessful
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

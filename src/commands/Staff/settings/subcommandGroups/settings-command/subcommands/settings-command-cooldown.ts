@@ -14,19 +14,27 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const cooldown: number = interaction.options.getInteger("duration", true);
 
-    const scope: CommandUtilScope = <CommandUtilScope> interaction.options.getString("scope") ?? "channel";
+    const scope: CommandUtilScope =
+        <CommandUtilScope>interaction.options.getString("scope") ?? "channel";
 
     const command: Command | undefined = client.commands.get(commandName);
 
     if (!command) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.commandNotFound)
+            content: MessageCreator.createReject(
+                settingsStrings.commandNotFound
+            ),
         });
     }
 
-    if (!CommandHelper.isExecutedByBotOwner(interaction) && command.config.permissions.some(v => v === "BOT_OWNER")) {
+    if (
+        !CommandHelper.isExecutedByBotOwner(interaction) &&
+        command.config.permissions.some((v) => v === "BOT_OWNER")
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.cannotDisableCommand)
+            content: MessageCreator.createReject(
+                settingsStrings.cannotDisableCommand
+            ),
         });
     }
 
@@ -34,46 +42,78 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     switch (scope) {
         case "channel":
-            if (!CommandHelper.userFulfillsCommandPermission(interaction, ["MANAGE_CHANNELS"])) {
+            if (
+                !CommandHelper.userFulfillsCommandPermission(interaction, [
+                    "MANAGE_CHANNELS",
+                ])
+            ) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.noPermissionReject)
+                    content: MessageCreator.createReject(
+                        Constants.noPermissionReject
+                    ),
                 });
             }
 
-            result = await CommandUtilManager.setCommandCooldownInChannel(<TextChannel | NewsChannel> interaction.channel, commandName, cooldown);
+            result = await CommandUtilManager.setCommandCooldownInChannel(
+                <TextChannel | NewsChannel>interaction.channel,
+                commandName,
+                cooldown
+            );
             break;
         case "guild":
-            if (!CommandHelper.userFulfillsCommandPermission(interaction, ["MANAGE_GUILD"])) {
+            if (
+                !CommandHelper.userFulfillsCommandPermission(interaction, [
+                    "MANAGE_GUILD",
+                ])
+            ) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.noPermissionReject)
+                    content: MessageCreator.createReject(
+                        Constants.noPermissionReject
+                    ),
                 });
             }
 
-            result = await CommandUtilManager.setCommandCooldownInGuild(interaction.guildId, commandName, cooldown);
+            result = await CommandUtilManager.setCommandCooldownInGuild(
+                interaction.guildId,
+                commandName,
+                cooldown
+            );
             break;
         case "global":
             // Only allow bot owners to globally set a command's cooldown
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.noPermissionReject)
+                    content: MessageCreator.createReject(
+                        Constants.noPermissionReject
+                    ),
                 });
             }
 
-            CommandUtilManager.setCommandCooldownGlobally(commandName, cooldown);
+            CommandUtilManager.setCommandCooldownGlobally(
+                commandName,
+                cooldown
+            );
             break;
     }
 
     if (result && !result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.setCommandCooldownFailed, result.reason!)
+            content: MessageCreator.createReject(
+                settingsStrings.setCommandCooldownFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(settingsStrings.setCommandCooldownSuccess, commandName, cooldown.toString())
+        content: MessageCreator.createAccept(
+            settingsStrings.setCommandCooldownSuccess,
+            commandName,
+            cooldown.toString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

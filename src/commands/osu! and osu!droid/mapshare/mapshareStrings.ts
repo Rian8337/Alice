@@ -10,7 +10,7 @@ export enum mapshareStrings {
     userIsNotBanned = "I'm sorry, this user is not banned from submitting a map share submission!",
     beatmapIsOutdated = "I'm sorry, the beatmap was updated after submission! Submission has been automatically deleted.",
     // eslint-disable-next-line no-useless-escape
-    beatmapIsTooEasy = "I'm sorry, you can only submit beatmaps that are 3\* or higher!",
+    beatmapIsTooEasy = "I'm sorry, you can only submit beatmaps that are 3* or higher!",
     beatmapHasLessThan50Objects = "I'm sorry, it seems like the beatmap has less than 50 objects!",
     beatmapHasNoCirclesOrSliders = "I'm sorry, the beatmap has no circles and sliders!",
     beatmapDurationIsLessThan30Secs = "I'm sorry, the beatmap's duration is too short! It must be at least 30 seconds.",
@@ -31,5 +31,5 @@ export enum mapshareStrings {
     postFailed = "I'm sorry, I couldn't post the submission: %s.",
     postSuccess = "Successfully posted the submission.",
     submitFailed = "I'm sorry, I couldn't submit your submission: %s.",
-    submitSuccess = "Successfully submitted your submission."
+    submitSuccess = "Successfully submitted your submission.",
 }

@@ -6,11 +6,16 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { voteStrings } from "../voteStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const voteInfo: Voting | null = await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(interaction.channel!.id);
+    const voteInfo: Voting | null =
+        await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
+            interaction.channel!.id
+        );
 
     if (!voteInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(voteStrings.noOngoingVoteInChannel)
+            content: MessageCreator.createReject(
+                voteStrings.noOngoingVoteInChannel
+            ),
         });
     }
 
@@ -21,14 +26,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < choiceArray.length; ++i) {
         const choice: VoteChoice = choiceArray[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length}\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${
+            choice.voters.length
+        }\`\n\n`;
     }
 
     interaction.editReply({
-        content: string
+        content: string,
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

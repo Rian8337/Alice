@@ -9,23 +9,33 @@ import { Collection, GuildMember, Snowflake } from "discord.js";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const staffMembers: Collection<Snowflake, GuildMember> = await PermissionHelper.getMainGuildStaffMembers(client);
+    const staffMembers: Collection<Snowflake, GuildMember> =
+        await PermissionHelper.getMainGuildStaffMembers(client);
 
-    if (!(<GuildMember> interaction.member).roles.cache.find(r => r.name === "Referee") || !staffMembers.get(interaction.user.id)) {
+    if (
+        !(<GuildMember>interaction.member).roles.cache.find(
+            (r) => r.name === "Referee"
+        ) ||
+        !staffMembers.get(interaction.user.id)
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject)
+            content: MessageCreator.createReject(Constants.noPermissionReject),
         });
     }
 
     const name: string = interaction.options.getString("name", true);
 
-    const isMatch: boolean = interaction.options.getBoolean("ismatchmode", true);
+    const isMatch: boolean = interaction.options.getBoolean(
+        "ismatchmode",
+        true
+    );
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(name);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromName(name);
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntExist)
+            content: MessageCreator.createReject(clanStrings.clanDoesntExist),
         });
     }
 
@@ -35,15 +45,20 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.setClanMatchModeFailed, result.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.setClanMatchModeFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.setClanMatchModeSuccess)
+        content: MessageCreator.createAccept(
+            clanStrings.setClanMatchModeSuccess
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

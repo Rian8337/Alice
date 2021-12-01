@@ -3,15 +3,25 @@ import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { Collection, Guild, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import {
+    Collection,
+    Guild,
+    Message,
+    MessageEmbed,
+    Snowflake,
+    TextChannel,
+} from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
-    const excludedChannels: Snowflake[] = [
-        "360716684174032896"
-    ];
+    const excludedChannels: Snowflake[] = ["360716684174032896"];
 
     setInterval(async () => {
-        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("reportBroadcast")) {
+        if (
+            Config.maintenance ||
+            CommandUtilManager.globallyDisabledEventUtils
+                .get("ready")
+                ?.includes("reportBroadcast")
+        ) {
             return;
         }
 
@@ -21,15 +31,21 @@ export const run: EventUtil["run"] = async (client) => {
 
         await guild.channels.fetch();
 
-        const embed: MessageEmbed = EmbedCreator.createReportBroadcastEmbed(guild);
+        const embed: MessageEmbed =
+            EmbedCreator.createReportBroadcastEmbed(guild);
 
         for await (const channel of guild.channels.cache.values()) {
-            if (!(channel instanceof TextChannel) || excludedChannels.includes(channel.id)) {
+            if (
+                !(channel instanceof TextChannel) ||
+                excludedChannels.includes(channel.id)
+            ) {
                 continue;
             }
 
             // Check if channel has active conversation; check based on messages per second
-            const lastMessage: Message | undefined = (await channel.messages.fetch({ limit: 1 }))?.first();
+            const lastMessage: Message | undefined = (
+                await channel.messages.fetch({ limit: 1 })
+            )?.first();
 
             if (!lastMessage) {
                 continue;
@@ -44,19 +60,29 @@ export const run: EventUtil["run"] = async (client) => {
                 continue;
             }
 
-            const messages: Collection<string, Message> = (await channel.messages.fetch({ limit: 100, before: lastMessage.id })).filter(v => !v.author.bot && executionTime - v.createdTimestamp <= timeThreshold);
+            const messages: Collection<string, Message> = (
+                await channel.messages.fetch({
+                    limit: 100,
+                    before: lastMessage.id,
+                })
+            ).filter(
+                (v) =>
+                    !v.author.bot &&
+                    executionTime - v.createdTimestamp <= timeThreshold
+            );
 
             if (messages.size < messageThreshold) {
                 continue;
             }
 
-            await channel.send({embeds: [embed]});
+            await channel.send({ embeds: [embed] });
         }
     }, 60 * 60 * 1000);
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for occasionally broadcasting report announcement",
+    description:
+        "Responsible for occasionally broadcasting report announcement",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

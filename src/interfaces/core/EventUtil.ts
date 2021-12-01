@@ -1,6 +1,6 @@
-import { EventUtilToggleScope } from '@alice-types/core/EventUtilToggleScope';
-import { Permission } from '@alice-types/core/Permission';
-import { Event } from './Event';
+import { EventUtilToggleScope } from "@alice-types/core/EventUtilToggleScope";
+import { Permission } from "@alice-types/core/Permission";
+import { Event } from "./Event";
 
 /**
  * Defines an event utility.
@@ -29,5 +29,5 @@ export interface EventUtil extends Event {
          * Whether this event utility will be enabled in debug mode.
          */
         readonly debugEnabled?: boolean;
-    }
+    };
 }

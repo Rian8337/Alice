@@ -13,13 +13,18 @@ export abstract class PermissionHelper {
     /**
      * Gets a guild member's permission position
      * compared to another guild member.
-     * 
+     *
      * @param member The guild member to get the permission position from.
      * @param toCompare The guild member to compare.
      * @returns Information about the guild member's position compared to the other guild member.
      */
-    static comparePosition(member: GuildMember, toCompare: GuildMember): GuildMemberPermissionComparison {
-        const position: number = member.roles.highest.comparePositionTo(toCompare.roles.highest);
+    static comparePosition(
+        member: GuildMember,
+        toCompare: GuildMember
+    ): GuildMemberPermissionComparison {
+        const position: number = member.roles.highest.comparePositionTo(
+            toCompare.roles.highest
+        );
 
         if (position < 0) {
             return "LOWER";
@@ -33,7 +38,7 @@ export abstract class PermissionHelper {
     /**
      * Gets the permission string representation of
      * a list of permissions.
-     * 
+     *
      * @param permissions The permissions to get the string from.
      * @returns The string that represents the permission.
      */
@@ -44,16 +49,23 @@ export abstract class PermissionHelper {
 
         const permissionsString: string[] = [];
 
-        permissions.forEach(permission => {
+        permissions.forEach((permission) => {
             switch (permission) {
                 case "SEND_TTS_MESSAGES":
                     permissionsString.push("Send TTS Messages");
                     break;
                 case "USE_VAD":
-                    permissionsString.push("Use VAD (Voice Activity Detection)");
+                    permissionsString.push(
+                        "Use VAD (Voice Activity Detection)"
+                    );
                     break;
                 default:
-                    permissionsString.push(permission.split("_").map(v => StringHelper.capitalizeString(v, true)).join(" "));
+                    permissionsString.push(
+                        permission
+                            .split("_")
+                            .map((v) => StringHelper.capitalizeString(v, true))
+                            .join(" ")
+                    );
             }
         });
 
@@ -62,10 +74,12 @@ export abstract class PermissionHelper {
 
     /**
      * Gets a list of staff members in the main guild.
-     * 
+     *
      * @param client The instance of the bot.
      */
-    static async getMainGuildStaffMembers(client: Bot): Promise<Collection<Snowflake, GuildMember>> {
+    static async getMainGuildStaffMembers(
+        client: Bot
+    ): Promise<Collection<Snowflake, GuildMember>> {
         const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
         let collection: Collection<Snowflake, GuildMember> = new Collection();
@@ -78,7 +92,7 @@ export abstract class PermissionHelper {
 
         const roleIds: Snowflake[] = [
             "369108742077284353",
-            "595667274707370024"
+            "595667274707370024",
         ];
 
         for await (const roleId of roleIds) {

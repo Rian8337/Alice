@@ -12,19 +12,27 @@ import { settingsStrings } from "../../../settingsStrings";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const commandName: string = interaction.options.getString("command", true);
 
-    const scope: CommandUtilScope = <CommandUtilScope> interaction.options.getString("scope") ?? "channel";
+    const scope: CommandUtilScope =
+        <CommandUtilScope>interaction.options.getString("scope") ?? "channel";
 
     const command: Command | undefined = client.commands.get(commandName);
 
     if (!command) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.commandNotFound)
+            content: MessageCreator.createReject(
+                settingsStrings.commandNotFound
+            ),
         });
     }
 
-    if (!CommandHelper.isExecutedByBotOwner(interaction) && command.config.permissions.some(v => v === "BOT_OWNER")) {
+    if (
+        !CommandHelper.isExecutedByBotOwner(interaction) &&
+        command.config.permissions.some((v) => v === "BOT_OWNER")
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.cannotDisableCommand)
+            content: MessageCreator.createReject(
+                settingsStrings.cannotDisableCommand
+            ),
         });
     }
 
@@ -32,28 +40,50 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     switch (scope) {
         case "channel":
-            if (!CommandHelper.userFulfillsCommandPermission(interaction, ["MANAGE_CHANNELS"])) {
+            if (
+                !CommandHelper.userFulfillsCommandPermission(interaction, [
+                    "MANAGE_CHANNELS",
+                ])
+            ) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.noPermissionReject)
+                    content: MessageCreator.createReject(
+                        Constants.noPermissionReject
+                    ),
                 });
             }
 
-            result = await CommandUtilManager.setCommandCooldownInChannel(<TextChannel | NewsChannel> interaction.channel, commandName, -1);
+            result = await CommandUtilManager.setCommandCooldownInChannel(
+                <TextChannel | NewsChannel>interaction.channel,
+                commandName,
+                -1
+            );
             break;
         case "guild":
-            if (!CommandHelper.userFulfillsCommandPermission(interaction, ["MANAGE_GUILD"])) {
+            if (
+                !CommandHelper.userFulfillsCommandPermission(interaction, [
+                    "MANAGE_GUILD",
+                ])
+            ) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.noPermissionReject)
+                    content: MessageCreator.createReject(
+                        Constants.noPermissionReject
+                    ),
                 });
             }
 
-            result = await CommandUtilManager.setCommandCooldownInGuild(interaction.guildId, commandName, -1);
+            result = await CommandUtilManager.setCommandCooldownInGuild(
+                interaction.guildId,
+                commandName,
+                -1
+            );
             break;
         case "global":
             // Only allow bot owners to globally disable a command
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.noPermissionReject)
+                    content: MessageCreator.createReject(
+                        Constants.noPermissionReject
+                    ),
                 });
             }
 
@@ -63,15 +93,21 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (result && !result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.disableCommandFailed, result.reason!)
+            content: MessageCreator.createReject(
+                settingsStrings.disableCommandFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(settingsStrings.disableCommandSuccess, commandName)
+        content: MessageCreator.createAccept(
+            settingsStrings.disableCommandSuccess,
+            commandName
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

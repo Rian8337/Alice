@@ -17,5 +17,5 @@ export enum namechangeStrings {
     newUsernameTooLong = "I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!",
     emailNotEqualToBindedAccount = "I'm sorry, the email you have provided is not the same as the email registered to your binded osu!droid account!",
     requestSuccess = "Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your Direct Messages or else you won't get notified of your name change request status!",
-    userHasNoHistory = "I'm sorry, this player doesn't have any name change history!"
+    userHasNoHistory = "I'm sorry, this player doesn't have any name change history!",
 }

@@ -11,13 +11,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const timezone: number = interaction.options.getInteger("timezone", true);
 
-    const result: OperationResult = await DatabaseManager.aliceDb.collections.birthday.setUserBirthday(interaction.user.id, date, month, timezone);
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.birthday.setUserBirthday(
+            interaction.user.id,
+            date,
+            month,
+            timezone
+        );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                birthdayStrings.setBirthdayFailed, result.reason!
-            )
+                birthdayStrings.setBirthdayFailed,
+                result.reason!
+            ),
         });
     }
 
@@ -27,10 +34,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             date.toString(),
             (month + 1).toString(),
             timezone >= 0 ? `+${timezone}` : timezone.toString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

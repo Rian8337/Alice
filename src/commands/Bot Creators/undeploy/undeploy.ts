@@ -16,19 +16,27 @@ export const run: Command["run"] = async (client, interaction) => {
         await client.application!.commands.fetch();
     }
 
-    const command: ApplicationCommand | undefined =
-        (isDebug ? interaction.guild! : client.application!).commands.cache.find(v => v.name === commandName);
+    const command: ApplicationCommand | undefined = (
+        isDebug ? interaction.guild! : client.application!
+    ).commands.cache.find((v) => v.name === commandName);
 
     if (!command) {
         return interaction.editReply({
-            content: MessageCreator.createReject(undeployStrings.commandNotFound)
+            content: MessageCreator.createReject(
+                undeployStrings.commandNotFound
+            ),
         });
     }
 
-    await (isDebug ? interaction.guild! : client.application!).commands.delete(command);
+    await (isDebug ? interaction.guild! : client.application!).commands.delete(
+        command
+    );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(undeployStrings.commandUndeploySuccessful, commandName)
+        content: MessageCreator.createAccept(
+            undeployStrings.commandUndeploySuccessful,
+            commandName
+        ),
     });
 };
 
@@ -42,13 +50,13 @@ export const config: Command["config"] = {
             name: "command",
             required: true,
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The command name."
+            description: "The command name.",
         },
         {
             name: "debug",
             type: ApplicationCommandOptionTypes.BOOLEAN,
-            description: "Whether to undeploy the command in debug server."
-        }
+            description: "Whether to undeploy the command in debug server.",
+        },
     ],
     example: [
         {
@@ -56,26 +64,28 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "command",
-                    value: "blacklist"
-                }
+                    value: "blacklist",
+                },
             ],
-            description: "will undeploy the command with name \"blacklist\" globally."
+            description:
+                'will undeploy the command with name "blacklist" globally.',
         },
         {
             command: "undeploy command:help debug:True",
             arguments: [
                 {
                     name: "command",
-                    value: "help"
+                    value: "help",
                 },
                 {
                     name: "debug",
-                    value: true
-                }
+                    value: true,
+                },
             ],
-            description: "will undeploy the command with name \"help\" in debug server."
-        }
+            description:
+                'will undeploy the command with name "help" in debug server.',
+        },
     ],
     permissions: ["BOT_OWNER"],
-    scope: "ALL"
+    scope: "ALL",
 };

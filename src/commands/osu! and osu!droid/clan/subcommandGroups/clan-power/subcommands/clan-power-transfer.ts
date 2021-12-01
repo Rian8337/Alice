@@ -14,33 +14,46 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const to: User = interaction.options.getUser("toclan", true);
 
-    const isChallengePassed: boolean = interaction.options.getBoolean("challengepassed", true);
+    const isChallengePassed: boolean = interaction.options.getBoolean(
+        "challengepassed",
+        true
+    );
 
-    const fromClan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(from);
+    const fromClan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(from);
 
     if (!fromClan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.userToTransferFromNotInClan)
+            content: MessageCreator.createReject(
+                clanStrings.userToTransferFromNotInClan
+            ),
         });
     }
 
     if (!fromClan.isMatch) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanToTransferFromNotInMatchMode)
+            content: MessageCreator.createReject(
+                clanStrings.clanToTransferFromNotInMatchMode
+            ),
         });
     }
 
-    const toClan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(to);
+    const toClan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(to);
 
     if (!toClan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.userToTransferToNotInClan)
+            content: MessageCreator.createReject(
+                clanStrings.userToTransferToNotInClan
+            ),
         });
     }
 
     if (!toClan.isMatch) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanToTransferToNotInMatchMode)
+            content: MessageCreator.createReject(
+                clanStrings.clanToTransferToNotInMatchMode
+            ),
         });
     }
 
@@ -54,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         "debuff",
         "megabomb",
         "superbomb",
-        "bomb"
+        "bomb",
     ];
 
     const buffPowerups: PowerupType[] = [
@@ -63,7 +76,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         "buff",
         "megachallenge",
         "superchallenge",
-        "challenge"
+        "challenge",
     ];
 
     for await (const powerup of fromClan.active_powerups) {
@@ -71,9 +84,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             continue;
         }
 
-        allResponses.push(MessageCreator.createPrefixedMessage(
-            clanStrings.clanHasPowerupActive, Symbols.downArrow, fromClan.name, powerup
-        ));
+        allResponses.push(
+            MessageCreator.createPrefixedMessage(
+                clanStrings.clanHasPowerupActive,
+                Symbols.downArrow,
+                fromClan.name,
+                powerup
+            )
+        );
 
         switch (powerup) {
             case "megadebuff":
@@ -107,9 +125,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             continue;
         }
 
-        allResponses.push(MessageCreator.createPrefixedMessage(
-            clanStrings.clanHasPowerupActive, Symbols.upArrow, toClan.name, powerup
-        ));
+        allResponses.push(
+            MessageCreator.createPrefixedMessage(
+                clanStrings.clanHasPowerupActive,
+                Symbols.upArrow,
+                toClan.name,
+                powerup
+            )
+        );
 
         switch (powerup) {
             case "megabuff":
@@ -138,7 +161,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     }
 
-    const totalGivenPower: number = Math.min(fromClan.power, Math.floor(fromClan.power * finalMultiplier));
+    const totalGivenPower: number = Math.min(
+        fromClan.power,
+        Math.floor(fromClan.power * finalMultiplier)
+    );
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
@@ -148,7 +174,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 totalGivenPower.toLocaleString(),
                 fromClan.name,
                 toClan.name
-            )
+            ),
         },
         [interaction.user.id],
         20
@@ -162,7 +188,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     fromClan.isMatch = false;
     fromClan.active_powerups = [];
-    fromClan.member_list.get(from.id)!.battle_cooldown = currentTime + 86400 * 4;
+    fromClan.member_list.get(from.id)!.battle_cooldown =
+        currentTime + 86400 * 4;
     fromClan.power -= totalGivenPower;
 
     toClan.isMatch = false;
@@ -174,7 +201,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!fromClanResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanPowerTransferFailed, fromClanResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.clanPowerTransferFailed,
+                fromClanResult.reason!
+            ),
         });
     }
 
@@ -182,7 +212,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!toClanResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanPowerTransferFailed, toClanResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.clanPowerTransferFailed,
+                toClanResult.reason!
+            ),
         });
     }
 
@@ -192,10 +225,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             totalGivenPower.toLocaleString(),
             fromClan.name,
             toClan.name
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["SPECIAL"]
+    permissions: ["SPECIAL"],
 };

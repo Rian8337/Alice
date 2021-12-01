@@ -9,15 +9,21 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     const cost: number = 100;
 
@@ -27,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 clanStrings.notEnoughCoins,
                 "buy a clan powerup",
                 cost.toLocaleString()
-            )
+            ),
         });
     }
 
@@ -38,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 clanStrings.buyShopItemConfirmation,
                 "clan powerup",
                 cost.toLocaleString()
-            )
+            ),
         },
         [interaction.user.id],
         20
@@ -78,13 +84,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             powerup = "superdebuff"; // 1% chance
             break;
         case gachaNum <= 100:
-            powerup = "superbuff" // 1% chance
+            powerup = "superbuff"; // 1% chance
             break;
     }
 
     if (!powerup) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.powerupGachaNoResult)
+            content: MessageCreator.createReject(
+                clanStrings.powerupGachaNoResult
+            ),
         });
     }
 
@@ -95,26 +103,23 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, result.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: [
-            MessageCreator.createAccept(
-                clanStrings.powerupGachaWin,
-                powerup
-            )
-            ,
+            MessageCreator.createAccept(clanStrings.powerupGachaWin, powerup),
             MessageCreator.createAccept(
                 clanStrings.buyShopItemSuccessful,
                 cost.toLocaleString()
-            )
-        ].join("\n")
+            ),
+        ].join("\n"),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

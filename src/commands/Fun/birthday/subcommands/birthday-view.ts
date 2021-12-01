@@ -10,31 +10,41 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const birthday: Birthday | null =
-        await DatabaseManager.aliceDb.collections.birthday.getUserBirthday(user.id);
+        await DatabaseManager.aliceDb.collections.birthday.getUserBirthday(
+            user.id
+        );
 
     if (!birthday) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                birthdayStrings.birthdayNotExist, user.id === interaction.user.id ? "you don't" : "the user doesn't"
-            )
+                birthdayStrings.birthdayNotExist,
+                user.id === interaction.user.id
+                    ? "you don't"
+                    : "the user doesn't"
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember | null>interaction.member)?.displayColor,
+    });
 
     embed.setDescription(
         `__**Birthday Info for ${user}**__\n` +
-        `**Date**: ${birthday.date}/${birthday.month + 1}\n` +
-        `**Timezone**: UTC${birthday.timezone >= 0 ? `+${birthday.timezone}` : birthday.timezone}`
+            `**Date**: ${birthday.date}/${birthday.month + 1}\n` +
+            `**Timezone**: UTC${
+                birthday.timezone >= 0
+                    ? `+${birthday.timezone}`
+                    : birthday.timezone
+            }`
     );
 
     interaction.editReply({
-        embeds: [ embed ]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

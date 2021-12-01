@@ -6,18 +6,25 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { askcountStrings } from "./askcountStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const askCount: AskCount | null = await DatabaseManager.aliceDb.collections.askCount.getUserAskCount(interaction.user.id);
+    const askCount: AskCount | null =
+        await DatabaseManager.aliceDb.collections.askCount.getUserAskCount(
+            interaction.user.id
+        );
 
     if (!askCount) {
-        return interaction.editReply(MessageCreator.createReject(askcountStrings.haveNotAsked));
+        return interaction.editReply(
+            MessageCreator.createReject(askcountStrings.haveNotAsked)
+        );
     }
 
     const count: number = askCount.count;
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            askcountStrings.askCount, count.toLocaleString(), count === 1 ? "time" : "times"
-        )
+            askcountStrings.askCount,
+            count.toLocaleString(),
+            count === 1 ? "time" : "times"
+        ),
     });
 };
 
@@ -30,9 +37,9 @@ export const config: Command["config"] = {
     example: [
         {
             command: "askcount",
-            description: "will tell you how many times you have asked me."
-        }
+            description: "will tell you how many times you have asked me.",
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

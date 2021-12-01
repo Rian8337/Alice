@@ -1,6 +1,17 @@
 import AdmZip from "adm-zip";
-import { ExportedReplayJSON, HitErrorInformation, MapInfo, ReplayData, Score } from "osu-droid";
-import { GuildMember, MessageAttachment, MessageEmbed, MessageOptions } from "discord.js";
+import {
+    ExportedReplayJSON,
+    HitErrorInformation,
+    MapInfo,
+    ReplayData,
+    Score,
+} from "osu-droid";
+import {
+    GuildMember,
+    MessageAttachment,
+    MessageEmbed,
+    MessageOptions,
+} from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
@@ -21,27 +32,38 @@ export const run: Command["run"] = async (_, interaction) => {
 
     let uid: number | null = interaction.options.getInteger("uid");
 
-    let hash: string = beatmapLink?.startsWith("h:") ? beatmapLink.slice(2) : "";
+    let hash: string = beatmapLink?.startsWith("h:")
+        ? beatmapLink.slice(2)
+        : "";
 
     if (!beatmapID && !hash) {
         return interaction.editReply({
-            content: MessageCreator.createReject(fetchreplayStrings.beatmapNotProvided)
+            content: MessageCreator.createReject(
+                fetchreplayStrings.beatmapNotProvided
+            ),
         });
     }
 
     if (!uid) {
-        const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
+        const bindInfo: UserBind | null =
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+                interaction.user
+            );
 
         if (!bindInfo) {
             return interaction.editReply({
-                content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                content: MessageCreator.createReject(
+                    Constants.selfNotBindedReject
+                ),
             });
         }
 
         uid = bindInfo.uid;
     }
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(hash ? hash : beatmapID);
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+        hash ? hash : beatmapID
+    );
 
     if (beatmapInfo) {
         hash = beatmapInfo.hash;
@@ -52,8 +74,11 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!score.title) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                fetchreplayStrings.noScoreFound, interaction.options.getInteger("uid") ? "that uid does" : "you do"
-            )
+                fetchreplayStrings.noScoreFound,
+                interaction.options.getInteger("uid")
+                    ? "that uid does"
+                    : "you do"
+            ),
         });
     }
 
@@ -63,7 +88,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!data) {
         return interaction.editReply({
-            content: MessageCreator.createReject(fetchreplayStrings.noReplayFound)
+            content: MessageCreator.createReject(
+                fetchreplayStrings.noReplayFound
+            ),
         });
     }
 
@@ -75,9 +102,12 @@ export const run: Command["run"] = async (_, interaction) => {
         version: 1,
         replaydata: {
             filename: `${data.folderName}\\/${data.fileName}`,
-            playername: data.replayVersion < 3 ? score.username : data.playerName,
+            playername:
+                data.replayVersion < 3 ? score.username : data.playerName,
             replayfile: `${score.scoreID}.odr`,
-            mod: `${score.mods.map(v => v.droidString).join("")}${score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""}${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
+            mod: `${score.mods.map((v) => v.droidString).join("")}${
+                score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
+            }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
             score: score.score,
             combo: score.combo,
             mark: score.rank,
@@ -89,13 +119,25 @@ export const run: Command["run"] = async (_, interaction) => {
             misses: score.accuracy.nmiss,
             accuracy: score.accuracy.value(),
             time: score.date.getTime(),
-            perfect: data.replayVersion < 3 ? (score.accuracy.nmiss === 0 ? 1 : 0) : (data.isFullCombo ? 1 : 0)
-        }
+            perfect:
+                data.replayVersion < 3
+                    ? score.accuracy.nmiss === 0
+                        ? 1
+                        : 0
+                    : data.isFullCombo
+                    ? 1
+                    : 0,
+        },
     };
 
     zip.addFile("entry.json", Buffer.from(JSON.stringify(json, null, 2)));
 
-    const replayAttachment: MessageAttachment = new MessageAttachment(zip.toBuffer(), `${data.fileName.substring(0, data.fileName.length - 4)} [${data.playerName}]-${json.replaydata.time}.edr`);
+    const replayAttachment: MessageAttachment = new MessageAttachment(
+        zip.toBuffer(),
+        `${data.fileName.substring(0, data.fileName.length - 4)} [${
+            data.playerName
+        }]-${json.replaydata.time}.edr`
+    );
 
     if (!beatmapInfo?.map) {
         return interaction.editReply({
@@ -110,23 +152,39 @@ export const run: Command["run"] = async (_, interaction) => {
                 score.accuracy.n50.toString(),
                 score.accuracy.nmiss.toString()
             ),
-            files: [replayAttachment]
+            files: [replayAttachment],
         });
     }
 
-    const calcResult: PerformanceCalculationResult =
-        <PerformanceCalculationResult>await BeatmapDifficultyHelper.calculateScorePerformance(score);
+    const calcResult: PerformanceCalculationResult = <
+        PerformanceCalculationResult
+    >await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
-    const calcEmbedOptions: MessageOptions = await EmbedCreator.createCalculationEmbed(
-        await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
-        calcResult,
-        (<GuildMember | null>interaction.member)?.displayHexColor
-    );
+    const calcEmbedOptions: MessageOptions =
+        await EmbedCreator.createCalculationEmbed(
+            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+            calcResult,
+            (<GuildMember | null>interaction.member)?.displayHexColor
+        );
 
-    const hitErrorInformation: HitErrorInformation = score.replay!.calculateHitError()!;
+    const hitErrorInformation: HitErrorInformation =
+        score.replay!.calculateHitError()!;
 
-    (<MessageEmbed>calcEmbedOptions.embeds![0]).setAuthor(`Play Information for ${score.username}`, (<MessageEmbed>calcEmbedOptions.embeds![0]).author?.iconURL)
-        .addField("Hit Error Information", `${hitErrorInformation.negativeAvg.toFixed(2)}ms - ${hitErrorInformation.positiveAvg.toFixed(2)}ms hit error avg | ${hitErrorInformation.unstableRate.toFixed(2)} UR`);
+    (<MessageEmbed>calcEmbedOptions.embeds![0])
+        .setAuthor(
+            `Play Information for ${score.username}`,
+            (<MessageEmbed>calcEmbedOptions.embeds![0]).author?.iconURL
+        )
+        .addField(
+            "Hit Error Information",
+            `${hitErrorInformation.negativeAvg.toFixed(
+                2
+            )}ms - ${hitErrorInformation.positiveAvg.toFixed(
+                2
+            )}ms hit error avg | ${hitErrorInformation.unstableRate.toFixed(
+                2
+            )} UR`
+        );
 
     calcEmbedOptions.files?.push(replayAttachment);
 
@@ -143,13 +201,14 @@ export const config: Command["config"] = {
             name: "beatmap",
             required: true,
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The beatmap ID or link."
+            description: "The beatmap ID or link.",
         },
         {
             name: "uid",
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The uid of the player. Defaults to your current binded uid."
-        }
+            description:
+                "The uid of the player. Defaults to your current binded uid.",
+        },
     ],
     example: [
         {
@@ -157,51 +216,55 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "beatmap",
-                    value: 1884658
-                }
+                    value: 1884658,
+                },
             ],
-            description: "will fetch the replay from the uid you're currently binded on in the beatmap with ID 1884658."
+            description:
+                "will fetch the replay from the uid you're currently binded on in the beatmap with ID 1884658.",
         },
         {
             command: "fetchreplay",
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
-                }
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+                },
             ],
-            description: "will fetch the replay from the uid you're currently binded on in the linked beatmap."
+            description:
+                "will fetch the replay from the uid you're currently binded on in the linked beatmap.",
         },
         {
             command: "fetchreplay",
             arguments: [
                 {
                     name: "beatmap",
-                    value: 1884658
+                    value: 1884658,
                 },
                 {
                     name: "uid",
-                    value: 51076
-                }
+                    value: 51076,
+                },
             ],
-            description: "will fetch the replay from the player with uid 51076 in the beatmap with ID 1884658."
+            description:
+                "will fetch the replay from the player with uid 51076 in the beatmap with ID 1884658.",
         },
         {
             command: "fetchreplay 5455",
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/b/1884658"
+                    value: "https://osu.ppy.sh/b/1884658",
                 },
                 {
                     name: "uid",
-                    value: 5455
-                }
+                    value: 5455,
+                },
             ],
-            description: "will fetch the replay from the player with uid 5455 in the linked beatmap."
-        }
+            description:
+                "will fetch the replay from the player with uid 5455 in the linked beatmap.",
+        },
     ],
     cooldown: 30,
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

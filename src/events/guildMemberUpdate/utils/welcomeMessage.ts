@@ -2,12 +2,20 @@ import { GuildChannel, GuildMember, ThreadChannel } from "discord.js";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 
-export const run: EventUtil["run"] = async (_, oldMember: GuildMember, newMember: GuildMember) => {
-    if (oldMember.user.bot || oldMember.roles.cache.size === newMember.roles.cache.size) {
+export const run: EventUtil["run"] = async (
+    _,
+    oldMember: GuildMember,
+    newMember: GuildMember
+) => {
+    if (
+        oldMember.user.bot ||
+        oldMember.roles.cache.size === newMember.roles.cache.size
+    ) {
         return;
     }
 
-    const general: GuildChannel | ThreadChannel | undefined = newMember.guild.channels.cache.get(Constants.mainServer);
+    const general: GuildChannel | ThreadChannel | undefined =
+        newMember.guild.channels.cache.get(Constants.mainServer);
 
     if (!general?.isText()) {
         return;
@@ -24,5 +32,5 @@ export const run: EventUtil["run"] = async (_, oldMember: GuildMember, newMember
 export const config: EventUtil["config"] = {
     description: "Responsible for welcoming users upon verification.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

@@ -10,20 +10,28 @@ import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
+    const bindInfo: UserBind | null =
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+            interaction.user
+        );
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject)
+            content: MessageCreator.createReject(Constants.selfNotBindedReject),
         });
     }
 
-    const nameChange: NameChange | null = await DatabaseManager.aliceDb.collections.nameChange.getFromUid(bindInfo.uid);
+    const nameChange: NameChange | null =
+        await DatabaseManager.aliceDb.collections.nameChange.getFromUid(
+            bindInfo.uid
+        );
 
     if (nameChange) {
         if (!nameChange.isProcessed) {
             return interaction.editReply({
-                content: MessageCreator.createReject(namechangeStrings.activeRequestExists)
+                content: MessageCreator.createReject(
+                    namechangeStrings.activeRequestExists
+                ),
             });
         }
 
@@ -32,7 +40,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 content: MessageCreator.createReject(
                     namechangeStrings.requestCooldownNotExpired,
                     new Date(nameChange.cooldown * 1000).toUTCString()
-                )
+                ),
             });
         }
     }
@@ -41,7 +49,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.currentBindedAccountDoesntExist)
+            content: MessageCreator.createReject(
+                namechangeStrings.currentBindedAccountDoesntExist
+            ),
         });
     }
 
@@ -49,40 +59,60 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (email !== player.email) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.emailNotEqualToBindedAccount)
+            content: MessageCreator.createReject(
+                namechangeStrings.emailNotEqualToBindedAccount
+            ),
         });
     }
 
-    const newUsername: string = <string> interaction.options.getString("newusername");
+    const newUsername: string = <string>(
+        interaction.options.getString("newusername")
+    );
 
-    if (StringHelper.hasUnicode(newUsername) || !(/^[a-zA-Z0-9_]+$/.test(newUsername))) {
+    if (
+        StringHelper.hasUnicode(newUsername) ||
+        !/^[a-zA-Z0-9_]+$/.test(newUsername)
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.newUsernameContainsUnicode)
+            content: MessageCreator.createReject(
+                namechangeStrings.newUsernameContainsUnicode
+            ),
         });
     }
 
     if (!NumberHelper.isNumberInRange(newUsername.length, 2, 20, true)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.newUsernameTooLong)
+            content: MessageCreator.createReject(
+                namechangeStrings.newUsernameTooLong
+            ),
         });
     }
 
-    const newPlayer: Player = await Player.getInformation({ username: newUsername });
+    const newPlayer: Player = await Player.getInformation({
+        username: newUsername,
+    });
 
     if (newPlayer.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.newNameAlreadyTaken)
+            content: MessageCreator.createReject(
+                namechangeStrings.newNameAlreadyTaken
+            ),
         });
     }
 
-    await DatabaseManager.aliceDb.collections.nameChange.requestNameChange(interaction.user.id, bindInfo.uid, player.username, newUsername);
+    await DatabaseManager.aliceDb.collections.nameChange.requestNameChange(
+        interaction.user.id,
+        bindInfo.uid,
+        player.username,
+        newUsername
+    );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(namechangeStrings.requestSuccess)
+        content: MessageCreator.createAccept(namechangeStrings.requestSuccess),
     });
 };
 
 export const config: Subcommand["config"] = {
     permissions: [],
-    replyEphemeral: true
+    replyEphemeral: true,
 };

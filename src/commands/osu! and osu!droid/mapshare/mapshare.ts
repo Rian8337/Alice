@@ -22,9 +22,10 @@ export const config: Command["config"] = {
                     name: "beatmap",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link that the submission is sharing."
-                }
-            ]
+                    description:
+                        "The beatmap ID or link that the submission is sharing.",
+                },
+            ],
         },
         {
             name: "ban",
@@ -35,9 +36,9 @@ export const config: Command["config"] = {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to ban."
-                }
-            ]
+                    description: "The user to ban.",
+                },
+            ],
         },
         {
             name: "deny",
@@ -48,57 +49,62 @@ export const config: Command["config"] = {
                     name: "beatmap",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link that the submission is sharing."
-                }
-            ]
+                    description:
+                        "The beatmap ID or link that the submission is sharing.",
+                },
+            ],
         },
         {
             name: "list",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Lists all map sharing submissions with the specified status.",
+            description:
+                "Lists all map sharing submissions with the specified status.",
             options: [
                 {
                     name: "status",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The status of submissions to list. Defaults to pending.",
+                    description:
+                        "The status of submissions to list. Defaults to pending.",
                     choices: [
                         {
                             name: "Accepted",
-                            value: "accepted"
+                            value: "accepted",
                         },
                         {
                             name: "Denied",
-                            value: "denied"
+                            value: "denied",
                         },
                         {
                             name: "Pending",
-                            value: "pending"
+                            value: "pending",
                         },
                         {
                             name: "Posted",
-                            value: "posted"
-                        }
-                    ]
+                            value: "posted",
+                        },
+                    ],
                 },
                 {
                     name: "page",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page to view. Defaults to 1."
-                }
-            ]
+                    description: "The page to view. Defaults to 1.",
+                },
+            ],
         },
         {
             name: "post",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Posts a map sharing submission to the map share channel.",
+            description:
+                "Posts a map sharing submission to the map share channel.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link that the submission is sharing."
-                }
-            ]
+                    description:
+                        "The beatmap ID or link that the submission is sharing.",
+                },
+            ],
         },
         {
             name: "submit",
@@ -109,28 +115,30 @@ export const config: Command["config"] = {
                     name: "beatmap",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link to share."
+                    description: "The beatmap ID or link to share.",
                 },
                 {
                     name: "summary",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The summary of the beatmap to share. Must be between 50-120 words and 100-900 characters."
-                }
-            ]
+                    description:
+                        "The summary of the beatmap to share. Must be between 50-120 words and 100-900 characters.",
+                },
+            ],
         },
         {
             name: "unban",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Unbans a user from submitting a map share submission.",
+            description:
+                "Unbans a user from submitting a map share submission.",
             options: [
                 {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to unban."
-                }
-            ]
+                    description: "The user to unban.",
+                },
+            ],
         },
         {
             name: "view",
@@ -141,10 +149,11 @@ export const config: Command["config"] = {
                     name: "beatmap",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link that the submission is sharing."
-                }
-            ]
-        }
+                    description:
+                        "The beatmap ID or link that the submission is sharing.",
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -152,16 +161,17 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
                 },
                 {
                     name: "summary",
-                    value: "This map is so good"
-                }
+                    value: "This map is so good",
+                },
             ],
-            description: "will submit a new map sharing submission with the linked beatmap and summary \"This map is so good\"."
-        }
+            description:
+                'will submit a new map sharing submission with the linked beatmap and summary "This map is so good".',
+        },
     ],
     permissions: [],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

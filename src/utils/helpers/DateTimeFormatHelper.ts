@@ -4,7 +4,7 @@
 export abstract class DateTimeFormatHelper {
     /**
      * Converts seconds into `w days, x hours, y minutes, z seconds` format.
-     * 
+     *
      * @param seconds The amount of seconds to convert.
      * @returns The formatted date.
      */
@@ -24,19 +24,21 @@ export abstract class DateTimeFormatHelper {
             days + " day" + (days > 1 ? "s" : ""),
             hours + " hour" + (hours > 1 ? "s" : ""),
             minutes + " minute" + (minutes > 1 ? "s" : ""),
-            seconds + " second" + (seconds > 1 ? "s" : "")
+            seconds + " second" + (seconds > 1 ? "s" : ""),
         ];
 
-        return final.filter(v => !v.startsWith("0")).join(", ") || "0 seconds";
+        return (
+            final.filter((v) => !v.startsWith("0")).join(", ") || "0 seconds"
+        );
     }
 
     /**
      * Converts a DD:HH:MM:SS time format or DHMS time format into seconds.
-     * 
+     *
      * Example formats:
      * - 6:01:24:33
      * - 2d14h55m34s
-     * 
+     *
      * @param dhms The time format to be converted.
      * @returns The converted time format in seconds.
      */
@@ -104,7 +106,7 @@ export abstract class DateTimeFormatHelper {
 
     /**
      * Converts a date object into human-readable string.
-     * 
+     *
      * @param date The date to convert.
      * @returns The converted string.
      */
@@ -116,9 +118,9 @@ export abstract class DateTimeFormatHelper {
 
     /**
      * Gets the difference between the specified time and current time in milliseconds.
-     * 
+     *
      * A negative return value means the specified time is in the past.
-     * 
+     *
      * @param time The time.
      * @returns The difference between the specified time and current time in milliseconds.
      */

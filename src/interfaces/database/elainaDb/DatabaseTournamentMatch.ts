@@ -22,14 +22,14 @@ export interface DatabaseTournamentMatch extends BaseDocument {
 
     /**
      * The teams in the match.
-     * 
+     *
      * The first index is the team name, the second index is the total score gained by the team.
      */
     team: [string, number][];
 
     /**
      * The players in the match.
-     * 
+     *
      * The teams they are assigned in is based on the index they are placed in this array.
      * Players in even indexes will be assigned to the first team, while players in odd indexes will be assigned to the second team.
      */
@@ -42,7 +42,7 @@ export interface DatabaseTournamentMatch extends BaseDocument {
 
     /**
      * The results of the match.
-     * 
+     *
      * Each players' score are stored in here based on the index they are placed
      * in `player` field.
      */

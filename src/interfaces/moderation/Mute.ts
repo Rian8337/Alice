@@ -11,7 +11,7 @@ export interface Mute {
 
     /**
      * The log channel ID of the guild when the user was muted.
-     * 
+     *
      * This is stored in case the guild's log channel is changed
      * when the mute is active.
      */

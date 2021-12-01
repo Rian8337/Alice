@@ -16,11 +16,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const allowedConfirmations: Snowflake[] = [];
 
     if (interaction.options.getString("name")) {
-        const staffMembers: Collection<Snowflake, GuildMember> = await PermissionHelper.getMainGuildStaffMembers(client);
+        const staffMembers: Collection<Snowflake, GuildMember> =
+            await PermissionHelper.getMainGuildStaffMembers(client);
 
         if (!staffMembers.has(interaction.user.id)) {
             return interaction.editReply({
-                content: MessageCreator.createReject(Constants.noPermissionReject)
+                content: MessageCreator.createReject(
+                    Constants.noPermissionReject
+                ),
             });
         }
 
@@ -28,17 +31,24 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         clanName = interaction.options.getString("name", true);
     } else {
-        const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
+        const bindInfo: UserBind | null =
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+                interaction.user
+            );
 
         if (!bindInfo) {
             return interaction.editReply({
-                content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                content: MessageCreator.createReject(
+                    Constants.selfNotBindedReject
+                ),
             });
         }
 
         if (!bindInfo.clan) {
             return interaction.editReply({
-                content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+                content: MessageCreator.createReject(
+                    clanStrings.selfIsNotInClan
+                ),
             });
         }
 
@@ -47,24 +57,31 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         clanName = bindInfo.clan;
     }
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(clanName);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromName(clanName);
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntExist)
+            content: MessageCreator.createReject(clanStrings.clanDoesntExist),
         });
     }
 
     // Only clan leaders and staff members can disband clan
     if (!clan.isLeader(interaction.user) && allowedConfirmations.length === 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
-        { content: MessageCreator.createWarn(clanStrings.disbandClanConfirmation) },
+        {
+            content: MessageCreator.createWarn(
+                clanStrings.disbandClanConfirmation
+            ),
+        },
         allowedConfirmations,
         20
     );
@@ -77,15 +94,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.disbandClanFailed, result.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.disbandClanFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.disbandClanSuccessful)
+        content: MessageCreator.createAccept(clanStrings.disbandClanSuccessful),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

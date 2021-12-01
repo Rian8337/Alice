@@ -7,13 +7,19 @@ import { Collection as MongoDBCollection } from "mongodb";
 /**
  * A manager for the `dppapikey` collection.
  */
-export class DPPAPIKeyCollectionManager extends DatabaseCollectionManager<DatabaseDPPAPIKey, DPPAPIKey> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseDPPAPIKey, DPPAPIKey>;
+export class DPPAPIKeyCollectionManager extends DatabaseCollectionManager<
+    DatabaseDPPAPIKey,
+    DPPAPIKey
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseDPPAPIKey,
+        DPPAPIKey
+    >;
 
     override get defaultDocument(): DatabaseDPPAPIKey {
         return {
             key: "",
-            owner: ""
+            owner: "",
         };
     }
 
@@ -23,6 +29,8 @@ export class DPPAPIKeyCollectionManager extends DatabaseCollectionManager<Databa
     constructor(collection: MongoDBCollection<DatabaseDPPAPIKey>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseDPPAPIKey, DPPAPIKey>> new DPPAPIKey().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseDPPAPIKey, DPPAPIKey>
+        >new DPPAPIKey().constructor;
     }
 }

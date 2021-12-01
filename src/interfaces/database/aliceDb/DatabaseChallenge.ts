@@ -24,7 +24,7 @@ export interface DatabaseChallenge extends BaseDocument {
 
     /**
      * The download links to the challenge beatmapset.
-     * 
+     *
      * The first element is the download link via Google Drive,
      * the second element is the download link via OneDrive.
      */

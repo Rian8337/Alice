@@ -8,15 +8,21 @@ import { Collection as MongoDBCollection } from "mongodb";
 /**
  * A manager for the `guildsettings` collection.
  */
-export class GuildSettingsCollectionManager extends DatabaseCollectionManager<DatabaseGuildSettings, GuildSettings> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>;
+export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
+    DatabaseGuildSettings,
+    GuildSettings
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseGuildSettings,
+        GuildSettings
+    >;
 
     override get defaultDocument(): DatabaseGuildSettings {
         return {
             channelSettings: [],
             disabledCommands: [],
             disabledEventUtils: [],
-            id: ""
+            id: "",
         };
     }
 
@@ -26,12 +32,14 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<Da
     constructor(collection: MongoDBCollection<DatabaseGuildSettings>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>> new GuildSettings().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>
+        >new GuildSettings().constructor;
     }
 
     /**
      * Gets the settings of a guild.
-     * 
+     *
      * @param guildId The ID of the guild.
      * @returns The guild setting, `null` if not found.
      */

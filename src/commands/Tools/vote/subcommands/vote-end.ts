@@ -7,21 +7,30 @@ import { voteStrings } from "../voteStrings";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const voteInfo: Voting | null = await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(interaction.channel!.id);
+    const voteInfo: Voting | null =
+        await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
+            interaction.channel!.id
+        );
 
     if (!voteInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(voteStrings.noOngoingVoteInChannel)
+            content: MessageCreator.createReject(
+                voteStrings.noOngoingVoteInChannel
+            ),
         });
     }
 
     // People with manage channels permission can end vote
     if (
         interaction.user.id !== voteInfo.initiator &&
-        !(<TextChannel> interaction.channel).permissionsFor(<GuildMember> interaction.member)?.any(Permissions.FLAGS.MANAGE_CHANNELS)
+        !(<TextChannel>interaction.channel)
+            .permissionsFor(<GuildMember>interaction.member)
+            ?.any(Permissions.FLAGS.MANAGE_CHANNELS)
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(voteStrings.noEndVotePermission)
+            content: MessageCreator.createReject(
+                voteStrings.noEndVotePermission
+            ),
         });
     }
 
@@ -32,10 +41,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < voteInfo.choices.length; ++i) {
         const choice: VoteChoice = voteInfo.choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length}\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${
+            choice.voters.length
+        }\`\n\n`;
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(voteStrings.endVoteSuccess) + `\n${string}`
+        content:
+            MessageCreator.createAccept(voteStrings.endVoteSuccess) +
+            `\n${string}`,
     });
 };

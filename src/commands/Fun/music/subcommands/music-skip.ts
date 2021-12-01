@@ -7,22 +7,23 @@ import { musicStrings } from "../musicStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await MusicManager.skip(
-        (<GuildMember> interaction.member).voice.channel!
+        (<GuildMember>interaction.member).voice.channel!
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.skipTrackFailed, result.reason!
-            )
+                musicStrings.skipTrackFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(musicStrings.skipTrackSuccess)
+        content: MessageCreator.createAccept(musicStrings.skipTrackSuccess),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

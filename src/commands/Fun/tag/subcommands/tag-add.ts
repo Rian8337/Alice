@@ -12,25 +12,31 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const name: string = interaction.options.getString("name", true);
 
-    const content: string = Util.removeMentions(interaction.options.getString("content") ?? "");
+    const content: string = Util.removeMentions(
+        interaction.options.getString("content") ?? ""
+    );
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.nameTooLong)
+            content: MessageCreator.createReject(tagStrings.nameTooLong),
         });
     }
 
     if (content.length > 1500) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.contentTooLong)
+            content: MessageCreator.createReject(tagStrings.contentTooLong),
         });
     }
 
-    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
+    const tag: GuildTag | null =
+        await DatabaseManager.aliceDb.collections.guildTags.getByName(
+            interaction.guildId,
+            name
+        );
 
     if (tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagExists)
+            content: MessageCreator.createReject(tagStrings.tagExists),
         });
     }
 
@@ -41,16 +47,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         author: interaction.user.id,
         attachment_message: "",
         attachments: [],
-        date: interaction.createdTimestamp
+        date: interaction.createdTimestamp,
     });
 
     interaction.editReply({
-        content: MessageCreator.createAccept(
-            tagStrings.addTagSuccessful, name
-        )
+        content: MessageCreator.createAccept(tagStrings.addTagSuccessful, name),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

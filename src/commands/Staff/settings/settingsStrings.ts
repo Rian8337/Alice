@@ -20,5 +20,5 @@ export enum settingsStrings {
     disableCommandSuccess = "Successfully disabled `%s` command.",
     enableCommandFailed = "I'm sorry, I'm unable to enable the command: %s.",
     enableCommandSuccess = "Successfully enabled `%s` command.",
-    setGlobalCommandCooldownSuccess = "Successfully set global command cooldown to `%s` second(s)."
+    setGlobalCommandCooldownSuccess = "Successfully set global command cooldown to `%s` second(s).",
 }

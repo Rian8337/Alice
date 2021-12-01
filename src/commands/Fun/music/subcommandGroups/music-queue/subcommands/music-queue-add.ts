@@ -10,60 +10,74 @@ import yts, { SearchResult, VideoSearchResult } from "yt-search";
 import { musicStrings } from "../../../musicStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const searchResult: SearchResult = await yts(interaction.options.getString("query", true));
+    const searchResult: SearchResult = await yts(
+        interaction.options.getString("query", true)
+    );
 
     const videos: VideoSearchResult[] = searchResult.videos;
 
     if (videos.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.noTracksFound)
+            content: MessageCreator.createReject(musicStrings.noTracksFound),
         });
     }
 
-    const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
-        interaction,
-        {
-            content: MessageCreator.createWarn("Choose the video that you want to queue.")
-        },
-        videos.map(v => {
-            return {
-                label: v.title.substring(0, 101),
-                value: v.videoId,
-                description: v.author.name.substring(0, 101)
-            };
-        }),
-        [interaction.user.id],
-        30
-    ))[0];
+    const pickedChoice: string = (
+        await SelectMenuCreator.createSelectMenu(
+            interaction,
+            {
+                content: MessageCreator.createWarn(
+                    "Choose the video that you want to queue."
+                ),
+            },
+            videos.map((v) => {
+                return {
+                    label: v.title.substring(0, 101),
+                    value: v.videoId,
+                    description: v.author.name.substring(0, 101),
+                };
+            }),
+            [interaction.user.id],
+            30
+        )
+    )[0];
 
     if (!pickedChoice) {
         return;
     }
 
-    const info: VideoSearchResult = videos.find(v => v.videoId === pickedChoice)!;
+    const info: VideoSearchResult = videos.find(
+        (v) => v.videoId === pickedChoice
+    )!;
 
     const result: OperationResult = await MusicManager.enqueue(
-        (<GuildMember> interaction.member).voice.channel!,
-        <TextChannel | ThreadChannel> interaction.channel!,
+        (<GuildMember>interaction.member).voice.channel!,
+        <TextChannel | ThreadChannel>interaction.channel!,
         new MusicQueue(info, interaction.user.id),
-        NumberHelper.clamp(interaction.options.getInteger("position") ?? 1, 1, 10)
+        NumberHelper.clamp(
+            interaction.options.getInteger("position") ?? 1,
+            1,
+            10
+        )
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.addQueueFailed, result.reason!
-            )
+                musicStrings.addQueueFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.addQueueSuccess, info.title
-        )
+            musicStrings.addQueueSuccess,
+            info.title
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

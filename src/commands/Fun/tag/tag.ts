@@ -22,14 +22,16 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the tag. Must be less than or equal to 30 characters."
+                    description:
+                        "The name of the tag. Must be less than or equal to 30 characters.",
                 },
                 {
                     name: "content",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The content of the tag. Must be less than or equal to 1500 characters."
-                }
-            ]
+                    description:
+                        "The content of the tag. Must be less than or equal to 1500 characters.",
+                },
+            ],
         },
         {
             name: "attach",
@@ -40,15 +42,16 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the tag."
+                    description: "The name of the tag.",
                 },
                 {
                     name: "url",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The URL to the attachment. Attachment must be less than 8 MB."
-                }
-            ]
+                    description:
+                        "The URL to the attachment. Attachment must be less than 8 MB.",
+                },
+            ],
         },
         {
             name: "delete",
@@ -59,9 +62,9 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the tag."
-                }
-            ]
+                    description: "The name of the tag.",
+                },
+            ],
         },
         {
             name: "edit",
@@ -72,15 +75,15 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the tag."
+                    description: "The name of the tag.",
                 },
                 {
                     name: "content",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The new content of the tag."
-                }
-            ]
+                    description: "The new content of the tag.",
+                },
+            ],
         },
         {
             name: "info",
@@ -91,9 +94,9 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the tag."
-                }
-            ]
+                    description: "The name of the tag.",
+                },
+            ],
         },
         {
             name: "list",
@@ -103,28 +106,29 @@ export const config: Command["config"] = {
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The Discord user. Defaults to yourself."
-                }
-            ]
+                    description: "The Discord user. Defaults to yourself.",
+                },
+            ],
         },
         {
             name: "move",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Transfers the ownership of tags from a user to someone else.",
+            description:
+                "Transfers the ownership of tags from a user to someone else.",
             options: [
                 {
                     name: "olduser",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to transfer the tags from."
+                    description: "The user to transfer the tags from.",
                 },
                 {
                     name: "newuser",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to transfer the tags to."
-                }
-            ]
+                    description: "The user to transfer the tags to.",
+                },
+            ],
         },
         {
             name: "view",
@@ -135,9 +139,9 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the tag."
-                }
-            ]
+                    description: "The name of the tag.",
+                },
+            ],
         },
         {
             name: "unattach",
@@ -148,7 +152,7 @@ export const config: Command["config"] = {
                     name: "name",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The name of the tag."
+                    description: "The name of the tag.",
                 },
                 {
                     name: "index",
@@ -158,20 +162,20 @@ export const config: Command["config"] = {
                     choices: [
                         {
                             name: "First",
-                            value: 1
+                            value: 1,
                         },
                         {
                             name: "Second",
-                            value: 2
+                            value: 2,
                         },
                         {
                             name: "Third",
-                            value: 3
-                        }
-                    ]
-                }
-            ]
-        }
+                            value: 3,
+                        },
+                    ],
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -179,54 +183,56 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "name",
-                    value: "deni123"
-                }
+                    value: "deni123",
+                },
             ],
-            description: "will add a new empty tag called \"deni123\" which needs to be edited or given an attachment."
+            description:
+                'will add a new empty tag called "deni123" which needs to be edited or given an attachment.',
         },
         {
             command: "tag add",
             arguments: [
                 {
                     name: "name",
-                    value: "deni123"
+                    value: "deni123",
                 },
                 {
                     name: "content",
-                    value: "hi"
-                }
+                    value: "hi",
+                },
             ],
-            description: "will add a new tag called \"deni123\" with content \"hi\"."
+            description:
+                'will add a new tag called "deni123" with content "hi".',
         },
         {
             command: "tag attach",
             arguments: [
                 {
                     name: "name",
-                    value: "deni123"
+                    value: "deni123",
                 },
                 {
                     name: "url",
-                    value: "https://b.ppy.sh/thumb/902745l.jpg"
-                }
+                    value: "https://b.ppy.sh/thumb/902745l.jpg",
+                },
             ],
-            description: "will attach the given image to the tag \"deni123\"."
+            description: 'will attach the given image to the tag "deni123".',
         },
         {
             command: "tag edit",
             arguments: [
                 {
                     name: "name",
-                    value: "deni123"
+                    value: "deni123",
                 },
                 {
                     name: "content",
-                    value: "hi"
-                }
+                    value: "hi",
+                },
             ],
-            description: "will edit the tag \"deni123\"'s content to \"hi\"."
-        }
+            description: 'will edit the tag "deni123"\'s content to "hi".',
+        },
     ],
     permissions: [],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

@@ -1,29 +1,34 @@
-import { Player } from 'osu-droid';
-import { Guild, GuildMember, Role } from 'discord.js';
-import { MessageCreator } from '@alice-utils/creators/MessageCreator';
-import { userbindStrings } from '../userbindStrings';
-import { DatabaseManager } from '@alice-database/DatabaseManager';
-import { Constants } from '@alice-core/Constants';
-import { MessageButtonCreator } from '@alice-utils/creators/MessageButtonCreator';
-import { UserBindCollectionManager } from '@alice-database/managers/elainaDb/UserBindCollectionManager';
-import { UserBind } from '@alice-database/utils/elainaDb/UserBind';
-import { Subcommand } from '@alice-interfaces/core/Subcommand';
-import { OperationResult } from '@alice-interfaces/core/OperationResult';
+import { Player } from "osu-droid";
+import { Guild, GuildMember, Role } from "discord.js";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { userbindStrings } from "../userbindStrings";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Constants } from "@alice-core/Constants";
+import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
+import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const uid: number = interaction.options.getInteger("uid", true);
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     const uidBindInfo: UserBind | null = await dbManager.getFromUid(uid);
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(userbindStrings.accountHasBeenBindedError)
+            content: MessageCreator.createReject(
+                userbindStrings.accountHasBeenBindedError
+            ),
         });
     }
 
-    const userBindInfo: UserBind | null = await dbManager.getFromUser(interaction.user);
+    const userBindInfo: UserBind | null = await dbManager.getFromUser(
+        interaction.user
+    );
 
     // TODO: this is a lot of duplicate codes. should consider moving to a function
 
@@ -31,48 +36,61 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(userbindStrings.profileNotFound)
+            content: MessageCreator.createReject(
+                userbindStrings.profileNotFound
+            ),
         });
     }
 
     if (userBindInfo) {
         if (!userBindInfo.isUidBinded(uid)) {
             // Binding a new account must be done inside main server
-            const mainServer: Guild = await client.guilds.fetch(Constants.mainServer);
+            const mainServer: Guild = await client.guilds.fetch(
+                Constants.mainServer
+            );
 
             if (interaction.guild?.id !== mainServer.id) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(userbindStrings.newAccountBindNotInMainServer)
+                    content: MessageCreator.createReject(
+                        userbindStrings.newAccountBindNotInMainServer
+                    ),
                 });
             }
 
-            const role: Role = mainServer.roles.cache.find(r => r.name === "Member")!;
+            const role: Role = mainServer.roles.cache.find(
+                (r) => r.name === "Member"
+            )!;
 
             if (!(<GuildMember>interaction.member).roles.cache.has(role.id)) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(userbindStrings.newAccountBindNotVerified)
+                    content: MessageCreator.createReject(
+                        userbindStrings.newAccountBindNotVerified
+                    ),
                 });
             }
 
             // Check if account has played verification map
             if (!(await player.hasPlayedVerificationMap())) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(userbindStrings.verificationMapNotFound)
+                    content: MessageCreator.createReject(
+                        userbindStrings.verificationMapNotFound
+                    ),
                 });
             }
 
-            const confirmation: boolean = await MessageButtonCreator.createConfirmation(
-                interaction,
-                {
-                    content: MessageCreator.createWarn(
-                        userbindStrings.newAccountBindConfirmation,
-                        "uid",
-                        uid.toString()
-                    )
-                },
-                [interaction.user.id],
-                10
-            );
+            const confirmation: boolean =
+                await MessageButtonCreator.createConfirmation(
+                    interaction,
+                    {
+                        content: MessageCreator.createWarn(
+                            userbindStrings.newAccountBindConfirmation,
+                            "uid",
+                            uid.toString()
+                        ),
+                    },
+                    [interaction.user.id],
+                    10
+                );
 
             if (!confirmation) {
                 return;
@@ -88,7 +106,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     "uid",
                     uid.toString(),
                     result.reason!
-                )
+                ),
             });
         }
 
@@ -98,7 +116,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     userbindStrings.oldAccountBindSuccessful,
                     "uid",
                     player.uid.toString()
-                )
+                ),
             });
         } else {
             interaction.editReply({
@@ -108,14 +126,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     player.uid.toString(),
                     (1 - userBindInfo.previous_bind.length).toString(),
                     1 - userBindInfo.previous_bind.length !== 1 ? "s" : ""
-                )
+                ),
             });
         }
     } else {
         // Check if account has played verification map
         if (!(await player.hasPlayedVerificationMap())) {
             return interaction.editReply({
-                content: MessageCreator.createReject(userbindStrings.verificationMapNotFound)
+                content: MessageCreator.createReject(
+                    userbindStrings.verificationMapNotFound
+                ),
             });
         }
 
@@ -123,12 +143,15 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             discordid: interaction.user.id,
             uid: player.uid,
             username: player.username,
-            previous_bind: [player.uid]
+            previous_bind: [player.uid],
         });
 
         if (!result.success) {
             return interaction.editReply({
-                content: MessageCreator.createReject(userbindStrings.accountBindError, result.reason!)
+                content: MessageCreator.createReject(
+                    userbindStrings.accountBindError,
+                    result.reason!
+                ),
             });
         }
 
@@ -139,11 +162,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 player.uid.toString(),
                 "1",
                 ""
-            )
+            ),
         });
     }
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

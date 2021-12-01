@@ -10,11 +10,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const amount: number = interaction.options.getInteger("amount", true);
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(name);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromName(name);
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntExist)
+            content: MessageCreator.createReject(clanStrings.clanDoesntExist),
         });
     }
 
@@ -23,8 +24,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!incrementResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.modifyClanPowerFailed, incrementResult.reason!
-            )
+                clanStrings.modifyClanPowerFailed,
+                incrementResult.reason!
+            ),
         });
     }
 
@@ -33,16 +35,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.modifyClanPowerFailed, finalResult.reason!
-            )
+                clanStrings.modifyClanPowerFailed,
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.modifyClanPowerSuccessful)
+        content: MessageCreator.createAccept(
+            clanStrings.modifyClanPowerSuccessful
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

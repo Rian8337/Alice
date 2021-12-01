@@ -14,32 +14,40 @@ import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackgrou
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
+    const bindInfo: UserBind | null =
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+            interaction.user
+        );
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject)
+            content: MessageCreator.createReject(Constants.selfNotBindedReject),
         });
     }
 
-    const backgroundList: Collection<string, ProfileBackground> = await DatabaseManager.aliceDb.collections.profileBackgrounds.get("id");
+    const backgroundList: Collection<string, ProfileBackground> =
+        await DatabaseManager.aliceDb.collections.profileBackgrounds.get("id");
 
     const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
 
-    const bgId: string | undefined = (await SelectMenuCreator.createSelectMenu(
-        interaction,
-        {
-            content: MessageCreator.createWarn("Choose the background that you want to use.")
-        },
-        backgroundList.map(v => {
-            return {
-                label: v.name,
-                value: v.id
-            };
-        }),
-        [interaction.user.id],
-        30
-    ))[0];
+    const bgId: string | undefined = (
+        await SelectMenuCreator.createSelectMenu(
+            interaction,
+            {
+                content: MessageCreator.createWarn(
+                    "Choose the background that you want to use."
+                ),
+            },
+            backgroundList.map((v) => {
+                return {
+                    label: v.name,
+                    value: v.id,
+                };
+            }),
+            [interaction.user.id],
+            30
+        )
+    )[0];
 
     if (!bgId) {
         return;
@@ -47,12 +55,19 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const background: ProfileBackground = backgroundList.get(bgId)!;
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     const pictureConfig: ProfileImageConfig =
-        playerInfo?.picture_config ?? DatabaseManager.aliceDb.collections.playerInfo.defaultDocument.picture_config;
+        playerInfo?.picture_config ??
+        DatabaseManager.aliceDb.collections.playerInfo.defaultDocument
+            .picture_config;
 
-    const isBackgroundOwned: boolean = !!pictureConfig.backgrounds.find(v => v.id === bgId);
+    const isBackgroundOwned: boolean = !!pictureConfig.backgrounds.find(
+        (v) => v.id === bgId
+    );
 
     if (!isBackgroundOwned) {
         if ((playerInfo?.alicecoins ?? 0) < 500) {
@@ -63,7 +78,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     coin.toString(),
                     coin.toString(),
                     (playerInfo?.alicecoins ?? 0).toLocaleString()
-                )
+                ),
             });
         }
 
@@ -72,11 +87,21 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     pictureConfig.activeBackground = background;
 
-    const image: Buffer | null = await ProfileManager.getProfileStatistics(bindInfo.uid, undefined, bindInfo, playerInfo, undefined, true);
+    const image: Buffer | null = await ProfileManager.getProfileStatistics(
+        bindInfo.uid,
+        undefined,
+        bindInfo,
+        playerInfo,
+        undefined,
+        true
+    );
 
     if (!image) {
         return interaction.editReply({
-            content: MessageCreator.createReject(profileStrings.profileNotFound, "your")
+            content: MessageCreator.createReject(
+                profileStrings.profileNotFound,
+                "your"
+            ),
         });
     }
 
@@ -84,20 +109,19 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                isBackgroundOwned ?
-                StringHelper.formatString(
-                    profileStrings.switchBackgroundConfirmation,
-                    interaction.user.toString()
-                )
-                :
-                StringHelper.formatString(
-                    profileStrings.buyBackgroundConfirmation,
-                    interaction.user.toString(),
-                    coin.toString()
-                )
+                isBackgroundOwned
+                    ? StringHelper.formatString(
+                          profileStrings.switchBackgroundConfirmation,
+                          interaction.user.toString()
+                      )
+                    : StringHelper.formatString(
+                          profileStrings.buyBackgroundConfirmation,
+                          interaction.user.toString(),
+                          coin.toString()
+                      )
             ),
             files: [image],
-            embeds: []
+            embeds: [],
         },
         [interaction.user.id],
         15
@@ -110,7 +134,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     // Safe to assume that the user already has an entry
     // in database as we checked if the user has 500 Alice coins earlier.
     await DatabaseManager.aliceDb.collections.playerInfo.update(
-        { discordid: interaction.user.id }, { $set: { picture_config: pictureConfig }, $inc: { alicecoins: isBackgroundOwned ? 0 : -500 } }
+        { discordid: interaction.user.id },
+        {
+            $set: { picture_config: pictureConfig },
+            $inc: { alicecoins: isBackgroundOwned ? 0 : -500 },
+        }
     );
 
     interaction.editReply({
@@ -118,13 +146,15 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             profileStrings.switchBackgroundSuccess,
             interaction.user.toString(),
             bgId,
-            isBackgroundOwned ? "" : ` You now have ${coin}\`${playerInfo?.alicecoins}\` Alice coins.`
+            isBackgroundOwned
+                ? ""
+                : ` You now have ${coin}\`${playerInfo?.alicecoins}\` Alice coins.`
         ),
         embeds: [],
-        files: []
+        files: [],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

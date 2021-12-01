@@ -11,20 +11,35 @@ import { Config } from "@alice-core/Config";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (client) => {
-    const coinEmoji: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
-    const notificationChannel: TextChannel = <TextChannel> await client.channels.fetch("696646867567640586");
+    const coinEmoji: GuildEmoji = client.emojis.cache.get(
+        Constants.aliceCoinEmote
+    )!;
+    const notificationChannel: TextChannel = <TextChannel>(
+        await client.channels.fetch("696646867567640586")
+    );
 
     setInterval(async () => {
-        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("clanAuctionTracking")) {
+        if (
+            Config.maintenance ||
+            CommandUtilManager.globallyDisabledEventUtils
+                .get("ready")
+                ?.includes("clanAuctionTracking")
+        ) {
             return;
         }
 
         const executionTime: number = Math.floor(Date.now() / 1000);
 
-        const expiredAuctions: Collection<string, ClanAuction> = await DatabaseManager.aliceDb.collections.clanAuction.getExpiredAuctions(executionTime);
+        const expiredAuctions: Collection<string, ClanAuction> =
+            await DatabaseManager.aliceDb.collections.clanAuction.getExpiredAuctions(
+                executionTime
+            );
 
         for await (const expiredAuction of expiredAuctions.values()) {
-            const embed: MessageEmbed = EmbedCreator.createClanAuctionEmbed(expiredAuction, coinEmoji);
+            const embed: MessageEmbed = EmbedCreator.createClanAuctionEmbed(
+                expiredAuction,
+                coinEmoji
+            );
 
             if (expiredAuction.bids.size === 0) {
                 embed.addField("Winner", "None");
@@ -33,11 +48,12 @@ export const run: EventUtil["run"] = async (client) => {
                     content: MessageCreator.createWarn(
                         `${expiredAuction.auctioneer}'s \`${expiredAuction.name}\` expiredAuction has ended! There are no bids put!`
                     ),
-                    embeds: [embed]
+                    embeds: [embed],
                 });
             }
 
-            const winnerClan: Clan | null = await expiredAuction.getWinnerClan();
+            const winnerClan: Clan | null =
+                await expiredAuction.getWinnerClan();
 
             if (!winnerClan) {
                 embed.addField("Winner", "None");
@@ -46,7 +62,7 @@ export const run: EventUtil["run"] = async (client) => {
                     content: MessageCreator.createWarn(
                         `${expiredAuction.auctioneer}'s \`${expiredAuction.name}\` expiredAuction has ended! There are bids put, however all bidders were disbanded!`
                     ),
-                    embeds: [embed]
+                    embeds: [embed],
                 });
             }
 
@@ -55,7 +71,9 @@ export const run: EventUtil["run"] = async (client) => {
 
             const bidArray: AuctionBid[] = [...expiredAuction.bids.values()];
 
-            const bidIndex: number = bidArray.findIndex(v => v.clan === winnerClan.name);
+            const bidIndex: number = bidArray.findIndex(
+                (v) => v.clan === winnerClan.name
+            );
 
             embed.addField(
                 "Winner",
@@ -64,9 +82,15 @@ export const run: EventUtil["run"] = async (client) => {
 
             await notificationChannel.send({
                 content: MessageCreator.createWarn(
-                    `${expiredAuction.auctioneer}'s \`${expiredAuction.name}\` expiredAuction has ended! ${bidIndex > 0 ? `Unfortunately, the top ${bidIndex} bidder(s) were not available or disbanded. ` : ""}\`${winnerClan.name}\` wins the expiredAuction!`
+                    `${expiredAuction.auctioneer}'s \`${
+                        expiredAuction.name
+                    }\` expiredAuction has ended! ${
+                        bidIndex > 0
+                            ? `Unfortunately, the top ${bidIndex} bidder(s) were not available or disbanded. `
+                            : ""
+                    }\`${winnerClan.name}\` wins the expiredAuction!`
                 ),
-                embeds: [embed]
+                embeds: [embed],
             });
         }
     }, 60 * 10 * 1000);
@@ -75,5 +99,5 @@ export const run: EventUtil["run"] = async (client) => {
 export const config: EventUtil["config"] = {
     description: "Responsible for tracking clan auctions.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

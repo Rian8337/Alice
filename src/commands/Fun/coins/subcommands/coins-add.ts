@@ -12,7 +12,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!CommandHelper.isExecutedByBotOwner(interaction)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject)
+            content: MessageCreator.createReject(Constants.noPermissionReject),
         });
     }
 
@@ -22,15 +22,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!NumberHelper.isPositive(addAmount)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.addAmountInvalid)
+            content: MessageCreator.createReject(coinsStrings.addAmountInvalid),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(userToAdd);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            userToAdd
+        );
 
     if (!playerInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.otherUserDoesntHaveCoinsInfo)
+            content: MessageCreator.createReject(
+                coinsStrings.otherUserDoesntHaveCoinsInfo
+            ),
         });
     }
 
@@ -38,17 +43,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.addCoinFailed, <string> result.reason)
+            content: MessageCreator.createReject(
+                coinsStrings.addCoinFailed,
+                <string>result.reason
+            ),
         });
     }
 
-    interaction.editReply(MessageCreator.createAccept(
-        coinsStrings.addCoinSuccess,
-        addAmount.toLocaleString(),
-        (playerInfo.alicecoins + addAmount).toLocaleString()
-    ));
+    interaction.editReply(
+        MessageCreator.createAccept(
+            coinsStrings.addCoinSuccess,
+            addAmount.toLocaleString(),
+            (playerInfo.alicecoins + addAmount).toLocaleString()
+        )
+    );
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

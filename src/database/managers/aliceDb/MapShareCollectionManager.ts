@@ -9,8 +9,14 @@ import { Collection as DiscordCollection } from "discord.js";
 /**
  * A manager for the `mapshare` collection.
  */
-export class MapShareCollectionManager extends DatabaseCollectionManager<DatabaseMapShare, MapShare> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapShare, MapShare>;
+export class MapShareCollectionManager extends DatabaseCollectionManager<
+    DatabaseMapShare,
+    MapShare
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseMapShare,
+        MapShare
+    >;
 
     override get defaultDocument(): DatabaseMapShare {
         return {
@@ -20,7 +26,7 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<Databas
             id: "",
             status: "pending",
             submitter: "",
-            summary: ""
+            summary: "",
         };
     }
 
@@ -30,22 +36,26 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<Databas
     constructor(collection: MongoDBCollection<DatabaseMapShare>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseMapShare, MapShare>> new MapShare().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseMapShare, MapShare>
+        >new MapShare().constructor;
     }
 
     /**
      * Gets map share submissions that have the specified status.
-     * 
+     *
      * @param status The status.
      * @returns The map share submissions, mapped by beatmap ID.
      */
-    getByStatus(status: MapShareSubmissionStatus): Promise<DiscordCollection<number, MapShare>> {
+    getByStatus(
+        status: MapShareSubmissionStatus
+    ): Promise<DiscordCollection<number, MapShare>> {
         return this.get("beatmap_id", { status: status });
     }
 
     /**
      * Gets a map share submission from its beatmap ID.
-     * 
+     *
      * @param id The beatmap ID that is used in the submission.
      * @returns The submission, `null` if not found.
      */

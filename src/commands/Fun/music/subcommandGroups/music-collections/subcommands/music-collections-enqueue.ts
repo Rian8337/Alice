@@ -13,11 +13,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
-        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(name);
+        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
+            name
+        );
 
     if (!collection) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.noCollectionWithName)
+            content: MessageCreator.createReject(
+                musicStrings.noCollectionWithName
+            ),
         });
     }
 
@@ -27,8 +31,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const info: VideoMetadataResult = await yts({ videoId: videoId });
 
         const result: OperationResult = await MusicManager.enqueue(
-            (<GuildMember> interaction.member).voice.channel!,
-            <TextChannel | ThreadChannel> interaction.channel!,
+            (<GuildMember>interaction.member).voice.channel!,
+            <TextChannel | ThreadChannel>interaction.channel!,
             new MusicQueue({ type: "video", ...info }, interaction.user.id)
         );
 
@@ -41,11 +45,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.enqueueFromCollectionSuccess, enqueuedCount.toLocaleString()
-        )
+            musicStrings.enqueueFromCollectionSuccess,
+            enqueuedCount.toLocaleString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

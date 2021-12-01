@@ -13,4 +13,4 @@ export type PowerupType =
     | "buff"
     | "debuff"
     | "challenge"
-    | "bomb"
+    | "bomb";

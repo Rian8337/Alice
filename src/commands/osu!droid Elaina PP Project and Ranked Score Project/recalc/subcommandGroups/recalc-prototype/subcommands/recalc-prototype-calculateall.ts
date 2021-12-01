@@ -7,12 +7,15 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { recalcStrings } from "../../../recalcStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const dbManager: PrototypePPCollectionManager = DatabaseManager.aliceDb.collections.prototypePP;
+    const dbManager: PrototypePPCollectionManager =
+        DatabaseManager.aliceDb.collections.prototypePP;
 
     let calculatedCount: number = 0;
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(recalcStrings.fullRecalcInProgress)
+        content: MessageCreator.createAccept(
+            recalcStrings.fullRecalcInProgress
+        ),
     });
 
     if (interaction.options.getBoolean("resetprogress")) {
@@ -24,7 +27,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     while ((player = (await dbManager.getUnscannedPlayers(1)).first())) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
-        const bindInfo: UserBind = (await DatabaseManager.elainaDb.collections.userBind.getFromUser(player.discordid))!;
+        const bindInfo: UserBind =
+            (await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+                player.discordid
+            ))!;
 
         await bindInfo.calculatePrototypeDPP();
 
@@ -33,11 +39,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            recalcStrings.fullRecalcSuccess, interaction.user.toString()
-        )
+            recalcStrings.fullRecalcSuccess,
+            interaction.user.toString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

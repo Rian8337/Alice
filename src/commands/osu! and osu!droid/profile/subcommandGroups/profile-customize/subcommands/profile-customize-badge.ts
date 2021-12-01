@@ -9,33 +9,34 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             {
                 label: "Show Badge Template",
                 value: "showBadgeTemplate",
-                description: "Show the template of badges in a profile card."
+                description: "Show the template of badges in a profile card.",
             },
             {
                 label: "Claim Badge",
                 value: "claimBadge",
-                description: "Claim a badge."
+                description: "Claim a badge.",
             },
             {
                 label: "Equip Badge",
                 value: "equipBadge",
-                description: "Equip a badge."
+                description: "Equip a badge.",
             },
             {
                 label: "Unequip Badge",
                 value: "unequipBadge",
-                description: "Unequip a badge."
+                description: "Unequip a badge.",
             },
             {
                 label: "List Badges",
                 value: "listBadges",
-                description: "List all profile card badges, including those that you own."
-            }
+                description:
+                    "List all profile card badges, including those that you own.",
+            },
         ],
-        "Choose what you want to customize.",
+        "Choose what you want to customize."
     );
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

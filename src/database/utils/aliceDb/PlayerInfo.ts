@@ -57,7 +57,7 @@ export class PlayerInfo extends Manager {
     /**
      * The epoch time at which daily coins claim will be reset,
      * in seconds.
-     * 
+     *
      * This is only available under user ID `386742340968120321`.
      */
     dailyreset?: number;
@@ -87,14 +87,20 @@ export class PlayerInfo extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabasePlayerInfo = DatabaseManager.aliceDb?.collections.playerInfo.defaultDocument ?? {}) {
+    constructor(
+        data: DatabasePlayerInfo = DatabaseManager.aliceDb?.collections
+            .playerInfo.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
         this.discordid = data.discordid;
         this.username = data.username;
         this.uid = data.uid;
-        this.challenges = ArrayHelper.arrayToCollection(data.challenges ?? [], "id");
+        this.challenges = ArrayHelper.arrayToCollection(
+            data.challenges ?? [],
+            "id"
+        );
         this.points = data.points;
         this.alicecoins = data.alicecoins;
         this.streak = data.streak;
@@ -108,14 +114,17 @@ export class PlayerInfo extends Manager {
 
     /**
      * Increments the user's coins.
-     * 
+     *
      * @param amount The amount to increment.
      * @returns An object containing information about the operation.
      */
     async incrementCoins(amount: number): Promise<OperationResult> {
         if (this.alicecoins + amount < 0) {
             // This would only happen if the amount incremented is negative
-            return this.createOperationResult(false, `too much coin deduction; can only deduct at most ${this.alicecoins.toLocaleString()} Alice coins`);
+            return this.createOperationResult(
+                false,
+                `too much coin deduction; can only deduct at most ${this.alicecoins.toLocaleString()} Alice coins`
+            );
         }
 
         this.alicecoins = Math.max(0, this.alicecoins + amount);
@@ -128,12 +137,15 @@ export class PlayerInfo extends Manager {
 
     /**
      * Claims daily coins.
-     * 
+     *
      * @param coinAmount The amount of coins the user has gained.
      */
     async claimDailyCoins(coinAmount: number): Promise<OperationResult> {
         if (this.hasClaimedDaily) {
-            return this.createOperationResult(false, "daily claim has been used");
+            return this.createOperationResult(
+                false,
+                "daily claim has been used"
+            );
         }
 
         this.hasClaimedDaily = true;
@@ -150,25 +162,29 @@ export class PlayerInfo extends Manager {
             { discordid: this.discordid },
             {
                 $inc: {
-                    alicecoins: coinAmount
+                    alicecoins: coinAmount,
                 },
                 $set: {
                     hasClaimedDaily: this.hasClaimedDaily,
-                    streak: this.streak
-                } 
+                    streak: this.streak,
+                },
             }
         );
     }
 
     /**
      * Transfers this user's coins to another user.
-     * 
+     *
      * @param amount The amount of coins to transfer.
      * @param thisPlayer The `Player` instance of this user.
      * @param to The player to transfer the Alice coins to.
      * @returns An object containing information about the operation.
      */
-    async transferCoins(amount: number, thisPlayer: Player, to: PlayerInfo): Promise<OperationResult> {
+    async transferCoins(
+        amount: number,
+        thisPlayer: Player,
+        to: PlayerInfo
+    ): Promise<OperationResult> {
         let limit: number;
 
         switch (true) {
@@ -188,12 +204,25 @@ export class PlayerInfo extends Manager {
                 limit = 250;
         }
 
-        if (!NumberHelper.isNumberInRange(amount + this.transferred, 0, limit, true)) {
-            return this.createOperationResult(false, `transferred amount is beyond daily limit—can only transfer ${(limit - this.transferred).toLocaleString()} Alice coins left.`);
+        if (
+            !NumberHelper.isNumberInRange(
+                amount + this.transferred,
+                0,
+                limit,
+                true
+            )
+        ) {
+            return this.createOperationResult(
+                false,
+                `transferred amount is beyond daily limit—can only transfer ${(
+                    limit - this.transferred
+                ).toLocaleString()} Alice coins left.`
+            );
         }
 
         await DatabaseManager.aliceDb.collections.playerInfo.update(
-            { discordid: this.discordid }, { $inc: { transferred: amount, alicecoins: -amount } }
+            { discordid: this.discordid },
+            { $inc: { transferred: amount, alicecoins: -amount } }
         );
 
         return to.incrementCoins(amount);

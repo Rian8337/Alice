@@ -8,12 +8,13 @@ import { Collection, Snowflake } from "discord.js";
 import { scanStrings } from "../scanStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     let calculatedCount: number = 0;
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(scanStrings.scanStarted)
+        content: MessageCreator.createAccept(scanStrings.scanStarted),
     });
 
     let players: Collection<Snowflake, UserBind>;
@@ -24,7 +25,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             await player.scanDPP();
 
-            const finalPP: number = DPPHelper.calculateFinalPerformancePoints(player.pp);
+            const finalPP: number = DPPHelper.calculateFinalPerformancePoints(
+                player.pp
+            );
 
             client.logger.info(`Final pp: ${finalPP}`);
             client.logger.info(`${++calculatedCount} players scanned`);
@@ -34,10 +37,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     await dbManager.update({}, { $unset: { dppScanComplete: "" } });
 
     interaction.channel!.send({
-        content: MessageCreator.createAccept(scanStrings.scanComplete, interaction.user.toString())
+        content: MessageCreator.createAccept(
+            scanStrings.scanComplete,
+            interaction.user.toString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

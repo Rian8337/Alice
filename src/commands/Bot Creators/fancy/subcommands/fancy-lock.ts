@@ -9,29 +9,42 @@ import { fancyStrings } from "../fancyStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user", true);
 
-    const duration: number = CommandHelper.convertStringTimeFormat(interaction.options.getString("duration", true));
+    const duration: number = CommandHelper.convertStringTimeFormat(
+        interaction.options.getString("duration", true)
+    );
 
     const reason: string = interaction.options.getString("reason", true);
 
     if (!Number.isFinite(duration)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(fancyStrings.durationError)
+            content: MessageCreator.createReject(fancyStrings.durationError),
         });
     }
 
-    const result: OperationResult = await LoungeLockManager.lock(user.id, reason, duration);
+    const result: OperationResult = await LoungeLockManager.lock(
+        user.id,
+        reason,
+        duration
+    );
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(fancyStrings.processFailed, "lock", result.reason!)
+            content: MessageCreator.createReject(
+                fancyStrings.processFailed,
+                "lock",
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(fancyStrings.processSuccessful, "locked")
+        content: MessageCreator.createAccept(
+            fancyStrings.processSuccessful,
+            "locked"
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

@@ -13,81 +13,124 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const toTransfer: User = interaction.options.getUser("user", true);
 
-    const toTransferGuildMember: GuildMember | null = await interaction.guild!.members.fetch(toTransfer).catch(() => null);
+    const toTransferGuildMember: GuildMember | null = await interaction
+        .guild!.members.fetch(toTransfer)
+        .catch(() => null);
 
     if (!toTransferGuildMember) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.userToTransferNotFound)
+            content: MessageCreator.createReject(
+                coinsStrings.userToTransferNotFound
+            ),
         });
     }
 
     if (toTransferGuildMember.user.bot) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.userToTransferIsBot)
+            content: MessageCreator.createReject(
+                coinsStrings.userToTransferIsBot
+            ),
         });
     }
 
     if (toTransferGuildMember.id === interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.userToTransferIsSelf)
+            content: MessageCreator.createReject(
+                coinsStrings.userToTransferIsSelf
+            ),
         });
     }
 
-    if (DateTimeFormatHelper.getTimeDifference(<Date>toTransferGuildMember.joinedAt) > -86400 * 1000 * 7) {
-        return interaction.editReply(MessageCreator.createReject(coinsStrings.userToTransferNotInServerForAWeek));
+    if (
+        DateTimeFormatHelper.getTimeDifference(
+            <Date>toTransferGuildMember.joinedAt
+        ) >
+        -86400 * 1000 * 7
+    ) {
+        return interaction.editReply(
+            MessageCreator.createReject(
+                coinsStrings.userToTransferNotInServerForAWeek
+            )
+        );
     }
 
-    const transferAmount: number = <number>interaction.options.getInteger("amount");
+    const transferAmount: number = <number>(
+        interaction.options.getInteger("amount")
+    );
 
     if (!NumberHelper.isPositive(transferAmount)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.transferAmountInvalid)
+            content: MessageCreator.createReject(
+                coinsStrings.transferAmountInvalid
+            ),
         });
     }
 
-    const userPlayerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const userPlayerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     if (!userPlayerInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.userDoesntHaveCoinsInfo)
+            content: MessageCreator.createReject(
+                coinsStrings.userDoesntHaveCoinsInfo
+            ),
         });
     }
 
-    if (!NumberHelper.isNumberInRange(transferAmount, 0, userPlayerInfo.alicecoins)) {
+    if (
+        !NumberHelper.isNumberInRange(
+            transferAmount,
+            0,
+            userPlayerInfo.alicecoins
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.notEnoughCoinsToTransfer)
+            content: MessageCreator.createReject(
+                coinsStrings.notEnoughCoinsToTransfer
+            ),
         });
     }
 
-    const toTransferPlayerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(toTransferGuildMember.id);
+    const toTransferPlayerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            toTransferGuildMember.id
+        );
 
     if (!toTransferPlayerInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.otherUserDoesntHaveCoinsInfo)
+            content: MessageCreator.createReject(
+                coinsStrings.otherUserDoesntHaveCoinsInfo
+            ),
         });
     }
 
-    const player: Player = await Player.getInformation({ uid: userPlayerInfo.uid });
+    const player: Player = await Player.getInformation({
+        uid: userPlayerInfo.uid,
+    });
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.cannotFetchPlayerInformation)
+            content: MessageCreator.createReject(
+                coinsStrings.cannotFetchPlayerInformation
+            ),
         });
     }
 
     let limit: number;
 
     switch (true) {
-        case (player.rank < 10):
+        case player.rank < 10:
             limit = 2500;
             break;
-        case (player.rank < 50):
+        case player.rank < 50:
             limit = 1750;
             break;
-        case (player.rank < 100):
+        case player.rank < 100:
             limit = 1250;
             break;
-        case (player.rank < 500):
+        case player.rank < 500:
             limit = 500;
             break;
         default:
@@ -103,7 +146,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 coinsStrings.coinTransferConfirmation,
                 transferAmount.toLocaleString(),
                 toTransferGuildMember.toString()
-            )
+            ),
         },
         [interaction.user.id],
         15
@@ -113,11 +156,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const result: OperationResult = await userPlayerInfo.transferCoins(transferAmount, player, toTransferPlayerInfo);
+    const result: OperationResult = await userPlayerInfo.transferCoins(
+        transferAmount,
+        player,
+        toTransferPlayerInfo
+    );
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.coinTransferFailed, result.reason!)
+            content: MessageCreator.createReject(
+                coinsStrings.coinTransferFailed,
+                result.reason!
+            ),
         });
     }
 
@@ -128,10 +178,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             toTransferGuildMember.toString(),
             (limit - transferAmount - transferredAmount).toLocaleString(),
             (userPlayerInfo.alicecoins - transferAmount).toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

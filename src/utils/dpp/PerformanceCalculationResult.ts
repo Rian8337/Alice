@@ -1,4 +1,9 @@
-import { DroidPerformanceCalculator, MapInfo, OsuPerformanceCalculator, ReplayAnalyzer } from "osu-droid";
+import {
+    DroidPerformanceCalculator,
+    MapInfo,
+    OsuPerformanceCalculator,
+    ReplayAnalyzer,
+} from "osu-droid";
 
 /**
  * Represents a beatmap's performance calculation result.
@@ -24,7 +29,12 @@ export class PerformanceCalculationResult {
      */
     readonly osu: OsuPerformanceCalculator;
 
-    constructor(map: MapInfo, droid: DroidPerformanceCalculator, osu: OsuPerformanceCalculator, replay?: ReplayAnalyzer) {
+    constructor(
+        map: MapInfo,
+        droid: DroidPerformanceCalculator,
+        osu: OsuPerformanceCalculator,
+        replay?: ReplayAnalyzer
+    ) {
         this.map = map;
         this.droid = droid;
         this.osu = osu;

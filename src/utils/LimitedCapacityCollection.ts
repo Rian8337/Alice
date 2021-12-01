@@ -73,9 +73,9 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
 
     /**
      * Adds or updates an element with a specified key and a value to the collection.
-     * 
+     *
      * If the capacity overfills, the oldest added/updated element will be removed.
-     * 
+     *
      * @param key The key of the element to add.
      * @param value The value of the element to add.
      * @returns This `LimitedCapacityCollection` object.

@@ -13,25 +13,30 @@ import { Player, Score } from "osu-droid";
 import { compareStrings } from "./compareStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const cachedBeatmapHash: string | undefined = BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
+    const cachedBeatmapHash: string | undefined =
+        BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
 
     if (!cachedBeatmapHash) {
         return interaction.editReply({
-            content: MessageCreator.createReject(compareStrings.noCachedBeatmap)
+            content: MessageCreator.createReject(
+                compareStrings.noCachedBeatmap
+            ),
         });
     }
 
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(compareStrings.tooManyOptions)
+            content: MessageCreator.createReject(compareStrings.tooManyOptions),
         });
     }
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
 
@@ -51,7 +56,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
             if (!bindInfo) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.userNotBindedReject)
+                    content: MessageCreator.createReject(
+                        Constants.userNotBindedReject
+                    ),
                 });
             }
 
@@ -63,7 +70,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
             if (!bindInfo) {
                 return interaction.editReply({
-                    content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                    content: MessageCreator.createReject(
+                        Constants.selfNotBindedReject
+                    ),
                 });
             }
 
@@ -72,30 +81,38 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(compareStrings.playerNotFound)
+            content: MessageCreator.createReject(compareStrings.playerNotFound),
         });
     }
 
-    const score: Score = await Score.getFromHash({ uid: player.uid, hash: cachedBeatmapHash });
+    const score: Score = await Score.getFromHash({
+        uid: player.uid,
+        hash: cachedBeatmapHash,
+    });
 
     if (!score.title) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 compareStrings.scoreNotFound,
-                !!uid || !!discordid || !!username ? "this user has" : "you have"
-            )
+                !!uid || !!discordid || !!username
+                    ? "this user has"
+                    : "you have"
+            ),
         });
     }
 
     const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
-        (<GuildMember | null> interaction.member)?.displayColor
+        (<GuildMember | null>interaction.member)?.displayColor
     );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(compareStrings.comparePlayDisplay, player.username),
-        embeds: [ embed ]
+        content: MessageCreator.createAccept(
+            compareStrings.comparePlayDisplay,
+            player.username
+        ),
+        embeds: [embed],
     });
 };
 
@@ -108,55 +125,57 @@ export const config: Command["config"] = {
         {
             name: "user",
             type: ApplicationCommandOptionTypes.USER,
-            description: "The Discord user to compare."
+            description: "The Discord user to compare.",
         },
         {
             name: "uid",
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The uid of the player."
+            description: "The uid of the player.",
         },
         {
             name: "username",
             type: ApplicationCommandOptionTypes.STRING,
-            description: "The username of the player."
-        }
+            description: "The username of the player.",
+        },
     ],
     example: [
         {
             command: "compare",
-            description: "will compare your score among others."
+            description: "will compare your score among others.",
         },
         {
             command: "compare",
             arguments: [
                 {
                     name: "uid",
-                    value: 51076
-                }
+                    value: 51076,
+                },
             ],
-            description: "will compare the score of an osu!droid account with uid 51076."
+            description:
+                "will compare the score of an osu!droid account with uid 51076.",
         },
         {
             command: "compare",
             arguments: [
                 {
                     name: "username",
-                    value: "NeroYuki"
-                }
+                    value: "NeroYuki",
+                },
             ],
-            description: "will compare the score of an osu!droid account with username NeroYuki."
+            description:
+                "will compare the score of an osu!droid account with username NeroYuki.",
         },
         {
             command: "compare",
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
-                }
+                    value: "@Rian8337#0001",
+                },
             ],
-            description: "will compare the score of Rian8337."
-        }
+            description: "will compare the score of Rian8337.",
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

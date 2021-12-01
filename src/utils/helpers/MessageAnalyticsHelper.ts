@@ -1,7 +1,17 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Manager } from "@alice-utils/base/Manager";
-import { Collection, FetchedThreads, Guild, GuildChannel, Message, MessageManager, Snowflake, TextChannel, ThreadChannel } from "discord.js";
+import {
+    Collection,
+    FetchedThreads,
+    Guild,
+    GuildChannel,
+    Message,
+    MessageManager,
+    Snowflake,
+    TextChannel,
+    ThreadChannel,
+} from "discord.js";
 import { HelperFunctions } from "./HelperFunctions";
 
 /**
@@ -17,7 +27,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
         "415559968062963712",
         "360715303149240321",
         "360715871187894273",
-        "360715992621514752"
+        "360715992621514752",
     ];
 
     /**
@@ -37,19 +47,21 @@ export abstract class MessageAnalyticsHelper extends Manager {
         "757137031162888223",
         "757137127652982846",
         "696663321633357844",
-        "803160572345712640"
+        "803160572345712640",
     ];
 
     /**
      * Fetches messages on a daily basis.
-     * 
+     *
      * Run each time daily counter is reset.
-     * 
+     *
      * @param client The instance of the bot.
      * @param newDailyTime The new daily time, in milliseconds.
      */
     static async fetchDaily(newDailyTime: number): Promise<void> {
-        const guild: Guild = await this.client.guilds.fetch(Constants.mainServer);
+        const guild: Guild = await this.client.guilds.fetch(
+            Constants.mainServer
+        );
 
         const channelData: Collection<Snowflake, number> = new Collection();
 
@@ -62,14 +74,26 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 continue;
             }
 
-            const finalCounts: Collection<number, number> = await this.getChannelMessageCount(channel, newDailyTime - 86400 * 1000, newDailyTime);
+            const finalCounts: Collection<number, number> =
+                await this.getChannelMessageCount(
+                    channel,
+                    newDailyTime - 86400 * 1000,
+                    newDailyTime
+                );
 
-            channelData.set(channel.id, finalCounts.reduce((a, v) => a + v, 0));
+            channelData.set(
+                channel.id,
+                finalCounts.reduce((a, v) => a + v, 0)
+            );
         }
 
         await DatabaseManager.aliceDb.collections.channelData.update(
             { timestamp: newDailyTime - 86400 * 1000 },
-            { $set: { channels: channelData.map((value, key) => [ key, value ]) } },
+            {
+                $set: {
+                    channels: channelData.map((value, key) => [key, value]),
+                },
+            },
             { upsert: true }
         );
     }
@@ -77,20 +101,25 @@ export abstract class MessageAnalyticsHelper extends Manager {
     /**
      * Gets the amount of messages sent by users in a channel within
      * the specified period of time, counting in threads in the channel.
-     * 
+     *
      * @param channel The channel.
      * @param fetchStartTime The time at which messages will start being counted, in milliseconds.
      * @param fetchEndTime The time at which messages will stop being counted, in milliseconds.
      * @returns A collection of amount of messages per day, mapped by the epoch time of the day, in milliseconds.
      */
-    static async getChannelMessageCount(channel: TextChannel, fetchStartTime: number, fetchEndTime: number): Promise<Collection<number, number>> {
+    static async getChannelMessageCount(
+        channel: TextChannel,
+        fetchStartTime: number,
+        fetchEndTime: number
+    ): Promise<Collection<number, number>> {
         const finalCollection: Collection<number, number> = new Collection();
 
-        const channelCollection: Collection<number, number> = await this.getUserMessagesCount(
-            channel,
-            fetchStartTime,
-            fetchEndTime
-        );
+        const channelCollection: Collection<number, number> =
+            await this.getUserMessagesCount(
+                channel,
+                fetchStartTime,
+                fetchEndTime
+            );
 
         for (const [date, amount] of channelCollection.entries()) {
             finalCollection.set(
@@ -99,14 +128,16 @@ export abstract class MessageAnalyticsHelper extends Manager {
             );
         }
 
-        const activeThreads: FetchedThreads = await channel.threads.fetchActive();
+        const activeThreads: FetchedThreads =
+            await channel.threads.fetchActive();
 
         for await (const activeThread of activeThreads.threads.values()) {
-            const threadCollection: Collection<number, number> = await this.getUserMessagesCount(
-                activeThread,
-                fetchStartTime,
-                fetchEndTime
-            );
+            const threadCollection: Collection<number, number> =
+                await this.getUserMessagesCount(
+                    activeThread,
+                    fetchStartTime,
+                    fetchEndTime
+                );
 
             for (const [date, amount] of threadCollection) {
                 finalCollection.set(
@@ -116,14 +147,16 @@ export abstract class MessageAnalyticsHelper extends Manager {
             }
         }
 
-        const archivedThreads: FetchedThreads = await channel.threads.fetchArchived({ fetchAll: true });
+        const archivedThreads: FetchedThreads =
+            await channel.threads.fetchArchived({ fetchAll: true });
 
         for await (const archivedThread of archivedThreads.threads.values()) {
-            const threadCollection: Collection<number, number> = await this.getUserMessagesCount(
-                archivedThread,
-                fetchStartTime,
-                fetchEndTime
-            );
+            const threadCollection: Collection<number, number> =
+                await this.getUserMessagesCount(
+                    archivedThread,
+                    fetchStartTime,
+                    fetchEndTime
+                );
 
             for (const [date, amount] of threadCollection) {
                 finalCollection.set(
@@ -138,17 +171,21 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
     /**
      * Gets the amount of messages sent by users in a channel within the specified period of time.
-     * 
+     *
      * IMPORTANT: The bot will start searching from the most recent message instead of
      * from the specified time, therefore this operation is quite expensive. Make sure that
      * you don't specify the time limit to be too far unless you really need it.
-     * 
+     *
      * @param channel The channel.
      * @param fetchStartTime The time at which user messages will start being counted, in milliseconds.
      * @param fetchEndTime The time at which user messages will stop being counted, in milliseconds.
      * @returns The amount of messages sent by users in the channel.
      */
-    private static async getUserMessagesCount(channel: TextChannel | ThreadChannel, fetchStartTime: number, fetchEndTime: number): Promise<Collection<number, number>> {
+    private static async getUserMessagesCount(
+        channel: TextChannel | ThreadChannel,
+        fetchStartTime: number,
+        fetchEndTime: number
+    ): Promise<Collection<number, number>> {
         const collection: Collection<number, number> = new Collection();
 
         if (this.isChannelFiltered(channel)) {
@@ -159,7 +196,9 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
         const messageManager: MessageManager = channel.messages;
 
-        const lastMessage: Message | undefined = (await messageManager.fetch({ limit: 1 })).first();
+        const lastMessage: Message | undefined = (
+            await messageManager.fetch({ limit: 1 })
+        ).first();
 
         let lastMessageID: Snowflake | undefined = lastMessage?.id;
 
@@ -174,7 +213,11 @@ export abstract class MessageAnalyticsHelper extends Manager {
         currentDate.setUTCHours(0, 0, 0, 0);
 
         while (currentDate.getTime() >= fetchStartTime && lastMessageID) {
-            const messages: Collection<string, Message> = await messageManager.fetch({ limit: fetchCount, before: lastMessageID });
+            const messages: Collection<string, Message> =
+                await messageManager.fetch({
+                    limit: fetchCount,
+                    before: lastMessageID,
+                });
 
             await HelperFunctions.sleep(0.2);
 
@@ -210,11 +253,14 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
     /**
      * Checks whether a channel is filtered.
-     * 
+     *
      * @param channel The channel to check.
      * @returns Whether the channel is filtered.
      */
     static isChannelFiltered(channel: GuildChannel | ThreadChannel): boolean {
-        return this.filteredCategories.includes(<Snowflake> channel.parentId) || this.filteredChannels.includes(channel.id);
+        return (
+            this.filteredCategories.includes(<Snowflake>channel.parentId) ||
+            this.filteredChannels.includes(channel.id)
+        );
     }
 }

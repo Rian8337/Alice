@@ -45,7 +45,10 @@ export class RankedScore extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseRankedScore = DatabaseManager.aliceDb?.collections.rankedScore.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseRankedScore = DatabaseManager.aliceDb?.collections
+            .rankedScore.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -55,17 +58,22 @@ export class RankedScore extends Manager {
         this.playc = data.playc;
         this.level = data.level;
         // Could call <Array>.reverse() but TypeScript complains
-        this.scorelist = new Collection(data.scorelist?.map(v => [v[1], v[0]]) ?? []);
+        this.scorelist = new Collection(
+            data.scorelist?.map((v) => [v[1], v[0]]) ?? []
+        );
     }
 
     /**
      * Sets a new ranked score based on the given list.
-     * 
+     *
      * @param list The list of scores.
      * @param playCountIncrement The amount to increment towards play count.
      * @returns An object containing information about the operation.
      */
-    async setNewRankedScoreValue(list: Collection<string, number>, playCountIncrement: number): Promise<OperationResult> {
+    async setNewRankedScoreValue(
+        list: Collection<string, number>,
+        playCountIncrement: number
+    ): Promise<OperationResult> {
         this.scorelist = list.clone();
 
         this.score = list.reduce((a, v) => a + v, 0);
@@ -81,11 +89,11 @@ export class RankedScore extends Manager {
                     level: this.level,
                     score: this.score,
                     scorelist: RankedScoreHelper.toArray(this.scorelist),
-                    username: this.username
+                    username: this.username,
                 },
                 $inc: {
-                    playc: playCountIncrement
-                }
+                    playc: playCountIncrement,
+                },
             },
             { upsert: true }
         );

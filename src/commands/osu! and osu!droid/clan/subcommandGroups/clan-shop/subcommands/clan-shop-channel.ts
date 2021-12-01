@@ -10,17 +10,22 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Guild, GuildChannel, Role, TextChannel } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.isLeader(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
@@ -29,8 +34,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (clan.power < powerReq) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanPowerNotEnoughToBuyItem, powerReq.toLocaleString()
-            )
+                clanStrings.clanPowerNotEnoughToBuyItem,
+                powerReq.toLocaleString()
+            ),
         });
     }
 
@@ -38,7 +44,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!clanRole) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntHaveClanRole)
+            content: MessageCreator.createReject(
+                clanStrings.clanDoesntHaveClanRole
+            ),
         });
     }
 
@@ -46,11 +54,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (channel) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanAlreadyHasChannel)
+            content: MessageCreator.createReject(
+                clanStrings.clanAlreadyHasChannel
+            ),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     const cost: number = 50000;
 
@@ -60,7 +73,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 clanStrings.notEnoughCoins,
                 "buy a clan channel",
                 cost.toLocaleString()
-            )
+            ),
         });
     }
 
@@ -71,7 +84,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 clanStrings.buyShopItemConfirmation,
                 "clan channel",
                 cost.toLocaleString()
-            )
+            ),
         },
         [interaction.user.id],
         20
@@ -86,44 +99,44 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, result.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                result.reason!
+            ),
         });
     }
 
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
-    const position: number = (<GuildChannel> guild.channels.cache.get("696663321633357844")).position;
+    const position: number = (<GuildChannel>(
+        guild.channels.cache.get("696663321633357844")
+    )).position;
 
-    const clanChannel: TextChannel = await guild.channels.create(
-        clan.name,
-        {
-            topic: `Clan chat for ${clan.name} clan.`,
-            parent: "696646649128288346",
-            permissionOverwrites: [
-                {
-                    id: clanRole,
-                    allow: ["VIEW_CHANNEL"],
-                    type: "role"
-                },
-                {
-                    id: "353397345636974593",
-                    deny: ["VIEW_CHANNEL"],
-                    type: "role"
-                },
-                {
-                    id: "369108742077284353",
-                    allow: ["VIEW_CHANNEL", "MANAGE_MESSAGES"],
-                    type: "role"
-                },
-                {
-                    id: clan.leader,
-                    allow: ["MANAGE_MESSAGES"],
-                    type: "member"
-                }
-            ]
-        }
-    );
+    const clanChannel: TextChannel = await guild.channels.create(clan.name, {
+        topic: `Clan chat for ${clan.name} clan.`,
+        parent: "696646649128288346",
+        permissionOverwrites: [
+            {
+                id: clanRole,
+                allow: ["VIEW_CHANNEL"],
+                type: "role",
+            },
+            {
+                id: "353397345636974593",
+                deny: ["VIEW_CHANNEL"],
+                type: "role",
+            },
+            {
+                id: "369108742077284353",
+                allow: ["VIEW_CHANNEL", "MANAGE_MESSAGES"],
+                type: "role",
+            },
+            {
+                id: clan.leader,
+                allow: ["MANAGE_MESSAGES"],
+                type: "member",
+            },
+        ],
+    });
 
     await clanChannel.setPosition(position);
 
@@ -131,10 +144,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(
             clanStrings.buyShopItemSuccessful,
             cost.toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

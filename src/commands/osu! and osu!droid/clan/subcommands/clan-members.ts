@@ -11,24 +11,31 @@ import { GuildMember, MessageEmbed } from "discord.js";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const dbManager: ClanCollectionManager = DatabaseManager.elainaDb.collections.clan;
+    const dbManager: ClanCollectionManager =
+        DatabaseManager.elainaDb.collections.clan;
 
-    const clan: Clan | null =
-        interaction.options.getString("name") ?
-        await dbManager.getFromName(interaction.options.getString("name", true)) :
-        await dbManager.getFromUser(interaction.user);
+    const clan: Clan | null = interaction.options.getString("name")
+        ? await dbManager.getFromName(
+              interaction.options.getString("name", true)
+          )
+        : await dbManager.getFromUser(interaction.user);
 
     if (!clan) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                interaction.options.getString("name") ? clanStrings.clanDoesntExist : clanStrings.selfIsNotInClan
-            )
+                interaction.options.getString("name")
+                    ? clanStrings.clanDoesntExist
+                    : clanStrings.selfIsNotInClan
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (await clan.getClanRole())?.color ?? (<GuildMember> interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color:
+            (await clan.getClanRole())?.color ??
+            (<GuildMember>interaction.member).displayColor,
+    });
 
     embed.setTitle(`${clan.name} Members`);
 
@@ -36,15 +43,33 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         embed.setThumbnail(clan.iconURL);
     }
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: ClanMember[]) => {
+    const onPageChange: OnButtonPageChange = async (
+        _,
+        page,
+        contents: ClanMember[]
+    ) => {
         embed.setDescription(
-            contents.slice(5 * (page - 1), 5 + 5 * (page - 1))
-                .map((v, i) =>
-                    `**${5 * (page - 1) + i + 1}. <@${v.id}> (#${v.rank})**\n` +
-                    `**Discord ID**: ${v.id}\n` +
-                    `**Uid**: ${v.uid}\n` +
-                    `**Role**: ${v.hasPermission ? `${v.id === clan.leader ? "Leader" : "Co-Leader"}` : "Member"}\n` +
-                    `**Upkeep Value**: ${clan.calculateUpkeep(v.id)} Alice coins`
+            contents
+                .slice(5 * (page - 1), 5 + 5 * (page - 1))
+                .map(
+                    (v, i) =>
+                        `**${5 * (page - 1) + i + 1}. <@${v.id}> (#${
+                            v.rank
+                        })**\n` +
+                        `**Discord ID**: ${v.id}\n` +
+                        `**Uid**: ${v.uid}\n` +
+                        `**Role**: ${
+                            v.hasPermission
+                                ? `${
+                                      v.id === clan.leader
+                                          ? "Leader"
+                                          : "Co-Leader"
+                                  }`
+                                : "Member"
+                        }\n` +
+                        `**Upkeep Value**: ${clan.calculateUpkeep(
+                            v.id
+                        )} Alice coins`
                 )
                 .join("\n\n")
         );
@@ -52,7 +77,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         [...clan.member_list.values()],
         5,
@@ -63,5 +88,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

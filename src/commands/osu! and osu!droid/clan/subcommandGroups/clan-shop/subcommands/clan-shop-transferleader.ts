@@ -11,23 +11,30 @@ import { User } from "discord.js";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const toTransfer: User = interaction.options.getUser("member", true);
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.isLeader(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
     if (!clan.member_list.has(toTransfer.id)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.userIsNotInExecutorClan)
+            content: MessageCreator.createReject(
+                clanStrings.userIsNotInExecutorClan
+            ),
         });
     }
 
@@ -38,11 +45,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 clanStrings.clanPowerNotEnoughToBuyItem,
                 powerReq.toLocaleString()
-            )
+            ),
         });
     }
 
-    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+            interaction.user
+        );
 
     const cost: number = 500;
 
@@ -52,7 +62,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 clanStrings.notEnoughCoins,
                 "transfer leadership",
                 cost.toLocaleString()
-            )
+            ),
         });
     }
 
@@ -63,7 +73,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 clanStrings.buyShopItemConfirmation,
                 "leader transfership",
                 cost.toLocaleString()
-            )
+            ),
         },
         [interaction.user.id],
         20
@@ -73,21 +83,28 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const coinDeductionResult: OperationResult = await playerInfo.incrementCoins(-cost);
+    const coinDeductionResult: OperationResult =
+        await playerInfo.incrementCoins(-cost);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed, coinDeductionResult.reason!
-            )
+                clanStrings.buyShopItemFailed,
+                coinDeductionResult.reason!
+            ),
         });
     }
 
-    const changeLeaderResult: OperationResult = await clan.changeLeader(toTransfer.id);
+    const changeLeaderResult: OperationResult = await clan.changeLeader(
+        toTransfer.id
+    );
 
     if (!changeLeaderResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.buyShopItemFailed, changeLeaderResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.buyShopItemFailed,
+                changeLeaderResult.reason!
+            ),
         });
     }
 
@@ -95,7 +112,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!finalResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.buyShopItemFailed, finalResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.buyShopItemFailed,
+                finalResult.reason!
+            ),
         });
     }
 
@@ -103,10 +123,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             clanStrings.buyShopItemSuccessful,
             cost.toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

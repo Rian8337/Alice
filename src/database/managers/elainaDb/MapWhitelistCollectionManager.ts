@@ -9,8 +9,14 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 /**
  * A manager for the `mapwhitelist` command.
  */
-export class MapWhitelistCollectionManager extends DatabaseCollectionManager<DatabaseMapWhitelist, MapWhitelist> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapWhitelist, MapWhitelist>;
+export class MapWhitelistCollectionManager extends DatabaseCollectionManager<
+    DatabaseMapWhitelist,
+    MapWhitelist
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseMapWhitelist,
+        MapWhitelist
+    >;
 
     override get defaultDocument(): DatabaseMapWhitelist {
         return {
@@ -20,11 +26,11 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<Dat
                 od: 0,
                 hp: 0,
                 sr: 0,
-                bpm: 0
+                bpm: 0,
             },
             hashid: "",
             mapid: 0,
-            mapname: ""
+            mapname: "",
         };
     }
 
@@ -34,19 +40,27 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<Dat
     constructor(collection: MongoDBCollection<DatabaseMapWhitelist>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseMapWhitelist, MapWhitelist>> new MapWhitelist().constructor
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseMapWhitelist, MapWhitelist>
+        >new MapWhitelist().constructor;
     }
 
     /**
      * Gets beatmaps that are not scanned.
-     * 
+     *
      * @param amount The amount of beatmaps to get.
      */
-    async getUnscannedBeatmaps(amount: number): Promise<DiscordCollection<number, MapWhitelist>> {
-        const mapWhitelist: DatabaseMapWhitelist[] = await this.collection.find(
-            { whitelistScanDone: { $ne: true } }
-        ).limit(amount).toArray();
+    async getUnscannedBeatmaps(
+        amount: number
+    ): Promise<DiscordCollection<number, MapWhitelist>> {
+        const mapWhitelist: DatabaseMapWhitelist[] = await this.collection
+            .find({ whitelistScanDone: { $ne: true } })
+            .limit(amount)
+            .toArray();
 
-        return ArrayHelper.arrayToCollection(mapWhitelist.map(v => new MapWhitelist(v)), "mapid");
+        return ArrayHelper.arrayToCollection(
+            mapWhitelist.map((v) => new MapWhitelist(v)),
+            "mapid"
+        );
     }
 }

@@ -14,80 +14,103 @@ import { Player, Score } from "osu-droid";
 import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const type: ChallengeType = <ChallengeType> interaction.options.getString("type") ?? "daily";
+    const type: ChallengeType =
+        <ChallengeType>interaction.options.getString("type") ?? "daily";
 
     const challenge: Challenge | null =
-        await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(type);
+        await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(
+            type
+        );
 
     if (!challenge) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.noOngoingChallenge)
+            content: MessageCreator.createReject(
+                dailyStrings.noOngoingChallenge
+            ),
         });
     }
 
     const bindInfo: UserBind | null =
-        await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+            interaction.user
+        );
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject)
+            content: MessageCreator.createReject(Constants.selfNotBindedReject),
         });
     }
 
     const player: Player = await Player.getInformation({ uid: bindInfo.uid });
 
-    const score: Score | undefined = player.recentPlays.find(s => s.hash === challenge.hash);
+    const score: Score | undefined = player.recentPlays.find(
+        (s) => s.hash === challenge.hash
+    );
 
     if (!score) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.scoreNotFound)
+            content: MessageCreator.createReject(dailyStrings.scoreNotFound),
         });
     }
 
-    const completionStatus: OperationResult = await challenge.checkScoreCompletion(score);
+    const completionStatus: OperationResult =
+        await challenge.checkScoreCompletion(score);
 
     if (!completionStatus.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.challengeNotCompleted, completionStatus.reason!
-            )
+                dailyStrings.challengeNotCompleted,
+                completionStatus.reason!
+            ),
         });
     }
 
     const bonusLevel: number = await challenge.calculateBonusLevel(score);
 
-    const playerInfoDbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
+    const playerInfoDbManager: PlayerInfoCollectionManager =
+        DatabaseManager.aliceDb.collections.playerInfo;
 
-    const playerInfo: PlayerInfo | null =
-        await playerInfoDbManager.getFromUser(interaction.user);
+    const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
+        interaction.user
+    );
 
     // Keep track of how many points are gained
     let pointsGained: number = bonusLevel * 2 + challenge.points;
 
     if (playerInfo) {
-
-        const challengeData: ChallengeCompletionData | undefined = playerInfo.challenges.get(challenge.challengeid);
+        const challengeData: ChallengeCompletionData | undefined =
+            playerInfo.challenges.get(challenge.challengeid);
 
         if (challengeData) {
             // Player has completed challenge. Subtract the challenge's original points
             // and difference from highest challenge level
-            pointsGained -= challenge.points + (challengeData.highestLevel - Math.max(0, bonusLevel - challengeData.highestLevel)) * 2;
+            pointsGained -=
+                challenge.points +
+                (challengeData.highestLevel -
+                    Math.max(0, bonusLevel - challengeData.highestLevel)) *
+                    2;
 
-            challengeData.highestLevel = Math.max(bonusLevel, challengeData.highestLevel);
+            challengeData.highestLevel = Math.max(
+                bonusLevel,
+                challengeData.highestLevel
+            );
         } else {
-            playerInfo.challenges.set(challenge.challengeid, { id: challenge.challengeid, highestLevel: bonusLevel });
+            playerInfo.challenges.set(challenge.challengeid, {
+                id: challenge.challengeid,
+                highestLevel: bonusLevel,
+            });
         }
 
         await playerInfoDbManager.update(
             { discordid: interaction.user.id },
             {
                 $set: {
-                    challenges: [...playerInfo.challenges.values()]
+                    challenges: [...playerInfo.challenges.values()],
                 },
                 $inc: {
                     alicecoins: pointsGained * 2,
-                    points: pointsGained
-                }
+                    points: pointsGained,
+                },
             }
         );
     } else {
@@ -100,14 +123,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             challenges: [
                 {
                     id: challenge.challengeid,
-                    highestLevel: bonusLevel
-                }
-            ]
+                    highestLevel: bonusLevel,
+                },
+            ],
         });
     }
 
     if (bindInfo.clan) {
-        const clan: Clan = (await DatabaseManager.elainaDb.collections.clan.getFromName(bindInfo.clan))!;
+        const clan: Clan =
+            (await DatabaseManager.elainaDb.collections.clan.getFromName(
+                bindInfo.clan
+            ))!;
 
         clan.incrementPower(pointsGained);
 
@@ -123,12 +149,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             pointsGained === 1 ? "" : "s",
             (pointsGained * 2).toLocaleString(),
             ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(),
-            ((playerInfo?.points ?? 0) + pointsGained) === 1 ? "" : "s",
+            (playerInfo?.points ?? 0) + pointsGained === 1 ? "" : "s",
             ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString()
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

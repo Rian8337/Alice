@@ -12,7 +12,9 @@ import { CacheManager } from "@alice-utils/managers/CacheManager";
 export const run: Command["run"] = async (_, interaction) => {
     if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mathquizStrings.userStillHasActiveGame)
+            content: MessageCreator.createReject(
+                mathquizStrings.userStillHasActiveGame
+            ),
         });
     }
 
@@ -24,51 +26,68 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!NumberHelper.isNumberInRange(level, minLevel, maxLevel, true)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mathquizStrings.difficultyLevelOutOfRange, minLevel.toString(), maxLevel.toString()
-            )
+                mathquizStrings.difficultyLevelOutOfRange,
+                minLevel.toString(),
+                maxLevel.toString()
+            ),
         });
     }
 
-    const operatorAmount: number = interaction.options.getInteger("operatoramount") ?? 4;
+    const operatorAmount: number =
+        interaction.options.getInteger("operatoramount") ?? 4;
 
     const minOperatorAmount: number = 1;
     const maxOperatorAmount: number = 10;
 
-    if (!NumberHelper.isNumberInRange(operatorAmount, minOperatorAmount, maxOperatorAmount, true)) {
+    if (
+        !NumberHelper.isNumberInRange(
+            operatorAmount,
+            minOperatorAmount,
+            maxOperatorAmount,
+            true
+        )
+    ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 mathquizStrings.operatorAmountOutOfRange,
                 minOperatorAmount.toString(),
                 maxOperatorAmount.toString()
-            )
+            ),
         });
     }
 
-    const mathEquation: MathEquation = MathEquationCreator.createEquation(level, operatorAmount);
+    const mathEquation: MathEquation = MathEquationCreator.createEquation(
+        level,
+        operatorAmount
+    );
     const realEquation: string = mathEquation.realEquation;
     const answer: number = mathEquation.answer;
 
     if (isNaN(answer)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mathquizStrings.equationGeneratorError)
+            content: MessageCreator.createReject(
+                mathquizStrings.equationGeneratorError
+            ),
         });
     }
 
-    const msg: Message = <Message> await interaction.editReply({
+    const msg: Message = <Message>await interaction.editReply({
         content: MessageCreator.createWarn(
             mathquizStrings.equationQuestion,
             interaction.user.toString(),
             operatorAmount.toString(),
             level.toString(),
             realEquation
-        )
+        ),
     });
 
     CacheManager.stillHasMathGameActive.add(interaction.user.id);
 
     const collector: MessageCollector = msg.channel.createMessageCollector({
-        filter: (m: Message) => parseInt(m.content) === answer && m.author.id === interaction.user.id,
-        time: 30 * 1000
+        filter: (m: Message) =>
+            parseInt(m.content) === answer &&
+            m.author.id === interaction.user.id,
+        time: 30 * 1000,
     });
 
     let correct: boolean = false;
@@ -85,7 +104,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 ((Date.now() - msg.createdTimestamp) / 1000).toString(),
                 realEquation,
                 answer.toString()
-            )
+            ),
         });
 
         collector.stop();
@@ -93,12 +112,14 @@ export const run: Command["run"] = async (_, interaction) => {
 
     collector.on("end", () => {
         if (!correct) {
-            interaction.editReply(MessageCreator.createReject(
-                mathquizStrings.wrongAnswer,
-                interaction.user.toString(),
-                realEquation,
-                answer.toString()
-            ));
+            interaction.editReply(
+                MessageCreator.createReject(
+                    mathquizStrings.wrongAnswer,
+                    interaction.user.toString(),
+                    realEquation,
+                    answer.toString()
+                )
+            );
         }
 
         CacheManager.stillHasMathGameActive.delete(interaction.user.id);
@@ -109,50 +130,56 @@ export const category: Command["category"] = CommandCategory.FUN;
 
 export const config: Command["config"] = {
     name: "mathquiz",
-    description: "Creates a simple math equation that you have to solve within 30 seconds.",
+    description:
+        "Creates a simple math equation that you have to solve within 30 seconds.",
     options: [
         {
             name: "difflevel",
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The difficulty level of the equation, ranging from 1 to 20. Defaults to 1."
+            description:
+                "The difficulty level of the equation, ranging from 1 to 20. Defaults to 1.",
         },
         {
             name: "operatoramount",
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: "The amount of operators to be used in the equation, ranging from 1 to 10. Defaults to 4."
-        }
+            description:
+                "The amount of operators to be used in the equation, ranging from 1 to 10. Defaults to 4.",
+        },
     ],
     example: [
         {
             command: "mathquiz",
-            description: "will generate a math equation with difficulty level 1 and 4 operator amount."
+            description:
+                "will generate a math equation with difficulty level 1 and 4 operator amount.",
         },
         {
             command: "mathquiz difflevel:20",
             arguments: [
                 {
                     name: "difflevel",
-                    value: 20
-                }
+                    value: 20,
+                },
             ],
-            description: "will generate a math equation with difficulty level 20 and 4 operator amount."
+            description:
+                "will generate a math equation with difficulty level 20 and 4 operator amount.",
         },
         {
             command: "mathquiz difflevel:5 operatoramount:5",
             arguments: [
                 {
                     name: "difflevel",
-                    value: 5
+                    value: 5,
                 },
                 {
                     name: "operatoramount",
-                    value: 5
-                }
+                    value: 5,
+                },
             ],
-            description: "will generate a math equation with difficulty level 5 and 5 operator amount."
-        }
+            description:
+                "will generate a math equation with difficulty level 5 and 5 operator amount.",
+        },
     ],
     cooldown: 10,
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

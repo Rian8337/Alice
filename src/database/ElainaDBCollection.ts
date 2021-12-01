@@ -57,12 +57,24 @@ export class ElainaDBCollection {
      */
     constructor(elainaDb: Db) {
         this.clan = new ClanCollectionManager(elainaDb.collection("clandb"));
-        this.mapBlacklist = new MapBlacklistCollectionManager(elainaDb.collection("mapblacklist"));
-        this.tournamentMappool = new TournamentMappoolCollectionManager(elainaDb.collection("mapinfo"));
-        this.tournamentMatch = new TournamentMatchCollectionManager(elainaDb.collection("matchinfo"));
-        this.mapWhitelist = new MapWhitelistCollectionManager(elainaDb.collection("mapwhitelist"));
+        this.mapBlacklist = new MapBlacklistCollectionManager(
+            elainaDb.collection("mapblacklist")
+        );
+        this.tournamentMappool = new TournamentMappoolCollectionManager(
+            elainaDb.collection("mapinfo")
+        );
+        this.tournamentMatch = new TournamentMatchCollectionManager(
+            elainaDb.collection("matchinfo")
+        );
+        this.mapWhitelist = new MapWhitelistCollectionManager(
+            elainaDb.collection("mapwhitelist")
+        );
         this.dppBan = new DPPBanCollectionManager(elainaDb.collection("ppban"));
-        this.playerTracking = new PlayerTrackingCollectionManager(elainaDb.collection("tracking"));
-        this.userBind = new UserBindCollectionManager(elainaDb.collection("userbind"));
+        this.playerTracking = new PlayerTrackingCollectionManager(
+            elainaDb.collection("tracking")
+        );
+        this.userBind = new UserBindCollectionManager(
+            elainaDb.collection("userbind")
+        );
     }
 }

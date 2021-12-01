@@ -7,15 +7,20 @@ import { Message } from "discord.js";
 import { recalcStrings } from "../recalcStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(recalcStrings.fullRecalcInProgress)
+        content: MessageCreator.createAccept(
+            recalcStrings.fullRecalcInProgress
+        ),
     });
 
-    let calculatedCount: number = await dbManager.getRecalcCalculatedPlayerCount();
+    let calculatedCount: number =
+        await dbManager.getRecalcCalculatedPlayerCount();
 
-    const uncalculatedCount: number = await dbManager.getRecalcUncalculatedPlayerCount();
+    const uncalculatedCount: number =
+        await dbManager.getRecalcUncalculatedPlayerCount();
 
     const total: number = calculatedCount + uncalculatedCount;
 
@@ -24,8 +29,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             recalcStrings.fullRecalcTrackProgress,
             calculatedCount.toLocaleString(),
             total.toLocaleString(),
-            (calculatedCount * 100 / total).toFixed(2)
-        )
+            ((calculatedCount * 100) / total).toFixed(2)
+        ),
     });
 
     let player: UserBind | undefined;
@@ -46,8 +51,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 recalcStrings.fullRecalcTrackProgress,
                 calculatedCount.toLocaleString(),
                 total.toLocaleString(),
-                (calculatedCount * 100 / total).toFixed(2)
-            )
+                ((calculatedCount * 100) / total).toFixed(2)
+            ),
         });
     }
 
@@ -55,11 +60,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            recalcStrings.fullRecalcSuccess, interaction.user.toString()
-        )
+            recalcStrings.fullRecalcSuccess,
+            interaction.user.toString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: ["BOT_OWNER"],
 };

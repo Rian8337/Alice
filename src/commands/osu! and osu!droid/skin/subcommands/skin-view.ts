@@ -10,23 +10,27 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const permaSkinLink: string = "https://tsukushi.site/";
 
-    const skinInfo: PlayerSkin | null = await DatabaseManager.aliceDb.collections.playerSkins.getUserSkin(user);
+    const skinInfo: PlayerSkin | null =
+        await DatabaseManager.aliceDb.collections.playerSkins.getUserSkin(user);
 
     if (!skinInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(
-                skinStrings.noSkinSetForUser
-            ) + `\n\nFor a collection of skins, visit <${permaSkinLink}>`
+            content:
+                MessageCreator.createReject(skinStrings.noSkinSetForUser) +
+                `\n\nFor a collection of skins, visit <${permaSkinLink}>`,
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(
-            skinStrings.userSkinInfo, user.username, skinInfo.skin
-        ) + `\n\nFor a collection of skins, visit <${permaSkinLink}>`
+        content:
+            MessageCreator.createAccept(
+                skinStrings.userSkinInfo,
+                user.username,
+                skinInfo.skin
+            ) + `\n\nFor a collection of skins, visit <${permaSkinLink}>`,
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

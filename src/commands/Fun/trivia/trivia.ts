@@ -16,7 +16,7 @@ export const config: Command["config"] = {
         {
             name: "map",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Starts a beatmap trivia in the channel."
+            description: "Starts a beatmap trivia in the channel.",
         },
         {
             name: "questions",
@@ -26,28 +26,30 @@ export const config: Command["config"] = {
                 {
                     name: "forcecategory",
                     type: ApplicationCommandOptionTypes.BOOLEAN,
-                    description: "Whether to enforce a specific question category (you will be prompted to choose)."
+                    description:
+                        "Whether to enforce a specific question category (you will be prompted to choose).",
                 },
                 {
                     name: "type",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The type of the question. Defaults to random.",
+                    description:
+                        "The type of the question. Defaults to random.",
                     choices: [
                         {
                             name: "Multiple Choice",
-                            value: 1
+                            value: 1,
                         },
                         {
                             name: "Fill-in-the-blank",
-                            value: 2
-                        }
-                    ]
-                }
-            ]
-        }
+                            value: 2,
+                        },
+                    ],
+                },
+            ],
+        },
     ],
     example: [],
     cooldown: 10,
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

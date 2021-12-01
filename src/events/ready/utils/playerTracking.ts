@@ -9,17 +9,29 @@ import { Collection, MessageEmbed, TextChannel } from "discord.js";
 import { Player } from "osu-droid";
 
 export const run: EventUtil["run"] = async (client) => {
-    const channel: TextChannel = <TextChannel> await client.channels.fetch("665106609382359041");
+    const channel: TextChannel = <TextChannel>(
+        await client.channels.fetch("665106609382359041")
+    );
 
     setInterval(async () => {
-        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("playerTracking")) {
+        if (
+            Config.maintenance ||
+            CommandUtilManager.globallyDisabledEventUtils
+                .get("ready")
+                ?.includes("playerTracking")
+        ) {
             return;
         }
 
-        const trackedPlayers: Collection<number, PlayerTracking> = await DatabaseManager.elainaDb.collections.playerTracking.get("uid");
+        const trackedPlayers: Collection<number, PlayerTracking> =
+            await DatabaseManager.elainaDb.collections.playerTracking.get(
+                "uid"
+            );
 
         for await (const trackedPlayer of trackedPlayers.values()) {
-            const player: Player = await Player.getInformation({ uid: trackedPlayer.uid });
+            const player: Player = await Player.getInformation({
+                uid: trackedPlayer.uid,
+            });
 
             if (!player.username) {
                 continue;
@@ -32,15 +44,18 @@ export const run: EventUtil["run"] = async (client) => {
                     break;
                 }
 
-                const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
-                    score, player.avatarURL, 8311585
-                );
+                const embed: MessageEmbed =
+                    await EmbedCreator.createRecentPlayEmbed(
+                        score,
+                        player.avatarURL,
+                        8311585
+                    );
 
                 channel.send({
                     content: MessageCreator.createAccept(
                         `Recent play for ${player.username}:`
                     ),
-                    embeds: [embed]
+                    embeds: [embed],
                 });
             }
         }
@@ -48,7 +63,8 @@ export const run: EventUtil["run"] = async (client) => {
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for tracking players that are tracked from the `addtrack` command.",
+    description:
+        "Responsible for tracking players that are tracked from the `addtrack` command.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

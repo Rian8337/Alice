@@ -1,7 +1,10 @@
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Interaction } from "discord.js";
 
-export const run: EventUtil["run"] = async (client, interaction: Interaction) => {
+export const run: EventUtil["run"] = async (
+    client,
+    interaction: Interaction
+) => {
     if (!interaction.isContextMenu()) {
         return;
     }
@@ -10,8 +13,9 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for handling commands from context menus. This event utility cannot be disabled.",
+    description:
+        "Responsible for handling commands from context menus. This event utility cannot be disabled.",
     togglePermissions: [],
     toggleScope: [],
-    debugEnabled: true
+    debugEnabled: true,
 };

@@ -2,7 +2,11 @@ import { Event } from "@alice-interfaces/core/Event";
 import { EventHelper } from "@alice-utils/helpers/EventHelper";
 import { Collection, Snowflake, ThreadMember } from "discord.js";
 
-export const run: Event["run"] = async (client, oldMembers: Collection<Snowflake, ThreadMember>, newMembers: Collection<Snowflake, ThreadMember>) => {
+export const run: Event["run"] = async (
+    client,
+    oldMembers: Collection<Snowflake, ThreadMember>,
+    newMembers: Collection<Snowflake, ThreadMember>
+) => {
     EventHelper.runUtilities(
         client,
         __dirname,

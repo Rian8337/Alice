@@ -4,7 +4,7 @@
 export interface MathEquation {
     /**
      * The math equation.
-     * 
+     *
      * This can be evaluated using `eval()`.
      */
     equation: string;

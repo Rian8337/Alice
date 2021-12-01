@@ -34,5 +34,5 @@ export interface Subcommand {
          * Whether to reply to this subcommand execution in private (only the executor can see it).
          */
         readonly replyEphemeral?: boolean;
-    }
+    };
 }

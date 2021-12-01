@@ -8,25 +8,34 @@ import { MessageEmbed, MessageOptions } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const beatmapHash: string | undefined = BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
+    const beatmapHash: string | undefined =
+        BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
 
     if (!beatmapHash) {
         return interaction.editReply({
-            content: MessageCreator.createReject(downloadlinkStrings.noCachedBeatmap)
+            content: MessageCreator.createReject(
+                downloadlinkStrings.noCachedBeatmap
+            ),
         });
     }
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapHash, false);
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+        beatmapHash,
+        false
+    );
 
     if (!beatmapInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(downloadlinkStrings.beatmapNotAvailable)
+            content: MessageCreator.createReject(
+                downloadlinkStrings.beatmapNotAvailable
+            ),
         });
     }
 
-    const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmapInfo);
+    const embedOptions: MessageOptions =
+        EmbedCreator.createBeatmapEmbed(beatmapInfo);
 
-    const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+    const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
     embed.spliceFields(0, embed.fields.length);
 
@@ -37,44 +46,47 @@ export const category: Command["category"] = CommandCategory.OSU;
 
 export const config: Command["config"] = {
     name: "downloadlink",
-    description: "Grabs the download link of the latest beatmap cache in the channel (if any).",
+    description:
+        "Grabs the download link of the latest beatmap cache in the channel (if any).",
     options: [],
     example: [
         {
             command: "downloadlink",
-            description: "will grab the download link of the cached beatmap in the channel (if any)."
+            description:
+                "will grab the download link of the cached beatmap in the channel (if any).",
         },
         {
             command: "downloadlink",
             arguments: [
                 {
                     name: "beatmap",
-                    value: 1884658
-                }
+                    value: 1884658,
+                },
             ],
-            description: "will grab the download link of the beatmap with ID 1884658."
+            description:
+                "will grab the download link of the beatmap with ID 1884658.",
         },
         {
             command: "downloadlink",
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
-                }
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+                },
             ],
-            description: "will grab the download link of the linked beatmap."
+            description: "will grab the download link of the linked beatmap.",
         },
         {
             command: "downloadlink",
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/b/1884658"
-                }
+                    value: "https://osu.ppy.sh/b/1884658",
+                },
             ],
-            description: "will grab the download link of the linked beatmap."
-        }
+            description: "will grab the download link of the linked beatmap.",
+        },
     ],
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

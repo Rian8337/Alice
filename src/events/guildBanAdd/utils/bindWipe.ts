@@ -11,35 +11,50 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const guildConfig: GuildPunishmentConfig | null = await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(guildBan.guild);
+    const guildConfig: GuildPunishmentConfig | null =
+        await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
+            guildBan.guild
+        );
 
     if (!guildConfig) {
         return;
     }
 
-    const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(guildBan.guild);
+    const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(
+        guildBan.guild
+    );
 
     if (!(logChannel instanceof TextChannel)) {
         return;
     }
 
-    const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(guildBan.user);
+    const bindInfo: UserBind | null =
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+            guildBan.user
+        );
 
     if (!bindInfo) {
         return;
     }
 
-    await DatabaseManager.elainaDb.collections.userBind.delete({ discordid: guildBan.user.id });
+    await DatabaseManager.elainaDb.collections.userBind.delete({
+        discordid: guildBan.user.id,
+    });
 
-    await DatabaseManager.aliceDb.collections.rankedScore.delete({ uid: { $in: bindInfo.previous_bind } });
+    await DatabaseManager.aliceDb.collections.rankedScore.delete({
+        uid: { $in: bindInfo.previous_bind },
+    });
 
-    logChannel.send(MessageCreator.createAccept(
-        "Successfully wiped user's droid pp and ranked score data!"
-    ));
+    logChannel.send(
+        MessageCreator.createAccept(
+            "Successfully wiped user's droid pp and ranked score data!"
+        )
+    );
 };
 
 export const config: EventUtil["config"] = {
-    description: "Responsible for wiping a user's droid pp and ranked score data once a user is banned.",
+    description:
+        "Responsible for wiping a user's droid pp and ranked score data once a user is banned.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

@@ -12,59 +12,79 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
-        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(name);
+        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
+            name
+        );
 
     if (!collection) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.collectionWithNameAlreadyExists)
+            content: MessageCreator.createReject(
+                musicStrings.collectionWithNameAlreadyExists
+            ),
         });
     }
 
     if (collection.owner !== interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.userDoesntOwnCollection)
+            content: MessageCreator.createReject(
+                musicStrings.userDoesntOwnCollection
+            ),
         });
     }
 
     if (collection.videoIds.length > 10) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.collectionLimitReached)
+            content: MessageCreator.createReject(
+                musicStrings.collectionLimitReached
+            ),
         });
     }
 
-    const searchResult: SearchResult = await yts(interaction.options.getString("query", true));
+    const searchResult: SearchResult = await yts(
+        interaction.options.getString("query", true)
+    );
 
     const videos: VideoSearchResult[] = searchResult.videos;
 
     if (videos.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.noTracksFound)
+            content: MessageCreator.createReject(musicStrings.noTracksFound),
         });
     }
 
-    const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
-        interaction,
-        {
-            content: MessageCreator.createWarn("Choose the video that you want to insert to the music collection.")
-        },
-        videos.map(v => {
-            return {
-                label: v.title.substring(0, 101),
-                value: v.videoId,
-                description: v.author.name.substring(0, 101)
-            };
-        }),
-        [interaction.user.id],
-        30
-    ))[0];
+    const pickedChoice: string = (
+        await SelectMenuCreator.createSelectMenu(
+            interaction,
+            {
+                content: MessageCreator.createWarn(
+                    "Choose the video that you want to insert to the music collection."
+                ),
+            },
+            videos.map((v) => {
+                return {
+                    label: v.title.substring(0, 101),
+                    value: v.videoId,
+                    description: v.author.name.substring(0, 101),
+                };
+            }),
+            [interaction.user.id],
+            30
+        )
+    )[0];
 
     if (!pickedChoice) {
         return;
     }
 
-    const info: VideoSearchResult = videos.find(v => v.videoId === pickedChoice)!;
+    const info: VideoSearchResult = videos.find(
+        (v) => v.videoId === pickedChoice
+    )!;
 
-    const position: number = NumberHelper.clamp(interaction.options.getInteger("position", true), 1, collection.videoIds.length);
+    const position: number = NumberHelper.clamp(
+        interaction.options.getInteger("position", true),
+        1,
+        collection.videoIds.length
+    );
 
     collection.videoIds.splice(position, 0, info.videoId);
 
@@ -73,18 +93,21 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.addVideoToCollectionFailed, result.reason!
-            )
+                musicStrings.addVideoToCollectionFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.addVideoToCollectionSuccess, name, position.toLocaleString()
-        )
+            musicStrings.addVideoToCollectionSuccess,
+            name,
+            position.toLocaleString()
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

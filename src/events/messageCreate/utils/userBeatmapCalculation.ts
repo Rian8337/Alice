@@ -16,10 +16,17 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromMessage(message.content);
+    const calcParams: PerformanceCalculationParameters =
+        BeatmapDifficultyHelper.getCalculationParamsFromMessage(
+            message.content
+        );
 
     for await (const arg of message.content.split(/\s+/g)) {
-        if ((!arg.startsWith("https://osu.ppy.sh/") && !arg.startsWith("https://dev.ppy.sh/")) || !StringHelper.isValidURL(arg)) {
+        if (
+            (!arg.startsWith("https://osu.ppy.sh/") &&
+                !arg.startsWith("https://dev.ppy.sh/")) ||
+            !StringHelper.isValidURL(arg)
+        ) {
             continue;
         }
 
@@ -28,26 +35,37 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
         // Prioritize beatmap ID over beatmapset ID
         if (beatmapID) {
-            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID, false);
+            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+                beatmapID,
+                false
+            );
 
             if (!beatmapInfo) {
                 continue;
             }
 
             // Beatmap cache
-            BeatmapManager.setChannelLatestBeatmap(message.channel.id, beatmapInfo.hash);
+            BeatmapManager.setChannelLatestBeatmap(
+                message.channel.id,
+                beatmapInfo.hash
+            );
 
-            const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapID, calcParams);
+            const calcResult: PerformanceCalculationResult | null =
+                await BeatmapDifficultyHelper.calculateBeatmapPerformance(
+                    beatmapID,
+                    calcParams
+                );
 
             if (!calcResult) {
                 continue;
             }
 
-            const calcEmbedOptions: MessageOptions = await EmbedCreator.createCalculationEmbed(
-                calcParams,
-                calcResult,
-                message.member?.displayHexColor
-            );
+            const calcEmbedOptions: MessageOptions =
+                await EmbedCreator.createCalculationEmbed(
+                    calcParams,
+                    calcResult,
+                    message.member?.displayHexColor
+                );
 
             let string: string = "";
 
@@ -66,7 +84,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             message.channel.send(calcEmbedOptions);
         } else if (beatmapsetID) {
             // Retrieve beatmap file one by one to not overcreate requests
-            const beatmapInformations: MapInfo[] = await BeatmapManager.getBeatmaps(beatmapsetID, false);
+            const beatmapInformations: MapInfo[] =
+                await BeatmapManager.getBeatmaps(beatmapsetID, false);
 
             if (beatmapInformations.length === 0) {
                 return;
@@ -79,7 +98,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             let string: string = "";
 
             if (beatmapInformations.length > 3) {
-                string = MessageCreator.createAccept(`I found ${beatmapInformations.length} maps, but only displaying up to 3 due to my limitations.`);
+                string = MessageCreator.createAccept(
+                    `I found ${beatmapInformations.length} maps, but only displaying up to 3 due to my limitations.`
+                );
             }
 
             for await (const beatmapInfo of beatmapInformations) {
@@ -88,7 +109,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
             const firstBeatmap: MapInfo = beatmapInformations[0];
 
-            const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(firstBeatmap);
+            const embedOptions: MessageOptions =
+                EmbedCreator.createBeatmapEmbed(firstBeatmap);
 
             if (string) {
                 embedOptions.content = string;
@@ -97,21 +119,26 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             // Empty files first, we will reenter all attachments later
             embedOptions.files = [];
 
-            const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+            const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
             const stats: MapStats = new MapStats({
                 mods: calcParams.mods,
-                speedMultiplier: calcParams.customStatistics?.speedMultiplier
+                speedMultiplier: calcParams.customStatistics?.speedMultiplier,
             });
 
-            embed.spliceFields(0, embed.fields.length)
-                .setTitle(`${firstBeatmap.artist} - ${firstBeatmap.title} by ${firstBeatmap.creator}`)
+            embed
+                .spliceFields(0, embed.fields.length)
+                .setTitle(
+                    `${firstBeatmap.artist} - ${firstBeatmap.title} by ${firstBeatmap.creator}`
+                )
                 .setColor(firstBeatmap.statusColor)
                 .setAuthor("Beatmap Information")
                 .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                 .setDescription(
                     `${firstBeatmap.showStatistics(1, calcParams.mods)}\n` +
-                    `**BPM**: ${firstBeatmap.convertBPM(stats)} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                        `**BPM**: ${firstBeatmap.convertBPM(
+                            stats
+                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                 );
 
             for await (const beatmapInfo of beatmapInformations) {
@@ -119,17 +146,33 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     break;
                 }
 
-                const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapInfo.hash, calcParams);
+                const calcResult: PerformanceCalculationResult | null =
+                    await BeatmapDifficultyHelper.calculateBeatmapPerformance(
+                        beatmapInfo.hash,
+                        calcParams
+                    );
 
                 if (!calcResult) {
                     continue;
                 }
 
                 embed.addField(
-                    `__${beatmapInfo.version}__ (${calcResult.droid.stars.total.toFixed(2)} ${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)} ${Symbols.star})`,
+                    `__${
+                        beatmapInfo.version
+                    }__ (${calcResult.droid.stars.total.toFixed(2)} ${
+                        Symbols.star
+                    } | ${calcResult.osu.stars.total.toFixed(2)} ${
+                        Symbols.star
+                    })`,
                     `${beatmapInfo.showStatistics(2, calcParams.mods)}\n` +
-                    `**Max score**: ${beatmapInfo.maxScore(stats).toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo}x\n` +
-                    `**${calcResult.droid.total.toFixed(2)}**dpp - ${calcResult.osu.total.toFixed(2)}pp`
+                        `**Max score**: ${beatmapInfo
+                            .maxScore(stats)
+                            .toLocaleString()} - **Max combo**: ${
+                            beatmapInfo.maxCombo
+                        }x\n` +
+                        `**${calcResult.droid.total.toFixed(
+                            2
+                        )}**dpp - ${calcResult.osu.total.toFixed(2)}pp`
                 );
             }
 
@@ -141,5 +184,5 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 export const config: EventUtil["config"] = {
     description: "Responsible for calculating beatmaps that are sent by users.",
     togglePermissions: ["MANAGE_CHANNELS"],
-    toggleScope: ["GLOBAL", "GUILD", "CHANNEL"]
+    toggleScope: ["GLOBAL", "GUILD", "CHANNEL"],
 };

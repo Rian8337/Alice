@@ -12,5 +12,10 @@ export interface OnButtonPageChange {
      * @param args Additional arguments for the function.
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (options: MessageOptions, page: number, contents: any[], ...args: any[]): Promise<any>;
+    (
+        options: MessageOptions,
+        page: number,
+        contents: any[],
+        ...args: any[]
+    ): Promise<any>;
 }

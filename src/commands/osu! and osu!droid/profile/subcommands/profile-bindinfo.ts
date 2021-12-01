@@ -9,17 +9,19 @@ import { Player } from "osu-droid";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(profileStrings.tooManyOptions)
+            content: MessageCreator.createReject(profileStrings.tooManyOptions),
         });
     }
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
 
@@ -55,31 +57,41 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!player?.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.profileNotFound, "the player's"
-            )
+                profileStrings.profileNotFound,
+                "the player's"
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { color: (<GuildMember | null>interaction.member)?.displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        color: (<GuildMember | null>interaction.member)?.displayColor,
+    });
 
-    embed.setAuthor(`Player Information for ${player.username} (click to view profile)`, interaction.user.avatarURL({ dynamic: true })!, `http://ops.dgsrz.com/profile.php?uid=${player.uid}`)
+    embed
+        .setAuthor(
+            `Player Information for ${player.username} (click to view profile)`,
+            interaction.user.avatarURL({ dynamic: true })!,
+            `http://ops.dgsrz.com/profile.php?uid=${player.uid}`
+        )
         .setThumbnail(player.avatarURL)
         .setDescription(
             `[Avatar Link](${player.avatarURL})\n\n` +
-            `**Uid**: ${player.uid}\n` +
-            `**Rank**: ${player.rank.toLocaleString()}\n` +
-            `**Play Count**: ${player.playCount.toLocaleString()}\n` +
-            `**Country**: ${player.location}\n\n` +
-            `**Bind Information**: ${bindInfo ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})` : "Not binded"}`
+                `**Uid**: ${player.uid}\n` +
+                `**Rank**: ${player.rank.toLocaleString()}\n` +
+                `**Play Count**: ${player.playCount.toLocaleString()}\n` +
+                `**Country**: ${player.location}\n\n` +
+                `**Bind Information**: ${
+                    bindInfo
+                        ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})`
+                        : "Not binded"
+                }`
         );
 
     interaction.editReply({
-        embeds: [embed]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

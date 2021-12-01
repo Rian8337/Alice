@@ -10,17 +10,22 @@ import { clanStrings } from "../clanStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const toAccept: User = interaction.options.getUser("user", true);
 
-    const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
+    const clan: Clan | null =
+        await DatabaseManager.elainaDb.collections.clan.getFromUser(
+            interaction.user
+        );
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan)
+            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfHasNoAdministrativePermission)
+            content: MessageCreator.createReject(
+                clanStrings.selfHasNoAdministrativePermission
+            ),
         });
     }
 
@@ -30,7 +35,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 clanStrings.acceptClanInvitationConfirmation,
                 toAccept.toString()
-            )
+            ),
         },
         [toAccept.id],
         20
@@ -45,8 +50,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!firstResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.acceptClanInvitationFailed, toAccept.toString(), firstResult.reason!
-            )
+                clanStrings.acceptClanInvitationFailed,
+                toAccept.toString(),
+                firstResult.reason!
+            ),
         });
     }
 
@@ -54,17 +61,23 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!finalResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.acceptClanInvitationFailed, toAccept.toString(), finalResult.reason!)
+            content: MessageCreator.createReject(
+                clanStrings.acceptClanInvitationFailed,
+                toAccept.toString(),
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.acceptClanInvitationSuccessful, toAccept.toString(), clan.name
-        )
+            clanStrings.acceptClanInvitationSuccessful,
+            toAccept.toString(),
+            clan.name
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

@@ -11,24 +11,35 @@ import { GuildMember, MessageEmbed } from "discord.js";
 import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const type: ChallengeType = <ChallengeType> interaction.options.getString("type") ?? "daily";
+    const type: ChallengeType =
+        <ChallengeType>interaction.options.getString("type") ?? "daily";
 
     const challenge: Challenge | null =
-        await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(type);
+        await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(
+            type
+        );
 
     if (!challenge) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.noOngoingChallenge)
+            content: MessageCreator.createReject(
+                dailyStrings.noOngoingChallenge
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
 
-    const bonusDescription: BonusDescription[] = challenge.getBonusInformation();
+    const bonusDescription: BonusDescription[] =
+        challenge.getBonusInformation();
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: BonusDescription[]) => {
+    const onPageChange: OnButtonPageChange = async (
+        _,
+        page,
+        contents: BonusDescription[]
+    ) => {
         const content: BonusDescription = contents[page - 1];
 
         embed.addField(content.id, content.description);
@@ -36,7 +47,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         bonusDescription,
         1,
@@ -47,5 +58,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

@@ -12,42 +12,62 @@ import { mapshareStrings } from "../mapshareStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (interaction.channelId !== Constants.mapShareChannel) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.notAvailableInChannelReject)
+            content: MessageCreator.createReject(
+                Constants.notAvailableInChannelReject
+            ),
         });
     }
 
-    const beatmapId: number = BeatmapManager.getBeatmapID(interaction.options.getString("beatmap", true))[0];
+    const beatmapId: number = BeatmapManager.getBeatmapID(
+        interaction.options.getString("beatmap", true)
+    )[0];
 
     if (!beatmapId) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mapshareStrings.noBeatmapFound)
+            content: MessageCreator.createReject(
+                mapshareStrings.noBeatmapFound
+            ),
         });
     }
 
     const submission: MapShare | null =
-        await DatabaseManager.aliceDb.collections.mapShare.getByBeatmapId(beatmapId);
+        await DatabaseManager.aliceDb.collections.mapShare.getByBeatmapId(
+            beatmapId
+        );
 
     if (!submission) {
         return interaction.editReply({
-            content: MessageCreator.createReject(mapshareStrings.noSubmissionWithBeatmap)
+            content: MessageCreator.createReject(
+                mapshareStrings.noSubmissionWithBeatmap
+            ),
         });
     }
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapId, false);
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+        beatmapId,
+        false
+    );
 
-    if (!beatmapInfo || (beatmapInfo.hash !== submission.hash && submission.status !== "pending")) {
+    if (
+        !beatmapInfo ||
+        (beatmapInfo.hash !== submission.hash &&
+            submission.status !== "pending")
+    ) {
         await submission.delete();
 
         return interaction.editReply({
-            content: MessageCreator.createReject(mapshareStrings.beatmapIsOutdated)
+            content: MessageCreator.createReject(
+                mapshareStrings.beatmapIsOutdated
+            ),
         });
     }
 
-    const embedOptions: MessageOptions = (await EmbedCreator.createMapShareEmbed(submission))!;
+    const embedOptions: MessageOptions =
+        (await EmbedCreator.createMapShareEmbed(submission))!;
 
     interaction.editReply(embedOptions);
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["SPECIAL"]
+    permissions: ["SPECIAL"],
 };

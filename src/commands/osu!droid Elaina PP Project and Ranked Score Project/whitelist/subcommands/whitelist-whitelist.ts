@@ -11,9 +11,14 @@ import { MapInfo } from "osu-droid";
 import { whitelistStrings } from "../whitelistStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!CommandHelper.isExecutedByBotOwner(interaction) && !(<GuildMember>interaction.member).roles.cache.has(WhitelistManager.whitelistRole)) {
+    if (
+        !CommandHelper.isExecutedByBotOwner(interaction) &&
+        !(<GuildMember>interaction.member).roles.cache.has(
+            WhitelistManager.whitelistRole
+        )
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject)
+            content: MessageCreator.createReject(Constants.noPermissionReject),
         });
     }
 
@@ -21,7 +26,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!beatmapLink) {
         return interaction.editReply({
-            content: MessageCreator.createReject(whitelistStrings.noBeatmapProvided)
+            content: MessageCreator.createReject(
+                whitelistStrings.noBeatmapProvided
+            ),
         });
     }
 
@@ -30,7 +37,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!beatmapID && !beatmapsetID) {
         return interaction.editReply({
-            content: MessageCreator.createReject(whitelistStrings.noBeatmapIDorSetIDFound)
+            content: MessageCreator.createReject(
+                whitelistStrings.noBeatmapIDorSetIDFound
+            ),
         });
     }
 
@@ -45,9 +54,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const beatmaps: MapInfo[] = [];
 
     if (beatmapsetID) {
-        beatmaps.push(...await BeatmapManager.getBeatmaps(beatmapsetID, false));
+        beatmaps.push(
+            ...(await BeatmapManager.getBeatmaps(beatmapsetID, false))
+        );
     } else {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID, false);
+        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+            beatmapID,
+            false
+        );
 
         if (beatmapInfo) {
             beatmaps.push(beatmapInfo);
@@ -56,40 +70,63 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (beatmaps.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(whitelistStrings.noBeatmapsFound)
+            content: MessageCreator.createReject(
+                whitelistStrings.noBeatmapsFound
+            ),
         });
     }
 
-    const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmaps[0]);
+    const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
+        beatmaps[0]
+    );
 
     const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
-    embed.spliceFields(0, embed.fields.length)
-        .addField(beatmaps[0].showStatistics(4), `Star Rating:\n${beatmaps.map(v => `- [${v.version}](https://osu.ppy.sh/b/${v.beatmapID}) - **${v.totalDifficulty.toFixed(2)}**`).join("\n")}`);
+    embed
+        .spliceFields(0, embed.fields.length)
+        .addField(
+            beatmaps[0].showStatistics(4),
+            `Star Rating:\n${beatmaps
+                .map(
+                    (v) =>
+                        `- [${v.version}](https://osu.ppy.sh/b/${
+                            v.beatmapID
+                        }) - **${v.totalDifficulty.toFixed(2)}**`
+                )
+                .join("\n")}`
+        );
 
     const whitelistResponseStrings: string[] = [];
 
     for await (const beatmap of beatmaps) {
-        const whitelistResult: OperationResult = await WhitelistManager.whitelist(beatmap);
+        const whitelistResult: OperationResult =
+            await WhitelistManager.whitelist(beatmap);
 
         if (!whitelistResult.success) {
-            whitelistResponseStrings.push(MessageCreator.createReject(
-                whitelistStrings.whitelistFailed, beatmap.fullTitle, whitelistResult.reason!
-            ));
+            whitelistResponseStrings.push(
+                MessageCreator.createReject(
+                    whitelistStrings.whitelistFailed,
+                    beatmap.fullTitle,
+                    whitelistResult.reason!
+                )
+            );
             continue;
         }
 
-        whitelistResponseStrings.push(MessageCreator.createAccept(
-            whitelistStrings.whitelistSuccess, beatmap.fullTitle
-        ));
+        whitelistResponseStrings.push(
+            MessageCreator.createAccept(
+                whitelistStrings.whitelistSuccess,
+                beatmap.fullTitle
+            )
+        );
     }
 
     interaction.editReply({
         content: whitelistResponseStrings.join("\n"),
-        ...embedOptions
+        ...embedOptions,
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["SPECIAL"]
+    permissions: ["SPECIAL"],
 };

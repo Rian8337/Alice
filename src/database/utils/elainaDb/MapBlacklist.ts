@@ -11,7 +11,10 @@ export class MapBlacklist extends Manager implements DatabaseMapBlacklist {
     reason: string;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseMapBlacklist = DatabaseManager.elainaDb?.collections.mapBlacklist.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseMapBlacklist = DatabaseManager.elainaDb?.collections
+            .mapBlacklist.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

@@ -11,7 +11,8 @@ export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
 
 export const config: Command["config"] = {
     name: "whitelist",
-    description: "The main command for droid performance points (dpp) whitelisting system.",
+    description:
+        "The main command for droid performance points (dpp) whitelisting system.",
     options: [
         {
             name: "check",
@@ -21,9 +22,10 @@ export const config: Command["config"] = {
                 {
                     name: "beatmap",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link. Defaults the latest beatmap cache from the channel (if any)."
-                }
-            ]
+                    description:
+                        "The beatmap ID or link. Defaults the latest beatmap cache from the channel (if any).",
+                },
+            ],
         },
         {
             name: "unwhitelist",
@@ -34,9 +36,10 @@ export const config: Command["config"] = {
                     name: "beatmap",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID, beatmap link, or beatmapset link."
-                }
-            ]
+                    description:
+                        "The beatmap ID, beatmap link, or beatmapset link.",
+                },
+            ],
         },
         {
             name: "whitelist",
@@ -47,10 +50,11 @@ export const config: Command["config"] = {
                     name: "beatmap",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID, beatmap link, or beatmapset link."
-                }
-            ]
-        }
+                    description:
+                        "The beatmap ID, beatmap link, or beatmapset link.",
+                },
+            ],
+        },
     ],
     example: [
         {
@@ -58,42 +62,46 @@ export const config: Command["config"] = {
             arguments: [
                 {
                     name: "beatmap",
-                    value: 1884658
-                }
+                    value: 1884658,
+                },
             ],
-            description: "will whitelist/unwhitelist the beatmap with ID 1884658."
+            description:
+                "will whitelist/unwhitelist the beatmap with ID 1884658.",
         },
         {
             command: "whitelist",
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/b/1884658"
-                }
+                    value: "https://osu.ppy.sh/b/1884658",
+                },
             ],
-            description: "will whitelist/unwhitelist the linked beatmap, depending on the action taken by the user."
+            description:
+                "will whitelist/unwhitelist the linked beatmap, depending on the action taken by the user.",
         },
         {
             command: "whitelist",
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/s/902745"
-                }
+                    value: "https://osu.ppy.sh/s/902745",
+                },
             ],
-            description: "will whitelist/unwhitelist the linked beatmapset, depending on the action taken by the user."
+            description:
+                "will whitelist/unwhitelist the linked beatmapset, depending on the action taken by the user.",
         },
         {
             command: "whitelist",
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
-                }
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+                },
             ],
-            description: "will whitelist/unwhitelist the linked beatmap/beatmapset (the link contains both beatmap ID and beatmapset ID), depending on the action taken by the user."
-        }
+            description:
+                "will whitelist/unwhitelist the linked beatmap/beatmapset (the link contains both beatmap ID and beatmapset ID), depending on the action taken by the user.",
+        },
     ],
     permissions: ["SPECIAL"],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

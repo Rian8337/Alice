@@ -8,56 +8,76 @@ import { whitelistStrings } from "../whitelistStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     // Prioritize beatmap ID over hash
-    const beatmapID: number = BeatmapManager.getBeatmapID(interaction.options.getString("beatmap") ?? "")[0];
-    const hash: string = BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id)!;
+    const beatmapID: number = BeatmapManager.getBeatmapID(
+        interaction.options.getString("beatmap") ?? ""
+    )[0];
+    const hash: string = BeatmapManager.getChannelLatestBeatmap(
+        interaction.channel!.id
+    )!;
 
     if (!beatmapID && !hash) {
         return interaction.editReply({
-            content: MessageCreator.createReject(whitelistStrings.noCachedBeatmapFound)
+            content: MessageCreator.createReject(
+                whitelistStrings.noCachedBeatmapFound
+            ),
         });
     }
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID || hash, false);
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+        beatmapID || hash,
+        false
+    );
 
     if (!beatmapInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(whitelistStrings.beatmapNotFound)
+            content: MessageCreator.createReject(
+                whitelistStrings.beatmapNotFound
+            ),
         });
     }
 
     if (!WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(whitelistStrings.beatmapDoesntNeedWhitelist)
+            content: MessageCreator.createReject(
+                whitelistStrings.beatmapDoesntNeedWhitelist
+            ),
         });
     }
 
-    const isWhitelisted: WhitelistStatus = await WhitelistManager.getBeatmapWhitelistStatus(beatmapInfo.hash);
+    const isWhitelisted: WhitelistStatus =
+        await WhitelistManager.getBeatmapWhitelistStatus(beatmapInfo.hash);
 
     switch (isWhitelisted) {
         case "updated":
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    whitelistStrings.whitelistStatus, beatmapInfo.fullTitle, "whitelisted and updated"
-                )
+                    whitelistStrings.whitelistStatus,
+                    beatmapInfo.fullTitle,
+                    "whitelisted and updated"
+                ),
             });
             break;
         case "whitelisted":
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    whitelistStrings.whitelistStatus, beatmapInfo.fullTitle, "whitelisted, but not updated"
-                )
+                    whitelistStrings.whitelistStatus,
+                    beatmapInfo.fullTitle,
+                    "whitelisted, but not updated"
+                ),
             });
             break;
         case "not whitelisted":
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    whitelistStrings.whitelistStatus, beatmapInfo.fullTitle, "not whitelisted"
-                )
+                    whitelistStrings.whitelistStatus,
+                    beatmapInfo.fullTitle,
+                    "not whitelisted"
+                ),
             });
             break;
     }
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

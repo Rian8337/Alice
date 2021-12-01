@@ -21,14 +21,15 @@ export const config: Command["config"] = {
                 {
                     name: "beatmap",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link to view. If unspecified, will take the latest cached beatmap in the channel."
+                    description:
+                        "The beatmap ID or link to view. If unspecified, will take the latest cached beatmap in the channel.",
                 },
                 {
                     name: "page",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page of the leaderboard. Defaults to 1."
-                }
-            ]
+                    description: "The page of the leaderboard. Defaults to 1.",
+                },
+            ],
         },
         {
             name: "dpp",
@@ -38,14 +39,14 @@ export const config: Command["config"] = {
                 {
                     name: "page",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page of the leaderboard. Defaults to 1."
+                    description: "The page of the leaderboard. Defaults to 1.",
                 },
                 {
                     name: "clan",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The clan name to view the leaderboard from."
-                }
-            ]
+                    description: "The clan name to view the leaderboard from.",
+                },
+            ],
         },
         {
             name: "global",
@@ -55,9 +56,9 @@ export const config: Command["config"] = {
                 {
                     name: "page",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page of the leaderboard. Defaults to 1."
-                }
-            ]
+                    description: "The page of the leaderboard. Defaults to 1.",
+                },
+            ],
         },
         {
             name: "prototype",
@@ -67,9 +68,9 @@ export const config: Command["config"] = {
                 {
                     name: "page",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page of the leaderboard. Defaults to 1."
-                }
-            ]
+                    description: "The page of the leaderboard. Defaults to 1.",
+                },
+            ],
         },
         {
             name: "ranked",
@@ -79,38 +80,39 @@ export const config: Command["config"] = {
                 {
                     name: "page",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page of the leaderboard. Defaults to 1."
-                }
-            ]
-        }
+                    description: "The page of the leaderboard. Defaults to 1.",
+                },
+            ],
+        },
     ],
     example: [
         {
             command: "leaderboard dpp",
-            description: "will view the droid pp leaderboard at page 1."
+            description: "will view the droid pp leaderboard at page 1.",
         },
         {
             command: "leaderboard ranked",
             arguments: [
                 {
                     name: "page",
-                    value: 3
-                }
+                    value: 3,
+                },
             ],
-            description: "will view the ranked score leaderboard at page 3."
+            description: "will view the ranked score leaderboard at page 3.",
         },
         {
             command: "leaderboard dpp",
             arguments: [
                 {
                     name: "clan",
-                    value: "Sunda Empire"
-                }
+                    value: "Sunda Empire",
+                },
             ],
-            description: "will view the ranked score leaderboard at page 1 for the \"Sunda Empire\" clan."
-        }
+            description:
+                'will view the ranked score leaderboard at page 1 for the "Sunda Empire" clan.',
+        },
     ],
     cooldown: 20,
     permissions: [],
-    scope: "ALL"
+    scope: "ALL",
 };

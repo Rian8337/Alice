@@ -8,28 +8,37 @@ import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const collection: MusicCollection | null =
-        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(interaction.options.getString("name", true));
+        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
+            interaction.options.getString("name", true)
+        );
 
     if (!collection) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.noCollectionWithName)
+            content: MessageCreator.createReject(
+                musicStrings.noCollectionWithName
+            ),
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
 
-    embed.setTitle(collection.name)
+    embed
+        .setTitle(collection.name)
         .addField("Owner", `<@${collection.owner}> (${collection.owner})`)
         .addField("Creation Date", new Date(collection.createdAt).toUTCString())
-        .addField("Links", collection.videoIds.map((v, i) => `${i + 1}. v`).join("\n"));
+        .addField(
+            "Links",
+            collection.videoIds.map((v, i) => `${i + 1}. v`).join("\n")
+        );
 
     interaction.editReply({
-        embeds: [ embed ]
+        embeds: [embed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

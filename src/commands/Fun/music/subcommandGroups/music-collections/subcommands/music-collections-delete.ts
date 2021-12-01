@@ -9,39 +9,48 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
-        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(name);
+        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
+            name
+        );
 
     if (!collection) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.noCollectionWithName)
+            content: MessageCreator.createReject(
+                musicStrings.noCollectionWithName
+            ),
         });
     }
 
     if (collection.owner !== interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.userDoesntOwnCollection)
+            content: MessageCreator.createReject(
+                musicStrings.userDoesntOwnCollection
+            ),
         });
     }
 
-    const result: OperationResult = await DatabaseManager.aliceDb.collections.musicCollection.delete(
-        { name: name }
-    );
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.musicCollection.delete({
+            name: name,
+        });
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.deleteCollectionFailed, result.reason!
-            )
+                musicStrings.deleteCollectionFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.deleteCollectionSuccess, name
-        )
+            musicStrings.deleteCollectionSuccess,
+            name
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

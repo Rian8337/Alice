@@ -8,26 +8,52 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const res: Collection<number, RankedScore> = await DatabaseManager.aliceDb.collections.rankedScore.getLeaderboard();
+    const res: Collection<number, RankedScore> =
+        await DatabaseManager.aliceDb.collections.rankedScore.getLeaderboard();
 
-    const page: number = NumberHelper.clamp(interaction.options.getInteger("page") ?? 1, 1, Math.ceil(res.size / 20));
+    const page: number = NumberHelper.clamp(
+        interaction.options.getInteger("page") ?? 1,
+        1,
+        Math.ceil(res.size / 20)
+    );
 
-    const onPageChange: OnButtonPageChange = async (options, page, entries: RankedScore[]) => {
+    const onPageChange: OnButtonPageChange = async (
+        options,
+        page,
+        entries: RankedScore[]
+    ) => {
         const longestUsernameLength: number = Math.max(
-            ...entries.slice(20 * (page - 1), 20 + 20 * (page - 1))
-                .map(v => StringHelper.getUnicodeStringLength(v.username.trim())),
+            ...entries
+                .slice(20 * (page - 1), 20 + 20 * (page - 1))
+                .map((v) =>
+                    StringHelper.getUnicodeStringLength(v.username.trim())
+                ),
             16
         );
-        
-        let output: string = `${"#".padEnd(4)} | ${"Username".padEnd(longestUsernameLength)} | ${"UID".padEnd(6)} | ${"Play".padEnd(5)} | Score (Lv)\n`;
+
+        let output: string = `${"#".padEnd(4)} | ${"Username".padEnd(
+            longestUsernameLength
+        )} | ${"UID".padEnd(6)} | ${"Play".padEnd(5)} | Score (Lv)\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
             const player: RankedScore = entries[i];
 
             if (player) {
-                output += `${(i + 1).toString().padEnd(4)} | ${player.username.trim().padEnd(longestUsernameLength)} | ${player.uid.toString().padEnd(6)} | ${player.playc.toString().padEnd(5)} | ${player.score.toLocaleString()} (${Math.floor(player.level)})`;
+                output += `${(i + 1).toString().padEnd(4)} | ${player.username
+                    .trim()
+                    .padEnd(longestUsernameLength)} | ${player.uid
+                    .toString()
+                    .padEnd(6)} | ${player.playc
+                    .toString()
+                    .padEnd(
+                        5
+                    )} | ${player.score.toLocaleString()} (${Math.floor(
+                    player.level
+                )})`;
             } else {
-                output += `${"-".padEnd(4)} | ${"-".padEnd(longestUsernameLength)} | ${"-".padEnd(6)} | ${"-".padEnd(5)} | -`;
+                output += `${"-".padEnd(4)} | ${"-".padEnd(
+                    longestUsernameLength
+                )} | ${"-".padEnd(6)} | ${"-".padEnd(5)} | -`;
             }
 
             output += "\n";
@@ -49,5 +75,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

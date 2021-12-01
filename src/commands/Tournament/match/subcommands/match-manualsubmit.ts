@@ -17,15 +17,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const splitRegex: RegExp = /\b[\w']+(?:[^\w\n]+[\w']+){0,3}\b/g;
 
-    const team1Scores: string[] = interaction.options.getString("team1scores", true).match(splitRegex) ?? [];
+    const team1Scores: string[] =
+        interaction.options.getString("team1scores", true).match(splitRegex) ??
+        [];
 
-    const team2Scores: string[] = interaction.options.getString("team2scores", true).match(splitRegex) ?? [];
+    const team2Scores: string[] =
+        interaction.options.getString("team2scores", true).match(splitRegex) ??
+        [];
 
-    const match: TournamentMatch | null = await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
+    const match: TournamentMatch | null =
+        await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist)
+            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
         });
     }
 
@@ -36,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 "1",
                 Math.ceil(match.player.length / 2).toLocaleString(),
                 team1Scores.length.toLocaleString()
-            )
+            ),
         });
     }
 
@@ -47,33 +52,39 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 "2",
                 Math.floor(match.player.length / 2).toLocaleString(),
                 team2Scores.length.toLocaleString()
-            )
+            ),
         });
     }
 
     const mappoolDurationData: TournamentMapLengthInfo | null =
-        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(match.matchid.split(".").shift()!);
+        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(
+            match.matchid.split(".").shift()!
+        );
 
     if (!mappoolDurationData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.mappoolNotFound)
+            content: MessageCreator.createReject(matchStrings.mappoolNotFound),
         });
     }
 
     const mappoolMainData: TournamentMappool | null =
-        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(mappoolDurationData.poolid);
+        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
+            mappoolDurationData.poolid
+        );
 
     if (!mappoolMainData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.mappoolNotFound)
+            content: MessageCreator.createReject(matchStrings.mappoolNotFound),
         });
     }
 
-    const pickIndex: number = mappoolDurationData.map.findIndex(m => m[0].toUpperCase() === pick.toUpperCase());
+    const pickIndex: number = mappoolDurationData.map.findIndex(
+        (m) => m[0].toUpperCase() === pick.toUpperCase()
+    );
 
     if (pickIndex === -1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.mapNotFound)
+            content: MessageCreator.createReject(matchStrings.mapNotFound),
         });
     }
 
@@ -87,16 +98,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     let team2String: string = "";
 
     for (let i = 0; i < match.player.length; ++i) {
-        const scoreData: string[] = (i % 2 === 0 ? team1Scores : team2Scores)[Math.floor(i / 2)]?.split(" ") ?? [];
+        const scoreData: string[] =
+            (i % 2 === 0 ? team1Scores : team2Scores)[Math.floor(i / 2)]?.split(
+                " "
+            ) ?? [];
 
-        if (scoreData.length !== 3 || scoreData.map(v => parseFloat(v)).some(isNaN)) {
+        if (
+            scoreData.length !== 3 ||
+            scoreData.map((v) => parseFloat(v)).some(isNaN)
+        ) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
                     matchStrings.scoreDataInvalid,
-                    (i % 2 + 1).toLocaleString(),
+                    ((i % 2) + 1).toLocaleString(),
                     Math.floor(i / 2).toLocaleString(),
                     scoreData.join(" ")
-                )
+                ),
             });
         }
 
@@ -104,7 +121,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             parseInt(scoreData[0]),
             parseFloat(scoreData[1]) / 100,
             parseInt(scoreData[2]),
-            parseInt(<string> mapData[2]),
+            parseInt(<string>mapData[2]),
             mapData[4] ?? 0.6
         );
 
@@ -116,7 +133,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         scoreList.push(scoreV2);
 
-        const scoreString: string = `${match.player[i][0]} - (N/A): **${scoreV2}** - ${(parseFloat(scoreData[1])).toFixed(2)}% - ${scoreData[2]} misses\n`;
+        const scoreString: string = `${
+            match.player[i][0]
+        } - (N/A): **${scoreV2}** - ${parseFloat(scoreData[1]).toFixed(2)}% - ${
+            scoreData[2]
+        } misses\n`;
         const failString: string = `${match.player[i][0]} - (N/A): **0** - **Failed**`;
 
         if (i % 2 === 0) {
@@ -132,7 +153,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     team2String ||= "None";
 
     let embedColor: number = 0;
-    let description: string = `${team1OverallScore > team2OverallScore ? match.team[0][0] : match.team[1][0]} won by ${Math.abs(team1OverallScore - team2OverallScore)}`;
+    let description: string = `${
+        team1OverallScore > team2OverallScore
+            ? match.team[0][0]
+            : match.team[1][0]
+    } won by ${Math.abs(team1OverallScore - team2OverallScore)}`;
 
     if (team1OverallScore > team2OverallScore) {
         embedColor = 16711680;
@@ -142,11 +167,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         description = "It's a draw";
     }
 
-    const resultEmbed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { timestamp: true, color: embedColor }
-    );
+    const resultEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        timestamp: true,
+        color: embedColor,
+    });
 
-    resultEmbed.setAuthor(match.name)
+    resultEmbed
+        .setAuthor(match.name)
         .setTitle(mapData[1])
         .addField(`${match.team[0][0]}: ${team1OverallScore}`, team1String)
         .addField(`${match.team[1][0]}: ${team2OverallScore}`, team2String)
@@ -157,7 +184,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     // Blue team wins
     match.team[1][1] += Number(team2OverallScore > team1OverallScore);
 
-    const summaryEmbed: MessageEmbed = EmbedCreator.createMatchSummaryEmbed(match);
+    const summaryEmbed: MessageEmbed =
+        EmbedCreator.createMatchSummaryEmbed(match);
 
     for (let i = 0; i < scoreList.length; ++i) {
         match.result[i].push(scoreList[i]);
@@ -168,17 +196,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.submitMatchFailed, finalResult.reason!
-            )
+                matchStrings.submitMatchFailed,
+                finalResult.reason!
+            ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(matchStrings.submitMatchSuccessful),
-        embeds: [ resultEmbed, summaryEmbed ]
+        content: MessageCreator.createAccept(
+            matchStrings.submitMatchSuccessful
+        ),
+        embeds: [resultEmbed, summaryEmbed],
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

@@ -7,13 +7,17 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { submitStrings } from "./submitStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    if (!CommandHelper.isExecutedByBotOwner(interaction) && !Config.ppChannel.includes(interaction.channel!.id)) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(
-                submitStrings.commandNotAllowed)
-        }).then(
-            () => setTimeout(() => interaction.deleteReply(), 5 * 1000)
-        );
+    if (
+        !CommandHelper.isExecutedByBotOwner(interaction) &&
+        !Config.ppChannel.includes(interaction.channel!.id)
+    ) {
+        return interaction
+            .editReply({
+                content: MessageCreator.createReject(
+                    submitStrings.commandNotAllowed
+                ),
+            })
+            .then(() => setTimeout(() => interaction.deleteReply(), 5 * 1000));
     }
 
     CommandHelper.runSubcommandFromInteraction(interaction);
@@ -23,7 +27,8 @@ export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
 
 export const config: Command["config"] = {
     name: "submit",
-    description: "Submits one or more score(s) the droid pp and ranked score system.",
+    description:
+        "Submits one or more score(s) the droid pp and ranked score system.",
     options: [
         {
             name: "beatmap",
@@ -34,9 +39,9 @@ export const config: Command["config"] = {
                     name: "beatmap",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link."
-                }
-            ]
+                    description: "The beatmap ID or link.",
+                },
+            ],
         },
         {
             name: "recent",
@@ -46,67 +51,72 @@ export const config: Command["config"] = {
                 {
                     name: "amount",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1."
+                    description:
+                        "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1.",
                 },
                 {
                     name: "offset",
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50."
-                }
-            ]
-        }
+                    description:
+                        "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50.",
+                },
+            ],
+        },
     ],
     example: [
         {
             command: "submit recent",
-            description: "will submit your most recent play."
+            description: "will submit your most recent play.",
         },
         {
             command: "submit recent",
             arguments: [
                 {
                     name: "amount",
-                    value: 3
-                }
+                    value: 3,
+                },
             ],
-            description: "will submit your 1st, 2nd, and 3rd most recent plays."
+            description:
+                "will submit your 1st, 2nd, and 3rd most recent plays.",
         },
         {
             command: "submit recent",
             arguments: [
                 {
                     name: "amount",
-                    value: 4
+                    value: 4,
                 },
                 {
                     name: "offset",
-                    value: 18
-                }
+                    value: 18,
+                },
             ],
-            description: "will submit your 18th, 19th, 20th, and 21th most recent plays."
+            description:
+                "will submit your 18th, 19th, 20th, and 21th most recent plays.",
         },
         {
             command: "submit beatmap",
             arguments: [
                 {
                     name: "beatmap",
-                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
-                }
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+                },
             ],
-            description: "will submit your score from the linked beatmap."
+            description: "will submit your score from the linked beatmap.",
         },
         {
             command: "submit beatmap",
             arguments: [
                 {
                     name: "beatmap",
-                    value: 1884658
-                }
+                    value: 1884658,
+                },
             ],
-            description: "will submit your score from the beatmap with that ID."
-        }
+            description:
+                "will submit your score from the beatmap with that ID.",
+        },
     ],
     permissions: [],
     cooldown: 5,
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };

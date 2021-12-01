@@ -10,5 +10,5 @@ export const run: EventUtil["run"] = async (_, thread: ThreadChannel) => {
 export const config: EventUtil["config"] = {
     description: "Responsible for joining a thread upon its creation.",
     togglePermissions: ["BOT_OWNER"],
-    toggleScope: ["GLOBAL"]
+    toggleScope: ["GLOBAL"],
 };

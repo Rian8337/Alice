@@ -10,21 +10,31 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
-        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(name);
+        await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
+            name
+        );
 
     if (!collection) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.noCollectionWithName)
+            content: MessageCreator.createReject(
+                musicStrings.noCollectionWithName
+            ),
         });
     }
 
     if (collection.owner !== interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.userDoesntOwnCollection)
+            content: MessageCreator.createReject(
+                musicStrings.userDoesntOwnCollection
+            ),
         });
     }
 
-    const position: number = NumberHelper.clamp(interaction.options.getInteger("position", true), 1, collection.videoIds.length);
+    const position: number = NumberHelper.clamp(
+        interaction.options.getInteger("position", true),
+        1,
+        collection.videoIds.length
+    );
 
     collection.videoIds.splice(position - 1, 1);
 
@@ -33,18 +43,21 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.removeVideoFromCollectionFailed, result.reason!
-            )
+                musicStrings.removeVideoFromCollectionFailed,
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.removeVideoFromCollectionSuccess, position.toLocaleString(), name
-        )
+            musicStrings.removeVideoFromCollectionSuccess,
+            position.toLocaleString(),
+            name
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

@@ -8,13 +8,19 @@ import { Collection as MongoDBCollection } from "mongodb";
 /**
  * A manager for the `askcount` collection.
  */
-export class AskCountCollectionManager extends DatabaseCollectionManager<DatabaseAskCount, AskCount> {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseAskCount, AskCount>;
+export class AskCountCollectionManager extends DatabaseCollectionManager<
+    DatabaseAskCount,
+    AskCount
+> {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<
+        DatabaseAskCount,
+        AskCount
+    >;
 
     override get defaultDocument(): DatabaseAskCount {
         return {
             discordid: "",
-            count: 0
+            count: 0,
         };
     }
 
@@ -24,12 +30,14 @@ export class AskCountCollectionManager extends DatabaseCollectionManager<Databas
     constructor(collection: MongoDBCollection<DatabaseAskCount>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseAskCount, AskCount>> new AskCount(this.defaultDocument).constructor;
+        this.utilityInstance = <
+            DatabaseUtilityConstructor<DatabaseAskCount, AskCount>
+        >new AskCount(this.defaultDocument).constructor;
     }
 
     /**
      * Gets the ask count data of a user.
-     * 
+     *
      * @param userId The ID of the user.
      */
     getUserAskCount(userId: Snowflake): Promise<AskCount | null> {

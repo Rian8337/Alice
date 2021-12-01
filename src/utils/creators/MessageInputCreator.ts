@@ -1,4 +1,10 @@
-import { CommandInteraction, InteractionReplyOptions, Message, MessageCollector, Snowflake } from "discord.js";
+import {
+    CommandInteraction,
+    InteractionReplyOptions,
+    Message,
+    MessageCollector,
+    Snowflake,
+} from "discord.js";
 import { MessageCreator } from "./MessageCreator";
 
 /**
@@ -7,7 +13,7 @@ import { MessageCreator } from "./MessageCreator";
 export abstract class MessageInputCreator {
     /**
      * Creates an input detector.
-     * 
+     *
      * @param interaction The interaction that triggered the input detector.
      * @param options Options for the message notifying that an input detector is active.
      * @param choices Messages that are accepted by the detector. Use an empty array to accept any kind of message.
@@ -16,13 +22,26 @@ export abstract class MessageInputCreator {
      * @param deleteOnInput Whether to delete the input after given. Defaults to `true`.
      * @returns The picked choice or given input, `undefined` if the users didn't pick any choice or give any input.
      */
-    static async createInputDetector(interaction: CommandInteraction, options: InteractionReplyOptions, choices: string[], users: Snowflake[], duration: number, deleteOnInput: boolean = true): Promise<string | undefined> {
+    static async createInputDetector(
+        interaction: CommandInteraction,
+        options: InteractionReplyOptions,
+        choices: string[],
+        users: Snowflake[],
+        duration: number,
+        deleteOnInput: boolean = true
+    ): Promise<string | undefined> {
         const message: Message = <Message>await interaction.editReply(options);
 
-        const collector: MessageCollector = message.channel.createMessageCollector({
-            filter: (m: Message) => ((choices.length > 0 ? choices.includes(m.content) : m.content.replace(/\s/g, "").length > 0) || m.content.toLowerCase() === "exit") && users.includes(m.author.id),
-            time: duration * 1000
-        });
+        const collector: MessageCollector =
+            message.channel.createMessageCollector({
+                filter: (m: Message) =>
+                    ((choices.length > 0
+                        ? choices.includes(m.content)
+                        : m.content.replace(/\s/g, "").length > 0) ||
+                        m.content.toLowerCase() === "exit") &&
+                    users.includes(m.author.id),
+                time: duration * 1000,
+            });
 
         collector.on("collect", async (m: Message) => {
             if (deleteOnInput && m.deletable) {
@@ -32,14 +51,12 @@ export abstract class MessageInputCreator {
             collector.stop();
         });
 
-        return new Promise(resolve => {
-            collector.on("end", async collected => {
+        return new Promise((resolve) => {
+            collector.on("end", async (collected) => {
                 try {
                     if (collected.size === 0) {
                         await interaction.editReply({
-                            content: MessageCreator.createReject(
-                                "Timed out."
-                            )
+                            content: MessageCreator.createReject("Timed out."),
                         });
 
                         setTimeout(() => {
@@ -47,7 +64,7 @@ export abstract class MessageInputCreator {
                         }, 5 * 1000);
                     }
                     // eslint-disable-next-line no-empty
-                } catch { }
+                } catch {}
 
                 if (collected.first()?.content === "exit") {
                     return resolve(undefined);

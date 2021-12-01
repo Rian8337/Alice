@@ -21,7 +21,10 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
         return this.expiration < Date.now();
     }
 
-    constructor(data: DatabaseLoungeLock = DatabaseManager.aliceDb?.collections.loungeLock.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseLoungeLock = DatabaseManager.aliceDb?.collections
+            .loungeLock.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;
@@ -32,7 +35,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
 
     /**
      * Extends this lock.
-     * 
+     *
      * @param duration The duration to extend for, in seconds.
      * @param reason The reason for extending the reason.
      * @returns An object containing information about the database operation.
@@ -49,16 +52,18 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
 
     /**
      * Releases this lock.
-     * 
+     *
      * @returns An object containing information about the database operation.
      */
     async unlock(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.loungeLock.delete({ discordid: this.discordid });
+        return DatabaseManager.aliceDb.collections.loungeLock.delete({
+            discordid: this.discordid,
+        });
     }
 
     /**
      * Makes this lock permanent.
-     * 
+     *
      * @returns An object containing information about the database operation.
      */
     async makePermanent(): Promise<OperationResult> {

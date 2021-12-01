@@ -1,7 +1,16 @@
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
-import { AudioPlayer, AudioPlayerStatus, AudioResource, createAudioPlayer, entersState, VoiceConnection, VoiceConnectionDisconnectReason, VoiceConnectionStatus } from "@discordjs/voice";
+import {
+    AudioPlayer,
+    AudioPlayerStatus,
+    AudioResource,
+    createAudioPlayer,
+    entersState,
+    VoiceConnection,
+    VoiceConnectionDisconnectReason,
+    VoiceConnectionStatus,
+} from "@discordjs/voice";
 import { Snowflake, TextChannel, ThreadChannel } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -42,7 +51,7 @@ export class MusicInfo {
 
     /**
      * The music queue of the voice channel.
-     * 
+     *
      * The first item is the music that is being played.
      */
     readonly queue: MusicQueue[] = [];
@@ -71,12 +80,16 @@ export class MusicInfo {
      * The music queue that is currently playing.
      */
     get currentlyPlaying(): MusicQueue | null {
-        return this.player.state.status !== AudioPlayerStatus.Idle ?
-            (<AudioResource<MusicQueue>> this.player.state.resource).metadata :
-            null;
+        return this.player.state.status !== AudioPlayerStatus.Idle
+            ? (<AudioResource<MusicQueue>>this.player.state.resource).metadata
+            : null;
     }
 
-    constructor(connection: VoiceConnection, voiceChannelId: Snowflake, executionChannel: TextChannel | ThreadChannel) {
+    constructor(
+        connection: VoiceConnection,
+        voiceChannelId: Snowflake,
+        executionChannel: TextChannel | ThreadChannel
+    ) {
         this.connection = connection;
         this.voiceChannelId = voiceChannelId;
         this.executionChannel = executionChannel;
@@ -85,16 +98,26 @@ export class MusicInfo {
         this.connection.on("stateChange", async (_, newState) => {
             switch (newState.status) {
                 case VoiceConnectionStatus.Disconnected:
-                    if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
+                    if (
+                        newState.reason ===
+                            VoiceConnectionDisconnectReason.WebSocketClose &&
+                        newState.closeCode === 4014
+                    ) {
                         try {
                             // Probably moved voice channel.
-                            await entersState(this.connection, VoiceConnectionStatus.Connecting, 5e3);
+                            await entersState(
+                                this.connection,
+                                VoiceConnectionStatus.Connecting,
+                                5e3
+                            );
                         } catch {
                             // Probably removed from voice channel.
                             this.connection.destroy();
                         }
                     } else if (this.connection.rejoinAttempts < 5) {
-                        await HelperFunctions.sleep((this.connection.rejoinAttempts + 1) * 5e3);
+                        await HelperFunctions.sleep(
+                            (this.connection.rejoinAttempts + 1) * 5e3
+                        );
                         this.connection.rejoin();
                     } else {
                         this.connection.destroy();
@@ -112,9 +135,16 @@ export class MusicInfo {
                         this.readyLock = true;
 
                         try {
-                            await entersState(this.connection, VoiceConnectionStatus.Ready, 2e4);
+                            await entersState(
+                                this.connection,
+                                VoiceConnectionStatus.Ready,
+                                2e4
+                            );
                         } catch {
-                            if (this.connection.state.status !== VoiceConnectionStatus.Destroyed) {
+                            if (
+                                this.connection.state.status !==
+                                VoiceConnectionStatus.Destroyed
+                            ) {
                                 this.connection.destroy();
                             }
                         }
@@ -126,25 +156,37 @@ export class MusicInfo {
         });
 
         this.player.on("stateChange", (oldState, newState) => {
-            if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
-				// Idle state is entered from a nonidle state. This means that an audio resource has finished playing.
-				// Process the queue to start playing the next queue, if one is available.
-				this.processQueue((<AudioResource<MusicQueue>> oldState.resource).metadata);
-			} else if (oldState.status !== AudioPlayerStatus.Paused && newState.status === AudioPlayerStatus.Playing) {
+            if (
+                newState.status === AudioPlayerStatus.Idle &&
+                oldState.status !== AudioPlayerStatus.Idle
+            ) {
+                // Idle state is entered from a nonidle state. This means that an audio resource has finished playing.
+                // Process the queue to start playing the next queue, if one is available.
+                this.processQueue(
+                    (<AudioResource<MusicQueue>>oldState.resource).metadata
+                );
+            } else if (
+                oldState.status !== AudioPlayerStatus.Paused &&
+                newState.status === AudioPlayerStatus.Playing
+            ) {
                 // New music is playing.
                 this.executionChannel.send({
-                    embeds: [ EmbedCreator.createMusicQueueEmbed(
-                        (<AudioResource<MusicQueue>> newState.resource).metadata
-                    ) ]
+                    embeds: [
+                        EmbedCreator.createMusicQueueEmbed(
+                            (<AudioResource<MusicQueue>>newState.resource)
+                                .metadata
+                        ),
+                    ],
                 });
             }
         });
 
-        this.player.on("error", err => {
+        this.player.on("error", (err) => {
             this.executionChannel.send({
                 content: MessageCreator.createReject(
-                    `The audio player emitted an error: \`%s\`.`, err.message
-                )
+                    `The audio player emitted an error: \`%s\`.`,
+                    err.message
+                ),
             });
         });
 
@@ -153,7 +195,7 @@ export class MusicInfo {
 
     /**
      * Enqueues a music queue.
-     * 
+     *
      * @param queue The music queue to enqueue.
      * @param index The index to enqueue this music queue on. Defaults to latest.
      */
@@ -165,7 +207,7 @@ export class MusicInfo {
 
     /**
      * Dequeues a music queue.
-     * 
+     *
      * @param index The index of the queue to dequeue.
      */
     dequeue(index: number): void {
@@ -191,22 +233,28 @@ export class MusicInfo {
     }
 
     /**
-	 * Attempts to play a queue.
-     * 
+     * Attempts to play a queue.
+     *
      * @param queueToRepeat The music queue that will be repeated if repeat mode is enabled.
      * @param forceSkip Whether to skip the previously played queue if repeat mode is enabled.
-	 */
+     */
     private async processQueue(queueToRepeat: MusicQueue): Promise<void> {
         const repeatAndNotSkip: boolean = this.repeat && !this.skip;
 
         // Don't do anything if the queue is locked (already being processed),
         // is empty, or the audio player is already playing something.
         if (this.queue.length === 0 && !repeatAndNotSkip) {
-            this.idleTimeout ??= setTimeout(() => this.connection.destroy(), 60 * 10 * 1000);
+            this.idleTimeout ??= setTimeout(
+                () => this.connection.destroy(),
+                60 * 10 * 1000
+            );
             return;
         }
 
-        if (this.queueLock || this.player.state.status !== AudioPlayerStatus.Idle) {
+        if (
+            this.queueLock ||
+            this.player.state.status !== AudioPlayerStatus.Idle
+        ) {
             return;
         }
 
@@ -219,14 +267,14 @@ export class MusicInfo {
             this.idleTimeout = null;
         }
 
-        const nextQueue: MusicQueue =
-            repeatAndNotSkip ?
-            queueToRepeat :
-            this.queue.shift()!;
+        const nextQueue: MusicQueue = repeatAndNotSkip
+            ? queueToRepeat
+            : this.queue.shift()!;
 
         try {
             // Attempt to convert the queue into an `AudioResource` (i.e. start streaming the video).
-            const resource: AudioResource<MusicQueue> = await nextQueue.createAudioResource();
+            const resource: AudioResource<MusicQueue> =
+                await nextQueue.createAudioResource();
 
             this.player.play(resource);
 
@@ -236,8 +284,10 @@ export class MusicInfo {
         } catch (err) {
             await this.executionChannel.send({
                 content: MessageCreator.createReject(
-                    `An error occurred while trying to play %s: \`%s\`.`, nextQueue.information.title, (<Error> err).message
-                )
+                    `An error occurred while trying to play %s: \`%s\`.`,
+                    nextQueue.information.title,
+                    (<Error>err).message
+                ),
             });
 
             this.queueLock = false;
@@ -248,4 +298,3 @@ export class MusicInfo {
         }
     }
 }
-

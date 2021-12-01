@@ -8,9 +8,16 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    if (DateTimeFormatHelper.getTimeDifference((<GuildMember> interaction.member).joinedAt!) > -86400 * 1000 * 7) {
+    if (
+        DateTimeFormatHelper.getTimeDifference(
+            (<GuildMember>interaction.member).joinedAt!
+        ) >
+        -86400 * 1000 * 7
+    ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(coinsStrings.userNotInServerForAWeek)
+            content: MessageCreator.createReject(
+                coinsStrings.userNotInServerForAWeek
+            ),
         });
     }
 
@@ -32,20 +39,20 @@ export const config: Command["config"] = {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to add Alice coins to."
+                    description: "The user to add Alice coins to.",
                 },
                 {
                     name: "amount",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The amount of Alice coins to add."
-                }
-            ]
+                    description: "The amount of Alice coins to add.",
+                },
+            ],
         },
         {
             name: "claim",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Claim daily Alice coins."
+            description: "Claim daily Alice coins.",
         },
         {
             name: "remove",
@@ -56,15 +63,15 @@ export const config: Command["config"] = {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to remove Alice coins from."
+                    description: "The user to remove Alice coins from.",
                 },
                 {
                     name: "amount",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The amount of Alice coins to remove."
-                }
-            ]
+                    description: "The amount of Alice coins to remove.",
+                },
+            ],
         },
         {
             name: "transfer",
@@ -75,15 +82,15 @@ export const config: Command["config"] = {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to transfer Alice coins to."
+                    description: "The user to transfer Alice coins to.",
                 },
                 {
                     name: "amount",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The amount of Alice coins to transfer."
-                }
-            ]
+                    description: "The amount of Alice coins to transfer.",
+                },
+            ],
         },
         {
             name: "view",
@@ -93,41 +100,42 @@ export const config: Command["config"] = {
                 {
                     name: "user",
                     type: ApplicationCommandOptionTypes.USER,
-                    description: "The user to view. Defaults to yourself."
-                }
-            ]
-        }
+                    description: "The user to view. Defaults to yourself.",
+                },
+            ],
+        },
     ],
     example: [
         {
             command: "coins claim",
-            description: "will claim your daily Alice coins."
+            description: "will claim your daily Alice coins.",
         },
         {
             command: "coins transfer",
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001"
+                    value: "@Rian8337#0001",
                 },
                 {
                     name: "amount",
-                    value: 500
-                }
+                    value: 500,
+                },
             ],
-            description: "will transfer 500 Alice coins to Rian8337."
+            description: "will transfer 500 Alice coins to Rian8337.",
         },
         {
             command: "coins view",
             arguments: [
                 {
                     name: "user",
-                    value: "132783516176875520"
-                }
+                    value: "132783516176875520",
+                },
             ],
-            description: "will view the amount of Alice coins of the Discord account with that ID."
-        }
+            description:
+                "will view the amount of Alice coins of the Discord account with that ID.",
+        },
     ],
     permissions: [],
-    scope: "GUILD_CHANNEL"
+    scope: "GUILD_CHANNEL",
 };
