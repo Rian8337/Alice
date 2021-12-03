@@ -39,7 +39,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
 
         this.utilityInstance = <
             DatabaseUtilityConstructor<DatabaseUserBind, UserBind>
-        >new UserBind().constructor;
+            >new UserBind().constructor;
     }
 
     /**
@@ -183,16 +183,5 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
             userBind.map((v) => new UserBind(v)),
             "discordid"
         );
-    }
-
-    aggregateDuplicate() {
-        return this.collection
-            .aggregate([
-                { $group: { _id: "$uid", count: { $sum: 1 } } },
-                { $match: { _id: { $ne: null }, count: { $gt: 1 } } },
-                { $sort: { count: -1 } },
-                { $project: { uid: "$_id", _id: 0 } },
-            ])
-            .toArray();
     }
 }
