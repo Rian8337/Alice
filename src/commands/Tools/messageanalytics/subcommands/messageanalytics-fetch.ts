@@ -89,12 +89,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         ),
     });
 
-    const guildMessageAnalyticsData: Collection<number, ChannelData> =
-        await DatabaseManager.aliceDb.collections.channelData.getFromTimestampRange(
-            fromDate.getTime(),
-            toDate.getTime()
-        );
-
     for await (const channel of channelsToFetch) {
         if (MessageAnalyticsHelper.isChannelFiltered(channel)) {
             continue;
@@ -118,17 +112,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         for await (const [date, count] of messageData) {
             const channelData: ChannelData =
-                guildMessageAnalyticsData.get(date) ??
                 DatabaseManager.aliceDb.collections.channelData.defaultInstance;
 
             channelData.timestamp = date;
 
-            channelData.channels.set(
-                channel.id,
-                (channelData.channels.get(channel.id) ?? 0) + count
-            );
-
-            guildMessageAnalyticsData.set(date, channelData);
+            channelData.channels.set(channel.id, count);
 
             await DatabaseManager.aliceDb.collections.channelData.update(
                 { timestamp: date },
