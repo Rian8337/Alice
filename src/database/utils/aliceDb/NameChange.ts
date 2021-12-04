@@ -35,7 +35,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
     }
 
     /**
-     * Accepts the name change request if this account requests a name change.
+     * Accepts this name change request if this account requests a name change.
      *
      * @returns An object containing information about the operation.
      */
@@ -86,7 +86,16 @@ export class NameChange extends Manager implements DatabaseNameChange {
     }
 
     /**
-     * Accepts the name change request if this account requests a name change.
+     * Cancels this name change request if this account requests a name change.
+     * 
+     * @returns An object containing information about the operation.
+     */
+    cancel(): Promise<OperationResult> {
+        return this.deny();
+    }
+
+    /**
+     * Accepts this name change request if this account requests a name change.
      *
      * @returns An object containing information about the operation.
      */

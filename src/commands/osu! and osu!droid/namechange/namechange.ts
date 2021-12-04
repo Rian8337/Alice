@@ -27,6 +27,11 @@ export const config: Command["config"] = {
             ],
         },
         {
+            name: "cancel",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description: "Cancels your active name change request.",
+        },
+        {
             name: "deny",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Deny a name change request (bot owner only).",

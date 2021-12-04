@@ -1,7 +1,7 @@
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { DatabaseNameChange } from "@alice-interfaces/database/aliceDb/DatabaseNameChange";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as DiscordCollection, Snowflake } from "discord.js";
+import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
@@ -38,7 +38,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
 
         this.utilityInstance = <
             DatabaseUtilityConstructor<DatabaseNameChange, NameChange>
-        >new NameChange().constructor;
+            >new NameChange().constructor;
     }
 
     /**
@@ -48,6 +48,26 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
      */
     getFromUid(uid: number): Promise<NameChange | null> {
         return this.getOne({ uid: uid });
+    }
+
+    /**
+     * Gets name change request of a Discord user.
+     *
+     * @param user The user.
+     */
+    getFromUser(user: User): Promise<NameChange | null>;
+
+    /**
+     * Gets name change request of a Discord user.
+     *
+     * @param userId The ID of the user.
+     */
+    getFromUser(userId: Snowflake): Promise<NameChange | null>;
+
+    getFromUser(userOrId: User | Snowflake): Promise<NameChange | null> {
+        return this.getOne({
+            discordid: userOrId instanceof User ? userOrId.id : userOrId,
+        });
     }
 
     /**
