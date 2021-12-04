@@ -124,7 +124,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
         for (const [date, amount] of channelCollection.entries()) {
             finalCollection.set(
                 date,
-                (finalCollection.get(date) ?? 0) + amount
+                amount
             );
         }
 
