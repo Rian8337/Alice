@@ -122,10 +122,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
             );
 
         for (const [date, amount] of channelCollection.entries()) {
-            finalCollection.set(
-                date,
-                amount
-            );
+            finalCollection.set(date, amount);
         }
 
         const activeThreads: FetchedThreads =

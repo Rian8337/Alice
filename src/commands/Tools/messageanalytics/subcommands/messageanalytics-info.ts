@@ -50,11 +50,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             });
         }
 
-        date.setUTCFullYear(
-            dateEntries[0],
-            dateEntries[1] - 1,
-            dateEntries[2]
-        );
+        date.setUTCFullYear(dateEntries[0], dateEntries[1] - 1, dateEntries[2]);
     }
 
     date.setUTCHours(0, 0, 0, 0);
@@ -202,9 +198,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     ) => {
         const content: ActivityCategory = contents[page - 1];
 
-        embed.setDescription(
-            `**${content.category}**\n` + content.description
-        );
+        embed.setDescription(`**${content.category}**\n` + content.description);
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

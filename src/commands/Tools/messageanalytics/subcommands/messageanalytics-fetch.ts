@@ -65,7 +65,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             return interaction.editReply({
                 content: MessageCreator.createReject(
                     messageanalyticsStrings.wrongServer
-                )
+                ),
             });
         }
 
@@ -100,6 +100,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         ),
     });
 
+    const guildMessageAnalyticsData: Collection<number, ChannelData> =
+        await DatabaseManager.aliceDb.collections.channelData.getFromTimestampRange(
+            fromDate.getTime(),
+            toDate.getTime()
+        );
+
     for await (const channel of channelsToFetch) {
         if (MessageAnalyticsHelper.isChannelFiltered(channel)) {
             continue;
@@ -123,11 +129,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         for await (const [date, count] of messageData) {
             const channelData: ChannelData =
+                guildMessageAnalyticsData.get(date) ??
                 DatabaseManager.aliceDb.collections.channelData.defaultInstance;
 
             channelData.timestamp = date;
 
             channelData.channels.set(channel.id, count);
+
+            guildMessageAnalyticsData.set(date, channelData);
 
             await DatabaseManager.aliceDb.collections.channelData.update(
                 { timestamp: date },
@@ -143,6 +152,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             );
         }
     }
+
+    interaction.channel!.send({
+        content: MessageCreator.createAccept(
+            messageanalyticsStrings.messageFetchDone,
+            interaction.user.toString()
+        ),
+    });
 };
 
 export const config: Subcommand["config"] = {

@@ -10,4 +10,5 @@ export enum messageanalyticsStrings {
     wrongServer = "I'm sorry, this scope can only be used in main server!",
     notATextChannel = "I'm sorry, you can only execute this command in a text channel!",
     messageFetchStarted = "Successfully started message data fetching.",
+    messageFetchDone = "%s, message data fetch done!",
 }
