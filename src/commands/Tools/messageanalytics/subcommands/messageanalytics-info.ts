@@ -53,7 +53,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         date.setUTCFullYear(
             dateEntries[0],
             dateEntries[1] - 1,
-            dateEntries[2] - 1
+            dateEntries[2]
         );
     }
 
@@ -203,7 +203,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         const content: ActivityCategory = contents[page - 1];
 
         embed.setDescription(
-            `**${content.category}**\n\n` + content.description
+            `**${content.category}**\n` + content.description
         );
     };
 
