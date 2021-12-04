@@ -38,7 +38,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
 
         this.utilityInstance = <
             DatabaseUtilityConstructor<DatabaseNameChange, NameChange>
-            >new NameChange().constructor;
+        >new NameChange().constructor;
     }
 
     /**

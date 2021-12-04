@@ -57,9 +57,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     .trim()
                     .padEnd(longestUsernameLength)} | ${player.uid
                     .toString()
-                    .padEnd(6)} | ${player.playc
+                    .padEnd(6)} | ${(player.playc ?? 0)
                     .toString()
-                    .padEnd(4)} | ${player.pptotal.toFixed(2)}`;
+                    .padEnd(4)} | ${(player.pptotal ?? 0).toFixed(2)}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
                     longestUsernameLength

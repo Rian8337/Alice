@@ -39,7 +39,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
 
         this.utilityInstance = <
             DatabaseUtilityConstructor<DatabaseUserBind, UserBind>
-            >new UserBind().constructor;
+        >new UserBind().constructor;
     }
 
     /**

@@ -87,7 +87,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
     /**
      * Cancels this name change request if this account requests a name change.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     cancel(): Promise<OperationResult> {
@@ -103,7 +103,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
         if (this.isProcessed) {
             return this.createOperationResult(
                 false,
-                "no active name change requset"
+                "no active name change request"
             );
         }
 
