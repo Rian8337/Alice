@@ -4,17 +4,15 @@
   "description": "A Discord bot for osu!droid",
   "main": "dist/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "compile-windows": "npm run build-osu-droid-windows && rmdir dist /s /q & npm run compile-build",
     "compile-linux": "npm run build-osu-droid-linux && rm -rf dist & npm run compile-build",
     "compile-build": "tsc --build tsconfig.json",
+    "format-code": "npx prettier -w --loglevel=silent \"src/**\" && npx prettier -w --loglevel=silent \"modules/osu-droid/src/**\"",
     "build-osu-droid-windows": "npm run write-libraries-declaration && cd ./modules/osu-droid & rmdir dist /s /q & tsc --build tsconfig.json",
     "build-osu-droid-linux": "npm run write-libraries-declaration && cd ./modules/osu-droid && tsc --build tsconfig.json",
-    "write-libraries-declaration": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts",
     "startDebug": "node --trace-warnings --inspect .",
     "start": "node --trace-warnings .",
-    "startHeroku": "pm2-runtime start ecosystem.config.js --env production",
-    "heroku-postbuild": "npm run compile-linux"
+    "write-libraries-declaration": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts"
   },
   "engines": {
     "node": "16.x"
