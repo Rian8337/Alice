@@ -1,9 +1,10 @@
+import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
-import { Collection, TextChannel } from "discord.js";
+import { Collection, Guild, TextChannel } from "discord.js";
 import { messageanalyticsStrings } from "../messageanalyticsStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -55,9 +56,19 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
     }
 
+    const guild: Guild = await client.guilds.fetch(Constants.mainServer);
+
     const channelsToFetch: TextChannel[] = [];
 
     if ((interaction.options.getString("scope") ?? "channel") === "channel") {
+        if (interaction.guildId !== guild.id) {
+            return interaction.editReply({
+                content: MessageCreator.createReject(
+                    messageanalyticsStrings.wrongServer
+                )
+            });
+        }
+
         if (!(interaction.channel instanceof TextChannel)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
@@ -76,7 +87,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         channelsToFetch.push(interaction.channel);
     } else {
-        for (const channel of interaction.guild!.channels.cache.values()) {
+        for (const channel of guild.channels.cache.values()) {
             if (channel instanceof TextChannel) {
                 channelsToFetch.push(channel);
             }
