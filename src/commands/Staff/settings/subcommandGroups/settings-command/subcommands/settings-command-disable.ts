@@ -6,7 +6,7 @@ import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { NewsChannel, TextChannel } from "discord.js";
+import { NewsChannel, TextChannel, ThreadChannel } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -53,7 +53,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
 
             result = await CommandUtilManager.setCommandCooldownInChannel(
-                <TextChannel | NewsChannel>interaction.channel,
+                interaction.channel instanceof ThreadChannel
+                    ? interaction.channel.parent!
+                    : <TextChannel | NewsChannel>interaction.channel,
                 commandName,
                 -1
             );
