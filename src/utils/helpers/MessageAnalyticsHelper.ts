@@ -210,13 +210,17 @@ export abstract class MessageAnalyticsHelper extends Manager {
         currentDate.setUTCHours(0, 0, 0, 0);
 
         while (currentDate.getTime() >= fetchStartTime && lastMessageID) {
-            const messages: Collection<string, Message> =
+            const messages: Collection<string, Message> | null =
                 await messageManager.fetch({
                     limit: fetchCount,
                     before: lastMessageID,
-                });
+                }).catch(() => null);
 
-            await HelperFunctions.sleep(0.2);
+            if (!messages) {
+                continue;
+            }
+
+            await HelperFunctions.sleep(0.1);
 
             for (const message of messages.values()) {
                 if (message.createdTimestamp > fetchEndTime) {
