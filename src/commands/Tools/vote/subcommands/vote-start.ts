@@ -8,7 +8,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const topic: string = interaction.options.getString("topic", true);
 
     const choices: VoteChoice[] = interaction.options
-        .getString("input", true)
+        .getString("choices", true)
         .split("|")
         .map((v) => {
             return {
@@ -35,9 +35,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < choices.length; ++i) {
         const choice: VoteChoice = choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${
-            choice.voters.length
-        }\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length
+            }\`\n\n`;
     }
 
     interaction.editReply({
