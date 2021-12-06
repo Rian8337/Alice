@@ -119,7 +119,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                profileStrings.changeInfoBoxColorConfirmation,
+                profileStrings.changeInfoColorConfirmation,
                 interaction.user.toString(),
                 "text",
                 color
@@ -151,7 +151,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     return interaction.editReply({
         content: MessageCreator.createAccept(
-            profileStrings.changeInfoBoxColorSuccess,
+            profileStrings.changeInfoColorSuccess,
             interaction.user.toString(),
             "text",
             color
