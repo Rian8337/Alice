@@ -24,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const pickedChoice: number = interaction.options.getInteger("option")! - 1;
 
-    if (!NumberHelper.isNumberInRange(pickedChoice, 1, voteInfo.choices.length)) {
+    if (!NumberHelper.isNumberInRange(pickedChoice, 0, voteInfo.choices.length - 1, true)) {
         return interaction.editReply({
             content: MessageCreator.createReject(voteStrings.invalidVoteChoice)
         });
