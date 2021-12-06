@@ -3,6 +3,7 @@ import { Voting } from "@alice-database/utils/aliceDb/Voting";
 import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { voteStrings } from "../voteStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -21,7 +22,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const choices: VoteChoice[] = voteInfo.choices;
 
-    const pickedChoice: number = interaction.options.getInteger("option")!;
+    const pickedChoice: number = interaction.options.getInteger("option")! - 1;
+
+    if (!NumberHelper.isNumberInRange(pickedChoice, 1, voteInfo.choices.length)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(voteStrings.invalidVoteChoice)
+        });
+    }
 
     // Check if the user has already voted, in that case
     // we want to move the choice to the one that is picked
@@ -57,9 +64,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < voteInfo.choices.length; ++i) {
         const choice: VoteChoice = voteInfo.choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${
-            choice.voters.length
-        }\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length
+            }\`\n\n`;
     }
 
     interaction.editReply({
@@ -69,9 +75,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 interaction.user.toString(),
                 choiceIndex === -1
                     ? "your vote has been registered"
-                    : `your vote has been moved from option \`${
-                          choiceIndex + 1
-                      }\` to \`${pickedChoice + 1}\``
+                    : `your vote has been moved from option \`${choiceIndex + 1
+                    }\` to \`${pickedChoice + 1}\``
             ) + `\n${string}`,
     });
 };
