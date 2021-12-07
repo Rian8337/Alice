@@ -357,8 +357,7 @@ export class UserBind extends Manager {
             };
 
             this.client.logger.info(
-                `${calcResult.map.fullTitle}${
-                    entry.mods ? ` +${entry.mods}` : ""
+                `${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""
                 }: ${entry.prevPP} ⮕  ${entry.pp}`
             );
 
@@ -656,29 +655,56 @@ export class UserBind extends Manager {
 
         otherPreviousBind.push(uid);
 
-        await DatabaseManager.elainaDb.collections.userBind.update(
-            { discordid: to },
-            {
-                $set: {
-                    uid: uid,
-                    username: player.username,
-                    previous_bind: otherPreviousBind,
-                },
-                $setOnInsert: {
-                    hasAskedForRecalc: false,
-                    pptotal: 0,
-                    playc: 0,
-                    pp: [],
-                    clan: "",
-                },
-            },
-            { upsert: true }
-        );
-
         if (this.previous_bind.length === 0) {
-            await DatabaseManager.elainaDb.collections.userBind.delete({
-                discordid: this.discordid,
-            });
+            await DatabaseManager.elainaDb.collections.userBind.delete(
+                { discordid: this.discordid }
+            );
+
+            await DatabaseManager.elainaDb.collections.userBind.update(
+                { discordid: this.discordid },
+                {
+                    $set: {
+                        discordid: to,
+                        previous_bind: otherPreviousBind,
+                    },
+                    $setOnInsert: {
+                        uid: uid,
+                        username: player.username,
+                        pptotal: this.pptotal,
+                        playc: this.playc,
+                        pp: [...this.pp.values()],
+                        clan: this.clan,
+                        oldclan: this.oldclan,
+                        oldjoincooldown: this.oldjoincooldown,
+                        hasAskedForRecalc: this.hasAskedForRecalc,
+                        dppScanComplete: this.dppScanComplete,
+                        dppRecalcComplete: this.dppRecalcComplete,
+                        calculationInfo: this.calculationInfo,
+                    },
+                },
+                { upsert: true }
+            );
+
+            this.discordid = to;
+        } else {
+            await DatabaseManager.elainaDb.collections.userBind.update(
+                { discordid: to },
+                {
+                    $set: {
+                        previous_bind: otherPreviousBind,
+                    },
+                    $setOnInsert: {
+                        uid: uid,
+                        username: player.username,
+                        hasAskedForRecalc: false,
+                        pptotal: 0,
+                        playc: 0,
+                        pp: [],
+                        clan: "",
+                    },
+                },
+                { upsert: true }
+            );
         }
 
         return DatabaseManager.aliceDb.collections.playerInfo.update(
@@ -722,10 +748,10 @@ export class UserBind extends Manager {
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(
-                      typeof uidOrUsernameOrPlayer === "string"
-                          ? { username: uidOrUsernameOrPlayer }
-                          : { uid: uidOrUsernameOrPlayer }
-                  );
+                    typeof uidOrUsernameOrPlayer === "string"
+                        ? { username: uidOrUsernameOrPlayer }
+                        : { uid: uidOrUsernameOrPlayer }
+                );
 
         if (!player.username || !player.uid) {
             return this.createOperationResult(
