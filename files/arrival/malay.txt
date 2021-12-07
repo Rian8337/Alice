@@ -4,6 +4,8 @@ Sebagai permulaan, sila ke #rules dan baca peraturan-peraturan yang telah di tet
 
 Setelah itu, anda boleh mula menjalani proses verifikasi anda dengan menekan butang di bawah.
 
+Anda ada tempoh masa seminggu ( 7 hari ) dari masa anda memasuki server  ini untuk melalukan proses verifikasi. Gagal berbuat demikian dalam masa yang ditetapkan, akan mengakibatkan anda di keluarkan dari server ini dengan serta merta.
+
 Jika butang tersebut gagal untuk berfungsi, sila cuba lagi selepas 5 hingga 10 saat.
 
 Jika butang tersebut masih gagal untuk berfungsi, anda digalakkan untuk cuba masuk semula ke server ini. Jika cara demikian juga tidak berhasil, anda boleh meminta bantuan daripada staff server ini (a <@&595667274707370024> atau <@&369108742077284353>).

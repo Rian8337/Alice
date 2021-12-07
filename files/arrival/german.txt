@@ -4,6 +4,8 @@ Bevor es los geht, begib dich bitte in #rules und lies die Serverregeln.
 
 Danach kannst du die Verifikation beginnen, indem du den Knopf darunter drückst.
 
+Sie haben eine Woche (7 Tage) ab dem Zeitpunkt, an dem Sie diesem Server beigetreten sind, um sich zu verifizieren. Andernfalls werden Sie vom Server geworfen.
+
 Wenn der Knopf nicht funktioniert, versuche es erneut nach 5-10 Sekunden.
 
 Wenn der Knopf immer noch nicht funktioniert, kannst du versuchen den Server zu verlassen und wieder beizutreten. Wenn es jedoch immer noch nicht klappt, wende dich bitte an jemanden aus unserem Team (<@&595667274707370024> oder <@&369108742077284353>).

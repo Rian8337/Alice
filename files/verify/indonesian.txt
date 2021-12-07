@@ -9,6 +9,8 @@ Untuk memverifikasi diri Anda sebagai seseorang yang bermain osu!droid atau tert
 ```
 setelah itu, Anda dapat memanggil (*ping*/*mention*) role <@&369108742077284353> dan/atau <@&595667274707370024> di thread Anda dan tunggu seorang staff untuk datang dan memverifikasi Anda.
 
+Anda memiliki waktu sebanyak 1 minggu (7 hari) sejak Anda masuk ke server ini untuk memverifikasi diri Anda. Kegagalan dalam melakukan hal tersebut akan mengeluarkan Anda dari server.
+
 **MOHON UNTUK TIDAK MENINGGALKAN THREAD ANDA.**
 
 Apabila Anda tidak bisa melihat thread Anda, kemungkinan thread Anda telah diarsip. Silakan pergi ke menu "*threads*" and cari thread Anda di bagian "*archived*".

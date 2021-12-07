@@ -9,6 +9,8 @@ To verify yourself as someone who plays osu!droid or interested in the game and 
 ```
 after that, you can ping the <@&369108742077284353> and/or <@&595667274707370024> role in your thread and wait for one to come to verify you.
 
+You have a week (7 days) from the moment you joined this server to verify yourself. Failure to do so will kick you from the server.
+
 **REMEMBER TO NOT LEAVE YOUR THREAD.**
 
 If you cannot see your thread, it may have been archived. Go to the threads menu and find your thread in archived section.

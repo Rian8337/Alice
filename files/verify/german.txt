@@ -9,6 +9,8 @@ Um dich als jemand zu verifizieren, der osu!droid spielt oder Interesse an dem S
 ```
 Wenn du hiermit fertig bist, kannst du die <@&369108742077284353> und/oder die <@&595667274707370024> rolle in deinem Thread markieren und warten, bis jemand kommt um dich zu verifizieren.
 
+Sie haben eine Woche (7 Tage) ab dem Zeitpunkt, an dem Sie diesem Server beigetreten sind, um sich zu verifizieren. Andernfalls werden Sie vom Server geworfen.
+
 **VERLASSE ABER NICHT DEINEN THREAD**
 
 Falls du deinen Thread nicht mehr sehen kannst, wurde er vielleicht archiviert. Geh in das Thread Menü und finde deinen Thread in dem "Archiviert" Abteil.

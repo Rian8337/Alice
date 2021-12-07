@@ -4,6 +4,8 @@ Untuk memulai, mohon ke #rules untuk membaca peraturan server.
 
 Setelah itu, Anda dapat memulai proses verifikasi Anda dengan menekan tombol di bawah.
 
+Anda memiliki waktu sebanyak 1 minggu (7 hari) sejak Anda masuk ke server ini untuk memverifikasi diri Anda. Kegagalan dalam melakukan hal tersebut akan mengeluarkan Anda dari server.
+
 Jika tombol tersebut tidak bekerja, mohon coba lagi setelah 5-10 detik.
 
 Jika tombol tersebut masih tidak bekerja, Anda dapat mencoba keluar dari server dan masuk kembali. Jika masih tidak bekerja, Anda dapat menghubungi seorang anggota staff (seorang <@&595667274707370024> atau <@&369108742077284353>) untuk meminta bantuan.
