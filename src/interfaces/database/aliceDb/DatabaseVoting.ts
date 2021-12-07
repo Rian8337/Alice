@@ -12,6 +12,11 @@ export interface DatabaseVoting extends BaseDocument {
     initiator: Snowflake;
 
     /**
+     * The Tatsu XP requirement to participate in this vote.
+     */
+    xpReq?: number;
+
+    /**
      * The topic of the vote.
      */
     topic: string;

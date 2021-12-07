@@ -4,6 +4,7 @@ import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { voteStrings } from "../voteStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -50,6 +51,29 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 voteStrings.voteChoiceIsSameAsBefore
             ),
         });
+    }
+
+    if (voteInfo.xpReq) {
+        const userXP: number | null = await RESTManager.getUserTatsuXP(
+            interaction.guildId,
+            interaction.user.id
+        );
+
+        if (userXP === null) {
+            return interaction.editReply({
+                content: MessageCreator.createReject(
+                    voteStrings.cannotRetrieveTatsuXP
+                ),
+            });
+        }
+
+        if (userXP < voteInfo.xpReq) {
+            return interaction.editReply({
+                content: MessageCreator.createReject(
+                    voteStrings.tatsuXPTooSmall
+                ),
+            });
+        }
     }
 
     if (choiceIndex !== -1) {

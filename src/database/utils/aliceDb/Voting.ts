@@ -11,6 +11,7 @@ import { Snowflake } from "discord.js";
  */
 export class Voting extends Manager implements DatabaseVoting {
     initiator: Snowflake;
+    xpReq?: number;
     topic: string;
     channel: Snowflake;
     choices: VoteChoice[];
@@ -24,6 +25,7 @@ export class Voting extends Manager implements DatabaseVoting {
 
         this._id = data._id;
         this.initiator = data.initiator;
+        this.xpReq = data.xpReq;
         this.topic = data.topic;
         this.channel = data.channel;
         this.choices = data.choices ?? [];

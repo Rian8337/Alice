@@ -28,13 +28,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (choiceIndex === -1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(
-                voteStrings.notVotedYet
-            ),
+            content: MessageCreator.createReject(voteStrings.notVotedYet),
         });
     }
 
-    choices[choiceIndex].voters.splice(choices[choiceIndex].voters.indexOf(interaction.user.id), 1);
+    choices[choiceIndex].voters.splice(
+        choices[choiceIndex].voters.indexOf(interaction.user.id),
+        1
+    );
 
     await DatabaseManager.aliceDb.collections.voting.update(
         { channel: interaction.channel!.id },
@@ -46,8 +47,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < voteInfo.choices.length; ++i) {
         const choice: VoteChoice = voteInfo.choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length
-            }\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${
+            choice.voters.length
+        }\`\n\n`;
     }
 
     interaction.editReply({

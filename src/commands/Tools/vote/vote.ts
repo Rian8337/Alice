@@ -16,7 +16,7 @@ export const config: Command["config"] = {
         {
             name: "cancel",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Cancels your picked option in the ongoing vote."
+            description: "Cancels your picked option in the ongoing vote.",
         },
         {
             name: "check",
@@ -57,6 +57,11 @@ export const config: Command["config"] = {
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
                     description: 'The choices of the vote, separated by "|".',
+                },
+                {
+                    name: "xpreq",
+                    type: ApplicationCommandOptionTypes.INTEGER,
+                    description: "The Tatsu XP requirement for users to vote.",
                 },
             ],
         },

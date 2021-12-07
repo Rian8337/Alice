@@ -2,6 +2,8 @@ import request, { CoreOptions } from "request";
 import { RequestResponse } from "osu-droid";
 import { Manager } from "@alice-utils/base/Manager";
 import { Image, loadImage } from "canvas";
+import { Snowflake } from "discord.js";
+import { TatsuAPIGuildMemberRanking } from "@alice-interfaces/utils/TatsuAPIGuildMemberRanking";
 
 export abstract class RESTManager extends Manager {
     /**
@@ -47,5 +49,36 @@ export abstract class RESTManager extends Manager {
         } catch {
             return null;
         }
+    }
+
+    /**
+     * Gets a user's Tatsu XP in a guild.
+     *
+     * @param guildId The ID of the guild.
+     * @param userId The ID of the user.
+     * @returns The user's Tatsu XP, `null` if the request fails (non-`2xx` status code).
+     */
+    static async getUserTatsuXP(
+        guildId: Snowflake,
+        userId: Snowflake
+    ): Promise<number | null> {
+        const result: RequestResponse = await this.request(
+            `https://api.tatsu.gg/v1/guilds/${guildId}/rankings/members/${userId}/all`,
+            {
+                headers: {
+                    Authorization: process.env.TATSU_API_KEY,
+                },
+            }
+        );
+
+        if (result.statusCode !== 200) {
+            return null;
+        }
+
+        const data: TatsuAPIGuildMemberRanking = JSON.parse(
+            result.data.toString("utf-8")
+        );
+
+        return data.score;
     }
 }
