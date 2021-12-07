@@ -143,7 +143,7 @@ export abstract class CommandHelper extends Manager {
                 content: MessageCreator.createReject(
                     `${
                         Constants.noPermissionReject
-                    }. You need these permissions: \`${PermissionHelper.getPermissionString(
+                    } You need these permissions: \`${PermissionHelper.getPermissionString(
                         subcommand.config.permissions
                     )}\`.`
                 ),

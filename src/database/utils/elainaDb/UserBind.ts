@@ -357,7 +357,8 @@ export class UserBind extends Manager {
             };
 
             this.client.logger.info(
-                `${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""
+                `${calcResult.map.fullTitle}${
+                    entry.mods ? ` +${entry.mods}` : ""
                 }: ${entry.prevPP} ⮕  ${entry.pp}`
             );
 
@@ -656,9 +657,9 @@ export class UserBind extends Manager {
         otherPreviousBind.push(uid);
 
         if (this.previous_bind.length === 0) {
-            await DatabaseManager.elainaDb.collections.userBind.delete(
-                { discordid: this.discordid }
-            );
+            await DatabaseManager.elainaDb.collections.userBind.delete({
+                discordid: this.discordid,
+            });
 
             await DatabaseManager.elainaDb.collections.userBind.update(
                 { discordid: this.discordid },
@@ -748,10 +749,10 @@ export class UserBind extends Manager {
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(
-                    typeof uidOrUsernameOrPlayer === "string"
-                        ? { username: uidOrUsernameOrPlayer }
-                        : { uid: uidOrUsernameOrPlayer }
-                );
+                      typeof uidOrUsernameOrPlayer === "string"
+                          ? { username: uidOrUsernameOrPlayer }
+                          : { uid: uidOrUsernameOrPlayer }
+                  );
 
         if (!player.username || !player.uid) {
             return this.createOperationResult(
