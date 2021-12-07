@@ -1,4 +1,6 @@
+import { Bot } from "@alice-core/Bot";
 import { Config } from "@alice-core/Config";
+import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
@@ -23,7 +25,41 @@ async function resetDailyCoinsAndMapShare(): Promise<void> {
     );
 }
 
-export const run: EventUtil["run"] = async () => {
+async function kickUnverifiedMembers(client: Bot): Promise<void> {
+    client.logger.info("Checking for unverified members to prune");
+
+    const guild = await client.guilds.fetch(Constants.mainServer);
+
+    const members = await guild.members.fetch({ force: true });
+
+    const role = guild.roles.cache.find(
+        (r) => r.name === "Member"
+    )!;
+
+    const currentDate = Date.now();
+
+    const unverifiedMembers = members.filter(v =>
+        !v.user.bot &&
+        !v.roles.cache.has(role.id) &&
+        currentDate - v.joinedTimestamp! >= 86400 * 7 * 1000
+    );
+
+    const totalKick = unverifiedMembers.size;
+
+    let kickedCount = 0;
+
+    client.logger.info("Kicking", totalKick, "members");
+
+    for (const [, member] of unverifiedMembers) {
+        await member.kick("Unverified prune");
+
+        client.logger.info(`${++kickedCount}/${totalKick} members kicked`);
+    }
+
+    client.logger.info("Pruning done");
+}
+
+export const run: EventUtil["run"] = async (client) => {
     const playerInfo: PlayerInfo =
         (await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             "386742340968120321"
@@ -44,8 +80,9 @@ export const run: EventUtil["run"] = async () => {
 
         resetTime += 86400;
 
-        await resetDailyCoinsAndMapShare();
-        await MessageAnalyticsHelper.fetchDaily((resetTime - 86400) * 1000);
+        resetDailyCoinsAndMapShare();
+        MessageAnalyticsHelper.fetchDaily((resetTime - 86400) * 1000);
+        kickUnverifiedMembers(client);
     }, 15 * 1000);
 };
 
