@@ -32,16 +32,15 @@ async function kickUnverifiedMembers(client: Bot): Promise<void> {
 
     const members = await guild.members.fetch({ force: true });
 
-    const role = guild.roles.cache.find(
-        (r) => r.name === "Member"
-    )!;
+    const role = guild.roles.cache.find((r) => r.name === "Member")!;
 
     const currentDate = Date.now();
 
-    const unverifiedMembers = members.filter(v =>
-        !v.user.bot &&
-        !v.roles.cache.has(role.id) &&
-        currentDate - v.joinedTimestamp! >= 86400 * 7 * 1000
+    const unverifiedMembers = members.filter(
+        (v) =>
+            !v.user.bot &&
+            !v.roles.cache.has(role.id) &&
+            currentDate - v.joinedTimestamp! >= 86400 * 7 * 1000
     );
 
     const totalKick = unverifiedMembers.size;

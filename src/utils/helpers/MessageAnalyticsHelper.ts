@@ -211,10 +211,12 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
         while (currentDate.getTime() >= fetchStartTime && lastMessageID) {
             const messages: Collection<string, Message> | null =
-                await messageManager.fetch({
-                    limit: fetchCount,
-                    before: lastMessageID,
-                }).catch(() => null);
+                await messageManager
+                    .fetch({
+                        limit: fetchCount,
+                        before: lastMessageID,
+                    })
+                    .catch(() => null);
 
             if (!messages) {
                 continue;
