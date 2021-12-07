@@ -6,6 +6,7 @@ export enum voteStrings {
     noEndVotePermission = "I'm sorry, you cannot end the ongoing vote! You must be the initiator of it or have the `Manage Channels` permission in the channel!",
     endVoteSuccess = "Vote ended!",
     voteChoiceIsSameAsBefore = "I'm sorry, you have voted for that choice!",
+    notVotedYet = "I'm sorry, you have not voted for any option!",
     invalidVoteChoice = "Hey, please enter a valid vote choice!",
     voteRegistered = "%s, %s!",
     tooFewChoices = "I'm sorry, you must specify at least 2 choices!",

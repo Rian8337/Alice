@@ -14,6 +14,11 @@ export const config: Command["config"] = {
     description: "Main voting command.",
     options: [
         {
+            name: "cancel",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description: "Cancels your picked option in the ongoing vote."
+        },
+        {
             name: "check",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Checks the ongoing vote in the channel.",
