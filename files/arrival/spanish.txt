@@ -4,6 +4,8 @@ Para empezar, diríjase a #rules para leer las reglas del servidor.
 
 Después de ello, puedes empezar con el proceso de verificación simplemente presionando el botón que aparece debajo.
 
+Tienes una semana (7 dias) desde el momento que te uniste a este servidor para verificarte tu mismo. En caso que no lo hagas, seras sacado del servidor.
+
 Si el botón no funciona, por favor, inténtalo de nuevo después de 5-10 segundos.
 
 Si el botón sigue sin funcionar, puedes intentar re-ingresar al servidor. Si aún sigue sin funcionar, puedes contactarte con los miembros del staff (un <@&595667274707370024> o <@&369108742077284353>) para solicitar asistencia.
