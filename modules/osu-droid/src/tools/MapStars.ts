@@ -1,9 +1,9 @@
-import { Beatmap } from '../beatmap/Beatmap';
-import { MapStats } from '../utils/MapStats';
-import { DroidStarRating } from '../difficulty/DroidStarRating';
-import { OsuStarRating } from '../difficulty/OsuStarRating';
-import { Mod } from '../mods/Mod';
-import { Utils } from '../utils/Utils';
+import { Beatmap } from "../beatmap/Beatmap";
+import { MapStats } from "../utils/MapStats";
+import { DroidStarRating } from "../difficulty/DroidStarRating";
+import { OsuStarRating } from "../difficulty/OsuStarRating";
+import { Mod } from "../mods/Mod";
+import { Utils } from "../utils/Utils";
 
 /**
  * A star rating calculator that configures which mode to calculate difficulty for and what mods are applied.
@@ -26,28 +26,36 @@ export class MapStars {
         /**
          * The beatmap to calculate.
          */
-        map: Beatmap,
+        map: Beatmap;
 
         /**
          * Applied modifications.
          */
-        mods?: Mod[],
+        mods?: Mod[];
 
         /**
          * Custom map statistics to apply speed multiplier and force AR values as well as old statistics.
          */
-        stats?: MapStats
+        stats?: MapStats;
     }): MapStars {
         const mod: Mod[] = params.mods ?? [];
 
         const stats: MapStats = new MapStats({
             speedMultiplier: params.stats?.speedMultiplier ?? 1,
             isForceAR: params.stats?.isForceAR ?? false,
-            oldStatistics: params.stats?.oldStatistics ?? false
+            oldStatistics: params.stats?.oldStatistics ?? false,
         });
 
-        this.droidStars.calculate({ map: Utils.deepCopy(params.map), mods: mod, stats });
-        this.pcStars.calculate({ map: Utils.deepCopy(params.map), mods: mod, stats });
+        this.droidStars.calculate({
+            map: Utils.deepCopy(params.map),
+            mods: mod,
+            stats,
+        });
+        this.pcStars.calculate({
+            map: Utils.deepCopy(params.map),
+            mods: mod,
+            stats,
+        });
 
         return this;
     }

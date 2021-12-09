@@ -21,25 +21,43 @@ export abstract class OsuSkill extends StrainSkill {
         let difficulty: number = 0;
         let weight: number = 1;
 
-        const sortedStrains: number[] = this.strainPeaks.slice().sort((a, b) => {
-            return b - a;
-        });
+        const sortedStrains: number[] = this.strainPeaks
+            .slice()
+            .sort((a, b) => {
+                return b - a;
+            });
 
         // We are reducing the highest strains first to account for extreme difficulty spikes.
-        for (let i = 0; i < Math.min(sortedStrains.length, this.reducedSectionCount); ++i) {
-            const scale: number = Math.log10(Interpolation.lerp(1, 10, MathUtils.clamp(i / this.reducedSectionCount, 0, 1)));
+        for (
+            let i = 0;
+            i < Math.min(sortedStrains.length, this.reducedSectionCount);
+            ++i
+        ) {
+            const scale: number = Math.log10(
+                Interpolation.lerp(
+                    1,
+                    10,
+                    MathUtils.clamp(i / this.reducedSectionCount, 0, 1)
+                )
+            );
 
-            sortedStrains[i] *= Interpolation.lerp(this.reducedSectionBaseline, 1, scale);
+            sortedStrains[i] *= Interpolation.lerp(
+                this.reducedSectionBaseline,
+                1,
+                scale
+            );
         }
 
         // Difficulty is the weighted sum of the highest strains from every section.
         // We're sorting from highest to lowest strain.
-        sortedStrains.sort((a, b) => {
-            return b - a;
-        }).forEach(strain => {
-            difficulty += strain * weight;
-            weight *= this.decayWeight;
-        });
+        sortedStrains
+            .sort((a, b) => {
+                return b - a;
+            })
+            .forEach((strain) => {
+                difficulty += strain * weight;
+                weight *= this.decayWeight;
+            });
 
         return difficulty * this.difficultyMultiplier;
     }

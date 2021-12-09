@@ -1,15 +1,15 @@
-import { Beatmap } from '../beatmap/Beatmap';
-import { modes } from '../constants/modes';
-import { MapStats } from '../utils/MapStats';
-import { OsuAim } from './skills/OsuAim';
-import { OsuSpeed } from './skills/OsuSpeed';
-import { StarRating } from './base/StarRating';
-import { OsuSkill } from './skills/OsuSkill';
-import { Mod } from '../mods/Mod';
-import { OsuFlashlight } from './skills/OsuFlashlight';
-import { ModFlashlight } from '../mods/ModFlashlight';
-import { OsuHitWindow } from '../utils/HitWindow';
-import { ModRelax } from '../mods/ModRelax';
+import { Beatmap } from "../beatmap/Beatmap";
+import { modes } from "../constants/modes";
+import { MapStats } from "../utils/MapStats";
+import { OsuAim } from "./skills/OsuAim";
+import { OsuSpeed } from "./skills/OsuSpeed";
+import { StarRating } from "./base/StarRating";
+import { OsuSkill } from "./skills/OsuSkill";
+import { Mod } from "../mods/Mod";
+import { OsuFlashlight } from "./skills/OsuFlashlight";
+import { ModFlashlight } from "../mods/ModFlashlight";
+import { OsuHitWindow } from "../utils/HitWindow";
+import { ModRelax } from "../mods/ModRelax";
 
 /**
  * Difficulty calculator for osu!standard gamemode.
@@ -36,17 +36,17 @@ export class OsuStarRating extends StarRating {
         /**
          * The beatmap to calculate.
          */
-        map: Beatmap,
+        map: Beatmap;
 
         /**
          * Applied modifications.
          */
-        mods?: Mod[],
+        mods?: Mod[];
 
         /**
          * Custom map statistics to apply custom speed multiplier as well as old statistics.
          */
-        stats?: MapStats
+        stats?: MapStats;
     }): this {
         return super.calculate(params, modes.osu);
     }
@@ -55,20 +55,27 @@ export class OsuStarRating extends StarRating {
      * Calculates the aim star rating of the beatmap and stores it in this instance.
      */
     calculateAim(): void {
-        const aimSkill: OsuAim = new OsuAim(this.mods);
+        const aimSkill: OsuAim = new OsuAim(this.mods, true);
+        const aimSkillWithoutSliders: OsuAim = new OsuAim(this.mods, false);
 
         this.calculateSkills(aimSkill);
 
         this.aimStrainPeaks = aimSkill.strainPeaks;
 
         this.aim = this.starValue(aimSkill.difficultyValue());
+
+        if (this.aim) {
+            this.attributes.sliderFactor =
+                this.starValue(aimSkillWithoutSliders.difficultyValue()) /
+                this.aim;
+        }
     }
 
     /**
      * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
     calculateSpeed(): void {
-        if (this.mods.some(m => m instanceof ModRelax)) {
+        if (this.mods.some((m) => m instanceof ModRelax)) {
             return;
         }
 
@@ -99,50 +106,65 @@ export class OsuStarRating extends StarRating {
 
     override calculateTotal(): void {
         const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
-        const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
+        const speedPerformanceValue: number = this.basePerformanceValue(
+            this.speed
+        );
         let flashlightPerformanceValue: number = 0;
 
-        if (this.mods.some(m => m instanceof ModFlashlight)) {
+        if (this.mods.some((m) => m instanceof ModFlashlight)) {
             flashlightPerformanceValue = Math.pow(this.flashlight, 2) * 25;
         }
 
         const basePerformanceValue: number = Math.pow(
             Math.pow(aimPerformanceValue, 1.1) +
-            Math.pow(speedPerformanceValue, 1.1) +
-            Math.pow(flashlightPerformanceValue, 1.1),
+                Math.pow(speedPerformanceValue, 1.1) +
+                Math.pow(flashlightPerformanceValue, 1.1),
             1 / 1.1
         );
 
         if (basePerformanceValue > 1e-5) {
-            this.total = Math.cbrt(1.12) * 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * basePerformanceValue) + 4);
+            this.total =
+                Math.cbrt(1.12) *
+                0.027 *
+                (Math.cbrt(
+                    (100000 / Math.pow(2, 1 / 1.1)) * basePerformanceValue
+                ) +
+                    4);
         }
     }
 
     override calculateAll(): void {
         const skills: OsuSkill[] = this.createSkills();
 
-        const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
+        const isRelax: boolean = this.mods.some((m) => m instanceof ModRelax);
 
         if (isRelax) {
             // Remove speed skill to prevent overhead
-            skills.splice(1, 1);
+            skills.splice(2, 1);
         }
 
         this.calculateSkills(...skills);
 
-        const aimSkill: OsuAim = <OsuAim> skills[0];
+        const aimSkill: OsuAim = <OsuAim>skills[0];
+        const aimSkillWithoutSliders: OsuAim = <OsuAim>skills[1];
         let speedSkill: OsuSpeed | undefined;
         let flashlightSkill: OsuFlashlight;
 
         if (isRelax) {
-            flashlightSkill = <OsuFlashlight> skills[1];
+            flashlightSkill = <OsuFlashlight>skills[2];
         } else {
-            speedSkill = <OsuSpeed> skills[1];
-            flashlightSkill = <OsuFlashlight> skills[2];
+            speedSkill = <OsuSpeed>skills[2];
+            flashlightSkill = <OsuFlashlight>skills[3];
         }
 
         this.aimStrainPeaks = aimSkill.strainPeaks;
         this.aim = this.starValue(aimSkill.difficultyValue());
+
+        if (this.aim) {
+            this.attributes.sliderFactor =
+                this.starValue(aimSkillWithoutSliders.difficultyValue()) /
+                this.aim;
+        }
 
         if (speedSkill) {
             this.speedStrainPeaks = speedSkill.strainPeaks;
@@ -160,9 +182,14 @@ export class OsuStarRating extends StarRating {
      */
     override toString(): string {
         return (
-            this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
-            " aim, " + this.speed.toFixed(2) + " speed, " +
-            this.flashlight.toFixed(2) + " flashlight)"
+            this.total.toFixed(2) +
+            " stars (" +
+            this.aim.toFixed(2) +
+            " aim, " +
+            this.speed.toFixed(2) +
+            " speed, " +
+            this.flashlight.toFixed(2) +
+            " flashlight)"
         );
     }
 
@@ -171,12 +198,13 @@ export class OsuStarRating extends StarRating {
      */
     protected override createSkills(): OsuSkill[] {
         return [
-            new OsuAim(this.mods),
+            new OsuAim(this.mods, true),
+            new OsuAim(this.mods, false),
             new OsuSpeed(
                 this.mods,
                 new OsuHitWindow(this.stats.od!).hitWindowFor300()
             ),
-            new OsuFlashlight(this.mods)
+            new OsuFlashlight(this.mods),
         ];
     }
 }

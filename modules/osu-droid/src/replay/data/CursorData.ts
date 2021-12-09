@@ -23,7 +23,7 @@ export interface CursorInformation {
      * The y coordinates of this cursor instance in osu!pixels.
      */
     y: number[];
-    
+
     /**
      * The hit results of this cursor instance.
      */
@@ -32,9 +32,9 @@ export interface CursorInformation {
 
 /**
  * Represents a cursor instance in an osu!droid replay.
- * 
+ *
  * Stores cursor movement data such as x and y coordinates, movement size, etc.
- * 
+ *
  * This is used when analyzing replays using replay analyzer.
  */
 export class CursorData implements CursorInformation {

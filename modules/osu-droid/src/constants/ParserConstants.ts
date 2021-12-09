@@ -5,7 +5,7 @@ export enum ParserConstants {
     MAX_PARSE_VALUE = 2147483647,
 
     MAX_COORDINATE_VALUE = 131072,
-    
+
     MIN_REPETITIONS_VALUE = 0,
     MAX_REPETITIONS_VALUE = 9000,
 
@@ -16,5 +16,5 @@ export enum ParserConstants {
     MAX_SPEEDMULTIPLIER_VALUE = 10,
 
     MIN_MSPERBEAT_VALUE = 6,
-    MAX_MSPERBEAT_VALUE = 60000
-};
+    MAX_MSPERBEAT_VALUE = 60000,
+}

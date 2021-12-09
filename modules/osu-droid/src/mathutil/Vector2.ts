@@ -6,16 +6,13 @@ export class Vector2 {
      * The x position of the vector.
      */
     x: number;
-    
+
     /**
      * The y position of the vector.
      */
     y: number;
 
-    constructor(values: {
-        x: number,
-        y: number
-    }) {
+    constructor(values: { x: number; y: number }) {
         this.x = values.x;
         this.y = values.y;
     }
@@ -24,28 +21,31 @@ export class Vector2 {
      * Multiplies the vector with another vector.
      */
     multiply(vec: Vector2): Vector2 {
-        return new Vector2({x: this.x * vec.x, y: this.y * vec.y});
+        return new Vector2({ x: this.x * vec.x, y: this.y * vec.y });
     }
 
     divide(divideFactor: number): Vector2 {
         if (divideFactor === 0) {
             throw new Error("Division by 0");
         }
-        return new Vector2({x: this.x / divideFactor, y: this.y / divideFactor});
+        return new Vector2({
+            x: this.x / divideFactor,
+            y: this.y / divideFactor,
+        });
     }
 
     /**
      * Adds the vector with another vector.
      */
     add(vec: Vector2): Vector2 {
-        return new Vector2({x: this.x + vec.x, y: this.y + vec.y});
+        return new Vector2({ x: this.x + vec.x, y: this.y + vec.y });
     }
 
     /**
      * Subtracts the vector with another vector.
      */
     subtract(vec: Vector2): Vector2 {
-        return new Vector2({x: this.x - vec.x, y: this.y - vec.y});
+        return new Vector2({ x: this.x - vec.x, y: this.y - vec.y });
     }
 
     /**
@@ -66,7 +66,10 @@ export class Vector2 {
      * Scales the vector.
      */
     scale(scaleFactor: number): Vector2 {
-        return new Vector2({x: this.x * scaleFactor, y: this.y * scaleFactor});
+        return new Vector2({
+            x: this.x * scaleFactor,
+            y: this.y * scaleFactor,
+        });
     }
 
     /**
@@ -89,7 +92,7 @@ export class Vector2 {
 
     /**
      * Checks whether this vector is equal to another vector.
-     * 
+     *
      * @param other The other vector.
      */
     equals(other: Vector2): boolean {

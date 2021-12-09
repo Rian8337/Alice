@@ -18,7 +18,7 @@ export class DroidFlashlight extends DroidSkill {
             return 0;
         }
 
-        const scalingFactor: number = 52 / current.radius;
+        const scalingFactor: number = 52 / current.object.radius;
 
         let smallDistNerf: number = 1;
 
@@ -33,19 +33,27 @@ export class DroidFlashlight extends DroidSkill {
                 continue;
             }
 
-            const jumpDistance: number = current.object.stackedPosition.subtract(previous.object.endPosition).length;
+            const jumpDistance: number =
+                current.object.stackedPosition.subtract(
+                    previous.object.endPosition
+                ).length;
 
             cumulativeStrainTime += previous.strainTime;
 
             // We want to nerf objects that can be easily seen within the Flashlight circle radius.
             if (i === 0) {
-                smallDistNerf = Math.min(1, jumpDistance / 50);
+                smallDistNerf = Math.min(1, jumpDistance / 75);
             }
 
             // We also want to nerf stacks so that only the first object of the stack is accounted for.
-            const stackNerf: number = Math.min(1, previous.jumpDistance / scalingFactor / 25);
+            const stackNerf: number = Math.min(
+                1,
+                previous.jumpDistance / scalingFactor / 25
+            );
 
-            result += Math.pow(0.8, i) * stackNerf * scalingFactor * jumpDistance / cumulativeStrainTime;
+            result +=
+                (Math.pow(0.8, i) * stackNerf * scalingFactor * jumpDistance) /
+                cumulativeStrainTime;
         }
 
         return Math.pow(smallDistNerf * result, 2) * this.skillMultiplier;
@@ -56,12 +64,13 @@ export class DroidFlashlight extends DroidSkill {
      */
     protected override strainValueAt(current: DifficultyHitObject): number {
         this.currentStrain *= this.strainDecay(current.deltaTime);
-        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
+        this.currentStrain +=
+            this.strainValueOf(current) * this.skillMultiplier;
 
         return this.currentStrain;
     }
 
-    override saveToHitObject(current: DifficultyHitObject): void {
+    protected override saveToHitObject(current: DifficultyHitObject): void {
         current.flashlightStrain = this.currentStrain;
     }
 }

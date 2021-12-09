@@ -1,5 +1,5 @@
-import { HitObject } from '../HitObject';
-import { Vector2 } from '../../../mathutil/Vector2';
+import { HitObject } from "../HitObject";
+import { Vector2 } from "../../../mathutil/Vector2";
 
 /**
  * Represents a repeat point in a slider.
@@ -16,15 +16,14 @@ export class RepeatPoint extends HitObject {
     readonly spanDuration: number;
 
     constructor(values: {
-        position: Vector2,
-        startTime: number,
-        repeatIndex: number,
-        spanDuration: number
+        position: Vector2;
+        startTime: number;
+        repeatIndex: number;
+        spanDuration: number;
     }) {
         super({
             startTime: values.startTime,
             position: values.position,
-            type: 0
         });
         this.repeatIndex = values.repeatIndex;
         this.spanDuration = values.spanDuration;

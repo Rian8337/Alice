@@ -27,25 +27,10 @@ export abstract class ModUtil {
      * Mods that are incompatible with each other.
      */
     static readonly incompatibleMods: Mod[][] = [
-        [
-            new ModDoubleTime(),
-            new ModNightCore(),
-            new ModHalfTime()
-        ],
-        [
-            new ModNoFail(),
-            new ModSuddenDeath(),
-            new ModPerfect()
-        ],
-        [
-            new ModHardRock(),
-            new ModEasy()
-        ],
-        [
-            new ModAuto(),
-            new ModRelax(),
-            new ModAutopilot()
-        ]
+        [new ModDoubleTime(), new ModNightCore(), new ModHalfTime()],
+        [new ModNoFail(), new ModSuddenDeath(), new ModPerfect()],
+        [new ModHardRock(), new ModEasy()],
+        [new ModAuto(), new ModRelax(), new ModAutopilot()],
     ];
 
     /**
@@ -71,7 +56,7 @@ export abstract class ModUtil {
         new ModScoreV2(),
         new ModSmallCircle(),
         new ModSpunOut(),
-        new ModTouchDevice()
+        new ModTouchDevice(),
     ];
 
     /**
@@ -80,7 +65,7 @@ export abstract class ModUtil {
     static readonly speedChangingMods: Mod[] = [
         new ModDoubleTime(),
         new ModNightCore(),
-        new ModHalfTime()
+        new ModHalfTime(),
     ];
 
     /**
@@ -92,30 +77,37 @@ export abstract class ModUtil {
         new ModHalfTime(),
         new ModEasy(),
         new ModHardRock(),
-        new ModSmallCircle()
+        new ModSmallCircle(),
     ];
 
     /**
      * Gets a list of mods from a droid mod string, such as "hd".
-     * 
+     *
      * @param str The string.
      */
     static droidStringToMods(str: string): Mod[] {
-        return this.checkDuplicateMods(this.allMods.filter(m => m.droidString && str.toLowerCase().includes(m.droidString)));
+        return this.checkDuplicateMods(
+            this.allMods.filter(
+                (m) =>
+                    m.droidString && str.toLowerCase().includes(m.droidString)
+            )
+        );
     }
 
     /**
      * Gets a list of mods from a PC modbits.
-     * 
+     *
      * @param modbits The modbits.
      */
     static pcModbitsToMods(modbits: number): Mod[] {
-        return this.checkDuplicateMods(this.allMods.filter(m => m.bitwise & modbits));
+        return this.checkDuplicateMods(
+            this.allMods.filter((m) => m.bitwise & modbits)
+        );
     }
 
     /**
      * Gets a list of mods from a PC mod string, such as "HDHR".
-     * 
+     *
      * @param str The string.
      */
     static pcStringToMods(str: string): Mod[] {
@@ -142,15 +134,22 @@ export abstract class ModUtil {
 
     /**
      * Checks for mods that are duplicate and incompatible with each other.
-     * 
+     *
      * @param mods The mods to check for.
      */
     private static checkDuplicateMods(mods: Mod[]): Mod[] {
         for (const incompatibleMod of this.incompatibleMods) {
-            const fulfilledMods: Mod[] = mods.filter(m => incompatibleMod.map(v => v.acronym).includes(m.acronym));
+            const fulfilledMods: Mod[] = mods.filter((m) =>
+                incompatibleMod.map((v) => v.acronym).includes(m.acronym)
+            );
 
             if (fulfilledMods.length > 1) {
-                mods = mods.filter(m => !incompatibleMod.map(v => v.acronym).includes(m.acronym));
+                mods = mods.filter(
+                    (m) =>
+                        !incompatibleMod
+                            .map((v) => v.acronym)
+                            .includes(m.acronym)
+                );
                 // Keep the first selected mod
                 mods.push(fulfilledMods[0]);
             }

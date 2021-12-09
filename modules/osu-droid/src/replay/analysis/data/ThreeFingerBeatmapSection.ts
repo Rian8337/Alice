@@ -15,10 +15,10 @@ export class ThreeFingerBeatmapSection extends BeatmapSection {
     dragFingerIndex: number;
 
     constructor(values: {
-        firstObjectIndex: number,
-        lastObjectIndex: number,
-        isDragged: boolean,
-        dragFingerIndex: number
+        firstObjectIndex: number;
+        lastObjectIndex: number;
+        isDragged: boolean;
+        dragFingerIndex: number;
     }) {
         super(values.firstObjectIndex, values.lastObjectIndex);
         this.isDragged = values.isDragged;

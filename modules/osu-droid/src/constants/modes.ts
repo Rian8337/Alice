@@ -3,5 +3,5 @@
  */
 export enum modes {
     droid = "droid",
-    osu = "osu"
-};
+    osu = "osu",
+}

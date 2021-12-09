@@ -1,5 +1,5 @@
-import { Canvas, Image, createCanvas, CanvasRenderingContext2D } from 'canvas';
-import { Vector2 } from '../mathutil/Vector2';
+import { Canvas, Image, createCanvas, CanvasRenderingContext2D } from "canvas";
+import { Vector2 } from "../mathutil/Vector2";
 
 type AxisType = "time";
 
@@ -92,7 +92,7 @@ interface Data {
 
 /**
  * Utility to draw a graph with only node-canvas.
- * 
+ *
  * Used for creating strain graph of beatmaps.
  */
 export class Chart implements ChartInitializer {
@@ -170,9 +170,14 @@ export class Chart implements ChartInitializer {
         this.x = this.getLongestValueWidth() + this.padding * 2;
         this.y = this.padding * 2;
         this.width = this.canvas.width - this.x - this.padding * 2;
-        this.height = this.canvas.height - this.y - this.padding - this.fontHeight;
-        this.scaleX = (this.width - (this.xLabel ? this.baseLabelOffset : 0)) / this.rangeX;
-        this.scaleY = (this.height - (this.yLabel ? this.baseLabelOffset : 0)) / this.rangeY;
+        this.height =
+            this.canvas.height - this.y - this.padding - this.fontHeight;
+        this.scaleX =
+            (this.width - (this.xLabel ? this.baseLabelOffset : 0)) /
+            this.rangeX;
+        this.scaleY =
+            (this.height - (this.yLabel ? this.baseLabelOffset : 0)) /
+            this.rangeY;
 
         // Draw background and X and Y axis tick marks
         this.setBackground();
@@ -182,7 +187,7 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws a line graph with specified data, color, and line width.
-     * 
+     *
      * @param data The data to make the graph.
      * @param color The color of the line.
      * @param width The width of the line.
@@ -205,7 +210,14 @@ export class Chart implements ChartInitializer {
             c.closePath();
             if (this.pointRadius) {
                 c.beginPath();
-                c.arc(point.x * this.scaleX, point.y * this.scaleY, this.pointRadius, 0, 2 * Math.PI, false);
+                c.arc(
+                    point.x * this.scaleX,
+                    point.y * this.scaleY,
+                    this.pointRadius,
+                    0,
+                    2 * Math.PI,
+                    false
+                );
                 c.fill();
                 c.closePath();
             }
@@ -220,7 +232,7 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws an area graph with specified data and color.
-     * 
+     *
      * @param data The data to make the graph.
      * @param color The color of the area.
      */
@@ -231,7 +243,9 @@ export class Chart implements ChartInitializer {
         c.strokeStyle = c.fillStyle = color;
 
         c.beginPath();
-        data.forEach((d: Data) => c.lineTo(d.x * this.scaleX, d.y * this.scaleY));
+        data.forEach((d: Data) =>
+            c.lineTo(d.x * this.scaleX, d.y * this.scaleY)
+        );
         c.stroke();
         c.lineTo(data.at(-1)!.x * this.scaleX, 0);
         c.lineTo(0, 0);
@@ -256,7 +270,7 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws the X axis of the graph.
-     * 
+     *
      * @param drawLabel Whether or not to draw the axis label.
      */
     private drawXAxis(drawLabel?: boolean): void {
@@ -267,7 +281,11 @@ export class Chart implements ChartInitializer {
         if (this.xLabel && drawLabel) {
             c.textAlign = "center";
             c.font = this.axisLabelFont;
-            c.fillText(this.xLabel, this.x + this.width / 2, this.y + this.height + labelOffset);
+            c.fillText(
+                this.xLabel,
+                this.x + this.width / 2,
+                this.y + this.height + labelOffset
+            );
             c.restore();
         }
         c.beginPath();
@@ -280,8 +298,18 @@ export class Chart implements ChartInitializer {
         // Draw tick marks
         for (let n = 0; n < this.numXTicks; ++n) {
             c.beginPath();
-            c.moveTo((n + 1) * (this.width - yLabelOffset) / this.numXTicks + this.x + yLabelOffset, this.y + this.height - labelOffset);
-            c.lineTo((n + 1) * (this.width - yLabelOffset) / this.numXTicks + this.x + yLabelOffset, this.y + this.height - labelOffset - this.tickSize);
+            c.moveTo(
+                ((n + 1) * (this.width - yLabelOffset)) / this.numXTicks +
+                    this.x +
+                    yLabelOffset,
+                this.y + this.height - labelOffset
+            );
+            c.lineTo(
+                ((n + 1) * (this.width - yLabelOffset)) / this.numXTicks +
+                    this.x +
+                    yLabelOffset,
+                this.y + this.height - labelOffset - this.tickSize
+            );
             c.stroke();
         }
 
@@ -292,7 +320,9 @@ export class Chart implements ChartInitializer {
         c.textBaseline = "middle";
 
         for (let n = 0; n < this.numXTicks; ++n) {
-            const label: number = Math.round((n + 1) * this.maxX / this.numXTicks);
+            const label: number = Math.round(
+                ((n + 1) * this.maxX) / this.numXTicks
+            );
             let stringLabel: string = label.toString();
             switch (this.xValueType) {
                 case "time":
@@ -300,7 +330,12 @@ export class Chart implements ChartInitializer {
                     break;
             }
             c.save();
-            c.translate((n + 1) * (this.width - yLabelOffset) / this.numXTicks + this.x + yLabelOffset, this.y + this.height + this.padding - labelOffset);
+            c.translate(
+                ((n + 1) * (this.width - yLabelOffset)) / this.numXTicks +
+                    this.x +
+                    yLabelOffset,
+                this.y + this.height + this.padding - labelOffset
+            );
             c.fillText(stringLabel, 0, 0);
             c.restore();
         }
@@ -310,7 +345,7 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws the Y axis of the graph.
-     * 
+     *
      * @param drawLabel Whether or not to draw the axis label.
      */
     private drawYAxis(drawLabel?: boolean): void {
@@ -323,7 +358,11 @@ export class Chart implements ChartInitializer {
             c.font = this.axisLabelFont;
             c.translate(0, this.graphHeight);
             c.rotate(-Math.PI / 2);
-            c.fillText(this.yLabel, this.y + xLabelOffset + this.height / 2, this.x - labelOffset * 2.5);
+            c.fillText(
+                this.yLabel,
+                this.y + xLabelOffset + this.height / 2,
+                this.x - labelOffset * 2.5
+            );
             c.restore();
         }
         c.beginPath();
@@ -337,8 +376,14 @@ export class Chart implements ChartInitializer {
         // Draw tick marks
         for (let n = 0; n < this.numYTicks; ++n) {
             c.beginPath();
-            c.moveTo(this.x + labelOffset, n * (this.height - xLabelOffset) / this.numYTicks + this.y);
-            c.lineTo(this.x + labelOffset + this.tickSize, n * (this.height - xLabelOffset) / this.numYTicks + this.y);
+            c.moveTo(
+                this.x + labelOffset,
+                (n * (this.height - xLabelOffset)) / this.numYTicks + this.y
+            );
+            c.lineTo(
+                this.x + labelOffset + this.tickSize,
+                (n * (this.height - xLabelOffset)) / this.numYTicks + this.y
+            );
             c.stroke();
         }
 
@@ -349,9 +394,14 @@ export class Chart implements ChartInitializer {
         c.textBaseline = "middle";
 
         for (let n = 0; n < this.numYTicks; ++n) {
-            const value: number = Math.round(this.maxY - n * this.maxY / this.numYTicks);
+            const value: number = Math.round(
+                this.maxY - (n * this.maxY) / this.numYTicks
+            );
             c.save();
-            c.translate(this.x + labelOffset - this.padding, n * (this.height - xLabelOffset) / this.numYTicks + this.y);
+            c.translate(
+                this.x + labelOffset - this.padding,
+                (n * (this.height - xLabelOffset)) / this.numYTicks + this.y
+            );
             c.fillText(value.toString(), 0, 0);
             c.restore();
         }
@@ -366,7 +416,10 @@ export class Chart implements ChartInitializer {
         const c: CanvasRenderingContext2D = this.context;
 
         // Move context to point (0, 0) in graph
-        c.translate(this.x + (this.yLabel ? this.baseLabelOffset : 0), this.y + this.height - (this.xLabel ? this.baseLabelOffset : 0));
+        c.translate(
+            this.x + (this.yLabel ? this.baseLabelOffset : 0),
+            this.y + this.height - (this.xLabel ? this.baseLabelOffset : 0)
+        );
 
         // Invert the Y scale so that it
         // increments as we go upwards
@@ -387,7 +440,10 @@ export class Chart implements ChartInitializer {
                     stringValue = this.timeString(value);
                     break;
             }
-            longestValueWidth = Math.max(longestValueWidth, this.context.measureText(stringValue).width);
+            longestValueWidth = Math.max(
+                longestValueWidth,
+                this.context.measureText(stringValue).width
+            );
         }
         return longestValueWidth;
     }
@@ -400,22 +456,31 @@ export class Chart implements ChartInitializer {
             this.context.globalAlpha = 0.7;
             this.context.fillStyle = "#ffffff";
             this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.context.fillStyle = '#000000';
+            this.context.fillStyle = "#000000";
             return;
         }
         this.context.globalAlpha = 1;
-        this.context.drawImage(this.background, 0, 0, this.canvas.width, this.canvas.height);
+        this.context.drawImage(
+            this.background,
+            0,
+            0,
+            this.canvas.width,
+            this.canvas.height
+        );
         this.context.globalAlpha = 0.8;
         this.context.fillStyle = "#bbbbbb";
         this.context.fillRect(0, 0, 900, 250);
         this.context.globalAlpha = 1;
-        this.context.fillStyle = '#000000';
+        this.context.fillStyle = "#000000";
     }
 
     /**
      * Time string parsing function for axis labels.
      */
     private timeString(second: number): string {
-        return new Date(1000 * Math.ceil(second)).toISOString().substr(11, 8).replace(/^[0:]+/, "");
+        return new Date(1000 * Math.ceil(second))
+            .toISOString()
+            .substr(11, 8)
+            .replace(/^[0:]+/, "");
     }
 }

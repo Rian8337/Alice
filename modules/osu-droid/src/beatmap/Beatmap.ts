@@ -1,8 +1,8 @@
-import { Slider } from './hitobjects/Slider';
-import { HitObject } from './hitobjects/HitObject';
-import { BreakPoint } from './timings/BreakPoint';
-import { TimingControlPoint } from './timings/TimingControlPoint';
-import { DifficultyControlPoint } from './timings/DifficultyControlPoint';
+import { Slider } from "./hitobjects/Slider";
+import { HitObject } from "./hitobjects/HitObject";
+import { BreakPoint } from "./timings/BreakPoint";
+import { TimingControlPoint } from "./timings/TimingControlPoint";
+import { DifficultyControlPoint } from "./timings/DifficultyControlPoint";
 
 /**
  * Represents a beatmap with advanced information.
@@ -42,6 +42,16 @@ export class Beatmap {
      * The difficulty name of the beatmap.
      */
     version: string = "";
+
+    /**
+     * The ID of the beatmap.
+     */
+    beatmapId?: number;
+
+    /**
+     * The ID of the beatmapset containing this beatmap.
+     */
+    beatmapSetId?: number;
 
     /**
      * The approach rate of the beatmap.
@@ -117,8 +127,12 @@ export class Beatmap {
      * The amount of slider ticks in the beatmap.
      */
     get sliderTicks(): number {
-        const sliders: Slider[] = <Slider[]> this.objects.filter(v => v instanceof Slider);
-        return sliders.map(v => v.ticks).reduce((acc, value) => acc + value, 0);
+        const sliders: Slider[] = <Slider[]>(
+            this.objects.filter((v) => v instanceof Slider)
+        );
+        return sliders
+            .map((v) => v.ticks)
+            .reduce((acc, value) => acc + value, 0);
     }
 
     /**
@@ -132,15 +146,26 @@ export class Beatmap {
      * The amount of slider repeat points in the beatmap.
      */
     get sliderRepeatPoints(): number {
-        const sliders: Slider[] = <Slider[]> this.objects.filter(v => v instanceof Slider);
-        return sliders.map(v => v.repeatPoints).reduce((acc, value) => acc + value, 0);
+        const sliders: Slider[] = <Slider[]>(
+            this.objects.filter((v) => v instanceof Slider)
+        );
+        return sliders
+            .map((v) => v.repeatPoints)
+            .reduce((acc, value) => acc + value, 0);
     }
 
     /**
      * The maximum combo of the beatmap.
      */
     get maxCombo(): number {
-        return this.circles + this.sliders + this.sliderTicks + this.sliderRepeatPoints + this.sliderEnds + this.spinners;
+        return (
+            this.circles +
+            this.sliders +
+            this.sliderTicks +
+            this.sliderRepeatPoints +
+            this.sliderEnds +
+            this.spinners
+        );
     }
 
     /**
@@ -149,21 +174,35 @@ export class Beatmap {
     toString(): string {
         let res = this.artist + " - " + this.title + " [";
         if (this.titleUnicode || this.artistUnicode) {
-            res += "(" + this.artistUnicode + " - "
-                + this.titleUnicode + ")";
+            res += "(" + this.artistUnicode + " - " + this.titleUnicode + ")";
         }
-        res += (
-            this.version + "] mapped by " + this.creator + "\n"
-            + "\n"
-            + "AR" + parseFloat((this.ar as number).toFixed(2)) + " "
-            + "OD" + parseFloat(this.od.toFixed(2)) + " "
-            + "CS" + parseFloat(this.cs.toFixed(2)) + " "
-            + "HP" + parseFloat(this.hp.toFixed(2)) + "\n"
-            + this.circles + " circles, "
-            + this.sliders + " sliders, "
-            + this.spinners + " spinners" + "\n"
-            + this.maxCombo + " max combo"
-        );
+        res +=
+            this.version +
+            "] mapped by " +
+            this.creator +
+            "\n" +
+            "\n" +
+            "AR" +
+            parseFloat((this.ar as number).toFixed(2)) +
+            " " +
+            "OD" +
+            parseFloat(this.od.toFixed(2)) +
+            " " +
+            "CS" +
+            parseFloat(this.cs.toFixed(2)) +
+            " " +
+            "HP" +
+            parseFloat(this.hp.toFixed(2)) +
+            "\n" +
+            this.circles +
+            " circles, " +
+            this.sliders +
+            " sliders, " +
+            this.spinners +
+            " spinners" +
+            "\n" +
+            this.maxCombo +
+            " max combo";
         return res;
     }
 }

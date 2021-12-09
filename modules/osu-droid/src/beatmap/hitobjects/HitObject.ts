@@ -1,5 +1,5 @@
-import { objectTypes } from '../../constants/objectTypes';
-import { Vector2 } from '../../mathutil/Vector2';
+import { objectTypes } from "../../constants/objectTypes";
+import { Vector2 } from "../../mathutil/Vector2";
 
 /**
  * Represents a hitobject in a beatmap.
@@ -33,7 +33,25 @@ export abstract class HitObject {
     /**
      * The stacked position of the hitobject.
      */
-    stackedPosition: Vector2;
+    get stackedPosition(): Vector2 {
+        return this.position.add(this.stackOffset);
+    }
+
+    /**
+     * The stacked end position of the hitobject.
+     */
+    get stackedEndPosition(): Vector2 {
+        return this.endPosition.add(this.stackOffset);
+    }
+
+    /**
+     * The stack vector to calculate offset for stacked positions.
+     */
+    private get stackOffset(): Vector2 {
+        const coordinate: number = this.stackHeight * this.scale * -6.4;
+
+        return new Vector2({ x: coordinate, y: coordinate });
+    }
 
     /**
      * Whether or not this hitobject represents a new combo in the beatmap.
@@ -43,30 +61,40 @@ export abstract class HitObject {
     /**
      * The stack height of the hitobject.
      */
-    stackHeight: number;
+    stackHeight: number = 0;
+
+    /**
+     * The scale used to calculate stacked position and radius.
+     */
+    scale: number = 1;
+
+    /**
+     * The radius of the hitobject.
+     */
+    get radius(): number {
+        return 64 * this.scale;
+    }
 
     constructor(values: {
-        startTime: number,
-        position: Vector2,
-        type: number,
-        endTime?: number,
-        endPosition?: Vector2
+        startTime: number;
+        position: Vector2;
+        type?: number;
+        endTime?: number;
+        endPosition?: Vector2;
     }) {
-        this.startTime = values.startTime ?? 0;
+        this.startTime = values.startTime;
         this.endTime = values.endTime ?? values.startTime;
-        this.type = values.type ?? 0;
-        this.position = values.position ?? new Vector2({x: 0, y: 0});
+        this.type = values.type ?? objectTypes.circle;
+        this.position = values.position;
         this.endPosition = values.endPosition ?? this.position;
-        this.stackedPosition = this.position;
-        this.isNewCombo = !!(this.type & 1 << 2);
-        this.stackHeight = 0;
+        this.isNewCombo = !!(this.type & (1 << 2));
     }
 
     /**
      * Returns the hitobject type.
      */
     typeStr(): string {
-        let res = '';
+        let res = "";
         if (this.type & objectTypes.circle) {
             res += "circle | ";
         }
@@ -77,17 +105,6 @@ export abstract class HitObject {
             res += "spinner | ";
         }
         return res.substring(0, Math.max(0, res.length - 3));
-    }
-
-    /**
-     * Calculates the stacked position of the hitobject.
-     */
-    calculateStackedPosition(scale: number): void {
-        const coordinate: number = this.stackHeight * scale * -6.4;
-        const stackOffset: Vector2 = new Vector2({x: coordinate, y: coordinate});
-        if (!(this.type & objectTypes.spinner)) {
-            this.stackedPosition = this.position.add(stackOffset);
-        }
     }
 
     /**

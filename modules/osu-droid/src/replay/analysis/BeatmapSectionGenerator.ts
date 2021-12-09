@@ -8,14 +8,18 @@ import { BeatmapSection } from "./data/BeatmapSection";
 export abstract class BeatmapSectionGenerator {
     /**
      * Generates `BeatmapSection`s for the specified beatmap.
-     * 
+     *
      * @param map The beatmap to generate.
      * @param minSectionObjectCount The maximum delta time allowed between two beatmap sections.
      * Increasing this number decreases the amount of beatmap sections in general. Note that this value does not account for the speed multiplier of
      * the play, similar to the way replay object data is stored.
      * @param maxSectionDeltaTime The minimum object count required to make a beatmap section. Increasing this number decreases the amount of beatmap sections.
      */
-    static generateSections(map: StarRating, minSectionObjectCount: number, maxSectionDeltaTime: number): BeatmapSection[] {
+    static generateSections(
+        map: StarRating,
+        minSectionObjectCount: number,
+        maxSectionDeltaTime: number
+    ): BeatmapSection[] {
         const beatmapSections: BeatmapSection[] = [];
         let firstObjectIndex: number = 0;
 
@@ -23,7 +27,8 @@ export abstract class BeatmapSectionGenerator {
             const current: DifficultyHitObject = map.objects[i];
             const next: DifficultyHitObject = map.objects[i + 1];
 
-            const realDeltaTime: number = next.object.startTime - current.object.endTime;
+            const realDeltaTime: number =
+                next.object.startTime - current.object.endTime;
 
             if (realDeltaTime >= maxSectionDeltaTime) {
                 // Ignore sections that don't meet object count requirement.
@@ -34,7 +39,7 @@ export abstract class BeatmapSectionGenerator {
 
                 beatmapSections.push({
                     firstObjectIndex,
-                    lastObjectIndex: i
+                    lastObjectIndex: i,
                 });
 
                 firstObjectIndex = i + 1;
@@ -45,7 +50,7 @@ export abstract class BeatmapSectionGenerator {
         if (map.objects.length - firstObjectIndex > minSectionObjectCount) {
             beatmapSections.push({
                 firstObjectIndex,
-                lastObjectIndex: map.objects.length - 1
+                lastObjectIndex: map.objects.length - 1,
             });
         }
 

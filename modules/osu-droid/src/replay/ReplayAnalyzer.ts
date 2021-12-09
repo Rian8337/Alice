@@ -1,36 +1,42 @@
-import { Parse } from 'unzipper';
-import * as javaDeserialization from 'java-deserialization';
-import { Readable } from 'stream';
-import { Beatmap } from '../beatmap/Beatmap';
-import { DroidStarRating } from '../difficulty/DroidStarRating';
-import { ReplayData, ReplayInformation } from './data/ReplayData';
-import { CursorData } from './data/CursorData';
-import { ReplayObjectData } from './data/ReplayObjectData';
-import { movementType } from '../constants/movementType';
-import { HitObject } from '../beatmap/hitobjects/HitObject';
-import { hitResult } from '../constants/hitResult';
-import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
-import { ThreeFingerChecker, ThreeFingerInformation } from './analysis/ThreeFingerChecker';
-import { TwoHandChecker } from './analysis/TwoHandChecker';
-import { MathUtils } from '../mathutil/MathUtils';
-import { ModUtil } from '../utils/ModUtil';
-import { Mod } from '../mods/Mod';
-import { Accuracy } from '../utils/Accuracy';
-import { ModHidden } from '../mods/ModHidden';
-import { ModFlashlight } from '../mods/ModFlashlight';
-import { Spinner } from '../beatmap/hitobjects/Spinner';
+import { Parse } from "unzipper";
+import * as javaDeserialization from "java-deserialization";
+import { Readable } from "stream";
+import { Beatmap } from "../beatmap/Beatmap";
+import { DroidStarRating } from "../difficulty/DroidStarRating";
+import { ReplayData, ReplayInformation } from "./data/ReplayData";
+import { CursorData } from "./data/CursorData";
+import { ReplayObjectData } from "./data/ReplayObjectData";
+import { movementType } from "../constants/movementType";
+import { HitObject } from "../beatmap/hitobjects/HitObject";
+import { hitResult } from "../constants/hitResult";
+import {
+    DroidAPIRequestBuilder,
+    RequestResponse,
+} from "../utils/APIRequestBuilder";
+import {
+    ThreeFingerChecker,
+    ThreeFingerInformation,
+} from "./analysis/ThreeFingerChecker";
+import { TwoHandChecker } from "./analysis/TwoHandChecker";
+import { MathUtils } from "../mathutil/MathUtils";
+import { ModUtil } from "../utils/ModUtil";
+import { Mod } from "../mods/Mod";
+import { Accuracy } from "../utils/Accuracy";
+import { ModHidden } from "../mods/ModHidden";
+import { ModFlashlight } from "../mods/ModFlashlight";
+import { Spinner } from "../beatmap/hitobjects/Spinner";
 
 interface HitErrorInformation {
     negativeAvg: number;
     positiveAvg: number;
     unstableRate: number;
-};
+}
 
 /**
  * A replay analyzer that analyzes a replay from osu!droid.
- * 
+ *
  * Created by reverse engineering the replay parser from the game itself, which can be found {@link https://github.com/osudroid/osu-droid/blob/master/src/ru/nsu/ccfit/zuev/osu/scoring/Replay.java here}.
- * 
+ *
  * Once analyzed, the result can be accessed via the `data` property.
  */
 export class ReplayAnalyzer {
@@ -42,12 +48,12 @@ export class ReplayAnalyzer {
     /**
      * The original odr file of the replay.
      */
-    originalODR: Buffer|null = null;
+    originalODR: Buffer | null = null;
 
     /**
      * The fixed odr file of the replay.
      */
-    fixedODR: Buffer|null = null;
+    fixedODR: Buffer | null = null;
 
     /**
      * Whether or not the play is considered using >=3 finger abuse.
@@ -62,12 +68,12 @@ export class ReplayAnalyzer {
     /**
      * The beatmap that is being analyzed. `DroidStarRating` is required for penalty analyzing.
      */
-    map?: Beatmap|DroidStarRating;
+    map?: Beatmap | DroidStarRating;
 
     /**
      * The results of the analyzer. `null` when initialized.
      */
-    data: ReplayData|null = null;
+    data: ReplayData | null = null;
 
     /**
      * Penalty value used to penalize dpp for 2-hand.
@@ -98,14 +104,14 @@ export class ReplayAnalyzer {
         /**
          * The ID of the score.
          */
-        scoreID: number,
+        scoreID: number;
 
         /**
          * The beatmap to analyze.
-         * 
+         *
          * Using `DroidStarRating` is required to analyze for 3 finger play.
          */
-        map?: Beatmap|DroidStarRating
+        map?: Beatmap | DroidStarRating;
     }) {
         this.scoreID = values.scoreID;
         this.map = values.map;
@@ -124,7 +130,9 @@ export class ReplayAnalyzer {
         }
 
         if (!this.fixedODR) {
-            this.fixedODR = await this.decompress().catch(() => {return null;});
+            this.fixedODR = await this.decompress().catch(() => {
+                return null;
+            });
         }
 
         if (!this.fixedODR) {
@@ -138,24 +146,25 @@ export class ReplayAnalyzer {
     /**
      * Downloads the given score ID's replay.
      */
-    private downloadReplay(): Promise<Buffer|null> {
-        return new Promise(async resolve => {
-            const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
+    private async downloadReplay(): Promise<Buffer | null> {
+        const apiRequestBuilder: DroidAPIRequestBuilder =
+            new DroidAPIRequestBuilder()
                 .setRequireAPIkey(false)
                 .setEndpoint("upload")
                 .addParameter("", `${this.scoreID}.odr`);
 
-            const result: RequestResponse = await apiRequestBuilder.sendRequest();
-            if (result.statusCode !== 200) {
-                return resolve(null);
-            }
-            resolve(result.data);
-        });
+        const result: RequestResponse = await apiRequestBuilder.sendRequest();
+
+        if (result.statusCode !== 200) {
+            return null;
+        }
+
+        return result.data;
     }
 
     /**
      * Decompresses a replay.
-     * 
+     *
      * The decompressed replay is in a form of Java object. This will be converted to a buffer and deserialized to read data from the replay.
      */
     private decompress(): Promise<Buffer> {
@@ -163,8 +172,9 @@ export class ReplayAnalyzer {
             const stream: Readable = new Readable();
             stream.push(this.originalODR);
             stream.push(null);
-            stream.pipe(Parse())
-                .on("entry", async entry => {
+            stream
+                .pipe(Parse())
+                .on("entry", async (entry) => {
                     const fileName: string = entry.path;
                     if (fileName === "data") {
                         return resolve(await entry.buffer());
@@ -172,7 +182,7 @@ export class ReplayAnalyzer {
                         entry.autodrain();
                     }
                 })
-                .on("error", e => {
+                .on("error", (e) => {
                     setTimeout(() => reject(e), 2000);
                 });
         });
@@ -184,6 +194,7 @@ export class ReplayAnalyzer {
     private parseReplay(): void {
         // javaDeserialization can only somewhat parse some string field
         // the rest will be a buffer that we need to manually parse
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let rawObject: any[];
         try {
             rawObject = javaDeserialization.parse(this.fixedODR);
@@ -197,11 +208,13 @@ export class ReplayAnalyzer {
             fileName: rawObject[2],
             hash: rawObject[3],
             cursorMovement: [],
-            hitObjectData: []
+            hitObjectData: [],
         };
 
         if (resultObject.replayVersion >= 3) {
-            resultObject.time = new Date(Number(rawObject[4].readBigUInt64BE(0)));
+            resultObject.time = new Date(
+                Number(rawObject[4].readBigUInt64BE(0))
+            );
             resultObject.hit300k = rawObject[4].readInt32BE(8);
             resultObject.hit100k = rawObject[4].readInt32BE(16);
             resultObject.score = rawObject[4].readInt32BE(32);
@@ -210,16 +223,24 @@ export class ReplayAnalyzer {
                 n300: rawObject[4].readInt32BE(12),
                 n100: rawObject[4].readInt32BE(20),
                 n50: rawObject[4].readInt32BE(24),
-                nmiss: rawObject[4].readInt32BE(28)
+                nmiss: rawObject[4].readInt32BE(28),
             });
-            resultObject.isFullCombo = !!(rawObject[4][44]);
+            resultObject.isFullCombo = !!rawObject[4][44];
             resultObject.playerName = rawObject[5];
             resultObject.rawMods = rawObject[6].elements;
-            resultObject.convertedMods = this.convertMods(rawObject[6].elements);
+            resultObject.convertedMods = this.convertMods(
+                rawObject[6].elements
+            );
 
             // Determine rank
-            const totalHits: number = resultObject.accuracy.n300 + resultObject.accuracy.n100 + resultObject.accuracy.n50 + resultObject.accuracy.nmiss;
-            const isHidden: boolean = resultObject.convertedMods.some(m => m instanceof ModHidden || m instanceof ModFlashlight);
+            const totalHits: number =
+                resultObject.accuracy.n300 +
+                resultObject.accuracy.n100 +
+                resultObject.accuracy.n50 +
+                resultObject.accuracy.nmiss;
+            const isHidden: boolean = resultObject.convertedMods.some(
+                (m) => m instanceof ModHidden || m instanceof ModFlashlight
+            );
 
             const hit300Ratio: number = resultObject.accuracy.n300 / totalHits;
 
@@ -231,17 +252,21 @@ export class ReplayAnalyzer {
                         resultObject.rank = "X";
                     }
                     break;
-                case hit300Ratio > 0.9 && resultObject.accuracy.n50 / totalHits < 0.01 && !resultObject.accuracy.nmiss:
+                case hit300Ratio > 0.9 &&
+                    resultObject.accuracy.n50 / totalHits < 0.01 &&
+                    !resultObject.accuracy.nmiss:
                     if (isHidden) {
                         resultObject.rank = "SH";
                     } else {
                         resultObject.rank = "S";
                     }
                     break;
-                case (hit300Ratio > 0.8 && !resultObject.accuracy.nmiss) || hit300Ratio > 0.9:
+                case (hit300Ratio > 0.8 && !resultObject.accuracy.nmiss) ||
+                    hit300Ratio > 0.9:
                     resultObject.rank = "A";
                     break;
-                case (hit300Ratio > 0.7 && !resultObject.accuracy.nmiss) || hit300Ratio > 0.8:
+                case (hit300Ratio > 0.7 && !resultObject.accuracy.nmiss) ||
+                    hit300Ratio > 0.8:
                     resultObject.rank = "B";
                     break;
                 case hit300Ratio > 0.6:
@@ -254,7 +279,8 @@ export class ReplayAnalyzer {
 
         if (resultObject.replayVersion >= 4) {
             const s: string[] = rawObject[7].split("|");
-            resultObject.speedModification = parseFloat(s[0].replace("x", "")) || 1;
+            resultObject.speedModification =
+                parseFloat(s[0].replace("x", "")) || 1;
             if (s.length > 1) {
                 resultObject.forcedAR = parseFloat(s[1].replace("AR", ""));
             }
@@ -289,14 +315,15 @@ export class ReplayAnalyzer {
 
         // Parse movement data
         for (let x = 0; x < size; x++) {
-            const moveSize: number = replayDataBuffer.readInt32BE(bufferCounter);
+            const moveSize: number =
+                replayDataBuffer.readInt32BE(bufferCounter);
             bufferCounter += this.INT_LENGTH;
             const moveArray: CursorData = {
                 size: moveSize,
                 time: [],
                 x: [],
                 y: [],
-                id: []
+                id: [],
             };
             for (let i = 0; i < moveSize; i++) {
                 moveArray.time[i] = replayDataBuffer.readInt32BE(bufferCounter);
@@ -304,12 +331,13 @@ export class ReplayAnalyzer {
                 moveArray.id[i] = moveArray.time[i] & 3;
                 moveArray.time[i] >>= 2;
                 if (moveArray.id[i] !== movementType.UP) {
-                    moveArray.x[i] = replayDataBuffer.readInt16BE(bufferCounter);
+                    moveArray.x[i] =
+                        replayDataBuffer.readInt16BE(bufferCounter);
                     bufferCounter += this.SHORT_LENGTH;
-                    moveArray.y[i] = replayDataBuffer.readInt16BE(bufferCounter);
+                    moveArray.y[i] =
+                        replayDataBuffer.readInt16BE(bufferCounter);
                     bufferCounter += this.SHORT_LENGTH;
-                }
-                else {
+                } else {
                     moveArray.x[i] = -1;
                     moveArray.y[i] = -1;
                 }
@@ -317,7 +345,8 @@ export class ReplayAnalyzer {
             resultObject.cursorMovement.push(moveArray);
         }
 
-        const replayObjectLength: number = replayDataBuffer.readInt32BE(bufferCounter);
+        const replayObjectLength: number =
+            replayDataBuffer.readInt32BE(bufferCounter);
         bufferCounter += this.INT_LENGTH;
 
         // Parse result data
@@ -325,10 +354,11 @@ export class ReplayAnalyzer {
             const replayObjectData: ReplayObjectData = {
                 accuracy: 0,
                 tickset: [],
-                result: 0
+                result: 0,
             };
 
-            replayObjectData.accuracy = replayDataBuffer.readInt16BE(bufferCounter);
+            replayObjectData.accuracy =
+                replayDataBuffer.readInt16BE(bufferCounter);
             bufferCounter += this.SHORT_LENGTH;
             const len = replayDataBuffer.readInt8(bufferCounter);
             bufferCounter += this.BYTE_LENGTH;
@@ -342,12 +372,16 @@ export class ReplayAnalyzer {
                 }
                 // Int/int division in Java; numbers must be truncated to get actual number
                 for (let j = 0; j < len * 8; j++) {
-                    replayObjectData.tickset[j] = (bytes[len - Math.trunc(j / 8) - 1] & 1 << Math.trunc(j % 8)) !== 0;
+                    replayObjectData.tickset[j] =
+                        (bytes[len - Math.trunc(j / 8) - 1] &
+                            (1 << Math.trunc(j % 8))) !==
+                        0;
                 }
             }
 
             if (resultObject.replayVersion >= 1) {
-                replayObjectData.result = replayDataBuffer.readInt8(bufferCounter);
+                replayObjectData.result =
+                    replayDataBuffer.readInt8(bufferCounter);
                 bufferCounter += this.BYTE_LENGTH;
             }
 
@@ -355,7 +389,10 @@ export class ReplayAnalyzer {
         }
 
         // Parse max combo, hit results, and accuracy in old replay version
-        if (resultObject.replayVersion < 3 && (this.map instanceof DroidStarRating || this.map instanceof Beatmap)) {
+        if (
+            resultObject.replayVersion < 3 &&
+            (this.map instanceof DroidStarRating || this.map instanceof Beatmap)
+        ) {
             let hit300: number = 0;
             let hit300k: number = 0;
             let hit100: number = 0;
@@ -364,12 +401,16 @@ export class ReplayAnalyzer {
             let hit0: number = 0;
             let grantsGekiOrKatu: boolean = true;
 
-            const objects: HitObject[] = (this.map instanceof DroidStarRating ? this.map.map : this.map).objects;
+            const objects: HitObject[] = (
+                this.map instanceof DroidStarRating ? this.map.map : this.map
+            ).objects;
 
             for (let i = 0; i < resultObject.hitObjectData.length; ++i) {
                 // Hit result
-                const hitObjectData: ReplayObjectData = resultObject.hitObjectData[i];
-                const isNextNewCombo: boolean = i + 1 !== objects.length ? objects[i + 1].isNewCombo : true;
+                const hitObjectData: ReplayObjectData =
+                    resultObject.hitObjectData[i];
+                const isNextNewCombo: boolean =
+                    i + 1 !== objects.length ? objects[i + 1].isNewCombo : true;
 
                 switch (hitObjectData.result) {
                     case hitResult.RESULT_0:
@@ -407,12 +448,19 @@ export class ReplayAnalyzer {
                 n100: hit100,
                 n50: hit50,
                 nmiss: hit0,
-                nobjects: hit300 + hit100 + hit50 + hit0
+                nobjects: hit300 + hit100 + hit50 + hit0,
             });
 
             // Determine rank
-            const totalHits: number = resultObject.accuracy.n300 + resultObject.accuracy.n100 + resultObject.accuracy.n50 + resultObject.accuracy.nmiss;
-            const isHidden: boolean = resultObject.convertedMods?.some(m => m instanceof ModHidden || m instanceof ModFlashlight) ?? false;
+            const totalHits: number =
+                resultObject.accuracy.n300 +
+                resultObject.accuracy.n100 +
+                resultObject.accuracy.n50 +
+                resultObject.accuracy.nmiss;
+            const isHidden: boolean =
+                resultObject.convertedMods?.some(
+                    (m) => m instanceof ModHidden || m instanceof ModFlashlight
+                ) ?? false;
 
             const hit300Ratio: number = resultObject.accuracy.n300 / totalHits;
 
@@ -424,17 +472,21 @@ export class ReplayAnalyzer {
                         resultObject.rank = "X";
                     }
                     break;
-                case hit300Ratio > 0.9 && resultObject.accuracy.n50 / totalHits < 0.01 && !resultObject.accuracy.nmiss:
+                case hit300Ratio > 0.9 &&
+                    resultObject.accuracy.n50 / totalHits < 0.01 &&
+                    !resultObject.accuracy.nmiss:
                     if (isHidden) {
                         resultObject.rank = "SH";
                     } else {
                         resultObject.rank = "S";
                     }
                     break;
-                case (hit300Ratio > 0.8 && !resultObject.accuracy.nmiss) || hit300Ratio > 0.9:
+                case (hit300Ratio > 0.8 && !resultObject.accuracy.nmiss) ||
+                    hit300Ratio > 0.9:
                     resultObject.rank = "A";
                     break;
-                case (hit300Ratio > 0.7 && !resultObject.accuracy.nmiss) || hit300Ratio > 0.8:
+                case (hit300Ratio > 0.7 && !resultObject.accuracy.nmiss) ||
+                    hit300Ratio > 0.8:
                     resultObject.rank = "B";
                     break;
                 case hit300Ratio > 0.6:
@@ -450,7 +502,7 @@ export class ReplayAnalyzer {
 
     /**
      * Gets hit error information of the replay.
-     * 
+     *
      * `analyze()` must be called before calling this.
      */
     calculateHitError(): HitErrorInformation | null {
@@ -464,7 +516,9 @@ export class ReplayAnalyzer {
         let positiveTotal: number = 0;
         let negativeTotal: number = 0;
 
-        const objects: HitObject[] = (this.map instanceof DroidStarRating ? this.map.map : this.map).objects;
+        const objects: HitObject[] = (
+            this.map instanceof DroidStarRating ? this.map.map : this.map
+        ).objects;
 
         for (let i = 0; i < hitObjectData.length; ++i) {
             const v: ReplayObjectData = hitObjectData[i];
@@ -488,7 +542,15 @@ export class ReplayAnalyzer {
         return {
             positiveAvg: positiveTotal / positiveCount || 0,
             negativeAvg: negativeTotal / negativeCount || 0,
-            unstableRate: MathUtils.calculateStandardDeviation(hitObjectData.map((v, i) => v.result !== hitResult.RESULT_0 && !(objects[i] instanceof Spinner) ? v.accuracy : 0)) * 10
+            unstableRate:
+                MathUtils.calculateStandardDeviation(
+                    hitObjectData.map((v, i) =>
+                        v.result !== hitResult.RESULT_0 &&
+                        !(objects[i] instanceof Spinner)
+                            ? v.accuracy
+                            : 0
+                    )
+                ) * 10,
         };
     }
 
@@ -510,19 +572,22 @@ export class ReplayAnalyzer {
             MOD_REALLYEASY: "l",
             MOD_PERFECT: "f",
             MOD_SUDDENDEATH: "u",
-            MOD_SCOREV2: "v"
+            MOD_SCOREV2: "v",
         };
 
         let modString: string = "";
         for (const mod of replayMods) {
             for (const property in replayModsConstants) {
-                if (!replayModsConstants.hasOwnProperty(property)) {
+                if (!(property in replayModsConstants)) {
                     continue;
                 }
                 if (!mod.includes(property)) {
                     continue;
                 }
-                modString += replayModsConstants[property as keyof typeof replayModsConstants];
+                modString +=
+                    replayModsConstants[
+                        property as keyof typeof replayModsConstants
+                    ];
                 break;
             }
         }
@@ -539,7 +604,7 @@ export class ReplayAnalyzer {
 
     /**
      * Checks if a play is using 3 fingers.
-     * 
+     *
      * Requires `analyze()` to be called first and `map` to be defined as `DroidStarRating`.
      */
     checkFor3Finger(): void {
@@ -547,7 +612,10 @@ export class ReplayAnalyzer {
             return;
         }
 
-        const threeFingerChecker: ThreeFingerChecker = new ThreeFingerChecker(this.map, this.data);
+        const threeFingerChecker: ThreeFingerChecker = new ThreeFingerChecker(
+            this.map,
+            this.data
+        );
         const result: ThreeFingerInformation = threeFingerChecker.check();
 
         this.is3Finger = result.is3Finger;
@@ -557,7 +625,7 @@ export class ReplayAnalyzer {
 
     /**
      * Checks if a play is using 2 hands.
-     * 
+     *
      * Requires `analyze()` to be called first and `map` to be defined as `DroidStarRating`.
      */
     checkFor2Hand(): void {
@@ -565,7 +633,10 @@ export class ReplayAnalyzer {
             return;
         }
 
-        const twoHandChecker: TwoHandChecker = new TwoHandChecker(this.map, this.data);
+        const twoHandChecker: TwoHandChecker = new TwoHandChecker(
+            this.map,
+            this.data
+        );
         this.is2Hand = twoHandChecker.check();
         this.hasBeenCheckedFor2Hand = true;
     }

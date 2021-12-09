@@ -10,12 +10,12 @@ export namespace rankImage {
         D = "http://ops.dgsrz.com/assets/images/ranking-D-small.png",
         SH = "http://ops.dgsrz.com/assets/images/ranking-SH-small.png",
         X = "http://ops.dgsrz.com/assets/images/ranking-X-small.png",
-        XH = "http://ops.dgsrz.com/assets/images/ranking-XH-small.png"
+        XH = "http://ops.dgsrz.com/assets/images/ranking-XH-small.png",
     }
 
     /**
      * Returns an image of specified rank.
-     * 
+     *
      * @param rank The rank to get image from.
      */
     export function get(rank: string = ""): string {

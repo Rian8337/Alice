@@ -1,6 +1,6 @@
-import { Circle } from '../Circle';
+import { Circle } from "../Circle";
 
 /**
  * Represents the tailcircle of a slider (sliderend).
  */
-export class TailCircle extends Circle { }
+export class TailCircle extends Circle {}

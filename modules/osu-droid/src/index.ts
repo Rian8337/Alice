@@ -1,78 +1,81 @@
-import { Accuracy } from './utils/Accuracy';
-import { Beatmap } from './beatmap/Beatmap';
-import { BreakPoint } from './beatmap/timings/BreakPoint';
-import { Chart } from './utils/Chart';
-import { Circle } from './beatmap/hitobjects/Circle';
-import { CursorData } from './replay/data/CursorData';
-import { DifficultyHitObject } from './difficulty/preprocessing/DifficultyHitObject';
-import { DifficultyHitObjectCreator } from './difficulty/preprocessing/DifficultyHitObjectCreator';
-import { DroidAim } from './difficulty/skills/DroidAim';
-import { DroidAPIRequestBuilder, OsuAPIRequestBuilder } from './utils/APIRequestBuilder';
-import { DroidFlashlight } from './difficulty/skills/DroidFlashlight';
-import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
-import { DroidPerformanceCalculator } from './difficulty/DroidPerformanceCalculator';
-import { DroidStarRating } from './difficulty/DroidStarRating';
-import { DroidTap } from './difficulty/skills/DroidTap';
-import { gamemode } from './constants/gamemode';
-import { HeadCircle } from './beatmap/hitobjects/sliderObjects/HeadCircle';
-import { HitObject } from './beatmap/hitobjects/HitObject';
-import { hitResult } from './constants/hitResult';
-import { MapInfo } from './tools/MapInfo';
-import { MapStars } from './tools/MapStars';
-import { MapStats } from './utils/MapStats';
-import { MathUtils } from './mathutil/MathUtils';
-import { Mod } from './mods/Mod';
-import { ModAuto } from './mods/ModAuto';
-import { ModAutopilot } from './mods/ModAutopilot';
-import { ModDoubleTime } from './mods/ModDoubleTime';
-import { ModEasy } from './mods/ModEasy';
-import { ModFlashlight } from './mods/ModFlashlight';
-import { ModHalfTime } from './mods/ModHalfTime';
-import { ModHardRock } from './mods/ModHardRock';
-import { ModHidden } from './mods/ModHidden';
-import { ModNightCore } from './mods/ModNightCore';
-import { ModNoFail } from './mods/ModNoFail';
-import { ModPerfect } from './mods/ModPerfect';
-import { ModPrecise } from './mods/ModPrecise';
-import { ModReallyEasy } from './mods/ModReallyEasy';
-import { ModRelax } from './mods/ModRelax';
-import { ModScoreV2 } from './mods/ModScoreV2';
-import { ModSmallCircle } from './mods/ModSmallCircle';
-import { ModSpunOut } from './mods/ModSpunOut';
-import { ModSuddenDeath } from './mods/ModSuddenDeath';
-import { ModTouchDevice } from './mods/ModTouchDevice';
-import { ModUtil } from './utils/ModUtil';
-import { modes } from './constants/modes';
-import { movementType } from './constants/movementType';
-import { OsuAim } from './difficulty/skills/OsuAim';
-import { OsuFlashlight } from './difficulty/skills/OsuFlashlight';
-import { OsuPerformanceCalculator } from './difficulty/OsuPerformanceCalculator';
-import { OsuSpeed } from './difficulty/skills/OsuSpeed';
-import { OsuStarRating } from './difficulty/OsuStarRating';
-import { objectTypes } from './constants/objectTypes';
-import { Parser } from './beatmap/Parser';
-import { PathApproximator } from './utils/PathApproximator';
-import { PathType } from './constants/PathType';
-import { Precision } from './utils/Precision';
-import { Player } from './osu!droid/Player';
-import { RepeatPoint } from './beatmap/hitobjects/sliderObjects/RepeatPoint';
-import { ReplayAnalyzer } from './replay/ReplayAnalyzer';
-import { ReplayData } from './replay/data/ReplayData';
-import { ReplayObjectData } from './replay/data/ReplayObjectData';
-import { rankedStatus } from './constants/rankedStatus';
-import { rankImage } from './utils/rankImage';
-import { Score } from './osu!droid/Score';
-import { Slider } from './beatmap/hitobjects/Slider';
-import { SliderPath } from './utils/SliderPath';
-import { SliderTick } from './beatmap/hitobjects/sliderObjects/SliderTick';
-import { Spinner } from './beatmap/hitobjects/Spinner';
-import { TailCircle } from './beatmap/hitobjects/sliderObjects/TailCircle';
-import { ThreeFingerChecker } from './replay/analysis/ThreeFingerChecker';
-import { TimingPoint } from './beatmap/timings/TimingPoint';
-import { Utils } from './utils/Utils';
-import { Vector2 } from './mathutil/Vector2';
+import { Accuracy } from "./utils/Accuracy";
+import { Beatmap } from "./beatmap/Beatmap";
+import { BreakPoint } from "./beatmap/timings/BreakPoint";
+import { Chart } from "./utils/Chart";
+import { Circle } from "./beatmap/hitobjects/Circle";
+import { CursorData } from "./replay/data/CursorData";
+import { DifficultyHitObject } from "./difficulty/preprocessing/DifficultyHitObject";
+import { DifficultyHitObjectCreator } from "./difficulty/preprocessing/DifficultyHitObjectCreator";
+import { DroidAim } from "./difficulty/skills/DroidAim";
+import {
+    DroidAPIRequestBuilder,
+    OsuAPIRequestBuilder,
+} from "./utils/APIRequestBuilder";
+import { DroidFlashlight } from "./difficulty/skills/DroidFlashlight";
+import { DroidHitWindow, OsuHitWindow } from "./utils/HitWindow";
+import { DroidPerformanceCalculator } from "./difficulty/DroidPerformanceCalculator";
+import { DroidStarRating } from "./difficulty/DroidStarRating";
+import { DroidTap } from "./difficulty/skills/DroidTap";
+import { gamemode } from "./constants/gamemode";
+import { HeadCircle } from "./beatmap/hitobjects/sliderObjects/HeadCircle";
+import { HitObject } from "./beatmap/hitobjects/HitObject";
+import { hitResult } from "./constants/hitResult";
+import { MapInfo } from "./tools/MapInfo";
+import { MapStars } from "./tools/MapStars";
+import { MapStats } from "./utils/MapStats";
+import { MathUtils } from "./mathutil/MathUtils";
+import { Mod } from "./mods/Mod";
+import { ModAuto } from "./mods/ModAuto";
+import { ModAutopilot } from "./mods/ModAutopilot";
+import { ModDoubleTime } from "./mods/ModDoubleTime";
+import { ModEasy } from "./mods/ModEasy";
+import { ModFlashlight } from "./mods/ModFlashlight";
+import { ModHalfTime } from "./mods/ModHalfTime";
+import { ModHardRock } from "./mods/ModHardRock";
+import { ModHidden } from "./mods/ModHidden";
+import { ModNightCore } from "./mods/ModNightCore";
+import { ModNoFail } from "./mods/ModNoFail";
+import { ModPerfect } from "./mods/ModPerfect";
+import { ModPrecise } from "./mods/ModPrecise";
+import { ModReallyEasy } from "./mods/ModReallyEasy";
+import { ModRelax } from "./mods/ModRelax";
+import { ModScoreV2 } from "./mods/ModScoreV2";
+import { ModSmallCircle } from "./mods/ModSmallCircle";
+import { ModSpunOut } from "./mods/ModSpunOut";
+import { ModSuddenDeath } from "./mods/ModSuddenDeath";
+import { ModTouchDevice } from "./mods/ModTouchDevice";
+import { ModUtil } from "./utils/ModUtil";
+import { modes } from "./constants/modes";
+import { movementType } from "./constants/movementType";
+import { OsuAim } from "./difficulty/skills/OsuAim";
+import { OsuFlashlight } from "./difficulty/skills/OsuFlashlight";
+import { OsuPerformanceCalculator } from "./difficulty/OsuPerformanceCalculator";
+import { OsuSpeed } from "./difficulty/skills/OsuSpeed";
+import { OsuStarRating } from "./difficulty/OsuStarRating";
+import { objectTypes } from "./constants/objectTypes";
+import { Parser } from "./beatmap/Parser";
+import { PathApproximator } from "./utils/PathApproximator";
+import { PathType } from "./constants/PathType";
+import { Precision } from "./utils/Precision";
+import { Player } from "./osu!droid/Player";
+import { RepeatPoint } from "./beatmap/hitobjects/sliderObjects/RepeatPoint";
+import { ReplayAnalyzer } from "./replay/ReplayAnalyzer";
+import { ReplayData } from "./replay/data/ReplayData";
+import { ReplayObjectData } from "./replay/data/ReplayObjectData";
+import { rankedStatus } from "./constants/rankedStatus";
+import { rankImage } from "./utils/rankImage";
+import { Score } from "./osu!droid/Score";
+import { Slider } from "./beatmap/hitobjects/Slider";
+import { SliderPath } from "./utils/SliderPath";
+import { SliderTick } from "./beatmap/hitobjects/sliderObjects/SliderTick";
+import { Spinner } from "./beatmap/hitobjects/Spinner";
+import { TailCircle } from "./beatmap/hitobjects/sliderObjects/TailCircle";
+import { ThreeFingerChecker } from "./replay/analysis/ThreeFingerChecker";
+import { TimingPoint } from "./beatmap/timings/TimingPoint";
+import { Utils } from "./utils/Utils";
+import { Vector2 } from "./mathutil/Vector2";
 
-import { config } from 'dotenv';
+import { config } from "dotenv";
 config();
 
 export = {
@@ -93,14 +96,14 @@ export = {
 
     /**
      * Utility to draw a graph with only node-canvas.
-     * 
+     *
      * Used for creating strain graph of beatmaps.
      */
     Chart,
 
     /**
      * Represents a circle in a beatmap.
-     * 
+     *
      * All we need from circles is their position. All positions
      * stored in the objects are in playfield coordinates (512*384
      * rectangle).
@@ -109,9 +112,9 @@ export = {
 
     /**
      * Represents a cursor instance in an osu!droid replay.
-     * 
+     *
      * Stores cursor movement data such as x and y coordinates, movement size, etc.
-     * 
+     *
      * This is used when analyzing replays using replay analyzer.
      */
     CursorData,
@@ -119,8 +122,8 @@ export = {
     /**
      * Represents an osu!standard hit object with difficulty calculation values.
      */
-    DifficultyHitObject, 
-    
+    DifficultyHitObject,
+
     /**
      * A converter used to convert normal hitobjects into difficulty hitobjects.
      */
@@ -191,7 +194,7 @@ export = {
     MapStars,
 
     /**
-     * Holds general beatmap statistics for further modifications. 
+     * Holds general beatmap statistics for further modifications.
      */
     MapStats,
 
@@ -384,28 +387,28 @@ export = {
      * Represents a repeat point in a slider.
      */
     RepeatPoint,
-    
+
     /**
      * A replay analyzer that analyzes a replay from osu!droid with given score ID. This is mainly used to detect whether or not a play is considered using >=3 fingers abuse.
-     * 
+     *
      * Once analyzed, the result can be accessed via the `data` property.
      */
     ReplayAnalyzer,
 
     /**
      * Represents a replay data in an osu!droid replay.
-     * 
+     *
      * Stores generic information about an osu!droid replay such as player name, MD5 hash, time set, etc.
-     * 
+     *
      * This is used when analyzing replays using replay analyzer.
      */
     ReplayData,
 
     /**
      * Represents a hitobject in an osu!droid replay.
-     * 
+     *
      * Stores information about hitobjects in an osu!droid replay such as hit offset, tickset, and hit result.
-     * 
+     *
      * This is used when analyzing replays using replay analyzer.
      */
     ReplayObjectData,
@@ -442,12 +445,12 @@ export = {
 
     /**
      * Represents a spinner in a beatmap.
-     * 
+     *
      * All we need from spinners is their duration. The
      * position of a spinner is always at 256x192.
      */
     Spinner,
-    
+
     /**
      * Represents the tailcircle of a slider (sliderend).
      */
@@ -471,5 +474,5 @@ export = {
     /**
      * Based on `Vector2` class in C#.
      */
-    Vector2
+    Vector2,
 };

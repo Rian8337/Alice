@@ -8,5 +8,5 @@ export enum rankedStatus {
     RANKED = 1,
     APPROVED = 2,
     QUALIFIED = 3,
-    LOVED = 4
-};
+    LOVED = 4,
+}

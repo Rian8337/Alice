@@ -4,7 +4,7 @@
 export abstract class MathUtils {
     /**
      * Rounds a specified number with specified amount of fractional digits.
-     * 
+     *
      * @param num The number to round.
      * @param fractionalDigits The amount of fractional digits.
      */
@@ -14,7 +14,7 @@ export abstract class MathUtils {
 
     /**
      * Limits the specified number on range `[min, max]`.
-     * 
+     *
      * @param num The number to limit.
      * @param min The minimum range.
      * @param max The maximum range.
@@ -25,15 +25,19 @@ export abstract class MathUtils {
 
     /**
      * Calculates the standard deviation of given data.
-     * 
+     *
      * @param data The data to calculate.
      */
     static calculateStandardDeviation(data: number[]): number {
         if (data.length === 0) {
             return 0;
         }
-        const mean: number = data.reduce((acc, value) => acc + value) / data.length;
+        const mean: number =
+            data.reduce((acc, value) => acc + value) / data.length;
 
-        return Math.sqrt(data.reduce((acc, value) => acc + Math.pow(value - mean, 2), 0) / data.length);
+        return Math.sqrt(
+            data.reduce((acc, value) => acc + Math.pow(value - mean, 2), 0) /
+                data.length
+        );
     }
 }

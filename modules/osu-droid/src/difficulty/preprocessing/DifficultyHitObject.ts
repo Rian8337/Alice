@@ -1,5 +1,4 @@
-import { HitObject } from '../../beatmap/hitobjects/HitObject';
-import { Vector2 } from '../../mathutil/Vector2';
+import { HitObject } from "../../beatmap/hitobjects/HitObject";
 
 /**
  * Represents an osu!standard hit object with difficulty calculation values.
@@ -47,21 +46,36 @@ export class DifficultyHitObject {
     jumpDistance: number = 0;
 
     /**
+     * The minimum distance from the end position of the previous hitobject to the start position of this hitobject.
+     */
+    movementDistance: number = 0;
+
+    /**
      * Angle the player has to take to hit this hitobject.
-     * 
+     *
      * Calculated as the angle between the circles (current-2, current-1, current).
      */
     angle: number | null = null;
 
     /**
-     * The amount of time elapsed between this hitobject and the last hitobject.
+     * The amount of milliseconds elapsed between this hitobject and the last hitobject.
      */
     deltaTime: number = 0;
 
     /**
-     * Milliseconds elapsed since the start time of the previous hitobject, with a minimum of 25ms.
+     * The amount of milliseconds elapsed since the start time of the previous hitobject, with a minimum of 25ms.
      */
     strainTime: number = 0;
+
+    /**
+     * The amount of milliseconds elapsed since the start time of the previous hitobject to the end time of the same previous hitobject, with a minimum of 25ms.
+     */
+    travelTime: number = 0;
+
+    /**
+     * The amount of milliseconds elapsed since the end time of the previous hitobject, with a minimum of 25ms.
+     */
+    movementTime: number = 0;
 
     /**
      * Adjusted start time of the hitobject, taking speed multiplier into account.

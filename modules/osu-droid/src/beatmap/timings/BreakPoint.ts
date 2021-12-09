@@ -1,7 +1,7 @@
 /**
  * Represents a break period in a beatmap.
  */
- export class BreakPoint {
+export class BreakPoint {
     /**
      * The minimum duration required for a break to have any effect.
      */
@@ -22,10 +22,7 @@
      */
     readonly duration: number;
 
-    constructor(values: {
-        startTime: number,
-        endTime: number
-    }) {
+    constructor(values: { startTime: number; endTime: number }) {
         this.startTime = values.startTime;
         this.endTime = values.endTime;
         this.duration = this.endTime - this.startTime;
@@ -40,11 +37,14 @@
 
     /**
      * Whether this break period contains a specified time.
-     * 
+     *
      * @param time The time to check in milliseconds.
      * @returns Whether the time falls within this break period.
      */
     contains(time: number): boolean {
-        return time >= this.startTime && time <= this.endTime - BreakPoint.MIN_BREAK_DURATION / 2;
+        return (
+            time >= this.startTime &&
+            time <= this.endTime - BreakPoint.MIN_BREAK_DURATION / 2
+        );
     }
 }

@@ -8,7 +8,7 @@ export class IndexedHitObject {
      * The index of the cursor that hits the hitobject.
      */
     cursorIndex: number;
-    
+
     /**
      * The underlying difficulty hitobject.
      */

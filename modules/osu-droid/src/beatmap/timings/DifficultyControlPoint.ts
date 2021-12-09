@@ -9,16 +9,19 @@ export class DifficultyControlPoint extends TimingPoint {
      */
     readonly speedMultiplier: number;
 
-    constructor(values: {
-        time: number,
-        speedMultiplier: number
-    }) {
+    constructor(values: { time: number; speedMultiplier: number }) {
         super(values);
         this.speedMultiplier = values.speedMultiplier;
     }
 
     override toString(): string {
-        return "{ time: " + this.time.toFixed(2) + ", "
-            + "speed multiplier: " + this.speedMultiplier.toFixed(2) + " }";
+        return (
+            "{ time: " +
+            this.time.toFixed(2) +
+            ", " +
+            "speed multiplier: " +
+            this.speedMultiplier.toFixed(2) +
+            " }"
+        );
     }
 }

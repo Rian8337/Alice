@@ -1,30 +1,29 @@
-import { HitObject } from '../HitObject';
-import { Vector2 } from '../../../mathutil/Vector2';
+import { HitObject } from "../HitObject";
+import { Vector2 } from "../../../mathutil/Vector2";
 
 /**
  * Represents a slider tick in a slider.
  */
 export class SliderTick extends HitObject {
     /**
-     * The index of the slider tick.
+     * The index of the span at which this slider tick lies.
      */
     readonly spanIndex: number;
 
     /**
-     * The start time of the slider tick.
+     * The start time of the span at which this slider tick lies.
      */
     readonly spanStartTime: number;
 
     constructor(values: {
-        position: Vector2,
-        startTime: number,
-        spanIndex: number,
-        spanStartTime: number
+        position: Vector2;
+        startTime: number;
+        spanIndex: number;
+        spanStartTime: number;
     }) {
         super({
             startTime: values.startTime,
             position: values.position,
-            type: 0
         });
 
         this.spanIndex = values.spanIndex;

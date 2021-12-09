@@ -29,99 +29,99 @@ export interface ReplayInformation {
 
     /**
      * The date of which the play was set.
-     * 
+     *
      * Only available in replay v3 or later.
      */
     time?: Date;
 
     /**
      * The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-     * 
+     *
      * Only available in replay v3 or later.
-     * 
+     *
      * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
      */
     hit300k?: number;
 
     /**
      * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-     * 
+     *
      * Only available in replay v3 or later.
-     * 
+     *
      * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
      */
     hit100k?: number;
 
     /**
      * The total score achieved in the play.
-     * 
+     *
      * Only available in replay v3 or later.
      */
     score?: number;
 
     /**
      * The maximum combo achieved in the play.
-     * 
+     *
      * Only available in replay v3 or later.
      */
     maxCombo?: number;
 
     /**
      * The accuracy achieved in the play.
-     * 
+     *
      * Only available in replay v3 or later.
-     * 
+     *
      * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
      */
     accuracy?: Accuracy;
 
     /**
      * Whether or not the play achieved the beatmap's maximum combo.
-     * 
+     *
      * Only available in replay v3 or later.
      */
     isFullCombo?: boolean;
 
     /**
      * The name of the player in the replay.
-     * 
+     *
      * Only available in replay v3 or later.
      */
     playerName?: string;
 
     /**
      * Enabled modifications during the play in raw Java object format.
-     * 
+     *
      * Only available in replay v3 or later.
      */
     rawMods?: string;
 
     /**
      * The achieved rank in the play.
-     * 
+     *
      * Only available in replay v3 or later.
-     * 
+     *
      * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
      */
     rank?: string;
 
     /**
      * Enabled modifications during the play in osu!standard format.
-     * 
+     *
      * Only available in replay v3 or later.
      */
     convertedMods?: Mod[];
 
     /**
      * The speed modification of the replay.
-     * 
+     *
      * Only available in replay v4 or later. By default this is 1.
      */
     speedModification?: number;
 
     /**
      * The forced AR of the replay.
-     * 
+     *
      * Only available in replay v4 or later.
      */
     forcedAR?: number;
@@ -139,9 +139,9 @@ export interface ReplayInformation {
 
 /**
  * Represents a replay data in an osu!droid replay.
- * 
+ *
  * Stores generic information about an osu!droid replay such as player name, MD5 hash, time set, etc.
- * 
+ *
  * This is used when analyzing replays using replay analyzer.
  */
 export class ReplayData implements ReplayInformation {

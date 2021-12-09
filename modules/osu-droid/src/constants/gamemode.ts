@@ -5,5 +5,5 @@ export enum gamemode {
     std,
     taiko,
     ctb,
-    mania
+    mania,
 }

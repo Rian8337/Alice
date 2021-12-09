@@ -1,8 +1,11 @@
-import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
-import { Accuracy } from '../utils/Accuracy';
-import { ReplayAnalyzer } from '../replay/ReplayAnalyzer';
-import { Mod } from '../mods/Mod';
-import { ModUtil } from '../utils/ModUtil';
+import {
+    DroidAPIRequestBuilder,
+    RequestResponse,
+} from "../utils/APIRequestBuilder";
+import { Accuracy } from "../utils/Accuracy";
+import { ReplayAnalyzer } from "../replay/ReplayAnalyzer";
+import { Mod } from "../mods/Mod";
+import { ModUtil } from "../utils/ModUtil";
 
 interface ScoreInformation {
     /**
@@ -43,7 +46,7 @@ interface ScoreInformation {
     /**
      * The date of which the play was set.
      */
-    date: Date|number;
+    date: Date | number;
 
     /**
      * The accuracy achieved in the play.
@@ -142,10 +145,10 @@ export class Score {
         this.title = values?.title ?? "";
         this.combo = values?.combo ?? 0;
         this.score = values?.score ?? 0;
-        this.rank = values?.rank ?? '';
+        this.rank = values?.rank ?? "";
         this.date = new Date(values?.date ?? 0);
         this.accuracy = values?.accuracy ?? new Accuracy({});
-        this.hash = values?.hash ?? '';
+        this.hash = values?.hash ?? "";
 
         const modstrings: string[] = (values?.mods ?? "").split("|");
         let actualMods: string = "";
@@ -157,7 +160,9 @@ export class Score {
             if (modstrings[i].startsWith("AR")) {
                 this.forcedAR = parseFloat(modstrings[i].replace("AR", ""));
             } else if (modstrings[i].startsWith("x")) {
-                this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
+                this.speedMultiplier = parseFloat(
+                    modstrings[i].replace("x", "")
+                );
             } else {
                 actualMods += modstrings[i];
             }
@@ -168,52 +173,55 @@ export class Score {
 
     /**
      * Retrieves play information.
-     * 
+     *
      * @param values Function parameters.
      */
-    static getFromHash(params: {
+    static async getFromHash(params: {
         /**
          * The uid of the player.
          */
-        uid: number,
+        uid: number;
 
         /**
          * The MD5 hash to retrieve.
          */
-        hash: string
+        hash: string;
     }): Promise<Score> {
-        return new Promise(async (resolve, reject) => {
-            const score = new Score();
-            const uid: number = score.uid = params.uid;
-            const hash: string = score.hash = params.hash;
+        const score = new Score();
+        const uid: number = (score.uid = params.uid);
+        const hash: string = (score.hash = params.hash);
 
-            if (!uid || !hash) {
-                return reject("Uid and hash must be specified");
-            }
+        if (!uid || !hash) {
+            throw new Error("Uid and hash must be specified");
+        }
 
-            const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
+        const apiRequestBuilder: DroidAPIRequestBuilder =
+            new DroidAPIRequestBuilder()
                 .setEndpoint("scoresearchv2.php")
                 .addParameter("uid", uid)
                 .addParameter("hash", hash);
 
-            const result: RequestResponse = await apiRequestBuilder.sendRequest();
-            if (result.statusCode !== 200) {
-                return reject("Error retrieving score data");
-            }
+        const result: RequestResponse = await apiRequestBuilder.sendRequest();
+        if (result.statusCode !== 200) {
+            throw new Error("Error retrieving score data");
+        }
 
-            const entry: string[] = result.data.toString("utf-8").split("<br>");
-            entry.shift();
-            if (entry.length === 0) {
-                return resolve(score);
-            }
-            score.fillInformation(entry[0]);
-            resolve(score);
-        });
+        const entry: string[] = result.data.toString("utf-8").split("<br>");
+
+        entry.shift();
+
+        if (entry.length === 0) {
+            return score;
+        }
+
+        score.fillInformation(entry[0]);
+
+        return score;
     }
 
     /**
      * Fills this instance with score information.
-     * 
+     *
      * @param info The score information to from API response to fill with.
      */
     fillInformation(info: string): Score {
@@ -236,7 +244,9 @@ export class Score {
             if (modstrings[i].startsWith("AR")) {
                 this.forcedAR = parseFloat(modstrings[i].replace("AR", ""));
             } else if (modstrings[i].startsWith("x")) {
-                this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
+                this.speedMultiplier = parseFloat(
+                    modstrings[i].replace("x", "")
+                );
             } else {
                 actualMods += modstrings[i];
             }
@@ -248,12 +258,14 @@ export class Score {
             n300: parseInt(play[8]),
             n100: parseInt(play[9]),
             n50: parseInt(play[10]),
-            nmiss: parseInt(play[11])
+            nmiss: parseInt(play[11]),
         });
         const date: Date = new Date(parseInt(play[12]) * 1000);
         date.setUTCHours(date.getUTCHours() + 7);
         this.date = date;
-        this.title = play[13].substring(0, play[13].length - 4).replace(/_/g, " ");
+        this.title = play[13]
+            .substring(0, play[13].length - 4)
+            .replace(/_/g, " ");
         this.hash = play[14];
         return this;
     }
@@ -262,7 +274,9 @@ export class Score {
      * Returns the complete mod string of this score (mods, speed multiplier, and force AR combined).
      */
     getCompleteModString(): string {
-        let finalString: string = `+${this.mods.length > 0 ? this.mods.map(v => v.acronym) : "No Mod"}`;
+        let finalString: string = `+${
+            this.mods.length > 0 ? this.mods.map((v) => v.acronym) : "No Mod"
+        }`;
 
         if (this.forcedAR !== undefined || this.speedMultiplier !== 1) {
             finalString += " (";
@@ -289,7 +303,9 @@ export class Score {
             return;
         }
 
-        this.replay = await new ReplayAnalyzer({ scoreID: this.scoreID }).analyze();
+        this.replay = await new ReplayAnalyzer({
+            scoreID: this.scoreID,
+        }).analyze();
     }
 
     /**

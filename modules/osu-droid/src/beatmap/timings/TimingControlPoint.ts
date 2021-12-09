@@ -9,16 +9,19 @@ export class TimingControlPoint extends TimingPoint {
      */
     readonly msPerBeat: number;
 
-    constructor(values: {
-        time: number,
-        msPerBeat: number
-    }) {
+    constructor(values: { time: number; msPerBeat: number }) {
         super(values);
         this.msPerBeat = values.msPerBeat;
     }
 
     override toString(): string {
-        return "{ time: " + this.time.toFixed(2) + ", "
-            + "ms_per_beat: " + this.msPerBeat.toFixed(2) + " }";
+        return (
+            "{ time: " +
+            this.time.toFixed(2) +
+            ", " +
+            "ms_per_beat: " +
+            this.msPerBeat.toFixed(2) +
+            " }"
+        );
     }
 }

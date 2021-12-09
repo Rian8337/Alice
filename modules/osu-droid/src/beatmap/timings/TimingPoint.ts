@@ -11,7 +11,7 @@ export abstract class TimingPoint {
         /**
          * The time at which the timing point takes effect in milliseconds.
          */
-        time: number
+        time: number;
     }) {
         this.time = values.time;
     }

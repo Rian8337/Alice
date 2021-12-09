@@ -53,24 +53,43 @@ export class DroidTap extends DroidSkill {
         const greatWindowFull: number = this.hitWindow.hitWindowFor300() * 2;
 
         // Aim to nerf cheesy rhythms (very fast consecutive doubles with large deltatimes between).
-        if (this.previous[0] && strainTime < greatWindowFull && this.previous[0].strainTime > strainTime) {
-            strainTime = Interpolation.lerp(this.previous[0].strainTime, strainTime, strainTime / greatWindowFull);
+        if (
+            this.previous[0] &&
+            strainTime < greatWindowFull &&
+            this.previous[0].strainTime > strainTime
+        ) {
+            strainTime = Interpolation.lerp(
+                this.previous[0].strainTime,
+                strainTime,
+                strainTime / greatWindowFull
+            );
         }
 
         // Cap deltatime to the OD 300 hitwindow.
         // This equation is derived from making sure 260 BPM 1/4 OD7 streams aren't nerfed harshly.
-        strainTime /= MathUtils.clamp(strainTime / new OsuHitWindow(this.overallDifficulty - 21.5).hitWindowFor300() / 0.35, 0.9, 1);
+        strainTime /= MathUtils.clamp(
+            strainTime /
+                new OsuHitWindow(
+                    this.overallDifficulty - 21.5
+                ).hitWindowFor300() /
+                0.35,
+            0.9,
+            1
+        );
 
         let speedBonus: number = 1;
 
         if (strainTime < this.minSpeedBonus) {
-            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - strainTime) / 40, 2);
+            speedBonus +=
+                0.75 * Math.pow((this.minSpeedBonus - strainTime) / 40, 2);
         }
 
         let originalSpeedBonus: number = 1;
 
         if (current.strainTime < this.minSpeedBonus) {
-            originalSpeedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 40, 2);
+            originalSpeedBonus +=
+                0.75 *
+                Math.pow((this.minSpeedBonus - current.strainTime) / 40, 2);
         }
 
         const decay: number = this.strainDecay(current.deltaTime);
@@ -78,10 +97,13 @@ export class DroidTap extends DroidSkill {
         this.currentRhythm = this.calculateRhythmBonus(current);
 
         this.currentTapStrain *= decay;
-        this.currentTapStrain += this.tapStrainOf(speedBonus, strainTime) * this.skillMultiplier;
+        this.currentTapStrain +=
+            this.tapStrainOf(speedBonus, strainTime) * this.skillMultiplier;
 
         this.currentOriginalTapStrain *= decay;
-        this.currentOriginalTapStrain += this.tapStrainOf(originalSpeedBonus, current.strainTime) * this.skillMultiplier;
+        this.currentOriginalTapStrain +=
+            this.tapStrainOf(originalSpeedBonus, current.strainTime) *
+            this.skillMultiplier;
 
         return this.currentTapStrain * this.currentRhythm;
     }
@@ -105,44 +127,59 @@ export class DroidTap extends DroidSkill {
 
         for (let i = this.previous.length - 2; i > 0; --i) {
             // Scale note 0 to 1 from history to now.
-            let currentHistoricalDecay: number = Math.max(
-                0,
-                this.historyTimeMax - (current.startTime - this.previous[i - 1].startTime)
-            ) / this.historyTimeMax;
+            let currentHistoricalDecay: number =
+                Math.max(
+                    0,
+                    this.historyTimeMax -
+                        (current.startTime - this.previous[i - 1].startTime)
+                ) / this.historyTimeMax;
 
             if (currentHistoricalDecay === 0) {
                 continue;
             }
 
             // Either we're limited by time or limited by object count.
-            currentHistoricalDecay = Math.min(currentHistoricalDecay, (this.previous.length - i) / this.previous.length);
+            currentHistoricalDecay = Math.min(
+                currentHistoricalDecay,
+                (this.previous.length - i) / this.previous.length
+            );
 
             const currentDelta: number = this.previous[i - 1].strainTime;
             const prevDelta: number = this.previous[i].strainTime;
             const lastDelta: number = this.previous[i + 1].strainTime;
 
-            const currentRatio: number = 1 + 6 * Math.min(
-                0.5,
-                Math.pow(
-                    Math.sin(
-                        Math.PI / (Math.min(prevDelta, currentDelta) / Math.max(prevDelta, currentDelta))
-                    ),
-                    2
-                )
-            );
+            const currentRatio: number =
+                1 +
+                6 *
+                    Math.min(
+                        0.5,
+                        Math.pow(
+                            Math.sin(
+                                Math.PI /
+                                    (Math.min(prevDelta, currentDelta) /
+                                        Math.max(prevDelta, currentDelta))
+                            ),
+                            2
+                        )
+                    );
 
             const windowPenalty: number = Math.min(
                 1,
                 Math.max(
                     0,
-                    Math.abs(prevDelta - currentDelta) - this.hitWindow.hitWindowFor300() * 0.6
-                ) / (this.hitWindow.hitWindowFor300() * 0.6)
+                    Math.abs(prevDelta - currentDelta) -
+                        this.hitWindow.hitWindowFor300() * 0.6
+                ) /
+                    (this.hitWindow.hitWindowFor300() * 0.6)
             );
 
             let effectiveRatio: number = windowPenalty * currentRatio;
 
             if (firstDeltaSwitch) {
-                if (prevDelta <= 1.25 * currentDelta && prevDelta * 1.25 >= currentDelta) {
+                if (
+                    prevDelta <= 1.25 * currentDelta &&
+                    prevDelta * 1.25 >= currentDelta
+                ) {
                     // Island is still progressing, count size.
                     if (islandSize < 7) {
                         ++islandSize;
@@ -168,13 +205,22 @@ export class DroidTap extends DroidSkill {
                         effectiveRatio /= 2;
                     }
 
-                    if (lastDelta > prevDelta + 10 && prevDelta > currentDelta + 10) {
+                    if (
+                        lastDelta > prevDelta + 10 &&
+                        prevDelta > currentDelta + 10
+                    ) {
                         // Previous increase happened a note ago.
                         // Albeit this is a 1/1 -> 1/2-1/4 type of transition, we don't want to buff this.
                         effectiveRatio /= 8;
                     }
 
-                    rhythmComplexitySum += Math.sqrt(effectiveRatio * startRatio) * currentHistoricalDecay * Math.sqrt(4 + islandSize) / 2 * Math.sqrt(4 + previousIslandSize) / 2;
+                    rhythmComplexitySum +=
+                        (((Math.sqrt(effectiveRatio * startRatio) *
+                            currentHistoricalDecay *
+                            Math.sqrt(4 + islandSize)) /
+                            2) *
+                            Math.sqrt(4 + previousIslandSize)) /
+                        2;
 
                     startRatio = effectiveRatio;
 
@@ -217,9 +263,10 @@ export class DroidTap extends DroidSkill {
     /**
      * @param current The hitobject to save to.
      */
-    override saveToHitObject(current: DifficultyHitObject): void {
+    protected override saveToHitObject(current: DifficultyHitObject): void {
         current.tapStrain = this.currentStrain;
         current.rhythmMultiplier = this.currentRhythm;
-        current.originalTapStrain = this.currentOriginalTapStrain * this.currentRhythm;
+        current.originalTapStrain =
+            this.currentOriginalTapStrain * this.currentRhythm;
     }
 }

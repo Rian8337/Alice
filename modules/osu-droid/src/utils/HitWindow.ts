@@ -13,21 +13,21 @@ abstract class HitWindow {
 
     /**
      * Gets the threshold for 300 (great) hit result.
-     * 
+     *
      * @param isPrecise Whether or not to calculate for Precise mod. This is only available for `DroidHitWindow`.
      */
     abstract hitWindowFor300(isPrecise?: boolean): number;
 
     /**
      * Gets the threshold for 100 (good) hit result.
-     * 
+     *
      * @param isPrecise Whether or not to calculate for Precise mod. This is only available for `DroidHitWindow`.
      */
     abstract hitWindowFor100(isPrecise?: boolean): number;
 
     /**
      * Gets the threshold for 50 (meh) hit result.
-     * 
+     *
      * @param isPrecise Whether or not to calculate for Precise mod. This is only available for `DroidHitWindow`.
      */
     abstract hitWindowFor50(isPrecise?: boolean): number;

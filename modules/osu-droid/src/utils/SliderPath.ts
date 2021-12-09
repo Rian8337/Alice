@@ -1,7 +1,7 @@
-import { PathType } from '../constants/PathType';
-import { PathApproximator } from '../utils/PathApproximator';
-import { Vector2 } from '../mathutil/Vector2';
-import { Precision } from './Precision';
+import { PathType } from "../constants/PathType";
+import { PathApproximator } from "../utils/PathApproximator";
+import { Vector2 } from "../mathutil/Vector2";
+import { Precision } from "./Precision";
 
 /**
  * Represents a slider's path.
@@ -15,7 +15,7 @@ export class SliderPath {
     /**
      * The control points (anchor points) of the slider.
      */
-    readonly controlPoints: Vector2[] = [];
+    readonly controlPoints: Vector2[];
 
     /**
      * Distance that is expected when calculating slider path.
@@ -37,29 +37,24 @@ export class SliderPath {
      */
     readonly cumulativeLength: number[] = [];
 
-    /**
-     * The path approximator of the slider.
-     */
-    readonly pathApproximator: PathApproximator = new PathApproximator();
-
     constructor(values: {
         /**
          * The path type of the slider.
          */
-        pathType: PathType,
+        pathType: PathType;
 
         /**
          * The anchor points of the slider.
          */
-        controlPoints: Vector2[],
+        controlPoints: Vector2[];
 
         /**
          * The distance that is expected when calculating slider path.
          */
-        expectedDistance: number
+        expectedDistance: number;
     }) {
         this.pathType = values.pathType;
-        this.controlPoints = values.controlPoints || [];
+        this.controlPoints = values.controlPoints;
         this.expectedDistance = values.expectedDistance;
 
         this.ensureInitialized();
@@ -87,15 +82,19 @@ export class SliderPath {
     calculatePath(): void {
         this.calculatedPath.length = 0;
 
-        let start: number = 0;
+        let spanStart: number = 0;
 
         for (let i = 0; i < this.controlPoints.length; i++) {
             if (
                 i === this.controlPoints.length - 1 ||
                 this.controlPoints[i].equals(this.controlPoints[i + 1])
             ) {
-                const cpSpan: Vector2[] = this.controlPoints.slice(start, i + 1);
-                this.calculateSubPath(cpSpan).forEach(t => {
+                const spanEnd: number = i + 1;
+                const cpSpan: Vector2[] = this.controlPoints.slice(
+                    spanStart,
+                    spanEnd
+                );
+                this.calculateSubPath(cpSpan).forEach((t) => {
                     if (
                         this.calculatedPath.length === 0 ||
                         !this.calculatedPath.at(-1)!.equals(t)
@@ -103,7 +102,7 @@ export class SliderPath {
                         this.calculatedPath.push(t);
                     }
                 });
-                start = i;
+                spanStart = spanEnd;
             }
         }
     }
@@ -114,22 +113,27 @@ export class SliderPath {
     calculateSubPath(subControlPoints: Vector2[]): Vector2[] {
         switch (this.pathType) {
             case PathType.Linear:
-                return this.pathApproximator.approximateLinear(subControlPoints);
-            case PathType.PerfectCurve:
+                return PathApproximator.approximateLinear(subControlPoints);
+            case PathType.PerfectCurve: {
                 if (subControlPoints.length !== 3) {
                     break;
                 }
-                const subPath: Vector2[] = this.pathApproximator.approximateCircularArc(subControlPoints);
+
+                const subPath: Vector2[] =
+                    PathApproximator.approximateCircularArc(subControlPoints);
+
                 // If for some reason a circular arc could not be fit to the 3 given points, fall back to a numerically stable bezier approximation.
                 if (subPath.length === 0) {
                     break;
                 }
+
                 return subPath;
+            }
             case PathType.Catmull:
-                return this.pathApproximator.approximateCatmull(subControlPoints);
+                return PathApproximator.approximateCatmull(subControlPoints);
         }
 
-        return this.pathApproximator.approximateBezier(subControlPoints);
+        return PathApproximator.approximateBezier(subControlPoints);
     }
 
     /**
@@ -141,19 +145,34 @@ export class SliderPath {
         this.cumulativeLength.push(0);
 
         for (let i = 0; i < this.calculatedPath.length - 1; ++i) {
-            const diff: Vector2 = this.calculatedPath[i + 1].subtract(this.calculatedPath[i]);
+            const diff: Vector2 = this.calculatedPath[i + 1].subtract(
+                this.calculatedPath[i]
+            );
             calculatedLength += diff.length;
             this.cumulativeLength.push(calculatedLength);
         }
 
         if (calculatedLength !== this.expectedDistance) {
+            // In osu-stable, if the last two control points of a slider are equal, extension is not performed.
+            if (
+                this.controlPoints.length >= 2 &&
+                this.controlPoints.at(-1)!.equals(this.controlPoints.at(-2)!) &&
+                this.expectedDistance > calculatedLength
+            ) {
+                this.cumulativeLength.push(calculatedLength);
+                return;
+            }
+
             // The last length is always incorrect
             this.cumulativeLength.pop();
             let pathEndIndex: number = this.calculatedPath.length - 1;
 
             if (calculatedLength > this.expectedDistance) {
                 // The path will be shortened further, in which case we should trim any more unnecessary lengths and their associated path segments
-                while (this.cumulativeLength.length > 0 && this.cumulativeLength.at(-1)! >= this.expectedDistance) {
+                while (
+                    this.cumulativeLength.length > 0 &&
+                    this.cumulativeLength.at(-1)! >= this.expectedDistance
+                ) {
                     this.cumulativeLength.pop();
                     this.calculatedPath.splice(pathEndIndex--, 1);
                 }
@@ -166,10 +185,16 @@ export class SliderPath {
             }
 
             // The direction of the segment to shorten or lengthen
-            const dir: Vector2 = this.calculatedPath[pathEndIndex].subtract(this.calculatedPath[pathEndIndex - 1]);
+            const dir: Vector2 = this.calculatedPath[pathEndIndex].subtract(
+                this.calculatedPath[pathEndIndex - 1]
+            );
             dir.normalize();
 
-            this.calculatedPath[pathEndIndex] = this.calculatedPath[pathEndIndex - 1].add(dir.scale(this.expectedDistance - this.cumulativeLength.at(-1)!));
+            this.calculatedPath[pathEndIndex] = this.calculatedPath[
+                pathEndIndex - 1
+            ].add(
+                dir.scale(this.expectedDistance - this.cumulativeLength.at(-1)!)
+            );
             this.cumulativeLength.push(this.expectedDistance);
         }
     }
@@ -177,7 +202,7 @@ export class SliderPath {
     /**
      * Computes the position on the slider at a given progress that ranges from 0 (beginning of the path)
      * to 1 (end of the path).
-     * 
+     *
      * @param progress Ranges from 0 (beginning of the path) to 1 (end of the path).
      */
     positionAt(progress: number): Vector2 {
@@ -199,7 +224,7 @@ export class SliderPath {
      */
     private interpolateVerticles(i: number, d: number): Vector2 {
         if (this.calculatedPath.length === 0) {
-            return new Vector2({x: 0, y: 0});
+            return new Vector2({ x: 0, y: 0 });
         }
 
         if (i <= 0) {
@@ -228,7 +253,7 @@ export class SliderPath {
      * Returns the index of distance.
      */
     private indexOfDistance(d: number): number {
-        let index: number = this.cumulativeLength.indexOf(d);
+        const index: number = this.cumulativeLength.indexOf(d);
 
         if (index < 0) {
             for (let i: number = 0; i < this.cumulativeLength.length; ++i) {

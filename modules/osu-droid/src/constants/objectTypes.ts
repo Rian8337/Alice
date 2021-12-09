@@ -4,5 +4,5 @@
 export enum objectTypes {
     circle = 1 << 0,
     slider = 1 << 1,
-    spinner = 1 << 3
-};
+    spinner = 1 << 3,
+}

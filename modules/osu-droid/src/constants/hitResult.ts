@@ -20,5 +20,5 @@ export enum hitResult {
     /**
      * Good (300).
      */
-    RESULT_300 = 4
-};
+    RESULT_300 = 4,
+}

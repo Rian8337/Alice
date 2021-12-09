@@ -4,5 +4,5 @@
 export enum movementType {
     DOWN,
     MOVE,
-    UP
-};
+    UP,
+}

@@ -2,7 +2,6 @@
 import { Canvas, Image, NodeCanvasRenderingContext2D } from "canvas";
 
 declare module "osu-droid" {
-
     //#region Classes
     /**
      * An accuracy calculator that calculates accuracy based on given parameters.
@@ -62,6 +61,14 @@ declare module "osu-droid" {
          * The difficulty name of the beatmap.
          */
         version: string;
+        /**
+         * The ID of the beatmap.
+         */
+        beatmapId?: number;
+        /**
+         * The ID of the beatmapset containing this beatmap.
+         */
+        beatmapSetId?: number;
         /**
          * The approach rate of the beatmap.
          */
@@ -160,10 +167,7 @@ declare module "osu-droid" {
          * The duration of the break period. This is obtained from `endTime - startTime`.
          */
         readonly duration: number;
-        constructor(values: {
-            startTime: number;
-            endTime: number;
-        });
+        constructor(values: { startTime: number; endTime: number });
         /**
          * Returns a string representation of the class.
          */
@@ -315,10 +319,7 @@ declare module "osu-droid" {
          * The slider speed multiplier of the timing point.
          */
         readonly speedMultiplier: number;
-        constructor(values: {
-            time: number;
-            speedMultiplier: number;
-        });
+        constructor(values: { time: number; speedMultiplier: number });
         override toString(): string;
     }
 
@@ -543,7 +544,7 @@ declare module "osu-droid" {
          * The flashlight performance value.
          */
         flashlight: number;
-        private aggregatedRhythmMultiplier: number;
+        private averageRhythmMultiplier: number;
         override calculate(params: {
             /**
              * The star rating instance to calculate.
@@ -571,9 +572,9 @@ declare module "osu-droid" {
             stats?: MapStats;
         }): this;
         /**
-         * Calculates the aggregated rhythm multiplier of the beatmap.
+         * Calculates the average rhythm multiplier of the beatmap.
          */
-        private calculateAggregatedRhythmMultiplier(): void;
+        private calculateAverageRhythmMultiplier(): void;
         /**
          * Calculates the aim performance value of the beatmap.
          */
@@ -676,7 +677,7 @@ declare module "osu-droid" {
         private baseRatingValue(difficulty: number): number;
         /**
          * Calculates the base performance value of a difficulty rating.
-         * 
+         *
          * @param rating The difficulty rating.
          */
         private basePerformanceValue(rating: number): number;
@@ -988,9 +989,9 @@ declare module "osu-droid" {
         maxScore(stats: MapStats): number;
         /**
          * Fetches the droid leaderboard of the beatmap.
-         * 
+         *
          * The scores are sorted based on score.
-         * 
+         *
          * @param page The page of the leaderboard to fetch. Each page contains at most 100 scores. If unspecified, defaults to the first page.
          */
         fetchDroidLeaderboard(page?: number): Promise<Score[]>;
@@ -1145,7 +1146,11 @@ declare module "osu-droid" {
          * @param speedMultiplier The speed multiplier to calculate.
          * @param statisticsMultiplier The statistics multiplier to calculate from map-changing nonspeed-changing mods.
          */
-        static modifyAR(baseAR: number, speedMultiplier: number, statisticsMultiplier: number): number;
+        static modifyAR(
+            baseAR: number,
+            speedMultiplier: number,
+            statisticsMultiplier: number
+        ): number;
         /**
          * Utility function to apply speed and flat multipliers to stats where speed changes apply for OD.
          *
@@ -1153,7 +1158,11 @@ declare module "osu-droid" {
          * @param speedMultiplier The speed multiplier to calculate.
          * @param statisticsMultiplier The statistics multiplier to calculate from map-changing nonspeed-changing mods.
          */
-        static modifyOD(baseOD: number, speedMultiplier: number, statisticsMultiplier: number): number;
+        static modifyOD(
+            baseOD: number,
+            speedMultiplier: number,
+            statisticsMultiplier: number
+        ): number;
     }
 
     /**
@@ -1177,7 +1186,7 @@ declare module "osu-droid" {
         static clamp(num: number, min: number, max: number): number;
         /**
          * Calculates the standard deviation of a given data.
-         * 
+         *
          * @param data The data to calculate.
          */
         static calculateStandardDeviation(data: number[]): number;
@@ -1766,7 +1775,7 @@ declare module "osu-droid" {
         protected override createSkills(): OsuSkill[];
         /**
          * Calculates the base performance value of a difficulty rating.
-         * 
+         *
          * @param rating The difficulty rating.
          */
         private basePerformanceValue(rating: number): number;
@@ -1865,7 +1874,10 @@ declare module "osu-droid" {
          * @param time The time to search.
          * @param timingPoints The timing points to search in.
          */
-        private getTimingPoint<T extends TimingPoint>(time: number, timingPoints: T[]): T;
+        private getTimingPoint<T extends TimingPoint>(
+            time: number,
+            timingPoints: T[]
+        ): T;
         /**
          * Applies stacking to hitobjects for beatmap version 6 or above.
          */
@@ -1959,7 +1971,13 @@ declare module "osu-droid" {
          * @param subdivisionBuffer2 The second buffer containing the current subdivision state.
          * @param count The number of control points in the original array.
          */
-        private bezierApproximate(controlPoints: Vector2[], output: Vector2[], subdivisionBuffer1: Vector2[], subdivisionBuffer2: Vector2[], count: number): void;
+        private bezierApproximate(
+            controlPoints: Vector2[],
+            output: Vector2[],
+            subdivisionBuffer1: Vector2[],
+            subdivisionBuffer2: Vector2[],
+            count: number
+        ): void;
         /**
          * Subdivides `n` control points representing a bezier curve into 2 sets of `n` control points, each
          * describing a bezier curve equivalent to a half of the original curve. Effectively this splits
@@ -1971,7 +1989,13 @@ declare module "osu-droid" {
          * @param subdivisionBuffer Parts of the slider for approximation.
          * @param count The amount of anchor points in the slider.
          */
-        private bezierSubdivide(controlPoints: Vector2[], l: Vector2[], r: Vector2[], subdivisionBuffer: Vector2[], count: number): void;
+        private bezierSubdivide(
+            controlPoints: Vector2[],
+            l: Vector2[],
+            r: Vector2[],
+            subdivisionBuffer: Vector2[],
+            count: number
+        ): void;
         /**
          * Finds a point on the spline at the position of a parameter.
          *
@@ -1981,7 +2005,13 @@ declare module "osu-droid" {
          * @param vec4 The fourth vector.
          * @param t The parameter at which to find the point on the spline, in the range [0, 1].
          */
-        private catmullFindPoint(vec1: Vector2, vec2: Vector2, vec3: Vector2, vec4: Vector2, t: number): Vector2;
+        private catmullFindPoint(
+            vec1: Vector2,
+            vec2: Vector2,
+            vec3: Vector2,
+            vec4: Vector2,
+            t: number
+        ): Vector2;
     }
 
     /**
@@ -2059,7 +2089,11 @@ declare module "osu-droid" {
          * @param value2 The second number.
          * @param acceptableDifference The acceptable difference as threshold. Default is `Precision.FLOAT_EPSILON = 1e-3`.
          */
-        static almostEqualsNumber(value1: number, value2: number, acceptableDifference?: number): boolean;
+        static almostEqualsNumber(
+            value1: number,
+            value2: number,
+            acceptableDifference?: number
+        ): boolean;
         /**
          * Checks if two vectors are equal with a given tolerance.
          *
@@ -2067,7 +2101,11 @@ declare module "osu-droid" {
          * @param vec2 The second vector.
          * @param acceptableDifference The acceptable difference as threshold. Default is `Precision.FLOAT_EPSILON = 1e-3`.
          */
-        static almostEqualsVector(vec1: Vector2, vec2: Vector2, acceptableDifference?: number): boolean;
+        static almostEqualsVector(
+            vec1: Vector2,
+            vec2: Vector2,
+            acceptableDifference?: number
+        ): boolean;
     }
 
     /**
@@ -2187,7 +2225,7 @@ declare module "osu-droid" {
         private convertMods(replayMods: string[]): string;
         /**
          * Gets hit error information of the replay.
-         * 
+         *
          * `analyze()` must be called before calling this.
          */
         calculateHitError(): HitErrorInformation | null;
@@ -2431,7 +2469,7 @@ declare module "osu-droid" {
         /**
          * The duration of this slider.
          */
-        readonly duration: number;
+        get duration(): number;
         /**
          * The amount of slider ticks in this slider.
          */
@@ -2598,7 +2636,7 @@ declare module "osu-droid" {
         readonly data: ReplayData;
         /**
          * Checks whether a beatmap is eligible to be detected for 3-finger.
-         * 
+         *
          * @param map The beatmap.
          */
         static isEligibleToDetect(map: DroidStarRating): boolean;
@@ -2612,10 +2650,7 @@ declare module "osu-droid" {
          * The amount of milliseconds passed for each beat.
          */
         readonly msPerBeat: number;
-        constructor(values: {
-            time: number;
-            msPerBeat: number;
-        });
+        constructor(values: { time: number; msPerBeat: number });
         override toString(): string;
     }
 
@@ -2732,7 +2767,7 @@ declare module "osu-droid" {
         std = 0,
         taiko = 1,
         ctb = 2,
-        mania = 3
+        mania = 3,
     }
 
     /**
@@ -2754,7 +2789,7 @@ declare module "osu-droid" {
         /**
          * Good (300).
          */
-        RESULT_300 = 4
+        RESULT_300 = 4,
     }
 
     /**
@@ -2762,7 +2797,7 @@ declare module "osu-droid" {
      */
     export enum modes {
         droid = "droid",
-        osu = "osu"
+        osu = "osu",
     }
 
     /**
@@ -2771,7 +2806,7 @@ declare module "osu-droid" {
     export enum movementType {
         DOWN = 0,
         MOVE = 1,
-        UP = 2
+        UP = 2,
     }
 
     /**
@@ -2780,7 +2815,7 @@ declare module "osu-droid" {
     export enum objectTypes {
         circle = 1 << 0,
         slider = 1 << 1,
-        spinner = 1 << 3
+        spinner = 1 << 3,
     }
 
     /**
@@ -2796,7 +2831,7 @@ declare module "osu-droid" {
         MIN_SPEEDMULTIPLIER_VALUE = 0.1,
         MAX_SPEEDMULTIPLIER_VALUE = 10,
         MIN_MSPERBEAT_VALUE = 6,
-        MAX_MSPERBEAT_VALUE = 60000
+        MAX_MSPERBEAT_VALUE = 60000,
     }
 
     /**
@@ -2806,7 +2841,7 @@ declare module "osu-droid" {
         Catmull = 0,
         Bezier = 1,
         Linear = 2,
-        PerfectCurve = 3
+        PerfectCurve = 3,
     }
 
     /**
@@ -2819,7 +2854,7 @@ declare module "osu-droid" {
         RANKED = 1,
         APPROVED = 2,
         QUALIFIED = 3,
-        LOVED = 4
+        LOVED = 4,
     }
 
     //#endregion
@@ -3048,95 +3083,95 @@ declare module "osu-droid" {
         hash: string;
         /**
          * The date of which the play was set.
-         * 
+         *
          * Only available in replay v3 or later.
          */
         time?: Date;
         /**
          * The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-         * 
+         *
          * Only available in replay v3 or later.
-         * 
+         *
          * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
          */
         hit300k?: number;
         /**
          * The amount of 300s achieved in the play.
-         * 
+         *
          * Only available in replay v3 or later.
-         * 
+         *
          * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
          */
         hit300?: number;
         /**
          * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-         * 
+         *
          * Only available in replay v3 or later.
-         * 
+         *
          * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
          */
         hit100k?: number;
         /**
          * The total score achieved in the play.
-         * 
+         *
          * Only available in replay v3 or later.
          */
         score?: number;
         /**
          * The maximum combo achieved in the play.
-         * 
+         *
          * Only available in replay v3 or later.
          */
         maxCombo?: number;
         /**
          * The accuracy achieved in the play.
-         * 
+         *
          * Only available in replay v3 or later.
-         * 
+         *
          * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
          */
         accuracy?: Accuracy;
         /**
          * Whether the play achieved the beatmap's maximum combo.
-         * 
+         *
          * Only available in replay v3 or later.
          */
         isFullCombo?: boolean;
         /**
          * The name of the player in the replay.
-         * 
+         *
          * Only available in replay v3 or later.
          */
         playerName?: string;
         /**
          * Enabled modifications during the play in raw Java object format.
-         * 
+         *
          * Only available in replay v3 or later.
          */
         rawMods?: string;
         /**
          * The rank achieved in the play.
-         * 
+         *
          * Only available in replay v3 or later.
-         * 
+         *
          * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
          */
         rank?: string;
         /**
          * Enabled modifications during the play in osu!standard format.
-         * 
+         *
          * Only available in replay v3 or later.
          */
         convertedMods?: Mod[];
         /**
          * The speed modification of the replay.
-         * 
+         *
          * Only available in replay v4 or later. By default this is 1.
          */
         speedModification?: number;
         /**
          * The forced AR of the replay.
-         * 
+         *
          * Only available in replay v4 or later.
          */
         forcedAR?: number;
@@ -3306,7 +3341,7 @@ declare module "osu-droid" {
             D = "http://ops.dgsrz.com/assets/images/ranking-D-small.png",
             SH = "http://ops.dgsrz.com/assets/images/ranking-SH-small.png",
             X = "http://ops.dgsrz.com/assets/images/ranking-X-small.png",
-            XH = "http://ops.dgsrz.com/assets/images/ranking-XH-small.png"
+            XH = "http://ops.dgsrz.com/assets/images/ranking-XH-small.png",
         }
         /**
          * Returns an image of specified rank.
@@ -3322,9 +3357,26 @@ declare module "osu-droid" {
 
     export type AxisType = "time";
 
-    export type DroidAPIEndpoint = "banscore.php" | "getuserinfo.php" | "scoresearch.php" | "scoresearchv2.php" | "rename.php" | "upload" | "user_list.php" | "usergeneral.php" | "top.php" | "time.php";
+    export type DroidAPIEndpoint =
+        | "banscore.php"
+        | "getuserinfo.php"
+        | "scoresearch.php"
+        | "scoresearchv2.php"
+        | "rename.php"
+        | "upload"
+        | "user_list.php"
+        | "usergeneral.php"
+        | "top.php"
+        | "time.php";
 
-    export type OsuAPIEndpoint = "get_beatmaps" | "get_user" | "get_scores" | "get_user_best" | "get_user_recent" | "get_match" | "get_replay";
+    export type OsuAPIEndpoint =
+        | "get_beatmaps"
+        | "get_user"
+        | "get_scores"
+        | "get_user_best"
+        | "get_user_recent"
+        | "get_match"
+        | "get_replay";
 
     //#endregion
 
@@ -3355,6 +3407,7 @@ declare module "osu-droid" {
          * The parameters of this builder.
          */
         protected readonly params: Map<string, string | number>;
+        private fetchAttempts: number;
         /**
          * Sets the API endpoint.
          *
@@ -3373,6 +3426,8 @@ declare module "osu-droid" {
         buildURL(): string;
         /**
          * Sends a request to the API using built parameters.
+         * 
+         * If the request fails, it will be redone 5 times.
          */
         sendRequest(): Promise<RequestResponse>;
         /**
@@ -3410,19 +3465,19 @@ declare module "osu-droid" {
         readonly overallDifficulty: number;
         /**
          * Gets the threshold for 300 (great) hit result.
-         * 
+         *
          * @param isPrecise Whether or not to calculate for Precise mod. This is only available for `DroidHitWindow`.
          */
         abstract hitWindowFor300(isPrecise?: boolean): number;
         /**
          * Gets the threshold for 100 (good) hit result.
-         * 
+         *
          * @param isPrecise Whether or not to calculate for Precise mod. This is only available for `DroidHitWindow`.
          */
         abstract hitWindowFor100(isPrecise?: boolean): number;
         /**
          * Gets the threshold for 50 (meh) hit result.
-         * 
+         *
          * @param isPrecise Whether or not to calculate for Precise mod. This is only available for `DroidHitWindow`.
          */
         abstract hitWindowFor50(isPrecise?: boolean): number;
@@ -3487,10 +3542,19 @@ declare module "osu-droid" {
         protected comboPenalty: number;
         /**
          * The global multiplier to be applied to the final performance value.
-         * 
+         *
          * This is being adjusted to keep the final value scaled around what it used to be when changing things.
          */
         protected abstract finalMultiplier: number;
+        /**
+         * The amount of misses that are filtered out from sliderbreaks.
+         */
+        protected effectiveMissCount: number;
+
+        /**
+         * Nerf factor used for nerfing beatmaps with very likely dropped sliderends.
+         */
+        protected sliderNerfFactor: number;
         /**
          * Calculates the performance points of a beatmap.
          */
@@ -3535,36 +3599,43 @@ declare module "osu-droid" {
         /**
          * Processes given parameters for usage in performance calculation.
          */
-        protected handleParams(params: {
-            /**
-             * The star rating instance to calculate.
-             */
-            stars: StarRating;
-            /**
-             * The maximum combo achieved in the score.
-             */
-            combo?: number;
-            /**
-             * The accuracy achieved in the score.
-             */
-            accPercent?: Accuracy | number;
-            /**
-             * The amount of misses achieved in the score.
-             */
-            miss?: number;
-            /**
-             * The gamemode to calculate.
-             */
-            mode?: modes;
-            /**
-             * The speed penalty to apply for penalized scores.
-             */
-            speedPenalty?: number;
-            /**
-             * Custom map statistics to apply custom speed multiplier and force AR values as well as old statistics.
-             */
-            stats?: MapStats;
-        }, mode: modes): void;
+        protected handleParams(
+            params: {
+                /**
+                 * The star rating instance to calculate.
+                 */
+                stars: StarRating;
+                /**
+                 * The maximum combo achieved in the score.
+                 */
+                combo?: number;
+                /**
+                 * The accuracy achieved in the score.
+                 */
+                accPercent?: Accuracy | number;
+                /**
+                 * The amount of misses achieved in the score.
+                 */
+                miss?: number;
+                /**
+                 * The gamemode to calculate.
+                 */
+                mode?: modes;
+                /**
+                 * The speed penalty to apply for penalized scores.
+                 */
+                speedPenalty?: number;
+                /**
+                 * Custom map statistics to apply custom speed multiplier and force AR values as well as old statistics.
+                 */
+                stats?: MapStats;
+            },
+            mode: modes
+        ): void;
+        /**
+         * Calculates the amount of misses + sliderbreaks from combo.
+         */
+        private calculateEffectiveMissCount(combo: number, maxCombo: number): number;
     }
 
     /**
@@ -3658,20 +3729,23 @@ declare module "osu-droid" {
          * Also don't forget to manually add the peak strain for the last
          * section which would otherwise be ignored.
          */
-        protected calculate(params: {
-            /**
-             * The beatmap to calculate.
-             */
-            map: Beatmap;
-            /**
-             * Applied modifications.
-             */
-            mods?: Mod[];
-            /**
-             * Custom map statistics to apply custom speed multiplier as well as old statistics.
-             */
-            stats?: MapStats;
-        }, mode: modes): this;
+        protected calculate(
+            params: {
+                /**
+                 * The beatmap to calculate.
+                 */
+                map: Beatmap;
+                /**
+                 * Applied modifications.
+                 */
+                mods?: Mod[];
+                /**
+                 * Custom map statistics to apply custom speed multiplier as well as old statistics.
+                 */
+                stats?: MapStats;
+            },
+            mode: modes
+        ): this;
         /**
          * Generates difficulty hitobjects for this calculator.
          *
@@ -3698,7 +3772,10 @@ declare module "osu-droid" {
          * @param beatmapsetID The beatmapset ID to get background image from. If omitted, the background will be plain white.
          * @param color The color of the graph.
          */
-        getStrainChart(beatmapsetID?: number, color?: string): Promise<Buffer | null>;
+        getStrainChart(
+            beatmapsetID?: number,
+            color?: string
+        ): Promise<Buffer | null>;
         /**
          * Returns a string representative of the class.
          */
@@ -3746,7 +3823,7 @@ declare module "osu-droid" {
 
         /**
          * Determines how quickly strain decays for the given skill.
-         * 
+         *
          * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
          */
         protected abstract readonly strainDecayBase: number;
@@ -3757,7 +3834,7 @@ declare module "osu-droid" {
 
         /**
          * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
-         * 
+         *
          * @param current The hitobject to process.
          */
         protected override process(current: DifficultyHitObject): void;
@@ -3769,14 +3846,14 @@ declare module "osu-droid" {
 
         /**
          * Sets the initial strain level for a new section.
-         * 
+         *
          * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
          */
         protected startNewSectionFrom(offset: number): void;
 
         /**
          * Calculates strain decay for a specified time frame.
-         * 
+         *
          * @param ms The time frame to calculate.
          */
         protected strainDecay(ms: number): number;

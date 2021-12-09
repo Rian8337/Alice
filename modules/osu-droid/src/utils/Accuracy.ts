@@ -25,7 +25,7 @@ interface AccuracyInformation {
      * The amount of 50s achieved.
      */
     n50?: number;
-    
+
     /**
      * The amount of misses achieved.
      */
@@ -43,11 +43,11 @@ export class Accuracy implements AccuracyInformation {
 
     /**
      * Calculates accuracy based on given parameters.
-     * 
+     *
      * If `percent` and `nobjects` are specified, `n300`, `n100`, and `n50` will
      * be automatically calculated to be the closest to the given
      * acc percent.
-     * 
+     *
      * @param values Function parameters.
      */
     constructor(values: AccuracyInformation) {
@@ -64,7 +64,10 @@ export class Accuracy implements AccuracyInformation {
             let hitcount: number;
 
             if (n300 < 0) {
-                n300 = Math.max(0, nobjects - this.n100 - this.n50 - this.nmiss);
+                n300 = Math.max(
+                    0,
+                    nobjects - this.n100 - this.n50 - this.nmiss
+                );
             }
 
             hitcount = n300 + this.n100 + this.n50 + this.nmiss;
@@ -96,15 +99,21 @@ export class Accuracy implements AccuracyInformation {
 
         if (values.percent) {
             if (!values.nobjects) {
-                throw new TypeError("nobjects is required when specifying percent");
+                throw new TypeError(
+                    "nobjects is required when specifying percent"
+                );
             }
             nobjects = values.nobjects;
 
-            let max300 = nobjects - this.nmiss;
+            const max300 = nobjects - this.nmiss;
 
-            let maxacc = new Accuracy({
-                n300: max300, n100: 0, n50: 0, nmiss: this.nmiss
-            }).value() * 100;
+            const maxacc =
+                new Accuracy({
+                    n300: max300,
+                    n100: 0,
+                    n50: 0,
+                    nmiss: this.nmiss,
+                }).value() * 100;
 
             let acc_percent = values.percent;
             acc_percent = Math.max(0, Math.min(maxacc, acc_percent));
@@ -119,7 +128,9 @@ export class Accuracy implements AccuracyInformation {
                 // acc lower than all 100s, use 50s
                 this.n100 = 0;
                 this.n50 = Math.round(
-                    -6 * ((acc_percent * 0.01 - 1) * nobjects + this.nmiss) * 0.5
+                    -6 *
+                        ((acc_percent * 0.01 - 1) * nobjects + this.nmiss) *
+                        0.5
                 );
                 this.n50 = Math.min(max300, this.n50);
             }
@@ -130,23 +141,22 @@ export class Accuracy implements AccuracyInformation {
 
     /**
      * Calculates the accuracy value (0.0 - 1.0).
-     * 
+     *
      * @param nobjects The amount of objects in the beatmap. If `n300` was not specified in the constructor, this is required.
      */
     value(nobjects?: number): number {
         let n300 = this.n300;
         if (n300 < 0) {
             if (!nobjects) {
-                throw new TypeError("Either n300 or nobjects must be specified");
+                throw new TypeError(
+                    "Either n300 or nobjects must be specified"
+                );
             }
             n300 = nobjects - this.n100 - this.n50 - this.nmiss;
         } else {
             nobjects ??= n300 + this.n100 + this.n50 + this.nmiss;
         }
-        let res = (
-            (n300 * 6 + this.n100 * 2 + this.n50) /
-            (nobjects * 6)
-        );
+        const res = (n300 * 6 + this.n100 * 2 + this.n50) / (nobjects * 6);
         return MathUtils.clamp(res, 0, 1);
     }
 }
