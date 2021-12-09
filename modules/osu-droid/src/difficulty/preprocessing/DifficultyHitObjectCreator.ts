@@ -137,8 +137,8 @@ export class DifficultyHitObjectCreator {
                     0,
                     Math.min(
                         object.jumpDistance -
-                            (this.maximumSliderRadius -
-                                this.assumedSliderRadius),
+                        (this.maximumSliderRadius -
+                            this.assumedSliderRadius),
                         tailJumpDistance - this.maximumSliderRadius
                     )
                 );
@@ -185,6 +185,19 @@ export class DifficultyHitObjectCreator {
             slider.nestedHitObjects.sort((a, b) => {
                 return a.startTime - b.startTime;
             });
+
+            // Temporary lazy end position until a real result can be derived.
+            slider.lazyEndPosition = slider.stackedPosition;
+
+            // Stop here if the slider has too short duration due to float number limitation.
+            // Incredibly close start and end time fluctuates travel distance and lazy
+            // end position heavily, which we do not want to happen.
+            //
+            // In the real game, this shouldn't happen. Perhaps we need to reinvestigate this
+            // in the future.
+            if (Precision.almostEqualsNumber(slider.startTime, slider.endTime)) {
+                return;
+            }
         }
 
         // Not using slider.endTime due to legacy last tick offset.
@@ -202,16 +215,6 @@ export class DifficultyHitObjectCreator {
         slider.lazyEndPosition = slider.stackedPosition.add(
             slider.path.positionAt(endTimeMin)
         );
-
-        // Stop here if the slider has too short duration due to float number limitation.
-        // Incredibly close start and end time fluctuates travel distance and lazy
-        // end position heavily, which we do not want to happen.
-        //
-        // In the real game, this shouldn't happen. Perhaps we need to reinvestigate this
-        // in the future.
-        if (Precision.almostEqualsNumber(slider.startTime, slider.endTime)) {
-            return;
-        }
 
         let currentCursorPosition: Vector2 = slider.stackedPosition;
         const scalingFactor: number = this.normalizedRadius / slider.radius;
@@ -254,7 +257,7 @@ export class DifficultyHitObjectCreator {
                 currentCursorPosition = currentCursorPosition.add(
                     currentMovement.scale(
                         (currentMovementLength - requiredMovement) /
-                            currentMovementLength
+                        currentMovementLength
                     )
                 );
                 currentMovementLength *=
@@ -301,7 +304,7 @@ export class DifficultyHitObjectCreator {
                             this.DROID_CIRCLESIZE_BUFF_THRESHOLD - radius,
                             20
                         ) /
-                            40;
+                        40;
                 }
                 break;
             case modes.osu:
@@ -312,7 +315,7 @@ export class DifficultyHitObjectCreator {
                             this.PC_CIRCLESIZE_BUFF_THRESHOLD - radius,
                             5
                         ) /
-                            50;
+                        50;
                 }
         }
 
