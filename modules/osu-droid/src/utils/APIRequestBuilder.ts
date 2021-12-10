@@ -135,6 +135,8 @@ abstract class APIRequestBuilder {
                     ++this.fetchAttempts;
 
                     if (response.statusCode !== 200 && this.fetchAttempts < 5) {
+                        console.error(`Request to ${url} failed; ${this.fetchAttempts} attempts so far; retrying`);
+
                         await Utils.sleep(0.2);
 
                         return resolve(this.sendRequest());
