@@ -456,13 +456,11 @@ export class UserBind extends Manager {
             if (isDPPRecalc && this.calculationInfo) {
                 page = this.calculationInfo.page;
 
-                newList = newList.concat(
-                    new Collection(
-                        this.calculationInfo.currentPPEntries.map((v) => [
-                            v.hash,
-                            v,
-                        ])
-                    )
+                newList = new Collection(
+                    this.calculationInfo.currentPPEntries.map((v) => [
+                        v.hash,
+                        v,
+                    ])
                 );
             } else {
                 // Do manual operations to reduce memory usage (we don't need to cache
