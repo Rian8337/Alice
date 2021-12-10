@@ -399,7 +399,7 @@ export class UserBind extends Manager {
         markAsSlotFulfill: boolean = true,
         isDPPRecalc: boolean = false
     ): Promise<OperationResult> {
-        const newList: Collection<string, PPEntry> = new Collection();
+        let newList: Collection<string, PPEntry> = new Collection();
 
         this.playc = 0;
 
@@ -426,7 +426,9 @@ export class UserBind extends Manager {
             return entries.map((v) => new Score().fillInformation(v));
         };
 
-        for await (const uid of this.previous_bind) {
+        for (let i = 0; i < this.previous_bind.length; ++i) {
+            const uid: number = this.previous_bind[i];
+
             if (
                 await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
                     uid
@@ -454,7 +456,7 @@ export class UserBind extends Manager {
             if (isDPPRecalc && this.calculationInfo) {
                 page = this.calculationInfo.page;
 
-                newList.concat(
+                newList = newList.concat(
                     new Collection(
                         this.calculationInfo.currentPPEntries.map((v) => [
                             v.hash,
@@ -557,15 +559,36 @@ export class UserBind extends Manager {
                     { upsert: true }
                 );
 
+                if (isDPPRecalc) {
+                    this.calculationInfo = {
+                        uid: uid,
+                        page: page,
+                        currentPPEntries: [...newList.values()],
+                    };
+
+                    await DatabaseManager.elainaDb.collections.userBind.update(
+                        { discordid: this.discordid },
+                        {
+                            $set: {
+                                calculationInfo: this.calculationInfo,
+                            },
+                        }
+                    );
+                }
+            }
+
+            if (isDPPRecalc && this.previous_bind[i + 1]) {
+                this.calculationInfo = {
+                    uid: this.previous_bind[i + 1],
+                    page: 0,
+                    currentPPEntries: [...newList.values()],
+                };
+
                 await DatabaseManager.elainaDb.collections.userBind.update(
                     { discordid: this.discordid },
                     {
                         $set: {
-                            calculationInfo: {
-                                uid: uid,
-                                page: page,
-                                currentPPEntries: [...newList.values()],
-                            },
+                            calculationInfo: this.calculationInfo,
                         },
                     }
                 );
