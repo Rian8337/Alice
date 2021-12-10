@@ -137,8 +137,8 @@ export class DifficultyHitObjectCreator {
                     0,
                     Math.min(
                         object.jumpDistance -
-                        (this.maximumSliderRadius -
-                            this.assumedSliderRadius),
+                            (this.maximumSliderRadius -
+                                this.assumedSliderRadius),
                         tailJumpDistance - this.maximumSliderRadius
                     )
                 );
@@ -195,7 +195,9 @@ export class DifficultyHitObjectCreator {
             //
             // In the real game, this shouldn't happen. Perhaps we need to reinvestigate this
             // in the future.
-            if (Precision.almostEqualsNumber(slider.startTime, slider.endTime)) {
+            if (
+                Precision.almostEqualsNumber(slider.startTime, slider.endTime)
+            ) {
                 return;
             }
         }
@@ -257,7 +259,7 @@ export class DifficultyHitObjectCreator {
                 currentCursorPosition = currentCursorPosition.add(
                     currentMovement.scale(
                         (currentMovementLength - requiredMovement) /
-                        currentMovementLength
+                            currentMovementLength
                     )
                 );
                 currentMovementLength *=
@@ -304,7 +306,7 @@ export class DifficultyHitObjectCreator {
                             this.DROID_CIRCLESIZE_BUFF_THRESHOLD - radius,
                             20
                         ) /
-                        40;
+                            40;
                 }
                 break;
             case modes.osu:
@@ -315,7 +317,7 @@ export class DifficultyHitObjectCreator {
                             this.PC_CIRCLESIZE_BUFF_THRESHOLD - radius,
                             5
                         ) /
-                        50;
+                            50;
                 }
         }
 
