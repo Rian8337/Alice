@@ -135,7 +135,25 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const map: MainBeatmapData = mappoolMainData.map[index];
 
-    const scoreList: number[] = [];
+    const team1ScoreList: Score[] = [];
+    const team2ScoreList: Score[] = [];
+
+    for (let i = 0; i < playerList.length; ++i) {
+        (i % 2 ? team2ScoreList : team1ScoreList).push(
+            playerList[i].recentPlays[0]
+        );
+    }
+
+    const team1ScoreStatus: OperationResult = match.verifyTeamScore(
+        team1ScoreList,
+        map
+    );
+    const team2ScoreStatus: OperationResult = match.verifyTeamScore(
+        team2ScoreList,
+        map
+    );
+
+    const scoreV2List: number[] = [];
 
     let team1String: string = "";
     let team2String: string = "";
@@ -145,13 +163,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < playerList.length; ++i) {
         const score: Score = playerList[i].recentPlays[0];
 
+        const teamScoreStatus: OperationResult =
+            i % 2 ? team2ScoreStatus : team1ScoreStatus;
+
         const verificationResult: OperationResult = match.verifyScore(
             score,
             map,
             mappoolMainData.forcePR
         );
 
-        if (verificationResult.success) {
+        if (verificationResult.success && teamScoreStatus.success) {
             let scorev2: number = match.calculateScoreV2(
                 score.score,
                 score.accuracy.value(),
@@ -168,30 +189,38 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 scorev2 /= 0.59 / 0.56;
             }
 
-            scoreList.push(Math.round(scorev2));
+            scoreV2List.push(Math.round(scorev2));
         } else {
-            scoreList.push(0);
+            scoreV2List.push(0);
         }
 
         const scoreString: string = `${match.player[i][0]} - (${score.mods
             .map((v) => v.name)
-            .join(", ")}): **${scoreList.at(-1)!}** - ${score.rank} - ${(
+            .join(", ")}): **${scoreV2List.at(-1)!}** - ${score.rank} - ${(
             score.accuracy.value() * 100
         ).toFixed(2)}% - ${score.accuracy.nmiss} misses\n`;
-        const failString: string = `${match.player[i][0]} - (N/A): **0** - **${verificationResult.reason}**`;
+        const failString: string = `${match.player[i][0]} - (N/A): **0** - **${
+            !teamScoreStatus.success
+                ? teamScoreStatus.reason
+                : verificationResult.reason
+        }**`;
 
         if (i % 2 === 0) {
-            team1OverallScore += scoreList.at(-1)!;
+            if (teamScoreStatus.success) {
+                team1OverallScore += scoreV2List.at(-1)!;
+            }
 
-            if (verificationResult.success) {
+            if (teamScoreStatus.success && verificationResult.success) {
                 team1String += scoreString;
             } else {
                 team1String += failString;
             }
         } else {
-            team2OverallScore += scoreList.at(-1)!;
+            if (teamScoreStatus.success) {
+                team2OverallScore += scoreV2List.at(-1)!;
+            }
 
-            if (verificationResult.success) {
+            if (teamScoreStatus.success && verificationResult.success) {
                 team2String += scoreString;
             } else {
                 team2String += failString;
@@ -245,8 +274,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const summaryEmbed: MessageEmbed =
         EmbedCreator.createMatchSummaryEmbed(match);
 
-    for (let i = 0; i < scoreList.length; ++i) {
-        match.result[i].push(scoreList[i]);
+    for (let i = 0; i < scoreV2List.length; ++i) {
+        match.result[i].push(scoreV2List[i]);
     }
 
     const finalResult: OperationResult = await match.updateMatch();

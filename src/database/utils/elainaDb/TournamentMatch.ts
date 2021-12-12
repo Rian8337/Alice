@@ -8,6 +8,7 @@ import { Snowflake } from "discord.js";
 import {
     Mod,
     ModDoubleTime,
+    ModEasy,
     ModHardRock,
     ModHidden,
     ModNoFail,
@@ -133,6 +134,30 @@ export class TournamentMatch
     }
 
     /**
+     * Verifies whether a team's scores fulfill the criteria of team-wide criteria.
+     *
+     * @param scores The scores to verify.
+     * @param map The beatmap data to verify for.
+     */
+    verifyTeamScore(scores: Score[], map: MainBeatmapData): OperationResult {
+        if (map[0] !== "fm") {
+            return this.createOperationResult(true);
+        }
+
+        return this.createOperationResult(
+            scores.some((score) =>
+                score.mods.some(
+                    (m) =>
+                        m instanceof ModEasy ||
+                        m instanceof ModHidden ||
+                        m instanceof ModHardRock
+                )
+            ),
+            "No team members enabled HD/HR/EZ"
+        );
+    }
+
+    /**
      * Verifies whether a score fulfills the criteria of submitting a score.
      *
      * @param score The score to verify.
@@ -214,7 +239,7 @@ export class TournamentMatch
      * Calculates ScoreV2 of a score.
      *
      * @param score The score achieved.
-     * @param accuracy The accuracy achieved.
+     * @param accuracy The accuracy achieved, from 0 to 1.
      * @param misses The amount of misses achieved.
      * @param maxScore The maximum score value to use against the score.
      * @param comboPortion The value of how much combo affects ScoreV2, from 0 to 1.
@@ -229,7 +254,7 @@ export class TournamentMatch
     ): number {
         const tempScoreV2: number =
             (score / maxScore) * 1e6 * comboPortion +
-            Math.pow(accuracy, 4) * 1e6 * (1 - comboPortion);
+            Math.sqrt(accuracy) * 1e6 * (1 - comboPortion);
 
         return Math.max(0, tempScoreV2 - misses * 5e-3 * tempScoreV2);
     }
