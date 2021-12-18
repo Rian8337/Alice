@@ -253,8 +253,8 @@ export class TournamentMatch
         comboPortion: number
     ): number {
         const tempScoreV2: number =
-            (score / maxScore) * 1e6 * comboPortion +
-            Math.sqrt(accuracy) * 1e6 * (1 - comboPortion);
+            Math.sqrt(score / maxScore) * 1e6 * comboPortion +
+            Math.pow(accuracy, 2) * 1e6 * (1 - comboPortion);
 
         return Math.max(0, tempScoreV2 - misses * 5e-3 * tempScoreV2);
     }
