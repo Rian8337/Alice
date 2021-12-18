@@ -83,6 +83,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 `**Bind Information**: ${
                     bindInfo
                         ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})`
+                        : (await player.hasPlayedVerificationMap())
+                        ? "Has played verification beatmap"
                         : "Not binded"
                 }`
         );
