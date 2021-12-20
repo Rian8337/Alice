@@ -5,7 +5,7 @@ import {
     createAudioResource,
 } from "@discordjs/voice";
 import { Snowflake } from "discord.js";
-import { raw as ytdl } from "youtube-dl-exec";
+import { exec as ytdl } from "youtube-dl-exec";
 import { VideoSearchResult } from "yt-search";
 
 /**
