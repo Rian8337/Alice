@@ -35,10 +35,10 @@ export class MusicQueue {
             const process = ytdl(
                 this.information.url,
                 {
-                    o: "-",
-                    q: "",
-                    f: "bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio",
-                    r: "500K",
+                    output: "-",
+                    quiet: true,
+                    format: "bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio",
+                    limitRate: "250K",
                 },
                 { stdio: ["ignore", "pipe", "ignore"] }
             );

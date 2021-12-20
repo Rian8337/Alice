@@ -10,7 +10,6 @@ import {
     OptionalId,
     UpdateFilter,
     UpdateOptions,
-    WithId,
 } from "mongodb";
 
 /**
@@ -19,7 +18,7 @@ import {
 export abstract class DatabaseCollectionManager<
     T extends BaseDocument,
     C extends Manager
-> extends Manager {
+    > extends Manager {
     /**
      * The collection that this manager is responsible for.
      */
@@ -90,7 +89,7 @@ export abstract class DatabaseCollectionManager<
      */
     async get<K extends keyof T>(
         key: K,
-        filter?: Filter<WithId<T>>
+        filter?: Filter<T>
     ): Promise<DiscordCollection<T[K], C>>;
 
     /**
@@ -104,7 +103,7 @@ export abstract class DatabaseCollectionManager<
      */
     async get<K extends keyof T>(
         key: K,
-        filter: Filter<WithId<T>>,
+        filter: Filter<T>,
         options?: FindOptions<T>
     ): Promise<DiscordCollection<T[K], C>>;
 
@@ -119,7 +118,7 @@ export abstract class DatabaseCollectionManager<
      */
     async get<K extends keyof T>(
         key: K,
-        filter: Filter<WithId<T>>,
+        filter: Filter<T>,
         options: FindOptions<T>
     ): Promise<DiscordCollection<T[K], C>>;
 
@@ -134,7 +133,7 @@ export abstract class DatabaseCollectionManager<
      */
     async get<K extends keyof T>(
         key: K,
-        filter: Filter<WithId<T>> = {},
+        filter: Filter<T> = {},
         options?: FindOptions<T>
     ): Promise<DiscordCollection<T[K], C>> {
         const res: T[] = <T[]>(
