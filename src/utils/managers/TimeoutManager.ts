@@ -73,7 +73,7 @@ export abstract class TimeoutManager extends PunishmentManager {
             );
         }
 
-        if (!NumberHelper.isNumberInRange(duration, 30, 28 * 86400)) {
+        if (!NumberHelper.isNumberInRange(duration, 30, 28 * 86400, true)) {
             return this.createOperationResult(
                 false,
                 "timeout duration must be between 30 seconds and 28 days (4 weeks)"
