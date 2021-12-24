@@ -10,7 +10,7 @@ export interface RoleTimeoutPermission {
     id: Snowflake;
 
     /**
-     * The maximum time the role can timeouot a user.
+     * The maximum time the role can timeout a user.
      */
     maxTime: number;
 }
