@@ -24,10 +24,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         EmbedCreator.createMusicQueueEmbed(currentlyPlaying);
 
     embed
-        .setAuthor(
-            interaction.user.tag,
-            interaction.user.avatarURL({ dynamic: true })!
-        )
+        .setAuthor({
+            name: interaction.user.tag,
+            iconURL: interaction.user.avatarURL({ dynamic: true })!
+        })
         .setColor((<GuildMember>interaction.member).displayColor);
 
     interaction.editReply({

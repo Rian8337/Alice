@@ -68,25 +68,24 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     embed
-        .setAuthor(
-            `Player Information for ${player.username} (click to view profile)`,
-            interaction.user.avatarURL({ dynamic: true })!,
-            `http://ops.dgsrz.com/profile.php?uid=${player.uid}`
-        )
+        .setAuthor({
+            name: `Player Information for ${player.username} (click to view profile)`,
+            iconURL: interaction.user.avatarURL({ dynamic: true })!,
+            url: `http://ops.dgsrz.com/profile.php?uid=${player.uid}`
+        })
         .setThumbnail(player.avatarURL)
         .setDescription(
             `[Avatar Link](${player.avatarURL})\n\n` +
-                `**Uid**: ${player.uid}\n` +
-                `**Rank**: ${player.rank.toLocaleString()}\n` +
-                `**Play Count**: ${player.playCount.toLocaleString()}\n` +
-                `**Country**: ${player.location}\n\n` +
-                `**Bind Information**: ${
-                    bindInfo
-                        ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})`
-                        : (await player.hasPlayedVerificationMap())
-                        ? "Has played verification beatmap"
-                        : "Not binded"
-                }`
+            `**Uid**: ${player.uid}\n` +
+            `**Rank**: ${player.rank.toLocaleString()}\n` +
+            `**Play Count**: ${player.playCount.toLocaleString()}\n` +
+            `**Country**: ${player.location}\n\n` +
+            `**Bind Information**: ${bindInfo
+                ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})`
+                : (await player.hasPlayedVerificationMap())
+                    ? "Has played verification beatmap"
+                    : "Not binded"
+            }`
         );
 
     interaction.editReply({

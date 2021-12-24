@@ -21,11 +21,11 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     const unbanLog:
         | GuildAuditLogsEntry<
-              "MEMBER_BAN_REMOVE",
-              "MEMBER_BAN_REMOVE",
-              "CREATE",
-              "USER"
-          >
+            "MEMBER_BAN_REMOVE",
+            "MEMBER_BAN_REMOVE",
+            "CREATE",
+            "USER"
+        >
         | undefined = auditLogEntries.entries.first();
 
     if (!unbanLog) {
@@ -71,10 +71,10 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         );
 
     if (unbanLog.executor) {
-        embed.setAuthor(
-            unbanLog.executor.tag,
-            unbanLog.executor.avatarURL({ dynamic: true })!
-        );
+        embed.setAuthor({
+            name: unbanLog.executor.tag,
+            iconURL: unbanLog.executor.avatarURL({ dynamic: true })!,
+        });
     }
 
     logChannel.send({ embeds: [embed] });

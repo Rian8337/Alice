@@ -50,11 +50,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 
     embed
-        .setAuthor(
-            `Daily/Weekly Challenge Profile for ${playerInfo.username}`,
-            "https://image.frl/p/beyefgeq5m7tobjg.jpg",
-            ProfileManager.getProfileLink(playerInfo.uid).toString()
-        )
+        .setAuthor({
+            name: `Daily/Weekly Challenge Profile for ${playerInfo.username}`,
+            iconURL: "https://image.frl/p/beyefgeq5m7tobjg.jpg",
+            url: ProfileManager.getProfileLink(playerInfo.uid).toString()
+        })
         .addField(
             "Statistics",
             `**Points**: ${playerInfo.points}\n**Alice Coins**: ${coin}${playerInfo.alicecoins}\n**Challenges completed**: ${playerInfo.challenges.size}`
