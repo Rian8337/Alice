@@ -41,9 +41,8 @@ export abstract class BanManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(
-            banned.guild
-        );
+        const logChannel: GuildChannel | null =
+            await guildConfig.getGuildLogChannel(banned.guild);
 
         if (!logChannel) {
             return this.createOperationResult(
@@ -117,9 +116,8 @@ export abstract class BanManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(
-            interaction.guild!
-        );
+        const logChannel: GuildChannel | null =
+            await guildConfig.getGuildLogChannel(interaction.guild!);
 
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(

@@ -1,17 +1,16 @@
 import { Snowflake } from "discord.js";
 
 /**
- * Represents an information about a role's mute permission.
+ * Represents an information about a role's timeout permission.
  */
-export interface RoleMutePermission {
+export interface RoleTimeoutPermission {
     /**
      * The ID of the role.
      */
     id: Snowflake;
 
     /**
-     * The maximum time the role can mute a user. If the role can
-     * permanently mute a user, this will be -1.
+     * The maximum time the role can timeouot a user.
      */
     maxTime: number;
 }

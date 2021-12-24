@@ -53,12 +53,16 @@ export const config: Command["config"] = {
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description:
                         "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1.",
+                    minValue: 1,
+                    maxValue: 5,
                 },
                 {
                     name: "offset",
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description:
                         "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50.",
+                    minValue: 1,
+                    maxValue: 50,
                 },
             ],
         },

@@ -95,6 +95,8 @@ export const config: Command["config"] = {
             type: ApplicationCommandOptionTypes.INTEGER,
             description:
                 "The page to display, ranging from 1 to 10. Defaults to 1.",
+            minValue: 1,
+            maxValue: 10,
         },
         {
             name: "user",

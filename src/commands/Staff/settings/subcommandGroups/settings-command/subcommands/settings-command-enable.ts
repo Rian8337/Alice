@@ -63,7 +63,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
 
             result = await CommandUtilManager.setCommandCooldownInGuild(
-                interaction.guildId,
+                interaction.guildId!,
                 commandName,
                 0
             );

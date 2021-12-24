@@ -139,6 +139,8 @@ export const config: Command["config"] = {
             type: ApplicationCommandOptionTypes.INTEGER,
             description:
                 "The n-th play to show, ranging from 1 to 50. Defaults to the most recent play.",
+            minValue: 1,
+            maxValue: 50,
         },
     ],
     example: [

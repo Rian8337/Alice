@@ -13,18 +13,26 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const auditLogEntries: GuildAuditLogs = await guildBan.guild.fetchAuditLogs(
-        { limit: 1, type: "MEMBER_BAN_ADD" }
-    );
+    const auditLogEntries: GuildAuditLogs<"MEMBER_BAN_ADD"> =
+        await guildBan.guild.fetchAuditLogs({
+            limit: 1,
+            type: "MEMBER_BAN_ADD",
+        });
 
-    const banLog: GuildAuditLogsEntry | undefined =
-        auditLogEntries.entries.first();
+    const banLog:
+        | GuildAuditLogsEntry<
+              "MEMBER_BAN_ADD",
+              "MEMBER_BAN_ADD",
+              "DELETE",
+              "USER"
+          >
+        | undefined = auditLogEntries.entries.first();
 
     if (!banLog) {
         return;
     }
 
-    const target: User = <User>banLog.target;
+    const target: User = banLog.target!;
 
     if (target.id !== guildBan.user.id) {
         return;

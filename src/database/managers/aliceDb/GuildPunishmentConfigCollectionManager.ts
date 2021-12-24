@@ -20,10 +20,9 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     override get defaultDocument(): DatabaseGuildPunishmentConfig {
         return {
-            allowedMuteRoles: [],
-            currentMutes: [],
+            allowedTimeoutRoles: [],
             guildID: "",
-            immuneMuteRoles: [],
+            immuneTimeoutRoles: [],
             logChannel: "",
         };
     }

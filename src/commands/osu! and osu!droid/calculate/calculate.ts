@@ -156,6 +156,8 @@ export const config: Command["config"] = {
             name: "accuracy",
             type: ApplicationCommandOptionTypes.NUMBER,
             description: "The accuracy gained, from 0 to 100. Defaults to 100.",
+            minValue: 0,
+            maxValue: 100,
         },
         {
             name: "x100",
@@ -179,12 +181,16 @@ export const config: Command["config"] = {
             type: ApplicationCommandOptionTypes.NUMBER,
             description:
                 "The Approach Rate (AR) to be forced in calculation, from 0 to 12.5. Defaults to the beatmap's AR.",
+            minValue: 0,
+            maxValue: 12.5,
         },
         {
             name: "speedmultiplier",
             type: ApplicationCommandOptionTypes.NUMBER,
             description:
                 "The speed multiplier to calculate for (stackable with modifications) from 0.5 to 2. Defaults to 1.",
+            minValue: 0.5,
+            maxValue: 2,
         },
         {
             name: "showdroiddetail",

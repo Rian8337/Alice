@@ -5,7 +5,7 @@ import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.guildPunishmentConfig.unsetGuildLogChannel(
-        interaction.guildId
+        interaction.guildId!
     );
 
     interaction.editReply({

@@ -10,7 +10,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-            interaction.guildId
+            interaction.guildId!
         );
 
     if (!guildConfig) {

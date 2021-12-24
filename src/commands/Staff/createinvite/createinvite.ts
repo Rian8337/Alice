@@ -86,6 +86,7 @@ export const config: Command["config"] = {
             type: ApplicationCommandOptionTypes.INTEGER,
             description:
                 "The maximum usage until the invite link expires. Defaults to no limit.",
+            minValue: 0,
         },
         {
             name: "reason",

@@ -63,7 +63,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             break;
         case "guild":
             await CommandUtilManager.disableUtilityInGuild(
-                interaction.guildId,
+                interaction.guildId!,
                 event,
                 utility
             );

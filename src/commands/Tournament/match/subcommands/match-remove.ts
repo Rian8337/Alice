@@ -3,7 +3,7 @@ import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch"
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Channel, ThreadChannel } from "discord.js";
+import { AnyChannel, ThreadChannel } from "discord.js";
 import { matchStrings } from "../matchStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -39,7 +39,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (match.channelId) {
-        const channel: Channel | null = await client.channels.fetch(
+        const channel: AnyChannel | null = await client.channels.fetch(
             match.channelId
         );
 

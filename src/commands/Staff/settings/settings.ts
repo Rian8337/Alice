@@ -35,6 +35,8 @@ export const config: Command["config"] = {
                             type: ApplicationCommandOptionTypes.NUMBER,
                             description:
                                 "The duration of the cooldown in seconds, ranging from 5 to 3600.",
+                            minValue: 5,
+                            maxValue: 3600,
                         },
                         {
                             name: "scope",
@@ -135,6 +137,8 @@ export const config: Command["config"] = {
                             type: ApplicationCommandOptionTypes.NUMBER,
                             description:
                                 "The duration of the cooldown, ranging from 5 to 3600.",
+                            minValue: 5,
+                            maxValue: 3600,
                         },
                     ],
                 },

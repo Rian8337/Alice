@@ -1,6 +1,5 @@
 import { Snowflake } from "discord.js";
-import { Mute } from "@alice-interfaces/moderation/Mute";
-import { RoleMutePermission } from "@alice-interfaces/moderation/RoleMutePermission";
+import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleMutePermission";
 import { BaseDocument } from "../BaseDocument";
 
 /**
@@ -18,17 +17,12 @@ export interface DatabaseGuildPunishmentConfig extends BaseDocument {
     logChannel: Snowflake;
 
     /**
-     * Configuration for roles that are allowed to use mute commands.
+     * Configuration for roles that are allowed to timeout members.
      */
-    allowedMuteRoles: RoleMutePermission[];
+    allowedTimeoutRoles: RoleTimeoutPermission[];
 
     /**
      * Roles that cannot be muted.
      */
-    immuneMuteRoles: Snowflake[];
-
-    /**
-     * Temporary mutes that are currently active in the guild.
-     */
-    currentMutes: Mute[];
+    immuneTimeoutRoles: Snowflake[];
 }

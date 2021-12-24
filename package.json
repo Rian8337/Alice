@@ -4,6 +4,7 @@
   "description": "A Discord bot for osu!droid",
   "main": "dist/main.js",
   "scripts": {
+    "analyze-code": "npx eslint \"src/**\"",
     "compile-windows": "rmdir dist /s /q & npm run compile-build",
     "compile-linux": "rm -rf dist & npm run compile-build",
     "compile-build": "tsc --build tsconfig.json",
@@ -44,7 +45,7 @@
     "canvas": "^2.8.0",
     "consola": "^2.15.3",
     "d3": "^6.7.0",
-    "discord.js": "^13.3.1",
+    "discord.js": "^13.4.0",
     "dotenv": "^10.0.0",
     "html-entities": "^2.3.2",
     "libsodium-wrappers": "^0.7.9",

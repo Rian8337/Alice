@@ -29,6 +29,8 @@ export const config: Command["config"] = {
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The month of birthday, ranging from 1 to 12.",
+                    minValue: 1,
+                    maxValue: 12,
                 },
                 {
                     name: "date",
@@ -36,13 +38,17 @@ export const config: Command["config"] = {
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description:
                         "The date of the birthday, ranging from 1 to the max date of the month.",
+                    minValue: 1,
+                    maxValue: 31,
                 },
                 {
                     name: "timezone",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description:
-                        "The timezone of the user, ranging from -12 to 14. Decimals are supported (e.g. UTC+5:30 = 5.5).",
+                        "The timezone of the user, ranging from -12 to 14.",
+                    minValue: -12,
+                    maxValue: 14,
                 },
             ],
         },
@@ -56,6 +62,8 @@ export const config: Command["config"] = {
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The month of birthday, ranging from 1 to 12.",
+                    minValue: 1,
+                    maxValue: 12,
                 },
                 {
                     name: "date",
@@ -63,6 +71,8 @@ export const config: Command["config"] = {
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description:
                         "The date of the birthday, ranging from 1 to the max date of the month.",
+                    minValue: 1,
+                    maxValue: 31,
                 },
                 {
                     name: "timezone",
@@ -70,6 +80,8 @@ export const config: Command["config"] = {
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description:
                         "The timezone of the user, ranging from -12 to 14.",
+                    minValue: -12,
+                    maxValue: 14,
                 },
             ],
         },

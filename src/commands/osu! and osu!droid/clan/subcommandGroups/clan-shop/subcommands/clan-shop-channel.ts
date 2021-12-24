@@ -111,7 +111,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         guild.channels.cache.get("696663321633357844")
     )).position;
 
-    const clanChannel: TextChannel = await guild.channels.create(clan.name, {
+    const clanChannel: GuildChannel = await guild.channels.create(clan.name, {
         topic: `Clan chat for ${clan.name} clan.`,
         parent: "696646649128288346",
         permissionOverwrites: [

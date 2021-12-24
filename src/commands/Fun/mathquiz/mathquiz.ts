@@ -6,7 +6,6 @@ import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { mathquizStrings } from "./mathquizStrings";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 export const run: Command["run"] = async (_, interaction) => {
@@ -20,41 +19,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const level: number = interaction.options.getInteger("difflevel") ?? 1;
 
-    const minLevel: number = 1;
-    const maxLevel: number = 20;
-
-    if (!NumberHelper.isNumberInRange(level, minLevel, maxLevel, true)) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(
-                mathquizStrings.difficultyLevelOutOfRange,
-                minLevel.toString(),
-                maxLevel.toString()
-            ),
-        });
-    }
-
     const operatorAmount: number =
         interaction.options.getInteger("operatoramount") ?? 4;
-
-    const minOperatorAmount: number = 1;
-    const maxOperatorAmount: number = 10;
-
-    if (
-        !NumberHelper.isNumberInRange(
-            operatorAmount,
-            minOperatorAmount,
-            maxOperatorAmount,
-            true
-        )
-    ) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(
-                mathquizStrings.operatorAmountOutOfRange,
-                minOperatorAmount.toString(),
-                maxOperatorAmount.toString()
-            ),
-        });
-    }
 
     const mathEquation: MathEquation = MathEquationCreator.createEquation(
         level,
@@ -138,12 +104,16 @@ export const config: Command["config"] = {
             type: ApplicationCommandOptionTypes.INTEGER,
             description:
                 "The difficulty level of the equation, ranging from 1 to 20. Defaults to 1.",
+            minValue: 1,
+            maxValue: 20,
         },
         {
             name: "operatoramount",
             type: ApplicationCommandOptionTypes.INTEGER,
             description:
                 "The amount of operators to be used in the equation, ranging from 1 to 10. Defaults to 4.",
+            minValue: 1,
+            maxValue: 10,
         },
     ],
     example: [

@@ -1,8 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { Mute } from "@alice-interfaces/moderation/Mute";
-import { RoleMutePermission } from "@alice-interfaces/moderation/RoleMutePermission";
+import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleMutePermission";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
@@ -23,19 +22,14 @@ export class GuildPunishmentConfig extends Manager {
     logChannel: Snowflake;
 
     /**
-     * Configuration for roles that are allowed to use mute commands, mapped by role ID.
+     * Configuration for roles that are allowed to timeout members, mapped by role ID.
      */
-    allowedMuteRoles: Collection<Snowflake, RoleMutePermission>;
+    allowedTimeoutRoles: Collection<Snowflake, RoleTimeoutPermission>;
 
     /**
-     * Roles that cannot be muted.
+     * Roles that cannot be timeouted.
      */
-    immuneMuteRoles: Snowflake[];
-
-    /**
-     * Temporary mutes that are currently active in the guild, mapped by user ID.
-     */
-    currentMutes: Collection<Snowflake, Mute>;
+    immuneTimeoutRoles: Snowflake[];
 
     /**
      * The BSON object ID of this document in the database.
@@ -51,15 +45,11 @@ export class GuildPunishmentConfig extends Manager {
         this._id = data._id;
         this.guildID = data.guildID;
         this.logChannel = data.logChannel;
-        this.allowedMuteRoles = ArrayHelper.arrayToCollection(
-            data.allowedMuteRoles ?? [],
+        this.allowedTimeoutRoles = ArrayHelper.arrayToCollection(
+            data.allowedTimeoutRoles ?? [],
             "id"
         );
-        this.immuneMuteRoles = data.immuneMuteRoles ?? [];
-        this.currentMutes = ArrayHelper.arrayToCollection(
-            data.currentMutes ?? [],
-            "userID"
-        );
+        this.immuneTimeoutRoles = data.immuneTimeoutRoles ?? [];
     }
 
     /**
@@ -68,8 +58,8 @@ export class GuildPunishmentConfig extends Manager {
      * @param guild The guild instance.
      * @returns The guild's log channel, `null` if not found.
      */
-    getGuildLogChannel(guild: Guild): GuildChannel | null {
-        return <GuildChannel | null>guild.channels.resolve(this.logChannel);
+    getGuildLogChannel(guild: Guild): Promise<GuildChannel | null> {
+        return guild.channels.fetch(this.logChannel);
     }
 
     /**
@@ -79,11 +69,11 @@ export class GuildPunishmentConfig extends Manager {
      * @returns An object containing information about the operation.
      */
     async grantMuteImmunity(roleId: Snowflake): Promise<OperationResult> {
-        if (this.immuneMuteRoles.find((r) => r === roleId)) {
+        if (this.immuneTimeoutRoles.find((r) => r === roleId)) {
             return this.createOperationResult(true);
         }
 
-        this.immuneMuteRoles.push(roleId);
+        this.immuneTimeoutRoles.push(roleId);
 
         return DatabaseManager.aliceDb.collections.guildPunishmentConfig.update(
             { guildID: this.guildID },
@@ -102,7 +92,7 @@ export class GuildPunishmentConfig extends Manager {
      * @returns An object containing information about the operation.
      */
     async revokeMuteImmunity(roleId: Snowflake): Promise<OperationResult> {
-        const index: number = this.immuneMuteRoles.findIndex(
+        const index: number = this.immuneTimeoutRoles.findIndex(
             (r) => r === roleId
         );
 
@@ -110,7 +100,7 @@ export class GuildPunishmentConfig extends Manager {
             return this.createOperationResult(true);
         }
 
-        this.immuneMuteRoles.splice(index, 1);
+        this.immuneTimeoutRoles.splice(index, 1);
 
         return DatabaseManager.aliceDb.collections.guildPunishmentConfig.update(
             { guildID: this.guildID },
@@ -132,20 +122,20 @@ export class GuildPunishmentConfig extends Manager {
         roleId: Snowflake,
         maxTime: number
     ): Promise<OperationResult> {
-        const roleMutePermission: RoleMutePermission | undefined =
-            this.allowedMuteRoles.get(roleId);
+        const roleMutePermission: RoleTimeoutPermission | undefined =
+            this.allowedTimeoutRoles.get(roleId);
 
         if (roleMutePermission?.maxTime === maxTime) {
             return this.createOperationResult(true);
         }
 
-        this.allowedMuteRoles.set(roleId, { id: roleId, maxTime: maxTime });
+        this.allowedTimeoutRoles.set(roleId, { id: roleId, maxTime: maxTime });
 
         return DatabaseManager.aliceDb.collections.guildPunishmentConfig.update(
             { guildID: this.guildID },
             {
                 $set: {
-                    allowedMuteRoles: [...this.allowedMuteRoles.values()],
+                    allowedMuteRoles: [...this.allowedTimeoutRoles.values()],
                 },
             }
         );
@@ -158,7 +148,7 @@ export class GuildPunishmentConfig extends Manager {
      * @returns An object containing information about the operation.
      */
     async revokeMutePermission(roleId: Snowflake): Promise<OperationResult> {
-        if (!this.allowedMuteRoles.delete(roleId)) {
+        if (!this.allowedTimeoutRoles.delete(roleId)) {
             return this.createOperationResult(true);
         }
 
@@ -166,11 +156,9 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $set: {
-                    allowedMuteRoles: [...this.allowedMuteRoles.values()],
+                    allowedMuteRoles: [...this.allowedTimeoutRoles.values()],
                 },
             }
         );
     }
-
-    // TODO: methods for managing mutes, immunity, allowing, etc.
 }

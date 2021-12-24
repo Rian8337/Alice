@@ -6,7 +6,7 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { MuteManager } from "@alice-utils/managers/MuteManager";
+import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
 import {
     Collection,
     Guild,
@@ -112,7 +112,7 @@ export const run: EventUtil["run"] = async (client) => {
 
             const member: GuildMember = <GuildMember>i.member;
 
-            if (MuteManager.isUserMuted(member)) {
+            if (TimeoutManager.isUserMuted(member)) {
                 i.reply(mutedRejectionOptions);
 
                 return;

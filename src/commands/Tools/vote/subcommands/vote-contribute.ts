@@ -55,7 +55,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (voteInfo.xpReq) {
         const userXP: number | null = await RESTManager.getUserTatsuXP(
-            interaction.guildId,
+            interaction.guildId!,
             interaction.user.id
         );
 

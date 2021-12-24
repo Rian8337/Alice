@@ -82,9 +82,8 @@ export abstract class LoungeLockManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(
-            this.mainServer
-        );
+        const logChannel: GuildChannel | null =
+            await guildConfig.getGuildLogChannel(this.mainServer);
 
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
@@ -179,9 +178,8 @@ export abstract class LoungeLockManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(
-            this.mainServer
-        );
+        const logChannel: GuildChannel | null =
+            await guildConfig.getGuildLogChannel(this.mainServer);
 
         if (!logChannel) {
             return this.createOperationResult(

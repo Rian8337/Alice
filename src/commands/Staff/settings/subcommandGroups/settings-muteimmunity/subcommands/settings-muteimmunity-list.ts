@@ -26,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const immuneMuteRoles: Snowflake[] = guildConfig.immuneMuteRoles;
+    const immuneMuteRoles: Snowflake[] = guildConfig.immuneTimeoutRoles;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,

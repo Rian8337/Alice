@@ -11,7 +11,7 @@ import { MongoClient } from "mongodb";
 import consola, { Consola } from "consola";
 import { Command } from "@alice-interfaces/core/Command";
 import { Event } from "@alice-interfaces/core/Event";
-import { MuteManager } from "@alice-utils/managers/MuteManager";
+import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
@@ -319,7 +319,7 @@ export class Bot extends Client {
         ProfileManager.init();
         await CommandUtilManager.init();
         await LoungeLockManager.init();
-        await MuteManager.init();
+        await TimeoutManager.init();
         await WhitelistManager.init();
     }
 

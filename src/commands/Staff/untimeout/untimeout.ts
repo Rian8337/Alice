@@ -4,23 +4,23 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MuteManager } from "@alice-utils/managers/MuteManager";
-import { unmuteStrings } from "./unmuteStrings";
+import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
+import { untimeoutStrings } from "./untimeoutStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const toUnmute: GuildMember = await interaction.guild!.members.fetch(
+    const toUntimeout: GuildMember = await interaction.guild!.members.fetch(
         interaction.options.getUser("user", true)
     );
 
     if (
-        !(await MuteManager.userCanMute(
+        !(await TimeoutManager.userCanMute(
             <GuildMember>interaction.member,
             Number.POSITIVE_INFINITY
         ))
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                unmuteStrings.userCannotUnmuteError
+                untimeoutStrings.userCannotUntimeoutError
             ),
         });
     }
@@ -28,8 +28,8 @@ export const run: Command["run"] = async (_, interaction) => {
     const reason: string =
         interaction.options.getString("reason") ?? "Not specified.";
 
-    const result: OperationResult = await MuteManager.removeMute(
-        toUnmute,
+    const result: OperationResult = await TimeoutManager.removeMute(
+        toUntimeout,
         interaction,
         reason
     );
@@ -37,39 +37,41 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                unmuteStrings.unmuteFailed,
-                <string>result.reason
+                untimeoutStrings.untimeoutFailed,
+                result.reason!
             ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(unmuteStrings.unmuteSuccessful),
+        content: MessageCreator.createAccept(
+            untimeoutStrings.untimeoutSuccessful
+        ),
     });
 };
 
 export const category: Command["category"] = CommandCategory.STAFF;
 
 export const config: Command["config"] = {
-    name: "unmute",
-    description: `Unmutes a user. This command's permission can be configured using the /settings command.`,
+    name: "untimeout",
+    description: `Untimeouts a user. This command's permission can be configured using the /settings command.`,
     options: [
         {
             name: "user",
             required: true,
             type: ApplicationCommandOptionTypes.USER,
-            description: "The user to unmute.",
+            description: "The user to untimeout.",
         },
         {
             name: "reason",
             type: ApplicationCommandOptionTypes.STRING,
             description:
-                "The reason for unmuting the user. Maximum length is 1500 characters.",
+                "The reason for untimeouting the user. Maximum length is 1500 characters.",
         },
     ],
     example: [
         {
-            command: "unmute",
+            command: "untimeout",
             arguments: [
                 {
                     name: "user",
@@ -80,10 +82,10 @@ export const config: Command["config"] = {
                     value: "boo",
                 },
             ],
-            description: 'will unmute Rian8337 for "boo".',
+            description: 'will untimeout Rian8337 for "boo".',
         },
         {
-            command: "unmute",
+            command: "untimeout",
             arguments: [
                 {
                     name: "user",
@@ -94,7 +96,8 @@ export const config: Command["config"] = {
                     value: "bad",
                 },
             ],
-            description: 'will unmute the user with that Discord ID for "bad".',
+            description:
+                'will untimeout the user with that Discord ID for "bad".',
         },
     ],
     permissions: ["SPECIAL"],

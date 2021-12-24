@@ -52,6 +52,8 @@ export const config: Command["config"] = {
                             type: ApplicationCommandOptionTypes.INTEGER,
                             description:
                                 "The position at which to insert the new YouTube URL on, ranging from 1 to 10. Defaults to latest.",
+                            minValue: 1,
+                            maxValue: 10,
                         },
                     ],
                 },
@@ -199,6 +201,8 @@ export const config: Command["config"] = {
                             type: ApplicationCommandOptionTypes.INTEGER,
                             description:
                                 "The position at which to insert this queue in, ranging from 1 to 10. Defaults to latest.",
+                            minValue: 1,
+                            maxValue: 10,
                         },
                     ],
                 },
@@ -213,6 +217,8 @@ export const config: Command["config"] = {
                             type: ApplicationCommandOptionTypes.INTEGER,
                             description:
                                 "The position of the item to remove, ranging from 1 to 10.",
+                            minValue: 1,
+                            maxValue: 10,
                         },
                     ],
                 },

@@ -165,6 +165,8 @@ export const config: Command["config"] = {
             type: ApplicationCommandOptionTypes.INTEGER,
             description:
                 "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Defaults to 1.",
+            minValue: 1,
+            maxValue: 15,
         },
     ],
     example: [

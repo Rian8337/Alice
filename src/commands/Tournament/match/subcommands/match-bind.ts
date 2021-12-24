@@ -3,13 +3,13 @@ import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch"
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { TextBasedChannels, TextChannel, ThreadChannel } from "discord.js";
+import { TextBasedChannel, TextChannel, ThreadChannel } from "discord.js";
 import { matchStrings } from "../matchStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const id: string = interaction.options.getString("id", true);
 
-    const channel: TextBasedChannels = interaction.channel!;
+    const channel: TextBasedChannel = interaction.channel!;
 
     if (!(channel instanceof TextChannel)) {
         return interaction.editReply({

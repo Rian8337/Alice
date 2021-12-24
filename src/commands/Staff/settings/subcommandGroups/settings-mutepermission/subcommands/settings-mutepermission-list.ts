@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { RoleMutePermission } from "@alice-interfaces/moderation/RoleMutePermission";
+import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleMutePermission";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -28,8 +28,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const allowedMuteRoles: Collection<string, RoleMutePermission> =
-        guildConfig.allowedMuteRoles;
+    const allowedMuteRoles: Collection<string, RoleTimeoutPermission> =
+        guildConfig.allowedTimeoutRoles;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
@@ -41,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const onPageChange: OnButtonPageChange = async (
         _,
         page,
-        contents: RoleMutePermission[]
+        contents: RoleTimeoutPermission[]
     ) => {
         embed.setDescription(
             contents

@@ -20,9 +20,8 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(
-        guildBan.guild
-    );
+    const logChannel: GuildChannel | null =
+        await guildConfig.getGuildLogChannel(guildBan.guild);
 
     if (!(logChannel instanceof TextChannel)) {
         return;

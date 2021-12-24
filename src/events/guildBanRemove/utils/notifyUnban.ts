@@ -13,18 +13,26 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 
 export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
-    const auditLogEntries: GuildAuditLogs = await guildBan.guild.fetchAuditLogs(
-        { limit: 1, type: "MEMBER_BAN_REMOVE" }
-    );
+    const auditLogEntries: GuildAuditLogs<"MEMBER_BAN_REMOVE"> =
+        await guildBan.guild.fetchAuditLogs({
+            limit: 1,
+            type: "MEMBER_BAN_REMOVE",
+        });
 
-    const unbanLog: GuildAuditLogsEntry | undefined =
-        auditLogEntries.entries.first();
+    const unbanLog:
+        | GuildAuditLogsEntry<
+              "MEMBER_BAN_REMOVE",
+              "MEMBER_BAN_REMOVE",
+              "CREATE",
+              "USER"
+          >
+        | undefined = auditLogEntries.entries.first();
 
     if (!unbanLog) {
         return;
     }
 
-    const user: User = <User>unbanLog.target;
+    const user: User = unbanLog.target!;
 
     if (user.id !== guildBan.user.id) {
         return;
@@ -39,9 +47,8 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(
-        guildBan.guild
-    );
+    const logChannel: GuildChannel | null =
+        await guildConfig.getGuildLogChannel(guildBan.guild);
 
     if (!(logChannel instanceof TextChannel)) {
         return;

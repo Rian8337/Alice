@@ -18,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     await DatabaseManager.aliceDb.collections.guildPunishmentConfig.setGuildLogChannel(
-        interaction.guildId,
+        interaction.guildId!,
         channel.id
     );
 
