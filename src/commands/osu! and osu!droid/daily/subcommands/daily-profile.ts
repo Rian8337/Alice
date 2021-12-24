@@ -53,7 +53,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         .setAuthor({
             name: `Daily/Weekly Challenge Profile for ${playerInfo.username}`,
             iconURL: "https://image.frl/p/beyefgeq5m7tobjg.jpg",
-            url: ProfileManager.getProfileLink(playerInfo.uid).toString()
+            url: ProfileManager.getProfileLink(playerInfo.uid).toString(),
         })
         .addField(
             "Statistics",

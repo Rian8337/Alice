@@ -105,8 +105,9 @@ export const run: Command["run"] = async (_, interaction) => {
             playername:
                 data.replayVersion < 3 ? score.username : data.playerName,
             replayfile: `${score.scoreID}.odr`,
-            mod: `${score.mods.map((v) => v.droidString).join("")}${score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
-                }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
+            mod: `${score.mods.map((v) => v.droidString).join("")}${
+                score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
+            }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
             score: score.score,
             combo: score.combo,
             mark: score.rank,
@@ -124,8 +125,8 @@ export const run: Command["run"] = async (_, interaction) => {
                         ? 1
                         : 0
                     : data.isFullCombo
-                        ? 1
-                        : 0,
+                    ? 1
+                    : 0,
         },
     };
 
@@ -133,7 +134,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const replayAttachment: MessageAttachment = new MessageAttachment(
         zip.toBuffer(),
-        `${data.fileName.substring(0, data.fileName.length - 4)} [${data.playerName
+        `${data.fileName.substring(0, data.fileName.length - 4)} [${
+            data.playerName
         }]-${json.replaydata.time}.edr`
     );
 
@@ -156,7 +158,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const calcResult: PerformanceCalculationResult = <
         PerformanceCalculationResult
-        >await BeatmapDifficultyHelper.calculateScorePerformance(score);
+    >await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(
@@ -171,7 +173,8 @@ export const run: Command["run"] = async (_, interaction) => {
     (<MessageEmbed>calcEmbedOptions.embeds![0])
         .setAuthor({
             name: `Play Information for ${score.username}`,
-            iconURL: (<MessageEmbed>calcEmbedOptions.embeds![0]).author?.iconURL
+            iconURL: (<MessageEmbed>calcEmbedOptions.embeds![0]).author
+                ?.iconURL,
         })
         .addField(
             "Hit Error Information",

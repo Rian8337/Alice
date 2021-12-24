@@ -26,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     embed
         .setAuthor({
             name: interaction.user.tag,
-            iconURL: interaction.user.avatarURL({ dynamic: true })!
+            iconURL: interaction.user.avatarURL({ dynamic: true })!,
         })
         .setColor((<GuildMember>interaction.member).displayColor);
 

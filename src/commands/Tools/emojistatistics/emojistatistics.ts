@@ -45,9 +45,9 @@ export const run: Command["run"] = async (_, interaction) => {
         const months: number = Math.max(
             1,
             (currentDate.getUTCFullYear() - dateCreation.getUTCFullYear()) *
-            12 +
-            currentDate.getUTCMonth() -
-            dateCreation.getUTCMonth()
+                12 +
+                currentDate.getUTCMonth() -
+                dateCreation.getUTCMonth()
         );
 
         validEmojis.push({
@@ -81,10 +81,11 @@ export const run: Command["run"] = async (_, interaction) => {
     embed
         .setAuthor({
             name: `Emoji Statistics for ${interaction.guild!.name}`,
-            iconURL: interaction.guild!.iconURL({ dynamic: true })!
+            iconURL: interaction.guild!.iconURL({ dynamic: true })!,
         })
         .setDescription(
-            `**Sort Mode**: ${sortOption === "overall" ? "Overall" : "Average per month"
+            `**Sort Mode**: ${
+                sortOption === "overall" ? "Overall" : "Average per month"
             } usage`
         );
 
@@ -97,15 +98,15 @@ export const run: Command["run"] = async (_, interaction) => {
             embed.addField(
                 `${i + 1}. ${validEmojis[i].emoji.name}`,
                 `**Emoji**: ${validEmojis[i].emoji}\n` +
-                `**Date Creation**: ${validEmojis[
-                    i
-                ].emoji.createdAt.toUTCString()}\n` +
-                `**Overall Usage**: ${validEmojis[
-                    i
-                ].count.toLocaleString()}\n` +
-                `**Average Per Month Usage**: ${validEmojis[
-                    i
-                ].averagePerMonth.toLocaleString()}`
+                    `**Date Creation**: ${validEmojis[
+                        i
+                    ].emoji.createdAt.toUTCString()}\n` +
+                    `**Overall Usage**: ${validEmojis[
+                        i
+                    ].count.toLocaleString()}\n` +
+                    `**Average Per Month Usage**: ${validEmojis[
+                        i
+                    ].averagePerMonth.toLocaleString()}`
             );
         }
     };
