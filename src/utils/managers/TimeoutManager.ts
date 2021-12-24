@@ -141,11 +141,12 @@ export abstract class TimeoutManager extends PunishmentManager {
             )
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} in ${interaction.channel
+                `**${member} in ${
+                    interaction.channel
                 } for ${DateTimeFormatHelper.secondsToDHMS(duration)}**\n\n` +
-                `=========================\n\n` +
-                `**Reason**:\n` +
-                reason
+                    `=========================\n\n` +
+                    `**Reason**:\n` +
+                    reason
             );
 
         try {
@@ -245,9 +246,9 @@ export abstract class TimeoutManager extends PunishmentManager {
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} in ${interaction.channel}**\n\n` +
-                `=========================\n\n` +
-                `**Reason**:\n` +
-                reason
+                    `=========================\n\n` +
+                    `**Reason**:\n` +
+                    reason
             );
 
         await logChannel.send({ embeds: [untimeoutEmbed] });
