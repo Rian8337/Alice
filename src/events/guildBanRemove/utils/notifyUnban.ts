@@ -21,11 +21,11 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     const unbanLog:
         | GuildAuditLogsEntry<
-            "MEMBER_BAN_REMOVE",
-            "MEMBER_BAN_REMOVE",
-            "CREATE",
-            "USER"
-        >
+              "MEMBER_BAN_REMOVE",
+              "MEMBER_BAN_REMOVE",
+              "CREATE",
+              "USER"
+          >
         | undefined = auditLogEntries.entries.first();
 
     if (!unbanLog) {

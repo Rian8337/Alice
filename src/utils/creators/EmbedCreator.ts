@@ -94,7 +94,7 @@ export abstract class EmbedCreator {
         if (embedOptions.author) {
             embed.setAuthor({
                 name: embedOptions.author.tag,
-                iconURL: embedOptions.author.avatarURL({ dynamic: true })!
+                iconURL: embedOptions.author.avatarURL({ dynamic: true })!,
             });
         }
 
@@ -141,7 +141,7 @@ export abstract class EmbedCreator {
                         name: "Beatmap Information",
                         iconURL: `attachment://osu-${beatmapInfo.totalDifficulty.toFixed(
                             2
-                        )}.png`
+                        )}.png`,
                     })
                     .setThumbnail(
                         `https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`
@@ -219,10 +219,10 @@ export abstract class EmbedCreator {
 
         embed.setDescription(
             `**PP Profile for <@${bindInfo.discordid}> (${bindInfo.username})**\n` +
-            `Total PP: **${bindInfo.pptotal.toFixed(
-                2
-            )} pp (#${ppRank.toLocaleString()})**\n` +
-            `[PP Profile](https://ppboard.herokuapp.com/profile?uid=${bindInfo.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${bindInfo.uid})`
+                `Total PP: **${bindInfo.pptotal.toFixed(
+                    2
+                )} pp (#${ppRank.toLocaleString()})**\n` +
+                `[PP Profile](https://ppboard.herokuapp.com/profile?uid=${bindInfo.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${bindInfo.uid})`
         );
 
         return embed;
@@ -306,13 +306,16 @@ export abstract class EmbedCreator {
                         customStatistics
                     )}\n**Result**: ${combo}/${map.maxCombo}x | ${(
                         accuracy.value() * 100
-                    ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${accuracy.n50
+                    ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${
+                        accuracy.n50
                     }/${accuracy.nmiss}]`
                 )
                 .addField(
-                    `**Droid pp**: __${droidPP.total.toFixed(2)} pp__${calculationParams.isEstimated ? " (estimated)" : ""
+                    `**Droid pp**: __${droidPP.total.toFixed(2)} pp__${
+                        calculationParams.isEstimated ? " (estimated)" : ""
                     } - ${droidPP.stars.total.toFixed(2)} stars`,
-                    `**PC pp**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated ? " (estimated)" : ""
+                    `**PC pp**: ${pcPP.total.toFixed(2)} pp${
+                        calculationParams.isEstimated ? " (estimated)" : ""
                     } - ${pcPP.stars.total.toFixed(2)} stars`
                 );
         } else {
@@ -331,12 +334,12 @@ export abstract class EmbedCreator {
                     )} ${calculationResult.droid.total.toFixed(
                         2
                     )} droid stars\n` +
-                    `${Symbols.star.repeat(
-                        Math.min(
-                            10,
-                            Math.floor(calculationResult.osu.total)
-                        )
-                    )} ${calculationResult.osu.total.toFixed(2)} PC stars`
+                        `${Symbols.star.repeat(
+                            Math.min(
+                                10,
+                                Math.floor(calculationResult.osu.total)
+                            )
+                        )} ${calculationResult.osu.total.toFixed(2)} PC stars`
                 );
         }
 
@@ -418,8 +421,10 @@ export abstract class EmbedCreator {
         if (!calcResult) {
             beatmapInformation +=
                 `${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-                `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo
-                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50
+                `${arrow} ${score.score.toLocaleString()} ${arrow} ${
+                    score.combo
+                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
+                    score.accuracy.n50
                 }/${score.accuracy.nmiss}]`;
 
             embed.setDescription(beatmapInformation);
@@ -428,11 +433,13 @@ export abstract class EmbedCreator {
 
         embed
             .setAuthor({
-                name: `${calcResult.map.fullTitle
-                    } ${score.getCompleteModString()} [${calcResult.droid.stars.total.toFixed(
-                        2
-                    )}${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)}${Symbols.star
-                    }]`,
+                name: `${
+                    calcResult.map.fullTitle
+                } ${score.getCompleteModString()} [${calcResult.droid.stars.total.toFixed(
+                    2
+                )}${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)}${
+                    Symbols.star
+                }]`,
                 iconURL: playerAvatarURL,
                 url: `https://osu.ppy.sh/b/${calcResult.map.beatmapID}`,
             })
@@ -440,8 +447,9 @@ export abstract class EmbedCreator {
                 `https://b.ppy.sh/thumb/${calcResult.map.beatmapsetID}l.jpg`
             );
 
-        beatmapInformation += `**${calcResult.droid.total.toFixed(2)}DPP**${(calcResult.replay?.tapPenalty ?? 1) !== 1 ? " (*penalized*)" : ""
-            } | **${calcResult.osu.total.toFixed(2)}PP** `;
+        beatmapInformation += `**${calcResult.droid.total.toFixed(2)}DPP**${
+            (calcResult.replay?.tapPenalty ?? 1) !== 1 ? " (*penalized*)" : ""
+        } | **${calcResult.osu.total.toFixed(2)}PP** `;
 
         if (score.accuracy.nmiss > 0 || score.combo < calcResult.map.maxCombo) {
             const calcParams: PerformanceCalculationParameters =
@@ -477,8 +485,10 @@ export abstract class EmbedCreator {
 
         beatmapInformation +=
             `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-            `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo
-            }x/${calcResult.map.maxCombo}x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100
+            `${arrow} ${score.score.toLocaleString()} ${arrow} ${
+                score.combo
+            }x/${calcResult.map.maxCombo}x ${arrow} [${score.accuracy.n300}/${
+                score.accuracy.n100
             }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
 
         if (!score.replay) {
@@ -574,45 +584,51 @@ export abstract class EmbedCreator {
         embed
             .setFooter(
                 embed.footer!.text! +
-                ` | Challenge ID: ${challenge.challengeid
-                } | Time left: ${DateTimeFormatHelper.secondsToDHMS(
-                    Math.max(
-                        0,
-                        DateTimeFormatHelper.getTimeDifference(
-                            challenge.timelimit * 1000
-                        ) / 1000
-                    )
-                )}`,
+                    ` | Challenge ID: ${
+                        challenge.challengeid
+                    } | Time left: ${DateTimeFormatHelper.secondsToDHMS(
+                        Math.max(
+                            0,
+                            DateTimeFormatHelper.getTimeDifference(
+                                challenge.timelimit * 1000
+                            ) / 1000
+                        )
+                    )}`,
                 embed.footer!.iconURL
             )
             .setAuthor({
-                name: challenge.type === "weekly"
-                    ? "osu!droid Weekly Bounty Challenge"
-                    : "osu!droid Daily Challenge",
-                iconURL: `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`
+                name:
+                    challenge.type === "weekly"
+                        ? "osu!droid Weekly Bounty Challenge"
+                        : "osu!droid Daily Challenge",
+                iconURL: `attachment://osu-${calcResult.osu.total.toFixed(
+                    2
+                )}.png`,
             })
             .setDescription(
                 `Featured by <@${challenge.featured}>\n` +
-                `Download: [Google Drive](${challenge.link[0]})${challenge.link[1]
-                    ? ` - [OneDrive](${challenge.link[1]})`
-                    : ""
-                }`
+                    `Download: [Google Drive](${challenge.link[0]})${
+                        challenge.link[1]
+                            ? ` - [OneDrive](${challenge.link[1]})`
+                            : ""
+                    }`
             )
             .addField(
                 `**Star Rating**\n` +
-                `${Symbols.star.repeat(
-                    Math.min(10, Math.floor(calcResult.droid.total))
-                )} ${calcResult.droid.total.toFixed(2)} droid stars\n` +
-                `${Symbols.star.repeat(
-                    Math.min(10, Math.floor(calcResult.osu.total))
-                )} ${calcResult.osu.total.toFixed(2)} PC stars`,
+                    `${Symbols.star.repeat(
+                        Math.min(10, Math.floor(calcResult.droid.total))
+                    )} ${calcResult.droid.total.toFixed(2)} droid stars\n` +
+                    `${Symbols.star.repeat(
+                        Math.min(10, Math.floor(calcResult.osu.total))
+                    )} ${calcResult.osu.total.toFixed(2)} PC stars`,
                 `**Point(s)**: ${challenge.points} points\n` +
-                `**Pass Condition**: ${challenge.getPassInformation()}\n` +
-                `**Constrain**: ${challenge.constrain
-                    ? `${challenge.constrain.toUpperCase()} mod only`
-                    : "Any rankable mod except EZ, NF, and HT"
-                }\n\n` +
-                "Use `/daily challenges` to check bonuses."
+                    `**Pass Condition**: ${challenge.getPassInformation()}\n` +
+                    `**Constrain**: ${
+                        challenge.constrain
+                            ? `${challenge.constrain.toUpperCase()} mod only`
+                            : "Any rankable mod except EZ, NF, and HT"
+                    }\n\n` +
+                    "Use `/daily challenges` to check bonuses."
             );
 
         const chart: Buffer | null = await calcResult.osu.getStrainChart(
@@ -653,11 +669,11 @@ export abstract class EmbedCreator {
             .setTitle("Auction Information")
             .setDescription(
                 `**Name**: ${auction.name}\n` +
-                `**Auctioneer**: ${auction.auctioneer}\n` +
-                `**Creation Date**: ${new Date(
-                    auction.creationdate * 1000
-                ).toUTCString()}\n` +
-                `**Minimum Bid Amount**: ${coinEmoji}${auction.min_price} Alice coins`
+                    `**Auctioneer**: ${auction.auctioneer}\n` +
+                    `**Creation Date**: ${new Date(
+                        auction.creationdate * 1000
+                    ).toUTCString()}\n` +
+                    `**Minimum Bid Amount**: ${coinEmoji}${auction.min_price} Alice coins`
             )
             .addField(
                 "Item Information",
@@ -668,14 +684,15 @@ export abstract class EmbedCreator {
             .addField(
                 "Bid Information",
                 `**Bidders**: ${auction.bids.size.toLocaleString()}\n` +
-                `**Top Bidders**:\n` +
-                auction.bids
-                    .first(5)
-                    .map(
-                        (v, i) =>
-                            `#${i + 1}: ${v.clan} - ${coinEmoji}\`${v.amount
-                            }\` Alice coins`
-                    )
+                    `**Top Bidders**:\n` +
+                    auction.bids
+                        .first(5)
+                        .map(
+                            (v, i) =>
+                                `#${i + 1}: ${v.clan} - ${coinEmoji}\`${
+                                    v.amount
+                                }\` Alice coins`
+                        )
             );
 
         return embed;
@@ -694,11 +711,12 @@ export abstract class EmbedCreator {
 
         embed
             .setAuthor({
-                name: "Broadcast", iconURL: guild.iconURL({ dynamic: true })!
+                name: "Broadcast",
+                iconURL: guild.iconURL({ dynamic: true })!,
             })
             .setDescription(
                 `If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using \`/report\` command (more information is available using \`/help report\`).\n\n` +
-                `Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!`
+                    `Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!`
             );
 
         return embed;
@@ -753,16 +771,18 @@ export abstract class EmbedCreator {
             .setImage("attachment://chart.png")
             .setAuthor({
                 name: `Submission by ${submission.submitter}`,
-                iconURL: `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`
+                iconURL: `attachment://osu-${calcResult.osu.total.toFixed(
+                    2
+                )}.png`,
             })
             .addField(
                 "**Star Rating**",
                 `${Symbols.star.repeat(
                     Math.min(10, Math.floor(calcResult.droid.total))
                 )} ${calcResult.droid.total.toFixed(2)} droid stars\n` +
-                `${Symbols.star.repeat(
-                    Math.min(10, Math.floor(calcResult.osu.total))
-                )} ${calcResult.osu.total.toFixed(2)} PC stars`
+                    `${Symbols.star.repeat(
+                        Math.min(10, Math.floor(calcResult.osu.total))
+                    )} ${calcResult.osu.total.toFixed(2)} PC stars`
             )
             .addField(
                 "**Status and Summary**",
@@ -787,8 +807,10 @@ export abstract class EmbedCreator {
             .setTitle(queue.information.title)
             .setThumbnail(queue.information.thumbnail)
             .setDescription(
-                `Channel: ${queue.information.author.name
-                }\n\nDuration: ${queue.information.duration.toString()}\n\nQueued/requested by <@${queue.queuer
+                `Channel: ${
+                    queue.information.author.name
+                }\n\nDuration: ${queue.information.duration.toString()}\n\nQueued/requested by <@${
+                    queue.queuer
                 }>`
             )
             .setURL(queue.information.url);

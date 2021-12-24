@@ -21,11 +21,11 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     const banLog:
         | GuildAuditLogsEntry<
-            "MEMBER_BAN_ADD",
-            "MEMBER_BAN_ADD",
-            "DELETE",
-            "USER"
-        >
+              "MEMBER_BAN_ADD",
+              "MEMBER_BAN_ADD",
+              "DELETE",
+              "USER"
+          >
         | undefined = auditLogEntries.entries.first();
 
     if (!banLog) {
@@ -70,7 +70,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
     if (banLog.executor) {
         embed.setAuthor({
             name: banLog.executor.tag,
-            iconURL: banLog.executor.avatarURL({ dynamic: true })!
+            iconURL: banLog.executor.avatarURL({ dynamic: true })!,
         });
     }
 
