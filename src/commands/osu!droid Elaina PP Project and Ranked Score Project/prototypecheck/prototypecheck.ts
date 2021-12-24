@@ -71,7 +71,7 @@ export const run: Command["run"] = async (_, interaction) => {
             `Difference: **${(ppInfo.pptotal - ppInfo.prevpptotal).toFixed(
                 2
             )} pp**\n` +
-            `[PP Profile](https://ppboard.herokuapp.com/profile?uid=${ppInfo.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${ppInfo.uid})\n` +
+            `[PP Profile](https://droidppboard.herokuapp.com/prototype/profile?uid=${ppInfo.uid})\n` +
             `Last Update: **${new Date(ppInfo.lastUpdate).toUTCString()}**`
     );
 

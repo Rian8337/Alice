@@ -222,7 +222,7 @@ export abstract class EmbedCreator {
                 `Total PP: **${bindInfo.pptotal.toFixed(
                     2
                 )} pp (#${ppRank.toLocaleString()})**\n` +
-                `[PP Profile](https://ppboard.herokuapp.com/profile?uid=${bindInfo.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${bindInfo.uid})`
+                `[PP Profile](https://droidppboard.herokuapp.com/profile?uid=${bindInfo.uid})`
         );
 
         return embed;
