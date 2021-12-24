@@ -47,16 +47,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.invalidMutePermissionDuration
+                settingsStrings.invalidTimeoutPermissionDuration
             ),
         });
     }
 
-    await guildConfig.grantMutePermission(role.id, duration);
+    await guildConfig.grantTimeoutPermission(role.id, duration);
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.grantOrRevokeMutePermissionSuccess,
+            settingsStrings.grantOrRevokeTimeoutPermissionSuccess,
             "granted",
             role.name
         ),

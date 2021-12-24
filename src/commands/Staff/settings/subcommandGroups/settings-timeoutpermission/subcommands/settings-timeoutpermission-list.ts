@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleMutePermission";
+import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -48,10 +48,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map(
                     (v) =>
-                        `- <@&${v.id}> (${
-                            v.maxTime === -1
-                                ? "Permanent"
-                                : DateTimeFormatHelper.secondsToDHMS(v.maxTime)
+                        `- <@&${v.id}> (${v.maxTime === -1
+                            ? "Permanent"
+                            : DateTimeFormatHelper.secondsToDHMS(v.maxTime)
                         })`
                 )
                 .join("\n")

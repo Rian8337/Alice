@@ -29,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.grantOrRevokeMuteImmunitySuccess,
+            settingsStrings.grantOrRevokeTimeoutImmunitySuccess,
             "granted",
             role.name
         ),

@@ -1,5 +1,5 @@
 import { Snowflake } from "discord.js";
-import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleMutePermission";
+import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
 import { BaseDocument } from "../BaseDocument";
 
 /**

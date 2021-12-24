@@ -235,88 +235,89 @@ export const config: Command["config"] = {
             ],
         },
         {
-            name: "mutepermission",
+            name: "timeoutpermission",
             type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
-            description: "Customizes mute permissions in the guild.",
+            description: "Customizes timeout permissions in a server.",
             options: [
                 {
                     name: "grant",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Grants mute permission to a role.",
+                    description: "Grants timeout permission to a role.",
                     options: [
                         {
                             name: "role",
                             required: true,
                             type: ApplicationCommandOptionTypes.ROLE,
                             description:
-                                "The role to grant mute permission to.",
+                                "The role to grant timeout permission to.",
                         },
                         {
-                            name: "maxmutetime",
+                            name: "duration",
                             required: true,
                             type: ApplicationCommandOptionTypes.STRING,
                             description:
-                                "Maximum mute time, in time format (e.g. 6:01:24:33 or 2d14h55m34s). For permanent mute, set to -1.",
+                                "Maximum timeout time, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Use -1 for indefinite time.",
                         },
                     ],
                 },
                 {
                     name: "revoke",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Revokes mute permission from a role.",
+                    description: "Revokes timeout permission from a role.",
                     options: [
                         {
                             name: "role",
                             required: true,
                             type: ApplicationCommandOptionTypes.ROLE,
                             description:
-                                "The role to revoke mute permission from.",
+                                "The role to revoke timeout permission from.",
                         },
                     ],
                 },
                 {
                     name: "list",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Lists roles that have mute permission.",
+                    description: "Lists roles that have timeout permission.",
                 },
             ],
         },
         {
-            name: "muteimmunity",
+            name: "timeoutimmunity",
             type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
-            description: "Customizes mute immunity settings in the guild.",
+            description: "Customizes timeout immunity settings in a server.",
             options: [
                 {
                     name: "grant",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Grants mute immunity to a role.",
-                    options: [
-                        {
-                            name: "role",
-                            required: true,
-                            type: ApplicationCommandOptionTypes.ROLE,
-                            description: "The role to grant mute immunity to.",
-                        },
-                    ],
-                },
-                {
-                    name: "revoke",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Revokes mute immunity from a role.",
+                    description: "Grants timeout immunity to a role.",
                     options: [
                         {
                             name: "role",
                             required: true,
                             type: ApplicationCommandOptionTypes.ROLE,
                             description:
-                                "The role to revoke mute immunity from.",
+                                "The role to grant timeout immunity to.",
+                        },
+                    ],
+                },
+                {
+                    name: "revoke",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Revokes timeout immunity from a role.",
+                    options: [
+                        {
+                            name: "role",
+                            required: true,
+                            type: ApplicationCommandOptionTypes.ROLE,
+                            description:
+                                "The role to revoke timeout immunity from.",
                         },
                     ],
                 },
                 {
                     name: "list",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Lists roles that have mute immunity.",
+                    description: "Lists roles that have timeout immunity.",
                 },
             ],
         },
@@ -360,14 +361,14 @@ export const config: Command["config"] = {
                 "will set the current guild's punishment log channel to #channel.",
         },
         {
-            command: "settings muteimmunity grant",
+            command: "settings timeoutimmunity grant",
             arguments: [
                 {
                     name: "role",
                     value: "@Moderator",
                 },
             ],
-            description: "will grant mute immunity for the Moderator role.",
+            description: "will grant timeout immunity for the Moderator role.",
         },
         {
             command: "settings command cooldown",

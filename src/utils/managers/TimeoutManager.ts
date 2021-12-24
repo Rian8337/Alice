@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleMutePermission";
+import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PunishmentManager } from "./PunishmentManager";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
@@ -141,12 +141,11 @@ export abstract class TimeoutManager extends PunishmentManager {
             )
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} in ${
-                    interaction.channel
+                `**${member} in ${interaction.channel
                 } for ${DateTimeFormatHelper.secondsToDHMS(duration)}**\n\n` +
-                    `=========================\n\n` +
-                    `**Reason**:\n` +
-                    reason
+                `=========================\n\n` +
+                `**Reason**:\n` +
+                reason
             );
 
         try {
@@ -246,9 +245,9 @@ export abstract class TimeoutManager extends PunishmentManager {
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} in ${interaction.channel}**\n\n` +
-                    `=========================\n\n` +
-                    `**Reason**:\n` +
-                    reason
+                `=========================\n\n` +
+                `**Reason**:\n` +
+                reason
             );
 
         await logChannel.send({ embeds: [untimeoutEmbed] });

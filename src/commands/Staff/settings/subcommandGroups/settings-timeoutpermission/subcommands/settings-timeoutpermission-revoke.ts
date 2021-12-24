@@ -21,11 +21,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await guildConfig.revokeMutePermission(role.id);
+    await guildConfig.revokeTimeoutPermission(role.id);
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.grantOrRevokeMutePermissionSuccess,
+            settingsStrings.grantOrRevokeTimeoutPermissionSuccess,
             "revoked",
             role.name
         ),

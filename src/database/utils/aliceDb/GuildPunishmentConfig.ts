@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleMutePermission";
+import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
@@ -113,12 +113,12 @@ export class GuildPunishmentConfig extends Manager {
     }
 
     /**
-     * Grants mute permission for a role.
+     * Grants timeout permission for a role.
      *
      * @param roleId The ID of the role.
-     * @param maxTime The maximum time the role is allowed to mute for. -1 means the role can mute indefinitely.
+     * @param maxTime The maximum time the role is allowed to timeout for. -1 means the role can timeout indefinitely.
      */
-    async grantMutePermission(
+    async grantTimeoutPermission(
         roleId: Snowflake,
         maxTime: number
     ): Promise<OperationResult> {
@@ -142,12 +142,12 @@ export class GuildPunishmentConfig extends Manager {
     }
 
     /**
-     * Revokes mute permission from a role.
+     * Revokes timeout permission from a role.
      *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
-    async revokeMutePermission(roleId: Snowflake): Promise<OperationResult> {
+    async revokeTimeoutPermission(roleId: Snowflake): Promise<OperationResult> {
         if (!this.allowedTimeoutRoles.delete(roleId)) {
             return this.createOperationResult(true);
         }
