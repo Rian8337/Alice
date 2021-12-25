@@ -190,5 +190,4 @@ export const config: EventUtil["config"] = {
     description: "Responsible for logging manually given/taken timeouts.",
     togglePermissions: ["BOT_OWNER"],
     toggleScope: ["GLOBAL"],
-    debugEnabled: true,
 };
