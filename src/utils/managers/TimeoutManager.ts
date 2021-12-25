@@ -111,13 +111,6 @@ export abstract class TimeoutManager extends PunishmentManager {
         const logChannel: GuildChannel | null =
             await guildConfig.getGuildLogChannel(member.guild);
 
-        if (!logChannel) {
-            return this.createOperationResult(
-                false,
-                this.logChannelNotFoundReject
-            );
-        }
-
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
                 false,
@@ -219,13 +212,6 @@ export abstract class TimeoutManager extends PunishmentManager {
 
         const logChannel: GuildChannel | null =
             await guildConfig.getGuildLogChannel(member.guild);
-
-        if (!logChannel) {
-            return this.createOperationResult(
-                false,
-                this.logChannelNotFoundReject
-            );
-        }
 
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
