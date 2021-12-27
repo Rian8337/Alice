@@ -121,10 +121,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
             const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
-            const stats: MapStats = new MapStats({
-                mods: calcParams.mods,
-                speedMultiplier: calcParams.customStatistics?.speedMultiplier,
-            });
+            const stats: MapStats =
+                calcParams.customStatistics ?? new MapStats();
 
             embed
                 .spliceFields(0, embed.fields.length)
@@ -135,7 +133,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 .setAuthor("Beatmap Information")
                 .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                 .setDescription(
-                    `${firstBeatmap.showStatistics(1, calcParams.mods)}\n` +
+                    `${firstBeatmap.showStatistics(1, stats)}\n` +
                         `**BPM**: ${firstBeatmap.convertBPM(
                             stats
                         )} - **Length**: ${firstBeatmap.convertTime(stats)}`
@@ -164,7 +162,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     } | ${calcResult.osu.stars.total.toFixed(2)} ${
                         Symbols.star
                     })`,
-                    `${beatmapInfo.showStatistics(2, calcParams.mods)}\n` +
+                    `${beatmapInfo.showStatistics(2, stats)}\n` +
                         `**Max score**: ${beatmapInfo
                             .maxScore(stats)
                             .toLocaleString()} - **Max combo**: ${

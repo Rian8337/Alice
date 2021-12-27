@@ -928,12 +928,12 @@ export class Challenge extends Manager {
         return BeatmapDifficultyHelper.calculateBeatmapPerformance(
             this.beatmapid,
             new PerformanceCalculationParameters(
-                data.convertedMods,
                 data.accuracy,
                 data.accuracy.value() * 100,
                 data.maxCombo,
                 1,
                 new MapStats({
+                    mods: data.convertedMods,
                     ar: data.forcedAR,
                     isForceAR: !!data.forcedAR,
                     speedMultiplier: data.speedModification,

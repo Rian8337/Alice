@@ -168,7 +168,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
 
         const noModCalcParams: StarRatingCalculationParameters =
-            new StarRatingCalculationParameters([]);
+            new StarRatingCalculationParameters();
 
         const noModCalcResult: StarRatingCalculationResult | null = beatmapInfo
             ? await BeatmapDifficultyHelper.calculateBeatmapDifficulty(

@@ -1,4 +1,4 @@
-import { Accuracy, MapInfo, MapStats, Mod, Precision } from "osu-droid";
+import { Accuracy, MapInfo, MapStats, Precision } from "osu-droid";
 import { StarRatingCalculationParameters } from "./StarRatingCalculationParameters";
 
 /**
@@ -36,17 +36,16 @@ export class PerformanceCalculationParameters extends StarRatingCalculationParam
      * @param inputAccuracy The accuracy that a user inputs, if any.
      * @param combo The combo achieved.
      * @param tapPenalty The tap penalty to apply for penalized scores.
-     * @param customStatistics  Custom statistics to apply custom speed multiplier and force AR as well as NightCore mod penalty for replay version 3 or older.
+     * @param customStatistics Custom statistics to apply mods, custom speed multiplier and force AR as well as NightCore mod penalty for replay version 3 or older.
      */
     constructor(
-        mods: Mod[],
         accuracy: Accuracy,
         inputAccuracy: number = 100,
         combo?: number,
         tapPenalty: number = 1,
         customStatistics?: MapStats
     ) {
-        super(mods, customStatistics);
+        super(customStatistics);
 
         this.accuracy = accuracy;
         this.combo = combo;

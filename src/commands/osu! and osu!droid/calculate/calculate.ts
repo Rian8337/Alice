@@ -52,6 +52,9 @@ export const run: Command["run"] = async (_, interaction) => {
         : undefined;
 
     const stats: MapStats = new MapStats({
+        mods: ModUtil.pcStringToMods(
+            interaction.options.getString("mods") ?? ""
+        ),
         ar: forceAR,
         speedMultiplier: NumberHelper.clamp(
             interaction.options.getNumber("speedmultiplier") ?? 1,
@@ -63,7 +66,6 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const calcParams: PerformanceCalculationParameters =
         new PerformanceCalculationParameters(
-            ModUtil.pcStringToMods(interaction.options.getString("mods") ?? ""),
             new Accuracy({
                 n100: Math.max(0, interaction.options.getInteger("x100") ?? 0),
                 n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),

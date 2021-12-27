@@ -85,13 +85,13 @@ export abstract class BeatmapDifficultyHelper {
         }
 
         const stats: MapStats = new MapStats({
+            mods: mods,
             ar: forceAR,
             speedMultiplier: speedMultiplier,
             isForceAR: !isNaN(<number>forceAR),
         });
 
         return new PerformanceCalculationParameters(
-            mods,
             new Accuracy({
                 n100: count100,
                 n50: count50,
@@ -124,6 +124,7 @@ export abstract class BeatmapDifficultyHelper {
         }
 
         const stats: MapStats = new MapStats({
+            mods: score.mods,
             ar: score.forcedAR,
             speedMultiplier: score.speedMultiplier,
             isForceAR: !isNaN(score.forcedAR!),
@@ -131,7 +132,6 @@ export abstract class BeatmapDifficultyHelper {
         });
 
         return new PerformanceCalculationParameters(
-            score.mods,
             score.accuracy,
             score.accuracy.value() * 100,
             score.combo,
@@ -232,7 +232,6 @@ export abstract class BeatmapDifficultyHelper {
         }
 
         calculationParams ??= new PerformanceCalculationParameters(
-            [],
             new Accuracy({
                 n300: beatmap.objects,
             }),
@@ -314,7 +313,7 @@ export abstract class BeatmapDifficultyHelper {
 
         const star: MapStars = new MapStars().calculate({
             map: beatmap.map!,
-            mods: calculationParams.mods,
+            mods: calculationParams.customStatistics?.mods,
             stats: calculationParams.customStatistics,
         });
 

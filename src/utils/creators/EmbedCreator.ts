@@ -6,7 +6,6 @@ import {
     hitResult,
     MapInfo,
     MapStats,
-    Mod,
     ModUtil,
     OsuPerformanceCalculator,
     OsuStarRating,
@@ -149,14 +148,12 @@ export abstract class EmbedCreator {
                     .setTitle(
                         beatmapInfo.showStatistics(
                             0,
-                            calculationParams?.mods,
                             calculationParams?.customStatistics
                         )
                     )
                     .setDescription(
                         beatmapInfo.showStatistics(
                             1,
-                            calculationParams?.mods,
                             calculationParams?.customStatistics
                         )
                     )
@@ -164,24 +161,20 @@ export abstract class EmbedCreator {
                     .addField(
                         beatmapInfo.showStatistics(
                             2,
-                            calculationParams?.mods,
                             calculationParams?.customStatistics
                         ),
                         beatmapInfo.showStatistics(
                             3,
-                            calculationParams?.mods,
                             calculationParams?.customStatistics
                         )
                     )
                     .addField(
                         beatmapInfo.showStatistics(
                             4,
-                            calculationParams?.mods,
                             calculationParams?.customStatistics
                         ),
                         beatmapInfo.showStatistics(
                             5,
-                            calculationParams?.mods,
                             calculationParams?.customStatistics
                         )
                     ),
@@ -274,7 +267,6 @@ export abstract class EmbedCreator {
 
         const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
         const map: MapInfo = calculationResult.map;
-        const mods: Mod[] = calculationParams.mods;
         const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
 
         if (
@@ -299,10 +291,9 @@ export abstract class EmbedCreator {
                 )
                 .spliceFields(embed.fields.length - 1, 1)
                 .addField(
-                    map.showStatistics(4, mods, customStatistics),
+                    map.showStatistics(4, customStatistics),
                     `${map.showStatistics(
                         5,
-                        mods,
                         customStatistics
                     )}\n**Result**: ${combo}/${map.maxCombo}x | ${(
                         accuracy.value() * 100
@@ -565,7 +556,9 @@ export abstract class EmbedCreator {
     ): Promise<MessageOptions> {
         const calcParams: StarRatingCalculationParameters =
             new StarRatingCalculationParameters(
-                ModUtil.pcStringToMods(challenge.constrain)
+                new MapStats({
+                    mods: ModUtil.pcStringToMods(challenge.constrain),
+                })
             );
 
         const calcResult: StarRatingCalculationResult =
@@ -751,7 +744,7 @@ export abstract class EmbedCreator {
         submission: MapShare
     ): Promise<MessageOptions> {
         const calcParams: StarRatingCalculationParameters =
-            new StarRatingCalculationParameters([]);
+            new StarRatingCalculationParameters();
 
         const calcResult: StarRatingCalculationResult =
             (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(
