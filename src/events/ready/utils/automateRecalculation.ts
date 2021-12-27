@@ -18,11 +18,15 @@ export const run: EventUtil["run"] = async (client) => {
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
-    let calculatedCount: number =
-        await dbManager.getRecalcCalculatedPlayerCount();
-
     const uncalculatedCount: number =
         await dbManager.getRecalcUncalculatedPlayerCount();
+
+    if (!uncalculatedCount) {
+        return;
+    }
+
+    let calculatedCount: number =
+        await dbManager.getRecalcCalculatedPlayerCount();
 
     const total: number = calculatedCount + uncalculatedCount;
 
