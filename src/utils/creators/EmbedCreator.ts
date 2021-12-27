@@ -347,6 +347,16 @@ export abstract class EmbedCreator {
                 );
         }
 
+        if (
+            calculationResult instanceof RebalanceStarRatingCalculationResult ||
+            calculationResult instanceof RebalancePerformanceCalculationResult
+        ) {
+            embed.setDescription(
+                "**The resulting values are subject to change.**\n" +
+                    embed.description
+            );
+        }
+
         const newRating: OsuStarRating | RebalanceOsuStarRating =
             calculationResult instanceof PerformanceCalculationResult ||
             calculationResult instanceof RebalancePerformanceCalculationResult
