@@ -8,6 +8,9 @@ import {
     ModNightCore,
     ModUtil,
     OsuPerformanceCalculator,
+    RebalanceDroidPerformanceCalculator,
+    RebalanceMapStars,
+    RebalanceOsuPerformanceCalculator,
     ReplayAnalyzer,
     Score,
     ThreeFingerChecker,
@@ -17,6 +20,8 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
+import { RebalanceStarRatingCalculationResult } from "@alice-utils/dpp/RebalanceStarRatingCalculationResult";
 
 /**
  * A helper to calculate difficulty and performance of beatmaps or scores.
@@ -190,6 +195,55 @@ export abstract class BeatmapDifficultyHelper {
     }
 
     /**
+     * Calculates the rebalance difficulty and performance value of a score.
+     *
+     * @param score The score.
+     * @param useReplay Whether to use replay in the calculation when needed. Defaults to `true`.
+     * @param calcParams Calculation parameters to override the score's default calculation parameters.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    static async calculateScoreRebalancePerformance(
+        score: Score,
+        useReplay: boolean = true,
+        calcParams?: PerformanceCalculationParameters
+    ): Promise<RebalancePerformanceCalculationResult | null> {
+        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+            score.hash
+        );
+
+        if (!beatmap?.map) {
+            return null;
+        }
+
+        calcParams ??= await this.getCalculationParamsFromScore(
+            score,
+            useReplay
+        );
+
+        const star: RebalanceStarRatingCalculationResult | null =
+            this.calculateRebalanceDifficulty(beatmap, calcParams);
+
+        if (!star) {
+            return null;
+        }
+
+        // Determine whether to use replay for 3f nerf or not.
+        if (
+            !score.replay &&
+            useReplay &&
+            ThreeFingerChecker.isEligibleToDetect(star.droid)
+        ) {
+            await score.downloadReplay();
+        }
+
+        return this.calculateRebalancePerformance(
+            star,
+            calcParams,
+            useReplay ? score.replay : undefined
+        );
+    }
+
+    /**
      * Calculates the difficulty and/or performance value of a beatmap.
      *
      * @param star The result of difficulty calculation.
@@ -252,6 +306,77 @@ export abstract class BeatmapDifficultyHelper {
     }
 
     /**
+     * Calculates the rebalance difficulty and/or performance value of a beatmap.
+     *
+     * @param star The result of difficulty calculation.
+     * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
+     * @param replay The replay to use in calculation, used for calculating a replay's performance.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    static async calculateBeatmapRebalancePerformance(
+        star: RebalanceStarRatingCalculationResult,
+        calculationParams?: PerformanceCalculationParameters,
+        replay?: ReplayAnalyzer
+    ): Promise<RebalancePerformanceCalculationResult | null>;
+
+    /**
+     * Calculates the difficulty and/or performance value of a beatmap.
+     *
+     * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
+     * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
+     * @param replay The replay to use in calculation, used for calculating a replay's performance.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    static async calculateBeatmapRebalancePerformance(
+        beatmapIDorHash: number | string,
+        calculationParams?: PerformanceCalculationParameters,
+        replay?: ReplayAnalyzer
+    ): Promise<RebalancePerformanceCalculationResult | null>;
+
+    static async calculateBeatmapRebalancePerformance(
+        beatmapIDorHashorStar:
+            | number
+            | string
+            | RebalanceStarRatingCalculationResult,
+        calculationParams?: PerformanceCalculationParameters,
+        replay?: ReplayAnalyzer
+    ): Promise<RebalancePerformanceCalculationResult | null> {
+        const beatmap: MapInfo | null =
+            beatmapIDorHashorStar instanceof
+            RebalanceStarRatingCalculationResult
+                ? beatmapIDorHashorStar.map
+                : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
+
+        if (!beatmap?.map) {
+            return null;
+        }
+
+        calculationParams ??= new PerformanceCalculationParameters(
+            new Accuracy({
+                n300: beatmap.objects,
+            }),
+            100,
+            beatmap.maxCombo
+        );
+
+        const star: RebalanceStarRatingCalculationResult | null =
+            beatmapIDorHashorStar instanceof
+            RebalanceStarRatingCalculationResult
+                ? beatmapIDorHashorStar
+                : this.calculateRebalanceDifficulty(beatmap, calculationParams);
+
+        if (!star) {
+            return null;
+        }
+
+        return this.calculateRebalancePerformance(
+            star,
+            calculationParams,
+            replay
+        );
+    }
+
+    /**
      * Calculates the difficulty of the beatmap being played in a score.
      *
      * @param score The score to calculate.
@@ -269,6 +394,29 @@ export abstract class BeatmapDifficultyHelper {
         }
 
         return this.calculateDifficulty(
+            beatmap,
+            await this.getCalculationParamsFromScore(score, false)
+        );
+    }
+
+    /**
+     * Calculates the rebalance difficulty of the beatmap being played in a score.
+     *
+     * @param score The score to calculate.
+     * @returns The calculation result.
+     */
+    static async calculateScoreRebalanceDifficulty(
+        score: Score
+    ): Promise<RebalanceStarRatingCalculationResult | null> {
+        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+            score.hash
+        );
+
+        if (!beatmap?.map) {
+            return null;
+        }
+
+        return this.calculateRebalanceDifficulty(
             beatmap,
             await this.getCalculationParamsFromScore(score, false)
         );
@@ -297,6 +445,28 @@ export abstract class BeatmapDifficultyHelper {
     }
 
     /**
+     * Calculates the rebalance difficulty of a beatmap.
+     *
+     * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
+     * @param calculationParams Calculation parameters.
+     * @returns The calculation result.
+     */
+    static async calculateBeatmapRebalanceDifficulty(
+        beatmapIDorHash: number | string,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<RebalanceStarRatingCalculationResult | null> {
+        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+            beatmapIDorHash
+        );
+
+        if (!beatmap?.map) {
+            return null;
+        }
+
+        return this.calculateRebalanceDifficulty(beatmap, calculationParams);
+    }
+
+    /**
      * Calculates the difficulty of a beatmap.
      *
      * @param beatmap The beatmap to calculate.
@@ -318,6 +488,34 @@ export abstract class BeatmapDifficultyHelper {
         });
 
         return new StarRatingCalculationResult(
+            beatmap,
+            star.droidStars,
+            star.pcStars
+        );
+    }
+
+    /**
+     * Calculates the rebalance difficulty of a beatmap.
+     *
+     * @param beatmap The beatmap to calculate.
+     * @param calculationParams Calculation parameters.
+     * @returns The calculation result.
+     */
+    private static calculateRebalanceDifficulty(
+        beatmap: MapInfo,
+        calculationParams: StarRatingCalculationParameters
+    ): RebalanceStarRatingCalculationResult | null {
+        if (!beatmap.map || beatmap.map.objects.length === 0) {
+            return null;
+        }
+
+        const star: RebalanceMapStars = new RebalanceMapStars().calculate({
+            map: beatmap.map!,
+            mods: calculationParams.customStatistics?.mods,
+            stats: calculationParams.customStatistics,
+        });
+
+        return new RebalanceStarRatingCalculationResult(
             beatmap,
             star.droidStars,
             star.pcStars
@@ -370,5 +568,58 @@ export abstract class BeatmapDifficultyHelper {
             });
 
         return new PerformanceCalculationResult(star.map, dpp, pp, replay);
+    }
+
+    /**
+     * Calculates the performance value of a beatmap.
+     *
+     * @param star The result of difficulty calculation.
+     * @param calculationParams Calculation parameters.
+     * @param replay The replay of the score in the beatmap, if available. This will be used to analyze if the score uses 3 finger abuse.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    private static calculateRebalancePerformance(
+        star: RebalanceStarRatingCalculationResult,
+        calculationParams: PerformanceCalculationParameters,
+        replay?: ReplayAnalyzer
+    ): RebalancePerformanceCalculationResult | null {
+        if (!star.map.map || star.map.map.objects.length === 0) {
+            return null;
+        }
+
+        calculationParams.applyFromBeatmap(star.map);
+
+        if (replay) {
+            replay.map = star.droid;
+
+            if (!replay.hasBeenCheckedFor3Finger) {
+                replay.checkFor3Finger();
+                calculationParams.tapPenalty = replay.tapPenalty;
+            }
+        }
+
+        const dpp: RebalanceDroidPerformanceCalculator =
+            new RebalanceDroidPerformanceCalculator().calculate({
+                stars: star.droid,
+                combo: calculationParams.combo,
+                accPercent: calculationParams.accuracy,
+                tapPenalty: calculationParams.tapPenalty,
+                stats: calculationParams.customStatistics,
+            });
+
+        const pp: RebalanceOsuPerformanceCalculator =
+            new RebalanceOsuPerformanceCalculator().calculate({
+                stars: star.osu,
+                combo: calculationParams.combo,
+                accPercent: calculationParams.accuracy,
+                stats: calculationParams.customStatistics,
+            });
+
+        return new RebalancePerformanceCalculationResult(
+            star.map,
+            dpp,
+            pp,
+            replay
+        );
     }
 }

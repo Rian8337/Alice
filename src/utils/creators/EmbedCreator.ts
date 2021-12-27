@@ -10,6 +10,9 @@ import {
     OsuPerformanceCalculator,
     OsuStarRating,
     Precision,
+    RebalanceDroidPerformanceCalculator,
+    RebalanceOsuPerformanceCalculator,
+    RebalanceOsuStarRating,
     ReplayData,
     ReplayObjectData,
     Score,
@@ -47,6 +50,8 @@ import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
+import { RebalanceStarRatingCalculationResult } from "@alice-utils/dpp/RebalanceStarRatingCalculationResult";
+import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 
 /**
  * Utility to create message embeds.
@@ -257,7 +262,9 @@ export abstract class EmbedCreator {
         calculationParams: StarRatingCalculationParameters,
         calculationResult:
             | StarRatingCalculationResult
-            | PerformanceCalculationResult,
+            | PerformanceCalculationResult
+            | RebalanceStarRatingCalculationResult
+            | RebalancePerformanceCalculationResult,
         graphColor?: string
     ): Promise<MessageOptions> {
         const embedOptions: MessageOptions = this.createBeatmapEmbed(
@@ -271,10 +278,16 @@ export abstract class EmbedCreator {
 
         if (
             calculationParams instanceof PerformanceCalculationParameters &&
-            calculationResult instanceof PerformanceCalculationResult
+            (calculationResult instanceof PerformanceCalculationResult ||
+                calculationResult instanceof
+                    RebalancePerformanceCalculationResult)
         ) {
-            const droidPP: DroidPerformanceCalculator = calculationResult.droid;
-            const pcPP: OsuPerformanceCalculator = calculationResult.osu;
+            const droidPP:
+                | DroidPerformanceCalculator
+                | RebalanceDroidPerformanceCalculator = calculationResult.droid;
+            const pcPP:
+                | OsuPerformanceCalculator
+                | RebalanceOsuPerformanceCalculator = calculationResult.osu;
 
             const combo: number = calculationParams.combo ?? map.maxCombo;
             const accuracy: Accuracy = calculationParams.accuracy;
@@ -334,8 +347,9 @@ export abstract class EmbedCreator {
                 );
         }
 
-        const newRating: OsuStarRating =
-            calculationResult instanceof PerformanceCalculationResult
+        const newRating: OsuStarRating | RebalanceOsuStarRating =
+            calculationResult instanceof PerformanceCalculationResult ||
+            calculationResult instanceof RebalancePerformanceCalculationResult
                 ? calculationResult.osu.stars
                 : calculationResult.osu;
 
