@@ -11,6 +11,7 @@ import { calculateStrings } from "./calculateStrings";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { MapStats, ModUtil, Accuracy } from "osu-droid";
+import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 
 export const run: Command["run"] = async (_, interaction) => {
     const beatmapID: number = BeatmapManager.getBeatmapID(
@@ -86,11 +87,18 @@ export const run: Command["run"] = async (_, interaction) => {
             stats
         );
 
-    const calcResult: PerformanceCalculationResult | null =
-        await BeatmapDifficultyHelper.calculateBeatmapPerformance(
-            beatmapID ?? hash,
-            calcParams
-        );
+    const calcResult:
+        | PerformanceCalculationResult
+        | RebalancePerformanceCalculationResult
+        | null = await (interaction.options.getBoolean("lazercalculation")
+        ? BeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+              beatmapID ?? hash,
+              calcParams
+          )
+        : BeatmapDifficultyHelper.calculateBeatmapPerformance(
+              beatmapID ?? hash,
+              calcParams
+          ));
 
     if (!calcResult) {
         return interaction.editReply({
@@ -190,7 +198,7 @@ export const config: Command["config"] = {
             name: "speedmultiplier",
             type: ApplicationCommandOptionTypes.NUMBER,
             description:
-                "The speed multiplier to calculate for (stackable with modifications) from 0.5 to 2. Defaults to 1.",
+                "The speed multiplier to calculate for, from 0.5 to 2. Stackable with modifications. Defaults to 1.",
             minValue: 0.5,
             maxValue: 2,
         },
@@ -203,6 +211,12 @@ export const config: Command["config"] = {
             name: "showosudetail",
             type: ApplicationCommandOptionTypes.BOOLEAN,
             description: "Whether to show detailed response for PC pp.",
+        },
+        {
+            name: "lazercalculation",
+            type: ApplicationCommandOptionTypes.BOOLEAN,
+            description:
+                "Whether to calculate with respect to the latest osu!lazer difficulty and performance algorithm.",
         },
     ],
     example: [
