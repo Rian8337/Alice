@@ -26,6 +26,7 @@ import {
 import { Clan } from "./Clan";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ObjectId, UpdateFilter } from "mongodb";
+import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -677,12 +678,15 @@ export class UserBind extends Manager {
 
         otherPreviousBind.push(uid);
 
+        const dbManager: UserBindCollectionManager =
+            DatabaseManager.elainaDb.collections.userBind;
+
         if (this.previous_bind.length === 0) {
-            await DatabaseManager.elainaDb.collections.userBind.delete({
+            await dbManager.delete({
                 discordid: this.discordid,
             });
 
-            await DatabaseManager.elainaDb.collections.userBind.update(
+            await dbManager.update(
                 { discordid: this.discordid },
                 {
                     $set: {
@@ -709,7 +713,19 @@ export class UserBind extends Manager {
 
             this.discordid = to;
         } else {
-            await DatabaseManager.elainaDb.collections.userBind.update(
+            await dbManager.update(
+                { discordid: this.discordid },
+                {
+                    $pull: {
+                        previous_bind: uid,
+                    },
+                    $set: {
+                        uid: this.uid,
+                    },
+                }
+            );
+
+            await dbManager.update(
                 { discordid: to },
                 {
                     $set: {
