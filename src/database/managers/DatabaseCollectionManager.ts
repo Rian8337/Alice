@@ -66,12 +66,10 @@ export abstract class DatabaseCollectionManager<
         query: UpdateFilter<T> | Partial<T>,
         options: UpdateOptions = {}
     ): Promise<OperationResult> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.collection.updateMany(filter, query, options, (err) => {
                 if (err) {
-                    return resolve(
-                        this.createOperationResult(false, err.message)
-                    );
+                    return reject(err);
                 }
 
                 resolve(this.createOperationResult(true));
@@ -205,12 +203,10 @@ export abstract class DatabaseCollectionManager<
      * @returns An object containing information about the operation.
      */
     delete(filter: Filter<T>): Promise<OperationResult> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.collection.deleteMany(filter, (err) => {
                 if (err) {
-                    return resolve(
-                        this.createOperationResult(false, err.message)
-                    );
+                    return reject(err);
                 }
 
                 resolve(this.createOperationResult(true));
@@ -224,16 +220,14 @@ export abstract class DatabaseCollectionManager<
      * @param docs The part of documents to insert. Each document will be assigned to the default document with `Object.assign()`.
      */
     insert(...docs: Partial<T>[]): Promise<OperationResult> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.collection.insertMany(
                 docs.map(
                     (v) => <OptionalId<T>>Object.assign(this.defaultDocument, v)
                 ),
                 (err) => {
                     if (err) {
-                        return resolve(
-                            this.createOperationResult(false, err.message)
-                        );
+                        return reject(err.message);
                     }
 
                     resolve(this.createOperationResult(true));
