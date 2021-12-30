@@ -53,15 +53,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (CacheManager.recalculationQueue.size > 0) {
-        CacheManager.recalculationQueue.set(user.id, interaction);
+    CacheManager.recalculationQueue.set(user.id, interaction);
 
+    if (CacheManager.recalculationQueue.size > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.userQueued),
+            content: MessageCreator.createAccept(
+                recalcStrings.userQueued,
+                user.toString()
+            ),
         });
     }
-
-    CacheManager.recalculationQueue.set(user.id, interaction);
 
     if (!interaction.replied) {
         await interaction.editReply({
