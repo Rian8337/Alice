@@ -5,13 +5,14 @@ import { Command } from "@alice-interfaces/core/Command";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { calculateStrings } from "./calculateStrings";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { MapStats, ModUtil, Accuracy } from "osu-droid";
+import { MapStats, ModUtil, Accuracy, DroidPerformanceCalculator, RebalanceDroidPerformanceCalculator, OsuPerformanceCalculator, RebalanceOsuPerformanceCalculator } from "osu-droid";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const beatmapID: number = BeatmapManager.getBeatmapID(
@@ -46,10 +47,10 @@ export const run: Command["run"] = async (_, interaction) => {
         "approachrate"
     )
         ? NumberHelper.clamp(
-              interaction.options.getNumber("approachrate", true),
-              0,
-              12.5
-          )
+            interaction.options.getNumber("approachrate", true),
+            0,
+            12.5
+        )
         : undefined;
 
     const stats: MapStats = new MapStats({
@@ -87,20 +88,33 @@ export const run: Command["run"] = async (_, interaction) => {
             stats
         );
 
-    const calcResult:
-        | PerformanceCalculationResult
-        | RebalancePerformanceCalculationResult
+    const droidCalcResult:
+        | PerformanceCalculationResult<DroidPerformanceCalculator>
+        | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>
         | null = await (interaction.options.getBoolean("lazercalculation")
-        ? BeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
-              beatmapID ?? hash,
-              calcParams
-          )
-        : BeatmapDifficultyHelper.calculateBeatmapPerformance(
-              beatmapID ?? hash,
-              calcParams
-          ));
+            ? DroidBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+                beatmapID ?? hash,
+                calcParams
+            )
+            : DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                beatmapID ?? hash,
+                calcParams
+            ));
 
-    if (!calcResult) {
+    const osuCalcResult:
+        | PerformanceCalculationResult<OsuPerformanceCalculator>
+        | RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator>
+        | null = await (interaction.options.getBoolean("lazercalculation")
+            ? OsuBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+                beatmapID ?? hash,
+                calcParams
+            )
+            : OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                beatmapID ?? hash,
+                calcParams
+            ));
+
+    if (!droidCalcResult || !osuCalcResult) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 calculateStrings.beatmapNotFound
@@ -111,18 +125,19 @@ export const run: Command["run"] = async (_, interaction) => {
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(
             calcParams,
-            calcResult,
+            droidCalcResult,
+            osuCalcResult,
             (<GuildMember | null>interaction.member)?.displayHexColor
         );
 
     let string: string = "";
 
     if (interaction.options.getBoolean("showdroiddetail")) {
-        string += `Raw droid stars: ${calcResult.droid.stars.toString()}\nRaw droid pp: ${calcResult.droid.toString()}\n`;
+        string += `Raw droid stars: ${droidCalcResult.result.stars.toString()}\nRaw droid pp: ${droidCalcResult.result.toString()}\n`;
     }
 
     if (interaction.options.getBoolean("showosudetail")) {
-        string += `Raw PC stars: ${calcResult.osu.stars.toString()}\nRaw PC pp: ${calcResult.osu.toString()}`;
+        string += `Raw PC stars: ${osuCalcResult.result.stars.toString()}\nRaw PC pp: ${osuCalcResult.result.toString()}`;
     }
 
     if (string) {
@@ -131,7 +146,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     BeatmapManager.setChannelLatestBeatmap(
         interaction.channel!.id,
-        calcResult.map.hash
+        osuCalcResult.map.hash
     );
 
     interaction.editReply(calcEmbedOptions);

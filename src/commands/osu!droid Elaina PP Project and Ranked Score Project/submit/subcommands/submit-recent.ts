@@ -10,14 +10,14 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
-import { MapInfo, Player, Score } from "osu-droid";
+import { DroidPerformanceCalculator, MapInfo, Player, Score } from "osu-droid";
 import { submitStrings } from "../submitStrings";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const bindDbManager: UserBindCollectionManager =
@@ -91,9 +91,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             score.hash,
             false
         );
-        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${
-            score.mods.map((v) => v.acronym).join(",") || "No Mod"
-        }`;
+        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${score.mods.map((v) => v.acronym).join(",") || "No Mod"
+            }`;
         let fieldContent: string = `${score.combo}x | ${(
             score.accuracy.value() * 100
         ).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | **`;
@@ -119,20 +118,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 fieldContent += "Unranked features";
                 break;
             default: {
-                const calcResult: PerformanceCalculationResult | null =
-                    await BeatmapDifficultyHelper.calculateScorePerformance(
+                const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
+                    await DroidBeatmapDifficultyHelper.calculateScorePerformance(
                         score
                     );
 
-                if (!calcResult) {
+                if (!droidCalcResult) {
                     fieldContent += "Beatmap not found";
                     break;
                 }
 
-                DPPHelper.insertScore(bindInfo.pp, score, calcResult);
+                DPPHelper.insertScore(bindInfo.pp, score, droidCalcResult);
 
                 const dpp: number = parseFloat(
-                    calcResult.droid.total.toFixed(2)
+                    droidCalcResult.result.total.toFixed(2)
                 );
 
                 fieldContent += `${dpp}pp`;
@@ -169,19 +168,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setDescription(
         `Total PP: **${totalPP.toFixed(2)}pp**\n` +
-            `PP gained: **${ppDiff.toFixed(2)}pp**\n` +
-            `Ranked score: **${totalScore.toLocaleString()}**\n` +
-            `Score gained: **${scoreDiff.toLocaleString()}**\n` +
-            `Current level: **${Math.floor(level)} (${levelRemain}%)**${
-                (rankedScoreInfo?.level ?? 1) < Math.floor(level)
-                    ? `\n${Symbols.upIcon} Level up!`
-                    : ""
-            }\n` +
-            `Score needed to level up: **${(
-                RankedScoreHelper.calculateScoreRequirement(
-                    Math.floor(level) + 1
-                ) - totalScore
-            ).toLocaleString()}**`
+        `PP gained: **${ppDiff.toFixed(2)}pp**\n` +
+        `Ranked score: **${totalScore.toLocaleString()}**\n` +
+        `Score gained: **${scoreDiff.toLocaleString()}**\n` +
+        `Current level: **${Math.floor(level)} (${levelRemain}%)**${(rankedScoreInfo?.level ?? 1) < Math.floor(level)
+            ? `\n${Symbols.upIcon} Level up!`
+            : ""
+        }\n` +
+        `Score needed to level up: **${(
+            RankedScoreHelper.calculateScoreRequirement(
+                Math.floor(level) + 1
+            ) - totalScore
+        ).toLocaleString()}**`
     );
 
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);

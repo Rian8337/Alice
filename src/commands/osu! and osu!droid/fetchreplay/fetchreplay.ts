@@ -1,8 +1,10 @@
 import AdmZip from "adm-zip";
 import {
+    DroidPerformanceCalculator,
     ExportedReplayJSON,
     HitErrorInformation,
     MapInfo,
+    OsuPerformanceCalculator,
     ReplayData,
     Score,
 } from "osu-droid";
@@ -24,6 +26,8 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { fetchreplayStrings } from "./fetchreplayStrings";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const beatmapLink: string = interaction.options.getString("beatmap", true);
@@ -105,9 +109,8 @@ export const run: Command["run"] = async (_, interaction) => {
             playername:
                 data.replayVersion < 3 ? score.username : data.playerName,
             replayfile: `${score.scoreID}.odr`,
-            mod: `${score.mods.map((v) => v.droidString).join("")}${
-                score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
-            }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
+            mod: `${score.mods.map((v) => v.droidString).join("")}${score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
+                }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
             score: score.score,
             combo: score.combo,
             mark: score.rank,
@@ -125,8 +128,8 @@ export const run: Command["run"] = async (_, interaction) => {
                         ? 1
                         : 0
                     : data.isFullCombo
-                    ? 1
-                    : 0,
+                        ? 1
+                        : 0,
         },
     };
 
@@ -134,8 +137,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const replayAttachment: MessageAttachment = new MessageAttachment(
         zip.toBuffer(),
-        `${data.fileName.substring(0, data.fileName.length - 4)} [${
-            data.playerName
+        `${data.fileName.substring(0, data.fileName.length - 4)} [${data.playerName
         }]-${json.replaydata.time}.edr`
     );
 
@@ -156,14 +158,17 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const calcResult: PerformanceCalculationResult = <
-        PerformanceCalculationResult
-    >await BeatmapDifficultyHelper.calculateScorePerformance(score);
+    const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> =
+        (await DroidBeatmapDifficultyHelper.calculateScorePerformance(score))!;
+
+    const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> =
+        (await OsuBeatmapDifficultyHelper.calculateScorePerformance(score))!;
 
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(
             await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
-            calcResult,
+            droidCalcResult,
+            osuCalcResult,
             (<GuildMember | null>interaction.member)?.displayHexColor
         );
 

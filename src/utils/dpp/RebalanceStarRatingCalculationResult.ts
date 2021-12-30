@@ -1,35 +1,24 @@
 import {
     MapInfo,
-    RebalanceDroidStarRating,
-    RebalanceOsuStarRating,
+    RebalanceStarRating,
 } from "osu-droid";
 
 /**
  * Represents a beatmap's difficulty calculation result.
  */
-export class RebalanceStarRatingCalculationResult {
+export class RebalanceStarRatingCalculationResult<T extends RebalanceStarRating> {
     /**
      * The beatmap being calculated.
      */
     readonly map: MapInfo;
 
     /**
-     * The difficulty of the beatmap in osu!droid.
+     * The difficulty of the beatmap.
      */
-    readonly droid: RebalanceDroidStarRating;
+    readonly result: T;
 
-    /**
-     * The difficulty of the beatmap in osu!standard.
-     */
-    readonly osu: RebalanceOsuStarRating;
-
-    constructor(
-        map: MapInfo,
-        droid: RebalanceDroidStarRating,
-        osu: RebalanceOsuStarRating
-    ) {
+    constructor(map: MapInfo, result: T) {
         this.map = map;
-        this.droid = droid;
-        this.osu = osu;
+        this.result = result;
     }
 }

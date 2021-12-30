@@ -1,4 +1,4 @@
-import { MapInfo, Score } from "osu-droid";
+import { DroidPerformanceCalculator, MapInfo, Score } from "osu-droid";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -6,7 +6,6 @@ import { submitStrings } from "../submitStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -17,6 +16,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { RankedScoreCollectionManager } from "@alice-database/managers/aliceDb/RankedScoreCollectionManager";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const bindDbManager: UserBindCollectionManager =
@@ -109,8 +109,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     // PP
-    const calcResult: PerformanceCalculationResult | null =
-        await BeatmapDifficultyHelper.calculateScorePerformance(score);
+    const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
+        await DroidBeatmapDifficultyHelper.calculateScorePerformance(score);
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
@@ -121,17 +121,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         score.accuracy.value() * 100
     ).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | `;
 
-    if (calcResult) {
-        DPPHelper.insertScore(bindInfo.pp, score, calcResult);
+    if (droidCalcResult) {
+        DPPHelper.insertScore(bindInfo.pp, score, droidCalcResult);
 
-        const dpp: number = parseFloat(calcResult.droid.total.toFixed(2));
+        const dpp: number = parseFloat(droidCalcResult.result.total.toFixed(2));
 
         fieldContent += `${dpp}pp`;
     }
 
     const currentTotalPP: number = bindInfo.pptotal;
 
-    if (calcResult) {
+    if (droidCalcResult) {
         await bindInfo.setNewDPPValue(bindInfo.pp, 1);
     }
 
@@ -143,7 +143,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setDescription(
         `**Total PP**: ${totalPP.toFixed(2)}pp\n` +
-            `**PP gained**: ${ppDiff.toFixed(2)} pp\n`
+        `**PP gained**: ${ppDiff.toFixed(2)} pp\n`
     );
 
     // Ranked score
@@ -170,18 +170,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         embed.setDescription(
             embed.description! +
-                `**Ranked score**: ${totalScore.toLocaleString()}\n` +
-                `**Score gained**: ${scoreDiff.toLocaleString()}\n` +
-                `**Current level**: ${Math.floor(level)} (${levelRemain}%)${
-                    (rankedScoreInfo?.level ?? 1) > Math.floor(level)
-                        ? `\n${Symbols.upIcon} Level up!`
-                        : ""
-                }\n` +
-                `**Score needed to level up**: ${(
-                    RankedScoreHelper.calculateScoreRequirement(
-                        Math.floor(level) + 1
-                    ) - totalScore
-                ).toLocaleString()}`
+            `**Ranked score**: ${totalScore.toLocaleString()}\n` +
+            `**Score gained**: ${scoreDiff.toLocaleString()}\n` +
+            `**Current level**: ${Math.floor(level)} (${levelRemain}%)${(rankedScoreInfo?.level ?? 1) > Math.floor(level)
+                ? `\n${Symbols.upIcon} Level up!`
+                : ""
+            }\n` +
+            `**Score needed to level up**: ${(
+                RankedScoreHelper.calculateScoreRequirement(
+                    Math.floor(level) + 1
+                ) - totalScore
+            ).toLocaleString()}`
         );
 
         if (rankedScoreInfo) {
@@ -202,8 +201,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     embed
         .setTitle("PP submission info")
         .addField(
-            `${beatmapInfo.fullTitle} +${
-                score.mods.map((v) => v.acronym).join(",") || "No Mod"
+            `${beatmapInfo.fullTitle} +${score.mods.map((v) => v.acronym).join(",") || "No Mod"
             }`,
             fieldContent
         );

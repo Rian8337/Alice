@@ -1,14 +1,13 @@
 import {
-    RebalanceDroidPerformanceCalculator,
     MapInfo,
-    RebalanceOsuPerformanceCalculator,
     ReplayAnalyzer,
+    RebalancePerformanceCalculator,
 } from "osu-droid";
 
 /**
  * Represents a beatmap's performance calculation result.
  */
-export class RebalancePerformanceCalculationResult {
+export class RebalancePerformanceCalculationResult<T extends RebalancePerformanceCalculator> {
     /**
      * The beatmap being calculated.
      */
@@ -20,24 +19,17 @@ export class RebalancePerformanceCalculationResult {
     readonly replay?: ReplayAnalyzer;
 
     /**
-     * The performance of the beatmap in osu!droid.
+     * The performance of the beatmap.
      */
-    readonly droid: RebalanceDroidPerformanceCalculator;
-
-    /**
-     * The performance of the beatmap in osu!standard.
-     */
-    readonly osu: RebalanceOsuPerformanceCalculator;
+    readonly result: T;
 
     constructor(
         map: MapInfo,
-        droid: RebalanceDroidPerformanceCalculator,
-        osu: RebalanceOsuPerformanceCalculator,
+        result: T,
         replay?: ReplayAnalyzer
     ) {
         this.map = map;
-        this.droid = droid;
-        this.osu = osu;
+        this.result = result;
         this.replay = replay;
     }
 }

@@ -9,7 +9,9 @@ import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyH
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Message, MessageEmbed, MessageOptions } from "discord.js";
-import { MapInfo, MapStats } from "osu-droid";
+import { DroidPerformanceCalculator, MapInfo, MapStats, OsuPerformanceCalculator } from "osu-droid";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (Config.maintenance || message.author.bot) {
@@ -50,31 +52,38 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 beatmapInfo.hash
             );
 
-            const calcResult: PerformanceCalculationResult | null =
-                await BeatmapDifficultyHelper.calculateBeatmapPerformance(
+            const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
+                await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
                     beatmapID,
                     calcParams
                 );
 
-            if (!calcResult) {
+            const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
+                await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                    beatmapID,
+                    calcParams
+                );
+
+            if (!droidCalcResult || !osuCalcResult) {
                 continue;
             }
 
             const calcEmbedOptions: MessageOptions =
                 await EmbedCreator.createCalculationEmbed(
                     calcParams,
-                    calcResult,
+                    droidCalcResult,
+                    osuCalcResult,
                     message.member?.displayHexColor
                 );
 
             let string: string = "";
 
             if (message.content.includes("-d")) {
-                string += `Raw droid stars: ${calcResult.droid.stars.toString()}\nRaw droid pp: ${calcResult.droid.toString()}\n`;
+                string += `Raw droid stars: ${droidCalcResult.result.stars.toString()}\nRaw droid pp: ${droidCalcResult.result.toString()}\n`;
             }
 
             if (message.content.includes("-p")) {
-                string += `Raw PC stars: ${calcResult.osu.stars.toString()}\nRaw PC pp: ${calcResult.osu.toString()}`;
+                string += `Raw PC stars: ${osuCalcResult.result.stars.toString()}\nRaw PC pp: ${osuCalcResult.result.toString()}`;
             }
 
             if (string) {
@@ -134,9 +143,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                 .setDescription(
                     `${firstBeatmap.showStatistics(1, stats)}\n` +
-                        `**BPM**: ${firstBeatmap.convertBPM(
-                            stats
-                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                    `**BPM**: ${firstBeatmap.convertBPM(
+                        stats
+                    )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                 );
 
             for await (const beatmapInfo of beatmapInformations) {
@@ -144,33 +153,35 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     break;
                 }
 
-                const calcResult: PerformanceCalculationResult | null =
-                    await BeatmapDifficultyHelper.calculateBeatmapPerformance(
-                        beatmapInfo.hash,
+                const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
+                    await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                        beatmapID,
                         calcParams
                     );
 
-                if (!calcResult) {
+                const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
+                    await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                        beatmapID,
+                        calcParams
+                    );
+
+                if (!droidCalcResult || !osuCalcResult) {
                     continue;
                 }
 
                 embed.addField(
-                    `__${
-                        beatmapInfo.version
-                    }__ (${calcResult.droid.stars.total.toFixed(2)} ${
-                        Symbols.star
-                    } | ${calcResult.osu.stars.total.toFixed(2)} ${
-                        Symbols.star
+                    `__${beatmapInfo.version
+                    }__ (${droidCalcResult.result.stars.total.toFixed(2)} ${Symbols.star
+                    } | ${osuCalcResult.result.stars.total.toFixed(2)} ${Symbols.star
                     })`,
                     `${beatmapInfo.showStatistics(2, stats)}\n` +
-                        `**Max score**: ${beatmapInfo
-                            .maxScore(stats)
-                            .toLocaleString()} - **Max combo**: ${
-                            beatmapInfo.maxCombo
-                        }x\n` +
-                        `**${calcResult.droid.total.toFixed(
-                            2
-                        )}**dpp - ${calcResult.osu.total.toFixed(2)}pp`
+                    `**Max score**: ${beatmapInfo
+                        .maxScore(stats)
+                        .toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo
+                    }x\n` +
+                    `**${droidCalcResult.result.total.toFixed(
+                        2
+                    )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`
                 );
             }
 

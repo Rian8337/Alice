@@ -8,7 +8,6 @@ import { RecalculationProgress } from "@alice-interfaces/dpp/RecalculationProgre
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
@@ -17,9 +16,11 @@ import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { Collection, Snowflake } from "discord.js";
 import {
     DroidAPIRequestBuilder,
+    DroidPerformanceCalculator,
     MapInfo,
     Player,
     Precision,
+    RebalanceDroidPerformanceCalculator,
     RequestResponse,
     Score,
 } from "osu-droid";
@@ -27,6 +28,8 @@ import { Clan } from "./Clan";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ObjectId, UpdateFilter } from "mongodb";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
+import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -285,8 +288,8 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const calcResult: PerformanceCalculationResult | null =
-                await BeatmapDifficultyHelper.calculateScorePerformance(score);
+            const calcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
+                await DroidBeatmapDifficultyHelper.calculateScorePerformance(score);
 
             if (!calcResult) {
                 continue;
@@ -336,8 +339,8 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const calcResult: PerformanceCalculationResult | null =
-                await BeatmapDifficultyHelper.calculateScorePerformance(score);
+            const calcResult: RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null =
+                await DroidBeatmapDifficultyHelper.calculateScoreRebalancePerformance(score);
 
             if (!calcResult) {
                 continue;
@@ -348,7 +351,7 @@ export class UserBind extends Manager {
             const entry: PrototypePPEntry = {
                 hash: calcResult.map.hash,
                 title: calcResult.map.fullTitle,
-                pp: parseFloat(calcResult.droid.total.toFixed(2)),
+                pp: parseFloat(calcResult.result.total.toFixed(2)),
                 prevPP: ppEntry.pp,
                 mods: score.mods.map((v) => v.acronym).join(""),
                 accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
@@ -358,8 +361,7 @@ export class UserBind extends Manager {
             };
 
             this.client.logger.info(
-                `${calcResult.map.fullTitle}${
-                    entry.mods ? ` +${entry.mods}` : ""
+                `${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""
                 }: ${entry.prevPP} ⮕  ${entry.pp}`
             );
 
@@ -510,8 +512,8 @@ export class UserBind extends Manager {
                         (await DPPHelper.checkSubmissionValidity(score)) ===
                         DPPSubmissionValidity.VALID
                     ) {
-                        const calcResult: PerformanceCalculationResult | null =
-                            await BeatmapDifficultyHelper.calculateScorePerformance(
+                        const calcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
+                            await DroidBeatmapDifficultyHelper.calculateScorePerformance(
                                 score
                             );
 
@@ -786,10 +788,10 @@ export class UserBind extends Manager {
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(
-                      typeof uidOrUsernameOrPlayer === "string"
-                          ? { username: uidOrUsernameOrPlayer }
-                          : { uid: uidOrUsernameOrPlayer }
-                  );
+                    typeof uidOrUsernameOrPlayer === "string"
+                        ? { username: uidOrUsernameOrPlayer }
+                        : { uid: uidOrUsernameOrPlayer }
+                );
 
         if (!player.username || !player.uid) {
             return this.createOperationResult(

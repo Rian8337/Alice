@@ -8,17 +8,22 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Collection, MessageEmbed, MessageOptions } from "discord.js";
 import {
     DroidAPIRequestBuilder,
+    DroidPerformanceCalculator,
+    DroidStarRating,
     MapInfo,
+    OsuPerformanceCalculator,
+    OsuStarRating,
     RequestResponse,
     Score,
 } from "osu-droid";
 import { leaderboardStrings } from "../leaderboardStrings";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 
 /**
  * Fetches leaderboard for beatmaps that are not available in osu! beatmap listing.
@@ -88,11 +93,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     // Leaderboard cache, mapped by page number
     const leaderboardCache: Collection<number, Score[]> = new Collection();
 
-    // Calculation cache, mapped by score
-    const calculationCache: Collection<
-        Score,
-        PerformanceCalculationResult | null
+    // Calculation cache, mapped by score ID
+    const droidCalculationCache: Collection<
+        number,
+        PerformanceCalculationResult<DroidPerformanceCalculator> | null
     > = new Collection();
+    const osuCalculationCache: Collection<number, PerformanceCalculationResult<OsuPerformanceCalculator> | null> = new Collection();
 
     // Check first page first for score availability
     const firstPageScores: Score[] = await (beatmapInfo?.fetchDroidLeaderboard(
@@ -113,40 +119,48 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const getCalculationResult = async (
         score: Score
-    ): Promise<PerformanceCalculationResult | null> => {
-        const calcResult: PerformanceCalculationResult | null = beatmapInfo
-            ? calculationCache.get(score) ??
-              (await BeatmapDifficultyHelper.calculateScorePerformance(
-                  score,
-                  false
-              ))
+    ): Promise<[PerformanceCalculationResult<DroidPerformanceCalculator> | null, PerformanceCalculationResult<OsuPerformanceCalculator> | null]> => {
+        const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null = beatmapInfo
+            ? droidCalculationCache.get(score.scoreID) ??
+            await DroidBeatmapDifficultyHelper.calculateScorePerformance(
+                score,
+                false
+            )
             : null;
 
-        if (!calculationCache.has(score)) {
-            calculationCache.set(score, calcResult);
+        const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null = beatmapInfo
+            ? osuCalculationCache.get(score.scoreID) ??
+            await OsuBeatmapDifficultyHelper.calculateScorePerformance(
+                score
+            )
+            : null;
+
+        if (!droidCalculationCache.has(score.scoreID)) {
+            droidCalculationCache.set(score.scoreID, droidCalcResult);
         }
 
-        return calcResult;
+        if (!osuCalculationCache.has(score.scoreID)) {
+            osuCalculationCache.set(score.scoreID, osuCalcResult);
+        }
+
+        return [droidCalcResult, osuCalcResult];
     };
 
     const getScoreDescription = async (score: Score): Promise<string> => {
-        const calcResult: PerformanceCalculationResult | null =
+        const calcResult: [PerformanceCalculationResult<DroidPerformanceCalculator> | null, PerformanceCalculationResult<OsuPerformanceCalculator> | null] =
             await getCalculationResult(score);
 
         return (
             `${arrow} **${BeatmapManager.getRankEmote(
                 <ScoreRank>score.rank
-            )}** ${
-                calcResult
-                    ? `${arrow} **${calcResult.droid.total.toFixed(
-                          2
-                      )}DPP | ${calcResult.osu.total.toFixed(2)}PP**`
-                    : ""
+            )}** ${calcResult[0] && calcResult[1]
+                ? `${arrow} **${calcResult[0].result.total.toFixed(
+                    2
+                )}DPP | ${calcResult[1].result.total.toFixed(2)}PP**`
+                : ""
             } ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-            `${arrow} ${score.score.toLocaleString()} ${arrow} ${
-                score.combo
-            }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
-                score.accuracy.n50
+            `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo
+            }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50
             }/${score.accuracy.nmiss}]\n` +
             `\`${score.date.toUTCString()}\``
         );
@@ -170,11 +184,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const noModCalcParams: StarRatingCalculationParameters =
             new StarRatingCalculationParameters();
 
-        const noModCalcResult: StarRatingCalculationResult | null = beatmapInfo
-            ? await BeatmapDifficultyHelper.calculateBeatmapDifficulty(
-                  beatmapInfo.hash,
-                  noModCalcParams
-              )
+        const noModDroidCalcResult: StarRatingCalculationResult<DroidStarRating> | null = beatmapInfo
+            ? await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                beatmapInfo.hash,
+                noModCalcParams
+            )
+            : null;
+
+        const noModOsuCalcResult: StarRatingCalculationResult<OsuStarRating> | null = beatmapInfo
+            ? await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                beatmapInfo.hash,
+                noModCalcParams
+            )
             : null;
 
         const embedOptions: MessageOptions = beatmapInfo
@@ -187,21 +208,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         if (!embed.title) {
             embed.setTitle(topScore.title);
-        } else if (noModCalcResult) {
+        } else if (noModDroidCalcResult && noModOsuCalcResult) {
             embed.setTitle(
                 embed.title +
-                    ` [${noModCalcResult.droid.total.toFixed(2)}${
-                        Symbols.star
-                    } | ${noModCalcResult.osu.total.toFixed(2)}${Symbols.star}]`
+                ` [${noModDroidCalcResult.result.total.toFixed(2)}${Symbols.star
+                } | ${noModOsuCalcResult.result.total.toFixed(2)}${Symbols.star}]`
             );
         }
 
         embed.addField(
             "**Top Score**",
-            `**${topScore.username}${
-                topScore.mods.length > 0
-                    ? ` (${topScore.getCompleteModString()})`
-                    : ""
+            `**${topScore.username}${topScore.mods.length > 0
+                ? ` (${topScore.getCompleteModString()})`
+                : ""
             }**\n` + (await getScoreDescription(topScore))
         );
 
@@ -214,10 +233,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         for await (const score of displayedScores) {
             embed.addField(
-                `**#${++i} ${score.username}${
-                    score.mods.length > 0
-                        ? ` (${score.getCompleteModString()})`
-                        : ""
+                `**#${++i} ${score.username}${score.mods.length > 0
+                    ? ` (${score.getCompleteModString()})`
+                    : ""
                 }**`,
                 await getScoreDescription(score)
             );

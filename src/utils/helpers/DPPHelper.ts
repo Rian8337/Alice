@@ -6,7 +6,7 @@ import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalcul
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { Collection } from "discord.js";
-import { MapInfo, Score } from "osu-droid";
+import { DroidPerformanceCalculator, MapInfo, Score } from "osu-droid";
 
 /**
  * A helper for droid performance points submission.
@@ -59,12 +59,12 @@ export abstract class DPPHelper {
     static insertScore(
         dppList: Collection<string, PPEntry>,
         score: Score,
-        calculationResult: PerformanceCalculationResult
+        calculationResult: PerformanceCalculationResult<DroidPerformanceCalculator>
     ): void {
         const ppEntry: PPEntry = {
             hash: calculationResult.map.hash,
             title: calculationResult.map.fullTitle,
-            pp: parseFloat(calculationResult.droid.total.toFixed(2)),
+            pp: parseFloat(calculationResult.result.total.toFixed(2)),
             mods: score.mods.map((v) => v.acronym).join(""),
             accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
             combo: score.combo,

@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, MessageOptions } from "discord.js";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { MapInfo, MapStats } from "osu-droid";
+import { DroidStarRating, MapInfo, MapStats, OsuStarRating } from "osu-droid";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -10,6 +10,8 @@ import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCa
 import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
 import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
 import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -141,9 +143,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                     .setDescription(
                         `${firstBeatmap.showStatistics(1, stats)}\n` +
-                            `**BPM**: ${firstBeatmap.convertBPM(
-                                stats
-                            )} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                        `**BPM**: ${firstBeatmap.convertBPM(
+                            stats
+                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                     );
 
                 for await (const beatmapInfo of beatmapInformations) {
@@ -151,30 +153,32 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         break;
                     }
 
-                    const calcResult: StarRatingCalculationResult | null =
-                        await BeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                    const droidCalcResult: StarRatingCalculationResult<DroidStarRating> | null =
+                        await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
                             beatmapInfo.hash,
                             calcParams
                         );
 
-                    if (!calcResult) {
+                    const osuCalcResult: StarRatingCalculationResult<OsuStarRating> | null =
+                        await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                            beatmapInfo.hash,
+                            calcParams
+                        );
+
+                    if (!droidCalcResult || !osuCalcResult) {
                         continue;
                     }
 
                     embed.addField(
-                        `__${
-                            beatmapInfo.version
-                        }__ (${calcResult.droid.total.toFixed(2)} ${
-                            Symbols.star
-                        } | ${calcResult.osu.total.toFixed(2)} ${
-                            Symbols.star
+                        `__${beatmapInfo.version
+                        }__ (${droidCalcResult.result.total.toFixed(2)} ${Symbols.star
+                        } | ${osuCalcResult.result.total.toFixed(2)} ${Symbols.star
                         })`,
                         `${beatmapInfo.showStatistics(2, stats)}\n` +
-                            `**Max score**: ${beatmapInfo
-                                .maxScore(stats)
-                                .toLocaleString()} - **Max combo**: ${
-                                beatmapInfo.maxCombo
-                            }x`
+                        `**Max score**: ${beatmapInfo
+                            .maxScore(stats)
+                            .toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo
+                        }x`
                     );
                 }
 
