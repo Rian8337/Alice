@@ -3,7 +3,7 @@ import {
     GlobalCooldownKey,
 } from "@alice-types/core/CooldownKey";
 import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollection";
-import { CommandInteraction, Snowflake, Collection } from "discord.js";
+import { Snowflake } from "discord.js";
 import { MapInfo } from "osu-droid";
 
 /**
@@ -47,22 +47,6 @@ export abstract class CacheManager {
      * The channels that still have a map trivia active.
      */
     static readonly stillHasMapTriviaActive: Set<Snowflake> = new Set();
-
-    /**
-     * Recalculation queue for per-user recalculation, mapped by user ID.
-     */
-    static readonly recalculationQueue: Collection<
-        Snowflake,
-        CommandInteraction
-    > = new Collection();
-
-    /**
-     * Recalculation queue for per-user prototype recalculation, mapped by user ID.
-     */
-    static readonly prototypeRecalculationQueue: Collection<
-        Snowflake,
-        CommandInteraction
-    > = new Collection();
 
     /**
      * The users that still has a verification menu open.
