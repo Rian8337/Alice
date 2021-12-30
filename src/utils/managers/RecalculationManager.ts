@@ -98,6 +98,19 @@ export abstract class RecalculationManager extends Manager {
                     continue;
                 }
 
+                if (bindInfo.hasAskedForRecalc) {
+                    await interaction.channel!.send({
+                        content: MessageCreator.createReject(
+                            this.calculationFailedResponse,
+                            interaction.user.toString(),
+                            calculatedUserMention,
+                            "user has asked for recalculation"
+                        ),
+                    });
+
+                    continue;
+                }
+
                 if (await bindInfo.isDPPBanned()) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
@@ -178,19 +191,6 @@ export abstract class RecalculationManager extends Manager {
                             interaction.user.toString(),
                             `user ${calculatedUser}`,
                             "user is not binded"
-                        ),
-                    });
-
-                    continue;
-                }
-
-                if (bindInfo.hasAskedForRecalc) {
-                    await interaction.channel!.send({
-                        content: MessageCreator.createReject(
-                            this.calculationFailedResponse,
-                            interaction.user.toString(),
-                            `uid ${bindInfo.uid}`,
-                            "user has asked for recalculation"
                         ),
                     });
 
