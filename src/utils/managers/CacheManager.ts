@@ -49,9 +49,17 @@ export abstract class CacheManager {
     static readonly stillHasMapTriviaActive: Set<Snowflake> = new Set();
 
     /**
-     * Recalculation queue for per-user recalculation, mapped by the user's ID.
+     * Recalculation queue for per-user recalculation, mapped by user ID.
      */
     static readonly recalculationQueue: Collection<
+        Snowflake,
+        CommandInteraction
+    > = new Collection();
+
+    /**
+     * Recalculation queue for per-user prototype recalculation, mapped by user ID.
+     */
+    static readonly prototypeRecalculationQueue: Collection<
         Snowflake,
         CommandInteraction
     > = new Collection();

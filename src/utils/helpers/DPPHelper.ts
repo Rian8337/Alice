@@ -5,13 +5,18 @@ import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { Collection } from "discord.js";
+import { Collection, Snowflake } from "discord.js";
 import { DroidPerformanceCalculator, MapInfo, Score } from "osu-droid";
 
 /**
  * A helper for droid performance points submission.
  */
 export abstract class DPPHelper {
+    /**
+     * The ID of the role that permits pp-related moderation actions.
+     */
+    static readonly ppModeratorRole: Snowflake = "551662194270404644";
+
     /**
      * Checks a score's submission validity.
      *

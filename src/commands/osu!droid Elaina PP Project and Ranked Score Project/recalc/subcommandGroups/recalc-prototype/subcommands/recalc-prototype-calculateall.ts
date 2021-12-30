@@ -46,5 +46,5 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: [],
+    permissions: ["BOT_OWNER"],
 };
