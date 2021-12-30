@@ -1,8 +1,4 @@
-import {
-    MapInfo,
-    PerformanceCalculator,
-    ReplayAnalyzer,
-} from "osu-droid";
+import { MapInfo, PerformanceCalculator, ReplayAnalyzer } from "osu-droid";
 
 /**
  * Represents a beatmap's performance calculation result.
@@ -23,11 +19,7 @@ export class PerformanceCalculationResult<T extends PerformanceCalculator> {
      */
     readonly result: T;
 
-    constructor(
-        map: MapInfo,
-        result: T,
-        replay?: ReplayAnalyzer
-    ) {
+    constructor(map: MapInfo, result: T, replay?: ReplayAnalyzer) {
         this.map = map;
         this.result = result;
         this.replay = replay;

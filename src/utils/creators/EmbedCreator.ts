@@ -94,10 +94,10 @@ export abstract class EmbedCreator {
         const iconURL: string = ArrayHelper.getRandomArrayElement(
             Config.avatarList
         );
-        const embed: MessageEmbed = new MessageEmbed().setFooter(
-            this.botSign,
-            iconURL
-        );
+        const embed: MessageEmbed = new MessageEmbed().setFooter({
+            text: this.botSign,
+            iconURL: iconURL,
+        });
 
         if (embedOptions.author) {
             embed.setAuthor({
@@ -111,10 +111,10 @@ export abstract class EmbedCreator {
         }
 
         if (embedOptions.footerText) {
-            embed.setFooter(
-                `${embedOptions.footerText} | ${this.botSign}`,
-                iconURL
-            );
+            embed.setFooter({
+                text: `${embedOptions.footerText} | ${this.botSign}`,
+                iconURL: iconURL,
+            });
         }
 
         if (embedOptions.timestamp) {
@@ -221,10 +221,10 @@ export abstract class EmbedCreator {
 
         embed.setDescription(
             `**PP Profile for <@${bindInfo.discordid}> (${bindInfo.username})**\n` +
-            `Total PP: **${bindInfo.pptotal.toFixed(
-                2
-            )} pp (#${ppRank.toLocaleString()})**\n` +
-            `[PP Profile](https://droidppboard.herokuapp.com/profile?uid=${bindInfo.uid})`
+                `Total PP: **${bindInfo.pptotal.toFixed(
+                    2
+                )} pp (#${ppRank.toLocaleString()})**\n` +
+                `[PP Profile](https://droidppboard.herokuapp.com/profile?uid=${bindInfo.uid})`
         );
 
         return embed;
@@ -288,17 +288,21 @@ export abstract class EmbedCreator {
 
         if (
             calculationParams instanceof PerformanceCalculationParameters &&
-            (droidCalculationResult instanceof PerformanceCalculationResult || droidCalculationResult instanceof RebalancePerformanceCalculationResult) &&
+            (droidCalculationResult instanceof PerformanceCalculationResult ||
+                droidCalculationResult instanceof
+                    RebalancePerformanceCalculationResult) &&
             (osuCalculationResult instanceof PerformanceCalculationResult ||
                 osuCalculationResult instanceof
-                RebalancePerformanceCalculationResult)
+                    RebalancePerformanceCalculationResult)
         ) {
             const droidPP:
                 | DroidPerformanceCalculator
-                | RebalanceDroidPerformanceCalculator = droidCalculationResult.result;
+                | RebalanceDroidPerformanceCalculator =
+                droidCalculationResult.result;
             const pcPP:
                 | OsuPerformanceCalculator
-                | RebalanceOsuPerformanceCalculator = osuCalculationResult.result;
+                | RebalanceOsuPerformanceCalculator =
+                osuCalculationResult.result;
 
             const combo: number = calculationParams.combo ?? map.maxCombo;
             const accuracy: Accuracy = calculationParams.accuracy;
@@ -321,21 +325,28 @@ export abstract class EmbedCreator {
                         customStatistics
                     )}\n**Result**: ${combo}/${map.maxCombo}x | ${(
                         accuracy.value() * 100
-                    ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${accuracy.n50
+                    ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${
+                        accuracy.n50
                     }/${accuracy.nmiss}]`
                 )
                 .addField(
-                    `**Droid pp**: __${droidPP.total.toFixed(2)} pp__${calculationParams.isEstimated ? " (estimated)" : ""
+                    `**Droid pp**: __${droidPP.total.toFixed(2)} pp__${
+                        calculationParams.isEstimated ? " (estimated)" : ""
                     } - ${droidPP.stars.total.toFixed(2)} stars`,
-                    `**PC pp**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated ? " (estimated)" : ""
+                    `**PC pp**: ${pcPP.total.toFixed(2)} pp${
+                        calculationParams.isEstimated ? " (estimated)" : ""
                     } - ${pcPP.stars.total.toFixed(2)} stars`
                 );
         } else {
             const droidCalcResult: RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> =
-                <RebalanceStarRatingCalculationResult<RebalanceDroidStarRating>>droidCalculationResult;
+                <
+                    RebalanceStarRatingCalculationResult<RebalanceDroidStarRating>
+                >droidCalculationResult;
 
             const osuCalcResult: RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> =
-                <RebalanceStarRatingCalculationResult<RebalanceOsuStarRating>>osuCalculationResult;
+                <RebalanceStarRatingCalculationResult<RebalanceOsuStarRating>>(
+                    osuCalculationResult
+                );
 
             embed
                 .setColor(
@@ -352,30 +363,30 @@ export abstract class EmbedCreator {
                     )} ${droidCalcResult.result.total.toFixed(
                         2
                     )} droid stars\n` +
-                    `${Symbols.star.repeat(
-                        Math.min(
-                            10,
-                            Math.floor(osuCalcResult.result.total)
-                        )
-                    )} ${osuCalcResult.result.total.toFixed(2)} PC stars`
+                        `${Symbols.star.repeat(
+                            Math.min(10, Math.floor(osuCalcResult.result.total))
+                        )} ${osuCalcResult.result.total.toFixed(2)} PC stars`
                 );
         }
 
         if (
-            (droidCalculationResult instanceof PerformanceCalculationResult || droidCalculationResult instanceof RebalancePerformanceCalculationResult) &&
+            (droidCalculationResult instanceof PerformanceCalculationResult ||
+                droidCalculationResult instanceof
+                    RebalancePerformanceCalculationResult) &&
             (osuCalculationResult instanceof PerformanceCalculationResult ||
                 osuCalculationResult instanceof
-                RebalancePerformanceCalculationResult)
+                    RebalancePerformanceCalculationResult)
         ) {
             embed.setDescription(
                 "**The resulting values are subject to change.**\n" +
-                embed.description
+                    embed.description
             );
         }
 
         const newRating: OsuStarRating | RebalanceOsuStarRating =
             osuCalculationResult instanceof PerformanceCalculationResult ||
-                osuCalculationResult instanceof RebalancePerformanceCalculationResult
+            osuCalculationResult instanceof
+                RebalancePerformanceCalculationResult
                 ? osuCalculationResult.result.stars
                 : osuCalculationResult.result;
 
@@ -455,8 +466,10 @@ export abstract class EmbedCreator {
         if (!droidCalcResult || !osuCalcResult) {
             beatmapInformation +=
                 `${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-                `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo
-                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50
+                `${arrow} ${score.score.toLocaleString()} ${arrow} ${
+                    score.combo
+                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
+                    score.accuracy.n50
                 }/${score.accuracy.nmiss}]`;
 
             embed.setDescription(beatmapInformation);
@@ -465,11 +478,13 @@ export abstract class EmbedCreator {
 
         embed
             .setAuthor({
-                name: `${osuCalcResult.map.fullTitle
-                    } ${score.getCompleteModString()} [${droidCalcResult.result.stars.total.toFixed(
-                        2
-                    )}${Symbols.star} | ${osuCalcResult.result.stars.total.toFixed(2)}${Symbols.star
-                    }]`,
+                name: `${
+                    osuCalcResult.map.fullTitle
+                } ${score.getCompleteModString()} [${droidCalcResult.result.stars.total.toFixed(
+                    2
+                )}${Symbols.star} | ${osuCalcResult.result.stars.total.toFixed(
+                    2
+                )}${Symbols.star}]`,
                 iconURL: playerAvatarURL,
                 url: `https://osu.ppy.sh/b/${osuCalcResult.map.beatmapID}`,
             })
@@ -477,10 +492,18 @@ export abstract class EmbedCreator {
                 `https://b.ppy.sh/thumb/${osuCalcResult.map.beatmapsetID}l.jpg`
             );
 
-        beatmapInformation += `**${droidCalcResult.result.total.toFixed(2)}DPP**${(droidCalcResult.replay?.tapPenalty ?? 1) !== 1 ? " (*penalized*)" : ""
-            } | **${osuCalcResult.result.total.toFixed(2)}PP** `;
+        beatmapInformation += `**${droidCalcResult.result.total.toFixed(
+            2
+        )}DPP**${
+            (droidCalcResult.replay?.tapPenalty ?? 1) !== 1
+                ? " (*penalized*)"
+                : ""
+        } | **${osuCalcResult.result.total.toFixed(2)}PP** `;
 
-        if (score.accuracy.nmiss > 0 || score.combo < osuCalcResult.map.maxCombo) {
+        if (
+            score.accuracy.nmiss > 0 ||
+            score.combo < osuCalcResult.map.maxCombo
+        ) {
             const calcParams: PerformanceCalculationParameters =
                 await BeatmapDifficultyHelper.getCalculationParamsFromScore(
                     score
@@ -523,9 +546,13 @@ export abstract class EmbedCreator {
 
         beatmapInformation +=
             `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-            `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo
-            }x/${osuCalcResult.map.maxCombo}x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100
-            }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
+            `${arrow} ${score.score.toLocaleString()} ${arrow} ${
+                score.combo
+            }x/${osuCalcResult.map.maxCombo}x ${arrow} [${
+                score.accuracy.n300
+            }/${score.accuracy.n100}/${score.accuracy.n50}/${
+                score.accuracy.nmiss
+            }]`;
 
         if (!score.replay) {
             await score.downloadReplay();
@@ -542,7 +569,8 @@ export abstract class EmbedCreator {
 
             for (let i = 0; i < replayData.hitObjectData.length; ++i) {
                 // Using droid star rating as legacy slider tail doesn't exist.
-                const object: HitObject = droidCalcResult.result.stars.map.objects[i];
+                const object: HitObject =
+                    droidCalcResult.result.stars.map.objects[i];
                 const objectData: ReplayObjectData =
                     replayData.hitObjectData[i];
 
@@ -627,19 +655,21 @@ export abstract class EmbedCreator {
         const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
         embed
-            .setFooter(
-                embed.footer!.text! +
-                ` | Challenge ID: ${challenge.challengeid
-                } | Time left: ${DateTimeFormatHelper.secondsToDHMS(
-                    Math.max(
-                        0,
-                        DateTimeFormatHelper.getTimeDifference(
-                            challenge.timelimit * 1000
-                        ) / 1000
-                    )
-                )}`,
-                embed.footer!.iconURL
-            )
+            .setFooter({
+                text:
+                    embed.footer!.text! +
+                    ` | Challenge ID: ${
+                        challenge.challengeid
+                    } | Time left: ${DateTimeFormatHelper.secondsToDHMS(
+                        Math.max(
+                            0,
+                            DateTimeFormatHelper.getTimeDifference(
+                                challenge.timelimit * 1000
+                            ) / 1000
+                        )
+                    )}`,
+                iconURL: embed.footer!.iconURL,
+            })
             .setAuthor({
                 name:
                     challenge.type === "weekly"
@@ -651,26 +681,30 @@ export abstract class EmbedCreator {
             })
             .setDescription(
                 `Featured by <@${challenge.featured}>\n` +
-                `Download: [Google Drive](${challenge.link[0]})${challenge.link[1]
-                    ? ` - [OneDrive](${challenge.link[1]})`
-                    : ""
-                }`
+                    `Download: [Google Drive](${challenge.link[0]})${
+                        challenge.link[1]
+                            ? ` - [OneDrive](${challenge.link[1]})`
+                            : ""
+                    }`
             )
             .addField(
                 `**Star Rating**\n` +
-                `${Symbols.star.repeat(
-                    Math.min(10, Math.floor(droidCalcResult.result.total))
-                )} ${droidCalcResult.result.total.toFixed(2)} droid stars\n` +
-                `${Symbols.star.repeat(
-                    Math.min(10, Math.floor(osuCalcResult.result.total))
-                )} ${osuCalcResult.result.total.toFixed(2)} PC stars`,
+                    `${Symbols.star.repeat(
+                        Math.min(10, Math.floor(droidCalcResult.result.total))
+                    )} ${droidCalcResult.result.total.toFixed(
+                        2
+                    )} droid stars\n` +
+                    `${Symbols.star.repeat(
+                        Math.min(10, Math.floor(osuCalcResult.result.total))
+                    )} ${osuCalcResult.result.total.toFixed(2)} PC stars`,
                 `**Point(s)**: ${challenge.points} points\n` +
-                `**Pass Condition**: ${challenge.getPassInformation()}\n` +
-                `**Constrain**: ${challenge.constrain
-                    ? `${challenge.constrain.toUpperCase()} mod only`
-                    : "Any rankable mod except EZ, NF, and HT"
-                }\n\n` +
-                "Use `/daily challenges` to check bonuses."
+                    `**Pass Condition**: ${challenge.getPassInformation()}\n` +
+                    `**Constrain**: ${
+                        challenge.constrain
+                            ? `${challenge.constrain.toUpperCase()} mod only`
+                            : "Any rankable mod except EZ, NF, and HT"
+                    }\n\n` +
+                    "Use `/daily challenges` to check bonuses."
             );
 
         const chart: Buffer | null = await osuCalcResult.result.getStrainChart(
@@ -711,11 +745,11 @@ export abstract class EmbedCreator {
             .setTitle("Auction Information")
             .setDescription(
                 `**Name**: ${auction.name}\n` +
-                `**Auctioneer**: ${auction.auctioneer}\n` +
-                `**Creation Date**: ${new Date(
-                    auction.creationdate * 1000
-                ).toUTCString()}\n` +
-                `**Minimum Bid Amount**: ${coinEmoji}${auction.min_price} Alice coins`
+                    `**Auctioneer**: ${auction.auctioneer}\n` +
+                    `**Creation Date**: ${new Date(
+                        auction.creationdate * 1000
+                    ).toUTCString()}\n` +
+                    `**Minimum Bid Amount**: ${coinEmoji}${auction.min_price} Alice coins`
             )
             .addField(
                 "Item Information",
@@ -726,14 +760,15 @@ export abstract class EmbedCreator {
             .addField(
                 "Bid Information",
                 `**Bidders**: ${auction.bids.size.toLocaleString()}\n` +
-                `**Top Bidders**:\n` +
-                auction.bids
-                    .first(5)
-                    .map(
-                        (v, i) =>
-                            `#${i + 1}: ${v.clan} - ${coinEmoji}\`${v.amount
-                            }\` Alice coins`
-                    )
+                    `**Top Bidders**:\n` +
+                    auction.bids
+                        .first(5)
+                        .map(
+                            (v, i) =>
+                                `#${i + 1}: ${v.clan} - ${coinEmoji}\`${
+                                    v.amount
+                                }\` Alice coins`
+                        )
             );
 
         return embed;
@@ -757,7 +792,7 @@ export abstract class EmbedCreator {
             })
             .setDescription(
                 `If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using \`/report\` command (more information is available using \`/help report\`).\n\n` +
-                `Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!`
+                    `Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!`
             );
 
         return embed;
@@ -828,9 +863,9 @@ export abstract class EmbedCreator {
                 `${Symbols.star.repeat(
                     Math.min(10, Math.floor(droidCalcResult.result.total))
                 )} ${droidCalcResult.result.total.toFixed(2)} droid stars\n` +
-                `${Symbols.star.repeat(
-                    Math.min(10, Math.floor(osuCalcResult.result.total))
-                )} ${osuCalcResult.result.total.toFixed(2)} PC stars`
+                    `${Symbols.star.repeat(
+                        Math.min(10, Math.floor(osuCalcResult.result.total))
+                    )} ${osuCalcResult.result.total.toFixed(2)} PC stars`
             )
             .addField(
                 "**Status and Summary**",
@@ -855,8 +890,10 @@ export abstract class EmbedCreator {
             .setTitle(queue.information.title)
             .setThumbnail(queue.information.thumbnail)
             .setDescription(
-                `Channel: ${queue.information.author.name
-                }\n\nDuration: ${queue.information.duration.toString()}\n\nQueued/requested by <@${queue.queuer
+                `Channel: ${
+                    queue.information.author.name
+                }\n\nDuration: ${queue.information.duration.toString()}\n\nQueued/requested by <@${
+                    queue.queuer
                 }>`
             )
             .setURL(queue.information.url);

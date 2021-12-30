@@ -7,7 +7,9 @@ import {
 /**
  * Represents a beatmap's performance calculation result.
  */
-export class RebalancePerformanceCalculationResult<T extends RebalancePerformanceCalculator> {
+export class RebalancePerformanceCalculationResult<
+    T extends RebalancePerformanceCalculator
+> {
     /**
      * The beatmap being calculated.
      */
@@ -23,11 +25,7 @@ export class RebalancePerformanceCalculationResult<T extends RebalancePerformanc
      */
     readonly result: T;
 
-    constructor(
-        map: MapInfo,
-        result: T,
-        replay?: ReplayAnalyzer
-    ) {
+    constructor(map: MapInfo, result: T, replay?: ReplayAnalyzer) {
         this.map = map;
         this.result = result;
         this.replay = replay;

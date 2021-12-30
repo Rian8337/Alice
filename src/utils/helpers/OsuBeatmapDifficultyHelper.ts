@@ -39,10 +39,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
             return null;
         }
 
-        calcParams ??= await this.getCalculationParamsFromScore(
-            score,
-            false
-        );
+        calcParams ??= await this.getCalculationParamsFromScore(score, false);
 
         const result: StarRatingCalculationResult<OsuStarRating> | null =
             await this.calculateDifficulty(beatmap, calcParams);
@@ -51,10 +48,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
             return null;
         }
 
-        return this.calculatePerformance(
-            result,
-            calcParams
-        );
+        return this.calculatePerformance(result, calcParams);
     }
 
     /**
@@ -76,10 +70,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
             return null;
         }
 
-        calcParams ??= await this.getCalculationParamsFromScore(
-            score,
-            false
-        );
+        calcParams ??= await this.getCalculationParamsFromScore(score, false);
 
         const result: RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> | null =
             await this.calculateRebalanceDifficulty(beatmap, calcParams);
@@ -88,10 +79,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
             return null;
         }
 
-        return this.calculateRebalancePerformance(
-            result,
-            calcParams
-        );
+        return this.calculateRebalancePerformance(result, calcParams);
     }
 
     /**
@@ -103,7 +91,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
      */
     static async calculateBeatmapPerformance(
         star: StarRatingCalculationResult<OsuStarRating>,
-        calculationParams?: PerformanceCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters
     ): Promise<PerformanceCalculationResult<OsuPerformanceCalculator> | null>;
 
     /**
@@ -115,12 +103,15 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
      */
     static async calculateBeatmapPerformance(
         beatmapIDorHash: number | string,
-        calculationParams?: PerformanceCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters
     ): Promise<PerformanceCalculationResult<OsuPerformanceCalculator> | null>;
 
     static async calculateBeatmapPerformance(
-        beatmapIDorHashorStar: number | string | StarRatingCalculationResult<OsuStarRating>,
-        calculationParams?: PerformanceCalculationParameters,
+        beatmapIDorHashorStar:
+            | number
+            | string
+            | StarRatingCalculationResult<OsuStarRating>,
+        calculationParams?: PerformanceCalculationParameters
     ): Promise<PerformanceCalculationResult<OsuPerformanceCalculator> | null> {
         const beatmap: MapInfo | null =
             beatmapIDorHashorStar instanceof StarRatingCalculationResult
@@ -160,7 +151,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
      */
     static async calculateBeatmapRebalancePerformance(
         star: RebalanceStarRatingCalculationResult<RebalanceOsuStarRating>,
-        calculationParams?: PerformanceCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters
     ): Promise<RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator> | null>;
 
     /**
@@ -172,7 +163,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
      */
     static async calculateBeatmapRebalancePerformance(
         beatmapIDorHash: number | string,
-        calculationParams?: PerformanceCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters
     ): Promise<RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator> | null>;
 
     static async calculateBeatmapRebalancePerformance(
@@ -180,11 +171,11 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
             | number
             | string
             | RebalanceStarRatingCalculationResult<RebalanceOsuStarRating>,
-        calculationParams?: PerformanceCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters
     ): Promise<RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator> | null> {
         const beatmap: MapInfo | null =
             beatmapIDorHashorStar instanceof
-                RebalanceStarRatingCalculationResult
+            RebalanceStarRatingCalculationResult
                 ? beatmapIDorHashorStar.map
                 : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
 
@@ -202,18 +193,18 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
 
         const star: RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> | null =
             beatmapIDorHashorStar instanceof
-                RebalanceStarRatingCalculationResult
+            RebalanceStarRatingCalculationResult
                 ? beatmapIDorHashorStar
-                : await this.calculateRebalanceDifficulty(beatmap, calculationParams);
+                : await this.calculateRebalanceDifficulty(
+                      beatmap,
+                      calculationParams
+                  );
 
         if (!star) {
             return null;
         }
 
-        return this.calculateRebalancePerformance(
-            star,
-            calculationParams
-        );
+        return this.calculateRebalancePerformance(star, calculationParams);
     }
 
     /**
@@ -329,10 +320,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
             stats: calculationParams.customStatistics,
         });
 
-        return new StarRatingCalculationResult(
-            beatmap,
-            star
-        );
+        return new StarRatingCalculationResult(beatmap, star);
     }
 
     /**
@@ -352,16 +340,14 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
             return null;
         }
 
-        const star: RebalanceOsuStarRating = new RebalanceOsuStarRating().calculate({
-            map: beatmap.map!,
-            mods: calculationParams.customStatistics?.mods,
-            stats: calculationParams.customStatistics,
-        });
+        const star: RebalanceOsuStarRating =
+            new RebalanceOsuStarRating().calculate({
+                map: beatmap.map!,
+                mods: calculationParams.customStatistics?.mods,
+                stats: calculationParams.customStatistics,
+            });
 
-        return new RebalanceStarRatingCalculationResult(
-            beatmap,
-            star
-        );
+        return new RebalanceStarRatingCalculationResult(beatmap, star);
     }
 
     /**
@@ -373,7 +359,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
      */
     private static calculatePerformance(
         star: StarRatingCalculationResult<OsuStarRating>,
-        calculationParams: PerformanceCalculationParameters,
+        calculationParams: PerformanceCalculationParameters
     ): PerformanceCalculationResult<OsuPerformanceCalculator> | null {
         if (star.result.map.objects.length === 0) {
             return null;
@@ -401,7 +387,7 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
      */
     private static calculateRebalancePerformance(
         star: RebalanceStarRatingCalculationResult<RebalanceOsuStarRating>,
-        calculationParams: PerformanceCalculationParameters,
+        calculationParams: PerformanceCalculationParameters
     ): RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator> | null {
         if (star.result.map.objects.length === 0) {
             return null;
@@ -417,9 +403,6 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
                 stats: calculationParams.customStatistics,
             });
 
-        return new RebalancePerformanceCalculationResult(
-            star.map,
-            pp,
-        );
+        return new RebalancePerformanceCalculationResult(star.map, pp);
     }
 }

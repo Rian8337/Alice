@@ -1,12 +1,11 @@
-import {
-    MapInfo,
-    RebalanceStarRating,
-} from "osu-droid";
+import { MapInfo, RebalanceStarRating } from "osu-droid";
 
 /**
  * Represents a beatmap's difficulty calculation result.
  */
-export class RebalanceStarRatingCalculationResult<T extends RebalanceStarRating> {
+export class RebalanceStarRatingCalculationResult<
+    T extends RebalanceStarRating
+> {
     /**
      * The beatmap being calculated.
      */

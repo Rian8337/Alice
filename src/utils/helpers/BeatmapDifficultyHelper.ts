@@ -63,7 +63,7 @@ export abstract class BeatmapDifficultyHelper {
                     Math.min(
                         12.5,
                         parseFloat(parseFloat(input.substring(2)).toFixed(2)) ||
-                        0
+                            0
                     )
                 );
             }
@@ -133,7 +133,7 @@ export abstract class BeatmapDifficultyHelper {
 
     /**
      * Initializes a beatmap by downloading its file when needed.
-     * 
+     *
      * @param beatmap The beatmap.
      */
     protected static async initBeatmap(beatmap: MapInfo): Promise<void> {

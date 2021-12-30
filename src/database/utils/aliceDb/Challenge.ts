@@ -312,10 +312,14 @@ export class Challenge extends Manager {
 
                 await notificationChannel.send({
                     content: MessageCreator.createAccept(
-                        `Congratulations to <@${winnerBindInfo.discordid
-                        }> for achieving first place in challenge \`${this.challengeid
-                        }\`, earning him/her \`${this.isWeekly ? "50" : "25"
-                        }\` points and ${coinEmoji}\`${this.isWeekly ? "100" : "50"
+                        `Congratulations to <@${
+                            winnerBindInfo.discordid
+                        }> for achieving first place in challenge \`${
+                            this.challengeid
+                        }\`, earning him/her \`${
+                            this.isWeekly ? "50" : "25"
+                        }\` points and ${coinEmoji}\`${
+                            this.isWeekly ? "100" : "50"
                         }\` Alice coins!`
                     ),
                 });
@@ -426,8 +430,10 @@ export class Challenge extends Manager {
             );
         }
 
-        const calcResult: [PerformanceCalculationResult<DroidPerformanceCalculator>, PerformanceCalculationResult<OsuPerformanceCalculator>] =
-            (await this.getReplayCalculationResult(replay))!;
+        const calcResult: [
+            PerformanceCalculationResult<DroidPerformanceCalculator>,
+            PerformanceCalculationResult<OsuPerformanceCalculator>
+        ] = (await this.getReplayCalculationResult(replay))!;
 
         const pass: boolean = await this.verifyPassCompletion(
             replay,
@@ -479,15 +485,27 @@ export class Challenge extends Manager {
             }
         }
 
-        let droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null = null;
-        let osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null = null;
+        let droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
+            null;
+        let osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
+            null;
 
         if (scoreOrReplay instanceof Score) {
-            droidCalcResult = await DroidBeatmapDifficultyHelper.calculateScorePerformance(scoreOrReplay);
-            osuCalcResult = await OsuBeatmapDifficultyHelper.calculateScorePerformance(scoreOrReplay);
+            droidCalcResult =
+                await DroidBeatmapDifficultyHelper.calculateScorePerformance(
+                    scoreOrReplay
+                );
+            osuCalcResult =
+                await OsuBeatmapDifficultyHelper.calculateScorePerformance(
+                    scoreOrReplay
+                );
         } else {
-            const calcResult: [PerformanceCalculationResult<DroidPerformanceCalculator>, PerformanceCalculationResult<OsuPerformanceCalculator>] | null =
-                await this.getReplayCalculationResult(scoreOrReplay);
+            const calcResult:
+                | [
+                      PerformanceCalculationResult<DroidPerformanceCalculator>,
+                      PerformanceCalculationResult<OsuPerformanceCalculator>
+                  ]
+                | null = await this.getReplayCalculationResult(scoreOrReplay);
 
             if (calcResult) {
                 droidCalcResult = calcResult[0];
@@ -582,10 +600,12 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "dpp":
-                        bonusComplete = droidCalcResult.result.total >= tier.value;
+                        bonusComplete =
+                            droidCalcResult.result.total >= tier.value;
                         break;
                     case "pp":
-                        bonusComplete = osuCalcResult.result.total >= tier.value;
+                        bonusComplete =
+                            osuCalcResult.result.total >= tier.value;
                         break;
                     case "m300": {
                         const n300: number =
@@ -668,7 +688,8 @@ export class Challenge extends Manager {
                 description: v.list
                     .map(
                         (b) =>
-                            `**Level ${b.level
+                            `**Level ${
+                                b.level
                             }**: ${this.getPassOrBonusDescription(
                                 v.id,
                                 b.value
@@ -688,7 +709,7 @@ export class Challenge extends Manager {
         return (
             !this.constrain ||
             StringHelper.sortAlphabet(mods.map((v) => v.acronym).join("")) ===
-            StringHelper.sortAlphabet(this.constrain.toUpperCase())
+                StringHelper.sortAlphabet(this.constrain.toUpperCase())
         );
     }
 
@@ -775,8 +796,8 @@ export class Challenge extends Manager {
                     scoreOrReplay instanceof Score
                         ? await this.calculateChallengeScoreV2(scoreOrReplay)
                         : await this.calculateChallengeScoreV2(
-                            scoreOrReplay.data!
-                        );
+                              scoreOrReplay.data!
+                          );
                 return scoreV2 >= this.pass.value;
             }
             case "rank": {
@@ -936,47 +957,55 @@ export class Challenge extends Manager {
      */
     private async getReplayCalculationResult(
         replay: ReplayAnalyzer
-    ): Promise<[PerformanceCalculationResult<DroidPerformanceCalculator>, PerformanceCalculationResult<OsuPerformanceCalculator>] | null> {
+    ): Promise<
+        | [
+              PerformanceCalculationResult<DroidPerformanceCalculator>,
+              PerformanceCalculationResult<OsuPerformanceCalculator>
+          ]
+        | null
+    > {
         const data: ReplayData | null = replay.data;
 
         if (!data) {
             return null;
         }
 
-        const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> = (await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
-            this.beatmapid,
-            new PerformanceCalculationParameters(
-                data.accuracy,
-                data.accuracy.value() * 100,
-                data.maxCombo,
-                1,
-                new MapStats({
-                    mods: data.convertedMods,
-                    ar: data.forcedAR,
-                    isForceAR: !!data.forcedAR,
-                    speedMultiplier: data.speedModification,
-                    oldStatistics: data.replayVersion <= 3,
-                })
-            ),
-            replay
-        ))!;
+        const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> =
+            (await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                this.beatmapid,
+                new PerformanceCalculationParameters(
+                    data.accuracy,
+                    data.accuracy.value() * 100,
+                    data.maxCombo,
+                    1,
+                    new MapStats({
+                        mods: data.convertedMods,
+                        ar: data.forcedAR,
+                        isForceAR: !!data.forcedAR,
+                        speedMultiplier: data.speedModification,
+                        oldStatistics: data.replayVersion <= 3,
+                    })
+                ),
+                replay
+            ))!;
 
-        const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> = (await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
-            this.beatmapid,
-            new PerformanceCalculationParameters(
-                data.accuracy,
-                data.accuracy.value() * 100,
-                data.maxCombo,
-                1,
-                new MapStats({
-                    mods: data.convertedMods,
-                    ar: data.forcedAR,
-                    isForceAR: !!data.forcedAR,
-                    speedMultiplier: data.speedModification,
-                    oldStatistics: data.replayVersion <= 3,
-                })
-            )
-        ))!;
+        const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> =
+            (await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                this.beatmapid,
+                new PerformanceCalculationParameters(
+                    data.accuracy,
+                    data.accuracy.value() * 100,
+                    data.maxCombo,
+                    1,
+                    new MapStats({
+                        mods: data.convertedMods,
+                        ar: data.forcedAR,
+                        isForceAR: !!data.forcedAR,
+                        speedMultiplier: data.speedModification,
+                        oldStatistics: data.replayVersion <= 3,
+                    })
+                )
+            ))!;
 
         return [droidCalcResult, osuCalcResult];
     }

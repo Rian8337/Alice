@@ -149,7 +149,10 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
     ): Promise<PerformanceCalculationResult<DroidPerformanceCalculator> | null>;
 
     static async calculateBeatmapPerformance(
-        beatmapIDorHashorStar: number | string | StarRatingCalculationResult<DroidStarRating>,
+        beatmapIDorHashorStar:
+            | number
+            | string
+            | StarRatingCalculationResult<DroidStarRating>,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<PerformanceCalculationResult<DroidPerformanceCalculator> | null> {
@@ -220,7 +223,7 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
     ): Promise<RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null> {
         const beatmap: MapInfo | null =
             beatmapIDorHashorStar instanceof
-                RebalanceStarRatingCalculationResult
+            RebalanceStarRatingCalculationResult
                 ? beatmapIDorHashorStar.map
                 : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
 
@@ -238,9 +241,12 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
 
         const star: RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> | null =
             beatmapIDorHashorStar instanceof
-                RebalanceStarRatingCalculationResult
+            RebalanceStarRatingCalculationResult
                 ? beatmapIDorHashorStar
-                : await this.calculateRebalanceDifficulty(beatmap, calculationParams);
+                : await this.calculateRebalanceDifficulty(
+                      beatmap,
+                      calculationParams
+                  );
 
         if (!star) {
             return null;
@@ -366,10 +372,7 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
             stats: calculationParams.customStatistics,
         });
 
-        return new StarRatingCalculationResult(
-            beatmap,
-            star
-        );
+        return new StarRatingCalculationResult(beatmap, star);
     }
 
     /**
@@ -389,16 +392,14 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
             return null;
         }
 
-        const star: RebalanceDroidStarRating = new RebalanceDroidStarRating().calculate({
-            map: beatmap.map!,
-            mods: calculationParams.customStatistics?.mods,
-            stats: calculationParams.customStatistics,
-        });
+        const star: RebalanceDroidStarRating =
+            new RebalanceDroidStarRating().calculate({
+                map: beatmap.map!,
+                mods: calculationParams.customStatistics?.mods,
+                stats: calculationParams.customStatistics,
+            });
 
-        return new RebalanceStarRatingCalculationResult(
-            beatmap,
-            star
-        );
+        return new RebalanceStarRatingCalculationResult(beatmap, star);
     }
 
     /**
@@ -478,10 +479,6 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
                 stats: calculationParams.customStatistics,
             });
 
-        return new RebalancePerformanceCalculationResult(
-            star.map,
-            pp,
-            replay
-        );
+        return new RebalancePerformanceCalculationResult(star.map, pp, replay);
     }
 }

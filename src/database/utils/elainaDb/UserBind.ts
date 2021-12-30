@@ -289,7 +289,9 @@ export class UserBind extends Manager {
             }
 
             const calcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                await DroidBeatmapDifficultyHelper.calculateScorePerformance(score);
+                await DroidBeatmapDifficultyHelper.calculateScorePerformance(
+                    score
+                );
 
             if (!calcResult) {
                 continue;
@@ -340,7 +342,9 @@ export class UserBind extends Manager {
             }
 
             const calcResult: RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null =
-                await DroidBeatmapDifficultyHelper.calculateScoreRebalancePerformance(score);
+                await DroidBeatmapDifficultyHelper.calculateScoreRebalancePerformance(
+                    score
+                );
 
             if (!calcResult) {
                 continue;
@@ -361,7 +365,8 @@ export class UserBind extends Manager {
             };
 
             this.client.logger.info(
-                `${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""
+                `${calcResult.map.fullTitle}${
+                    entry.mods ? ` +${entry.mods}` : ""
                 }: ${entry.prevPP} ⮕  ${entry.pp}`
             );
 
@@ -788,10 +793,10 @@ export class UserBind extends Manager {
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(
-                    typeof uidOrUsernameOrPlayer === "string"
-                        ? { username: uidOrUsernameOrPlayer }
-                        : { uid: uidOrUsernameOrPlayer }
-                );
+                      typeof uidOrUsernameOrPlayer === "string"
+                          ? { username: uidOrUsernameOrPlayer }
+                          : { uid: uidOrUsernameOrPlayer }
+                  );
 
         if (!player.username || !player.uid) {
             return this.createOperationResult(
