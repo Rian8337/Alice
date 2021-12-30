@@ -129,9 +129,9 @@ export abstract class TimeoutManager extends PunishmentManager {
                 iconURL: interaction.user.avatarURL({ dynamic: true })!,
             })
             .setTitle("Timeout executed")
-            .setFooter(
-                `User ID: ${member.id} | Channel ID: ${interaction.channel?.id}`
-            )
+            .setFooter({
+                text: `User ID: ${member.id} | Channel ID: ${interaction.channel?.id}`,
+            })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} in ${
@@ -226,9 +226,9 @@ export abstract class TimeoutManager extends PunishmentManager {
                 iconURL: interaction.user.avatarURL({ dynamic: true })!,
             })
             .setTitle("Untimeout executed")
-            .setFooter(
-                `User ID: ${member.id} | Channel ID: ${interaction.channel?.id}`
-            )
+            .setFooter({
+                text: `User ID: ${member.id} | Channel ID: ${interaction.channel?.id}`,
+            })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} in ${interaction.channel}**\n\n` +

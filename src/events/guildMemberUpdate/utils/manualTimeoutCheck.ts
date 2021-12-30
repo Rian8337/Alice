@@ -82,7 +82,9 @@ export const run: EventUtil["run"] = async (
                 iconURL: auditLog.executor.avatarURL({ dynamic: true })!,
             })
             .setTitle("Timeout executed")
-            .setFooter(`User ID: ${newMember.id}`)
+            .setFooter({
+                text: `User ID: ${newMember.id}`,
+            })
             .setTimestamp(new Date())
             .setDescription(
                 `**${newMember} for ${DateTimeFormatHelper.secondsToDHMS(
@@ -164,7 +166,9 @@ export const run: EventUtil["run"] = async (
                 iconURL: auditLog.executor.avatarURL({ dynamic: true })!,
             })
             .setTitle("Untimeout executed")
-            .setFooter(`User ID: ${newMember.id}`)
+            .setFooter({
+                text: `User ID: ${newMember.id}`,
+            })
             .setTimestamp(new Date())
             .setDescription(
                 `**Reason**:\n` + auditLog.reason ?? "Not specified."
