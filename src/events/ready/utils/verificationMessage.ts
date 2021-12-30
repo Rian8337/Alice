@@ -193,7 +193,7 @@ export const run: EventUtil["run"] = async (client) => {
                         EmbedCreator.createNormalEmbed({ color: "#ffdd00" });
 
                     infoEmbed
-                        .setAuthor("User Information")
+                        .setAuthor({ name: "User Information" })
                         .addField(
                             "Account Creation Date",
                             member.user.createdAt.toUTCString()
@@ -226,9 +226,9 @@ export const run: EventUtil["run"] = async (client) => {
                     );
 
                     mainEmbed
-                        .setAuthor(
-                            `Language: ${VerifyLanguage[selectedLanguage]}`
-                        )
+                        .setAuthor({
+                            name: `Language: ${VerifyLanguage[selectedLanguage]}`,
+                        })
                         .setDescription(
                             `**If you chose the wrong language, please go to ${verificationChannel} to show another language of this message**.\n\n${verifyText}`
                         );

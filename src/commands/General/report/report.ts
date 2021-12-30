@@ -81,7 +81,9 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 
     replyEmbed
-        .setAuthor("Report Summary")
+        .setAuthor({
+            name: "Report Summary",
+        })
         .setDescription(
             `**Offender**: ${toReport} (${toReport.id})\n` +
                 `**Channel**: ${interaction.channel}\n` +

@@ -9,7 +9,12 @@ import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyH
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Message, MessageEmbed, MessageOptions } from "discord.js";
-import { DroidPerformanceCalculator, MapInfo, MapStats, OsuPerformanceCalculator } from "osu-droid";
+import {
+    DroidPerformanceCalculator,
+    MapInfo,
+    MapStats,
+    OsuPerformanceCalculator,
+} from "osu-droid";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 
@@ -139,13 +144,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     `${firstBeatmap.artist} - ${firstBeatmap.title} by ${firstBeatmap.creator}`
                 )
                 .setColor(firstBeatmap.statusColor)
-                .setAuthor("Beatmap Information")
+                .setAuthor({ name: "Beatmap Information" })
                 .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                 .setDescription(
                     `${firstBeatmap.showStatistics(1, stats)}\n` +
-                    `**BPM**: ${firstBeatmap.convertBPM(
-                        stats
-                    )} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                        `**BPM**: ${firstBeatmap.convertBPM(
+                            stats
+                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                 );
 
             for await (const beatmapInfo of beatmapInformations) {
@@ -170,18 +175,22 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 }
 
                 embed.addField(
-                    `__${beatmapInfo.version
-                    }__ (${droidCalcResult.result.stars.total.toFixed(2)} ${Symbols.star
-                    } | ${osuCalcResult.result.stars.total.toFixed(2)} ${Symbols.star
+                    `__${
+                        beatmapInfo.version
+                    }__ (${droidCalcResult.result.stars.total.toFixed(2)} ${
+                        Symbols.star
+                    } | ${osuCalcResult.result.stars.total.toFixed(2)} ${
+                        Symbols.star
                     })`,
                     `${beatmapInfo.showStatistics(2, stats)}\n` +
-                    `**Max score**: ${beatmapInfo
-                        .maxScore(stats)
-                        .toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo
-                    }x\n` +
-                    `**${droidCalcResult.result.total.toFixed(
-                        2
-                    )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`
+                        `**Max score**: ${beatmapInfo
+                            .maxScore(stats)
+                            .toLocaleString()} - **Max combo**: ${
+                            beatmapInfo.maxCombo
+                        }x\n` +
+                        `**${droidCalcResult.result.total.toFixed(
+                            2
+                        )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`
                 );
             }
 

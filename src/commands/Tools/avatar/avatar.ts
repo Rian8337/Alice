@@ -12,7 +12,9 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 
     avatarEmbed
-        .setAuthor(user.tag)
+        .setAuthor({
+            name: user.tag,
+        })
         .setDescription(
             `[Avatar Link](${user.avatarURL({ dynamic: true, size: 1024 })})`
         )
@@ -28,7 +30,9 @@ export const run: Command["run"] = async (_, interaction) => {
         });
 
         bannerEmbed
-            .setAuthor(user.tag)
+            .setAuthor({
+                name: user.tag,
+            })
             .setDescription(
                 `[Banner Link](${user.bannerURL({
                     dynamic: true,

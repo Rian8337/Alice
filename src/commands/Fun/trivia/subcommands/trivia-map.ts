@@ -133,7 +133,9 @@ function createEmbed(
     });
 
     embed
-        .setAuthor("Beatmap Hint")
+        .setAuthor({
+            name: "Beatmap Hint",
+        })
         .setTitle(`Level ${level}`)
         .setDescription(
             `**Artist:** ${artist}\n**Title**: ${title}${
@@ -468,7 +470,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 });
 
                 embed
-                    .setAuthor("Beatmap Information")
+                    .setAuthor({
+                        name: "Beatmap Information",
+                    })
                     .setTitle(
                         `${beatmapInfo.artist} - ${beatmapInfo.title} by ${beatmapInfo.creator}`
                     )

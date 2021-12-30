@@ -139,13 +139,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         `${firstBeatmap.artist} - ${firstBeatmap.title} by ${firstBeatmap.creator}`
                     )
                     .setColor(firstBeatmap.statusColor)
-                    .setAuthor("Beatmap Information")
+                    .setAuthor({ name: "Beatmap Information" })
                     .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                     .setDescription(
                         `${firstBeatmap.showStatistics(1, stats)}\n` +
-                        `**BPM**: ${firstBeatmap.convertBPM(
-                            stats
-                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                            `**BPM**: ${firstBeatmap.convertBPM(
+                                stats
+                            )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                     );
 
                 for await (const beatmapInfo of beatmapInformations) {
@@ -170,15 +170,19 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     }
 
                     embed.addField(
-                        `__${beatmapInfo.version
-                        }__ (${droidCalcResult.result.total.toFixed(2)} ${Symbols.star
-                        } | ${osuCalcResult.result.total.toFixed(2)} ${Symbols.star
+                        `__${
+                            beatmapInfo.version
+                        }__ (${droidCalcResult.result.total.toFixed(2)} ${
+                            Symbols.star
+                        } | ${osuCalcResult.result.total.toFixed(2)} ${
+                            Symbols.star
                         })`,
                         `${beatmapInfo.showStatistics(2, stats)}\n` +
-                        `**Max score**: ${beatmapInfo
-                            .maxScore(stats)
-                            .toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo
-                        }x`
+                            `**Max score**: ${beatmapInfo
+                                .maxScore(stats)
+                                .toLocaleString()} - **Max combo**: ${
+                                beatmapInfo.maxCombo
+                            }x`
                     );
                 }
 

@@ -173,7 +173,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     resultEmbed
-        .setAuthor(match.name)
+        .setAuthor({
+            name: match.name,
+        })
         .setTitle(mapData[1])
         .addField(`${match.team[0][0]}: ${team1OverallScore}`, team1String)
         .addField(`${match.team[1][0]}: ${team2OverallScore}`, team2String)
