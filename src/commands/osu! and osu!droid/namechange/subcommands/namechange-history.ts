@@ -54,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             "Name History",
             contents
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
-                .map((v, i) => `**${10 * (page - 1) + i}.** ${v}`)
+                .map((v, i) => `**${10 * (page - 1) + i + 1}.** ${v}`)
                 .join("\n")
         );
     };
