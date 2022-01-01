@@ -169,6 +169,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const verificationResult: OperationResult = match.verifyScore(
             score,
             map,
+            teamScoreStatus.success,
             mappoolMainData.forcePR
         );
 
@@ -203,7 +204,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             !teamScoreStatus.success
                 ? teamScoreStatus.reason
                 : verificationResult.reason
-        }**`;
+        }**\n`;
 
         if (i % 2 === 0) {
             if (teamScoreStatus.success) {

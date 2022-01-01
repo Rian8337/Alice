@@ -162,11 +162,13 @@ export class TournamentMatch
      *
      * @param score The score to verify.
      * @param map The beatmap data to verify for.
+     * @param teamScoreStatus Whether the team fulfills the criteria of submitting a score.
      * @param forcePR Whether this match enforces the PR mod.
      */
     verifyScore(
         score: Score,
         map: MainBeatmapData,
+        teamScoreStatus: boolean,
         forcePR?: boolean
     ): OperationResult {
         if (score.hash !== map[3]) {
@@ -220,7 +222,8 @@ export class TournamentMatch
                 );
             case "fm":
                 return this.createOperationResult(
-                    mods.length > 1 && speedChangingMods.length === 0,
+                    (mods.length > 1 || teamScoreStatus) &&
+                        speedChangingMods.length === 0,
                     `${speedChangingMods
                         .map((m) => m.acronym)
                         .join("")} was used`
