@@ -105,16 +105,15 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setTitle("Lounge Lock Extended")
                 .setDescription(
                     `**User**: <@${userId}>\n` +
-                        `**Updated Reason**: ${reason}\n` +
-                        `**New Expiration Date**: ${
-                            !Number.isFinite(
-                                lockInfo.expiration + duration * 1000
-                            )
-                                ? "Never"
-                                : new Date(
-                                      lockInfo.expiration + duration * 1000
-                                  ).toUTCString()
-                        }`
+                    `**Updated Reason**: ${reason}\n` +
+                    `**New Expiration Date**: ${!Number.isFinite(
+                        lockInfo.expiration + duration * 1000
+                    )
+                        ? "Never"
+                        : new Date(
+                            lockInfo.expiration + duration * 1000
+                        ).toUTCString()
+                    }`
                 );
         } else {
             // Insert new lock
@@ -129,14 +128,13 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setTitle("Lounge Lock Added")
                 .setDescription(
                     `**User**: <@${userId}>\n` +
-                        `**Reason**: ${reason}\n` +
-                        `**Expiration Date**: ${
-                            !Number.isFinite(duration * 1000)
-                                ? "Never"
-                                : new Date(
-                                      Date.now() + duration * 1000
-                                  ).toUTCString()
-                        }`
+                    `**Reason**: ${reason}\n` +
+                    `**Expiration Date**: ${!Number.isFinite(duration * 1000)
+                        ? "Never"
+                        : new Date(
+                            Date.now() + duration * 1000
+                        ).toUTCString()
+                    }`
                 );
         }
 
@@ -204,7 +202,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
             .setTitle("Lounge Lock Removed")
             .setDescription(
                 `**User**: <@${userId}>
-                **Updated Reason**: ${reason}`
+                **Reason**: ${reason}`
             );
 
         await lockInfo.unlock();
