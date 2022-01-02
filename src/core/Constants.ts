@@ -59,7 +59,7 @@ export class Constants {
     /**
      * The ID of lounge channel in main server.
      */
-    static readonly loungeChannel: Snowflake = "667400988801368094";
+    static readonly loungeChannel: Snowflake = "927204556683771945";
 
     /**
      * The ID of verification channel in main server.
