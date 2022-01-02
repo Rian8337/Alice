@@ -54,14 +54,12 @@ export abstract class LoungeLockManager extends PunishmentManager {
      * @param userId The ID of the user.
      * @param reason The reason for locking the user.
      * @param duration The duration of the lock or the extension, in seconds. For permanent locks, use `Number.POSITIVE_INFINITY` or -1.
-     * @param updateChannelPermission Whether to update lounge channel permission. Defaults to `true`.
      * @returns An object containing information about the operation.
      */
     static async lock(
         userId: Snowflake,
         reason: string,
-        duration: number,
-        updateChannelPermission: boolean = true
+        duration: number
     ): Promise<OperationResult> {
         if (duration < 0) {
             duration = Number.POSITIVE_INFINITY;
@@ -105,36 +103,34 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setTitle("Lounge Lock Extended")
                 .setDescription(
                     `**User**: <@${userId}>\n` +
-                    `**Updated Reason**: ${reason}\n` +
-                    `**New Expiration Date**: ${!Number.isFinite(
-                        lockInfo.expiration + duration * 1000
-                    )
-                        ? "Never"
-                        : new Date(
-                            lockInfo.expiration + duration * 1000
-                        ).toUTCString()
-                    }`
+                        `**Updated Reason**: ${reason}\n` +
+                        `**New Expiration Date**: ${
+                            !Number.isFinite(
+                                lockInfo.expiration + duration * 1000
+                            )
+                                ? "Never"
+                                : new Date(
+                                      lockInfo.expiration + duration * 1000
+                                  ).toUTCString()
+                        }`
                 );
         } else {
             // Insert new lock
             await this.loungeLockDb.insertNewLock(userId, duration, reason);
-
-            if (updateChannelPermission) {
-                await this.insertLockPermissionToChannel(userId);
-            }
 
             logEmbed
                 .setColor("#a5de6f")
                 .setTitle("Lounge Lock Added")
                 .setDescription(
                     `**User**: <@${userId}>\n` +
-                    `**Reason**: ${reason}\n` +
-                    `**Expiration Date**: ${!Number.isFinite(duration * 1000)
-                        ? "Never"
-                        : new Date(
-                            Date.now() + duration * 1000
-                        ).toUTCString()
-                    }`
+                        `**Reason**: ${reason}\n` +
+                        `**Expiration Date**: ${
+                            !Number.isFinite(duration * 1000)
+                                ? "Never"
+                                : new Date(
+                                      Date.now() + duration * 1000
+                                  ).toUTCString()
+                        }`
                 );
         }
 
@@ -210,44 +206,5 @@ export abstract class LoungeLockManager extends PunishmentManager {
         await logChannel.send({ embeds: [logEmbed] });
 
         return this.createOperationResult(true);
-    }
-
-    /**
-     * Inserts a lock permission to the lounge channel.
-     *
-     * @param userId The ID of the user to lock.
-     */
-    static async insertLockPermissionToChannel(
-        userId: Snowflake
-    ): Promise<void> {
-        return this.updateChannelPermission(userId, true);
-    }
-
-    /**
-     * Removes a lock permission to the lounge channel.
-     *
-     * @param userId The ID of the user to remove.
-     */
-    static async removeLockPermissionFromChannel(
-        userId: Snowflake
-    ): Promise<void> {
-        return this.updateChannelPermission(userId, false);
-    }
-
-    /**
-     * Updates the lounge channel's permission with respect to a user.
-     *
-     * @param userId The ID of the user.
-     * @param lock Whether to lock the user.
-     */
-    private static async updateChannelPermission(
-        userId: Snowflake,
-        lock: boolean
-    ): Promise<void> {
-        await this.loungeChannel.permissionOverwrites.edit(
-            userId,
-            { VIEW_CHANNEL: !lock },
-            { reason: lock ? "Lounge lock insertion" : "Lounge lock removal" }
-        );
     }
 }

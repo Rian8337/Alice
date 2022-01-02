@@ -48,7 +48,6 @@ export const run: EventUtil["run"] = async (
         // TODO: check this typings
         if (
             !auditLog.changes ||
-            //@ts-expect-error: Wrong typings?
             auditLog.changes[0].key !== "communication_disabled_until"
         ) {
             return;
@@ -138,7 +137,6 @@ export const run: EventUtil["run"] = async (
 
         if (
             !auditLog.changes ||
-            //@ts-expect-error: Wrong typings?
             auditLog.changes[0].key !== "communication_disabled_until"
         ) {
             return;

@@ -1,22 +1,16 @@
-import {
-    GuildChannel,
-    GuildMember,
-    MessageEmbed,
-    Role,
-    TextChannel,
-} from "discord.js";
+import { GuildMember, MessageEmbed, Role, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";
 
-export const run: EventUtil["run"] = async (_, member: GuildMember) => {
-    if (member.guild.id !== Constants.mainServer) {
+export const run: EventUtil["run"] = async (_, __, newMember: GuildMember) => {
+    if (newMember.guild.id !== Constants.mainServer) {
         return;
     }
 
-    const role: Role | undefined = member.guild.roles.cache.find(
+    const role: Role | undefined = newMember.guild.roles.cache.find(
         (r) => r.name === "Lounge Pass"
     );
 
@@ -24,13 +18,13 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
         return;
     }
 
-    if (!member.roles.cache.has(role.id)) {
+    if (!newMember.roles.cache.has(role.id)) {
         return;
     }
 
     const lockInfo: LoungeLock | null =
         await DatabaseManager.aliceDb.collections.loungeLock.getUserLockInfo(
-            member.id
+            newMember.id
         );
 
     if (!lockInfo) {
@@ -38,13 +32,10 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     }
 
     if (lockInfo.isExpired) {
-        await (<GuildChannel>(
-            member.guild.channels.cache.get(Constants.loungeChannel)
-        )).permissionOverwrites.delete(member.id);
         return;
     }
 
-    member.roles.remove(
+    await newMember.roles.remove(
         role,
         `Locked from lounge channel for \`${
             lockInfo.reason ?? "not specified"
@@ -57,7 +48,7 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     });
 
     embed.setDescription(
-        `${member} is locked from lounge channel!\n` +
+        `${newMember} is locked from lounge channel!\n` +
             `Reason: ${lockInfo.reason ?? "Not specified"}.\n\n` +
             `This lock will ${
                 !Number.isFinite(lockInfo.expiration)
@@ -66,7 +57,7 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
             }.`
     );
 
-    (<TextChannel>member.guild.channels.resolve("783506454966566912")).send({
+    (<TextChannel>newMember.guild.channels.resolve("783506454966566912")).send({
         embeds: [embed],
     });
 };
