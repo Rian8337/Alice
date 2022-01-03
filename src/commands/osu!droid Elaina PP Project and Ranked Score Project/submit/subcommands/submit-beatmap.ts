@@ -94,6 +94,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     submitStrings.beatmapNotWhitelisted
                 ),
             });
+        case DPPSubmissionValidity.BEATMAP_TOO_SHORT:
+            return interaction.editReply({
+                content: MessageCreator.createReject(
+                    submitStrings.beatmapTooShort
+                ),
+            });
         case DPPSubmissionValidity.SCORE_USES_FORCE_AR:
             return interaction.editReply({
                 content: MessageCreator.createReject(

@@ -114,6 +114,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             case DPPSubmissionValidity.BEATMAP_NOT_WHITELISTED:
                 fieldContent += "Unranked beatmap";
                 break;
+            case DPPSubmissionValidity.BEATMAP_TOO_SHORT:
+                fieldContent += "Beatmap too short";
+                break;
             case DPPSubmissionValidity.SCORE_USES_FORCE_AR:
             case DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED:
                 fieldContent += "Unranked features";

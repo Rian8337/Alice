@@ -6,7 +6,12 @@ import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalcul
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { Collection, Snowflake } from "discord.js";
-import { DroidPerformanceCalculator, MapInfo, Score } from "osu-droid";
+import {
+    DroidPerformanceCalculator,
+    MapInfo,
+    rankedStatus,
+    Score,
+} from "osu-droid";
 
 /**
  * A helper for droid performance points submission.
@@ -40,6 +45,10 @@ export abstract class DPPHelper {
                 return DPPSubmissionValidity.SCORE_USES_FORCE_AR;
             case score.speedMultiplier !== 1:
                 return DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED;
+            case beatmapInfo.approved === rankedStatus.LOVED &&
+                (beatmapInfo.hitLength < 30 ||
+                    beatmapInfo.hitLength / beatmapInfo.totalLength < 0.6):
+                return DPPSubmissionValidity.BEATMAP_TOO_SHORT;
             case await WhitelistManager.isBlacklisted(beatmapInfo.beatmapID):
                 return DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED;
             case WhitelistManager.beatmapNeedsWhitelisting(
