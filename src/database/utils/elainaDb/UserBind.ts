@@ -12,7 +12,6 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { Collection, Snowflake } from "discord.js";
 import {
     DroidAPIRequestBuilder,
@@ -169,6 +168,7 @@ export class UserBind extends Manager {
             // Reset everything if user is banned.
             this.pp = new Collection();
             this.pptotal = 0;
+            this.playc = 0;
 
             return DatabaseManager.elainaDb.collections.userBind.update(
                 { discordid: this.discordid },
@@ -176,6 +176,7 @@ export class UserBind extends Manager {
                     $set: {
                         pp: [],
                         pptotal: 0,
+                        playc: 0,
                         dppScanComplete: true,
                     },
                 }
@@ -190,26 +191,13 @@ export class UserBind extends Manager {
 
             await HelperFunctions.sleep(0.2);
 
-            if (!beatmapInfo) {
-                this.pp.delete(ppEntry.hash);
-                continue;
-            }
-
             if (
-                WhitelistManager.beatmapNeedsWhitelisting(
-                    beatmapInfo.approved
-                ) &&
-                (await WhitelistManager.getBeatmapWhitelistStatus(
-                    beatmapInfo.hash
-                )) !== "whitelisted"
+                !beatmapInfo ||
+                (await DPPHelper.checkSubmissionValidity(beatmapInfo)) !==
+                    DPPSubmissionValidity.VALID
             ) {
                 this.pp.delete(ppEntry.hash);
-                continue;
-            }
-
-            if (await WhitelistManager.isBlacklisted(beatmapInfo.beatmapID)) {
-                this.pp.delete(ppEntry.hash);
-                continue;
+                this.playc = Math.max(0, this.playc - 1);
             }
         }
 
@@ -222,6 +210,7 @@ export class UserBind extends Manager {
                 $set: {
                     pptotal: this.pptotal,
                     pp: [...this.pp.values()],
+                    playc: this.playc,
                     dppScanComplete: true,
                 },
             }
