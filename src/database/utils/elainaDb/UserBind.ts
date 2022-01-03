@@ -279,14 +279,14 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const submissionValidity: DPPSubmissionValidity =
-                await DPPHelper.checkSubmissionValidity(score);
-
-            await HelperFunctions.sleep(0.1);
-
-            if (submissionValidity !== DPPSubmissionValidity.VALID) {
+            if (
+                (await DPPHelper.checkSubmissionValidity(score)) !==
+                DPPSubmissionValidity.VALID
+            ) {
                 continue;
             }
+
+            await HelperFunctions.sleep(0.1);
 
             const calcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
                 await DroidBeatmapDifficultyHelper.calculateScorePerformance(
@@ -332,14 +332,14 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const submissionValidity: DPPSubmissionValidity =
-                await DPPHelper.checkSubmissionValidity(score);
-
-            await HelperFunctions.sleep(0.1);
-
-            if (submissionValidity !== DPPSubmissionValidity.VALID) {
+            if (
+                (await DPPHelper.checkSubmissionValidity(score)) !==
+                DPPSubmissionValidity.VALID
+            ) {
                 continue;
             }
+
+            await HelperFunctions.sleep(0.1);
 
             const calcResult: RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null =
                 await DroidBeatmapDifficultyHelper.calculateScoreRebalancePerformance(
