@@ -141,7 +141,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     let clansDescription: string = "";
     let languageDescription: string = "";
 
-    for await (const [id, count] of sortedChannelData) {
+    for (const [id, count] of sortedChannelData) {
         const channel: GuildChannel | null = await guild.channels
             .fetch(id)
             .catch(() => null);

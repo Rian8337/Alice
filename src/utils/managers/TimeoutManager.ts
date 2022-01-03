@@ -275,7 +275,7 @@ export abstract class TimeoutManager extends PunishmentManager {
 
         let maxDuration: number = Number.NEGATIVE_INFINITY;
 
-        for await (const allowedMuteRole of allowedMuteRoles.values()) {
+        for (const allowedMuteRole of allowedMuteRoles.values()) {
             if (!member.roles.cache.has(allowedMuteRole.id)) {
                 continue;
             }

@@ -136,7 +136,7 @@ export abstract class DPPHelper {
                 { projection: { _id: 0, discordid: 1, pp: 1, playc: 1 } }
             );
 
-        for await (const toUpdate of toUpdateList.values()) {
+        for (const toUpdate of toUpdateList.values()) {
             toUpdate.pp.delete(hash);
 
             await DatabaseManager.elainaDb.collections.userBind.update(

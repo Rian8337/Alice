@@ -65,7 +65,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
         const channelData: Collection<Snowflake, number> = new Collection();
 
-        for await (const channel of guild.channels.cache.values()) {
+        for (const channel of guild.channels.cache.values()) {
             if (this.isChannelFiltered(channel)) {
                 continue;
             }
@@ -128,7 +128,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
         const activeThreads: FetchedThreads =
             await channel.threads.fetchActive();
 
-        for await (const activeThread of activeThreads.threads.values()) {
+        for (const activeThread of activeThreads.threads.values()) {
             const threadCollection: Collection<number, number> =
                 await this.getUserMessagesCount(
                     activeThread,
@@ -147,7 +147,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
         const archivedThreads: FetchedThreads =
             await channel.threads.fetchArchived({ fetchAll: true });
 
-        for await (const archivedThread of archivedThreads.threads.values()) {
+        for (const archivedThread of archivedThreads.threads.values()) {
             const threadCollection: Collection<number, number> =
                 await this.getUserMessagesCount(
                     archivedThread,

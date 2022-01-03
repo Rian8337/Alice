@@ -83,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const playerList: Player[] = [];
 
-    for await (const p of match.player) {
+    for (const p of match.player) {
         const player: Player = await Player.getInformation({
             uid: parseInt(p[1]),
         });

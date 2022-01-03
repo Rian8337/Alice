@@ -146,7 +146,7 @@ export class UserBind extends Manager {
      * Checks whether this player is dpp-banned.
      */
     async isDPPBanned(): Promise<boolean> {
-        for await (const uid of this.previous_bind) {
+        for (const uid of this.previous_bind) {
             if (
                 await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
                     uid
@@ -182,7 +182,7 @@ export class UserBind extends Manager {
             );
         }
 
-        for await (const ppEntry of this.pp.values()) {
+        for (const ppEntry of this.pp.values()) {
             const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
                 ppEntry.hash,
                 false
@@ -270,7 +270,7 @@ export class UserBind extends Manager {
     async recalculateDPP(): Promise<OperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
 
-        for await (const ppEntry of this.pp.values()) {
+        for (const ppEntry of this.pp.values()) {
             const score: Score | null = await this.getScoreRelativeToPP(
                 ppEntry
             );
@@ -323,7 +323,7 @@ export class UserBind extends Manager {
     async calculatePrototypeDPP(): Promise<OperationResult> {
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
-        for await (const ppEntry of this.pp.values()) {
+        for (const ppEntry of this.pp.values()) {
             const score: Score | null = await this.getScoreRelativeToPP(
                 ppEntry
             );
@@ -925,7 +925,7 @@ export class UserBind extends Manager {
     private async getScoreRelativeToPP(
         ppEntry: PPEntry
     ): Promise<Score | null> {
-        for await (const uid of this.previous_bind) {
+        for (const uid of this.previous_bind) {
             const score: Score = await Score.getFromHash({
                 uid: uid,
                 hash: ppEntry.hash,

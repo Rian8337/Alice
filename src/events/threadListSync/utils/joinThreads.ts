@@ -5,7 +5,7 @@ export const run: EventUtil["run"] = async (
     _,
     threads: Collection<Snowflake, ThreadChannel>
 ) => {
-    for await (const thread of threads.values()) {
+    for (const thread of threads.values()) {
         if (thread.joinable && !thread.joined) {
             await thread.join();
         }

@@ -42,7 +42,7 @@ export const run: EventUtil["run"] = async (client) => {
                 .catch(client.logger.error);
         }
 
-        for await (const ongoingChallenge of ongoingChallenges.values()) {
+        for (const ongoingChallenge of ongoingChallenges.values()) {
             // End current challenge if sufficient
             const endOperationResult: OperationResult =
                 await ongoingChallenge.end();

@@ -157,7 +157,7 @@ export class Bot extends Client {
 
         let i = 0;
 
-        for await (const folder of folders) {
+        for (const folder of folders) {
             this.logger.info("%d. Loading folder %s", ++i, folder);
 
             const commands: string[] = await fs.readdir(
@@ -166,7 +166,7 @@ export class Bot extends Client {
 
             let j = 0;
 
-            for await (const command of commands) {
+            for (const command of commands) {
                 this.logger.success("%d.%d. %s loaded", i, ++j, command);
 
                 const filePath: string = `${commandPath}/${folder}/${command}`;
@@ -204,7 +204,7 @@ export class Bot extends Client {
 
         const collection: Collection<string, Subcommand> = new Collection();
 
-        for await (const subcommandGroup of subcommandGroups) {
+        for (const subcommandGroup of subcommandGroups) {
             const filePath: string = `${subcommandGroupPath}/${subcommandGroup}`;
 
             const file: Subcommand = await import(
@@ -241,9 +241,7 @@ export class Bot extends Client {
 
         const collection: Collection<string, Subcommand> = new Collection();
 
-        for await (const subcommand of subcommands.filter((v) =>
-            v.endsWith(".js")
-        )) {
+        for (const subcommand of subcommands.filter((v) => v.endsWith(".js"))) {
             const filePath: string = `${subcommandPath}/${subcommand}`;
 
             const fileStat = await fs.lstat(filePath);
@@ -275,7 +273,7 @@ export class Bot extends Client {
 
         let i = 0;
 
-        for await (const event of events) {
+        for (const event of events) {
             const file: Event = await import(`${eventsPath}/${event}/${event}`);
 
             super.on(event, file.run.bind(null, this));
@@ -290,7 +288,7 @@ export class Bot extends Client {
 
             let j = 0;
 
-            for await (const eventUtil of eventUtils
+            for (const eventUtil of eventUtils
                 .filter((v) => v.endsWith(".js"))
                 .map((v) => v.substring(0, v.length - 3))) {
                 this.logger.success(

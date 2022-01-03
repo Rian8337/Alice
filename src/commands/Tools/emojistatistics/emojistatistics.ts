@@ -32,7 +32,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const currentDate: Date = new Date();
 
-    for await (const emoji of stats.emojiStats.values()) {
+    for (const emoji of stats.emojiStats.values()) {
         const actualEmoji: GuildEmoji | null = await interaction
             .guild!.emojis.fetch(emoji.id)
             .catch(() => null);

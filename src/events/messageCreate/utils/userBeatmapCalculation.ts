@@ -28,7 +28,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             message.content
         );
 
-    for await (const arg of message.content.split(/\s+/g)) {
+    for (const arg of message.content.split(/\s+/g)) {
         if (
             (!arg.startsWith("https://osu.ppy.sh/") &&
                 !arg.startsWith("https://dev.ppy.sh/")) ||
@@ -117,7 +117,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 );
             }
 
-            for await (const beatmapInfo of beatmapInformations) {
+            for (const beatmapInfo of beatmapInformations) {
                 await beatmapInfo.retrieveBeatmapFile();
             }
 
@@ -153,7 +153,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                 );
 
-            for await (const beatmapInfo of beatmapInformations) {
+            for (const beatmapInfo of beatmapInformations) {
                 if (embed.fields.length === 3) {
                     break;
                 }

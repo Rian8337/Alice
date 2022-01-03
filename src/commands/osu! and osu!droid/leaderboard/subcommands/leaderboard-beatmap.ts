@@ -252,7 +252,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         let i = 20 * actualPage + 5 * pageRemainder;
 
-        for await (const score of displayedScores) {
+        for (const score of displayedScores) {
             embed.addField(
                 `**#${++i} ${score.username}${
                     score.mods.length > 0

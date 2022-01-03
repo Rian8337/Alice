@@ -84,7 +84,7 @@ export abstract class PermissionHelper {
 
         let collection: Collection<Snowflake, GuildMember> = new Collection();
 
-        for await (const botOwner of Config.botOwners) {
+        for (const botOwner of Config.botOwners) {
             const member: GuildMember = await guild.members.fetch(botOwner);
 
             collection.set(botOwner, member);
@@ -95,7 +95,7 @@ export abstract class PermissionHelper {
             "595667274707370024",
         ];
 
-        for await (const roleId of roleIds) {
+        for (const roleId of roleIds) {
             const role: Role | null = await guild.roles.fetch(roleId);
 
             if (!role) {

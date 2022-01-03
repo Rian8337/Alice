@@ -97,7 +97,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             canUserClaimBadge = player.score >= badge.requirement;
             break;
         case "score_ranked":
-            for await (const uid of bindInfo.previous_bind) {
+            for (const uid of bindInfo.previous_bind) {
                 const rankedScoreInfo: RankedScore | null =
                     await DatabaseManager.aliceDb.collections.rankedScore.getOne(
                         { uid: uid },
@@ -175,7 +175,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 });
             }
 
-            for await (const uid of bindInfo.previous_bind) {
+            for (const uid of bindInfo.previous_bind) {
                 const score: Score = await Score.getFromHash({
                     uid: uid,
                     hash: beatmapInfo.hash,

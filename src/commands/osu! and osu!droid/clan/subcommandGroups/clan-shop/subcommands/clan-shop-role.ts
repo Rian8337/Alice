@@ -109,7 +109,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         reason: "Clan leader bought clan role",
     });
 
-    for await (const member of clan.member_list.values()) {
+    for (const member of clan.member_list.values()) {
         const guildMember: GuildMember | null = await guild.members
             .fetch(member.id)
             .catch(() => null);

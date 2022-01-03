@@ -24,7 +24,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     let entries: Collection<number, MapWhitelist>;
 
     while ((entries = await whitelistDb.getUnscannedBeatmaps(250)).size) {
-        for await (const entry of entries.values()) {
+        for (const entry of entries.values()) {
             const validity: WhitelistValidity = await entry.checkValidity();
 
             switch (validity) {

@@ -83,13 +83,13 @@ export const run: EventUtil["run"] = async (client) => {
         }
 
         // Clear outdated birthday roles
-        for await (const member of role.members.values()) {
+        for (const member of role.members.values()) {
             if (!validBirthdays.find((v) => v.discordid === member.id)) {
                 await member.roles.remove(role, "Not birthday anymore");
             }
         }
 
-        for await (const birthday of validBirthdays) {
+        for (const birthday of validBirthdays) {
             const user: GuildMember | null = await guild.members
                 .fetch(birthday.discordid)
                 .catch(() => null);

@@ -26,7 +26,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             message.content
         );
 
-    for await (const arg of message.content.split(/\s+/g)) {
+    for (const arg of message.content.split(/\s+/g)) {
         const match: RegExpMatchArray | null = arg.match(ytRegex);
 
         if (!match) {
@@ -51,7 +51,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         // Limit to 3 beatmaps to prevent spam
         let validCount: number = 0;
 
-        for await (const link of description.split(/\s+/g)) {
+        for (const link of description.split(/\s+/g)) {
             if (!link.startsWith("https://osu.ppy.sh/")) {
                 continue;
             }
@@ -110,7 +110,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     );
                 }
 
-                for await (const beatmapInfo of beatmapInformations) {
+                for (const beatmapInfo of beatmapInformations) {
                     await beatmapInfo.retrieveBeatmapFile();
                 }
 
@@ -148,7 +148,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                             )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                     );
 
-                for await (const beatmapInfo of beatmapInformations) {
+                for (const beatmapInfo of beatmapInformations) {
                     if (embed.fields.length === 3) {
                         break;
                     }

@@ -106,7 +106,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             toDate.getTime()
         );
 
-    for await (const channel of channelsToFetch) {
+    for (const channel of channelsToFetch) {
         if (MessageAnalyticsHelper.isChannelFiltered(channel)) {
             continue;
         }
@@ -127,7 +127,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             )} messages`
         );
 
-        for await (const [date, count] of messageData) {
+        for (const [date, count] of messageData) {
             const channelData: ChannelData =
                 guildMessageAnalyticsData.get(date) ??
                 DatabaseManager.aliceDb.collections.channelData.defaultInstance;

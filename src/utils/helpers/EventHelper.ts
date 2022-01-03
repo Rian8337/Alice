@@ -26,7 +26,7 @@ export abstract class EventHelper {
     ): Promise<void> {
         const eventName: string = <string>eventDirectory.split(/[/\\]/g).pop();
 
-        for await (const [utilityName, utility] of client.eventUtilities.get(
+        for (const [utilityName, utility] of client.eventUtilities.get(
             eventName
         ) ?? new Collection()) {
             if (Config.isDebug && !utility.config.debugEnabled) {

@@ -10,7 +10,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    for await (const arg of message.content.split(/\s+/g)) {
+    for (const arg of message.content.split(/\s+/g)) {
         if (!arg.startsWith("http://ops.dgsrz.com/profile")) {
             continue;
         }

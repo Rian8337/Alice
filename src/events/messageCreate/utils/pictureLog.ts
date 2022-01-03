@@ -17,7 +17,7 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
         await client.channels.fetch("684630015538626570")
     );
 
-    for await (const attachment of message.attachments.values()) {
+    for (const attachment of message.attachments.values()) {
         if (!StringHelper.isValidImage(attachment.url)) {
             continue;
         }

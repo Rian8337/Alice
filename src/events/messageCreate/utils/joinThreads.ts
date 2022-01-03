@@ -12,7 +12,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     const activeThreads: FetchedThreads =
         await message.channel.threads.fetchActive();
 
-    for await (const thread of activeThreads.threads.values()) {
+    for (const thread of activeThreads.threads.values()) {
         if (thread.joinable && !thread.joined) {
             await thread.join();
         }

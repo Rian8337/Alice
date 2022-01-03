@@ -27,7 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     let enqueuedCount: number = 0;
 
-    for await (const videoId of collection.videoIds) {
+    for (const videoId of collection.videoIds) {
         const info: VideoMetadataResult = await yts({ videoId: videoId });
 
         const result: OperationResult = await MusicManager.enqueue(

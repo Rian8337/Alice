@@ -98,7 +98,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const whitelistResponseStrings: string[] = [];
 
-    for await (const beatmap of beatmaps) {
+    for (const beatmap of beatmaps) {
         const unwhitelistResult: OperationResult =
             await WhitelistManager.unwhitelist(beatmap);
 

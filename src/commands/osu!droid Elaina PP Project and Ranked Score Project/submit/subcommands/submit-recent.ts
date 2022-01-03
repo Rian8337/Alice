@@ -86,7 +86,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    for await (const score of scoresToSubmit) {
+    for (const score of scoresToSubmit) {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
             score.hash,
             false

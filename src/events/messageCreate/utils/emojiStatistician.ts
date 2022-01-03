@@ -26,7 +26,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     const guildEmojiStats: Collection<Snowflake, EmojiStat> =
         guildEmojiData?.emojiStats ?? new Collection();
 
-    for await (const emojiMessage of emojiMessages) {
+    for (const emojiMessage of emojiMessages) {
         const emojiID: Snowflake = <Snowflake>(
             (<string>emojiMessage.split(":").pop()).replace(">", "")
         );

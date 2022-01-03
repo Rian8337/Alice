@@ -272,7 +272,7 @@ export class Clan extends Manager {
 
         player.rank = Number.POSITIVE_INFINITY;
 
-        for await (const uid of toAcceptBindInfo.previous_bind) {
+        for (const uid of toAcceptBindInfo.previous_bind) {
             const tempPlayer = await Player.getInformation({ uid: uid });
 
             if (player.rank > tempPlayer.rank) {
@@ -621,7 +621,7 @@ export class Clan extends Manager {
 
         const globalClanRole: Role = await this.getGlobalClanRole();
 
-        for await (const user of users) {
+        for (const user of users) {
             const member: GuildMember | null = await mainServer.members
                 .fetch(user)
                 .catch(() => null);
@@ -656,7 +656,7 @@ export class Clan extends Manager {
 
         const globalClanRole: Role = await this.getGlobalClanRole();
 
-        for await (const user of users) {
+        for (const user of users) {
             const member: GuildMember | null = await mainServer.members
                 .fetch(user)
                 .catch(() => null);

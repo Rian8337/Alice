@@ -41,11 +41,11 @@ export const run: EventUtil["run"] = async (client) => {
 
         let kickedCount: number = 0;
 
-        for await (const clan of clans.values()) {
+        for (const clan of clans.values()) {
             const upkeepDistribution: number[] =
                 clan.getEqualUpkeepDistribution();
 
-            for await (const member of clan.member_list.values()) {
+            for (const member of clan.member_list.values()) {
                 if (!clan.exists) {
                     break;
                 }
@@ -76,7 +76,7 @@ export const run: EventUtil["run"] = async (client) => {
 
                 let highestRank: number = Number.POSITIVE_INFINITY;
 
-                for await (const uid of bindInfo.previous_bind) {
+                for (const uid of bindInfo.previous_bind) {
                     const player: Player = await Player.getInformation({
                         uid: uid,
                     });

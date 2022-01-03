@@ -125,7 +125,7 @@ export class ClanAuction extends Manager {
      * @returns The clan who won the auction, `null` if there are none (possibly for various reasons (disbanded, database error, etc)).
      */
     async getWinnerClan(): Promise<Clan | null> {
-        for await (const bid of this.bids.values()) {
+        for (const bid of this.bids.values()) {
             const clan: Clan | null =
                 await DatabaseManager.elainaDb.collections.clan.getFromName(
                     bid.clan

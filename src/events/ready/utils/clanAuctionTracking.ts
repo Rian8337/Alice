@@ -35,7 +35,7 @@ export const run: EventUtil["run"] = async (client) => {
                 executionTime
             );
 
-        for await (const expiredAuction of expiredAuctions.values()) {
+        for (const expiredAuction of expiredAuctions.values()) {
             const embed: MessageEmbed = EmbedCreator.createClanAuctionEmbed(
                 expiredAuction,
                 coinEmoji

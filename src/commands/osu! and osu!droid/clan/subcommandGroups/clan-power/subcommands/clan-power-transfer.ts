@@ -79,7 +79,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         "challenge",
     ];
 
-    for await (const powerup of fromClan.active_powerups) {
+    for (const powerup of fromClan.active_powerups) {
         if (!debuffPowerups.includes(powerup)) {
             continue;
         }
@@ -120,7 +120,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     }
 
-    for await (const powerup of toClan.active_powerups) {
+    for (const powerup of toClan.active_powerups) {
         if (!buffPowerups.includes(powerup)) {
             continue;
         }

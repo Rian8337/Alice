@@ -28,7 +28,7 @@ export const run: EventUtil["run"] = async (client) => {
                 "uid"
             );
 
-        for await (const trackedPlayer of trackedPlayers.values()) {
+        for (const trackedPlayer of trackedPlayers.values()) {
             const player: Player = await Player.getInformation({
                 uid: trackedPlayer.uid,
             });
@@ -39,7 +39,7 @@ export const run: EventUtil["run"] = async (client) => {
 
             const currentTime: Date = new Date();
 
-            for await (const score of player.recentPlays) {
+            for (const score of player.recentPlays) {
                 if (currentTime.getTime() - score.date.getTime() > 600 * 1000) {
                     break;
                 }

@@ -34,7 +34,7 @@ export const run: EventUtil["run"] = async (client) => {
         const embed: MessageEmbed =
             EmbedCreator.createReportBroadcastEmbed(guild);
 
-        for await (const channel of guild.channels.cache.values()) {
+        for (const channel of guild.channels.cache.values()) {
             if (
                 !(channel instanceof TextChannel) ||
                 excludedChannels.includes(channel.id)
