@@ -39,7 +39,7 @@ export abstract class BeatmapManager extends Manager {
         .interpolate(d3.interpolateRgb.gamma(2.2));
 
     /**
-     * Gets a beatmap from the beatmap cache.
+     * Gets a beatmap from the beatmap cache, or downloads it if it's not available.
      *
      * @param beatmapIDorHash The beatmap ID or MD5 hash of the beatmap.
      * @param checkFile Whether to check if the beatmap's `.osu` file is downloaded, and downloads it if it's not. Defaults to `true`.
