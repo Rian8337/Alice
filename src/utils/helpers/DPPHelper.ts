@@ -23,6 +23,16 @@ export abstract class DPPHelper {
     static readonly ppModeratorRole: Snowflake = "551662194270404644";
 
     /**
+     * Checks a beatmap's submission validity.
+     *
+     * @param beatmap The beatmap.
+     * @returns The validity of the beatmap.
+     */
+    static async checkSubmissionValidity(
+        beatmap: MapInfo
+    ): Promise<DPPSubmissionValidity>;
+
+    /**
      * Checks a score's submission validity.
      *
      * @param score The score.
@@ -30,20 +40,26 @@ export abstract class DPPHelper {
      */
     static async checkSubmissionValidity(
         score: Score
+    ): Promise<DPPSubmissionValidity>;
+
+    static async checkSubmissionValidity(
+        beatmapOrScore: Score | MapInfo
     ): Promise<DPPSubmissionValidity> {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-            score.hash,
-            false
-        );
+        const beatmapInfo: MapInfo | null =
+            beatmapOrScore instanceof MapInfo
+                ? beatmapOrScore
+                : await BeatmapManager.getBeatmap(beatmapOrScore.hash, false);
 
         if (!beatmapInfo) {
             return DPPSubmissionValidity.BEATMAP_NOT_FOUND;
         }
 
         switch (true) {
-            case score.forcedAR !== undefined:
+            case beatmapOrScore instanceof Score &&
+                beatmapOrScore.forcedAR !== undefined:
                 return DPPSubmissionValidity.SCORE_USES_FORCE_AR;
-            case score.speedMultiplier !== 1:
+            case beatmapOrScore instanceof Score &&
+                beatmapOrScore.speedMultiplier !== 1:
                 return DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED;
             case beatmapInfo.approved === rankedStatus.LOVED &&
                 (beatmapInfo.hitLength < 30 ||
