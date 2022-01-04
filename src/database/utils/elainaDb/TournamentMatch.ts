@@ -25,8 +25,7 @@ import { TournamentMappool } from "./TournamentMappool";
  */
 export class TournamentMatch
     extends Manager
-    implements DatabaseTournamentMatch
-{
+    implements DatabaseTournamentMatch {
     matchid: string;
     channelId: Snowflake;
     name: string;
@@ -165,12 +164,12 @@ export class TournamentMatch
      * @param teamScoreStatus Whether the team fulfills the criteria of submitting a score.
      * @param forcePR Whether this match enforces the PR mod.
      */
-    verifyScore(
+    async verifyScore(
         score: Score,
         map: MainBeatmapData,
         teamScoreStatus: boolean,
         forcePR?: boolean
-    ): OperationResult {
+    ): Promise<OperationResult> {
         if (score.hash !== map[3]) {
             return this.createOperationResult(false, "Score not found");
         }
@@ -184,6 +183,22 @@ export class TournamentMatch
             return this.createOperationResult(
                 false,
                 forcePR ? "NFPR is not used" : "NF is not used"
+            );
+        }
+
+        await score.downloadReplay();
+
+        if (!score.replay || !score.replay.data) {
+            return this.createOperationResult(
+                false,
+                "Replay not found"
+            );
+        }
+
+        if (score.replay.data.replayVersion > 4) {
+            return this.createOperationResult(
+                false,
+                "Unsupported osu!droid version"
             );
         }
 
@@ -202,28 +217,27 @@ export class TournamentMatch
             case "hd":
                 return this.createOperationResult(
                     mods.length === 2 &&
-                        mods.some((m) => m instanceof ModHidden),
+                    mods.some((m) => m instanceof ModHidden),
                     `Other mods except ${forcePR ? "NFHDPR" : "NFHD"} was used`
                 );
             case "hr":
                 return this.createOperationResult(
                     mods.length === 2 &&
-                        mods.some((m) => m instanceof ModHardRock),
+                    mods.some((m) => m instanceof ModHardRock),
                     `Other mods except ${forcePR ? "NFHRPR" : "NFHR"} was used`
                 );
             case "dt":
                 return this.createOperationResult(
                     mods.some((m) => m instanceof ModDoubleTime) &&
-                        mods.length ===
-                            (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
-                    `Other mods except ${forcePR ? "NFDTPR" : "NFDT"} or ${
-                        forcePR ? "NFHDDTPR" : "NFHDDT"
+                    mods.length ===
+                    (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
+                    `Other mods except ${forcePR ? "NFDTPR" : "NFDT"} or ${forcePR ? "NFHDDTPR" : "NFHDDT"
                     } was used`
                 );
             case "fm":
                 return this.createOperationResult(
                     (mods.length > 1 || teamScoreStatus) &&
-                        speedChangingMods.length === 0,
+                    speedChangingMods.length === 0,
                     `${speedChangingMods
                         .map((m) => m.acronym)
                         .join("")} was used`
