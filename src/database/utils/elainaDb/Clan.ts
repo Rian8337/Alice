@@ -367,7 +367,7 @@ export class Clan extends Manager {
 
         await this.removeClanRole(userOrId);
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        await DatabaseManager.elainaDb.collections.userBind.update(
             { discordid: id },
             {
                 $set: {
@@ -378,6 +378,8 @@ export class Clan extends Manager {
                 },
             }
         );
+
+        return this.updateClan();
     }
 
     /**
