@@ -370,12 +370,10 @@ export abstract class EmbedCreator {
         }
 
         if (
-            (droidCalculationResult instanceof PerformanceCalculationResult ||
-                droidCalculationResult instanceof
-                    RebalancePerformanceCalculationResult) &&
-            (osuCalculationResult instanceof PerformanceCalculationResult ||
-                osuCalculationResult instanceof
-                    RebalancePerformanceCalculationResult)
+            droidCalculationResult instanceof
+                RebalancePerformanceCalculationResult &&
+            osuCalculationResult instanceof
+                RebalancePerformanceCalculationResult
         ) {
             embed.setDescription(
                 "**The resulting values are subject to change.**\n" +
