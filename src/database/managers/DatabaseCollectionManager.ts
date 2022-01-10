@@ -18,7 +18,7 @@ import {
 export abstract class DatabaseCollectionManager<
     T extends BaseDocument,
     C extends Manager
-    > extends Manager {
+> extends Manager {
     /**
      * The collection that this manager is responsible for.
      */
@@ -223,7 +223,10 @@ export abstract class DatabaseCollectionManager<
         return new Promise((resolve, reject) => {
             this.collection.insertMany(
                 docs.map(
-                    (v) => <OptionalUnlessRequiredId<T>>Object.assign(this.defaultDocument, v)
+                    (v) =>
+                        <OptionalUnlessRequiredId<T>>(
+                            Object.assign(this.defaultDocument, v)
+                        )
                 ),
                 (err) => {
                     if (err) {
