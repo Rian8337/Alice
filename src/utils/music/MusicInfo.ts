@@ -11,7 +11,7 @@ import {
     VoiceConnectionDisconnectReason,
     VoiceConnectionStatus,
 } from "@discordjs/voice";
-import { Snowflake, TextChannel, ThreadChannel } from "discord.js";
+import { DMChannel, PartialDMChannel, Snowflake, TextBasedChannel } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
@@ -42,7 +42,7 @@ export class MusicInfo {
     /**
      * The channel this music information is binded to.
      */
-    readonly executionChannel: TextChannel | ThreadChannel;
+    readonly executionChannel: Exclude<TextBasedChannel, DMChannel | PartialDMChannel>;
 
     /**
      * The timeout for the bot to leave the voice channel after channel inactivity.
@@ -88,7 +88,7 @@ export class MusicInfo {
     constructor(
         connection: VoiceConnection,
         voiceChannelId: Snowflake,
-        executionChannel: TextChannel | ThreadChannel
+        executionChannel: Exclude<TextBasedChannel, DMChannel | PartialDMChannel>
     ) {
         this.connection = connection;
         this.voiceChannelId = voiceChannelId;
@@ -100,7 +100,7 @@ export class MusicInfo {
                 case VoiceConnectionStatus.Disconnected:
                     if (
                         newState.reason ===
-                            VoiceConnectionDisconnectReason.WebSocketClose &&
+                        VoiceConnectionDisconnectReason.WebSocketClose &&
                         newState.closeCode === 4014
                     ) {
                         try {
