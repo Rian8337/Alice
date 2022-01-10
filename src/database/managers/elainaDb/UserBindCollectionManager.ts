@@ -184,4 +184,26 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
             "discordid"
         );
     }
+
+    /**
+     * Checks whether a Discord user is binded.
+     *
+     * @param user The user.
+     */
+    async isUserBinded(user: User): Promise<boolean>;
+
+    /**
+     * Checks whether a Discord user is binded.
+     *
+     * @param userId The ID of the user.
+     */
+    async isUserBinded(userId: Snowflake): Promise<boolean>;
+
+    async isUserBinded(userOrId: User | Snowflake): Promise<boolean> {
+        return (
+            (await this.collection.countDocuments({
+                discordid: userOrId instanceof User ? userOrId.id : userOrId,
+            })) > 0
+        );
+    }
 }

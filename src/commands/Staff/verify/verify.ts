@@ -7,6 +7,7 @@ import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { verifyStrings } from "./verifyStrings";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 
 export const run: Command["run"] = async (_, interaction) => {
     if (
@@ -85,7 +86,13 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     general.send({
-        content: `Welcome to ${interaction.guild!.name}, ${toVerify}!`,
+        content: `Welcome ${
+            (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
+                toVerify.id
+            ))
+                ? "back "
+                : ""
+        }to ${interaction.guild!.name}, ${toVerify}!`,
         files: [Constants.welcomeImageLink],
     });
 };
