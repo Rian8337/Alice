@@ -3,7 +3,10 @@ import { DatabaseNameChange } from "@alice-interfaces/database/aliceDb/DatabaseN
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
-import { Snowflake } from "discord.js";
+import { MessageEmbed, Snowflake, User } from "discord.js";
+import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { DroidAPIRequestBuilder, RequestResponse } from "osu-droid";
 
 /**
  * Represents an osu!droid name change request.
@@ -43,8 +46,30 @@ export class NameChange extends Manager implements DatabaseNameChange {
         if (this.isProcessed) {
             return this.createOperationResult(
                 false,
-                "no active name change requset"
+                "name change request is not active"
             );
+        }
+
+        const apiRequestBuilder: DroidAPIRequestBuilder =
+            new DroidAPIRequestBuilder()
+                .setEndpoint("rename.php")
+                .addParameter("username", this.current_username)
+                .addParameter("newname", this.new_username!);
+
+        const apiResult: RequestResponse = await apiRequestBuilder.sendRequest();
+
+        if (apiResult.statusCode !== 200) {
+            return this.createOperationResult(
+                false,
+                "cannot create request to osu!droid server"
+            );
+        }
+
+        const content: string = apiResult.data.toString("utf-8");
+        const requestResult: string = content.split(" ").shift()!;
+
+        if (requestResult === "FAILED") {
+            return this.deny("New username taken");
         }
 
         await DatabaseManager.elainaDb.collections.userBind.update(
@@ -79,6 +104,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 }
             );
 
+        await this.notifyAccept();
+
         this.previous_usernames.push(this.current_username);
         this.current_username = this.new_username!;
 
@@ -95,21 +122,23 @@ export class NameChange extends Manager implements DatabaseNameChange {
     }
 
     /**
-     * Accepts this name change request if this account requests a name change.
+     * Denies this name change request if this account requests a name change.
+     * 
+     * @param reason The reason for denying the name change request.
      *
      * @returns An object containing information about the operation.
      */
-    async deny(): Promise<OperationResult> {
+    async deny(reason?: string): Promise<OperationResult> {
         if (this.isProcessed) {
             return this.createOperationResult(
                 false,
-                "no active name change request"
+                "name change request is not active"
             );
         }
 
         this.isProcessed = true;
 
-        return DatabaseManager.aliceDb.collections.nameChange.update(
+        const result: OperationResult = await DatabaseManager.aliceDb.collections.nameChange.update(
             { uid: this.uid },
             {
                 $inc: {
@@ -121,5 +150,90 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 },
             }
         );
+
+        if (result.success && reason) {
+            await this.notifyDeny(reason);
+        }
+
+        return result;
+    }
+
+    /**
+     * Notifies a user for name change request accept.
+     */
+    private async notifyAccept(): Promise<void> {
+        const user: User = await this.client.users.fetch(this.discordid);
+
+        if (!user) {
+            return;
+        }
+
+        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+            color: 2483712,
+            timestamp: true,
+        });
+
+        embed
+            .setTitle("Request Details")
+            .setDescription(
+                `**Old Username**: ${this.current_username}\n` +
+                `**New Username**: ${this.new_username}\n` +
+                `**Creation Date**: ${new Date(
+                    (this.cooldown - 86400 * 30) * 1000
+                ).toUTCString()}\n\n` +
+                "**Status**: Accepted"
+            );
+
+        try {
+            user.send({
+                content: MessageCreator.createReject(
+                    "Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in %s.",
+                    new Date(this.cooldown * 1000).toUTCString()
+                ),
+                embeds: [embed],
+            });
+            // eslint-disable-next-line no-empty
+        } catch { }
+    }
+
+    /**
+     * Notifies the user for name change request denial.
+     * 
+     * @param reason The reason for denying the name change request.
+     */
+    private async notifyDeny(reason: string): Promise<void> {
+        const user: User = await this.client.users.fetch(this.discordid);
+
+        if (!user) {
+            return;
+        }
+
+        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+            color: 16711711,
+            timestamp: true,
+        });
+
+        embed
+            .setTitle("Request Details")
+            .setDescription(
+                `**Old Username**: ${this.current_username}\n` +
+                `**New Username**: ${this.new_username}\n` +
+                `**Creation Date**: ${new Date(
+                    (this.cooldown - 86400 * 30) * 1000
+                ).toUTCString()}\n\n` +
+                "**Status**: Denied\n" +
+                `**Reason**: ${reason}`
+            );
+
+        try {
+            user.send({
+                content: MessageCreator.createReject(
+                    "Hey, I would like to inform you that your name change request was denied due to `%s`. You are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!",
+                    reason
+                ),
+                embeds: [embed],
+            });
+            // eslint-disable-next-line no-empty
+        } catch { }
     }
 }
