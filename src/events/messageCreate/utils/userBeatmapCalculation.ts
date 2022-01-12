@@ -160,13 +160,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
                 const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
                     await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
-                        beatmapID,
+                        beatmapInfo,
                         calcParams
                     );
 
                 const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
                     await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
-                        beatmapID,
+                        beatmapInfo,
                         calcParams
                     );
 
