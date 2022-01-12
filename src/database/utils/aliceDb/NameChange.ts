@@ -56,7 +56,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 .addParameter("username", this.current_username)
                 .addParameter("newname", this.new_username!);
 
-        const apiResult: RequestResponse = await apiRequestBuilder.sendRequest();
+        const apiResult: RequestResponse =
+            await apiRequestBuilder.sendRequest();
 
         if (apiResult.statusCode !== 200) {
             return this.createOperationResult(
@@ -123,7 +124,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
     /**
      * Denies this name change request if this account requests a name change.
-     * 
+     *
      * @param reason The reason for denying the name change request.
      *
      * @returns An object containing information about the operation.
@@ -138,18 +139,19 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
         this.isProcessed = true;
 
-        const result: OperationResult = await DatabaseManager.aliceDb.collections.nameChange.update(
-            { uid: this.uid },
-            {
-                $inc: {
-                    cooldown: -86400 * 30,
-                },
-                $set: {
-                    new_username: null,
-                    isProcessed: true,
-                },
-            }
-        );
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.nameChange.update(
+                { uid: this.uid },
+                {
+                    $inc: {
+                        cooldown: -86400 * 30,
+                    },
+                    $set: {
+                        new_username: null,
+                        isProcessed: true,
+                    },
+                }
+            );
 
         if (result.success && reason) {
             await this.notifyDeny(reason);
@@ -177,11 +179,11 @@ export class NameChange extends Manager implements DatabaseNameChange {
             .setTitle("Request Details")
             .setDescription(
                 `**Old Username**: ${this.current_username}\n` +
-                `**New Username**: ${this.new_username}\n` +
-                `**Creation Date**: ${new Date(
-                    (this.cooldown - 86400 * 30) * 1000
-                ).toUTCString()}\n\n` +
-                "**Status**: Accepted"
+                    `**New Username**: ${this.new_username}\n` +
+                    `**Creation Date**: ${new Date(
+                        (this.cooldown - 86400 * 30) * 1000
+                    ).toUTCString()}\n\n` +
+                    "**Status**: Accepted"
             );
 
         try {
@@ -193,12 +195,12 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
     }
 
     /**
      * Notifies the user for name change request denial.
-     * 
+     *
      * @param reason The reason for denying the name change request.
      */
     private async notifyDeny(reason: string): Promise<void> {
@@ -217,12 +219,12 @@ export class NameChange extends Manager implements DatabaseNameChange {
             .setTitle("Request Details")
             .setDescription(
                 `**Old Username**: ${this.current_username}\n` +
-                `**New Username**: ${this.new_username}\n` +
-                `**Creation Date**: ${new Date(
-                    (this.cooldown - 86400 * 30) * 1000
-                ).toUTCString()}\n\n` +
-                "**Status**: Denied\n" +
-                `**Reason**: ${reason}`
+                    `**New Username**: ${this.new_username}\n` +
+                    `**Creation Date**: ${new Date(
+                        (this.cooldown - 86400 * 30) * 1000
+                    ).toUTCString()}\n\n` +
+                    "**Status**: Denied\n" +
+                    `**Reason**: ${reason}`
             );
 
         try {
@@ -234,6 +236,6 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
     }
 }

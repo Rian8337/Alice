@@ -43,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 namechangeStrings.denyFailed,
                 result.reason!
-            )
+            ),
         });
     }
 
