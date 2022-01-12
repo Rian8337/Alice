@@ -117,10 +117,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 );
             }
 
-            for (const beatmapInfo of beatmapInformations) {
-                await beatmapInfo.retrieveBeatmapFile();
-            }
-
             const firstBeatmap: MapInfo = beatmapInformations[0];
 
             const embedOptions: MessageOptions =
