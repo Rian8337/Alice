@@ -123,6 +123,20 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
     /**
      * Calculates the osu!droid difficulty and/or performance value of a beatmap.
      *
+     * @param beatmap The beatmap to calculate.
+     * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
+     * @param replay The replay to use in calculation, used for calculating a replay's performance.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    static async calculateBeatmapPerformance(
+        beatmap: MapInfo,
+        calculationParams?: PerformanceCalculationParameters,
+        replay?: ReplayAnalyzer
+    ): Promise<PerformanceCalculationResult<DroidPerformanceCalculator> | null>;
+
+    /**
+     * Calculates the osu!droid difficulty and/or performance value of a beatmap.
+     *
      * @param star The result of difficulty calculation.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
      * @param replay The replay to use in calculation, used for calculating a replay's performance.
@@ -149,19 +163,25 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
     ): Promise<PerformanceCalculationResult<DroidPerformanceCalculator> | null>;
 
     static async calculateBeatmapPerformance(
-        beatmapIDorHashorStar:
+        beatmapOrHashOrStar:
+            | MapInfo
             | number
             | string
             | StarRatingCalculationResult<DroidStarRating>,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<PerformanceCalculationResult<DroidPerformanceCalculator> | null> {
-        const beatmap: MapInfo | null =
-            beatmapIDorHashorStar instanceof StarRatingCalculationResult
-                ? beatmapIDorHashorStar.map
-                : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
+        let beatmap: MapInfo | null;
 
-        if (!beatmap?.map) {
+        if (beatmapOrHashOrStar instanceof MapInfo) {
+            beatmap = beatmapOrHashOrStar;
+        } else if (beatmapOrHashOrStar instanceof StarRatingCalculationResult) {
+            beatmap = beatmapOrHashOrStar.map;
+        } else {
+            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrStar);
+        }
+
+        if (!beatmap) {
             return null;
         }
 
@@ -174,8 +194,8 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
         );
 
         const star: StarRatingCalculationResult<DroidStarRating> | null =
-            beatmapIDorHashorStar instanceof StarRatingCalculationResult
-                ? beatmapIDorHashorStar
+            beatmapOrHashOrStar instanceof StarRatingCalculationResult
+                ? beatmapOrHashOrStar
                 : await this.calculateDifficulty(beatmap, calculationParams);
 
         if (!star) {
@@ -184,6 +204,20 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
 
         return this.calculatePerformance(star, calculationParams, replay);
     }
+
+    /**
+     * Calculates the osu!droid rebalance difficulty and/or performance value of a beatmap.
+     *
+     * @param beatmap The beatmap to calculate.
+     * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
+     * @param replay The replay to use in calculation, used for calculating a replay's performance.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    static async calculateBeatmapRebalancePerformance(
+        beatmap: MapInfo,
+        calculationParams?: PerformanceCalculationParameters,
+        replay?: ReplayAnalyzer
+    ): Promise<RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null>;
 
     /**
      * Calculates the osu!droid rebalance difficulty and/or performance value of a beatmap.
@@ -214,20 +248,27 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
     ): Promise<RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null>;
 
     static async calculateBeatmapRebalancePerformance(
-        beatmapIDorHashorStar:
+        beatmapOrHashOrStar:
+            | MapInfo
             | number
             | string
             | RebalanceStarRatingCalculationResult<RebalanceDroidStarRating>,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null> {
-        const beatmap: MapInfo | null =
-            beatmapIDorHashorStar instanceof
-            RebalanceStarRatingCalculationResult
-                ? beatmapIDorHashorStar.map
-                : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
+        let beatmap: MapInfo | null;
 
-        if (!beatmap?.map) {
+        if (beatmapOrHashOrStar instanceof MapInfo) {
+            beatmap = beatmapOrHashOrStar;
+        } else if (
+            beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
+        ) {
+            beatmap = beatmapOrHashOrStar.map;
+        } else {
+            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrStar);
+        }
+
+        if (!beatmap) {
             return null;
         }
 
@@ -240,9 +281,8 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
         );
 
         const star: RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> | null =
-            beatmapIDorHashorStar instanceof
-            RebalanceStarRatingCalculationResult
-                ? beatmapIDorHashorStar
+            beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
+                ? beatmapOrHashOrStar
                 : await this.calculateRebalanceDifficulty(
                       beatmap,
                       calculationParams
@@ -308,6 +348,18 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
     /**
      * Calculates the osu!droid difficulty of a beatmap.
      *
+     * @param beatmap The beatmap.
+     * @param calculationParams Calculation parameters.
+     * @returns The calculation result.
+     */
+    static async calculateBeatmapDifficulty(
+        beatmap: MapInfo,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<StarRatingCalculationResult<DroidStarRating> | null>;
+
+    /**
+     * Calculates the osu!droid difficulty of a beatmap.
+     *
      * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters.
      * @returns The calculation result.
@@ -315,17 +367,35 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
     static async calculateBeatmapDifficulty(
         beatmapIDorHash: number | string,
         calculationParams: StarRatingCalculationParameters
-    ): Promise<StarRatingCalculationResult<DroidStarRating> | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
-            beatmapIDorHash
-        );
+    ): Promise<StarRatingCalculationResult<DroidStarRating> | null>;
 
-        if (!beatmap?.map) {
+    static async calculateBeatmapDifficulty(
+        beatmapOrIdOrHash: MapInfo | number | string,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<StarRatingCalculationResult<DroidStarRating> | null> {
+        const beatmap: MapInfo | null =
+            beatmapOrIdOrHash instanceof MapInfo
+                ? beatmapOrIdOrHash
+                : await BeatmapManager.getBeatmap(beatmapOrIdOrHash);
+
+        if (!beatmap) {
             return null;
         }
 
         return this.calculateDifficulty(beatmap, calculationParams);
     }
+
+    /**
+     * Calculates the osu!droid rebalance difficulty of a beatmap.
+     *
+     * @param beatmap The beatmap.
+     * @param calculationParams Calculation parameters.
+     * @returns The calculation result.
+     */
+    static async calculateBeatmapRebalanceDifficulty(
+        beatmap: MapInfo,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> | null>;
 
     /**
      * Calculates the osu!droid rebalance difficulty of a beatmap.
@@ -337,12 +407,18 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
     static async calculateBeatmapRebalanceDifficulty(
         beatmapIDorHash: number | string,
         calculationParams: StarRatingCalculationParameters
-    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
-            beatmapIDorHash
-        );
+    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> | null>;
 
-        if (!beatmap?.map) {
+    static async calculateBeatmapRebalanceDifficulty(
+        beatmapOrIdOrHash: MapInfo | number | string,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> | null> {
+        const beatmap: MapInfo | null =
+            beatmapOrIdOrHash instanceof MapInfo
+                ? beatmapOrIdOrHash
+                : await BeatmapManager.getBeatmap(beatmapOrIdOrHash);
+
+        if (!beatmap) {
             return null;
         }
 

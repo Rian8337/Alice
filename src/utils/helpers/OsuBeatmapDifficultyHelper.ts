@@ -85,6 +85,18 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
     /**
      * Calculates the osu!standard difficulty and/or performance value of a beatmap.
      *
+     * @param beatmap The beatmap to calculate.
+     * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    static async calculateBeatmapPerformance(
+        beatmap: MapInfo,
+        calculationParams?: PerformanceCalculationParameters
+    ): Promise<PerformanceCalculationResult<OsuPerformanceCalculator> | null>;
+
+    /**
+     * Calculates the osu!standard difficulty and/or performance value of a beatmap.
+     *
      * @param star The result of difficulty calculation.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
      * @returns The result of the calculation, `null` if the beatmap is not found.
@@ -107,18 +119,24 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
     ): Promise<PerformanceCalculationResult<OsuPerformanceCalculator> | null>;
 
     static async calculateBeatmapPerformance(
-        beatmapIDorHashorStar:
+        beatmapOrHashOrStar:
+            | MapInfo
             | number
             | string
             | StarRatingCalculationResult<OsuStarRating>,
         calculationParams?: PerformanceCalculationParameters
     ): Promise<PerformanceCalculationResult<OsuPerformanceCalculator> | null> {
-        const beatmap: MapInfo | null =
-            beatmapIDorHashorStar instanceof StarRatingCalculationResult
-                ? beatmapIDorHashorStar.map
-                : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
+        let beatmap: MapInfo | null;
 
-        if (!beatmap?.map) {
+        if (beatmapOrHashOrStar instanceof MapInfo) {
+            beatmap = beatmapOrHashOrStar;
+        } else if (beatmapOrHashOrStar instanceof StarRatingCalculationResult) {
+            beatmap = beatmapOrHashOrStar.map;
+        } else {
+            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrStar);
+        }
+
+        if (!beatmap) {
             return null;
         }
 
@@ -131,8 +149,8 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
         );
 
         const star: StarRatingCalculationResult<OsuStarRating> | null =
-            beatmapIDorHashorStar instanceof StarRatingCalculationResult
-                ? beatmapIDorHashorStar
+            beatmapOrHashOrStar instanceof StarRatingCalculationResult
+                ? beatmapOrHashOrStar
                 : await this.calculateDifficulty(beatmap, calculationParams);
 
         if (!star) {
@@ -141,6 +159,18 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
 
         return this.calculatePerformance(star, calculationParams);
     }
+
+    /**
+     * Calculates the osu!standard rebalance difficulty and/or performance value of a beatmap.
+     *
+     * @param beatmap The beatmap to calculate.
+     * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    static async calculateBeatmapRebalancePerformance(
+        beatmap: MapInfo,
+        calculationParams?: PerformanceCalculationParameters
+    ): Promise<RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator> | null>;
 
     /**
      * Calculates the osu!standard rebalance difficulty and/or performance value of a beatmap.
@@ -167,19 +197,26 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
     ): Promise<RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator> | null>;
 
     static async calculateBeatmapRebalancePerformance(
-        beatmapIDorHashorStar:
+        beatmapOrHashOrStar:
+            | MapInfo
             | number
             | string
             | RebalanceStarRatingCalculationResult<RebalanceOsuStarRating>,
         calculationParams?: PerformanceCalculationParameters
     ): Promise<RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator> | null> {
-        const beatmap: MapInfo | null =
-            beatmapIDorHashorStar instanceof
-            RebalanceStarRatingCalculationResult
-                ? beatmapIDorHashorStar.map
-                : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
+        let beatmap: MapInfo | null;
 
-        if (!beatmap?.map) {
+        if (beatmapOrHashOrStar instanceof MapInfo) {
+            beatmap = beatmapOrHashOrStar;
+        } else if (
+            beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
+        ) {
+            beatmap = beatmapOrHashOrStar.map;
+        } else {
+            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrStar);
+        }
+
+        if (!beatmap) {
             return null;
         }
 
@@ -192,9 +229,8 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
         );
 
         const star: RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> | null =
-            beatmapIDorHashorStar instanceof
-            RebalanceStarRatingCalculationResult
-                ? beatmapIDorHashorStar
+            beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
+                ? beatmapOrHashOrStar
                 : await this.calculateRebalanceDifficulty(
                       beatmap,
                       calculationParams
@@ -256,6 +292,18 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
     /**
      * Calculates the osu!standard difficulty of a beatmap.
      *
+     * @param beatmap The beatmap.
+     * @param calculationParams Calculation parameters.
+     * @returns The calculation result.
+     */
+    static async calculateBeatmapDifficulty(
+        beatmap: MapInfo,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<StarRatingCalculationResult<OsuStarRating> | null>;
+
+    /**
+     * Calculates the osu!standard difficulty of a beatmap.
+     *
      * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters.
      * @returns The calculation result.
@@ -263,17 +311,35 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
     static async calculateBeatmapDifficulty(
         beatmapIDorHash: number | string,
         calculationParams: StarRatingCalculationParameters
-    ): Promise<StarRatingCalculationResult<OsuStarRating> | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
-            beatmapIDorHash
-        );
+    ): Promise<StarRatingCalculationResult<OsuStarRating> | null>;
 
-        if (!beatmap?.map) {
+    static async calculateBeatmapDifficulty(
+        beatmapOrIdOrHash: MapInfo | number | string,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<StarRatingCalculationResult<OsuStarRating> | null> {
+        const beatmap: MapInfo | null =
+            beatmapOrIdOrHash instanceof MapInfo
+                ? beatmapOrIdOrHash
+                : await BeatmapManager.getBeatmap(beatmapOrIdOrHash);
+
+        if (!beatmap) {
             return null;
         }
 
         return this.calculateDifficulty(beatmap, calculationParams);
     }
+
+    /**
+     * Calculates the osu!standard rebalance difficulty of a beatmap.
+     *
+     * @param beatmap The beatmap.
+     * @param calculationParams Calculation parameters.
+     * @returns The calculation result.
+     */
+    static async calculateBeatmapRebalanceDifficulty(
+        beatmap: MapInfo,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> | null>;
 
     /**
      * Calculates the osu!standard rebalance difficulty of a beatmap.
@@ -285,12 +351,18 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
     static async calculateBeatmapRebalanceDifficulty(
         beatmapIDorHash: number | string,
         calculationParams: StarRatingCalculationParameters
-    ): Promise<RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
-            beatmapIDorHash
-        );
+    ): Promise<RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> | null>;
 
-        if (!beatmap?.map) {
+    static async calculateBeatmapRebalanceDifficulty(
+        beatmapOrIdOrHash: MapInfo | number | string,
+        calculationParams: StarRatingCalculationParameters
+    ): Promise<RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> | null> {
+        const beatmap: MapInfo | null =
+            beatmapOrIdOrHash instanceof MapInfo
+                ? beatmapOrIdOrHash
+                : await BeatmapManager.getBeatmap(beatmapOrIdOrHash);
+
+        if (!beatmap) {
             return null;
         }
 
