@@ -1,4 +1,4 @@
-import { MapInfo, MapStars, Player, rankedStatus, Score } from "osu-droid";
+import { MapInfo, OsuStarRating, Player, rankedStatus, Score } from "osu-droid";
 import { profileStrings } from "@alice-commands/osu! and osu!droid/profile/profileStrings";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -16,6 +16,9 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
+import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
+import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfoDbManager: PlayerInfoCollectionManager =
@@ -185,14 +188,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     continue;
                 }
 
-                await beatmapInfo.retrieveBeatmapFile();
+                const star: StarRatingCalculationResult<OsuStarRating> =
+                    (await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                        beatmapInfo,
+                        new StarRatingCalculationParameters()
+                    ))!;
 
-                const star: MapStars = new MapStars().calculate({
-                    map: beatmapInfo.map!,
-                    mods: score.mods,
-                });
-
-                if (star.pcStars.total >= badge.requirement) {
+                if (star.result.total >= badge.requirement) {
                     canUserClaimBadge = true;
                     break;
                 }
