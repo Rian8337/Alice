@@ -45,7 +45,7 @@
     "canvas": "^2.8.0",
     "consola": "^2.15.3",
     "d3": "^6.7.0",
-    "discord.js": "^13.5.0",
+    "discord.js": "^13.6.0",
     "dotenv": "^10.0.0",
     "html-entities": "^2.3.2",
     "libsodium-wrappers": "^0.7.9",
