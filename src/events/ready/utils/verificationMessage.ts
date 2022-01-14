@@ -68,28 +68,73 @@ export const run: EventUtil["run"] = async (client) => {
             CacheManager.userHasActiveVerificationMenu.add(i.user.id);
         }
 
+        const userLocales: VerifyLanguage[] = [VerifyLanguage.english];
+
+        switch (i.locale) {
+            case "zh-CN":
+            case "zh-TW":
+                userLocales.push(
+                    VerifyLanguage.chinese_simplified,
+                    VerifyLanguage.chinese_traditional
+                );
+                break;
+            case "fr":
+                userLocales.push(VerifyLanguage.french);
+                break;
+            case "de":
+                userLocales.push(VerifyLanguage.german);
+                break;
+            case "it":
+                userLocales.push(VerifyLanguage.italian);
+                break;
+            case "ko":
+                userLocales.push(VerifyLanguage.korean);
+                break;
+            case "pt-BR":
+                userLocales.push(VerifyLanguage.portuguese);
+                break;
+            case "ru":
+                userLocales.push(VerifyLanguage.russian);
+                break;
+            case "es-ES":
+                userLocales.push(VerifyLanguage.spanish);
+                break;
+            case "th":
+                userLocales.push(VerifyLanguage.thai);
+                break;
+            case "vi":
+                userLocales.push(VerifyLanguage.vietnamese);
+                break;
+        }
+
         const selectedLanguage: keyof typeof VerifyLanguage | undefined = <
             keyof typeof VerifyLanguage | undefined
-        >(
-            await SelectMenuCreator.createSelectMenu(
-                i,
-                {
-                    content: MessageCreator.createWarn(
-                        "__Do not dismiss this message until you select a language. You will be forced to wait for a minute if you do so__.\n\nSelect your preferred language."
-                    ),
-                },
-                (<(keyof typeof VerifyLanguage)[]>Object.keys(VerifyLanguage))
-                    .map((v) => {
-                        return {
-                            label: VerifyLanguage[v],
-                            value: v,
-                        };
-                    })
-                    .sort((a, b) => a.label.localeCompare(b.label)),
-                [i.user.id],
-                60
-            )
-        )[0];
+            >(
+                await SelectMenuCreator.createSelectMenu(
+                    i,
+                    {
+                        content: MessageCreator.createWarn(
+                            "__Do not dismiss this message until you select a language. You will be forced to wait for a minute if you do so__." +
+                            "\n\n" +
+                            "Select your preferred language." +
+                            "\n\n" +
+                            `Based on your Discord language, you may be familiar with these languages that I provide: ${userLocales
+                                .map((v) => `\`${v}\``)
+                                .join(", ")}.`
+                        ),
+                    },
+                    (<(keyof typeof VerifyLanguage)[]>Object.keys(VerifyLanguage))
+                        .map((v) => {
+                            return {
+                                label: VerifyLanguage[v],
+                                value: v,
+                            };
+                        })
+                        .sort((a, b) => a.label.localeCompare(b.label)),
+                    [i.user.id],
+                    60
+                )
+            )[0];
 
         CacheManager.userHasActiveVerificationMenu.delete(i.user.id);
 
