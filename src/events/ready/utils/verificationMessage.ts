@@ -11,7 +11,6 @@ import {
     Collection,
     Guild,
     GuildMember,
-    InteractionReplyOptions,
     Message,
     MessageComponentInteraction,
     MessageEmbed,
@@ -45,13 +44,6 @@ export const run: EventUtil["run"] = async (client) => {
     const onVerificationRole: Role = guild.roles.cache.find(
         (v) => v.name === "On Verification"
     )!;
-
-    const mutedRejectionOptions: InteractionReplyOptions = {
-        content: MessageCreator.createReject(
-            "I'm sorry, you are currently muted, therefore you cannot begin your verification process!"
-        ),
-        ephemeral: true,
-    };
 
     const getUserLanguagePreference = async (
         i: MessageComponentInteraction
@@ -158,7 +150,12 @@ export const run: EventUtil["run"] = async (client) => {
             const member: GuildMember = <GuildMember>i.member;
 
             if (TimeoutManager.isUserMuted(member)) {
-                i.reply(mutedRejectionOptions);
+                i.reply({
+                    content: MessageCreator.createReject(
+                        "I'm sorry, you are currently timeouted, therefore you cannot begin your verification process!"
+                    ),
+                    ephemeral: true,
+                });
 
                 return;
             }
