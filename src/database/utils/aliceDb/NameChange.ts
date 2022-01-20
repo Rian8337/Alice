@@ -164,29 +164,29 @@ export class NameChange extends Manager implements DatabaseNameChange {
      * Notifies a user for name change request accept.
      */
     private async notifyAccept(): Promise<void> {
-        const user: User = await this.client.users.fetch(this.discordid);
-
-        if (!user) {
-            return;
-        }
-
-        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
-            color: 2483712,
-            timestamp: true,
-        });
-
-        embed
-            .setTitle("Request Details")
-            .setDescription(
-                `**Old Username**: ${this.current_username}\n` +
-                    `**New Username**: ${this.new_username}\n` +
-                    `**Creation Date**: ${new Date(
-                        (this.cooldown - 86400 * 30) * 1000
-                    ).toUTCString()}\n\n` +
-                    "**Status**: Accepted"
-            );
-
         try {
+            const user: User = await this.client.users.fetch(this.discordid);
+
+            if (!user) {
+                return;
+            }
+
+            const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+                color: 2483712,
+                timestamp: true,
+            });
+
+            embed
+                .setTitle("Request Details")
+                .setDescription(
+                    `**Old Username**: ${this.current_username}\n` +
+                        `**New Username**: ${this.new_username}\n` +
+                        `**Creation Date**: ${new Date(
+                            (this.cooldown - 86400 * 30) * 1000
+                        ).toUTCString()}\n\n` +
+                        "**Status**: Accepted"
+                );
+
             user.send({
                 content: MessageCreator.createReject(
                     "Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in %s.",
