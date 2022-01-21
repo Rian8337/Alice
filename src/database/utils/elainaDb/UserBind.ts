@@ -682,11 +682,12 @@ export class UserBind extends Manager {
                 discordid: this.discordid,
             });
 
+            this.discordid = to;
+
             await dbManager.update(
                 { discordid: this.discordid },
                 {
                     $set: {
-                        discordid: to,
                         previous_bind: otherPreviousBind,
                     },
                     $setOnInsert: {
@@ -706,8 +707,6 @@ export class UserBind extends Manager {
                 },
                 { upsert: true }
             );
-
-            this.discordid = to;
         } else {
             await dbManager.update(
                 { discordid: this.discordid },
