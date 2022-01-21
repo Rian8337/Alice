@@ -88,7 +88,7 @@ export abstract class DatabaseCollectionManager<
     async get<K extends keyof T>(
         key: K,
         filter?: Filter<T>
-    ): Promise<DiscordCollection<T[K], C>>;
+    ): Promise<DiscordCollection<NonNullable<T[K]>, C>>;
 
     /**
      * Gets multiple documents from the collection and then
@@ -103,7 +103,7 @@ export abstract class DatabaseCollectionManager<
         key: K,
         filter: Filter<T>,
         options?: FindOptions<T>
-    ): Promise<DiscordCollection<T[K], C>>;
+    ): Promise<DiscordCollection<NonNullable<T[K]>, C>>;
 
     /**
      * Gets multiple documents from the collection and then
@@ -118,7 +118,7 @@ export abstract class DatabaseCollectionManager<
         key: K,
         filter: Filter<T>,
         options: FindOptions<T>
-    ): Promise<DiscordCollection<T[K], C>>;
+    ): Promise<DiscordCollection<NonNullable<T[K]>, C>>;
 
     /**
      * Gets multiple documents from the collection and then
@@ -133,15 +133,21 @@ export abstract class DatabaseCollectionManager<
         key: K,
         filter: Filter<T> = {},
         options?: FindOptions<T>
-    ): Promise<DiscordCollection<T[K], C>> {
+    ): Promise<DiscordCollection<NonNullable<T[K]>, C>> {
         const res: T[] = <T[]>(
             await this.collection.find(filter, options).toArray()
         );
 
-        const collection: DiscordCollection<T[K], C> = new DiscordCollection();
+        const collection: DiscordCollection<
+            NonNullable<T[K]>,
+            C
+        > = new DiscordCollection();
 
         for (const data of res) {
-            collection.set(data[key], new this.utilityInstance(data));
+            collection.set(
+                <NonNullable<T[K]>>data[key],
+                new this.utilityInstance(data)
+            );
         }
 
         return collection;
