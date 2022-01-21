@@ -682,6 +682,15 @@ export class UserBind extends Manager {
                 discordid: this.discordid,
             });
 
+            await DatabaseManager.aliceDb.collections.nameChange.update(
+                { discordid: this.discordid },
+                {
+                    $set: {
+                        discordid: to,
+                    },
+                }
+            );
+
             this.discordid = to;
 
             await dbManager.update(
