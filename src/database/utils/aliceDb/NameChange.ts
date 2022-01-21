@@ -6,20 +6,20 @@ import { ObjectId } from "bson";
 import { MessageEmbed, Snowflake, User } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DroidAPIRequestBuilder, RequestResponse } from "osu-droid";
+import { DroidAPIRequestBuilder, Player, RequestResponse } from "osu-droid";
 
 /**
  * Represents an osu!droid name change request.
  */
 export class NameChange extends Manager implements DatabaseNameChange {
     discordid: Snowflake;
-    current_username: string;
     new_username: string | null;
     uid: number;
     cooldown: number;
     isProcessed: boolean;
     previous_usernames: string[];
     readonly _id?: ObjectId;
+    private player?: Player;
 
     constructor(
         data: DatabaseNameChange = DatabaseManager.aliceDb?.collections
@@ -29,7 +29,6 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
         this._id = data._id;
         this.discordid = data.discordid;
-        this.current_username = data.current_username;
         this.new_username = data.new_username;
         this.uid = data.uid;
         this.cooldown = data.cooldown;
@@ -50,10 +49,16 @@ export class NameChange extends Manager implements DatabaseNameChange {
             );
         }
 
+        this.player ??= await Player.getInformation({ uid: this.uid });
+
+        if (!this.player.username) {
+            return this.deny("Cannot find player profile");
+        }
+
         const apiRequestBuilder: DroidAPIRequestBuilder =
             new DroidAPIRequestBuilder()
                 .setEndpoint("rename.php")
-                .addParameter("username", this.current_username)
+                .addParameter("username", this.player.username)
                 .addParameter("newname", this.new_username!);
 
         const apiResult: RequestResponse =
@@ -100,15 +105,15 @@ export class NameChange extends Manager implements DatabaseNameChange {
                         isProcessed: true,
                     },
                     $push: {
-                        previous_usernames: this.current_username,
+                        previous_usernames: this.player.username,
                     },
                 }
             );
 
         await this.notifyAccept();
 
-        this.previous_usernames.push(this.current_username);
-        this.current_username = this.new_username!;
+        this.previous_usernames.push(this.player.username);
+        this.new_username = null;
 
         return result;
     }
@@ -171,6 +176,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 return;
             }
 
+            this.player ??= await Player.getInformation({ uid: this.uid });
+
             const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
                 color: 2483712,
                 timestamp: true,
@@ -179,8 +186,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
             embed
                 .setTitle("Request Details")
                 .setDescription(
-                    `**Old Username**: ${this.current_username}\n` +
-                        `**New Username**: ${this.new_username}\n` +
+                    `**Current Username**: ${this.player.username}\n` +
+                        `**Requested Username**: ${this.new_username}\n` +
                         `**Creation Date**: ${new Date(
                             (this.cooldown - 86400 * 30) * 1000
                         ).toUTCString()}\n\n` +
@@ -204,30 +211,32 @@ export class NameChange extends Manager implements DatabaseNameChange {
      * @param reason The reason for denying the name change request.
      */
     private async notifyDeny(reason: string): Promise<void> {
-        const user: User = await this.client.users.fetch(this.discordid);
-
-        if (!user) {
-            return;
-        }
-
-        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
-            color: 16711711,
-            timestamp: true,
-        });
-
-        embed
-            .setTitle("Request Details")
-            .setDescription(
-                `**Old Username**: ${this.current_username}\n` +
-                    `**New Username**: ${this.new_username}\n` +
-                    `**Creation Date**: ${new Date(
-                        (this.cooldown - 86400 * 30) * 1000
-                    ).toUTCString()}\n\n` +
-                    "**Status**: Denied\n" +
-                    `**Reason**: ${reason}`
-            );
-
         try {
+            const user: User = await this.client.users.fetch(this.discordid);
+
+            if (!user) {
+                return;
+            }
+
+            this.player ??= await Player.getInformation({ uid: this.uid });
+
+            const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+                color: 16711711,
+                timestamp: true,
+            });
+
+            embed
+                .setTitle("Request Details")
+                .setDescription(
+                    `**Current Username**: ${this.player.username}\n` +
+                        `**Requested Username**: ${this.new_username}\n` +
+                        `**Creation Date**: ${new Date(
+                            (this.cooldown - 86400 * 30) * 1000
+                        ).toUTCString()}\n\n` +
+                        "**Status**: Denied\n" +
+                        `**Reason**: ${reason}`
+                );
+
             user.send({
                 content: MessageCreator.createReject(
                     "Hey, I would like to inform you that your name change request was denied due to `%s`. You are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!",

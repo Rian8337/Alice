@@ -11,11 +11,6 @@ export interface DatabaseNameChange extends BaseDocument {
     discordid: Snowflake;
 
     /**
-     * The current username of the osu!droid account.
-     */
-    current_username: string;
-
-    /**
      * The new username that was requested by the Discord user.
      */
     new_username: string | null;

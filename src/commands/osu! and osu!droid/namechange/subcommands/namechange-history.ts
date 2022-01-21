@@ -41,9 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    embed
-        .setTitle(`Name History For Uid ${nameChange.uid}`)
-        .setDescription(`**Current Username**: ${nameChange.current_username}`);
+    embed.setTitle(`Name History For Uid ${nameChange.uid}`);
 
     const onPageChange: OnButtonPageChange = async (
         _,

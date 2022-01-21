@@ -41,9 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
             if (content) {
                 embed.addField(
-                    `**${i + 1}**. **${content.current_username} (${
-                        content.uid
-                    })**`,
+                    `**${i + 1}**. **Uid ${content.uid}**`,
                     `**Discord Account**: <@${content.discordid}> (${content.discordid})\n` +
                         `**Username Requested**: ${content.new_username}\n` +
                         `**Creation Date**: ${new Date(

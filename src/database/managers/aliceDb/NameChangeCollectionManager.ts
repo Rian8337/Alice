@@ -21,7 +21,6 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
     override get defaultDocument(): DatabaseNameChange {
         return {
             cooldown: Math.floor(Date.now() / 1000),
-            current_username: "",
             discordid: "",
             isProcessed: false,
             new_username: "",
