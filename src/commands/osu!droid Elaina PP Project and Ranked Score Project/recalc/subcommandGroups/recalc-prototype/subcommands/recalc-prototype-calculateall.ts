@@ -27,10 +27,15 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     while ((player = (await dbManager.getUnscannedPlayers(1)).first())) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
-        const bindInfo: UserBind =
-            (await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+        const bindInfo: UserBind | null =
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(
                 player.discordid
-            ))!;
+            );
+
+        if (!bindInfo) {
+            await dbManager.delete({ discordid: player.discordid });
+            continue;
+        }
 
         await bindInfo.calculatePrototypeDPP();
 
