@@ -1,4 +1,3 @@
-import { MapInfo, OsuStarRating, Player, rankedStatus, Score } from "osu-droid";
 import { profileStrings } from "@alice-commands/osu! and osu!droid/profile/profileStrings";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -19,6 +18,9 @@ import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { MapInfo, rankedStatus } from "@rian8337/osu-base";
+import { OsuStarRating } from "@rian8337/osu-difficulty-calculator";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfoDbManager: PlayerInfoCollectionManager =

@@ -6,7 +6,7 @@ import { Manager } from "@alice-utils/base/Manager";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { ObjectId } from "bson";
-import { MapInfo } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
 
 /**
  * Represents a whitelisted beatmap.

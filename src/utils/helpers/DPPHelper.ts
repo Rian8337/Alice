@@ -5,13 +5,10 @@ import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
+import { MapInfo, rankedStatus } from "@rian8337/osu-base";
+import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
+import { Score } from "@rian8337/osu-droid-utilities";
 import { Collection, Snowflake } from "discord.js";
-import {
-    DroidPerformanceCalculator,
-    MapInfo,
-    rankedStatus,
-    Score,
-} from "osu-droid";
 
 /**
  * A helper for droid performance points submission.

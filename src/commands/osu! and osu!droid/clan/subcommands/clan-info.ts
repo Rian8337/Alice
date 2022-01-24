@@ -10,7 +10,7 @@ import {
     createCanvas,
     Image,
     loadImage,
-    NodeCanvasRenderingContext2D,
+    CanvasRenderingContext2D,
 } from "canvas";
 import {
     GuildEmoji,
@@ -27,8 +27,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const clan: Clan | null = interaction.options.getString("name")
         ? await dbManager.getFromName(
-              interaction.options.getString("name", true)
-          )
+            interaction.options.getString("name", true)
+        )
         : await dbManager.getFromUser(interaction.user);
 
     if (!clan) {
@@ -87,7 +87,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         const canvas: Canvas = createCanvas(900, 250);
 
-        const c: NodeCanvasRenderingContext2D = canvas.getContext("2d");
+        const c: CanvasRenderingContext2D = canvas.getContext("2d");
 
         c.drawImage(
             image,

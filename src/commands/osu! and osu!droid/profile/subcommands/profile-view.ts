@@ -1,5 +1,5 @@
 import { Snowflake } from "discord.js";
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Constants } from "@alice-core/Constants";

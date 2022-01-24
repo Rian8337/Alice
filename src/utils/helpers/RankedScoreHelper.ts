@@ -1,7 +1,8 @@
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { Collection } from "discord.js";
-import { rankedStatus, Score } from "osu-droid";
 import { ArrayHelper } from "./ArrayHelper";
+import { rankedStatus } from "@rian8337/osu-base";
+import { Score } from "@rian8337/osu-droid-utilities";
 
 /**
  * A helper to calculate things related to ranked score.
@@ -40,11 +41,11 @@ export abstract class RankedScoreHelper {
         return Math.round(
             level <= 100
                 ? ((5000 / 3) *
-                      (4 * Math.pow(level, 3) -
-                          3 * Math.pow(level, 2) -
-                          level) +
-                      1.25 * Math.pow(1.8, level - 60)) /
-                      1.128
+                    (4 * Math.pow(level, 3) -
+                        3 * Math.pow(level, 2) -
+                        level) +
+                    1.25 * Math.pow(1.8, level - 60)) /
+                1.128
                 : 23875169174 + 15000000000 * (level - 100)
         );
     }

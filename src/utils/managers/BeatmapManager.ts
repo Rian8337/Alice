@@ -1,10 +1,10 @@
 import * as d3 from "d3";
 import { GuildEmoji, MessageAttachment, Snowflake } from "discord.js";
-import { MapInfo, OsuAPIRequestBuilder, OsuAPIResponse } from "osu-droid";
+import { MapInfo, OsuAPIRequestBuilder, OsuAPIResponse } from "@rian8337/osu-base";
 import { Manager } from "@alice-utils/base/Manager";
 import { CacheManager } from "./CacheManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { Canvas, createCanvas, NodeCanvasRenderingContext2D } from "canvas";
+import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 
@@ -261,7 +261,7 @@ export abstract class BeatmapManager extends Manager {
     static getBeatmapDifficultyIcon(rating: number): Buffer {
         const canvas: Canvas = createCanvas(128, 128);
 
-        const c: NodeCanvasRenderingContext2D = canvas.getContext("2d");
+        const c: CanvasRenderingContext2D = canvas.getContext("2d");
 
         c.fillStyle = this.getBeatmapDifficultyColor(rating);
 

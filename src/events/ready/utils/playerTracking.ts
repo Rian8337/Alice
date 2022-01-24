@@ -6,7 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, MessageEmbed, TextChannel } from "discord.js";
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: EventUtil["run"] = async (client) => {
     const channel: TextChannel = <TextChannel>(

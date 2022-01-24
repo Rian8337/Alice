@@ -1,14 +1,3 @@
-import {
-    Accuracy,
-    DroidPerformanceCalculator,
-    DroidStarRating,
-    MapInfo,
-    RebalanceDroidPerformanceCalculator,
-    RebalanceDroidStarRating,
-    ReplayAnalyzer,
-    Score,
-    ThreeFingerChecker,
-} from "osu-droid";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
@@ -17,6 +6,11 @@ import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalc
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { RebalanceStarRatingCalculationResult } from "@alice-utils/dpp/RebalanceStarRatingCalculationResult";
 import { BeatmapDifficultyHelper } from "./BeatmapDifficultyHelper";
+import { MapInfo, Accuracy } from "@rian8337/osu-base";
+import { DroidPerformanceCalculator, DroidStarRating } from "@rian8337/osu-difficulty-calculator";
+import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator, DroidStarRating as RebalanceDroidStarRating } from "@rian8337/osu-rebalance-difficulty-calculator";
+import { ReplayAnalyzer, ThreeFingerChecker } from "@rian8337/osu-droid-replay-analyzer";
+import { Score } from "@rian8337/osu-droid-utilities";
 
 /**
  * A helper class for calculating osu!droid difficulty and performance of beatmaps or scores.
@@ -284,9 +278,9 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
             beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
                 ? beatmapOrHashOrStar
                 : await this.calculateRebalanceDifficulty(
-                      beatmap,
-                      calculationParams
-                  );
+                    beatmap,
+                    calculationParams
+                );
 
         if (!star) {
             return null;

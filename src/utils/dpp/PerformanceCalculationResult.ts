@@ -1,4 +1,6 @@
-import { MapInfo, PerformanceCalculator, ReplayAnalyzer } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
+import { PerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
+import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 
 /**
  * Represents a beatmap's performance calculation result.

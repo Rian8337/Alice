@@ -10,7 +10,7 @@ import {
     MessageEmbed,
     Snowflake,
 } from "discord.js";
-import { Player, Score } from "osu-droid";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { NumberHelper } from "./NumberHelper";
 
 /**
@@ -59,10 +59,9 @@ export abstract class ScoreDisplayHelper {
                     )}** | ${score.title} ${score.getCompleteModString()}`,
                     `${score.score.toLocaleString()} / ${score.combo}x / ${(
                         score.accuracy.value() * 100
-                    ).toFixed(2)}% / [${score.accuracy.n300}/${
-                        score.accuracy.n100
+                    ).toFixed(2)}% / [${score.accuracy.n300}/${score.accuracy.n100
                     }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
-                        `\`${score.date.toUTCString()}\``
+                    `\`${score.date.toUTCString()}\``
                 );
             }
         };

@@ -1,5 +1,5 @@
 import { GuildMember, MessageEmbed } from "discord.js";
-import { DroidAPIRequestBuilder, RequestResponse } from "osu-droid";
+import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -42,10 +42,10 @@ export const run: Command["run"] = async (_, interaction) => {
         .addField(
             "Registered Accounts",
             `**Total**: ${totalUserCount.toLocaleString()}\n` +
-                `**More than 5 scores**: ${userCountAbove5Scores.toLocaleString()}\n` +
-                `**More than 20 scores**: ${userCountAbove20Scores.toLocaleString()}\n` +
-                `**More than 100 scores**: ${userCountAbove100Scores.toLocaleString()}\n` +
-                `**More than 200 scores**: ${userCountAbove200Scores.toLocaleString()}`
+            `**More than 5 scores**: ${userCountAbove5Scores.toLocaleString()}\n` +
+            `**More than 20 scores**: ${userCountAbove20Scores.toLocaleString()}\n` +
+            `**More than 100 scores**: ${userCountAbove100Scores.toLocaleString()}\n` +
+            `**More than 200 scores**: ${userCountAbove200Scores.toLocaleString()}`
         )
         .addField("Total Online Scores", totalScoreCount.toLocaleString());
 

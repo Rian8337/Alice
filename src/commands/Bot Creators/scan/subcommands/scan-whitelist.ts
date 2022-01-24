@@ -8,7 +8,7 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { MapWhitelistCollectionManager } from "@alice-database/managers/elainaDb/MapWhitelistCollectionManager";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
 import { WhitelistValidity } from "@alice-enums/utils/WhitelistValidity";
-import { MapInfo } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 
 export const run: Subcommand["run"] = async (client, interaction) => {

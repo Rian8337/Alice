@@ -7,7 +7,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { GuildMember, MessageEmbed, MessageOptions } from "discord.js";
-import { MapInfo } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
 import { whitelistStrings } from "../whitelistStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -89,8 +89,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             `Star Rating:\n${beatmaps
                 .map(
                     (v) =>
-                        `- [${v.version}](https://osu.ppy.sh/b/${
-                            v.beatmapID
+                        `- [${v.version}](https://osu.ppy.sh/b/${v.beatmapID
                         }) - **${v.totalDifficulty.toFixed(2)}**`
                 )
                 .join("\n")}`

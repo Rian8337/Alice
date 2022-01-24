@@ -8,7 +8,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { Snowflake } from "discord.js";
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { recent5Strings } from "./recent5Strings";
 
 export const run: Command["run"] = async (_, interaction) => {

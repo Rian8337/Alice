@@ -21,22 +21,6 @@ import {
     TextChannel,
 } from "discord.js";
 import { ObjectId } from "mongodb";
-import {
-    Accuracy,
-    DroidPerformanceCalculator,
-    HitErrorInformation,
-    MapInfo,
-    MapStats,
-    Mod,
-    ModEasy,
-    ModHalfTime,
-    ModNoFail,
-    ModUtil,
-    OsuPerformanceCalculator,
-    ReplayAnalyzer,
-    ReplayData,
-    Score,
-} from "osu-droid";
 import { Manager } from "@alice-utils/base/Manager";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
@@ -46,6 +30,11 @@ import { UserBind } from "../elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
+import { Accuracy, Mod, MapInfo, ModEasy, ModNoFail, ModHalfTime, MapStats, ModUtil } from "@rian8337/osu-base";
+import { DroidPerformanceCalculator, OsuPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
+import { ReplayAnalyzer, ReplayData, HitErrorInformation } from "@rian8337/osu-droid-replay-analyzer";
+import { Score } from "@rian8337/osu-droid-utilities";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 /**
  * Represents a daily or weekly challenge.
@@ -312,14 +301,10 @@ export class Challenge extends Manager {
 
                 await notificationChannel.send({
                     content: MessageCreator.createAccept(
-                        `Congratulations to <@${
-                            winnerBindInfo.discordid
-                        }> for achieving first place in challenge \`${
-                            this.challengeid
-                        }\`, earning him/her \`${
-                            this.isWeekly ? "50" : "25"
-                        }\` points and ${coinEmoji}\`${
-                            this.isWeekly ? "100" : "50"
+                        `Congratulations to <@${winnerBindInfo.discordid
+                        }> for achieving first place in challenge \`${this.challengeid
+                        }\`, earning him/her \`${this.isWeekly ? "50" : "25"
+                        }\` points and ${coinEmoji}\`${this.isWeekly ? "100" : "50"
                         }\` Alice coins!`
                     ),
                 });
@@ -502,9 +487,9 @@ export class Challenge extends Manager {
         } else {
             const calcResult:
                 | [
-                      PerformanceCalculationResult<DroidPerformanceCalculator>,
-                      PerformanceCalculationResult<OsuPerformanceCalculator>
-                  ]
+                    PerformanceCalculationResult<DroidPerformanceCalculator>,
+                    PerformanceCalculationResult<OsuPerformanceCalculator>
+                ]
                 | null = await this.getReplayCalculationResult(scoreOrReplay);
 
             if (calcResult) {
@@ -654,19 +639,7 @@ export class Challenge extends Manager {
      * @returns The scores that are in the leaderboard of the challenge, sorted by score.
      */
     async getCurrentLeaderboard(): Promise<Score[]> {
-        const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-            this.beatmapid,
-            false
-        ))!;
-
-        const oldHash: string = beatmapInfo.hash;
-
-        beatmapInfo.hash = this.hash;
-
-        const scores: Score[] = await beatmapInfo.fetchDroidLeaderboard();
-
-        // Restore old hash so that cache works properly
-        beatmapInfo.hash = oldHash;
+        const scores: Score[] = await ScoreHelper.fetchDroidLeaderboard(this.hash);
 
         return scores;
     }
@@ -688,8 +661,7 @@ export class Challenge extends Manager {
                 description: v.list
                     .map(
                         (b) =>
-                            `**Level ${
-                                b.level
+                            `**Level ${b.level
                             }**: ${this.getPassOrBonusDescription(
                                 v.id,
                                 b.value
@@ -709,7 +681,7 @@ export class Challenge extends Manager {
         return (
             !this.constrain ||
             StringHelper.sortAlphabet(mods.map((v) => v.acronym).join("")) ===
-                StringHelper.sortAlphabet(this.constrain.toUpperCase())
+            StringHelper.sortAlphabet(this.constrain.toUpperCase())
         );
     }
 
@@ -796,8 +768,8 @@ export class Challenge extends Manager {
                     scoreOrReplay instanceof Score
                         ? await this.calculateChallengeScoreV2(scoreOrReplay)
                         : await this.calculateChallengeScoreV2(
-                              scoreOrReplay.data!
-                          );
+                            scoreOrReplay.data!
+                        );
                 return scoreV2 >= this.pass.value;
             }
             case "rank": {
@@ -959,9 +931,9 @@ export class Challenge extends Manager {
         replay: ReplayAnalyzer
     ): Promise<
         | [
-              PerformanceCalculationResult<DroidPerformanceCalculator>,
-              PerformanceCalculationResult<OsuPerformanceCalculator>
-          ]
+            PerformanceCalculationResult<DroidPerformanceCalculator>,
+            PerformanceCalculationResult<OsuPerformanceCalculator>
+        ]
         | null
     > {
         const data: ReplayData | null = replay.data;

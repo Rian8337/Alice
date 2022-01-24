@@ -3,9 +3,9 @@ import {
     createCanvas,
     Image,
     loadImage,
-    NodeCanvasRenderingContext2D,
+    CanvasRenderingContext2D,
 } from "canvas";
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { promises, Stats } from "fs";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -51,7 +51,7 @@ export class ProfileCardCreator {
     /**
      * The canvas context that will be used to draw.
      */
-    private get context(): NodeCanvasRenderingContext2D {
+    private get context(): CanvasRenderingContext2D {
         return this.canvas.getContext("2d");
     }
 
@@ -204,9 +204,8 @@ export class ProfileCardCreator {
         this.context.save();
 
         try {
-            const flagPath: string = `${process.cwd()}/files/flags/${
-                this.player.location
-            }.png`;
+            const flagPath: string = `${process.cwd()}/files/flags/${this.player.location
+                }.png`;
             const flagStats: Stats = await promises.stat(flagPath);
 
             if (flagStats.isFile()) {
@@ -231,7 +230,7 @@ export class ProfileCardCreator {
                 );
             }
             // eslint-disable-next-line no-empty
-        } catch {}
+        } catch { }
 
         this.context.restore();
     }
@@ -394,8 +393,7 @@ export class ProfileCardCreator {
                 ...this.bindInfo.pp.values(),
             ]);
             this.context.fillText(
-                `Accuracy: ${
-                    this.player.accuracy
+                `Accuracy: ${this.player.accuracy
                 }% | ${weightedAccuracy.toFixed(2)}%`,
                 x,
                 y + yOffset

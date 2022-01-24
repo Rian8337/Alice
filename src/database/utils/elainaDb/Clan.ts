@@ -21,7 +21,8 @@ import { Constants } from "@alice-core/Constants";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Image } from "canvas";
-import { Player, Precision } from "osu-droid";
+import { Precision } from "@rian8337/osu-base";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "./UserBind";
 

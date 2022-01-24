@@ -5,8 +5,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { profileStrings } from "../profileStrings";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined =
@@ -76,17 +77,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .setThumbnail(player.avatarURL)
         .setDescription(
             `[Avatar Link](${player.avatarURL})\n\n` +
-                `**Uid**: ${player.uid}\n` +
-                `**Rank**: ${player.rank.toLocaleString()}\n` +
-                `**Play Count**: ${player.playCount.toLocaleString()}\n` +
-                `**Country**: ${player.location}\n\n` +
-                `**Bind Information**: ${
-                    bindInfo
-                        ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})`
-                        : (await player.hasPlayedVerificationMap())
-                        ? "Has played verification beatmap"
-                        : "Not binded"
-                }`
+            `**Uid**: ${player.uid}\n` +
+            `**Rank**: ${player.rank.toLocaleString()}\n` +
+            `**Play Count**: ${player.playCount.toLocaleString()}\n` +
+            `**Country**: ${player.location}\n\n` +
+            `**Bind Information**: ${bindInfo
+                ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})`
+                : (await ScoreHelper.hasPlayedVerificationMap(player.uid))
+                    ? "Has played verification beatmap"
+                    : "Not binded"
+            }`
         );
 
     interaction.editReply({

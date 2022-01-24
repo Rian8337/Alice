@@ -1,5 +1,5 @@
 import request, { CoreOptions } from "request";
-import { RequestResponse } from "osu-droid";
+import { RequestResponse } from "@rian8337/osu-base";
 import { Manager } from "@alice-utils/base/Manager";
 import { Image, loadImage } from "canvas";
 import { Snowflake } from "discord.js";

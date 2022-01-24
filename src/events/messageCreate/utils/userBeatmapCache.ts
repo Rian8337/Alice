@@ -3,7 +3,7 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Message } from "discord.js";
-import { MapInfo } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (Config.maintenance || message.author.bot) {

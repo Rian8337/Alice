@@ -1,4 +1,4 @@
-import { MathUtils } from "osu-droid";
+import { MathUtils } from "@rian8337/osu-base";
 
 /**
  * Helper methods for numbers.

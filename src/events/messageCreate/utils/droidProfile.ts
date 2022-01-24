@@ -1,4 +1,4 @@
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { Message } from "discord.js";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
@@ -33,8 +33,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
         message.channel.send({
             content: MessageCreator.createAccept(
-                `osu!droid profile for ${
-                    player.username
+                `osu!droid profile for ${player.username
                 }:\n<${ProfileManager.getProfileLink(uid)}>`
             ),
             files: [profileImage],

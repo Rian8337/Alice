@@ -5,8 +5,8 @@ import {
     Mod,
     ModNightCore,
     ModUtil,
-    Score,
-} from "osu-droid";
+} from "@rian8337/osu-base";
+import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 /**
@@ -63,7 +63,7 @@ export abstract class BeatmapDifficultyHelper {
                     Math.min(
                         12.5,
                         parseFloat(parseFloat(input.substring(2)).toFixed(2)) ||
-                            0
+                        0
                     )
                 );
             }

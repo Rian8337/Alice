@@ -1,15 +1,13 @@
-import {
-    MapInfo,
-    ReplayAnalyzer,
-    RebalancePerformanceCalculator,
-} from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
+import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
+import { PerformanceCalculator as RebalancePerformanceCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
 
 /**
  * Represents a beatmap's performance calculation result.
  */
 export class RebalancePerformanceCalculationResult<
     T extends RebalancePerformanceCalculator
-> {
+    > {
     /**
      * The beatmap being calculated.
      */

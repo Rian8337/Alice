@@ -14,9 +14,8 @@ import {
     ModNoFail,
     ModPrecise,
     ModUtil,
-    Player,
-    Score,
-} from "osu-droid";
+} from "@rian8337/osu-base";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { TournamentMapLengthInfo } from "../aliceDb/TournamentMapLengthInfo";
 import { TournamentMappool } from "./TournamentMappool";
 
@@ -25,8 +24,7 @@ import { TournamentMappool } from "./TournamentMappool";
  */
 export class TournamentMatch
     extends Manager
-    implements DatabaseTournamentMatch
-{
+    implements DatabaseTournamentMatch {
     matchid: string;
     channelId: Snowflake;
     name: string;
@@ -215,28 +213,27 @@ export class TournamentMatch
             case "hd":
                 return this.createOperationResult(
                     mods.length === 2 &&
-                        mods.some((m) => m instanceof ModHidden),
+                    mods.some((m) => m instanceof ModHidden),
                     `Other mods except ${forcePR ? "NFHDPR" : "NFHD"} was used`
                 );
             case "hr":
                 return this.createOperationResult(
                     mods.length === 2 &&
-                        mods.some((m) => m instanceof ModHardRock),
+                    mods.some((m) => m instanceof ModHardRock),
                     `Other mods except ${forcePR ? "NFHRPR" : "NFHR"} was used`
                 );
             case "dt":
                 return this.createOperationResult(
                     mods.some((m) => m instanceof ModDoubleTime) &&
-                        mods.length ===
-                            (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
-                    `Other mods except ${forcePR ? "NFDTPR" : "NFDT"} or ${
-                        forcePR ? "NFHDDTPR" : "NFHDDT"
+                    mods.length ===
+                    (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
+                    `Other mods except ${forcePR ? "NFDTPR" : "NFDT"} or ${forcePR ? "NFHDDTPR" : "NFHDDT"
                     } was used`
                 );
             case "fm":
                 return this.createOperationResult(
                     (mods.length > 1 || teamScoreStatus) &&
-                        speedChangingMods.length === 0,
+                    speedChangingMods.length === 0,
                     `${speedChangingMods
                         .map((m) => m.acronym)
                         .join("")} was used`

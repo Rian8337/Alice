@@ -1,4 +1,5 @@
-import { MapInfo, StarRating } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
+import { StarRating } from "@rian8337/osu-difficulty-calculator";
 
 /**
  * Represents a beatmap's difficulty calculation result.

@@ -5,7 +5,7 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
@@ -170,8 +170,7 @@ export const run: EventUtil["run"] = async (client) => {
 
             await clan.updateClan();
             await clan.notifyLeader(
-                `Hey, your clan upkeep has been picked up from your members! ${
-                    clan.member_list.size
+                `Hey, your clan upkeep has been picked up from your members! ${clan.member_list.size
                 } member(s) have successfully paid their upkeep. A total of ${kickedCount} member(s) were kicked. Your next clan upkeep will be picked in ${new Date(
                     clan.weeklyfee * 1000
                 ).toUTCString()}.`

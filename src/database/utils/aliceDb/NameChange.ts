@@ -6,7 +6,8 @@ import { ObjectId } from "bson";
 import { MessageEmbed, Snowflake, User } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DroidAPIRequestBuilder, Player, RequestResponse } from "osu-droid";
+import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
+import { Player } from "@rian8337/osu-droid-utilities";
 
 /**
  * Represents an osu!droid name change request.
@@ -187,11 +188,11 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 .setTitle("Request Details")
                 .setDescription(
                     `**Current Username**: ${this.player.username}\n` +
-                        `**Requested Username**: ${this.new_username}\n` +
-                        `**Creation Date**: ${new Date(
-                            (this.cooldown - 86400 * 30) * 1000
-                        ).toUTCString()}\n\n` +
-                        "**Status**: Accepted"
+                    `**Requested Username**: ${this.new_username}\n` +
+                    `**Creation Date**: ${new Date(
+                        (this.cooldown - 86400 * 30) * 1000
+                    ).toUTCString()}\n\n` +
+                    "**Status**: Accepted"
                 );
 
             user.send({
@@ -202,7 +203,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch {}
+        } catch { }
     }
 
     /**
@@ -229,12 +230,12 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 .setTitle("Request Details")
                 .setDescription(
                     `**Current Username**: ${this.player.username}\n` +
-                        `**Requested Username**: ${this.new_username}\n` +
-                        `**Creation Date**: ${new Date(
-                            (this.cooldown - 86400 * 30) * 1000
-                        ).toUTCString()}\n\n` +
-                        "**Status**: Denied\n" +
-                        `**Reason**: ${reason}`
+                    `**Requested Username**: ${this.new_username}\n` +
+                    `**Creation Date**: ${new Date(
+                        (this.cooldown - 86400 * 30) * 1000
+                    ).toUTCString()}\n\n` +
+                    "**Status**: Denied\n" +
+                    `**Reason**: ${reason}`
                 );
 
             user.send({
@@ -245,6 +246,6 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch {}
+        } catch { }
     }
 }

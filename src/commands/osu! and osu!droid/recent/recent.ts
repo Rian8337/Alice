@@ -9,7 +9,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { recentStrings } from "./recentStrings";
 
 export const run: Command["run"] = async (_, interaction) => {

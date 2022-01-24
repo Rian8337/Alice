@@ -8,7 +8,8 @@ import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
-import { ModDoubleTime, ModHidden, Player, Score } from "osu-droid";
+import { ModDoubleTime, ModHidden } from "@rian8337/osu-base";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { matchStrings } from "../matchStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -17,22 +18,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const match: TournamentMatch | null = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-              interaction.channelId
-          );
+            interaction.channelId
+        );
 
     // Need to make cross-compatibility since this command is also called from match-start
     if (!match) {
         interaction.replied
             ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      matchStrings.matchDoesntExist
-                  ),
-              })
+                content: MessageCreator.createReject(
+                    matchStrings.matchDoesntExist
+                ),
+            })
             : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      matchStrings.matchDoesntExist
-                  ),
-              });
+                content: MessageCreator.createReject(
+                    matchStrings.matchDoesntExist
+                ),
+            });
 
         return;
     }
@@ -47,15 +48,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!mappoolMainData) {
         interaction.replied
             ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      matchStrings.mappoolNotFound
-                  ),
-              })
+                content: MessageCreator.createReject(
+                    matchStrings.mappoolNotFound
+                ),
+            })
             : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      matchStrings.mappoolNotFound
-                  ),
-              });
+                content: MessageCreator.createReject(
+                    matchStrings.mappoolNotFound
+                ),
+            });
 
         return;
     }
@@ -68,15 +69,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!mappoolDurationData) {
         interaction.replied
             ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      matchStrings.mappoolNotFound
-                  ),
-              })
+                content: MessageCreator.createReject(
+                    matchStrings.mappoolNotFound
+                ),
+            })
             : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      matchStrings.mappoolNotFound
-                  ),
-              });
+                content: MessageCreator.createReject(
+                    matchStrings.mappoolNotFound
+                ),
+            });
 
         return;
     }
@@ -91,17 +92,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (!player.username) {
             interaction.replied
                 ? interaction.channel!.send({
-                      content: MessageCreator.createReject(
-                          matchStrings.playerNotFound,
-                          p[1]
-                      ),
-                  })
+                    content: MessageCreator.createReject(
+                        matchStrings.playerNotFound,
+                        p[1]
+                    ),
+                })
                 : interaction.editReply({
-                      content: MessageCreator.createReject(
-                          matchStrings.playerNotFound,
-                          p[1]
-                      ),
-                  });
+                    content: MessageCreator.createReject(
+                        matchStrings.playerNotFound,
+                        p[1]
+                    ),
+                });
 
             return;
         }
@@ -120,15 +121,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (index === -1) {
         interaction.replied
             ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      matchStrings.mapNotFound
-                  ),
-              })
+                content: MessageCreator.createReject(
+                    matchStrings.mapNotFound
+                ),
+            })
             : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      matchStrings.mapNotFound
-                  ),
-              });
+                content: MessageCreator.createReject(
+                    matchStrings.mapNotFound
+                ),
+            });
 
         return;
     }
@@ -198,13 +199,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const scoreString: string = `${match.player[i][0]} - (${score.mods
             .map((v) => v.name)
             .join(", ")}): **${scoreV2List.at(-1)!}** - ${score.rank} - ${(
-            score.accuracy.value() * 100
-        ).toFixed(2)}% - ${score.accuracy.nmiss} misses\n`;
-        const failString: string = `${match.player[i][0]} - (N/A): **0** - **${
-            !teamScoreStatus.success
-                ? teamScoreStatus.reason
-                : verificationResult.reason
-        }**\n`;
+                score.accuracy.value() * 100
+            ).toFixed(2)}% - ${score.accuracy.nmiss} misses\n`;
+        const failString: string = `${match.player[i][0]} - (N/A): **0** - **${!teamScoreStatus.success
+            ? teamScoreStatus.reason
+            : verificationResult.reason
+            }**\n`;
 
         if (i % 2 === 0) {
             if (teamScoreStatus.success) {
@@ -232,11 +232,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     team1String ||= "None";
     team2String ||= "None";
 
-    let description: string = `${
-        team1OverallScore > team2OverallScore
-            ? match.team[0][0]
-            : match.team[1][0]
-    } won by ${Math.abs(team1OverallScore - team2OverallScore)}`;
+    let description: string = `${team1OverallScore > team2OverallScore
+        ? match.team[0][0]
+        : match.team[1][0]
+        } won by ${Math.abs(team1OverallScore - team2OverallScore)}`;
     let embedColor: number = 0;
 
     if (team1OverallScore > team2OverallScore) {

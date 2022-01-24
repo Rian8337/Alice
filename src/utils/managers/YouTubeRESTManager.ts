@@ -1,6 +1,6 @@
 import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
 import { decode } from "html-entities";
-import { RequestResponse } from "osu-droid";
+import { RequestResponse } from "@rian8337/osu-base";
 import { RESTManager } from "./RESTManager";
 
 /**
@@ -20,7 +20,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
     ): Promise<YouTubeVideoInformation | null> {
         const result: RequestResponse = await this.request(
             this.host +
-                `videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${id}`
+            `videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${id}`
         );
 
         if (result.statusCode !== 200) {
@@ -62,7 +62,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
     ): Promise<YouTubeVideoInformation[]> {
         const result: RequestResponse = await this.request(
             this.host +
-                `search?key=${process.env.YOUTUBE_API_KEY}&part=snippet&q=${query}&type=video&maxResults=25`
+            `search?key=${process.env.YOUTUBE_API_KEY}&part=snippet&q=${query}&type=video&maxResults=25`
         );
 
         if (result.statusCode !== 200) {

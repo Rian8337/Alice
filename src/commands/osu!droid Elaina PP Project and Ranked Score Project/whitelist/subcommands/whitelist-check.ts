@@ -3,7 +3,7 @@ import { WhitelistStatus } from "@alice-types/dpp/WhitelistStatus";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { MapInfo } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
 import { whitelistStrings } from "../whitelistStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

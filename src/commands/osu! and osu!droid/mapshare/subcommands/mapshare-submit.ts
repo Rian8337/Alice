@@ -8,7 +8,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MapInfo, rankedStatus } from "osu-droid";
+import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { mapshareStrings } from "../mapshareStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

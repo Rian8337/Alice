@@ -1,4 +1,4 @@
-import { MapInfo } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

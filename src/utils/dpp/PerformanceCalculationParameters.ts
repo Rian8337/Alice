@@ -1,4 +1,4 @@
-import { Accuracy, MapInfo, MapStats, Precision } from "osu-droid";
+import { Accuracy, MapInfo, MapStats, Precision } from "@rian8337/osu-base";
 import { StarRatingCalculationParameters } from "./StarRatingCalculationParameters";
 
 /**

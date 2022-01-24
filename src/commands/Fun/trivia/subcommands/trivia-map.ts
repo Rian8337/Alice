@@ -20,7 +20,7 @@ import {
     OsuAPIRequestBuilder,
     OsuAPIResponse,
     RequestResponse,
-} from "osu-droid";
+} from "@rian8337/osu-base";
 import { triviaStrings } from "../triviaStrings";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
@@ -41,9 +41,9 @@ async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
             `${finalDate.getUTCFullYear()}-${(finalDate.getUTCMonth() + 1)
                 .toString()
                 .padStart(2, "0")}-${finalDate
-                .getUTCDate()
-                .toString()
-                .padStart(2, "0")}`
+                    .getUTCDate()
+                    .toString()
+                    .padStart(2, "0")}`
         )
         .addParameter("m", 0);
 
@@ -138,8 +138,7 @@ function createEmbed(
         })
         .setTitle(`Level ${level}`)
         .setDescription(
-            `**Artist:** ${artist}\n**Title**: ${title}${
-                beatmapInfo.source ? `\n**Source**: ${beatmapInfo.source}` : ""
+            `**Artist:** ${artist}\n**Title**: ${title}${beatmapInfo.source ? `\n**Source**: ${beatmapInfo.source}` : ""
             }`
         )
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
@@ -529,13 +528,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .setTitle("Game Information")
         .setDescription(
             `**Starter**: ${interaction.user}\n` +
-                `**Time started**: ${interaction.createdAt.toUTCString()}\n` +
-                `**Duration**: ${DateTimeFormatHelper.secondsToDHMS(
-                    Math.floor(
-                        (Date.now() - interaction.createdTimestamp) / 1000
-                    )
-                )}\n` +
-                `**Level**: ${level}`
+            `**Time started**: ${interaction.createdAt.toUTCString()}\n` +
+            `**Duration**: ${DateTimeFormatHelper.secondsToDHMS(
+                Math.floor(
+                    (Date.now() - interaction.createdTimestamp) / 1000
+                )
+            )}\n` +
+            `**Level**: ${level}`
         )
         .addField(
             "Leaderboard",

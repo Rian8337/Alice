@@ -1,4 +1,4 @@
-import { MapStats } from "osu-droid";
+import { MapStats } from "@rian8337/osu-base";
 
 /**
  * Represents a parameter to alter difficulty calculation result.

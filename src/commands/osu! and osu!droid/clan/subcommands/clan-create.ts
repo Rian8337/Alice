@@ -7,7 +7,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

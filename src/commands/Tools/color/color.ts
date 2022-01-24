@@ -1,5 +1,5 @@
 import { MessageAttachment } from "discord.js";
-import { Canvas, createCanvas, NodeCanvasRenderingContext2D } from "canvas";
+import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
@@ -17,7 +17,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     const canvas: Canvas = createCanvas(75, 75);
-    const c: NodeCanvasRenderingContext2D = canvas.getContext("2d");
+    const c: CanvasRenderingContext2D = canvas.getContext("2d");
 
     c.fillStyle = color;
     c.fillRect(0, 0, 75, 75);

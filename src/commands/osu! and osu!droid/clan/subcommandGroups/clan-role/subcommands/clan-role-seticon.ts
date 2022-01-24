@@ -6,7 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { loadImage, Image } from "canvas";
 import { Role } from "discord.js";
-import { Precision, RequestResponse } from "osu-droid";
+import { Precision, RequestResponse } from "@rian8337/osu-base";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const iconURL: string | null = interaction.options.getString("url");

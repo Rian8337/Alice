@@ -4,7 +4,7 @@ import {
 } from "@alice-types/core/CooldownKey";
 import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollection";
 import { Snowflake } from "discord.js";
-import { MapInfo } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
 
 /**
  * A manager that holds anything that is cached.

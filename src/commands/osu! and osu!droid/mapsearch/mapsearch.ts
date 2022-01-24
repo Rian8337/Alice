@@ -12,7 +12,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { GuildMember, MessageEmbed } from "discord.js";
-import { rankedStatus, RequestResponse } from "osu-droid";
+import { rankedStatus, RequestResponse } from "@rian8337/osu-base";
 import { mapsearchStrings } from "./mapsearchStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
@@ -30,9 +30,8 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction.options.data.filter((v) => v.name !== "keyword").length > 0
     ) {
         const getInputRange = (mainstr: string): string => {
-            return `${interaction.options.getNumber(`min${mainstr}`) ?? 0}~${
-                interaction.options.getNumber(`max${mainstr}`) ?? ""
-            }`;
+            return `${interaction.options.getNumber(`min${mainstr}`) ?? 0}~${interaction.options.getNumber(`max${mainstr}`) ?? ""
+                }`;
         };
 
         url +=
@@ -43,10 +42,9 @@ export const run: Command["run"] = async (_, interaction) => {
             `HP:${getInputRange("hp")},` +
             `length:${DateTimeFormatHelper.DHMStoSeconds(
                 interaction.options.getString("minduration") ?? "0"
-            )}~${
-                DateTimeFormatHelper.DHMStoSeconds(
-                    interaction.options.getString("minduration") ?? ""
-                ) || ""
+            )}~${DateTimeFormatHelper.DHMStoSeconds(
+                interaction.options.getString("minduration") ?? ""
+            ) || ""
             },` +
             `BPM:${getInputRange("bpm")}` +
             'end"';
@@ -101,9 +99,9 @@ export const run: Command["run"] = async (_, interaction) => {
                     status =
                         rankedStatus[stat] !== "WIP"
                             ? StringHelper.capitalizeString(
-                                  rankedStatus[stat],
-                                  true
-                              )
+                                rankedStatus[stat],
+                                true
+                            )
                             : rankedStatus[stat];
                     break;
                 }
@@ -111,29 +109,20 @@ export const run: Command["run"] = async (_, interaction) => {
 
             embed.addField(
                 `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`,
-                `**Download**: [osu!](https://osu.ppy.sh/d/${
-                    d.sid
-                }) [(no video)](https://osu.ppy.sh/d/${
-                    d.sid
-                }n) - [Chimu](https://chimu.moe/en/d/${
-                    d.sid
-                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
-                    d.sid
-                }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${
-                    d.sid
-                }) - [Beatconnect](https://beatconnect.io/b/${
-                    d.sid
-                }/) - [Nerina](https://nerina.pw/d/${d.sid})${
-                    d.approved >= rankedStatus.RANKED &&
+                `**Download**: [osu!](https://osu.ppy.sh/d/${d.sid
+                }) [(no video)](https://osu.ppy.sh/d/${d.sid
+                }n) - [Chimu](https://chimu.moe/en/d/${d.sid
+                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${d.sid
+                }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid
+                }) - [Beatconnect](https://beatconnect.io/b/${d.sid
+                }/) - [Nerina](https://nerina.pw/d/${d.sid})${d.approved >= rankedStatus.RANKED &&
                     d.approved !== rankedStatus.QUALIFIED
-                        ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})`
-                        : ""
+                    ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})`
+                    : ""
                 }\n**Last Update**: ${new Date(
                     d.lastupdate * 1000
-                ).toUTCString()} | **${status}**\n${
-                    Symbols.heart
-                } **${d.favourite_count.toLocaleString()}** - ${
-                    Symbols.playButton
+                ).toUTCString()} | **${status}**\n${Symbols.heart
+                } **${d.favourite_count.toLocaleString()}** - ${Symbols.playButton
                 } **${d.play_count.toLocaleString()}**`
             );
         }

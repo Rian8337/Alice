@@ -1,4 +1,4 @@
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { Guild, GuildMember, Role } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { userbindStrings } from "../userbindStrings";
@@ -9,6 +9,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const uid: number = interaction.options.getInteger("uid", true);
@@ -70,7 +71,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
 
             // Check if account has played verification map
-            if (!(await player.hasPlayedVerificationMap())) {
+            if (!(await ScoreHelper.hasPlayedVerificationMap(player.uid))) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
                         userbindStrings.verificationMapNotFound
@@ -131,7 +132,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
     } else {
         // Check if account has played verification map
-        if (!(await player.hasPlayedVerificationMap())) {
+        if (!(await ScoreHelper.hasPlayedVerificationMap(player.uid))) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
                     userbindStrings.verificationMapNotFound

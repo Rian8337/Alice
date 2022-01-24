@@ -5,7 +5,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { pingStrings } from "./pingStrings";
-import { DroidAPIRequestBuilder } from "osu-droid";
+import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 
 export const run: Command["run"] = async (client, interaction) => {

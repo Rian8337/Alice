@@ -1,4 +1,4 @@
-import { Player } from "osu-droid";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { registerFont } from "canvas";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Manager } from "@alice-utils/base/Manager";

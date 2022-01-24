@@ -5,7 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
-import { DroidAPIRequestBuilder } from "osu-droid";
+import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { leaderboardStrings } from "../leaderboardStrings";
 
 /**
@@ -81,10 +81,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             output += `${(actualPage * 100 + i + 1)
                 .toString()
                 .padEnd(4)} | ${c[1].padEnd(
-                longestUsernameLength
-            )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
-                (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
-            ).padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
+                    longestUsernameLength
+                )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
+                    (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
+                ).padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
         }
 
         options.content = "```c\n" + output + "```";

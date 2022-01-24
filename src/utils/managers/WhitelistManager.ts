@@ -1,5 +1,5 @@
 import { MessageOptions, Snowflake, TextChannel } from "discord.js";
-import { MapInfo, rankedStatus } from "osu-droid";
+import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";

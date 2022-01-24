@@ -6,7 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MessageOptions } from "discord.js";
-import { MapInfo } from "osu-droid";
+import { MapInfo } from "@rian8337/osu-base";
 import { mapshareStrings } from "../mapshareStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
