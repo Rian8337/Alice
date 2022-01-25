@@ -18,7 +18,8 @@ export abstract class ScoreHelper {
         const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
             .setEndpoint("scoresearchv2.php")
             .addParameter("hash", hash)
-            .addParameter("page", Math.max(0, page - 1));
+            .addParameter("page", Math.max(0, page - 1))
+            .addParameter("order", "score");
 
         const result: RequestResponse = await apiRequestBuilder.sendRequest();
 
