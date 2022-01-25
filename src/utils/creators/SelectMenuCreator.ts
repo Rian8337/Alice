@@ -81,25 +81,23 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
 
         return new Promise((resolve) => {
             collector.on("end", async (collected) => {
-                try {
-                    if (collected.size > 0) {
-                        await interaction.editReply({
-                            content:
-                                MessageCreator.createAccept("Please wait..."),
-                            components: [],
-                        });
-                    } else {
-                        await interaction.editReply({
-                            content: MessageCreator.createReject("Timed out."),
-                            components: [],
-                        });
+                if (collected.size > 0) {
+                    await interaction.editReply({
+                        content: MessageCreator.createAccept("Please wait..."),
+                        components: [],
+                    });
+                } else {
+                    await interaction.editReply({
+                        content: MessageCreator.createReject("Timed out."),
+                        components: [],
+                    });
 
+                    if (!interaction.ephemeral) {
                         setTimeout(() => {
                             interaction.deleteReply();
                         }, 5 * 1000);
                     }
-                    // eslint-disable-next-line no-empty
-                } catch {}
+                }
 
                 resolve(
                     (<SelectMenuInteraction | undefined>collected.first())

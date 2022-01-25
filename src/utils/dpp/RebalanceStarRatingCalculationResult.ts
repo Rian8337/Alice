@@ -6,7 +6,7 @@ import { StarRating as RebalanceStarRating } from "@rian8337/osu-rebalance-diffi
  */
 export class RebalanceStarRatingCalculationResult<
     T extends RebalanceStarRating
-    > {
+> {
     /**
      * The beatmap being calculated.
      */

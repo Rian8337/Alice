@@ -188,11 +188,11 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 .setTitle("Request Details")
                 .setDescription(
                     `**Current Username**: ${this.player.username}\n` +
-                    `**Requested Username**: ${this.new_username}\n` +
-                    `**Creation Date**: ${new Date(
-                        (this.cooldown - 86400 * 30) * 1000
-                    ).toUTCString()}\n\n` +
-                    "**Status**: Accepted"
+                        `**Requested Username**: ${this.new_username}\n` +
+                        `**Creation Date**: ${new Date(
+                            (this.cooldown - 86400 * 30) * 1000
+                        ).toUTCString()}\n\n` +
+                        "**Status**: Accepted"
                 );
 
             user.send({
@@ -203,7 +203,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
     }
 
     /**
@@ -230,12 +230,12 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 .setTitle("Request Details")
                 .setDescription(
                     `**Current Username**: ${this.player.username}\n` +
-                    `**Requested Username**: ${this.new_username}\n` +
-                    `**Creation Date**: ${new Date(
-                        (this.cooldown - 86400 * 30) * 1000
-                    ).toUTCString()}\n\n` +
-                    "**Status**: Denied\n" +
-                    `**Reason**: ${reason}`
+                        `**Requested Username**: ${this.new_username}\n` +
+                        `**Creation Date**: ${new Date(
+                            (this.cooldown - 86400 * 30) * 1000
+                        ).toUTCString()}\n\n` +
+                        "**Status**: Denied\n" +
+                        `**Reason**: ${reason}`
                 );
 
             user.send({
@@ -246,6 +246,6 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
     }
 }

@@ -19,7 +19,12 @@ import { ObjectId, UpdateFilter } from "mongodb";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import { MapInfo, DroidAPIRequestBuilder, Precision, RequestResponse } from "@rian8337/osu-base";
+import {
+    MapInfo,
+    DroidAPIRequestBuilder,
+    Precision,
+    RequestResponse,
+} from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
@@ -188,7 +193,7 @@ export class UserBind extends Manager {
             if (
                 !beatmapInfo ||
                 (await DPPHelper.checkSubmissionValidity(beatmapInfo)) !==
-                DPPSubmissionValidity.VALID
+                    DPPSubmissionValidity.VALID
             ) {
                 this.pp.delete(ppEntry.hash);
                 this.playc = Math.max(0, this.playc - 1);
@@ -348,7 +353,8 @@ export class UserBind extends Manager {
             };
 
             this.client.logger.info(
-                `${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""
+                `${calcResult.map.fullTitle}${
+                    entry.mods ? ` +${entry.mods}` : ""
                 }: ${entry.prevPP} ⮕  ${entry.pp}`
             );
 
@@ -783,10 +789,10 @@ export class UserBind extends Manager {
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(
-                    typeof uidOrUsernameOrPlayer === "string"
-                        ? { username: uidOrUsernameOrPlayer }
-                        : { uid: uidOrUsernameOrPlayer }
-                );
+                      typeof uidOrUsernameOrPlayer === "string"
+                          ? { username: uidOrUsernameOrPlayer }
+                          : { uid: uidOrUsernameOrPlayer }
+                  );
 
         if (!player.username || !player.uid) {
             return this.createOperationResult(

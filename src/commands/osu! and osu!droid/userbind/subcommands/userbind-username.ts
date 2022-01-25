@@ -75,7 +75,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             // Check if account has played verification map
             if (!(await ScoreHelper.hasPlayedVerificationMap(player.uid))) {
-                2
+                2;
                 return interaction.editReply({
                     content: MessageCreator.createReject(
                         userbindStrings.verificationMapNotFound

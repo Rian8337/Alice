@@ -7,9 +7,18 @@ import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/Rebalanc
 import { RebalanceStarRatingCalculationResult } from "@alice-utils/dpp/RebalanceStarRatingCalculationResult";
 import { BeatmapDifficultyHelper } from "./BeatmapDifficultyHelper";
 import { MapInfo, Accuracy } from "@rian8337/osu-base";
-import { DroidPerformanceCalculator, DroidStarRating } from "@rian8337/osu-difficulty-calculator";
-import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator, DroidStarRating as RebalanceDroidStarRating } from "@rian8337/osu-rebalance-difficulty-calculator";
-import { ReplayAnalyzer, ThreeFingerChecker } from "@rian8337/osu-droid-replay-analyzer";
+import {
+    DroidPerformanceCalculator,
+    DroidStarRating,
+} from "@rian8337/osu-difficulty-calculator";
+import {
+    DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+    DroidStarRating as RebalanceDroidStarRating,
+} from "@rian8337/osu-rebalance-difficulty-calculator";
+import {
+    ReplayAnalyzer,
+    ThreeFingerChecker,
+} from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
 
 /**
@@ -278,9 +287,9 @@ export abstract class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelp
             beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
                 ? beatmapOrHashOrStar
                 : await this.calculateRebalanceDifficulty(
-                    beatmap,
-                    calculationParams
-                );
+                      beatmap,
+                      calculationParams
+                  );
 
         if (!star) {
             return null;

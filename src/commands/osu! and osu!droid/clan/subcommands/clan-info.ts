@@ -27,8 +27,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const clan: Clan | null = interaction.options.getString("name")
         ? await dbManager.getFromName(
-            interaction.options.getString("name", true)
-        )
+              interaction.options.getString("name", true)
+          )
         : await dbManager.getFromUser(interaction.user);
 
     if (!clan) {

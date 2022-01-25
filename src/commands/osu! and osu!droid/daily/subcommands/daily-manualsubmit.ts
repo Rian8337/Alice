@@ -15,7 +15,10 @@ import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { RequestResponse } from "@rian8337/osu-base";
-import { ReplayAnalyzer, ReplayData } from "@rian8337/osu-droid-replay-analyzer";
+import {
+    ReplayAnalyzer,
+    ReplayData,
+} from "@rian8337/osu-droid-replay-analyzer";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { Collection, GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { dailyStrings } from "../dailyStrings";
@@ -135,15 +138,15 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         .setTitle("Score Statistics")
         .setDescription(
             `**Total Score**: ${data.score}\n` +
-            `**Max Combo**: ${data.maxCombo}x\n` +
-            `**Accuracy**: ${(data.accuracy.value() * 100).toFixed(2)}%\n` +
-            `**Rank**: ${data.rank}\n` +
-            `**Time**: ${data.time.toUTCString()}\n\n` +
-            `**Hit Great (300)**: ${data.accuracy.n300} (${data.hit300k} geki and katu)\n` +
-            `**Hit good (100)**: ${data.accuracy.n100} (${data.hit100k} katu)\n` +
-            `**Hit meh (50)**: ${data.accuracy.n50}\n` +
-            `**Misses**: ${data.accuracy.nmiss}\n\n` +
-            `**Bonus Level Reached**: ${bonusLevel}`
+                `**Max Combo**: ${data.maxCombo}x\n` +
+                `**Accuracy**: ${(data.accuracy.value() * 100).toFixed(2)}%\n` +
+                `**Rank**: ${data.rank}\n` +
+                `**Time**: ${data.time.toUTCString()}\n\n` +
+                `**Hit Great (300)**: ${data.accuracy.n300} (${data.hit300k} geki and katu)\n` +
+                `**Hit good (100)**: ${data.accuracy.n100} (${data.hit100k} katu)\n` +
+                `**Hit meh (50)**: ${data.accuracy.n50}\n` +
+                `**Misses**: ${data.accuracy.nmiss}\n\n` +
+                `**Bonus Level Reached**: ${bonusLevel}`
         );
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
@@ -176,7 +179,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 challenge.points +
                 (challengeData.highestLevel -
                     Math.max(0, bonusLevel - challengeData.highestLevel)) *
-                2;
+                    2;
 
             challengeData.highestLevel = Math.max(
                 bonusLevel,

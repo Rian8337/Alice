@@ -204,8 +204,9 @@ export class ProfileCardCreator {
         this.context.save();
 
         try {
-            const flagPath: string = `${process.cwd()}/files/flags/${this.player.location
-                }.png`;
+            const flagPath: string = `${process.cwd()}/files/flags/${
+                this.player.location
+            }.png`;
             const flagStats: Stats = await promises.stat(flagPath);
 
             if (flagStats.isFile()) {
@@ -230,7 +231,7 @@ export class ProfileCardCreator {
                 );
             }
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
 
         this.context.restore();
     }
@@ -393,7 +394,8 @@ export class ProfileCardCreator {
                 ...this.bindInfo.pp.values(),
             ]);
             this.context.fillText(
-                `Accuracy: ${this.player.accuracy
+                `Accuracy: ${
+                    this.player.accuracy
                 }% | ${weightedAccuracy.toFixed(2)}%`,
                 x,
                 y + yOffset

@@ -59,9 +59,10 @@ export abstract class ScoreDisplayHelper {
                     )}** | ${score.title} ${score.getCompleteModString()}`,
                     `${score.score.toLocaleString()} / ${score.combo}x / ${(
                         score.accuracy.value() * 100
-                    ).toFixed(2)}% / [${score.accuracy.n300}/${score.accuracy.n100
+                    ).toFixed(2)}% / [${score.accuracy.n300}/${
+                        score.accuracy.n100
                     }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
-                    `\`${score.date.toUTCString()}\``
+                        `\`${score.date.toUTCString()}\``
                 );
             }
         };

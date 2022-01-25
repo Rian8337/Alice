@@ -33,7 +33,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
         message.channel.send({
             content: MessageCreator.createAccept(
-                `osu!droid profile for ${player.username
+                `osu!droid profile for ${
+                    player.username
                 }:\n<${ProfileManager.getProfileLink(uid)}>`
             ),
             files: [profileImage],

@@ -53,18 +53,17 @@ export abstract class MessageInputCreator {
 
         return new Promise((resolve) => {
             collector.on("end", async (collected) => {
-                try {
-                    if (collected.size === 0) {
-                        await interaction.editReply({
-                            content: MessageCreator.createReject("Timed out."),
-                        });
+                if (collected.size === 0) {
+                    await interaction.editReply({
+                        content: MessageCreator.createReject("Timed out."),
+                    });
 
+                    if (!interaction.ephemeral) {
                         setTimeout(() => {
                             interaction.deleteReply();
                         }, 5 * 1000);
                     }
-                    // eslint-disable-next-line no-empty
-                } catch {}
+                }
 
                 if (collected.first()?.content === "exit") {
                     return resolve(undefined);

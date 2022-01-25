@@ -63,7 +63,7 @@ export abstract class BeatmapDifficultyHelper {
                     Math.min(
                         12.5,
                         parseFloat(parseFloat(input.substring(2)).toFixed(2)) ||
-                        0
+                            0
                     )
                 );
             }

@@ -12,7 +12,10 @@ import { Message, MessageEmbed, MessageOptions } from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapInfo, MapStats } from "@rian8337/osu-base";
-import { DroidPerformanceCalculator, OsuPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
+import {
+    DroidPerformanceCalculator,
+    OsuPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (Config.maintenance || message.author.bot) {
@@ -140,9 +143,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                 .setDescription(
                     `${firstBeatmap.showStatistics(1, stats)}\n` +
-                    `**BPM**: ${firstBeatmap.convertBPM(
-                        stats
-                    )} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                        `**BPM**: ${firstBeatmap.convertBPM(
+                            stats
+                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                 );
 
             for (const beatmapInfo of beatmapInformations) {
@@ -167,18 +170,22 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 }
 
                 embed.addField(
-                    `__${beatmapInfo.version
-                    }__ (${droidCalcResult.result.stars.total.toFixed(2)} ${Symbols.star
-                    } | ${osuCalcResult.result.stars.total.toFixed(2)} ${Symbols.star
+                    `__${
+                        beatmapInfo.version
+                    }__ (${droidCalcResult.result.stars.total.toFixed(2)} ${
+                        Symbols.star
+                    } | ${osuCalcResult.result.stars.total.toFixed(2)} ${
+                        Symbols.star
                     })`,
                     `${beatmapInfo.showStatistics(2, stats)}\n` +
-                    `**Max score**: ${beatmapInfo
-                        .maxScore(stats)
-                        .toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo
-                    }x\n` +
-                    `**${droidCalcResult.result.total.toFixed(
-                        2
-                    )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`
+                        `**Max score**: ${beatmapInfo
+                            .maxScore(stats)
+                            .toLocaleString()} - **Max combo**: ${
+                            beatmapInfo.maxCombo
+                        }x\n` +
+                        `**${droidCalcResult.result.total.toFixed(
+                            2
+                        )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`
                 );
             }
 

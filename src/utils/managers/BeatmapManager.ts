@@ -1,6 +1,10 @@
 import * as d3 from "d3";
 import { GuildEmoji, MessageAttachment, Snowflake } from "discord.js";
-import { MapInfo, OsuAPIRequestBuilder, OsuAPIResponse } from "@rian8337/osu-base";
+import {
+    MapInfo,
+    OsuAPIRequestBuilder,
+    OsuAPIResponse,
+} from "@rian8337/osu-base";
 import { Manager } from "@alice-utils/base/Manager";
 import { CacheManager } from "./CacheManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";

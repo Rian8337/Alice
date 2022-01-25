@@ -7,8 +7,14 @@ import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/Rebalanc
 import { RebalanceStarRatingCalculationResult } from "@alice-utils/dpp/RebalanceStarRatingCalculationResult";
 import { BeatmapDifficultyHelper } from "./BeatmapDifficultyHelper";
 import { MapInfo, Accuracy } from "@rian8337/osu-base";
-import { OsuPerformanceCalculator, OsuStarRating } from "@rian8337/osu-difficulty-calculator";
-import { OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator, OsuStarRating as RebalanceOsuStarRating } from "@rian8337/osu-rebalance-difficulty-calculator";
+import {
+    OsuPerformanceCalculator,
+    OsuStarRating,
+} from "@rian8337/osu-difficulty-calculator";
+import {
+    OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
+    OsuStarRating as RebalanceOsuStarRating,
+} from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
 
 /**
@@ -227,9 +233,9 @@ export abstract class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper
             beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
                 ? beatmapOrHashOrStar
                 : await this.calculateRebalanceDifficulty(
-                    beatmap,
-                    calculationParams
-                );
+                      beatmap,
+                      calculationParams
+                  );
 
         if (!star) {
             return null;

@@ -151,7 +151,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setDescription(
         `**Total PP**: ${totalPP.toFixed(2)}pp\n` +
-        `**PP gained**: ${ppDiff.toFixed(2)} pp\n`
+            `**PP gained**: ${ppDiff.toFixed(2)} pp\n`
     );
 
     // Ranked score
@@ -178,17 +178,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         embed.setDescription(
             embed.description! +
-            `**Ranked score**: ${totalScore.toLocaleString()}\n` +
-            `**Score gained**: ${scoreDiff.toLocaleString()}\n` +
-            `**Current level**: ${Math.floor(level)} (${levelRemain}%)${(rankedScoreInfo?.level ?? 1) > Math.floor(level)
-                ? `\n${Symbols.upIcon} Level up!`
-                : ""
-            }\n` +
-            `**Score needed to level up**: ${(
-                RankedScoreHelper.calculateScoreRequirement(
-                    Math.floor(level) + 1
-                ) - totalScore
-            ).toLocaleString()}`
+                `**Ranked score**: ${totalScore.toLocaleString()}\n` +
+                `**Score gained**: ${scoreDiff.toLocaleString()}\n` +
+                `**Current level**: ${Math.floor(level)} (${levelRemain}%)${
+                    (rankedScoreInfo?.level ?? 1) > Math.floor(level)
+                        ? `\n${Symbols.upIcon} Level up!`
+                        : ""
+                }\n` +
+                `**Score needed to level up**: ${(
+                    RankedScoreHelper.calculateScoreRequirement(
+                        Math.floor(level) + 1
+                    ) - totalScore
+                ).toLocaleString()}`
         );
 
         if (rankedScoreInfo) {
@@ -209,7 +210,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     embed
         .setTitle("PP submission info")
         .addField(
-            `${beatmapInfo.fullTitle} +${score.mods.map((v) => v.acronym).join(",") || "No Mod"
+            `${beatmapInfo.fullTitle} +${
+                score.mods.map((v) => v.acronym).join(",") || "No Mod"
             }`,
             fieldContent
         );

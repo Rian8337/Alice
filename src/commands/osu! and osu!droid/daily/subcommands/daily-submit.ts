@@ -88,7 +88,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 challenge.points +
                 (challengeData.highestLevel -
                     Math.max(0, bonusLevel - challengeData.highestLevel)) *
-                2;
+                    2;
 
             challengeData.highestLevel = Math.max(
                 bonusLevel,

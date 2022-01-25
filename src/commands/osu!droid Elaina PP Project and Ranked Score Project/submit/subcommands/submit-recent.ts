@@ -93,8 +93,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             score.hash,
             false
         );
-        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${score.mods.map((v) => v.acronym).join(",") || "No Mod"
-            }`;
+        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${
+            score.mods.map((v) => v.acronym).join(",") || "No Mod"
+        }`;
         let fieldContent: string = `${score.combo}x | ${(
             score.accuracy.value() * 100
         ).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | **`;
@@ -173,18 +174,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setDescription(
         `Total PP: **${totalPP.toFixed(2)}pp**\n` +
-        `PP gained: **${ppDiff.toFixed(2)}pp**\n` +
-        `Ranked score: **${totalScore.toLocaleString()}**\n` +
-        `Score gained: **${scoreDiff.toLocaleString()}**\n` +
-        `Current level: **${Math.floor(level)} (${levelRemain}%)**${(rankedScoreInfo?.level ?? 1) < Math.floor(level)
-            ? `\n${Symbols.upIcon} Level up!`
-            : ""
-        }\n` +
-        `Score needed to level up: **${(
-            RankedScoreHelper.calculateScoreRequirement(
-                Math.floor(level) + 1
-            ) - totalScore
-        ).toLocaleString()}**`
+            `PP gained: **${ppDiff.toFixed(2)}pp**\n` +
+            `Ranked score: **${totalScore.toLocaleString()}**\n` +
+            `Score gained: **${scoreDiff.toLocaleString()}**\n` +
+            `Current level: **${Math.floor(level)} (${levelRemain}%)**${
+                (rankedScoreInfo?.level ?? 1) < Math.floor(level)
+                    ? `\n${Symbols.upIcon} Level up!`
+                    : ""
+            }\n` +
+            `Score needed to level up: **${(
+                RankedScoreHelper.calculateScoreRequirement(
+                    Math.floor(level) + 1
+                ) - totalScore
+            ).toLocaleString()}**`
     );
 
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);

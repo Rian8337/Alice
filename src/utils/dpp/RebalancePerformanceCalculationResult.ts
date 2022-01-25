@@ -7,7 +7,7 @@ import { PerformanceCalculator as RebalancePerformanceCalculator } from "@rian83
  */
 export class RebalancePerformanceCalculationResult<
     T extends RebalancePerformanceCalculator
-    > {
+> {
     /**
      * The beatmap being calculated.
      */

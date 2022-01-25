@@ -13,8 +13,14 @@ import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/Rebalanc
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapStats, ModUtil, Accuracy } from "@rian8337/osu-base";
-import { DroidPerformanceCalculator, OsuPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
-import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator, OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
+import {
+    DroidPerformanceCalculator,
+    OsuPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
+import {
+    DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+    OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
+} from "@rian8337/osu-rebalance-difficulty-calculator";
 
 export const run: Command["run"] = async (_, interaction) => {
     const beatmapID: number = BeatmapManager.getBeatmapID(
@@ -49,10 +55,10 @@ export const run: Command["run"] = async (_, interaction) => {
         "approachrate"
     )
         ? NumberHelper.clamp(
-            interaction.options.getNumber("approachrate", true),
-            0,
-            12.5
-        )
+              interaction.options.getNumber("approachrate", true),
+              0,
+              12.5
+          )
         : undefined;
 
     const stats: MapStats = new MapStats({
@@ -94,27 +100,27 @@ export const run: Command["run"] = async (_, interaction) => {
         | PerformanceCalculationResult<DroidPerformanceCalculator>
         | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>
         | null = await (interaction.options.getBoolean("lazercalculation")
-            ? DroidBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
-                beatmapID ?? hash,
-                calcParams
-            )
-            : DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
-                beatmapID ?? hash,
-                calcParams
-            ));
+        ? DroidBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+              beatmapID ?? hash,
+              calcParams
+          )
+        : DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+              beatmapID ?? hash,
+              calcParams
+          ));
 
     const osuCalcResult:
         | PerformanceCalculationResult<OsuPerformanceCalculator>
         | RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator>
         | null = await (interaction.options.getBoolean("lazercalculation")
-            ? OsuBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
-                beatmapID ?? hash,
-                calcParams
-            )
-            : OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
-                beatmapID ?? hash,
-                calcParams
-            ));
+        ? OsuBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+              beatmapID ?? hash,
+              calcParams
+          )
+        : OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+              beatmapID ?? hash,
+              calcParams
+          ));
 
     if (!droidCalcResult || !osuCalcResult) {
         return interaction.editReply({

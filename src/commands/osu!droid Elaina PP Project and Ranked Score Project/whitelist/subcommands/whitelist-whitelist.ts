@@ -89,7 +89,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             `Star Rating:\n${beatmaps
                 .map(
                     (v) =>
-                        `- [${v.version}](https://osu.ppy.sh/b/${v.beatmapID
+                        `- [${v.version}](https://osu.ppy.sh/b/${
+                            v.beatmapID
                         }) - **${v.totalDifficulty.toFixed(2)}**`
                 )
                 .join("\n")}`

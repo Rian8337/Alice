@@ -152,9 +152,11 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             components: [],
                         });
 
-                        setTimeout(() => {
-                            interaction.deleteReply();
-                        }, 5 * 1000);
+                        if (!interaction.ephemeral) {
+                            setTimeout(() => {
+                                interaction.deleteReply();
+                            }, 5 * 1000);
+                        }
                     }
                 } else {
                     await interaction.editReply({
@@ -162,12 +164,14 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         components: [],
                     });
 
-                    setTimeout(() => {
-                        interaction.deleteReply();
-                    }, 5 * 1000);
-                }
+                    if (!interaction.ephemeral) {
+                        setTimeout(() => {
+                            interaction.deleteReply();
+                        }, 5 * 1000);
+                    }
 
-                resolve(collected.first()?.customId === "yes");
+                    resolve(collected.first()?.customId === "yes");
+                }
             });
         });
     }
