@@ -169,9 +169,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             interaction.deleteReply();
                         }, 5 * 1000);
                     }
-
-                    resolve(collected.first()?.customId === "yes");
                 }
+
+                resolve(collected.first()?.customId === "yes");
             });
         });
     }
