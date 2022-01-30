@@ -269,7 +269,9 @@ export class Clan extends Manager {
             );
         }
 
-        let player: Player = await Player.getInformation({ uid: toAcceptBindInfo.previous_bind[0] });
+        let player: Player = await Player.getInformation({
+            uid: toAcceptBindInfo.previous_bind[0],
+        });
 
         for (const uid of toAcceptBindInfo.previous_bind.slice(1)) {
             const tempPlayer = await Player.getInformation({ uid: uid });
