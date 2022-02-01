@@ -22,6 +22,7 @@ import {
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Config } from "@alice-core/Config";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 
 export const run: EventUtil["run"] = async (client) => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
@@ -239,6 +240,14 @@ export const run: EventUtil["run"] = async (client) => {
                         .addField(
                             "Account Creation Date",
                             member.user.createdAt.toUTCString()
+                        )
+                        .addField(
+                            "Bind Information",
+                            (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
+                                i.user
+                            ))
+                                ? "Binded"
+                                : "Not binded"
                         );
 
                     if (
