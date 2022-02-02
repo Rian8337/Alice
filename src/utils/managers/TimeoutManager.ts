@@ -17,6 +17,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { LoungeLockManager } from "./LoungeLockManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { Constants } from "@alice-core/Constants";
 
 /**
  * A manager for timeouts.
@@ -24,11 +25,6 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 export abstract class TimeoutManager extends PunishmentManager {
     /**
      * Initializes the manager.
-     *
-     * This will:
-     * - Continue temporary mutes upon bot restart
-     * - Remove temporary mutes that have expired (if it's not already taken off)
-     * - Reapply mutes that were manually taken off
      */
     static override async init(): Promise<void> {
         this.punishmentDb =
@@ -52,7 +48,7 @@ export abstract class TimeoutManager extends PunishmentManager {
         reason: string,
         duration: number
     ): Promise<OperationResult> {
-        if (this.isUserMuted(member)) {
+        if (this.isUserTimeouted(member)) {
             return this.createOperationResult(
                 false,
                 "user is already timeouted"
@@ -81,7 +77,7 @@ export abstract class TimeoutManager extends PunishmentManager {
         }
 
         if (
-            !(await this.userCanMute(<GuildMember>interaction.member, duration))
+            !(await this.userCanTimeout(<GuildMember>interaction.member, duration))
         ) {
             return this.createOperationResult(
                 false,
@@ -134,12 +130,11 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} in ${
-                    interaction.channel
+                `**${member} in ${interaction.channel
                 } for ${DateTimeFormatHelper.secondsToDHMS(duration)}**\n\n` +
-                    `=========================\n\n` +
-                    `**Reason**:\n` +
-                    reason
+                `=========================\n\n` +
+                `**Reason**:\n` +
+                reason
             );
 
         try {
@@ -162,10 +157,10 @@ export abstract class TimeoutManager extends PunishmentManager {
 
         await logChannel.send({ embeds: [timeoutEmbed] });
 
-        if (duration >= 6 * 3600) {
+        if (duration >= 6 * 3600 && interaction.guildId === Constants.mainServer) {
             await LoungeLockManager.lock(
                 member.id,
-                "Muted for 6 hours or longer",
+                "Timeouted for 6 hours or longer",
                 30 * 24 * 3600
             );
         }
@@ -181,12 +176,12 @@ export abstract class TimeoutManager extends PunishmentManager {
      * @param reason The reason for untimeouting.
      * @returns An object containing information about the operation.
      */
-    static async removeMute(
+    static async removeTimeout(
         member: GuildMember,
         interaction: CommandInteraction,
         reason: string
     ): Promise<OperationResult> {
-        if (!this.isUserMuted(member)) {
+        if (!this.isUserTimeouted(member)) {
             return this.createOperationResult(
                 false,
                 "the user is not timeouted"
@@ -232,9 +227,9 @@ export abstract class TimeoutManager extends PunishmentManager {
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} in ${interaction.channel}**\n\n` +
-                    `=========================\n\n` +
-                    `**Reason**:\n` +
-                    reason
+                `=========================\n\n` +
+                `**Reason**:\n` +
+                reason
             );
 
         await logChannel.send({ embeds: [untimeoutEmbed] });
@@ -251,13 +246,13 @@ export abstract class TimeoutManager extends PunishmentManager {
     }
 
     /**
-     * Checks if a guild member can mute a user with specified duration.
+     * Checks if a guild member can timeout a user with specified duration.
      *
-     * @param member The guild member executing the mute.
-     * @param duration The duration the guild member wants to mute for, in seconds.
-     * @returns A boolean indicating whether the guild member can mute the user.
+     * @param member The guild member executing the timeout.
+     * @param duration The duration the guild member wants to timeout for, in seconds.
+     * @returns A boolean indicating whether the guild member can timeout the user.
      */
-    static async userCanMute(
+    static async userCanTimeout(
         member: GuildMember,
         duration: number
     ): Promise<boolean> {
@@ -270,21 +265,21 @@ export abstract class TimeoutManager extends PunishmentManager {
             return false;
         }
 
-        const allowedMuteRoles: Collection<Snowflake, RoleTimeoutPermission> =
+        const allowedTimeoutRoles: Collection<Snowflake, RoleTimeoutPermission> =
             guildConfig.allowedTimeoutRoles;
 
         let maxDuration: number = Number.NEGATIVE_INFINITY;
 
-        for (const allowedMuteRole of allowedMuteRoles.values()) {
-            if (!member.roles.cache.has(allowedMuteRole.id)) {
+        for (const allowedTimeoutRole of allowedTimeoutRoles.values()) {
+            if (!member.roles.cache.has(allowedTimeoutRole.id)) {
                 continue;
             }
 
-            if (allowedMuteRole.maxTime < 0) {
+            if (allowedTimeoutRole.maxTime < 0) {
                 return true;
             }
 
-            maxDuration = Math.max(maxDuration, allowedMuteRole.maxTime);
+            maxDuration = Math.max(maxDuration, allowedTimeoutRole.maxTime);
 
             // End loop here if duration is fulfilled
             if (duration <= maxDuration) {
@@ -322,12 +317,12 @@ export abstract class TimeoutManager extends PunishmentManager {
     }
 
     /**
-     * Checks if a guild member is muted.
+     * Checks if a guild member is timeouted.
      *
      * @param member The member.
-     * @returns Whether the guild member is muted.
+     * @returns Whether the guild member is timeouted.
      */
-    static isUserMuted(member: GuildMember): boolean {
+    static isUserTimeouted(member: GuildMember): boolean {
         return (
             member.communicationDisabledUntilTimestamp !== null &&
             member.communicationDisabledUntilTimestamp > Date.now()
@@ -335,7 +330,7 @@ export abstract class TimeoutManager extends PunishmentManager {
     }
 
     /**
-     * Notifies a guild member about their mute status.
+     * Notifies a guild member about their timeout status.
      *
      * @param client The instance of the bot.
      * @param member The member to notify.

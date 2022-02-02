@@ -28,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const allowedMuteRoles: Collection<string, RoleTimeoutPermission> =
+    const allowedTimeoutRoles: Collection<string, RoleTimeoutPermission> =
         guildConfig.allowedTimeoutRoles;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
@@ -36,7 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: interaction.member.displayColor,
     });
 
-    embed.setTitle("Roles with Mute Immunity");
+    embed.setTitle("Roles with Timeout Permission");
 
     const onPageChange: OnButtonPageChange = async (
         _,
@@ -48,10 +48,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map(
                     (v) =>
-                        `- <@&${v.id}> (${
-                            v.maxTime === -1
-                                ? "Indefinite"
-                                : DateTimeFormatHelper.secondsToDHMS(v.maxTime)
+                        `- <@&${v.id}> (${v.maxTime === -1
+                            ? "Indefinite"
+                            : DateTimeFormatHelper.secondsToDHMS(v.maxTime)
                         })`
                 )
                 .join("\n")
@@ -62,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...allowedMuteRoles.values()],
+        [...allowedTimeoutRoles.values()],
         10,
         1,
         120,

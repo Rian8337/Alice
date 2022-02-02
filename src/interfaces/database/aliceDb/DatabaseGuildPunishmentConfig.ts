@@ -22,7 +22,7 @@ export interface DatabaseGuildPunishmentConfig extends BaseDocument {
     allowedTimeoutRoles: RoleTimeoutPermission[];
 
     /**
-     * Roles that cannot be muted.
+     * Roles that cannot be timeouted.
      */
     immuneTimeoutRoles: Snowflake[];
 }

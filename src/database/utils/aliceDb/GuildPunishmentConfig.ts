@@ -63,12 +63,12 @@ export class GuildPunishmentConfig extends Manager {
     }
 
     /**
-     * Grants mute immunity for a role.
+     * Grants timeout immunity for a role.
      *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
-    async grantMuteImmunity(roleId: Snowflake): Promise<OperationResult> {
+    async grantTimeoutImmunity(roleId: Snowflake): Promise<OperationResult> {
         if (this.immuneTimeoutRoles.find((r) => r === roleId)) {
             return this.createOperationResult(true);
         }
@@ -79,19 +79,19 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $addToSet: {
-                    immuneMuteRoles: roleId,
+                    immuneTimeoutRoles: roleId,
                 },
             }
         );
     }
 
     /**
-     * Revokes mute immunity from a role.
+     * Revokes timeout immunity from a role.
      *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
-    async revokeMuteImmunity(roleId: Snowflake): Promise<OperationResult> {
+    async revokeTimeoutImmunity(roleId: Snowflake): Promise<OperationResult> {
         const index: number = this.immuneTimeoutRoles.findIndex(
             (r) => r === roleId
         );
@@ -106,7 +106,7 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $pull: {
-                    immuneMuteRoles: roleId,
+                    immuneTimeoutRoles: roleId,
                 },
             }
         );
@@ -122,10 +122,10 @@ export class GuildPunishmentConfig extends Manager {
         roleId: Snowflake,
         maxTime: number
     ): Promise<OperationResult> {
-        const roleMutePermission: RoleTimeoutPermission | undefined =
+        const roleTimeoutPermission: RoleTimeoutPermission | undefined =
             this.allowedTimeoutRoles.get(roleId);
 
-        if (roleMutePermission?.maxTime === maxTime) {
+        if (roleTimeoutPermission?.maxTime === maxTime) {
             return this.createOperationResult(true);
         }
 
@@ -135,7 +135,7 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $set: {
-                    allowedMuteRoles: [...this.allowedTimeoutRoles.values()],
+                    allowedTimeoutRoles: [...this.allowedTimeoutRoles.values()],
                 },
             }
         );
@@ -156,7 +156,7 @@ export class GuildPunishmentConfig extends Manager {
             { guildID: this.guildID },
             {
                 $set: {
-                    allowedMuteRoles: [...this.allowedTimeoutRoles.values()],
+                    allowedTimeoutRoles: [...this.allowedTimeoutRoles.values()],
                 },
             }
         );

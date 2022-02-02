@@ -26,14 +26,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const immuneMuteRoles: Snowflake[] = guildConfig.immuneTimeoutRoles;
+    const immuneTimeoutRoles: Snowflake[] = guildConfig.immuneTimeoutRoles;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: interaction.member.displayColor,
     });
 
-    embed.setTitle("Roles with Mute Immunity");
+    embed.setTitle("Roles with Timeout Immunity");
 
     const onPageChange: OnButtonPageChange = async (
         _,
@@ -52,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        immuneMuteRoles,
+        immuneTimeoutRoles,
         10,
         1,
         120,

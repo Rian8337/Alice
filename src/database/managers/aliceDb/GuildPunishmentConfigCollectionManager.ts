@@ -38,7 +38,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
                 DatabaseGuildPunishmentConfig,
                 GuildPunishmentConfig
             >
-        >new GuildPunishmentConfig().constructor;
+            >new GuildPunishmentConfig().constructor;
     }
 
     /**
@@ -92,8 +92,8 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
                     logChannel: channelId,
                 },
                 $setOnInsert: {
-                    allowedMuteRoles: [],
-                    immuneMuteRoles: [],
+                    allowedTimeoutRoles: [],
+                    immuneTimeoutRoles: [],
                 },
             },
             { upsert: true }

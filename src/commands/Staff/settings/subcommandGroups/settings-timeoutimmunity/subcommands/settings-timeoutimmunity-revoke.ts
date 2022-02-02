@@ -21,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await guildConfig.revokeMuteImmunity(role.id);
+    await guildConfig.revokeTimeoutImmunity(role.id);
 
     interaction.editReply({
         content: MessageCreator.createAccept(

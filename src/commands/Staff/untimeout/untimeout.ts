@@ -13,7 +13,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (
-        !(await TimeoutManager.userCanMute(
+        !(await TimeoutManager.userCanTimeout(
             <GuildMember>interaction.member,
             Number.POSITIVE_INFINITY
         ))
@@ -28,7 +28,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const reason: string =
         interaction.options.getString("reason") ?? "Not specified.";
 
-    const result: OperationResult = await TimeoutManager.removeMute(
+    const result: OperationResult = await TimeoutManager.removeTimeout(
         toUntimeout,
         interaction,
         reason
