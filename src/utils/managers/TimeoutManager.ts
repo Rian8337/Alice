@@ -77,7 +77,10 @@ export abstract class TimeoutManager extends PunishmentManager {
         }
 
         if (
-            !(await this.userCanTimeout(<GuildMember>interaction.member, duration))
+            !(await this.userCanTimeout(
+                <GuildMember>interaction.member,
+                duration
+            ))
         ) {
             return this.createOperationResult(
                 false,
@@ -130,11 +133,12 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} in ${interaction.channel
+                `**${member} in ${
+                    interaction.channel
                 } for ${DateTimeFormatHelper.secondsToDHMS(duration)}**\n\n` +
-                `=========================\n\n` +
-                `**Reason**:\n` +
-                reason
+                    `=========================\n\n` +
+                    `**Reason**:\n` +
+                    reason
             );
 
         try {
@@ -157,7 +161,10 @@ export abstract class TimeoutManager extends PunishmentManager {
 
         await logChannel.send({ embeds: [timeoutEmbed] });
 
-        if (duration >= 6 * 3600 && interaction.guildId === Constants.mainServer) {
+        if (
+            duration >= 6 * 3600 &&
+            interaction.guildId === Constants.mainServer
+        ) {
             await LoungeLockManager.lock(
                 member.id,
                 "Timeouted for 6 hours or longer",
@@ -227,9 +234,9 @@ export abstract class TimeoutManager extends PunishmentManager {
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} in ${interaction.channel}**\n\n` +
-                `=========================\n\n` +
-                `**Reason**:\n` +
-                reason
+                    `=========================\n\n` +
+                    `**Reason**:\n` +
+                    reason
             );
 
         await logChannel.send({ embeds: [untimeoutEmbed] });
@@ -265,8 +272,10 @@ export abstract class TimeoutManager extends PunishmentManager {
             return false;
         }
 
-        const allowedTimeoutRoles: Collection<Snowflake, RoleTimeoutPermission> =
-            guildConfig.allowedTimeoutRoles;
+        const allowedTimeoutRoles: Collection<
+            Snowflake,
+            RoleTimeoutPermission
+        > = guildConfig.allowedTimeoutRoles;
 
         let maxDuration: number = Number.NEGATIVE_INFINITY;
 

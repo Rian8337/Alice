@@ -48,9 +48,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map(
                     (v) =>
-                        `- <@&${v.id}> (${v.maxTime === -1
-                            ? "Indefinite"
-                            : DateTimeFormatHelper.secondsToDHMS(v.maxTime)
+                        `- <@&${v.id}> (${
+                            v.maxTime === -1
+                                ? "Indefinite"
+                                : DateTimeFormatHelper.secondsToDHMS(v.maxTime)
                         })`
                 )
                 .join("\n")

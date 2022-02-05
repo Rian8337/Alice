@@ -38,7 +38,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
                 DatabaseGuildPunishmentConfig,
                 GuildPunishmentConfig
             >
-            >new GuildPunishmentConfig().constructor;
+        >new GuildPunishmentConfig().constructor;
     }
 
     /**

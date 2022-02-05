@@ -102,32 +102,32 @@ export const run: EventUtil["run"] = async (client) => {
 
         const selectedLanguage: keyof typeof VerifyLanguage | undefined = <
             keyof typeof VerifyLanguage | undefined
-            >(
-                await SelectMenuCreator.createSelectMenu(
-                    i,
-                    {
-                        content: MessageCreator.createWarn(
-                            "__Do not dismiss this message until you select a language. You will be forced to wait for a minute if you do so__." +
+        >(
+            await SelectMenuCreator.createSelectMenu(
+                i,
+                {
+                    content: MessageCreator.createWarn(
+                        "__Do not dismiss this message until you select a language. You will be forced to wait for a minute if you do so__." +
                             "\n\n" +
                             "Select your preferred language." +
                             "\n\n" +
                             `Based on your Discord language, you may be familiar with these languages that I provide: ${userLocales
                                 .map((v) => `\`${v}\``)
                                 .join(", ")}.`
-                        ),
-                    },
-                    (<(keyof typeof VerifyLanguage)[]>Object.keys(VerifyLanguage))
-                        .map((v) => {
-                            return {
-                                label: VerifyLanguage[v],
-                                value: v,
-                            };
-                        })
-                        .sort((a, b) => a.label.localeCompare(b.label)),
-                    [i.user.id],
-                    60
-                )
-            )[0];
+                    ),
+                },
+                (<(keyof typeof VerifyLanguage)[]>Object.keys(VerifyLanguage))
+                    .map((v) => {
+                        return {
+                            label: VerifyLanguage[v],
+                            value: v,
+                        };
+                    })
+                    .sort((a, b) => a.label.localeCompare(b.label)),
+                [i.user.id],
+                60
+            )
+        )[0];
 
         CacheManager.userHasActiveVerificationMenu.delete(i.user.id);
 
