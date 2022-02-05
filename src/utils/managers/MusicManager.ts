@@ -323,6 +323,13 @@ export abstract class MusicManager extends Manager {
             );
         }
 
+        if (musicInformation.voiceChannelId !== channel.id) {
+            return this.createOperationResult(
+                false,
+                "I'm not in your voice channel"
+            );
+        }
+
         musicInformation.shuffleQueue();
 
         return this.createOperationResult(true);
