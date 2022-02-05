@@ -61,6 +61,8 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
 
     /**
      * Updates the diffstat of this whitelisted beatmap.
+     * 
+     * Note that this will not update the beatmap statistics in database.
      */
     async updateDiffstat(): Promise<void> {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
