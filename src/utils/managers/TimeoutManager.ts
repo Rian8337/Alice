@@ -122,6 +122,8 @@ export abstract class TimeoutManager extends PunishmentManager {
             reason
         );
 
+        // TODO: get user locale and translate timeout embed to locale
+
         const timeoutEmbed: MessageEmbed = new MessageEmbed()
             .setAuthor({
                 name: interaction.user.tag,

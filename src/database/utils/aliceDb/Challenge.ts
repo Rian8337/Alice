@@ -321,7 +321,7 @@ export class Challenge extends Manager {
                             winnerBindInfo.discordid
                         }> for achieving first place in challenge \`${
                             this.challengeid
-                        }\`, earning him/her \`${
+                        }\`, earning them \`${
                             this.isWeekly ? "50" : "25"
                         }\` points and ${coinEmoji}\`${
                             this.isWeekly ? "100" : "50"

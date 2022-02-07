@@ -112,9 +112,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         interaction.options.getUser("user")
                             ? "The user is"
                             : "You are",
-                        interaction.options.getUser("user")
-                            ? "the user's"
-                            : "your"
+                        interaction.options.getUser("user") ? "their" : "your"
                     )
                 );
             }

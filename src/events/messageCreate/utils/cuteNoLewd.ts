@@ -23,7 +23,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     `${message.author}, you are only allowed to send 1 picture every 5 seconds!`
                 )
             )
-            .then((m) => setTimeout(m.delete.bind(m), 5 * 1000));
+            .then((m) => setTimeout(() => m.delete(), 5 * 1000));
     }
 
     const images: string[] = [];

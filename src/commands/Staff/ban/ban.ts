@@ -13,6 +13,8 @@ export const run: Command["run"] = async (client, interaction) => {
         interaction.options.getUser("user", true)
     );
 
+    // TODO: remove this in place of Discord's internal ban command
+
     if (toBan.id === interaction.user.id) {
         return interaction.editReply({
             content: MessageCreator.createReject(banStrings.selfBanError),

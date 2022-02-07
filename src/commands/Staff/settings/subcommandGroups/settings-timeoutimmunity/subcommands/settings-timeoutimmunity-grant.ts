@@ -10,7 +10,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const role: Role = <Role>interaction.options.getRole("role", true);
+    const role: Role = interaction.options.getRole("role", true);
 
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(

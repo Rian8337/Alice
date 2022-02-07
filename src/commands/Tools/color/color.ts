@@ -29,7 +29,6 @@ export const run: Command["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             colorStrings.showingHexColor,
-            interaction.user.toString(),
             color
         ),
         files: [attachment],

@@ -11,6 +11,7 @@ import { MessageEmbed } from "discord.js";
 import { ModDoubleTime, ModHidden } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { matchStrings } from "../matchStrings";
+import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const id: string | null = interaction.options.getString("id");
@@ -200,7 +201,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             .map((v) => v.name)
             .join(", ")}): **${scoreV2List.at(-1)!}** - ${score.rank} - ${(
             score.accuracy.value() * 100
-        ).toFixed(2)}% - ${score.accuracy.nmiss} misses\n`;
+        ).toFixed(2)}% - ${score.accuracy.nmiss} ${Symbols.missIcon}\n`;
         const failString: string = `${match.player[i][0]} - (N/A): **0** - **${
             !teamScoreStatus.success
                 ? teamScoreStatus.reason

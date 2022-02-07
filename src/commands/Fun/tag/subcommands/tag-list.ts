@@ -25,7 +25,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 tagStrings.userDoesntHaveTags,
-                user.id === interaction.user.id ? "you" : "this user"
+                user.id === interaction.user.id
+                    ? "you don't"
+                    : "this user doesn't"
             ),
         });
     }

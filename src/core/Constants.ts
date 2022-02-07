@@ -11,12 +11,6 @@ export class Constants {
         "I'm sorry, you do not have the permission to execute this command.";
 
     /**
-     * Default message to send when a database operation fails.
-     */
-    static readonly databaseErrorReject: string =
-        "I'm sorry, I'm having trouble receiving response from database. Please try again!";
-
-    /**
      * Default message to send when a Discord user doesn't have a binded osu!droid account.
      */
     static readonly selfNotBindedReject: string =
@@ -39,12 +33,6 @@ export class Constants {
      */
     static readonly userNotBindedReject: string =
         "I'm sorry, that account is not binded. The user needs to bind his/her account using `/userbind` first.";
-
-    /**
-     * Default message to send when an API request towards the osu!droid server fails.
-     */
-    static readonly droidApiRequestFail: string =
-        "I'm sorry, I'm having trouble receiving response from osu!droid server. Please try again!";
 
     /**
      * The ID of main guild.

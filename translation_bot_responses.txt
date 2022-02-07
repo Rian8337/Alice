@@ -1,0 +1,1467 @@
+NOTE:
+1. Only translate numbered words/sentences.
+2. Do not replace %s's. This is used for substitution within bot.
+3. Examples and per-number descriptions do not need to be translated.
+4. Some messages/text portions are repeated. This is done due to context.
+5. Do not translate commands (e.g. /daily submit).
+6. For Discord permissions, use Discord's own translation if available, otherwise leave as is.
+
+==============================================
+
+blacklist.ts (6)
+
+1.1. Detected beatmap ID:
+1.2. Choose the action that you want to do.
+1.3. Blacklist
+1.4. Blacklist the beatmap.
+1.5. Unblacklist
+1.6. Unblacklist the beatmap.
+
+==============================================
+
+deploy.ts (2)
+
+2.1. I'm sorry, I cannot find any command with that name!
+2.2. Successfully registered command %s. Please wait for it to get updated in Discord.
+
+==============================================
+
+fancy.ts (5)
+
+3.1. Hey, please enter a valid duration for locking the user!
+3.2. I'm sorry, I'm unable to lock the user: %s.
+3.3. I'm sorry, I'm unable to unlock the user: %s.
+3.4. Successfully locked the user.
+3.5. Successfully unlocked the user.
+
+==============================================
+
+maintenance.ts (1)
+
+4.1. Maintenance mode has been set to %s for %s.
+
+==============================================
+
+playertrack.ts (3)
+
+5.1. Hey, please enter a correct uid!
+5.2. Now tracking uid %s.
+5.3. No longer tracking uid %s.
+
+==============================================
+
+scan.ts (2)
+
+6.1. %s, scan complete!
+6.2. Scan started!
+
+==============================================
+
+switchbind.ts (4)
+
+7.1. Hey, please enter a valid uid!
+7.2. I'm sorry, this uid is not binded to anyone!
+7.3. I'm sorry, I'm unable to switch the bind: %s.
+7.4. Successfully switched bind.
+
+==============================================
+
+unbind.ts (4)
+
+8.1. Hey, please enter a valid uid!
+8.2. I'm sorry, the uid is not binded!
+8.3. I'm sorry, I couldn't unbind the uid: %s.
+8.4. Successfully unbinded uid %s.
+
+=============================================
+
+undeploy.ts (2)
+
+9.1. I'm sorry, I cannot find any command with that name!
+9.2. Successfully unregistered %s command.
+
+=============================================
+
+askcount.ts (2)
+
+10.1. I'm sorry, looks like you haven't asked me yet!
+10.2. You have asked me %s %s.
+    (e.g. you have asked me 2 times)
+
+=============================================
+
+birthday.ts (4)
+
+11.1. I'm sorry, you don't have a birthday!
+11.2. I'm sorry, the user doesn't have a birthday!
+11.3. I'm sorry, I'm unable to set birthday: %s.
+11.4. Successfully set birthday to %s/%s at UTC%s.
+    (e.g. Successfully set birthday to 16/1 at UTC+9.)
+
+=============================================
+
+coins.ts (24)
+
+12.1. I'm sorry, you haven't been in the server for a week!
+12.2. I'm sorry, I couldn't process your daily coins claim: %s.
+12.3. You have claimed %s Alice coins! Your current streak is %s. You now have %s Alice coins.
+12.4. You have completed a streak and claimed %s Alice coins! Your current streak is %s. You now have %s Alice coins.
+12.5. You have %s Alice coins.
+12.6. That user has %s Alice coins.
+12.7. I'm sorry, I cannot find the user to give your coins to!
+12.8. Hey, you cannot transfer coins to a bot!
+12.9. Hey, you cannot transfer coins to yourself!
+12.10. Hey, I need a valid amount of coins to transfer!
+12.11. I'm sorry, the user you are giving your coins to has not been in the server for a week!
+12.12. I'm sorry, I cannot find information about your Alice coins!
+12.13. I'm sorry, I cannot find information about the user's Alice coins!
+12.14. I'm sorry, I cannot find your osu!droid profile!
+12.15. I'm sorry, you don't have enough coins!
+12.16. Are you sure you want to transfer %s Alice coins to %s?
+12.17. I'm sorry, I'm unable to transfer your Alice coins: %s.
+12.18. Successfully transferred %s Alice coins to %s. You can transfer %s Alice coins left today. You now have %s Alice coins.
+12.19. Hey, I need a valid amount of coins to add!
+12.20. Successfully added %s Alice coins to the user. The user now has %s Alice coins.
+12.21. I'm sorry, I couldn't add Alice coins to the user: %s.
+12.22. Hey, I need a valid amount of coins to remove!
+12.23. I'm sorry, I cannot remove the user's Alice coins: %s.
+12.24. Successfully removed %s Alice coins from user. The user now has %s Alice coins.
+
+============================================
+
+mathgame.ts (17)
+
+13.1. Hey, you still have a game ongoing! Play that one instead!
+13.2. Hey, there is a game ongoing in this channel! Play that one instead!
+13.3. I'm sorry, that mode is invalid! Accepted modes are `single` and `multi`.
+13.4. Game started!
+13.5. Unfortunately, the equation generator could not generate any equation after %s attempts! As a result, the game has ended!
+13.6. Game ended! The correct answer is:
+13.7. Game statistics can be found in embed.
+13.8. %s, solve this equation within 30 seconds!
+13.9. Operator count
+13.10. Level
+13.11. Solve this equation within 30 seconds (level %s, %s operator(s))!
+13.12. %s got the correct answer! That took %s seconds.
+13.13. Game starter
+    (person who started the game)
+13.14. Time started
+13.15. Duration
+13.16. Level reached
+13.17. Total correct answers
+
+============================================
+
+mathquiz.ts (12)
+
+14.1. Hey, you still have an equation to solve! Please solve that one first before creating another equation!
+14.2. I'm sorry, that's an invalid difficulty level!
+14.3. I'm sorry, difficulty level range is from %s to %s!
+14.4. I'm sorry, that's an invalid operator amount!
+14.5. I'm sorry, operator amount range is from %s to %s!
+14.6. I'm sorry, the equation generator had problems generating your equation, please try again!
+14.7. %s, here is your equation:
+14.8. Operator count
+14.9. Level
+14.10. You have 30 seconds to solve it.
+14.11. %s, your answer is correct! It took you %s seconds!
+14.12. %s, timed out. The correct answer is:
+
+============================================
+
+music.ts (40)
+
+15.1. I'm sorry, you must be in a voice channel to use this command!
+15.2. I'm sorry, I don't have an active connection to a voice channel!
+15.3. I'm sorry, there is no music playing!
+15.4. I'm sorry, I couldn't find any YouTube videos from your search query!
+15.5. I'm sorry, I couldn't play the track: %s.
+15.6. Successfully played or enqueued %s.
+15.7. I'm sorry, I couldn't skip the track: %s.
+15.8. Successfully skipped the track.
+15.9. I'm sorry, I couldn't pause the track: %s.
+15.10. Successfully paused the current track.
+15.11. I'm sorry, I couldn't resume the track: %s.
+15.12. Successfully resumed the current track.
+15.13. I'm sorry, I couldn't leave the voice channel: %s.
+15.14. Successfully left the voice channel.
+15.15. I'm sorry, I couldn't modify repeat mode: %s.
+15.16. Successfully enabled repeat mode.
+15.17. Successfully disabled repeat mode.
+15.18. I'm sorry, I couldn't shuffle the music queue: %s.
+15.19. Successfully shuffled the music queue.
+15.20. I'm sorry, I couldn't add the video into the music queue: %s.
+15.21. Successfully added %s into the music queue.
+15.22. I'm sorry, I couldn't remove %s from the music queue: %s.
+15.23. Successfully removed %s from the music queue.
+15.24. Choose the video that you want to insert to the music collection.
+15.25. I'm sorry, I couldn't create the collection: %s.
+15.26. Successfully created collection %s.
+15.27. I'm sorry, I couldn't delete the collection: %s.
+15.28. Successfully deleted collection %s.
+15.29. I'm sorry, I couldn't add the video into the collection: %s.
+15.30. Successfully added video into collection %s at position %s.
+15.31. I'm sorry, I couldn't remove the video link in the specified position: %s.
+15.32. Successfully removed video link at position %s from collection %s.
+15.33. I'm sorry, there is no music queued!
+15.34. I'm sorry, you have no music collections!
+15.35. I'm sorry, this user has no music collections!
+15.36. I'm sorry, there is no music collection with that name!
+15.37. I'm sorry, a music collection with that name already exists!
+15.38. I'm sorry, you don't own this music collection!
+15.39. I'm sorry, you can only insert up to 10 videos into a music collection!
+15.40. Successfully enqueued %s video(s) from the music collection.
+
+============================================
+
+tag.ts (19)
+
+16.1. Hey, that tag's name is too long!
+16.2. Hey, that tag's content is too long!
+16.3. I'm sorry, a tag with that name exists!
+16.4. I'm sorry, a tag with that name doesn't exist!
+16.5. I'm sorry, this tag doesn't have any content nor does it have any attachments!
+16.6. I'm sorry, this tag doesn't have any attachments!
+16.7. Hey, please enter a valid URL!
+16.8. I'm sorry, you can only attach up to 3 attachments!
+16.9. I'm sorry, the size of your attachment is too big! You can only attach an image with size at most 8 MB!
+16.10. Successfully added tag %s.
+16.11. Successfully edited tag %s.
+16.12. Successfully attached an image to tag %s.
+16.13. I'm sorry, the tag only has %s attachment(s)!
+16.14. Successfully deleted tag %s.
+16.15. Successfully deleted the attachment of tag %s.
+16.16. Successfully transferred %s's tags to %s.
+16.17. I'm sorry, this tag doesn't belong to you!
+16.18. I'm sorry, you don't have any saved tags in this server!
+16.19. I'm sorry, this user doesn't have any saved tags in this server!
+
+============================================
+
+trivia.ts (21)
+
+17.1. Hey, this channel has an active trivia question! Please answer that one first!
+17.2. Hey, this channel has an active map trivia! Please play that one!
+17.3. Game started!
+17.4. I'm sorry, I'm unable to retrieve a beatmap, therefore the game has been ended!
+17.5. I'm sorry, the selected question category (%s) does not have any question of the type that you have requested!
+17.6. I'm sorry, you have run out of lives to guess!
+17.7. %s has guessed an incorrect character (%s)! They have %s live(s) left.
+    (e.g. Sexia has guessed an incorrect character (A)! They have 2 live(s) left.)
+17.8. %s has guessed a correct character (%s)!
+    (e.g. Sexia has guessed a correct character (A)!)
+17.9. Beatmap Information
+17.10. Everyone got the beatmap correct (it took %s seconds)!
+17.11. No one guessed the beatmap!
+17.12. Game Information
+17.13. Starter (the user who started the game)
+17.14. Time started
+17.15. Duration
+17.16. Level
+17.17. Leaderboard
+17.18. None
+17.19. Game ended!
+17.20. Choose the category that you want to enforce.
+17.21. Your latest choice (%s) has been recorded!
+
+============================================
+
+help.ts (12)
+
+18.1. I'm sorry, I cannot find the command!
+18.2. Alice Synthesis Thirty Help
+18.3. Made by <@132783516176875520> and <@386742340968120321>.
+18.4. For detailed information about a command, use `/help [command name]`.
+18.5. If you encounter any bugs or issues with the bot, please contact bot creators.
+18.6. Category
+18.7. Required Permissions
+18.8. Examples
+18.9. Usage
+18.10. Required
+18.11. Optional
+18.12. Details
+
+============================================
+
+ping.ts (4)
+
+19.1. Discord Websocket
+19.2. osu!droid server
+19.3. Elaina Database
+19.4. Alice Database
+
+============================================
+
+report.ts (9)
+
+20.1. Hey, please enter a valid user to report!
+20.2. I'm sorry, you cannot report this user.
+20.3. Hey, you cannot report yourself!
+20.4. %s, your DM is locked, therefore you will not receive your report's summary!
+20.5. Offender
+20.6. Channel
+20.7. Reason
+20.8. Report Summary
+20.9. Remember to save your evidence in case it is needed.
+
+============================================
+
+calculate.ts (7)
+
+21.1. Hey, there is no beatmap being talked in this channel! Please provide a beatmap!
+21.2. Hey, please provide a valid beatmap!
+21.3. I'm sorry, I cannot find the beatmap that you are looking for!
+21.4. Raw droid stars
+21.5. Raw droid pp
+21.6. Raw PC stars
+21.7. Raw PC pp
+
+============================================
+
+clan.ts (158)
+
+22.1. I'm sorry, this command is not executable in this server.
+22.2. I'm sorry, your announcement message is too long!
+22.3. I'm sorry, you are not in a clan!
+22.4. I'm sorry, you are already in a clan!
+22.5. I'm sorry, the user is not in a clan!
+22.6. I'm sorry, the user is already in a clan!
+22.7. I'm sorry, you do not have enough administrative privileges in the clan to perform this action.
+22.8. I'm sorry, this user is already a co-leader!
+22.9. I'm sorry, this user is not a co-leader!
+22.10. I'm sorry, there are no ongoing auctions as of now!
+22.11. I'm sorry, there are no clans as of now!
+22.12. I'm sorry, the user is not in your clan!
+22.13. You cannot participate in a clan battle for %s.
+    (e.g. You cannot participate in a clan battle for 2 days, 1 hour, 13 minutes, 58 seconds.)
+22.14. The user cannot participate in a clan battle for %s.
+    (e.g. The user cannot participate in a clan battle for 2 days, 1 hour, 13 minutes, 58 seconds.)
+22.15. You are currently not in cooldown from participating a clan battle.
+22.16. The user is currently not in cooldown from participating a clan battle.
+22.17. You cannot join your old clan for %s.
+    (e.g. You cannot join your old clan for 2 days, 1 hour, 13 minutes, 58 seconds.)
+22.18. The user cannot join their old clan for %s.
+    (e.g. The user cannot join your old clan for 2 days, 1 hour, 13 minutes, 58 seconds.)
+22.19. You are currently not in cooldown to join your old clan.
+22.20. The user currently not in cooldown to join their old clan.
+22.21. You cannot join a clan for %s.
+    (e.g. You cannot join a clan for 2 days, 1 hour, 13 minutes, 58 seconds.)
+22.22. The user cannot join a clan for %s.
+    (e.g. The user cannot join a clan for 2 days, 1 hour, 13 minutes, 58 seconds.)
+22.23. You are currently not in cooldown to join a clan.
+22.24. The user is currently not in cooldown to join a clan.
+22.25. I'm sorry, your clan has not unlocked the ability to change clan role icon!
+22.26. I'm sorry, your clan has not unlocked the ability to change clan role color!
+22.27. I'm sorry, I cannot download the role icon!
+22.28. I'm sorry, the URL that you have entered doesn't direct to an image!
+22.29. I'm sorry, role icons must be less than or equal to 256 kB!
+22.30. I'm sorry, role icons must be at least 64x64 pixels and has a 1:1 ratio!
+22.31. I'm sorry, your clan doesn't have enough power points! You need at least %s!
+    (e.g. I'm sorry, your clan doesn't have enough power points! You need at least 2000!)
+22.32. I'm sorry, your clan has bought this shop item before!
+22.33. I'm sorry, there is no ongoing special event now! Please check back soon!
+22.34. I'm sorry, that doesn't look like a valid hex code color!
+22.35. I'm sorry, you cannot change your role color into the same role color as referees and staff members!
+22.36. I'm sorry, your clan doesn't have a custom clan role!
+22.37. I'm sorry, your clan already has a custom clan role!
+22.38. I'm sorry, your clan already has a clan channel!
+22.39. Unfortunately, you didn't get anything!
+22.40. You won a %s powerup!
+    (e.g. You won a `superbuff` powerup!)
+22.41. I'm sorry, your clan is currently in match mode, therefore you cannot activate powerups!
+22.42. I'm sorry, your clan already has a powerup active of that type!
+22.43. I'm sorry, your clan doesn't have any powerup of that type!
+22.44. I'm sorry, a clan has bid for this auction, therefore you cannot cancel it!
+22.45. Hey, please enter a valid amount of powerups to auction!
+22.46. Hey, you don't have that many powerup of that type! You only have %s!
+22.47. Hey, please enter a valid minimum price for other clans to bid!
+22.48. I'm sorry, auctions can only last between a minute and a day!
+22.49. Hey, please enter a valid amount of Alice coins to bid!
+22.50. Are you sure you want to buy a %s for %s Alice coins?
+    (e.g. Are you sure you want to buy a clan role icon unlock ability for 5000 Alice coins?)
+22.51. clan channel
+22.52. clan powerup
+22.53. clan rename
+22.54. clan role
+22.55. clan role color unlock ability
+22.56. clan role icon unlock ability
+22.57. leadership transfer
+22.58. Are you sure you want to send an announcement for your clan?
+22.59. Are you sure you want to create a clan named %s for %s Alice coins?
+22.60. Are you sure you want to leave your current clan?
+22.61. Are you sure you want to disband the clan?
+22.62. Are you sure you want to kick the user out of the clan?
+22.63. Are you sure you want to remove the clan's icon?
+22.64. Are you sure you want to remove the clan's icon?
+22.65. Are you sure you want to edit your clan's description?
+22.66. Are you sure you want to clear the clan's description?
+22.67. Are you sure you want to promote this user to co-leader?
+22.68. Are you sure you want to demote this user to member?
+22.69. %s, are you sure you want to join this clan?
+22.70. Are you sure you want to activate the %s powerup for your clan?
+22.71. Are you sure you want to cancel this auction?
+22.72. Are you sure you want to create a new auction?
+22.73. Are you sure you want to bid to this auction?
+22.74. Are you sure you want to transfer %s power points from %s clan to %s clan?
+    (e.g. Are you sure you want to transfer `2000` power points from `clan 1` clan to `clan 2` clan?)
+22.75. I'm sorry, clan names can only be 25 characters long!
+22.76. I'm sorry, clan auction names can only be 20 characters long!
+22.77. I'm sorry, clan name must not contain any unicode characters!
+22.78. I'm sorry, you don't have enough Alice coins to %s! You need %s Alice coins!
+    (e.g. I'm sorry, you don't have enough Alice coins to buy a clan role color unlock ability! You need %s Alice coins!)
+22.79. buy a %s
+    (%s is a clan shop item from 22.51-22.57, so e.g. buy a clan channel)
+22.80. bid
+    (context: bid to an auction)
+22.81. I'm sorry, that name is already taken by another clan!
+22.82. I'm sorry, that clan doesn't exist!
+22.83. I'm sorry, that auction doesn't exist!
+22.84. I'm sorry, that auction name has been taken!
+22.85. Hey, the user to transfer power points from is not in a clan!
+22.86. Hey, the user to transfer power points to is not in a clan!
+22.87. I'm sorry, the clan to transfer power points from is not in match mode!
+22.88. I'm sorry, the clan to transfer power points to is not in match mode!
+22.89. %s has a %s powerup active!
+    (e.g. clan 1 has a `superbuff` powerup active!)
+22.90. I'm sorry, I cannot find your binded osu!droid account's profile!
+22.91. Your upkeep cost is somewhere between %s Alice coins, which will be taken from you in %s. Your clan's estimated total weekly upkeep cost is %s Alice coins.
+    (e.g. Your upkeep cost is somewhere between 5000 Alice coins, which will be taken from you in 2 days, 1 hours, 11 minutes, 58 seconds. Your clan's estimated total weekly upkeep cost is 10000 Alice coins.)
+22.92. I'm sorry, clan description must be less than 2000 characters!
+22.93. Successfully created clan %s.
+22.94. I'm sorry, you cannot leave the clan: %s.
+22.95. Successfully left %s clan.
+22.96. I'm sorry, I couldn't set the clan's match mode: %s.
+22.97. Successfully set the clan's match mode.
+22.98. I'm sorry, I couldn't disband the clan: %s.
+22.99. Successfully disbanded the clan.
+22.100. I'm sorry, I couldn't kick the user: %s.
+22.101. Successfully kicked %s from the clan.
+22.102. I'm sorry, I couldn't set your clan's icon: %s.
+22.103. Successfully set your clan's icon.
+22.104. I'm sorry, I couldn't set your clan's banner: %s.
+22.105. Successfully set your banner's icon.
+22.106. I'm sorry, I couldn't remove the clan's icon: %s.
+22.107. Successfully removed the clan's icon.
+22.108. I'm sorry, I couldn't remove the clan's banner: %s.
+22.109. Successfully removed the clan's banner.
+22.110. I'm sorry, I couldn't modify the clan's power: %s.
+22.111. Successfully modified the clan's power.
+22.112. I'm sorry, I couldn't set your clan's description: %s.
+22.113. Successfully set your clan's description.
+22.114. I'm sorry, I couldn't clear the clan's description: %s.
+22.115. Successfully cleared the clan's description.
+22.116. I'm sorry, I couldn't purchase this shop item for you: %s.
+22.117. Successfully bought this shop item for %s Alice coins.
+22.118. I'm sorry, I couldn't promote this user: %s.
+22.119. Successfully promoted the user to co-leader.
+22.120. I'm sorry, I couldn't demote this user: %s.
+22.121. Successfully demoted the user to member.
+22.122. %s, I couldn't process your clan invitation: %s.
+22.123. %s, successfully joined %s.
+    (e.g. Sexia, successfully joined clan 1.)
+22.124. I'm sorry, I couldn't activate the powerup: %s.
+22.125. Successfully activated powerup.
+22.126. I'm sorry, I couldn't cancel the auction: %s.
+22.127. Successfully canceled the auction.
+22.128. I'm sorry, I couldn't create the auction: %s.
+22.129. Successfully created the auction.
+22.130. I'm sorry, I couldn't process your bid: %s.
+22.131. Successfully bid to the auction.
+22.132. I'm sorry, I couldn't perform the power points transfer: %s.
+22.133. Successfully transferred %s power points from %s clan to %s clan.
+    (e.g. Successfully transferred `2000` power points from `clan 1` clan to `clan 2` clan.)
+22.134. Successfully changed your clan's role color.
+22.135. Successfully changed your clan's role icon.
+22.136. Auction Information
+22.137. Name
+22.138. Auctioneer
+22.139. Creation Date
+22.140. Expiration Date
+22.141. Auction Item
+22.142. Powerup
+22.143. Amount
+22.144. Minimum Bid Amount
+22.145. Bid Information
+22.146. Currently Active Powerups for %s
+22.147. Currently Owned Powerups by %s
+22.148. Please go to this website for guidelines.
+22.149. Clan Leader
+22.150. Power
+22.151. Members
+    (member count)
+22.152. Total Upkeep Estimation
+22.153. Clan Name
+22.154. Discord ID
+22.155. Role
+22.156. Leader
+22.157. Co-Leader
+22.158. Member
+
+============================================
+
+compare.ts (6)
+
+23.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
+23.2. I'm sorry, there is no beatmap being talked in the channel!
+23.3. I'm sorry, I cannot find the player that you are looking for!
+23.4. I'm sorry, you have not submitted any scores in the beatmap!
+23.5. I'm sorry, this user has not submitted any scores in the beatmap!
+23.6. Comparison play for %s:
+
+============================================
+
+daily.ts (32)
+
+24.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
+24.2. I'm sorry, there are no players as of now!
+24.3. I'm sorry, there is no ongoing challenge now!
+24.4. I'm sorry, I cannot find the challenge!
+24.5. I'm sorry, I cannot find the challenge associated with that replay!
+24.6. I'm sorry, I couldn't start the challenge: %s.
+24.7. Successfully started challenge %s.
+24.8. The player has played challenge %s with highest bonus level achieved %s.
+24.9. The player has not played challenge %s.
+24.10. I'm sorry, this user has not played any challenges at all!
+24.11. I'm sorry, you haven't played the challenge beatmap!
+24.12. I'm sorry, this challenge has not been started or has ended!
+24.13. Congratulations! You have completed challenge %s with challenge bonus level %s, earning %s point(s) and %s Alice coins! You now have %s point(s) and %s Alice coins.
+24.14. Hey, please enter a valid URL!
+24.15. I'm sorry, I couldn't download your replay!
+24.16. Hey, please provide the proper download link to your replay!
+24.17. I'm sorry, that replay file does not contain the same username as your binded osu!droid account!
+24.18. I'm sorry, that replay's format version is too old!
+24.19. Please ask a staff member to confirm your manual submission!
+24.20. osu!droid Daily/Weekly Challenges
+24.21. This is a system that provides daily and weekly challenges for you to complete. Gain points and %sAlice coins as you complete challenges!
+24.22. How does it work?
+24.23. Every day, there will be a new daily challenge to complete. Each challenges grant a different amount of points depending on how hard the challenge is. You can get points and %sAlice coins by passing the challenge. There will be a few bonuses that allows you to gain more points and %sAlice coins, too! Each challenge bonus level converts to 2 challenge points, which also converts to ${coin}\`4\` Alice coins.\n\nThe weekly bounty challenge, which is only available once per week, grants more points and ${coin}Alice coins as this challenge is considerably harder than any daily challenges. That's also why you have a week to complete it, too!
+24.24. How can I submit challenges?
+24.25. There will be a separate beatmap set for you to download in case you have played the original map. In fact, you **must** download the set in order to submit your play.\n\nOnce you complete a challenge, use the \`/daily submit\` command to submit your play.
+24.26. How can I use my points and Alice coins?
+24.27. As of now, there is no use for points. However, %sAlice coins can be used for clans and cosmetics.
+24.28. Is there a leaderboard for points and Alice coins?
+24.29. I have more questions that are not mentioned in here!
+24.30. You can ask <@386742340968120321> for more information about daily and weekly challenges.
+
+============================================
+
+downloadlink.ts (2)
+
+25.1. I'm sorry, there is no cached beatmap in this channel!
+25.2. I'm sorry, this beatmap is not available for download!
+
+============================================
+
+fetchreplay.ts (9)
+
+26.1. Hey, please enter the beatmap that I need to fetch the replay from!
+26.2. I'm sorry, you do not have a score submitted on that beatmap!
+26.3. I'm sorry, that uid does not have a score submitted on that beatmap!
+26.4. I'm sorry, I cannot find the replay of the score!
+26.5. Successfully fetched replay.
+26.6. Rank
+26.7. Score
+26.8. Max Combo
+26.9. Accuracy
+
+============================================
+
+gamestats.ts (8)
+
+27.1. Overall Game Statistics
+27.2. Registered Accounts
+27.3. Total
+27.4. More than 5 scores
+27.6. More than 20 scores
+27.5. More than 100 scores
+27.7. More than 200 scores
+27.8. Total Online Scores
+
+============================================
+
+leaderboard.ts (12)
+
+28.1. Hey, please enter a valid page!
+28.2. I'm sorry, I cannot find the clan!
+28.3. I'm sorry, there are no scores in the prototype dpp database as of now!
+28.4. Hey, please enter a valid beatmap link or ID!
+28.5. I'm sorry, this beatmap doesn't have any scores submitted!
+28.6. Top Score
+28.7. Username
+28.8. UID
+28.9. Play
+28.10. PP
+28.11. Accuracy
+28.12. Score
+
+============================================
+
+mapsearch.ts (4)
+
+29.1. I'm sorry, I couldn't fetch your beatmap search result from Sayobot!
+29.2. I'm sorry, your beatmap search doesn't return any beatmaps!
+29.3. Service provided by Sayobot
+29.4. Beatmaps Found:
+
+============================================
+
+mapshare.ts (37)
+
+30.1. I'm sorry, there is no submission with %s status now!
+30.2. accepted
+30.3. denied
+30.3. pending
+30.3. posted
+30.4. Hey, please enter a valid beatmap link or ID!
+30.5. I'm sorry, there is no submission with that beatmap!
+30.6. I'm sorry, this submission is not in %s status!
+30.7. I'm sorry, this user is already banned from submitting a map share submission!
+30.8. I'm sorry, this user is not banned from submitting a map share submission!
+30.9. I'm sorry, the beatmap was updated after submission! Submission has been automatically deleted.
+30.10. I'm sorry, you can only submit beatmaps that are 3* or higher!
+30.11. I'm sorry, it seems like the beatmap has less than 50 objects!
+30.12. I'm sorry, the beatmap has no circles and sliders!
+30.13. I'm sorry, the beatmap's duration is too short! It must be at least 30 seconds.
+30.14. I'm sorry, you cannot submit a WIP (Work In Progress) and qualified beatmaps!
+30.15. I'm sorry, this beatmap was submitted in less than a week ago!
+30.16. I'm sorry, this beatmap was just updated in less than 3 days ago!
+30.17. I'm sorry, this beatmap has been submitted as a submission before!
+30.18. I'm sorry, your summary's length is currently %s word(s) long! It must be between 50 and 120 words!
+30.19. I'm sorry, your summary's length is currently %s character(s) long! It must be between 100 and 900 words!
+30.20. I'm sorry, I couldn't deny the submission: %s.
+30.21. Successfully denied the submission.
+30.22. I'm sorry, I couldn't accept the submission: %s.
+30.23. Successfully accepted the submission.
+30.24. I'm sorry, I couldn't ban the user from map share submission: %s.
+30.25. Successfully banned the user from map share submission.
+30.26. I'm sorry, I couldn't unban the user from map share submission: %s.
+30.27. Successfully unbanned the user from map share submission.
+30.28. I'm sorry, I couldn't post the submission: %s.
+30.29. Successfully posted the submission.
+30.30. I'm sorry, I couldn't submit your submission: %s.
+30.31. Successfully submitted your submission.
+30.32. Submissions with %s status
+30.33. Submission from %s
+30.34. User ID
+30.35. Beatmap ID
+30.36. Beatmap Link
+30.37. Creation Date
+
+============================================
+
+namechange.ts (32)
+
+31.1. I'm sorry, there is no active name change request now!
+31.2. Hey, please enter a valid uid!
+31.3. I'm sorry, this user does not have an active name change request!
+31.4. I'm sorry, you do not have an active name change request!
+31.5. I'm sorry, the requested username has been taken!
+31.6. Hey, you currently have an active request! Please wait for that one to get reviewed before submitting another one!
+31.7. I'm sorry, you're still in cooldown! You will be able to send a name change request in %s.
+    (e.g. I'm sorry, you're still in cooldown! You will be able to send a name change request in `Jan 26 2019`.)
+31.8. I'm sorry, I cannot find your currently binded account in osu!droid server!
+31.9. I'm sorry, I cannot find your currently binded account in osu!droid server!
+31.10. I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!
+31.11. I'm sorry, the email you have provided is not the same as the email registered to your binded osu!droid account!
+31.12. Successfully requested name change. Please wait for it to get reviewed!
+31.13. Remember to not disable your Direct Messages or else you won't get notified of your name change request status!
+31.14. I'm sorry, this player doesn't have any name change history!
+31.15. I'm sorry, I couldn't accept the name change request: %s.
+31.16. Request Details
+31.17. Current Username
+31.18. Requested Username
+31.19. Creation Date
+31.20. **Status**: Accepted
+31.21. **Status**: Denied
+31.22. Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in %s.
+    (e.g. Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in Jan 26 2019.)
+31.23. Successfully accepted name change request.
+31.24. I'm sorry, I couldn't cancel your name change request: %s.
+31.25. Successfully cancelled your name change request.
+31.26. I'm sorry, I couldn't deny the name change request: %s.
+31.27. Successfully denied name change request for %s.
+31.28. Name History For Uid %s
+31.29. Name History
+31.30. Name Change Request List
+31.31. Discord Account
+31.32. Username Requested
+
+============================================
+
+profile.ts (44)
+
+32.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
+32.2. I'm sorry, I cannot find your profile!
+32.3. I'm sorry, I cannot find the player's profile!
+32.4. osu!droid profile for %s:
+32.5. I'm sorry, that's an invalid RGBA color format!
+32.6. I'm sorry, that's an invalid hex code!
+32.7. %s, are you sure you want to change your profile picture description box text color to %s?
+32.8. %s, are you sure you want to change your profile picture description box background color to %s?
+32.9. %s, successfully changed your profile picture description box text color to %s.
+32.9. %s, successfully changed your profile picture description box background color to %s.
+32.10. I'm sorry, you don't have enough %sAlice coins to perform this action! A background costs %s`500` Alice coins. You currently have %s%s Alice coins.
+32.11. %s, you don't have this background yet! Are you sure you want to purchase this background for %s`500` Alice coins and change your background profile picture to the background?
+32.12. %s, are you sure you want to change your background profile picture?
+32.13. %s, successfully set your background profile picture to %s. You now have %s%s Alice coins.
+32.14. I'm sorry, you don't own any badges!
+32.15. I'm sorry, you've already owned this badge!
+32.16. %s, successfully equipped badge %s at slot %s.
+32.17. %s, successfully unequipped badge %s at slot %s.
+32.18. I'm sorry, this badge cannot be claimed!
+32.19. Hey, please enter a valid beatmap ID or link!
+32.20. I'm sorry, I cannot find the beatmap that you have specified!
+32.21. I'm sorry, only ranked or approved beatmaps count!
+32.22. I'm sorry, you don't have a score in the beatmap!
+32.23. I'm sorry, you don't have a score in the beatmap!
+32.24. %s, successfully claimed badge %s.
+32.25. Choose the background that you want to use.
+32.26. Change Information Box Background Color
+32.27. Enter the color that you want to use.
+32.28. This can be in RGBA format (e.g. 255,0,0,1) or hex code (e.g. #008BFF)
+32.29. Change Information Box Text Color
+32.30. Choose the badge that you want to claim.
+32.31. Claim a Profile Badge
+32.32. Enter the beatmap ID or link that is at least %s★ in PC rating and you have a full combo on.
+    (e.g. Enter the beatmap ID or link that is at least 9★ in PC rating and you have a full combo on.)
+32.33. The beatmap must be a ranked or approved beatmap.
+32.34. Choose the badge that you want to equip.
+32.35. Choose the slot number where you want to put the badge on.
+32.36. Owned
+    (describes an ownership of an item)
+32.37. Rewarded for reaching %s droid pp
+32.38. Rewarded for getting %s total score
+32.39. Rewarded for getting %s ranked score
+32.40. Rewarded for getting a full combo on a ranked/approved %s★ beatmap
+32.41. Rewarded for winning the %s iteration of osu!droid Discord Tournament
+    (e.g. Rewarded for winning the 8th iteration of osu!droid Discord Tournament)
+32.42. Choose the slot number that you want to unequip the badge on.
+32.43. Your information box text RGBA/hex color is %s.
+32.44. Your information box background RGBA/hex color is %s.
+
+============================================
+
+recent.ts (5)
+
+33.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
+33.2. I'm sorry, I cannot find the player that you are looking for!
+33.3. I'm sorry, this player has not submitted any scores!
+33.4. I'm sorry, this player does not have a %s-th recent play!
+33.5. Recent play for %s:
+
+============================================
+
+recent5.ts (4)
+
+34.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
+34.2. I'm sorry, I cannot find the player that you are looking for!
+34.3. I'm sorry, this player has not submitted any scores!
+34.4. Recent plays for %s
+
+============================================
+
+skin.ts (5)
+
+35.1. For a collection of skins, visit https://tsukushi.site
+35.2. Hey, please enter the link to your skin!
+35.3. I'm sorry, this user doesn't have any skins!
+35.4. %s, successfully set your skin to <%s>.
+35.5. %s's skin: %s
+
+============================================
+
+userbind.ts (14)
+
+36.1. I'm sorry, I couldn't find that account's profile!
+36.2. I'm sorry, this account has not played the verification beatmap! Please use `/userbind verifymap` to get the verification beatmap.
+36.3. I'm sorry, new account binding must be done in the osu!droid International Discord server! This is required to keep bind moderation at ease.
+36.4. I'm sorry, you must be a verified member to use this command!
+36.5. Are you sure you want to bind your account to uid %s?
+36.6. Are you sure you want to bind your account to username %s?
+36.7. Successfully binded your account to uid %s. You can bind %s more osu!droid account(s).
+36.8. Successfully binded your account to username %s. You can bind %s more osu!droid account(s).
+36.9. I'm sorry, I couldn't bind your account to uid %s: %s.
+36.10. I'm sorry, I couldn't bind your account to username %s: %s.
+36.11. player with such uid or username is not found
+36.12. account bind limit reached
+36.13. I'm sorry, that osu!droid account has been binded to another Discord account!
+36.14. Use this beatmap to verify that you are the owner of an osu!droid account. This is required if you want to bind it for the first time.
+
+============================================
+
+ppcheck.ts (2)
+
+37.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
+37.2. Hey, please enter a valid uid!
+
+============================================
+
+ppcompare.ts (5)
+
+38.1. Hey, you cannot compare two of the same players!
+38.2. I'm sorry, the uid "%s" is not binded!
+38.3. I'm sorry, the user "%s" is not binded!
+38.4. I'm sorry, the username "%s" is not binded!
+38.5. I'm sorry, both players do not have any intersecting top plays!
+
+============================================
+
+prototypecheck.ts (10)
+
+39.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
+39.2. Hey, please enter a valid uid!
+39.3. I'm sorry, your prototype dpp information is not available!
+39.4. I'm sorry, the user's prototype dpp information is not available!
+39.5. PP Profile for %s
+    (e.g. PP Profile for Sexia)
+39.6. Total PP
+39.7. Previous Total PP
+39.8. Difference
+39.9. PP Profile
+39.10. Last Update
+
+============================================
+
+recalc.ts (7)
+
+40.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
+40.2. I'm sorry, this user has been DPP banned!
+40.3. I'm sorry, this user has already requested a recalculation before!
+40.4. Successfully queued %s for recalculation.
+    (e.g. Successfully queued Sexia for recalculation.)
+40.5. Successfully started recalculation.
+40.6. Recalculating players (%s/%s (%s%))...
+    (e.g. Recalculating players (10/5000 (0.02%))...)
+40.7. %s, recalculation done!
+
+============================================
+
+submit.ts (26)
+
+41.1. I'm sorry, this command is not available in this channel.
+41.2. I'm sorry, your currently binded osu!droid account has been disallowed from submitting dpp.
+41.3. Hey, please give me a valid beatmap to submit!
+41.4. I'm sorry, this beatmap has been blacklisted.
+41.5. I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved beatmaps right now!
+41.6. I'm sorry, this beatmap is either too short (less than 30 seconds) or doesn't have at least 60% of its music length mapped.
+41.7. I'm sorry, you don't have a score submitted in this beatmap!
+41.8. I'm sorry, you don't have any scores to submit within that range and offset!
+41.9. I'm sorry, force AR is not allowed!
+41.10. I'm sorry, custom speed multiplier is not allowed!
+41.11. Successfully submitted your play(s). More info in embed.
+41.12. I'm sorry, I cannot find your profile!
+41.13. I'm sorry, you don't have that many recent plays!
+41.14. Total PP
+41.15. PP gained
+41.16. Ranked score
+41.17. Score gained
+41.18. Current level
+41.19. Level up!
+41.20. Score needed to level up
+41.21. PP submission info
+41.22. Blacklisted beatmap
+41.23. Unranked beatmap
+41.24. Beatmap too short
+41.25. Unranked features
+41.26. Beatmap not found
+
+============================================
+
+whitelist.ts (13)
+
+42.1. Hey, please enter a beatmap link or beatmap ID!
+42.2. I'm sorry, I cannot find any beatmap ID or beatmapset ID!
+42.3. I'm sorry, I cannot find any beatmap with the provided beatmap ID or link!
+42.4. Successfully whitelisted %s.
+42.5. I'm sorry, I'm unable to whitelist %s: %s.
+42.6. beatmap is not graveyarded
+42.7. I'm sorry, there is no cached beatmap in this channel! Please enter a beatmap ID or beatmap link!
+42.8. I'm sorry, I cannot find the beatmap in osu! beatmap listing!
+42.9. Hey, this beatmap doesn't need to be whitelisted!
+42.10. %s is %s.
+    (e.g. Beatmap 1 is whitelisted and updated.)
+42.11. whitelisted and updated
+42.12. whitelisted, but not updated
+42.13. not whitelisted
+
+============================================
+
+createinvite.ts (10)
+
+43.1. Hey, please enter a valid time for invite link expiration!
+43.2. Hey, please enter a valid maximum invite link usage!
+43.3. Invite Link Created
+43.4. Created in %s
+    (e.g. Created in #general)
+43.5. Maximum Usage
+43.6. Infinite
+43.7. Expiration Time
+43.8. Never
+43.9. Reason
+43.10. Invite Link
+
+============================================
+
+settings.ts (27)
+
+44.1. Hey, please choose a text channel!
+44.2. Successfully set your guild's punishment log channel to %s.
+44.3. Successfully unset your guild's punishment log channel.
+44.4. I'm sorry, this server doesn't have a punishment log channel configured! Please set a punishment log channel first!
+44.5. Successfully granted timeout immunity for %s role.
+44.6. Successfully revoked timeout immunity for %s role.
+44.7. Successfully granted timeout permission for %s role.
+44.8. Successfully revoked timeout permission for %s role.
+44.9. Successfully granted timeout permission for %s role.
+44.9. Successfully revoked timeout permission for %s role.
+44.10. I'm sorry, I cannot find the event that you have specified!
+44.11. I'm sorry, I cannot find the event utility that you have specified!
+44.12. Successfully enabled event utility %s for event %s.
+44.13. Successfully disabled event utility %s for event %s.
+44.14. I'm sorry, I cannot find the command that you have specified!
+44.15. I'm sorry, you cannot disable or put a cooldown to this command!
+44.16. I'm sorry, I'm unable to set the command's cooldown: %s.
+44.17. Successfully set %s cooldown to %s second(s).
+44.18. I'm sorry, I'm unable to disable the command: %s.
+44.19. Successfully disabled %s command.
+44.20. I'm sorry, I'm unable to enable the command: %s.
+44.21. Successfully enabled %s command.
+44.22. Successfully set global command cooldown to %s second(s).
+44.23. Roles with Timeout Immunity
+44.24. Roles with Timeout Permission
+44.25. Event name
+44.26. Required Permissions
+44.27. Toggleable Scope
+
+============================================
+
+timeout.ts (3)
+
+45.1. Hey, please enter a valid user to timeout!
+45.2. I'm sorry, I cannot timeout the user: %s.
+45.3. Successfully timeouted the user for %s.
+    (e.g. Successfully timeouted the user for 2 days, 1 hours, 11 minutes, 58 seconds.)
+
+============================================
+
+untimeout.ts (3)
+
+46.1. I'm sorry, you don't have the permission to untimeout the user.
+46.2. I'm sorry, I cannot untimeout the user: %s.
+46.3. Successfully untimeouted the user.
+
+============================================
+
+verify.ts (5)
+
+47.1. I'm sorry, this command cannot be used in this channel.
+47.2. I'm sorry, the user is not in this thread!
+47.3. I'm sorry, the user is currently not in verification process!
+47.4. I'm sorry, the user is already verified!
+47.5. Successfully verified the user. Closing the thread.
+
+============================================
+
+color.ts (2)
+
+48.1. I'm sorry, that doesn't look like a valid hex code color!
+48.2. Showing color with hex code %s:
+
+============================================
+
+emojistatistics.ts (10)
+
+49.1. I'm sorry, this server has no emoji usage statistics!
+49.2. I'm sorry, I couldn't find any valid emojis!
+49.3. Emoji Statistics for %s
+    (e.g. Emoji Statistics for Sexia Server)
+49.4. Sort Mode
+49.5. Overall
+49.6. Average per month
+49.7. Emoji
+49.8. Date Creation
+49.9. Overall Usage
+49.10. Average Per Month Usage
+
+============================================
+
+messageanalytics.ts (14)
+
+50.1. Hey, please enter a correct date format!
+50.2. Hey, the server didn't exist back then!
+50.3. You're in the future, are you? Unfortunately, I'm not.
+50.4. I'm sorry, there is no activity data on this date!
+50.5. I'm sorry, this channel is filtered from message analytics!
+50.6. I'm sorry, this scope can only be used in main server!
+50.7. I'm sorry, you can only execute this command in a text channel!
+50.8. Successfully started message data fetching.
+50.9. %s, message data fetch done!
+50.10. messages
+    (message count)
+50.11. General Channels
+50.12. Language Channels
+50.13. Clan Channels
+50.14. channel activity per %s
+    (e.g. channel activity per 16 Jan 2019)
+
+============================================
+
+vote.ts (16)
+
+51.1. I'm sorry, there is an ongoing vote in this channel!
+51.2. I'm sorry, there is no ongoing vote in this channel!
+51.3. I'm sorry, you cannot end the ongoing vote! You must be the initiator of it or have the `Manage Channels` permission in the channel!
+51.4. Vote ended!
+51.5. I'm sorry, you have voted for that choice!
+51.6. I'm sorry, you have not voted for any option!
+51.7. I'm sorry, you have not voted for any option!
+51.8. %s, your vote has been registered!
+51.9. %s, your vote has been cancelled!
+51.10. %s, your vote has been moved from option %s to %s!
+51.11. I'm sorry, you must specify at least 2 choices!
+51.12. Successfully started vote.
+51.13. Hey, please enter a valid Tatsu XP requirement!
+51.14. I'm sorry, I'm unable to retrieve your Tatsu XP status!
+51.15. I'm sorry, you don't have enough Tatsu XP to participate in this vote!
+51.16. Topic
+
+============================================
+
+match.ts (39)
+
+52.1. Hey, please follow the match ID naming convention!
+52.2. I'm sorry, a match with the same ID already exists!
+52.3. I'm sorry, the player count difference between both teams must not exceed 1!
+52.4. I'm sorry, this player information is not correct: %s.
+52.5. Hey, you can only bind matches in a text channel!
+52.6. I'm sorry, that match doesn't exist or this channel/thread is not binded to a match!
+52.7. I'm sorry, this match has ended!
+52.8. I'm sorry, this match doesn't have any result yet!
+52.9. I'm sorry, I cannot find the mappool!
+52.10. I'm sorry, I cannot find the beatmap that was recently played!
+52.11. I'm sorry, I cannot find the profile of uid %s!
+52.12. Processing match data. Please wait...
+52.13. Round initiated!
+52.14. Beatmap time is over. Beginning 30 seconds cooldown.
+52.15. Round ended!
+52.16. I'm sorry, your input doesn't match. Team %s has %s player(s). You have only inputted data for %s players.
+    (e.g. I'm sorry, your input doesn't match. Team 1 has 5 player(s). You have only inputted data for 4 players.)
+52.17. I'm sorry, the score data for team %s player %s is invalid: %s.
+52.18. I'm sorry, I couldn't add the match: %s.
+52.19. Successfully added match %s.
+52.20. I'm sorry, I couldn't bind the match: %s.
+52.21. Successfully binded match %s to this channel. Please check threads section.
+52.22. I'm sorry, I couldn't end the match: %s.
+52.23. Successfully ended match %s.
+52.24. I'm sorry, I couldn't remove the match: %s.
+52.25. Successfully removed match %s.
+52.26. I'm sorry, I couldn't undo the match result: %s.
+52.27. Successfully reverted match %s's result.
+52.28. I'm sorry, I couldn't unbind the match: %s.
+52.29. Successfully unbinded match %s.
+52.30. I'm sorry, I couldn't submit the match result: %s.
+52.31. Successfully updated match result.
+52.32. Failed
+52.33. None
+52.34. It's a draw
+52.35. %s won by %s
+    (e.g. Team 1 won by 129172)
+52.36. Round Info
+52.37. Match ID
+52.38. Map
+52.39. Map Length
+    (map duration)
+
+============================================
+
+pool.ts (2)
+
+53.1. I'm sorry, I cannot find the mappool that you are looking for!
+53.2. Length
+    (duration)
+
+============================================
+
+Constants.ts (4)
+
+54.1. I'm sorry, you do not have the permission to execute this command.
+54.2. I'm sorry, your account is not binded. You need to bind your account using `/userbind` first.
+54.3. I'm sorry, this command is not available in this server.
+54.4. I'm sorry, this command is not available in this channel.
+54.5. I'm sorry, that account is not binded. The user needs to bind his/her account using `/userbind` first.
+
+============================================
+
+Challenge.ts (41)
+
+55.1. challenge is not scheduled
+55.2. a challenge is still ongoing
+55.3. challenge is not ongoing
+55.4. not the time to end challenge yet
+55.5. Successfully ended challenge \`%s\`.
+55.6. Congratulations to %s for achieving first place in challenge %s, earning them %s points and %s%s Alice coins!
+55.7. constrain not fulfilled
+55.8. usage of EZ, NF, or HT
+55.9. replay not found
+55.10. custom speed multiplier and/or force AR is used
+55.11. beatmap not found
+55.12. pass requirement is not fulfilled
+55.13. cannot parse replay
+55.14. Level
+55.15. ScoreV1
+55.16. Accuracy
+55.17. ScoreV2
+55.18. Miss Count
+55.19. Combo
+55.20. Rank
+55.21. Mods
+55.22. Droid PP
+55.23. PC PP
+55.24. Minimum 300
+55.25. Maximum 100
+55.26. Maximum 50
+55.27. Maximum unstable rate
+55.28. Score V1 at least %s
+55.29. Accuracy at least %s
+55.30. Score V2 at least %s
+55.31. No misses
+55.32. Miss count below %s
+55.33. Usage of %s mod only
+55.34. Combo at least %s
+55.35. %s rank or above
+55.36. %s dpp or more
+55.37. %s pp or more
+55.38. 300 hit result at least %s
+55.39. 100 hit result less than or equal to %s
+55.40. 50 hit result less than or equal to %s
+55.41. UR (unstable rate) below or equal to %s
+
+============================================
+
+ClanAuction.ts (3)
+
+56.1. not the time to end auction yet
+56.2. no winning clan
+56.3. auctioneer not found
+
+============================================
+
+MapShare.ts (3)
+
+57.1. submission is not accepted yet
+57.2. beatmap not found
+57.3. submitter is not binded
+
+============================================
+
+NameChange.ts (14)
+
+58.1. name change request is not active
+58.2. Cannot find player profile
+58.3. cannot create request to osu!droid server
+58.4. New username taken
+58.5. Request Details
+58.6. Current Username
+58.7. Requested Username
+58.8. Creation Date
+58.9. Status
+58.10. Accepted
+58.11. Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in %s.
+    (e.g. Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in Jan 16 2019.)
+58.12. Denied
+58.13. Reason
+58.14. Hey, I would like to inform you that your name change request was denied due to `%s`. You are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!
+
+============================================
+
+PlayerInfo.ts (3)
+
+59.1. too much coin deduction; can only deduct at most %s Alice coins
+59.2. daily claim has been used
+59.3. transferred amount is beyond daily limit—can only transfer %s Alice coins left.
+
+============================================
+
+Clan.ts (18)
+
+60.1. clan leader not found
+60.2. user is already in this clan
+60.3. user is already in another clan
+60.4. user is still in cooldown to join old clan
+60.5. user is still in cooldown to join a clan
+60.6. user's binded accounts not found
+60.7. clan leader cannot leave the clan
+60.8. user is not in the clan
+60.9. new leader is the same as the old leader
+60.10. cannot find new leader
+60.11. clan is already in match mode
+60.12. clan is already not in match mode
+60.13. clan role doesn't exist
+60.14. invalid image
+60.15. image ratio is not 18:5
+60.16. description must be less than 2000 characters
+60.17. clan power will fall below zero
+60.18. clan power will be infinite
+
+============================================
+
+TournamentMatch.ts (6)
+
+61.1. Score not found
+61.2. %s is not used
+    (%s is a combination of mods (e.g. HDHR))
+61.3. Replay not found
+61.4. Unsupported osu!droid version
+61.5. Other mods except %s was used
+61.6. %s was used
+    (%s is a combination of mods (e.g. HDHR))
+
+============================================
+
+UserBind.ts (8)
+
+62.1. uid is not binded to this Discord account
+62.2. cannot rebind to the same Discord account
+62.3. bind limit reached in other Discord account
+62.4. player not found
+62.5. player with such uid or username is not found
+62.6. account bind limit reached
+62.7. uid is not binded to this Discord account
+62.8. Hey, your Discord account has been unbinded from any osu!droid accounts! Therefore, your clan has been disbanded!
+
+============================================
+
+EmbedCreator.ts (49)
+
+63.1. Type "exit" to exit this menu
+63.2. Result
+63.3. Droid pp
+63.4. PC pp
+63.5. estimated
+63.6. droid stars
+63.7. PC stars
+63.8. Star Rating
+63.9. The resulting values are subject to change.
+63.10. Beatmap Information
+63.11. Achieved on %s
+    (e.g. Achieved on Jan 16 2019)
+63.12. penalized
+63.13. for FC
+    (e.g. PP for FC)
+63.14. slider ticks
+63.15. slider ends
+63.16. hit error avg
+    (hit error average)
+63.17. Challenge ID
+63.18. Time left
+63.19. osu!droid Weekly Bounty Challenge
+63.20. osu!droid Daily Challenge
+63.21. Featured by %s
+    (e.g. Featured by Sexia)
+63.22. Download
+63.23. Points
+63.24. Pass Condition
+63.25. Constrain
+63.26. %s mod only
+    (e.g. HDHR mod only)
+63.27. Any rankable mod except EZ, NF, and HT
+63.28. Use `/daily challenges` to check bonuses.
+63.29. Auction Information
+63.30. Name
+63.31. Auctioneer
+63.32. Creation Date
+63.33. Minimum Bid Amount
+63.34. Item Information
+63.35. Powerup
+63.36. Amount
+63.37. Bid Information
+63.38. Bidders
+    (amount of clans bidded)
+63.39. Top Bidders
+63.40. Broadcast
+63.41. If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using \`/report\` command (more information is available using \`/help report\`)
+63.42. Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!
+63.43. Submission by %s
+    (e.g. Submission by Sexia)
+63.44. Status and Summary
+63.45. Status
+63.46. Summary
+63.47. Channel
+63.48. Duration
+63.49. Queued/requested by %s
+    (e.g. Queued/requested by Sexia)
+
+============================================
+
+MessageButtonCreator.ts (3)
+
+64.1. Please wait...
+64.2. Action cancelled.
+64.3. Timed out.
+
+============================================
+
+ProfileCardCreator.ts (7)
+
+65.1. Total Score
+65.2. Ranked Score
+65.3. Accuracy
+65.4. Play Count
+65.5. Droid pp
+65.6. Clan
+65.7. Challenge Points
+
+============================================
+
+CommandHelper.ts (2)
+
+66.1. I'm sorry, I cannot find the command that you are looking for!
+66.2. You need these permissions:
+
+============================================
+
+ScoreDisplayHelper.ts (1)
+
+67.1. Recent plays for %s
+    (e.g. Recent plays for Sexia)
+
+============================================
+
+TriviaHelper.ts (1)
+
+68.1. Your latest choice (%s) has been recorded!
+    (e.g. Your latest choice (A) has been recorded!)
+
+============================================
+
+CommandUtilManager.ts (2)
+
+69.1. cooldown must be between 5 and 3600 seconds
+69.2. command is already disabled
+
+============================================
+
+LoungeLockManager.ts (1)
+
+70.1. User is not locked from lounge
+
+============================================
+
+MusicManager.ts (7)
+
+71.1. failed to join voice channel within 20 seconds
+71.2. video is already queued
+71.3. queue limit reached, only up to 10 items allowed
+71.4. I'm not in a voice channel
+71.5. I'm not in your voice channel
+71.6. no music is playing
+71.7. playback is not paused
+
+============================================
+
+PunishmentManager.ts (2)
+
+72.1. Unable to find the server log channel
+72.2. The server's log channel is not a text channel
+
+============================================
+
+RecalculationManager.ts (5)
+
+73.1. %s, successfully recalculated %s.
+73.2. %s, recalculation for %s failed: %s.
+73.3. user is not binded
+73.4. user has asked for recalculation
+73.5. user was DPP banned
+
+============================================
+
+TimeoutManager.ts (13)
+
+74.1. user is already timeouted
+74.2. user has timeout immunity
+74.3. invalid timeout duration
+74.4. timeout duration must be between 30 seconds and 28 days (4 weeks)
+74.5. not enough permission to timeout for %s
+    (e.g. not enough permission to timeout for 2 days, 11 hours, 18 minutes, 53 seconds)
+74.6. timeout reason is too long; maximum is 1500 characters
+74.7. Timeout executed
+74.8. in %s
+    (e.g. in #general)
+74.9. Reason
+74.10. Hey, you were timeouted for %s for %s. Sorry!
+    (e.g. Hey, you were timeouted for 2 days, 11 hours, 18 minutes, 53 seconds for trash talking. Sorry!)
+74.11. the user is not timeouted
+74.12. timeout reason is too long; maximum is 1500 characters
+74.13. Hey, you were untimeouted for %s.
+    (e.g. Hey, you were untimeouted for false timeout.)
+
+============================================
+
+DateTimeFormatHelper.ts (5)
+
+75.1. day
+75.2. hour
+75.3. minute
+75.4. second
+75.5. seconds
+
+============================================
+
+WhitelistManager.ts (3)
+
+76.1. Beatmap is already blacklisted
+76.2. Beatmap is not blacklisted
+76.3. Beatmap is not graveyarded
+
+============================================
+
+guildMemberRemove -> clanCheck.ts (1)
+
+77.1. Hey, your member (%s) has left the server, therefore they have been kicked from your clan!
+
+============================================
+
+guildMemberUpdate -> manualTimeoutCheck.ts (1)
+
+78.1. Not specified.
+
+============================================
+
+interactionCreate -> runCommand.ts (7)
+
+79.1. I'm sorry, I'm in debug mode now. I cannot accept commands from anyone beside bot owners!
+79.2. I'm sorry, I cannot find the command with that name.
+79.3. I'm sorry, I'm currently under maintenance due to \`%s\`. Please try again later!
+79.4. I'm sorry, this command is not executable in this channel.
+79.5. You need these permissions:
+79.6. Hey, calm down with the command! I need to rest too, you know.
+79.7. Unable to execute command: %s
+
+============================================
+
+messageCreate -> cuteNoLewd.ts (1)
+
+80.1. %s, you are only allowed to send 1 picture every 5 seconds!
+
+============================================
+
+messageCreate -> droidProfile.ts (1)
+
+81.1. osu!droid profile for %s:
+
+============================================
+
+messageCreate -> userBeatmapCalculation.ts (5)
+
+82.1. Raw droid stars
+82.2. Raw droid pp
+82.3. Raw PC stars
+82.4. Raw PC pp
+82.5. I found %s maps, but only displaying up to 3 due to my limitations.
+
+============================================
+
+messageCreate -> youtubeBeatmapFinder.ts (1)
+
+83.1. I found %s maps, but only displaying up to 3 due to my limitations.

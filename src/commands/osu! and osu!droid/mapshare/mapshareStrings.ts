@@ -9,7 +9,6 @@ export enum mapshareStrings {
     userIsAlreadyBanned = "I'm sorry, this user is already banned from submitting a map share submission!",
     userIsNotBanned = "I'm sorry, this user is not banned from submitting a map share submission!",
     beatmapIsOutdated = "I'm sorry, the beatmap was updated after submission! Submission has been automatically deleted.",
-    // eslint-disable-next-line no-useless-escape
     beatmapIsTooEasy = "I'm sorry, you can only submit beatmaps that are 3* or higher!",
     beatmapHasLessThan50Objects = "I'm sorry, it seems like the beatmap has less than 50 objects!",
     beatmapHasNoCirclesOrSliders = "I'm sorry, the beatmap has no circles and sliders!",

@@ -31,7 +31,7 @@ export abstract class BeatmapManager extends Manager {
             "#4290FB",
             "#4FC0FF",
             "#4FFFD5",
-            "#7CFF4F|",
+            "#7CFF4F",
             "#F6F05C",
             "#FF8068",
             "#FF4E6F",

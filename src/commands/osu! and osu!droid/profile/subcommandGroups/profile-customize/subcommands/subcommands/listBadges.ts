@@ -63,6 +63,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 `${i + 1}. ${c.name} (\`${c.id}\`${
                     c.isOwned ? ", owned" : ""
                 })`,
+                // TODO: move description to bot-side instead of database
                 `Rewarded for ${c.description}`
             );
         }

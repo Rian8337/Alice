@@ -108,7 +108,6 @@ export class TournamentMatch
         let hash: string = "";
         let index: number = -1;
 
-        // TODO: port to here
         if (pick) {
             index = poolDurationData.map.findIndex((v) => v[0] === pick);
             if (index !== -1) {

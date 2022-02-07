@@ -45,7 +45,6 @@ export const run: EventUtil["run"] = async (
             return;
         }
 
-        // TODO: check this typings
         if (
             !auditLog.changes ||
             auditLog.changes[0].key !== "communication_disabled_until"

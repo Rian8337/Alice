@@ -71,7 +71,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         {
             content: MessageCreator.createWarn(
                 clanStrings.buyShopItemConfirmation,
-                "leader transfership",
+                "leadership transfer",
                 cost.toLocaleString()
             ),
         },

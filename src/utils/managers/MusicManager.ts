@@ -263,7 +263,7 @@ export abstract class MusicManager extends Manager {
         if (
             musicInformation.player.state.status !== AudioPlayerStatus.Playing
         ) {
-            return this.createOperationResult(false, "no audio is playing");
+            return this.createOperationResult(false, "no music is playing");
         }
 
         musicInformation.skip = true;

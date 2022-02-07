@@ -12,6 +12,8 @@ export const run: Command["run"] = async (_, interaction) => {
         <Snowflake>interaction.options.getString("user", true)
     );
 
+    // TODO: remove in favor of internal ban
+
     if (!banInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(

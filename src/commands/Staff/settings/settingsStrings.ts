@@ -4,7 +4,7 @@
 export enum settingsStrings {
     chosenChannelIsNotText = "Hey, please choose a text channel!",
     setLogChannelSuccess = "Successfully set your guild's punishment log channel to %s.",
-    unsetLogChannelSuccess = "Successfully set your guild's punishment log channel to %s.",
+    unsetLogChannelSuccess = "Successfully unset your guild's punishment log channel.",
     noLogChannelConfigured = "I'm sorry, this server doesn't have a punishment log channel configured! Please set a punishment log channel first!",
     grantOrRevokeTimeoutImmunitySuccess = "Successfully %s timeout immunity for %s role.",
     grantOrRevokeTimeoutPermissionSuccess = "Successfully %s timeout permission for %s role.",

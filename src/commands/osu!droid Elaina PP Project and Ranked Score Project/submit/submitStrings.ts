@@ -3,13 +3,13 @@
  */
 export enum submitStrings {
     commandNotAllowed = "I'm sorry, this command is not available in this channel.",
-    uidIsBanned = "I'm sorry, your currently binded account has been disallowed from submitting dpp.",
+    uidIsBanned = "I'm sorry, your currently binded osu!droid account has been disallowed from submitting dpp.",
     beatmapNotFound = "Hey, please give me a valid beatmap to submit!",
     beatmapIsBlacklisted = "I'm sorry, this beatmap has been blacklisted.",
     beatmapNotWhitelisted = "I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved beatmaps right now!",
     beatmapTooShort = "I'm sorry, this beatmap is either too short (less than 30 seconds) or doesn't have at least 60% of its music length mapped.",
     noScoreSubmitted = "I'm sorry, you don't have a score submitted in this beatmap!",
-    noScoresInSubmittedList = "I'm sorry, you don't have any scores to submit based on your input!",
+    noScoresInSubmittedList = "I'm sorry, you don't have any scores to submit within that range and offset!",
     scoreUsesForceAR = "I'm sorry, force AR is not allowed!",
     scoreUsesCustomSpeedMultiplier = "I'm sorry, custom speed multiplier is not allowed!",
     submitSuccessful = "Successfully submitted your play(s). More info in embed.",

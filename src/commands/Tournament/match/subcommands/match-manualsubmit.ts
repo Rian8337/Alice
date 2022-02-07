@@ -9,6 +9,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
 import { matchStrings } from "../matchStrings";
+import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const id: string = interaction.options.getString("id", true);
@@ -137,7 +138,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             match.player[i][0]
         } - (N/A): **${scoreV2}** - ${parseFloat(scoreData[1]).toFixed(2)}% - ${
             scoreData[2]
-        } misses\n`;
+        } ${Symbols.missIcon}\n`;
         const failString: string = `${match.player[i][0]} - (N/A): **0** - **Failed**`;
 
         if (i % 2 === 0) {

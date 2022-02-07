@@ -156,6 +156,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         partialData
     );
 
+    // TODO: insert auction to database
+
     const coinEmoji: GuildEmoji = client.emojis.cache.get(
         Constants.aliceCoinEmote
     )!;

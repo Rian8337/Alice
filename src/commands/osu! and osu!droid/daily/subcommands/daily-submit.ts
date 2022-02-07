@@ -146,10 +146,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             challenge.challengeid,
             bonusLevel.toLocaleString(),
             pointsGained.toLocaleString(),
-            pointsGained === 1 ? "" : "s",
             (pointsGained * 2).toLocaleString(),
             ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(),
-            (playerInfo?.points ?? 0) + pointsGained === 1 ? "" : "s",
             ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString()
         ),
     });

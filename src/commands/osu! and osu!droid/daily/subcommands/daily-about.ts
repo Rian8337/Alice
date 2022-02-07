@@ -27,7 +27,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )
         .addField(
             "How can I use my points and Alice coins?",
-            `As of now, there is no use for points and ${coin}Alice coins. Originally, ${coin}Alice coins were made for another upcoming project, so stay tuned for that.`
+            `As of now, there is no use for points. However, ${coin}Alice coins can be used for clans and cosmetics.`
         )
         .addField(
             "Is there a leaderboard for points and Alice coins?",

@@ -8,7 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Role } from "discord.js";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
             interaction.user
