@@ -23,6 +23,7 @@ import { VotingCollectionManager } from "./managers/aliceDb/VotingCollectionMana
 import { PrototypePPCollectionManager } from "./managers/aliceDb/PrototypePPCollectionManager";
 import { ProfileBadgeCollectionManager } from "./managers/aliceDb/ProfileBadgeCollectionManager";
 import { MusicCollectionManager } from "./managers/aliceDb/MusicCollectionManager";
+import { IllegalMapCollectionManager } from "./managers/aliceDb/IllegalMapCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -152,6 +153,11 @@ export class AliceDBCollection {
     readonly voting: VotingCollectionManager;
 
     /**
+     * The database collection for beatmaps that are considered illegal.
+     */
+    readonly illegalMap: IllegalMapCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -226,5 +232,8 @@ export class AliceDBCollection {
             aliceDb.collection("tags")
         );
         this.voting = new VotingCollectionManager(aliceDb.collection("voting"));
+        this.illegalMap = new IllegalMapCollectionManager(
+            aliceDb.collection("illegalmap")
+        );
     }
 }
