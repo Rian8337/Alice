@@ -3,7 +3,6 @@
  */
 export enum dailyStrings {
     tooManyOptions = "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
-    noAvailablePlayers = "I'm sorry, there are no players as of now!",
     noOngoingChallenge = "I'm sorry, there is no ongoing challenge now!",
     challengeNotFound = "I'm sorry, I cannot find the challenge!",
     challengeFromReplayNotFound = "I'm sorry, I cannot find the challenge associated with that replay!",

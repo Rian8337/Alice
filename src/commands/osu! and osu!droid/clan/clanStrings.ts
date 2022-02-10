@@ -52,7 +52,7 @@ export enum clanStrings {
     disbandClanConfirmation = "Are you sure you want to disband the clan?",
     kickMemberConfirmation = "Are you sure you want to kick the user out of the clan?",
     removeIconConfirmation = "Are you sure you want to remove the clan's icon?",
-    removeBannerConfirmation = "Are you sure you want to remove the clan's icon?",
+    removeBannerConfirmation = "Are you sure you want to remove the clan's banner?",
     editDescriptionConfirmation = "Are you sure you want to edit your clan's description?",
     clearDescriptionConfirmation = "Are you sure you want to clear the clan's description?",
     promoteMemberConfirmation = "Are you sure you want to promote this user to co-leader?",
