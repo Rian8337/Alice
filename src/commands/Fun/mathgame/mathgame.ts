@@ -79,9 +79,8 @@ function endGame(
         timestamp: true,
     });
 
-    // TODO: replace
     embed
-        .setTitle("Math Game Statistics")
+        .setTitle(localization.getTranslation("gameStatistics"))
         .setDescription(
             `**${localization.getTranslation("gameStarter")}**: ${interaction.user}\n` +
             `**${localization.getTranslation("timeStarted")}**: ${interaction.createdAt.toUTCString()}\n` +

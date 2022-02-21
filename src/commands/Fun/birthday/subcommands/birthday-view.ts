@@ -5,6 +5,7 @@ import { BirthdayLocalization } from "@alice-localization/commands/Fun/BirthdayL
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed, User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -30,11 +31,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    // TODO: replace
     embed.setDescription(
-        `__**Birthday Info for ${user}**__\n` +
-        `**Date**: ${birthday.date}/${birthday.month + 1}\n` +
-        `**Timezone**: UTC${birthday.timezone >= 0
+        `__**${StringHelper.formatString(localization.getTranslation("birthdayInfo"), user.toString())}**__\n` +
+        `**${localization.getTranslation("date")}**: ${birthday.date}/${birthday.month + 1}\n` +
+        `**${localization.getTranslation("timezone")}**: UTC${birthday.timezone >= 0
             ? `+${birthday.timezone}`
             : birthday.timezone
         }`

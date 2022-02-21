@@ -28,13 +28,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    // TODO: replace
     embed
         .setTitle(collection.name)
-        .addField("Owner", `<@${collection.owner}> (${collection.owner})`)
-        .addField("Creation Date", new Date(collection.createdAt).toUTCString())
+        .addField(localization.getTranslation("collectionOwner"), `<@${collection.owner}> (${collection.owner})`)
+        .addField(localization.getTranslation("creationDate"), new Date(collection.createdAt).toUTCString())
         .addField(
-            "Links",
+            localization.getTranslation("collectionLinks"),
             collection.videoIds.map((v, i) => `${i + 1}. ${v}`).join("\n")
         );
 

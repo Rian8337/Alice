@@ -10,6 +10,7 @@ export interface MathgameStrings {
     readonly singleGamemodeQuestion: string;
     readonly multiGamemodeQuestion: string;
     readonly correctAnswer: string;
+    readonly gameStatistics: string;
     readonly gameStarter: string;
     readonly timeStarted: string;
     readonly duration: string;
@@ -39,6 +40,7 @@ export class MathgameLocalization extends Localization<MathgameStrings> {
                 singleGamemodeQuestion: `%s, solve this equation within 30 seconds!\n\`Operator count %s, level %s\`\n\`\`\`fix\n%s = ...\`\`\``,
                 multiGamemodeQuestion: `Solve this equation within 30 seconds (level %s, %s operator(s))!\n\`\`\`fix\n%s = ...\`\`\``,
                 correctAnswer: `%s got the correct answer! That took %s seconds.\n\`\`\`fix\n%s = %s\`\`\``,
+                gameStatistics: "Math Game Statistics",
                 gameStarter: "Game starter",
                 timeStarted: "Time started",
                 duration: "Duration",

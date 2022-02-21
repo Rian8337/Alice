@@ -6,6 +6,9 @@ export interface BirthdayStrings {
     readonly userBirthdayNotExist: string;
     readonly setBirthdayFailed: string;
     readonly setBirthdaySuccess: string;
+    readonly birthdayInfo: string;
+    readonly date: string;
+    readonly timezone: string;
 }
 
 /**
@@ -21,6 +24,9 @@ export class BirthdayLocalization extends Localization<BirthdayStrings> {
                     "I'm sorry, the user doesn't have a birthday!",
                 setBirthdayFailed: "I'm sorry, I'm unable to set birthday: %s.",
                 setBirthdaySuccess: "Successfully set birthday to %s/%s at UTC%s.",
+                birthdayInfo: "Birthday Info for %s",
+                date: "Date",
+                timezone: "Timezone"
             },
         };
 }

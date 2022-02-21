@@ -32,8 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    // TODO: replace
-    embed.setDescription(`Total collections: ${collections.size}`);
+    embed.setDescription(`${localization.getTranslation("totalCollections")}: ${collections.size}`);
 
     const onPageChange: OnButtonPageChange = async (
         _,
@@ -43,7 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
             embed.addField(
                 `${i + 1}. ${collections[i].name}`,
-                `Created at ${new Date(collections[i].createdAt).toUTCString()}`
+                `${localization.getTranslation("createdAt")} ${new Date(collections[i].createdAt).toUTCString()}`
             );
         }
     };

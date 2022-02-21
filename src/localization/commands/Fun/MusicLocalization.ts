@@ -55,6 +55,11 @@ export interface MusicStrings {
     readonly enabled: string;
     readonly disabled: string;
     readonly queue: string;
+    readonly totalCollections: string;
+    readonly createdAt: string;
+    readonly collectionOwner: string;
+    readonly creationDate: string; // see 22.139
+    readonly collectionLinks: string;
 }
 
 /**
@@ -138,6 +143,11 @@ export class MusicLocalization extends Localization<MusicStrings> {
                 enabled: "Enabled",
                 disabled: "Disabled",
                 queue: "Queue",
+                totalCollections: "Total Collections",
+                createdAt: "Created at",
+                collectionOwner: "Owner",
+                creationDate: "Creation Date",
+                collectionLinks: "Links",
             },
         };
 }
