@@ -17,7 +17,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (queue.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new MusicLocalization(await CommandHelper.getLocale(interaction)).getTranslation("queueIsEmpty")
+                new MusicLocalization(
+                    await CommandHelper.getLocale(interaction)
+                ).getTranslation("queueIsEmpty")
             ),
         });
     }

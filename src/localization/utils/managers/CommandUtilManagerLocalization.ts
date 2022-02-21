@@ -10,10 +10,12 @@ export interface CommandUtilManagerStrings {
  * Localizations for the `CommandUtilManager` manager utility.
  */
 export class CommandUtilManagerLocalization extends Localization<CommandUtilManagerStrings> {
-    protected override readonly translations: Readonly<Translation<CommandUtilManagerStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<CommandUtilManagerStrings>
+    > = {
         en: {
             cooldownOutOfRange: "cooldown must be between 5 and 3600 seconds",
             commandAlreadyDisabled: "command is already disabled",
-        }
+        },
     };
 }

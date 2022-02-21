@@ -11,9 +11,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            new PlayertrackLocalization(await CommandHelper.getLocale(interaction)).getTranslation(
-                "nowTrackingUid"
-            ),
+            new PlayertrackLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation("nowTrackingUid"),
             uid.toString()
         ),
     });

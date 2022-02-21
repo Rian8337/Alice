@@ -32,7 +32,8 @@ export abstract class ScoreDisplayHelper {
         player: Player,
         language: Language = "en"
     ): Promise<Message> {
-        const localization: ScoreDisplayHelperLocalization = this.getLocalization(language);
+        const localization: ScoreDisplayHelperLocalization =
+            this.getLocalization(language);
 
         const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
             author: interaction.user,
@@ -45,7 +46,12 @@ export abstract class ScoreDisplayHelper {
             Math.ceil(player.recentPlays.length / 5)
         );
 
-        embed.setDescription(StringHelper.formatString(localization.getTranslation("recentPlays"), `**${player.username}**`));
+        embed.setDescription(
+            StringHelper.formatString(
+                localization.getTranslation("recentPlays"),
+                `**${player.username}**`
+            )
+        );
 
         const onPageChange: OnButtonPageChange = async (
             _,
@@ -65,9 +71,10 @@ export abstract class ScoreDisplayHelper {
                     )}** | ${score.title} ${score.getCompleteModString()}`,
                     `${score.score.toLocaleString()} / ${score.combo}x / ${(
                         score.accuracy.value() * 100
-                    ).toFixed(2)}% / [${score.accuracy.n300}/${score.accuracy.n100
+                    ).toFixed(2)}% / [${score.accuracy.n300}/${
+                        score.accuracy.n100
                     }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
-                    `\`${score.date.toUTCString()}\``
+                        `\`${score.date.toUTCString()}\``
                 );
             }
         };
@@ -113,10 +120,12 @@ export abstract class ScoreDisplayHelper {
 
     /**
      * Gets the localization of this helper utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): ScoreDisplayHelperLocalization {
+    private static getLocalization(
+        language: Language
+    ): ScoreDisplayHelperLocalization {
         return new ScoreDisplayHelperLocalization(language);
     }
 }

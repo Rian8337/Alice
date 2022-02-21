@@ -66,7 +66,7 @@ export class GuildSettings extends Manager {
 
     /**
      * Updates or adds this guild's settings to the database.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async updateData(): Promise<OperationResult> {
@@ -80,7 +80,7 @@ export class GuildSettings extends Manager {
                     disabledCommands: [...this.disabledCommands.values()],
                     disabledEventUtils: [...this.disabledEventUtils.values()],
                     preferredLocale: this.preferredLocale,
-                }
+                },
             },
             { upsert: true }
         );

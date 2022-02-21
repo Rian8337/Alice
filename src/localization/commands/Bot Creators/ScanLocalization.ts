@@ -13,9 +13,9 @@ export class ScanLocalization extends Localization<ScanStrings> {
     protected override readonly translations: Readonly<
         Translation<ScanStrings>
     > = {
-            en: {
-                scanComplete: "%s, scan complete!",
-                scanStarted: "Scan started!",
-            },
-        };
+        en: {
+            scanComplete: "%s, scan complete!",
+            scanStarted: "Scan started!",
+        },
+    };
 }

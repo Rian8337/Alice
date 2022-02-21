@@ -12,21 +12,27 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const dbManager: ClanCollectionManager =
         DatabaseManager.elainaDb.collections.clan;
 
     const clan: Clan | null = interaction.options.getString("name")
         ? await dbManager.getFromName(
-            interaction.options.getString("name", true)
-        )
+              interaction.options.getString("name", true)
+          )
         : await dbManager.getFromUser(interaction.user);
 
     if (!clan) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                localization.getTranslation(interaction.options.getString("name") ? "clanDoesntExist" : "selfIsNotInClan")
+                localization.getTranslation(
+                    interaction.options.getString("name")
+                        ? "clanDoesntExist"
+                        : "selfIsNotInClan"
+                )
             ),
         });
     }
@@ -54,20 +60,29 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 .slice(5 * (page - 1), 5 + 5 * (page - 1))
                 .map(
                     (v, i) =>
-                        `**${5 * (page - 1) + i + 1}. <@${v.id}> (#${v.rank
+                        `**${5 * (page - 1) + i + 1}. <@${v.id}> (#${
+                            v.rank
                         })**\n` +
-                        `**${localization.getTranslation("discordId")}**: ${v.id}\n` +
-                        `**Uid**: ${v.uid}\n` +
-                        `**${localization.getTranslation("clanMemberRole")}**: ${v.hasPermission
-                            ? `${localization.getTranslation(v.id === clan.leader
-                                ? "clanMemberRoleLeader"
-                                : "clanMemberRoleCoLeader"
-                            )}`
-                            : localization.getTranslation("clanMemberRoleMember")
-                        }\n` +
-                        `**${localization.getTranslation("clanUpkeepInformation")}**: ${clan.calculateUpkeep(
+                        `**${localization.getTranslation("discordId")}**: ${
                             v.id
-                        )} Alice coins`
+                        }\n` +
+                        `**Uid**: ${v.uid}\n` +
+                        `**${localization.getTranslation(
+                            "clanMemberRole"
+                        )}**: ${
+                            v.hasPermission
+                                ? `${localization.getTranslation(
+                                      v.id === clan.leader
+                                          ? "clanMemberRoleLeader"
+                                          : "clanMemberRoleCoLeader"
+                                  )}`
+                                : localization.getTranslation(
+                                      "clanMemberRoleMember"
+                                  )
+                        }\n` +
+                        `**${localization.getTranslation(
+                            "clanUpkeepInformation"
+                        )}**: ${clan.calculateUpkeep(v.id)} Alice coins`
                 )
                 .join("\n\n")
         );

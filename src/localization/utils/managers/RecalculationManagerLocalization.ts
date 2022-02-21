@@ -13,13 +13,15 @@ export interface RecalculationManagerStrings {
  * Localizations for the `RecalculationManager` manager utility.
  */
 export class RecalculationManagerLocalization extends Localization<RecalculationManagerStrings> {
-    protected override readonly translations: Readonly<Translation<RecalculationManagerStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<RecalculationManagerStrings>
+    > = {
         en: {
             recalculationSuccessful: "%s, successfully recalculated %s.",
             recalculationFailed: "%s, recalculation for %s failed: %s.",
             userNotBinded: "user is not binded",
             userHasAskedForRecalc: "user has asked for recalculation",
             userDPPBanned: "user was DPP banned",
-        }
+        },
     };
 }

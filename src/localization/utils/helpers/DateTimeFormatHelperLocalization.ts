@@ -16,7 +16,9 @@ export interface DateTimeFormatHelperStrings {
  * Localizations for the `DateTimeFormatHelper` helper utility.
  */
 export class DateTimeFormatHelperLocalization extends Localization<DateTimeFormatHelperStrings> {
-    protected override readonly translations: Readonly<Translation<DateTimeFormatHelperStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<DateTimeFormatHelperStrings>
+    > = {
         en: {
             day: "day",
             days: "days",
@@ -26,6 +28,6 @@ export class DateTimeFormatHelperLocalization extends Localization<DateTimeForma
             minutes: "minutes",
             second: "second",
             seconds: "seconds",
-        }
+        },
     };
 }

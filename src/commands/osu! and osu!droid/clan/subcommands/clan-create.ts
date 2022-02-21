@@ -22,7 +22,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 25) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("clanNameIsTooLong")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("clanNameIsTooLong")
+            ),
         });
     }
 
@@ -42,7 +44,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.selfNotBindedReject
+                )
             ),
         });
     }
@@ -77,7 +81,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("clanNameIsTaken")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("clanNameIsTaken")
+            ),
         });
     }
 
@@ -85,7 +91,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createAccept(localization.getTranslation("profileNotFound")),
+            content: MessageCreator.createAccept(
+                localization.getTranslation("profileNotFound")
+            ),
         });
     }
 

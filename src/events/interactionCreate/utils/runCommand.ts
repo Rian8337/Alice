@@ -37,7 +37,9 @@ export const run: EventUtil["run"] = async (
     // 3 seconds should be enough to get the user's locale
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: RunCommandLocalization = new RunCommandLocalization(language);
+    const localization: RunCommandLocalization = new RunCommandLocalization(
+        language
+    );
 
     const botOwnerExecution: boolean =
         CommandHelper.isExecutedByBotOwner(interaction);
@@ -100,10 +102,10 @@ export const run: EventUtil["run"] = async (
     ) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                `${new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)} ${localization.getTranslation("requiredPermissions")}`,
-                PermissionHelper.getPermissionString(
-                    command.config.permissions
-                )
+                `${new ConstantsLocalization(language).getTranslation(
+                    Constants.noPermissionReject
+                )} ${localization.getTranslation("requiredPermissions")}`,
+                PermissionHelper.getPermissionString(command.config.permissions)
             ),
         });
     }
@@ -175,13 +177,15 @@ export const run: EventUtil["run"] = async (
     }
 
     // Log used command along with its subcommand group, subcommand, and options
-    let logMessage: string = `${interaction.user.tag} (${interaction.channel instanceof DMChannel
-        ? "DM"
-        : `#${(<TextChannel | NewsChannel | ThreadChannel>(
-            interaction.channel!
-        )).name
-        }`
-        }): ${interaction.commandName}`;
+    let logMessage: string = `${interaction.user.tag} (${
+        interaction.channel instanceof DMChannel
+            ? "DM"
+            : `#${
+                  (<TextChannel | NewsChannel | ThreadChannel>(
+                      interaction.channel!
+                  )).name
+              }`
+    }): ${interaction.commandName}`;
 
     if (interaction.options.getSubcommandGroup(false)) {
         logMessage += ` ${interaction.options.getSubcommandGroup()}`;

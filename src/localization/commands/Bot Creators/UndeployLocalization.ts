@@ -13,11 +13,11 @@ export class UndeployLocalization extends Localization<UndeployStrings> {
     protected override readonly translations: Readonly<
         Translation<UndeployStrings>
     > = {
-            en: {
-                commandNotFound:
-                    "I'm sorry, I cannot find any command with that name!",
-                commandUndeploySuccessful:
-                    "Successfully unregistered `%s` command.",
-            },
-        };
+        en: {
+            commandNotFound:
+                "I'm sorry, I cannot find any command with that name!",
+            commandUndeploySuccessful:
+                "Successfully unregistered `%s` command.",
+        },
+    };
 }

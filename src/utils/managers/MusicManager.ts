@@ -46,7 +46,8 @@ export abstract class MusicManager extends Manager {
         language: Language = "en",
         index?: number
     ): Promise<OperationResult> {
-        const localization: MusicManagerLocalization = this.getLocalization(language);
+        const localization: MusicManagerLocalization =
+            this.getLocalization(language);
 
         let musicInformation: MusicInfo | undefined =
             this.musicInformations.get(channel.guildId);
@@ -87,7 +88,10 @@ export abstract class MusicManager extends Manager {
                 (q) => q.information.videoId === queue.information.videoId
             )
         ) {
-            return this.createOperationResult(false, localization.getTranslation("videoAlreadyQueued"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("videoAlreadyQueued")
+            );
         }
 
         // Limit queue to 10 items
@@ -115,7 +119,8 @@ export abstract class MusicManager extends Manager {
         index: number,
         language: Language = "en"
     ): OperationResult {
-        const localization: MusicManagerLocalization = this.getLocalization(language);
+        const localization: MusicManagerLocalization =
+            this.getLocalization(language);
 
         const musicInformation: MusicInfo | undefined =
             this.musicInformations.get(channel.guildId);
@@ -146,8 +151,12 @@ export abstract class MusicManager extends Manager {
      * @param language The locale of the user who attempted to make the bot leave. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    static leave(channel: VoiceChannel | StageChannel, language: Language = "en"): OperationResult {
-        const localization: MusicManagerLocalization = this.getLocalization(language);
+    static leave(
+        channel: VoiceChannel | StageChannel,
+        language: Language = "en"
+    ): OperationResult {
+        const localization: MusicManagerLocalization =
+            this.getLocalization(language);
 
         const musicInformation: MusicInfo | undefined =
             this.musicInformations.get(channel.guildId);
@@ -185,8 +194,12 @@ export abstract class MusicManager extends Manager {
      * @param language The locale of the user who attempted to pause. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    static pause(channel: VoiceChannel | StageChannel, language: Language = "en"): OperationResult {
-        const localization: MusicManagerLocalization = this.getLocalization(language);
+    static pause(
+        channel: VoiceChannel | StageChannel,
+        language: Language = "en"
+    ): OperationResult {
+        const localization: MusicManagerLocalization =
+            this.getLocalization(language);
 
         const musicInformation: MusicInfo | undefined =
             this.musicInformations.get(channel.guildId);
@@ -201,7 +214,10 @@ export abstract class MusicManager extends Manager {
         if (
             musicInformation.player.state.status !== AudioPlayerStatus.Playing
         ) {
-            return this.createOperationResult(false, localization.getTranslation("noMusicPlaying"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("noMusicPlaying")
+            );
         }
 
         if (musicInformation.voiceChannelId !== channel.id) {
@@ -223,8 +239,12 @@ export abstract class MusicManager extends Manager {
      * @param language The locale of the user who attempted the resume. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    static resume(channel: VoiceChannel | StageChannel, language: Language = "en"): OperationResult {
-        const localization: MusicManagerLocalization = this.getLocalization(language);
+    static resume(
+        channel: VoiceChannel | StageChannel,
+        language: Language = "en"
+    ): OperationResult {
+        const localization: MusicManagerLocalization =
+            this.getLocalization(language);
 
         const musicInformation: MusicInfo | undefined =
             this.musicInformations.get(channel.guildId);
@@ -244,7 +264,10 @@ export abstract class MusicManager extends Manager {
         }
 
         if (musicInformation.player.state.status !== AudioPlayerStatus.Paused) {
-            return this.createOperationResult(false, localization.getTranslation("playbackNotPaused"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("playbackNotPaused")
+            );
         }
 
         musicInformation.player.unpause();
@@ -263,7 +286,8 @@ export abstract class MusicManager extends Manager {
         channel: VoiceChannel | StageChannel,
         language: Language = "en"
     ): Promise<OperationResult> {
-        const localization: MusicManagerLocalization = this.getLocalization(language);
+        const localization: MusicManagerLocalization =
+            this.getLocalization(language);
 
         const musicInformation: MusicInfo | undefined =
             this.musicInformations.get(channel.guildId);
@@ -285,7 +309,10 @@ export abstract class MusicManager extends Manager {
         if (
             musicInformation.player.state.status !== AudioPlayerStatus.Playing
         ) {
-            return this.createOperationResult(false, localization.getTranslation("noMusicPlaying"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("noMusicPlaying")
+            );
         }
 
         musicInformation.skip = true;
@@ -309,7 +336,8 @@ export abstract class MusicManager extends Manager {
         repeat: boolean,
         language: Language = "en"
     ): OperationResult {
-        const localization: MusicManagerLocalization = this.getLocalization(language);
+        const localization: MusicManagerLocalization =
+            this.getLocalization(language);
 
         const musicInformation: MusicInfo | undefined =
             this.musicInformations.get(channel.guildId);
@@ -339,8 +367,12 @@ export abstract class MusicManager extends Manager {
      * @param channel The channel.
      * @param language The locale of the user who attempted the shuffle. Defaults to English.
      */
-    static shuffle(channel: VoiceChannel | StageChannel, language: Language = "en"): OperationResult {
-        const localization: MusicManagerLocalization = this.getLocalization(language);
+    static shuffle(
+        channel: VoiceChannel | StageChannel,
+        language: Language = "en"
+    ): OperationResult {
+        const localization: MusicManagerLocalization =
+            this.getLocalization(language);
 
         const musicInformation: MusicInfo | undefined =
             this.musicInformations.get(channel.guildId);
@@ -366,10 +398,12 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Gets the localization of this manager utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): MusicManagerLocalization {
+    private static getLocalization(
+        language: Language
+    ): MusicManagerLocalization {
         return new MusicManagerLocalization(language);
     }
 }

@@ -8,7 +8,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MusicLocalization = new MusicLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const collection: MusicCollection | null =
         await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
@@ -30,8 +32,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed
         .setTitle(collection.name)
-        .addField(localization.getTranslation("collectionOwner"), `<@${collection.owner}> (${collection.owner})`)
-        .addField(localization.getTranslation("creationDate"), new Date(collection.createdAt).toUTCString())
+        .addField(
+            localization.getTranslation("collectionOwner"),
+            `<@${collection.owner}> (${collection.owner})`
+        )
+        .addField(
+            localization.getTranslation("creationDate"),
+            new Date(collection.createdAt).toUTCString()
+        )
         .addField(
             localization.getTranslation("collectionLinks"),
             collection.videoIds.map((v, i) => `${i + 1}. ${v}`).join("\n")

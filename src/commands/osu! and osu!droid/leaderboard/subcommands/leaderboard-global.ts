@@ -34,7 +34,9 @@ async function retrieveLeaderboard(page: number): Promise<string[]> {
 }
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: LeaderboardLocalization = new LeaderboardLocalization(await CommandHelper.getLocale(interaction));
+    const localization: LeaderboardLocalization = new LeaderboardLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const page: number = interaction.options.getInteger("page") ?? 1;
 
@@ -68,9 +70,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${localization.getTranslation("username").padEnd(
-            longestUsernameLength
-        )} | ${localization.getTranslation("uid").padEnd(6)} | ${localization.getTranslation("playCount").padEnd(5)} | ${localization.getTranslation("accuracy")} | ${localization.getTranslation("score")}\n`;
+        let output: string = `${"#".padEnd(4)} | ${localization
+            .getTranslation("username")
+            .padEnd(longestUsernameLength)} | ${localization
+            .getTranslation("uid")
+            .padEnd(6)} | ${localization
+            .getTranslation("playCount")
+            .padEnd(5)} | ${localization.getTranslation(
+            "accuracy"
+        )} | ${localization.getTranslation("score")}\n`;
 
         for (
             let i = 20 * pageRemainder;
@@ -84,10 +92,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             output += `${(actualPage * 100 + i + 1)
                 .toString()
                 .padEnd(4)} | ${c[1].padEnd(
-                    longestUsernameLength
-                )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
-                    (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
-                ).padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
+                longestUsernameLength
+            )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
+                (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
+            ).padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
         }
 
         options.content = "```c\n" + output + "```";

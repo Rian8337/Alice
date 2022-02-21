@@ -7,7 +7,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildEmoji, GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(await CommandHelper.getLocale(interaction));
+    const localization: DailyLocalization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,

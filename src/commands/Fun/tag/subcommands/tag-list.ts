@@ -14,7 +14,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
+    const localization: TagLocalization = new TagLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
@@ -27,7 +29,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (tags.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                localization.getTranslation(user.id === interaction.user.id ? "selfDoesntHaveTags" : "userDoesntHaveTags")
+                localization.getTranslation(
+                    user.id === interaction.user.id
+                        ? "selfDoesntHaveTags"
+                        : "userDoesntHaveTags"
+                )
             ),
         });
     }
@@ -43,12 +49,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         contents: GuildTag[]
     ) => {
         embed.setDescription(
-            `**${localization.getTranslation("tagsForUser")} ${interaction.user}**\n` +
-            `**${localization.getTranslation("totalTags")}**: ${contents.length}\n\n` +
-            contents
-                .slice(10 * (page - 1), 10 + 10 * (page - 1))
-                .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
-                .join("\n")
+            `**${localization.getTranslation("tagsForUser")} ${
+                interaction.user
+            }**\n` +
+                `**${localization.getTranslation("totalTags")}**: ${
+                    contents.length
+                }\n\n` +
+                contents
+                    .slice(10 * (page - 1), 10 + 10 * (page - 1))
+                    .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
+                    .join("\n")
         );
     };
 

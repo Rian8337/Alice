@@ -15,15 +15,21 @@ export interface UserBindStrings {
  * Localizations for the `UserBind` database utility.
  */
 export class UserBindLocalization extends Localization<UserBindStrings> {
-    protected override readonly translations: Readonly<Translation<UserBindStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<UserBindStrings>
+    > = {
         en: {
             uidNotBindedToAccount: "uid is not binded to this Discord account",
-            cannotRebindToSameAccount: "cannot rebind to the same Discord account",
-            bindLimitReachedInOtherAccount: "bind limit reached in other Discord account",
+            cannotRebindToSameAccount:
+                "cannot rebind to the same Discord account",
+            bindLimitReachedInOtherAccount:
+                "bind limit reached in other Discord account",
             playerNotFound: "player not found",
-            playerWithUidOrUsernameNotFound: "player with such uid or username is not found",
+            playerWithUidOrUsernameNotFound:
+                "player with such uid or username is not found",
             bindLimitReached: "account bind limit reached",
-            unbindClanDisbandNotification: "Hey, your Discord account has been unbinded from any osu!droid accounts! Therefore, your clan has been disbanded!",
-        }
+            unbindClanDisbandNotification:
+                "Hey, your Discord account has been unbinded from any osu!droid accounts! Therefore, your clan has been disbanded!",
+        },
     };
 }

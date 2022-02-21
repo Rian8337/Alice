@@ -11,11 +11,14 @@ export interface UntimeoutStrings {
  * Localizations for the `untimeout` command.
  */
 export class UntimeoutLocalization extends Localization<UntimeoutStrings> {
-    protected override readonly translations: Readonly<Translation<UntimeoutStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<UntimeoutStrings>
+    > = {
         en: {
-            userCannotUntimeoutError: "I'm sorry, you don't have the permission to untimeout the user.",
+            userCannotUntimeoutError:
+                "I'm sorry, you don't have the permission to untimeout the user.",
             untimeoutFailed: "I'm sorry, I cannot untimeout the user: `%s`.",
             untimeoutSuccessful: "Successfully untimeouted the user.",
-        }
+        },
     };
 }

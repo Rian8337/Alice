@@ -12,7 +12,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (interaction.guildId! !== Constants.mainServer) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ClanLocalization(language).getTranslation("notInMainGuild")),
+            content: MessageCreator.createReject(
+                new ClanLocalization(language).getTranslation("notInMainGuild")
+            ),
         });
     }
 

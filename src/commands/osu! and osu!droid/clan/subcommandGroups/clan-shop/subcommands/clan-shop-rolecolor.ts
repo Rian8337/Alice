@@ -23,7 +23,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("selfIsNotInClan")
+            ),
         });
     }
 
@@ -94,7 +96,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const firstResult: OperationResult = await playerInfo.incrementCoins(-cost, language);
+    const firstResult: OperationResult = await playerInfo.incrementCoins(
+        -cost,
+        language
+    );
 
     if (!firstResult.success) {
         return interaction.editReply({

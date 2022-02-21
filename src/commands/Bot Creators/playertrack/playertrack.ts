@@ -7,7 +7,9 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayertrackLocalization } from "@alice-localization/commands/Bot Creators/PlayertrackLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: PlayertrackLocalization = new PlayertrackLocalization(await CommandHelper.getLocale(interaction));
+    const localization: PlayertrackLocalization = new PlayertrackLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const uid: number = interaction.options.getInteger("uid", true);
 

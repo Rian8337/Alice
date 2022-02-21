@@ -12,13 +12,17 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
+    const localization: TagLocalization = new TagLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("nameTooLong")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("nameTooLong")
+            ),
         });
     }
 
@@ -30,7 +34,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tagDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tagDoesntExist")
+            ),
         });
     }
 
@@ -43,7 +49,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("notTagOwner")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("notTagOwner")
+            ),
         });
     }
 

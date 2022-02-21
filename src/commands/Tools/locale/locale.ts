@@ -11,11 +11,13 @@ export const category: CommandCategory = CommandCategory.TOOLS;
 
 export const config: Command["config"] = {
     name: "locale",
-    description: "Main command for organizing locales per-user, channel, or server.",
+    description:
+        "Main command for organizing locales per-user, channel, or server.",
     options: [
         {
             name: "clear",
-            description: "Clears yours, the channel, or the server's preferred locale.",
+            description:
+                "Clears yours, the channel, or the server's preferred locale.",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             options: [
                 {
@@ -36,13 +38,14 @@ export const config: Command["config"] = {
                             name: "User (yourself)",
                             value: "user",
                         },
-                    ]
-                }
-            ]
+                    ],
+                },
+            ],
         },
         {
             name: "set",
-            description: "Sets yours, the channel, or the server's preferred locale.",
+            description:
+                "Sets yours, the channel, or the server's preferred locale.",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             options: [
                 {
@@ -63,12 +66,12 @@ export const config: Command["config"] = {
                             name: "User (yourself)",
                             value: "user",
                         },
-                    ]
-                }
-            ]
-        }
+                    ],
+                },
+            ],
+        },
     ],
     example: [],
     permissions: ["SPECIAL"],
-    scope: "ALL"
+    scope: "ALL",
 };

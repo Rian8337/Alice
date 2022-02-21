@@ -16,7 +16,9 @@ import { Language } from "@alice-localization/base/Language";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: UserbindLocalization = new UserbindLocalization(language);
+    const localization: UserbindLocalization = new UserbindLocalization(
+        language
+    );
 
     const username: string = interaction.options.getString("username", true);
 
@@ -62,7 +64,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (interaction.guild?.id !== mainServer.id) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        localization.getTranslation("newAccountBindNotInMainServer")
+                        localization.getTranslation(
+                            "newAccountBindNotInMainServer"
+                        )
                     ),
                 });
             }
@@ -94,7 +98,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     interaction,
                     {
                         content: MessageCreator.createWarn(
-                            localization.getTranslation("newAccountUsernameBindConfirmation"),
+                            localization.getTranslation(
+                                "newAccountUsernameBindConfirmation"
+                            ),
                             username
                         ),
                     },
@@ -108,7 +114,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
         }
 
-        const result: OperationResult = await userBindInfo.bind(player, language);
+        const result: OperationResult = await userBindInfo.bind(
+            player,
+            language
+        );
 
         if (!result.success) {
             return interaction.editReply({
@@ -123,14 +132,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (userBindInfo.isUidBinded(player.uid)) {
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    localization.getTranslation("oldAccountUsernameBindSuccessful"),
+                    localization.getTranslation(
+                        "oldAccountUsernameBindSuccessful"
+                    ),
                     player.username
                 ),
             });
         } else {
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    localization.getTranslation("newAccountUsernameBindSuccessful"),
+                    localization.getTranslation(
+                        "newAccountUsernameBindSuccessful"
+                    ),
                     player.username,
                     (1 - userBindInfo.previous_bind.length).toString(),
                     1 - userBindInfo.previous_bind.length !== 1 ? "s" : ""

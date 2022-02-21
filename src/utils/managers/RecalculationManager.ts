@@ -2,7 +2,10 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Language } from "@alice-localization/base/Language";
-import { RecalculationManagerLocalization, RecalculationManagerStrings } from "@alice-localization/utils/managers/RecalculationManagerLocalization";
+import {
+    RecalculationManagerLocalization,
+    RecalculationManagerStrings,
+} from "@alice-localization/utils/managers/RecalculationManagerLocalization";
 import { Manager } from "@alice-utils/base/Manager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -79,7 +82,10 @@ export abstract class RecalculationManager extends Manager {
             const calculatedUserMention: string = `<@${calculatedUser}>`;
             const interaction: CommandInteraction =
                 this.recalculationQueue.first()!;
-            const localization: RecalculationManagerLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(interaction));
+            const localization: RecalculationManagerLocalization =
+                this.getLocalization(
+                    await CommandHelper.getUserPreferredLocale(interaction)
+                );
 
             this.recalculationQueue.delete(calculatedUser);
 
@@ -92,7 +98,9 @@ export abstract class RecalculationManager extends Manager {
                 if (!bindInfo) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            localization.getTranslation(this.calculationFailedResponse),
+                            localization.getTranslation(
+                                this.calculationFailedResponse
+                            ),
                             interaction.user.toString(),
                             calculatedUserMention,
                             localization.getTranslation("userNotBinded")
@@ -105,7 +113,9 @@ export abstract class RecalculationManager extends Manager {
                 if (bindInfo.hasAskedForRecalc) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            localization.getTranslation(this.calculationFailedResponse),
+                            localization.getTranslation(
+                                this.calculationFailedResponse
+                            ),
                             interaction.user.toString(),
                             calculatedUserMention,
                             localization.getTranslation("userHasAskedForRecalc")
@@ -118,7 +128,9 @@ export abstract class RecalculationManager extends Manager {
                 if (await bindInfo.isDPPBanned()) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            localization.getTranslation(this.calculationFailedResponse),
+                            localization.getTranslation(
+                                this.calculationFailedResponse
+                            ),
                             interaction.user.toString(),
                             calculatedUserMention,
                             localization.getTranslation("userDPPBanned")
@@ -134,7 +146,9 @@ export abstract class RecalculationManager extends Manager {
                 if (result.success) {
                     await interaction.channel!.send({
                         content: MessageCreator.createAccept(
-                            localization.getTranslation(this.calculationSuccessResponse),
+                            localization.getTranslation(
+                                this.calculationSuccessResponse
+                            ),
                             interaction.user.toString(),
                             calculatedUserMention
                         ),
@@ -142,7 +156,9 @@ export abstract class RecalculationManager extends Manager {
                 } else {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            localization.getTranslation(this.calculationFailedResponse),
+                            localization.getTranslation(
+                                this.calculationFailedResponse
+                            ),
                             interaction.user.toString(),
                             calculatedUserMention,
                             result.reason!
@@ -152,7 +168,9 @@ export abstract class RecalculationManager extends Manager {
             } catch (e) {
                 await interaction.channel!.send({
                     content: MessageCreator.createReject(
-                        localization.getTranslation(this.calculationFailedResponse),
+                        localization.getTranslation(
+                            this.calculationFailedResponse
+                        ),
                         interaction.user.toString(),
                         calculatedUserMention,
                         <string>e
@@ -179,7 +197,10 @@ export abstract class RecalculationManager extends Manager {
                 this.prototypeRecalculationQueue.firstKey()!;
             const interaction: CommandInteraction =
                 this.prototypeRecalculationQueue.first()!;
-            const localization: RecalculationManagerLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(interaction));
+            const localization: RecalculationManagerLocalization =
+                this.getLocalization(
+                    await CommandHelper.getUserPreferredLocale(interaction)
+                );
 
             this.prototypeRecalculationQueue.delete(calculatedUser);
 
@@ -192,7 +213,9 @@ export abstract class RecalculationManager extends Manager {
                 if (!bindInfo) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            localization.getTranslation(this.calculationFailedResponse),
+                            localization.getTranslation(
+                                this.calculationFailedResponse
+                            ),
                             interaction.user.toString(),
                             `user ${calculatedUser}`,
                             localization.getTranslation("userNotBinded")
@@ -205,7 +228,9 @@ export abstract class RecalculationManager extends Manager {
                 if (await bindInfo.isDPPBanned()) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            localization.getTranslation(this.calculationFailedResponse),
+                            localization.getTranslation(
+                                this.calculationFailedResponse
+                            ),
                             interaction.user.toString(),
                             `uid ${bindInfo.uid}`,
                             localization.getTranslation("userDPPBanned")
@@ -221,7 +246,9 @@ export abstract class RecalculationManager extends Manager {
                 if (result.success) {
                     await interaction.channel!.send({
                         content: MessageCreator.createAccept(
-                            localization.getTranslation(this.calculationSuccessResponse),
+                            localization.getTranslation(
+                                this.calculationSuccessResponse
+                            ),
                             interaction.user.toString(),
                             `uid ${bindInfo.uid}`
                         ),
@@ -229,7 +256,9 @@ export abstract class RecalculationManager extends Manager {
                 } else {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            localization.getTranslation(this.calculationFailedResponse),
+                            localization.getTranslation(
+                                this.calculationFailedResponse
+                            ),
                             interaction.user.toString(),
                             `uid ${bindInfo.uid}`,
                             result.reason!
@@ -239,7 +268,9 @@ export abstract class RecalculationManager extends Manager {
             } catch (e) {
                 await interaction.channel!.send({
                     content: MessageCreator.createReject(
-                        localization.getTranslation(this.calculationFailedResponse),
+                        localization.getTranslation(
+                            this.calculationFailedResponse
+                        ),
                         interaction.user.toString(),
                         `user ${calculatedUser}`,
                         <string>e
@@ -253,10 +284,12 @@ export abstract class RecalculationManager extends Manager {
 
     /**
      * Gets the localization of this manager utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): RecalculationManagerLocalization {
+    private static getLocalization(
+        language: Language
+    ): RecalculationManagerLocalization {
         return new RecalculationManagerLocalization(language);
     }
 }

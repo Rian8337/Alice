@@ -28,7 +28,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!mappoolMainData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("poolNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("poolNotFound")
+            ),
         });
     }
 
@@ -39,7 +41,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!mappoolDurationData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("poolNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("poolNotFound")
+            ),
         });
     }
 
@@ -55,7 +59,9 @@ export const run: Command["run"] = async (_, interaction) => {
         ) {
             embed.addField(
                 mappoolMainData.map[i][1],
-                `**${localization.getTranslation("length")}**: ${DateTimeFormatHelper.secondsToDHMS(
+                `**${localization.getTranslation(
+                    "length"
+                )}**: ${DateTimeFormatHelper.secondsToDHMS(
                     parseInt(<string>mappoolDurationData.map[i][1]),
                     language
                 )}`

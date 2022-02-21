@@ -19,7 +19,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 25) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("clanNameIsTooLong")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("clanNameIsTooLong")
+            ),
         });
     }
 
@@ -30,7 +32,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("selfIsNotInClan")
+            ),
         });
     }
 

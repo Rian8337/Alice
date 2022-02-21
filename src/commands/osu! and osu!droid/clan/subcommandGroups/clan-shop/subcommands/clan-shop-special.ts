@@ -6,7 +6,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createReject(
-            new ClanLocalization(await CommandHelper.getLocale(interaction)).getTranslation("noSpecialClanShopEvent")
+            new ClanLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation("noSpecialClanShopEvent")
         ),
     });
 };

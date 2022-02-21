@@ -33,7 +33,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("selfIsNotInClan")
+            ),
         });
     }
 
@@ -61,7 +63,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const editDescResult: OperationResult = clan.setDescription(description, language);
+    const editDescResult: OperationResult = clan.setDescription(
+        description,
+        language
+    );
 
     if (!editDescResult.success) {
         return interaction.editReply({

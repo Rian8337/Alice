@@ -15,7 +15,9 @@ import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocaliz
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: WhitelistLocalization = new WhitelistLocalization(language);
+    const localization: WhitelistLocalization = new WhitelistLocalization(
+        language
+    );
 
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
@@ -24,7 +26,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.noPermissionReject
+                )
+            ),
         });
     }
 
@@ -97,7 +103,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             `${localization.getTranslation("starRating")}:\n${beatmaps
                 .map(
                     (v) =>
-                        `- [${v.version}](https://osu.ppy.sh/b/${v.beatmapID
+                        `- [${v.version}](https://osu.ppy.sh/b/${
+                            v.beatmapID
                         }) - **${v.totalDifficulty.toFixed(2)}**`
                 )
                 .join("\n")}`

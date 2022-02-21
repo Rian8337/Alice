@@ -10,7 +10,9 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MusicLocalization = new MusicLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 
@@ -51,7 +53,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (videos.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("noTracksFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("noTracksFound")
+            ),
         });
     }
 

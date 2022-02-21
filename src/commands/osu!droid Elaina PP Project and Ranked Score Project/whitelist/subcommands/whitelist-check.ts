@@ -8,7 +8,9 @@ import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { MapInfo } from "@rian8337/osu-base";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: WhitelistLocalization = new WhitelistLocalization(await CommandHelper.getLocale(interaction));
+    const localization: WhitelistLocalization = new WhitelistLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     // Prioritize beatmap ID over hash
     const beatmapID: number = BeatmapManager.getBeatmapID(

@@ -12,9 +12,9 @@ export class MaintenanceLocalization extends Localization<MaintenanceStrings> {
     protected override readonly translations: Readonly<
         Translation<MaintenanceStrings>
     > = {
-            en: {
-                maintenanceToggle:
-                    "Maintenance mode has been set to `%s` for `%s`.",
-            },
-        };
+        en: {
+            maintenanceToggle:
+                "Maintenance mode has been set to `%s` for `%s`.",
+        },
+    };
 }

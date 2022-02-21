@@ -196,7 +196,7 @@ export class UserBind extends Manager {
             if (
                 !beatmapInfo ||
                 (await DPPHelper.checkSubmissionValidity(beatmapInfo)) !==
-                DPPSubmissionValidity.VALID
+                    DPPSubmissionValidity.VALID
             ) {
                 this.pp.delete(ppEntry.hash);
                 this.playc = Math.max(0, this.playc - 1);
@@ -356,7 +356,8 @@ export class UserBind extends Manager {
             };
 
             this.client.logger.info(
-                `${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""
+                `${calcResult.map.fullTitle}${
+                    entry.mods ? ` +${entry.mods}` : ""
                 }: ${entry.prevPP} ⮕  ${entry.pp}`
             );
 
@@ -631,8 +632,13 @@ export class UserBind extends Manager {
      * @param language The locale of the user who attempted to move the bind. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async moveBind(uid: number, to: Snowflake, language: Language = "en"): Promise<OperationResult> {
-        const localization: UserBindLocalization = this.getLocalization(language);
+    async moveBind(
+        uid: number,
+        to: Snowflake,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: UserBindLocalization =
+            this.getLocalization(language);
 
         if (!this.previous_bind.includes(uid)) {
             return this.createOperationResult(
@@ -671,7 +677,10 @@ export class UserBind extends Manager {
         if (!player.username) {
             this.previous_bind.push(uid);
 
-            return this.createOperationResult(false, localization.getTranslation("playerNotFound"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("playerNotFound")
+            );
         }
 
         this.username = player.username;
@@ -798,12 +807,13 @@ export class UserBind extends Manager {
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(
-                    typeof uidOrUsernameOrPlayer === "string"
-                        ? { username: uidOrUsernameOrPlayer }
-                        : { uid: uidOrUsernameOrPlayer }
-                );
+                      typeof uidOrUsernameOrPlayer === "string"
+                          ? { username: uidOrUsernameOrPlayer }
+                          : { uid: uidOrUsernameOrPlayer }
+                  );
 
-        const localization: UserBindLocalization = this.getLocalization(language);
+        const localization: UserBindLocalization =
+            this.getLocalization(language);
 
         if (!player.username || !player.uid) {
             return this.createOperationResult(
@@ -845,8 +855,12 @@ export class UserBind extends Manager {
      * @param language The locale of the user who attempted to unbind.
      * @returns An object containing information about the operation.
      */
-    async unbind(uid: number, language: Language = "en"): Promise<OperationResult> {
-        const localization: UserBindLocalization = this.getLocalization(language);
+    async unbind(
+        uid: number,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: UserBindLocalization =
+            this.getLocalization(language);
 
         if (!this.isUidBinded(uid)) {
             return this.createOperationResult(
@@ -869,7 +883,11 @@ export class UserBind extends Manager {
                     await clan.removeMember(this.discordid);
 
                     if (!clan.exists) {
-                        await clan.notifyLeader(new UserBindLocalization(await CommandHelper.getLocale(this.discordid)).getTranslation("unbindClanDisbandNotification"));
+                        await clan.notifyLeader(
+                            new UserBindLocalization(
+                                await CommandHelper.getLocale(this.discordid)
+                            ).getTranslation("unbindClanDisbandNotification")
+                        );
                     }
                 }
             }
@@ -961,9 +979,9 @@ export class UserBind extends Manager {
 
     /**
      * Gets the localization of this database utility.
-     * 
-     * @param language 
-     * @returns 
+     *
+     * @param language
+     * @returns
      */
     private getLocalization(language: Language): UserBindLocalization {
         return new UserBindLocalization(language);

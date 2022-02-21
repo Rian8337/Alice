@@ -8,7 +8,9 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: CoinsLocalization = new CoinsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: CoinsLocalization = new CoinsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (
         DateTimeFormatHelper.getTimeDifference(

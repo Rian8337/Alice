@@ -13,12 +13,16 @@ import { User } from "discord.js";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: MapshareLocalization = new MapshareLocalization(language);
+    const localization: MapshareLocalization = new MapshareLocalization(
+        language
+    );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(Constants.notAvailableInServerReject)
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.notAvailableInServerReject
+                )
             ),
         });
     }
@@ -59,7 +63,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("unbanSuccess")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("unbanSuccess")
+        ),
     });
 };
 

@@ -9,7 +9,9 @@ import { UntimeoutLocalization } from "@alice-localization/commands/Staff/Untime
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: UntimeoutLocalization = new UntimeoutLocalization(await CommandHelper.getLocale(interaction));
+    const localization: UntimeoutLocalization = new UntimeoutLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const toUntimeout: GuildMember = await interaction.guild!.members.fetch(
         interaction.options.getUser("user", true)

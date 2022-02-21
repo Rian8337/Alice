@@ -11,11 +11,13 @@ export interface ClanAuctionStrings {
  * Localizations for the `ClanAuction` database utility.
  */
 export class ClanAuctionLocalization extends Localization<ClanAuctionStrings> {
-    protected override readonly translations: Readonly<Translation<ClanAuctionStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<ClanAuctionStrings>
+    > = {
         en: {
             auctionHasntExpired: "not the time to end auction yet",
             noWinningClan: "no winning clan",
             auctioneerNotFound: "auctioneer not found",
-        }
+        },
     };
 }

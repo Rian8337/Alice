@@ -16,7 +16,9 @@ import { Language } from "@alice-localization/base/Language";
 export const run: Command["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: SwitchbindLocalization = new SwitchbindLocalization(language);
+    const localization: SwitchbindLocalization = new SwitchbindLocalization(
+        language
+    );
 
     const uid: number = interaction.options.getInteger("uid", true);
 
@@ -50,7 +52,11 @@ export const run: Command["run"] = async (client, interaction) => {
         });
     }
 
-    const result: OperationResult = await bindInfo.moveBind(uid, user.id, language);
+    const result: OperationResult = await bindInfo.moveBind(
+        uid,
+        user.id,
+        language
+    );
 
     if (!result.success) {
         return interaction.editReply({

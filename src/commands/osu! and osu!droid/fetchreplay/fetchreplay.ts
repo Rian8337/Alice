@@ -37,7 +37,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: FetchreplayLocalization = new FetchreplayLocalization(language);
+    const localization: FetchreplayLocalization = new FetchreplayLocalization(
+        language
+    );
 
     const beatmapLink: string = interaction.options.getString("beatmap", true);
 
@@ -87,7 +89,11 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!score.title) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                localization.getTranslation(interaction.options.getInteger("uid") ? "userScoreNotFound" : "selfScoreNotFound")
+                localization.getTranslation(
+                    interaction.options.getInteger("uid")
+                        ? "userScoreNotFound"
+                        : "selfScoreNotFound"
+                )
             ),
         });
     }
@@ -115,8 +121,9 @@ export const run: Command["run"] = async (_, interaction) => {
             playername:
                 data.replayVersion < 3 ? score.username : data.playerName,
             replayfile: `${score.scoreID}.odr`,
-            mod: `${score.mods.map((v) => v.droidString).join("")}${score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
-                }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
+            mod: `${score.mods.map((v) => v.droidString).join("")}${
+                score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
+            }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
             score: score.score,
             combo: score.combo,
             mark: score.rank,
@@ -134,8 +141,8 @@ export const run: Command["run"] = async (_, interaction) => {
                         ? 1
                         : 0
                     : data.isFullCombo
-                        ? 1
-                        : 0,
+                    ? 1
+                    : 0,
         },
     };
 
@@ -143,7 +150,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const replayAttachment: MessageAttachment = new MessageAttachment(
         zip.toBuffer(),
-        `${data.fileName.substring(0, data.fileName.length - 4)} [${data.playerName
+        `${data.fileName.substring(0, data.fileName.length - 4)} [${
+            data.playerName
         }]-${json.replaydata.time}.edr`
     );
 
@@ -197,9 +205,9 @@ export const run: Command["run"] = async (_, interaction) => {
                 2
             )}ms - ${hitErrorInformation.positiveAvg.toFixed(
                 2
-            )}ms ${localization.getTranslation("hitErrorAvg")} | ${hitErrorInformation.unstableRate.toFixed(
-                2
-            )} UR`
+            )}ms ${localization.getTranslation(
+                "hitErrorAvg"
+            )} | ${hitErrorInformation.unstableRate.toFixed(2)} UR`
         );
 
     calcEmbedOptions.files?.push(replayAttachment);

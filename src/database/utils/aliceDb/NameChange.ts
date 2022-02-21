@@ -47,7 +47,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
      * @returns An object containing information about the operation.
      */
     async accept(language: Language = "en"): Promise<OperationResult> {
-        const localization: NameChangeLocalization = this.getLocalization(language);
+        const localization: NameChangeLocalization =
+            this.getLocalization(language);
 
         if (this.isProcessed) {
             return this.createOperationResult(
@@ -141,8 +142,12 @@ export class NameChange extends Manager implements DatabaseNameChange {
      * @param language The locale of the user who attempted to deny the name change request.
      * @returns An object containing information about the operation.
      */
-    async deny(reason?: string, language: Language = "en"): Promise<OperationResult> {
-        const localization: NameChangeLocalization = this.getLocalization(language);
+    async deny(
+        reason?: string,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: NameChangeLocalization =
+            this.getLocalization(language);
 
         if (this.isProcessed) {
             return this.createOperationResult(
@@ -185,7 +190,9 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 return;
             }
 
-            const localization: NameChangeLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(user));
+            const localization: NameChangeLocalization = this.getLocalization(
+                await CommandHelper.getUserPreferredLocale(user)
+            );
 
             this.player ??= await Player.getInformation({ uid: this.uid });
 
@@ -197,12 +204,20 @@ export class NameChange extends Manager implements DatabaseNameChange {
             embed
                 .setTitle(localization.getTranslation("requestDetails"))
                 .setDescription(
-                    `**${localization.getTranslation("currentUsername")}**: ${this.player.username}\n` +
-                    `**${localization.getTranslation("requestedUsername")}**: ${this.new_username}\n` +
-                    `**${localization.getTranslation("creationDate")}**: ${new Date(
-                        (this.cooldown - 86400 * 30) * 1000
-                    ).toUTCString()}\n\n` +
-                    `**${localization.getTranslation("accepted")}**: ${localization.getTranslation("accepted")}`
+                    `**${localization.getTranslation("currentUsername")}**: ${
+                        this.player.username
+                    }\n` +
+                        `**${localization.getTranslation(
+                            "requestedUsername"
+                        )}**: ${this.new_username}\n` +
+                        `**${localization.getTranslation(
+                            "creationDate"
+                        )}**: ${new Date(
+                            (this.cooldown - 86400 * 30) * 1000
+                        ).toUTCString()}\n\n` +
+                        `**${localization.getTranslation(
+                            "accepted"
+                        )}**: ${localization.getTranslation("accepted")}`
                 );
 
             user.send({
@@ -213,7 +228,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
     }
 
     /**
@@ -229,7 +244,9 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 return;
             }
 
-            const localization: NameChangeLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(user));
+            const localization: NameChangeLocalization = this.getLocalization(
+                await CommandHelper.getUserPreferredLocale(user)
+            );
 
             this.player ??= await Player.getInformation({ uid: this.uid });
 
@@ -241,13 +258,23 @@ export class NameChange extends Manager implements DatabaseNameChange {
             embed
                 .setTitle(localization.getTranslation("requestDetails"))
                 .setDescription(
-                    `**${localization.getTranslation("currentUsername")}**: ${this.player.username}\n` +
-                    `**${localization.getTranslation("requestedUsername")}**: ${this.new_username}\n` +
-                    `**${localization.getTranslation("creationDate")}**: ${new Date(
-                        (this.cooldown - 86400 * 30) * 1000
-                    ).toUTCString()}\n\n` +
-                    `**${localization.getTranslation("status")}**: ${localization.getTranslation("denied")}\n` +
-                    `**${localization.getTranslation("reason")}**: ${reason}`
+                    `**${localization.getTranslation("currentUsername")}**: ${
+                        this.player.username
+                    }\n` +
+                        `**${localization.getTranslation(
+                            "requestedUsername"
+                        )}**: ${this.new_username}\n` +
+                        `**${localization.getTranslation(
+                            "creationDate"
+                        )}**: ${new Date(
+                            (this.cooldown - 86400 * 30) * 1000
+                        ).toUTCString()}\n\n` +
+                        `**${localization.getTranslation(
+                            "status"
+                        )}**: ${localization.getTranslation("denied")}\n` +
+                        `**${localization.getTranslation(
+                            "reason"
+                        )}**: ${reason}`
                 );
 
             user.send({
@@ -258,12 +285,12 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
     }
 
     /**
      * Gets the localization of this database utility.
-     * 
+     *
      * @param language The language to localize.
      */
     private getLocalization(language: Language): NameChangeLocalization {

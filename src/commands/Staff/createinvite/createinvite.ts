@@ -15,7 +15,9 @@ import { CreateinviteLocalization } from "@alice-localization/commands/Staff/Cre
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: CreateinviteLocalization = new CreateinviteLocalization(await CommandHelper.getLocale(interaction));
+    const localization: CreateinviteLocalization = new CreateinviteLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const maxAge: number = DateTimeFormatHelper.DHMStoSeconds(
         interaction.options.getString("validduration") ?? "0"
@@ -40,7 +42,8 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     const reason: string =
-        interaction.options.getString("reason") ?? localization.getTranslation("notSpecified");
+        interaction.options.getString("reason") ??
+        localization.getTranslation("notSpecified");
 
     (<TextChannel | NewsChannel>interaction.channel)
         .createInvite({ maxAge: maxAge, maxUses: maxUsage, reason: reason })
@@ -53,18 +56,30 @@ export const run: Command["run"] = async (_, interaction) => {
 
             embed
                 .setTitle(localization.getTranslation("inviteLinkCreated"))
-                .addField(localization.getTranslation("createdInChannel"), interaction.channel!.toString(), true)
+                .addField(
+                    localization.getTranslation("createdInChannel"),
+                    interaction.channel!.toString(),
+                    true
+                )
                 .addField(
                     localization.getTranslation("maxUsage"),
-                    maxUsage === 0 ? localization.getTranslation("infinite") : maxUsage.toString()
+                    maxUsage === 0
+                        ? localization.getTranslation("infinite")
+                        : maxUsage.toString()
                 )
                 .addField(
                     localization.getTranslation("expirationTime"),
-                    DateTimeFormatHelper.secondsToDHMS(maxAge, localization.language) || localization.getTranslation("never"),
+                    DateTimeFormatHelper.secondsToDHMS(
+                        maxAge,
+                        localization.language
+                    ) || localization.getTranslation("never"),
                     true
                 )
                 .addField(localization.getTranslation("reason"), reason)
-                .addField(localization.getTranslation("inviteLink"), invite.url);
+                .addField(
+                    localization.getTranslation("inviteLink"),
+                    invite.url
+                );
 
             interaction.editReply({
                 embeds: [embed],

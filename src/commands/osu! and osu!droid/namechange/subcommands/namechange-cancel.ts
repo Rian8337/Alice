@@ -7,7 +7,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: NamechangeLocalization = new NamechangeLocalization(await CommandHelper.getLocale(interaction));
+    const localization: NamechangeLocalization = new NamechangeLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const nameChange: NameChange | null =
         await DatabaseManager.aliceDb.collections.nameChange.getFromUser(
@@ -33,7 +35,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createReject(localization.getTranslation("cancelSuccess")),
+        content: MessageCreator.createReject(
+            localization.getTranslation("cancelSuccess")
+        ),
     });
 };
 

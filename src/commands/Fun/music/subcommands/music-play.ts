@@ -23,7 +23,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (videos.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("noTracksFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("noTracksFound")
+            ),
         });
     }
 

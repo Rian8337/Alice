@@ -12,7 +12,9 @@ import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(await CommandHelper.getLocale(interaction));
+    const localization: DailyLocalization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -55,13 +57,22 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     embed
         .setAuthor({
-            name: StringHelper.formatString(localization.getTranslation("profile"), playerInfo.username),
+            name: StringHelper.formatString(
+                localization.getTranslation("profile"),
+                playerInfo.username
+            ),
             iconURL: "https://image.frl/p/beyefgeq5m7tobjg.jpg",
             url: ProfileManager.getProfileLink(playerInfo.uid).toString(),
         })
         .addField(
             localization.getTranslation("statistics"),
-            `**${localization.getTranslation("points")}**: ${playerInfo.points}\n**Alice Coins**: ${coin}${playerInfo.alicecoins}\n**${localization.getTranslation("challengesCompleted")}**: ${playerInfo.challenges.size}`
+            `**${localization.getTranslation("points")}**: ${
+                playerInfo.points
+            }\n**Alice Coins**: ${coin}${
+                playerInfo.alicecoins
+            }\n**${localization.getTranslation("challengesCompleted")}**: ${
+                playerInfo.challenges.size
+            }`
         );
 
     interaction.editReply({

@@ -14,7 +14,9 @@ export const run: Command["run"] = async (_, interaction) => {
         return interaction
             .editReply({
                 content: MessageCreator.createReject(
-                    new SubmitLocalization(await CommandHelper.getLocale(interaction)).getTranslation("commandNotAllowed")
+                    new SubmitLocalization(
+                        await CommandHelper.getLocale(interaction)
+                    ).getTranslation("commandNotAllowed")
                 ),
             })
             .then(() => setTimeout(() => interaction.deleteReply(), 5 * 1000));

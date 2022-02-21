@@ -39,7 +39,9 @@ function getCommandList(client: Bot): Collection<string, string[]> {
 }
 
 export const run: Command["run"] = async (client, interaction) => {
-    const localization: HelpLocalization = new HelpLocalization(await CommandHelper.getLocale(interaction));
+    const localization: HelpLocalization = new HelpLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const commandName: string | null =
         interaction.options.getString("commandname");
@@ -106,7 +108,7 @@ export const run: Command["run"] = async (client, interaction) => {
                                 | ApplicationCommandSubGroupData
                                 | ApplicationCommandSubCommandData
                             >
-                            >arg).required;
+                        >arg).required;
 
                         if (isOptional) {
                             mappedArgs.push(`[${arg.name}]`);
@@ -127,30 +129,33 @@ export const run: Command["run"] = async (client, interaction) => {
             .setTitle(cmd.config.name)
             .setDescription(
                 "```md\n" +
-                `${cmd.config.description}` +
-                "```\n" +
-                `${localization.getTranslation("category")}: ` +
-                "`" +
-                cmd.category +
-                "`\n" +
-                `${localization.getTranslation("requiredPermissions")}: \`` +
-                PermissionHelper.getPermissionString(
-                    cmd.config.permissions
-                ) +
-                "`"
+                    `${cmd.config.description}` +
+                    "```\n" +
+                    `${localization.getTranslation("category")}: ` +
+                    "`" +
+                    cmd.category +
+                    "`\n" +
+                    `${localization.getTranslation(
+                        "requiredPermissions"
+                    )}: \`` +
+                    PermissionHelper.getPermissionString(
+                        cmd.config.permissions
+                    ) +
+                    "`"
             )
             .addField(
                 localization.getTranslation("examples"),
                 cmd.config.example
                     .map(
                         (v) =>
-                            `\`/${v.command}\`${v.arguments
-                                ? ` ${v.arguments
-                                    .map(
-                                        (a) => `\`${a.name}:${a.value}\``
-                                    )
-                                    .join(" ")}`
-                                : ""
+                            `\`/${v.command}\`${
+                                v.arguments
+                                    ? ` ${v.arguments
+                                          .map(
+                                              (a) => `\`${a.name}:${a.value}\``
+                                          )
+                                          .join(" ")}`
+                                    : ""
                             }\n` + v.description
                     )
                     .join("\n\n") || localization.getTranslation("none"),
@@ -158,24 +163,27 @@ export const run: Command["run"] = async (client, interaction) => {
             )
             .addField(
                 `${localization.getTranslation("usage")}\n` +
-                `\`<...>\`: ${localization.getTranslation("required")}\n` +
-                `\`[...]\`: ${localization.getTranslation("optional")}\n\n` +
-                `\`${cmd.config.name}${argsString ? ` ${argsString}` : ""
-                }\``,
+                    `\`<...>\`: ${localization.getTranslation("required")}\n` +
+                    `\`[...]\`: ${localization.getTranslation(
+                        "optional"
+                    )}\n\n` +
+                    `\`${cmd.config.name}${
+                        argsString ? ` ${argsString}` : ""
+                    }\``,
                 `**${localization.getTranslation("details")}**\n` +
-                cmd.config.options
-                    .map(
-                        (v) =>
-                            "`" +
-                            v.name +
-                            "`: *" +
-                            CommandHelper.optionTypeToString(
-                                <ApplicationCommandOptionTypes>v.type
-                            ) +
-                            "*\n" +
-                            v.description
-                    )
-                    .join("\n\n") || localization.getTranslation("none"),
+                    cmd.config.options
+                        .map(
+                            (v) =>
+                                "`" +
+                                v.name +
+                                "`: *" +
+                                CommandHelper.optionTypeToString(
+                                    <ApplicationCommandOptionTypes>v.type
+                                ) +
+                                "*\n" +
+                                v.description
+                        )
+                        .join("\n\n") || localization.getTranslation("none"),
                 true
             );
 
@@ -188,14 +196,16 @@ export const run: Command["run"] = async (client, interaction) => {
             .setTitle(localization.getTranslation("aliceHelp"))
             .setDescription(
                 `${localization.getTranslation("creator")}\n\n` +
-                `${localization.getTranslation("useHelpCommand")}\n` +
-                localization.getTranslation("issuesContact")
+                    `${localization.getTranslation("useHelpCommand")}\n` +
+                    localization.getTranslation("issuesContact")
             )
             .setThumbnail(client.user!.avatarURL({ dynamic: true })!);
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             embed.addField(
-                `**${localization.getTranslation("category")}**: ${commandList.keyAt(page - 1)}`,
+                `**${localization.getTranslation(
+                    "category"
+                )}**: ${commandList.keyAt(page - 1)}`,
                 commandList
                     .at(page - 1)!
                     .map((v) => `\`${v}\``)

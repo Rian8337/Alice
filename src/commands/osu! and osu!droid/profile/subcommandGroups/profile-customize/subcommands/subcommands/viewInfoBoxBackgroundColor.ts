@@ -14,7 +14,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            new ProfileLocalization(await CommandHelper.getLocale(interaction)).getTranslation("infoBoxBackgroundColorInfo"),
+            new ProfileLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation("infoBoxBackgroundColorInfo"),
             color
         ),
     });

@@ -14,7 +14,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ConstantsLocalization(await CommandHelper.getLocale(interaction)).getTranslation(Constants.noPermissionReject)),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(
+                    await CommandHelper.getLocale(interaction)
+                ).getTranslation(Constants.noPermissionReject)
+            ),
         });
     }
 

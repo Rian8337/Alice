@@ -19,7 +19,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     ) {
         await message.delete();
 
-        const localization: CuteNoLewdLocalization = new CuteNoLewdLocalization(await CommandHelper.getLocale(message.author));
+        const localization: CuteNoLewdLocalization = new CuteNoLewdLocalization(
+            await CommandHelper.getLocale(message.author)
+        );
 
         return message.channel
             .send(

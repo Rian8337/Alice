@@ -30,7 +30,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tooManyOptions")
+            ),
         });
     }
 
@@ -111,7 +113,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
                 embed.addField(
                     `${i + 1}. ${pp.title} ${modstring}`,
-                    `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ${Symbols.missIcon
+                    `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ${
+                        Symbols.missIcon
                     } | __${pp.pp} pp__ (Net pp: ${(
                         pp.pp * Math.pow(0.95, i)
                     ).toFixed(2)} pp)`

@@ -29,7 +29,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!staffMembers.has(interaction.user.id)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    localization.getTranslation("selfHasNoAdministrativePermission")
+                    localization.getTranslation(
+                        "selfHasNoAdministrativePermission"
+                    )
                 ),
             });
         }
@@ -46,7 +48,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!bindInfo) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+                    new ConstantsLocalization(language).getTranslation(
+                        Constants.selfNotBindedReject
+                    )
                 ),
             });
         }
@@ -67,7 +71,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("clanDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("clanDoesntExist")
+            ),
         });
     }
 
@@ -122,7 +128,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("removeIconSuccessful")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("removeIconSuccessful")
+        ),
     });
 };
 

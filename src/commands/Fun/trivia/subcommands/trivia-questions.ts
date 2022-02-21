@@ -11,7 +11,9 @@ import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: TriviaLocalization = new TriviaLocalization(await CommandHelper.getLocale(interaction));
+    const localization: TriviaLocalization = new TriviaLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (CacheManager.stillHasQuestionTriviaActive.has(interaction.channelId)) {
         return interaction.editReply({
@@ -72,25 +74,27 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (result.results.length > 0) {
         embed.setDescription(
             `${localization.getTranslation("correctAnswerGotten")}.\n\n` +
-            result.results
-                .sort((a, b) => {
-                    return a.timeTaken - b.timeTaken;
-                })
-                .map((v) => `${v.user.username} - ${v.timeTaken / 1000} s`)
-                .join("\n") +
-            "\n\n" +
-            `${localization.getTranslation(result.correctAnswers.length === 1
-                ? "oneCorrectAnswer"
-                : "multipleCorrectAnswers"
-            )} **${result.correctAnswers.join(", ")}**.`
+                result.results
+                    .sort((a, b) => {
+                        return a.timeTaken - b.timeTaken;
+                    })
+                    .map((v) => `${v.user.username} - ${v.timeTaken / 1000} s`)
+                    .join("\n") +
+                "\n\n" +
+                `${localization.getTranslation(
+                    result.correctAnswers.length === 1
+                        ? "oneCorrectAnswer"
+                        : "multipleCorrectAnswers"
+                )} **${result.correctAnswers.join(", ")}**.`
         );
     } else {
         embed.setDescription(
             `${localization.getTranslation("correctAnswerNotGotten")}.\n\n` +
-            `${localization.getTranslation(result.correctAnswers.length === 1
-                ? "oneCorrectAnswer"
-                : "multipleCorrectAnswers"
-            )} **${result.correctAnswers.join(", ")}**.`
+                `${localization.getTranslation(
+                    result.correctAnswers.length === 1
+                        ? "oneCorrectAnswer"
+                        : "multipleCorrectAnswers"
+                )} **${result.correctAnswers.join(", ")}**.`
         );
     }
 

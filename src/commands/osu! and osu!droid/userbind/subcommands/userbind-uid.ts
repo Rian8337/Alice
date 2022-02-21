@@ -16,7 +16,9 @@ import { Language } from "@alice-localization/base/Language";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: UserbindLocalization = new UserbindLocalization(language);
+    const localization: UserbindLocalization = new UserbindLocalization(
+        language
+    );
 
     const uid: number = interaction.options.getInteger("uid", true);
 
@@ -59,7 +61,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (interaction.guild?.id !== mainServer.id) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        localization.getTranslation("newAccountBindNotInMainServer")
+                        localization.getTranslation(
+                            "newAccountBindNotInMainServer"
+                        )
                     ),
                 });
             }
@@ -90,7 +94,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     interaction,
                     {
                         content: MessageCreator.createWarn(
-                            localization.getTranslation("newAccountUidBindConfirmation"),
+                            localization.getTranslation(
+                                "newAccountUidBindConfirmation"
+                            ),
                             uid.toString()
                         ),
                     },
@@ -104,7 +110,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
         }
 
-        const result: OperationResult = await userBindInfo.bind(player, language);
+        const result: OperationResult = await userBindInfo.bind(
+            player,
+            language
+        );
 
         if (!result.success) {
             return interaction.editReply({

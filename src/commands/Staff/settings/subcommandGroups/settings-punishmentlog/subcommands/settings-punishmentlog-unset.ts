@@ -11,7 +11,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            new SettingsLocalization(await CommandHelper.getLocale(interaction)).getTranslation("unsetLogChannelSuccess")
+            new SettingsLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation("unsetLogChannelSuccess")
         ),
     });
 };

@@ -17,7 +17,10 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { ChannelDataCollectionManager } from "@alice-database/managers/aliceDb/ChannelDataCollectionManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { MessageanalyticsLocalization, MessageanalyticsStrings } from "@alice-localization/commands/Tools/MessageanalyticsLocalization";
+import {
+    MessageanalyticsLocalization,
+    MessageanalyticsStrings,
+} from "@alice-localization/commands/Tools/MessageanalyticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**
@@ -31,7 +34,10 @@ function daysToMilliseconds(days: number): number {
 }
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const localization: MessageanalyticsLocalization = new MessageanalyticsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MessageanalyticsLocalization =
+        new MessageanalyticsLocalization(
+            await CommandHelper.getLocale(interaction)
+        );
 
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
     const dbManager: ChannelDataCollectionManager =
@@ -153,7 +159,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             continue;
         }
 
-        const msg: string = `${channel}: ${count.toLocaleString()} ${localization.getTranslation("messageCount")}\n`;
+        const msg: string = `${channel}: ${count.toLocaleString()} ${localization.getTranslation(
+            "messageCount"
+        )}\n`;
 
         if (
             [generalParent, droidParent].includes(<Snowflake>channel.parentId)

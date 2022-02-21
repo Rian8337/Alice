@@ -11,7 +11,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const clans: Collection<string, Clan> =
         await DatabaseManager.elainaDb.collections.clan.get(
@@ -22,7 +24,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (clans.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("noAvailableClans")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("noAvailableClans")
+            ),
         });
     }
 
@@ -48,9 +52,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${localization.getTranslation("clanName").padEnd(
-            longestNameLength
-        )} | ${localization.getTranslation("clanMemberCount").padEnd(7)} | ${localization.getTranslation("clanPower")}\n`;
+        let output: string = `${"#".padEnd(4)} | ${localization
+            .getTranslation("clanName")
+            .padEnd(longestNameLength)} | ${localization
+            .getTranslation("clanMemberCount")
+            .padEnd(7)} | ${localization.getTranslation("clanPower")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
             const clan: Clan = entries[i];
@@ -59,8 +65,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 output += `${(i + 1).toString().padEnd(4)} | ${clan.name
                     .trim()
                     .padEnd(longestNameLength)} | ${clan.member_list.size
-                        .toString()
-                        .padEnd(6)} | ${clan.power.toLocaleString().padEnd(4)}`;
+                    .toString()
+                    .padEnd(6)} | ${clan.power.toLocaleString().padEnd(4)}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
                     longestNameLength

@@ -26,7 +26,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("matchDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("matchDoesntExist")
+            ),
         });
     }
 
@@ -39,7 +41,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!mappoolDurationData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("mappoolNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("mappoolNotFound")
+            ),
         });
     }
 
@@ -47,7 +51,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!map) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("mapNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("mapNotFound")
+            ),
         });
     }
 
@@ -71,14 +77,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("roundInitiated")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("roundInitiated")
+        ),
         embeds: [embed],
     });
 
     setTimeout(() => {
         setTimeout(() => {
             interaction.channel!.send({
-                content: MessageCreator.createAccept(localization.getTranslation("roundEnded")),
+                content: MessageCreator.createAccept(
+                    localization.getTranslation("roundEnded")
+                ),
             });
 
             client.subcommands

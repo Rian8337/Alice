@@ -30,7 +30,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.selfNotBindedReject
+                )
             ),
         });
     }
@@ -43,8 +45,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 embeds: [
                     EmbedCreator.createInputEmbed(
                         interaction,
-                        localization.getTranslation("changeInfoBoxBackgroundColorTitle"),
-                        `${localization.getTranslation("enterColor")}\n\n${localization.getTranslation("supportedColorFormat")}`,
+                        localization.getTranslation(
+                            "changeInfoBoxBackgroundColorTitle"
+                        ),
+                        `${localization.getTranslation(
+                            "enterColor"
+                        )}\n\n${localization.getTranslation(
+                            "supportedColorFormat"
+                        )}`,
                         language
                     ),
                 ],
@@ -62,10 +70,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (color.includes(",")) {
         const RGBA: number[] = color.split(",").map((v) => parseFloat(v));
 
-        if (RGBA.length !== 4 ||
+        if (
+            RGBA.length !== 4 ||
             RGBA.slice(0, 3).some(
                 (v) => !NumberHelper.isNumberInRange(v, 0, 255, true)
-            ) || !NumberHelper.isNumberInRange(RGBA[3], 0, 1, true)
+            ) ||
+            !NumberHelper.isNumberInRange(RGBA[3], 0, 1, true)
         ) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
@@ -75,7 +85,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     } else if (!StringHelper.isValidHexCode(color)) {
         return interaction.editReply({
-            content: MessageCreator.createAccept(localization.getTranslation("invalidHexCode")),
+            content: MessageCreator.createAccept(
+                localization.getTranslation("invalidHexCode")
+            ),
         });
     }
 
@@ -113,7 +125,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("changeInfoBackgroundColorConfirmation"),
+                localization.getTranslation(
+                    "changeInfoBackgroundColorConfirmation"
+                ),
                 interaction.user.toString(),
                 color
             ),

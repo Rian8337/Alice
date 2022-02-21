@@ -9,13 +9,17 @@ import { ColorLocalization } from "@alice-localization/commands/Tools/ColorLocal
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: ColorLocalization = new ColorLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ColorLocalization = new ColorLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const color: string = interaction.options.getString("hexcode", true);
 
     if (!StringHelper.isValidHexCode(color)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("invalidHexCode")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("invalidHexCode")
+            ),
         });
     }
 

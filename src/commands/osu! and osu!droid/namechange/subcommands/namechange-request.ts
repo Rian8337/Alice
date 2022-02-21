@@ -15,7 +15,9 @@ import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocaliz
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: NamechangeLocalization = new NamechangeLocalization(language);
+    const localization: NamechangeLocalization = new NamechangeLocalization(
+        language
+    );
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
@@ -25,7 +27,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.selfNotBindedReject
+                )
             ),
         });
     }
@@ -74,7 +78,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const newUsername: string = interaction.options.getString("newusername", true);
+    const newUsername: string = interaction.options.getString(
+        "newusername",
+        true
+    );
 
     if (
         StringHelper.hasUnicode(newUsername) ||
@@ -104,7 +111,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("newNameAlreadyTaken")
             ),
-        }); 2
+        });
+        2;
     }
 
     await DatabaseManager.aliceDb.collections.nameChange.requestNameChange(
@@ -115,7 +123,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("requestSuccess")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("requestSuccess")
+        ),
     });
 };
 

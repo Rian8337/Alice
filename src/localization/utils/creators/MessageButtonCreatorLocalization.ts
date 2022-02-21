@@ -11,11 +11,13 @@ export interface MessageButtonCreatorStrings {
  * Localizations for the `MessageButtonCreator` creator utility.
  */
 export class MessageButtonCreatorLocalization extends Localization<MessageButtonCreatorStrings> {
-    protected override readonly translations: Readonly<Translation<MessageButtonCreatorStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<MessageButtonCreatorStrings>
+    > = {
         en: {
             pleaseWait: "Please wait...",
             actionCancelled: "Action cancelled.",
             timedOut: "Timed out.",
-        }
+        },
     };
 }

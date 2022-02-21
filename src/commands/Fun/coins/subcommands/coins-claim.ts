@@ -45,7 +45,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         interaction.editReply({
             content: MessageCreator.createAccept(
-                localization.getTranslation(streakComplete ? "dailyClaimWithStreakSuccess" : "dailyClaimSuccess"),
+                localization.getTranslation(
+                    streakComplete
+                        ? "dailyClaimWithStreakSuccess"
+                        : "dailyClaimSuccess"
+                ),
                 dailyCoin.toLocaleString(),
                 streak.toString(),
                 (playerInfo.alicecoins + dailyCoin).toLocaleString()
@@ -58,11 +62,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
 
         if (!bindInfo) {
-            const constantsLocalization: ConstantsLocalization = new ConstantsLocalization(language);
+            const constantsLocalization: ConstantsLocalization =
+                new ConstantsLocalization(language);
 
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    constantsLocalization.getTranslation(Constants.selfNotBindedReject)
+                    constantsLocalization.getTranslation(
+                        Constants.selfNotBindedReject
+                    )
                 ),
             });
         }

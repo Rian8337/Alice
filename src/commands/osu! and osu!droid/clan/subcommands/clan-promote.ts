@@ -9,7 +9,9 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const toPromote: User = interaction.options.getUser("member", true);
 
@@ -20,7 +22,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("selfIsNotInClan")
+            ),
         });
     }
 

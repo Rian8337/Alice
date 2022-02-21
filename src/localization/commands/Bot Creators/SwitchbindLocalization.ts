@@ -15,11 +15,11 @@ export class SwitchbindLocalization extends Localization<SwitchbindStrings> {
     protected override readonly translations: Readonly<
         Translation<SwitchbindStrings>
     > = {
-            en: {
-                invalidUid: "Hey, please enter a valid uid!",
-                uidNotBinded: "I'm sorry, this uid is not binded to anyone!",
-                switchFailed: "I'm sorry, I'm unable to switch the bind: %s.",
-                switchSuccessful: "Successfully switched bind.",
-            },
-        };
+        en: {
+            invalidUid: "Hey, please enter a valid uid!",
+            uidNotBinded: "I'm sorry, this uid is not binded to anyone!",
+            switchFailed: "I'm sorry, I'm unable to switch the bind: %s.",
+            switchSuccessful: "Successfully switched bind.",
+        },
+    };
 }

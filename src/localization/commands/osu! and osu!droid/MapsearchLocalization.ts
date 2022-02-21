@@ -16,14 +16,14 @@ export class MapsearchLocalization extends Localization<MapsearchStrings> {
     protected override readonly translations: Readonly<
         Translation<MapsearchStrings>
     > = {
-            en: {
-                requestFailed:
-                    "I'm sorry, I couldn't fetch your beatmap search result from Sayobot!",
-                noBeatmapsFound:
-                    "I'm sorry, your beatmap search doesn't return any beatmaps!",
-                serviceProvider: "Service provided by Sayobot",
-                beatmapsFound: "Beatmaps Found",
-                download: "Download",
-            },
-        };
+        en: {
+            requestFailed:
+                "I'm sorry, I couldn't fetch your beatmap search result from Sayobot!",
+            noBeatmapsFound:
+                "I'm sorry, your beatmap search doesn't return any beatmaps!",
+            serviceProvider: "Service provided by Sayobot",
+            beatmapsFound: "Beatmaps Found",
+            download: "Download",
+        },
+    };
 }

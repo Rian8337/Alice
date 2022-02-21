@@ -49,18 +49,22 @@ export interface ChallengeStrings {
  * Localizations for the `Challenge` database utility.
  */
 export class ChallengeLocalization extends Localization<ChallengeStrings> {
-    protected override readonly translations: Readonly<Translation<ChallengeStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<ChallengeStrings>
+    > = {
         en: {
             challengeNotFound: "challenge is not scheduled",
             challengeOngoing: "a challenge is still ongoing",
             challengeNotOngoing: "challenge is not ongoing",
             challengeNotExpired: "not the time to end challenge yet",
             challengeEndSuccess: "Successfully ended challenge `%s`.",
-            firstPlace: "Congratulations to %s for achieving first place in challenge %s, earning them %s points and %s%s Alice coins!",
+            firstPlace:
+                "Congratulations to %s for achieving first place in challenge %s, earning them %s points and %s%s Alice coins!",
             constrainNotFulfilled: "constrain not fulfilled",
             eznfhtUsage: "usage of EZ, NF, or HT",
             replayNotFound: "replay not found",
-            customARSpeedMulUsage: "custom speed multiplier and/or force AR is used",
+            customARSpeedMulUsage:
+                "custom speed multiplier and/or force AR is used",
             beatmapNotFound: "beatmap not found",
             passReqNotFulfilled: "pass requirement is not fulfilled",
             cannotParseReplay: "cannot parse replay",
@@ -92,6 +96,6 @@ export class ChallengeLocalization extends Localization<ChallengeStrings> {
             max100Description: "100 hit result less than or equal to %s",
             max50Description: "50 hit result less than or equal to %s",
             maxURDescription: "UR (unstable rate) below or equal to %s",
-        }
+        },
     };
 }

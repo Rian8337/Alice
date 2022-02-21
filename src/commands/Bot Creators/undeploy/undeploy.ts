@@ -7,7 +7,9 @@ import { UndeployLocalization } from "@alice-localization/commands/Bot Creators/
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
-    const localization: UndeployLocalization = new UndeployLocalization(await CommandHelper.getLocale(interaction));
+    const localization: UndeployLocalization = new UndeployLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const commandName: string = interaction.options.getString("command", true);
 

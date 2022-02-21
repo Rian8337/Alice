@@ -122,8 +122,12 @@ export class PlayerInfo extends Manager {
      * @param language The locale of the user who attempted to increment this user's coins. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async incrementCoins(amount: number, language: Language = "en"): Promise<OperationResult> {
-        const localization: PlayerInfoLocalization = this.getLocalization(language);
+    async incrementCoins(
+        amount: number,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: PlayerInfoLocalization =
+            this.getLocalization(language);
 
         if (this.alicecoins + amount < 0) {
             // This would only happen if the amount incremented is negative
@@ -150,8 +154,12 @@ export class PlayerInfo extends Manager {
      * @param coinAmount The amount of coins the user has gained.
      * @param language The locale of the user who attempted to claim. Defaults to English.
      */
-    async claimDailyCoins(coinAmount: number, language: Language = "en"): Promise<OperationResult> {
-        const localization: PlayerInfoLocalization = this.getLocalization(language);
+    async claimDailyCoins(
+        coinAmount: number,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: PlayerInfoLocalization =
+            this.getLocalization(language);
 
         if (this.hasClaimedDaily) {
             return this.createOperationResult(
@@ -199,7 +207,8 @@ export class PlayerInfo extends Manager {
         to: PlayerInfo,
         language: Language = "en"
     ): Promise<OperationResult> {
-        const localization: PlayerInfoLocalization = this.getLocalization(language);
+        const localization: PlayerInfoLocalization =
+            this.getLocalization(language);
 
         let limit: number;
 
@@ -247,7 +256,7 @@ export class PlayerInfo extends Manager {
 
     /**
      * Gets the localization of this database utility.
-     * 
+     *
      * @param language The language to localize.
      */
     private getLocalization(language: Language): PlayerInfoLocalization {

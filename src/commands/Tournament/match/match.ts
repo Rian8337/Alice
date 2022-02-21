@@ -8,7 +8,8 @@ import { Snowflake } from "discord.js";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const constantsLocalization: ConstantsLocalization = new ConstantsLocalization(await CommandHelper.getLocale(interaction));
+    const constantsLocalization: ConstantsLocalization =
+        new ConstantsLocalization(await CommandHelper.getLocale(interaction));
 
     const whitelistedGuilds: Snowflake[] = [
         Constants.mainServer,
@@ -22,7 +23,9 @@ export const run: Command["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                constantsLocalization.getTranslation(Constants.notAvailableInServerReject)
+                constantsLocalization.getTranslation(
+                    Constants.notAvailableInServerReject
+                )
             ),
         });
     }
@@ -30,7 +33,9 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!interaction.member.roles.cache.find((r) => r.name === "Referee")) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                constantsLocalization.getTranslation(Constants.noPermissionReject)
+                constantsLocalization.getTranslation(
+                    Constants.noPermissionReject
+                )
             ),
         });
     }

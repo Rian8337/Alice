@@ -29,7 +29,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.selfNotBindedReject
+                )
             ),
         });
     }
@@ -82,7 +84,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if ((playerInfo?.alicecoins ?? 0) < 500) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    localization.getTranslation("coinsToBuyBackgroundNotEnough"),
+                    localization.getTranslation(
+                        "coinsToBuyBackgroundNotEnough"
+                    ),
                     coin.toString(),
                     coin.toString(),
                     coin.toString(),
@@ -119,14 +123,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             content: MessageCreator.createWarn(
                 isBackgroundOwned
                     ? StringHelper.formatString(
-                        localization.getTranslation("switchBackgroundConfirmation"),
-                        interaction.user.toString()
-                    )
+                          localization.getTranslation(
+                              "switchBackgroundConfirmation"
+                          ),
+                          interaction.user.toString()
+                      )
                     : StringHelper.formatString(
-                        localization.getTranslation("buyBackgroundConfirmation"),
-                        interaction.user.toString(),
-                        coin.toString()
-                    )
+                          localization.getTranslation(
+                              "buyBackgroundConfirmation"
+                          ),
+                          interaction.user.toString(),
+                          coin.toString()
+                      )
             ),
             files: [image],
             embeds: [],
@@ -152,9 +160,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            localization.getTranslation("switchBackgroundSuccess") + (isBackgroundOwned
-                ? ""
-                : ` ${StringHelper.formatString(localization.getTranslation("aliceCoinAmount"), coin.toString(), playerInfo!.alicecoins.toLocaleString())}`),
+            localization.getTranslation("switchBackgroundSuccess") +
+                (isBackgroundOwned
+                    ? ""
+                    : ` ${StringHelper.formatString(
+                          localization.getTranslation("aliceCoinAmount"),
+                          coin.toString(),
+                          playerInfo!.alicecoins.toLocaleString()
+                      )}`),
             interaction.user.toString(),
             bgId
         ),

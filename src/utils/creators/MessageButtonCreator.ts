@@ -117,7 +117,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         duration: number,
         language: Language = "en"
     ): Promise<boolean> {
-        const localization: MessageButtonCreatorLocalization = this.getLocalization(language);
+        const localization: MessageButtonCreatorLocalization =
+            this.getLocalization(language);
 
         const buttons: MessageButton[] = this.createConfirmationButtons();
 
@@ -152,10 +153,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         });
                     } else {
                         await interaction.editReply({
-                            content:
-                                MessageCreator.createReject(
-                                    localization.getTranslation("actionCancelled")
-                                ),
+                            content: MessageCreator.createReject(
+                                localization.getTranslation("actionCancelled")
+                            ),
                             components: [],
                         });
 
@@ -167,7 +167,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     }
                 } else {
                     await interaction.editReply({
-                        content: MessageCreator.createReject(localization.getTranslation("timedOut")),
+                        content: MessageCreator.createReject(
+                            localization.getTranslation("timedOut")
+                        ),
                         components: [],
                     });
 
@@ -317,7 +319,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             try {
                 await interaction.editReply(options);
                 // eslint-disable-next-line no-empty
-            } catch { }
+            } catch {}
         });
 
         return message;
@@ -390,10 +392,12 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
     /**
      * Gets the localization of this creator utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): MessageButtonCreatorLocalization {
+    private static getLocalization(
+        language: Language
+    ): MessageButtonCreatorLocalization {
         return new MessageButtonCreatorLocalization(language);
     }
 }

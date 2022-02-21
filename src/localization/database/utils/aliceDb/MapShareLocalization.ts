@@ -11,11 +11,13 @@ export interface MapShareStrings {
  * Localizations for the `MapShare
  */
 export class MapShareLocalization extends Localization<MapShareStrings> {
-    protected override readonly translations: Readonly<Translation<MapShareStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<MapShareStrings>
+    > = {
         en: {
             submissionNotAccepted: "submission is not accepted yet",
             beatmapNotFound: "beatmap not found",
             submitterNotBinded: "submitter is not binded",
-        }
+        },
     };
 }

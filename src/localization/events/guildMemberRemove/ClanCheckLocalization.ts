@@ -9,9 +9,12 @@ export interface ClanCheckStrings {
  * Localizations for the `clanCheck` event utility for `guildMemberRemove` event.
  */
 export class ClanCheckLocalization extends Localization<ClanCheckStrings> {
-    protected override readonly translations: Readonly<Translation<ClanCheckStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<ClanCheckStrings>
+    > = {
         en: {
-            memberKicked: "Hey, your member (%s) has left the server, therefore they have been kicked from your clan!",
-        }
+            memberKicked:
+                "Hey, your member (%s) has left the server, therefore they have been kicked from your clan!",
+        },
     };
 }

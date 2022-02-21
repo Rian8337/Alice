@@ -14,9 +14,12 @@ import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocaliz
 export const run: Subcommand["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: SettingsLocalization = new SettingsLocalization(language);
+    const localization: SettingsLocalization = new SettingsLocalization(
+        language
+    );
 
-    const constantsLocalization: ConstantsLocalization = new ConstantsLocalization(language);
+    const constantsLocalization: ConstantsLocalization =
+        new ConstantsLocalization(language);
 
     const commandName: string = interaction.options.getString("command", true);
 
@@ -44,7 +47,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        constantsLocalization.getTranslation(Constants.noPermissionReject)
+                        constantsLocalization.getTranslation(
+                            Constants.noPermissionReject
+                        )
                     ),
                 });
             }
@@ -65,7 +70,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        constantsLocalization.getTranslation(Constants.noPermissionReject)
+                        constantsLocalization.getTranslation(
+                            Constants.noPermissionReject
+                        )
                     ),
                 });
             }
@@ -81,7 +88,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        constantsLocalization.getTranslation(Constants.noPermissionReject)
+                        constantsLocalization.getTranslation(
+                            Constants.noPermissionReject
+                        )
                     ),
                 });
             }

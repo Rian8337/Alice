@@ -11,11 +11,15 @@ export interface PlayerInfoStrings {
  * Localizations for the `PlayerInfo` database utility.
  */
 export class PlayerInfoLocalization extends Localization<PlayerInfoStrings> {
-    protected override readonly translations: Readonly<Translation<PlayerInfoStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<PlayerInfoStrings>
+    > = {
         en: {
-            tooMuchCoinDeduction: "too much coin deduction; can only deduct at most %s Alice coins",
+            tooMuchCoinDeduction:
+                "too much coin deduction; can only deduct at most %s Alice coins",
             dailyClaimUsed: "daily claim has been used",
-            dailyLimitReached: "transferred amount is beyond daily limit—can only transfer %s Alice coins left."
-        }
+            dailyLimitReached:
+                "transferred amount is beyond daily limit—can only transfer %s Alice coins left.",
+        },
     };
 }

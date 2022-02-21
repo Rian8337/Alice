@@ -35,7 +35,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!StringHelper.isValidURL(url)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("invalidReplayURL")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("invalidReplayURL")
+            ),
         });
     }
 
@@ -47,7 +49,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.selfNotBindedReject
+                )
             ),
         });
     }
@@ -71,7 +75,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await replayAnalyzer.analyze();
     } catch {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("replayInvalid")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("replayInvalid")
+            ),
         });
     }
 
@@ -87,7 +93,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (data.replayVersion < 3) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("replayTooOld")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("replayTooOld")
+            ),
         });
     }
 
@@ -147,16 +155,36 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     embed
         .setTitle(localization.getTranslation("scoreStatistics"))
         .setDescription(
-            `**${localization.getTranslation("totalScore")}**: ${data.score}\n` +
-            `**${localization.getTranslation("maxCombo")}**: ${data.maxCombo}x\n` +
-            `**${localization.getTranslation("accuracy")}**: ${(data.accuracy.value() * 100).toFixed(2)}%\n` +
-            `**${localization.getTranslation("rank")}**: ${data.rank}\n` +
-            `**${localization.getTranslation("time")}**: ${data.time.toUTCString()}\n\n` +
-            `**${localization.getTranslation("hitGreat")}**: ${data.accuracy.n300} (${data.hit300k} ${localization.getTranslation("geki")} + ${localization.getTranslation("katu")})\n` +
-            `**${localization.getTranslation("hitGood")}**: ${data.accuracy.n100} (${data.hit100k} ${localization.getTranslation("katu")})\n` +
-            `**${localization.getTranslation("hitMeh")}**: ${data.accuracy.n50}\n` +
-            `**${localization.getTranslation("misses")}**: ${data.accuracy.nmiss}\n\n` +
-            `**${localization.getTranslation("bonusLevelReached")}**: ${bonusLevel}`
+            `**${localization.getTranslation("totalScore")}**: ${
+                data.score
+            }\n` +
+                `**${localization.getTranslation("maxCombo")}**: ${
+                    data.maxCombo
+                }x\n` +
+                `**${localization.getTranslation("accuracy")}**: ${(
+                    data.accuracy.value() * 100
+                ).toFixed(2)}%\n` +
+                `**${localization.getTranslation("rank")}**: ${data.rank}\n` +
+                `**${localization.getTranslation(
+                    "time"
+                )}**: ${data.time.toUTCString()}\n\n` +
+                `**${localization.getTranslation("hitGreat")}**: ${
+                    data.accuracy.n300
+                } (${data.hit300k} ${localization.getTranslation(
+                    "geki"
+                )} + ${localization.getTranslation("katu")})\n` +
+                `**${localization.getTranslation("hitGood")}**: ${
+                    data.accuracy.n100
+                } (${data.hit100k} ${localization.getTranslation("katu")})\n` +
+                `**${localization.getTranslation("hitMeh")}**: ${
+                    data.accuracy.n50
+                }\n` +
+                `**${localization.getTranslation("misses")}**: ${
+                    data.accuracy.nmiss
+                }\n\n` +
+                `**${localization.getTranslation(
+                    "bonusLevelReached"
+                )}**: ${bonusLevel}`
         );
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
@@ -190,7 +218,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 challenge.points +
                 (challengeData.highestLevel -
                     Math.max(0, bonusLevel - challengeData.highestLevel)) *
-                2;
+                    2;
 
             challengeData.highestLevel = Math.max(
                 bonusLevel,

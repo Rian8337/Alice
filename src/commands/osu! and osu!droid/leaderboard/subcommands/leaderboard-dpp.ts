@@ -11,7 +11,9 @@ import { LeaderboardLocalization } from "@alice-localization/commands/osu! and o
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: LeaderboardLocalization = new LeaderboardLocalization(await CommandHelper.getLocale(interaction));
+    const localization: LeaderboardLocalization = new LeaderboardLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const clan: string = interaction.options.getString("clan")!;
 
@@ -48,9 +50,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${localization.getTranslation("username").padEnd(
-            longestUsernameLength
-        )} | ${localization.getTranslation("uid").padEnd(6)} | ${localization.getTranslation("playCount").padEnd(4)} | ${localization.getTranslation("pp")}\n`;
+        let output: string = `${"#".padEnd(4)} | ${localization
+            .getTranslation("username")
+            .padEnd(longestUsernameLength)} | ${localization
+            .getTranslation("uid")
+            .padEnd(6)} | ${localization
+            .getTranslation("playCount")
+            .padEnd(4)} | ${localization.getTranslation("pp")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
             const player: UserBind = entries[i];
@@ -59,10 +65,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username
                     .trim()
                     .padEnd(longestUsernameLength)} | ${player.uid
-                        .toString()
-                        .padEnd(6)} | ${(player.playc ?? 0)
-                            .toString()
-                            .padEnd(4)} | ${(player.pptotal ?? 0).toFixed(2)}`;
+                    .toString()
+                    .padEnd(6)} | ${(player.playc ?? 0)
+                    .toString()
+                    .padEnd(4)} | ${(player.pptotal ?? 0).toFixed(2)}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
                     longestUsernameLength

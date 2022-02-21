@@ -9,9 +9,12 @@ export interface YoutubeBeatmapFinderStrings {
  * Localizations for the `youtubeBeatmapFinder` event utility in `messageCreate` event.
  */
 export class YoutubeBeatmapFinderLocalization extends Localization<YoutubeBeatmapFinderStrings> {
-    protected override readonly translations: Readonly<Translation<YoutubeBeatmapFinderStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<YoutubeBeatmapFinderStrings>
+    > = {
         en: {
-            beatmapLimitation: "I found %s maps, but only displaying up to 3 due to my limitations.",
-        }
+            beatmapLimitation:
+                "I found %s maps, but only displaying up to 3 due to my limitations.",
+        },
     };
 }

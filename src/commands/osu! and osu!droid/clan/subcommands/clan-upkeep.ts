@@ -6,7 +6,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
@@ -15,7 +17,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("clanDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("clanDoesntExist")
+            ),
         });
     }
 

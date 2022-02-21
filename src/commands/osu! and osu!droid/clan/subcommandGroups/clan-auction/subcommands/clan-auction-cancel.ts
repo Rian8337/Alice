@@ -10,7 +10,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 
@@ -40,7 +42,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("selfIsNotInClan")
+            ),
         });
     }
 

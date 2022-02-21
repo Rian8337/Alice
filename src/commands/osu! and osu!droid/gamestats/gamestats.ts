@@ -8,7 +8,9 @@ import { GamestatsLocalization } from "@alice-localization/commands/osu! and osu
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: GamestatsLocalization = new GamestatsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: GamestatsLocalization = new GamestatsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const apiRequestBuilder: DroidAPIRequestBuilder =
         new DroidAPIRequestBuilder().setEndpoint("usergeneral.php");
@@ -44,13 +46,26 @@ export const run: Command["run"] = async (_, interaction) => {
         .setTitle(localization.getTranslation("overallGameStats"))
         .addField(
             localization.getTranslation("registeredAccounts"),
-            `**${localization.getTranslation("totalRegisteredAccounts")}**: ${totalUserCount.toLocaleString()}\n` +
-            `**${localization.getTranslation("moreThan5ScoresAcc")}**: ${userCountAbove5Scores.toLocaleString()}\n` +
-            `**${localization.getTranslation("moreThan20ScoresAcc")}**: ${userCountAbove20Scores.toLocaleString()}\n` +
-            `**${localization.getTranslation("moreThan100ScoresAcc")}**: ${userCountAbove100Scores.toLocaleString()}\n` +
-            `**${localization.getTranslation("moreThan200ScoresAcc")}**: ${userCountAbove200Scores.toLocaleString()}`
+            `**${localization.getTranslation(
+                "totalRegisteredAccounts"
+            )}**: ${totalUserCount.toLocaleString()}\n` +
+                `**${localization.getTranslation(
+                    "moreThan5ScoresAcc"
+                )}**: ${userCountAbove5Scores.toLocaleString()}\n` +
+                `**${localization.getTranslation(
+                    "moreThan20ScoresAcc"
+                )}**: ${userCountAbove20Scores.toLocaleString()}\n` +
+                `**${localization.getTranslation(
+                    "moreThan100ScoresAcc"
+                )}**: ${userCountAbove100Scores.toLocaleString()}\n` +
+                `**${localization.getTranslation(
+                    "moreThan200ScoresAcc"
+                )}**: ${userCountAbove200Scores.toLocaleString()}`
         )
-        .addField(localization.getTranslation("totalScores"), totalScoreCount.toLocaleString());
+        .addField(
+            localization.getTranslation("totalScores"),
+            totalScoreCount.toLocaleString()
+        );
 
     interaction.editReply({
         embeds: [embed],

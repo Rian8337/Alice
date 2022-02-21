@@ -15,15 +15,19 @@ export interface RecalcStrings {
  * Localizations for the `recalc` command.
  */
 export class RecalcLocalization extends Localization<RecalcStrings> {
-    protected override readonly translations: Readonly<Translation<RecalcStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<RecalcStrings>
+    > = {
         en: {
-            tooManyOptions: "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
+            tooManyOptions:
+                "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
             userIsDPPBanned: "I'm sorry, this user has been DPP banned!",
-            userHasRequestedRecalc: "I'm sorry, this user has already requested a recalculation before!",
+            userHasRequestedRecalc:
+                "I'm sorry, this user has already requested a recalculation before!",
             userQueued: "Successfully queued %s for recalculation.",
             fullRecalcInProgress: "Successfully started recalculation.",
             fullRecalcTrackProgress: "Recalculating players (%s/%s (%s%))...",
             fullRecalcSuccess: "%s, recalculation done!",
-        }
+        },
     };
 }

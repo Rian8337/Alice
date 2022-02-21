@@ -17,7 +17,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     return interaction.editReply({
         content: MessageCreator.createWarn(
-            new UserbindLocalization(await CommandHelper.getLocale(interaction)).getTranslation("verificationMapInformation")
+            new UserbindLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation("verificationMapInformation")
         ),
         files: [attachment],
     });

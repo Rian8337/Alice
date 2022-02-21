@@ -52,7 +52,8 @@ export abstract class WhitelistManager extends Manager {
         reason: string,
         language: Language = "en"
     ): Promise<OperationResult> {
-        const localization: WhitelistManagerLocalization = this.getLocalization(language);
+        const localization: WhitelistManagerLocalization =
+            this.getLocalization(language);
 
         if (await this.isBlacklisted(beatmap.beatmapID)) {
             return this.createOperationResult(
@@ -68,8 +69,11 @@ export abstract class WhitelistManager extends Manager {
 
         await DPPHelper.deletePlays(beatmap.hash);
 
-        const embedOptions: MessageOptions =
-            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
+        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
+            beatmap,
+            undefined,
+            language
+        );
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -88,8 +92,12 @@ export abstract class WhitelistManager extends Manager {
      * @param language The locale of the user who attempted to unblacklist the beatmap. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    static async unblacklist(beatmap: MapInfo, language: Language = "en"): Promise<OperationResult> {
-        const localization: WhitelistManagerLocalization = this.getLocalization(language);
+    static async unblacklist(
+        beatmap: MapInfo,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: WhitelistManagerLocalization =
+            this.getLocalization(language);
 
         if (!(await this.isBlacklisted(beatmap.beatmapID))) {
             return this.createOperationResult(
@@ -102,8 +110,11 @@ export abstract class WhitelistManager extends Manager {
             beatmapID: beatmap.beatmapID,
         });
 
-        const embedOptions: MessageOptions =
-            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
+        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
+            beatmap,
+            undefined,
+            language
+        );
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -122,8 +133,12 @@ export abstract class WhitelistManager extends Manager {
      * @param language The locale of the user who attempted to blacklist the beatmap. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    static async whitelist(beatmap: MapInfo, language: Language = "en"): Promise<OperationResult> {
-        const localization: WhitelistManagerLocalization = this.getLocalization(language);
+    static async whitelist(
+        beatmap: MapInfo,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: WhitelistManagerLocalization =
+            this.getLocalization(language);
 
         if (!this.isEligibleForWhitelist(beatmap)) {
             return this.createOperationResult(
@@ -153,8 +168,11 @@ export abstract class WhitelistManager extends Manager {
             { upsert: true }
         );
 
-        const embedOptions: MessageOptions =
-            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
+        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
+            beatmap,
+            undefined,
+            language
+        );
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -173,8 +191,12 @@ export abstract class WhitelistManager extends Manager {
      * @param language The locale of the user who attempted to unwhitelist the beatmap.
      * @returns An object containing information about the operation.
      */
-    static async unwhitelist(beatmap: MapInfo, language: Language = "en"): Promise<OperationResult> {
-        const localization: WhitelistManagerLocalization = this.getLocalization(language);
+    static async unwhitelist(
+        beatmap: MapInfo,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: WhitelistManagerLocalization =
+            this.getLocalization(language);
 
         if (!this.isEligibleForWhitelist(beatmap)) {
             return this.createOperationResult(
@@ -189,8 +211,11 @@ export abstract class WhitelistManager extends Manager {
 
         await DPPHelper.deletePlays(beatmap.hash);
 
-        const embedOptions: MessageOptions =
-            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
+        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
+            beatmap,
+            undefined,
+            language
+        );
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -263,10 +288,12 @@ export abstract class WhitelistManager extends Manager {
 
     /**
      * Gets the localization of this manager.
-     * 
-     * @param language The language to localize. 
+     *
+     * @param language The language to localize.
      */
-    private static getLocalization(language: Language): WhitelistManagerLocalization {
+    private static getLocalization(
+        language: Language
+    ): WhitelistManagerLocalization {
         return new WhitelistManagerLocalization(language);
     }
 }

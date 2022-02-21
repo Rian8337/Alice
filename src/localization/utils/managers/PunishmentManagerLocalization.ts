@@ -10,10 +10,12 @@ export interface PunishmentManagerStrings {
  * Localizations for the `PunishmentManager` manager utility.
  */
 export class PunishmentManagerLocalization extends Localization<PunishmentManagerStrings> {
-    protected override readonly translations: Readonly<Translation<PunishmentManagerStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<PunishmentManagerStrings>
+    > = {
         en: {
             cannotFindLogChannel: "Unable to find the server log channel",
             invalidLogChannel: "The server's log channel is not a text channel",
-        }
+        },
     };
 }

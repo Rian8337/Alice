@@ -210,8 +210,9 @@ export class ProfileCardCreator {
         this.context.save();
 
         try {
-            const flagPath: string = `${process.cwd()}/files/flags/${this.player.location
-                }.png`;
+            const flagPath: string = `${process.cwd()}/files/flags/${
+                this.player.location
+            }.png`;
             const flagStats: Stats = await promises.stat(flagPath);
 
             if (flagStats.isFile()) {
@@ -236,7 +237,7 @@ export class ProfileCardCreator {
                 );
             }
             // eslint-disable-next-line no-empty
-        } catch { }
+        } catch {}
 
         this.context.restore();
     }
@@ -379,7 +380,9 @@ export class ProfileCardCreator {
         this.context.font =
             this.detailed || this.template ? "18px Exo" : "16px Exo";
         this.context.fillText(
-            `${this.localization.getTranslation("totalScore")}: ${this.player.score.toLocaleString()}`,
+            `${this.localization.getTranslation(
+                "totalScore"
+            )}: ${this.player.score.toLocaleString()}`,
             x,
             y + yOffset
         );
@@ -387,7 +390,9 @@ export class ProfileCardCreator {
 
         if (this.rankedScoreInfo) {
             this.context.fillText(
-                `${this.localization.getTranslation("rankedScore")}: ${this.rankedScoreInfo.score.toLocaleString()}`,
+                `${this.localization.getTranslation(
+                    "rankedScore"
+                )}: ${this.rankedScoreInfo.score.toLocaleString()}`,
                 x,
                 y + yOffset
             );
@@ -399,14 +404,17 @@ export class ProfileCardCreator {
                 ...this.bindInfo.pp.values(),
             ]);
             this.context.fillText(
-                `${this.localization.getTranslation("accuracy")}: ${this.player.accuracy
+                `${this.localization.getTranslation("accuracy")}: ${
+                    this.player.accuracy
                 }% | ${weightedAccuracy.toFixed(2)}%`,
                 x,
                 y + yOffset
             );
         } else {
             this.context.fillText(
-                `${this.localization.getTranslation("accuracy")}: ${this.player.accuracy}%`,
+                `${this.localization.getTranslation("accuracy")}: ${
+                    this.player.accuracy
+                }%`,
                 x,
                 y + yOffset
             );
@@ -414,7 +422,9 @@ export class ProfileCardCreator {
         increaseYOffset();
 
         this.context.fillText(
-            `${this.localization.getTranslation("playCount")}: ${this.player.playCount.toLocaleString()}`,
+            `${this.localization.getTranslation(
+                "playCount"
+            )}: ${this.player.playCount.toLocaleString()}`,
             x,
             y + yOffset
         );
@@ -423,7 +433,9 @@ export class ProfileCardCreator {
         if (this.bindInfo) {
             const ppRank: number = await this.getPlayerPPRank(this.bindInfo);
             this.context.fillText(
-                `${this.localization.getTranslation("droidPP")}: ${this.bindInfo.pptotal.toFixed(
+                `${this.localization.getTranslation(
+                    "droidPP"
+                )}: ${this.bindInfo.pptotal.toFixed(
                     2
                 )}pp (#${ppRank.toLocaleString()})`,
                 x,
@@ -433,7 +445,9 @@ export class ProfileCardCreator {
 
             if (this.bindInfo.clan) {
                 this.context.fillText(
-                    `${this.localization.getTranslation("clan")}: ${this.bindInfo.clan}`,
+                    `${this.localization.getTranslation("clan")}: ${
+                        this.bindInfo.clan
+                    }`,
                     x,
                     y + yOffset
                 );
@@ -561,7 +575,9 @@ export class ProfileCardCreator {
                 this.playerInfo?.alicecoins ?? 0
             ).toLocaleString()} Alice Coins | ${(
                 this.playerInfo?.points ?? 0
-            ).toLocaleString()} ${this.localization.getTranslation("challengePoints")}`,
+            ).toLocaleString()} ${this.localization.getTranslation(
+                "challengePoints"
+            )}`,
             75,
             280
         );

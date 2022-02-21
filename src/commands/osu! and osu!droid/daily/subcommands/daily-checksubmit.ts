@@ -9,7 +9,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(await CommandHelper.getLocale(interaction));
+    const localization: DailyLocalization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const challengeID: string = interaction.options.getString(
         "challengeid",
@@ -23,7 +25,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tooManyOptions")
+            ),
         });
     }
 

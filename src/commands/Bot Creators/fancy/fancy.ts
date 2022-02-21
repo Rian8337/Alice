@@ -4,7 +4,10 @@ import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(interaction, await CommandHelper.getLocale(interaction));
+    CommandHelper.runSubcommandFromInteraction(
+        interaction,
+        await CommandHelper.getLocale(interaction)
+    );
 };
 
 export const category: Command["category"] = CommandCategory.BOT_CREATORS;

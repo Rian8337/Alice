@@ -571,10 +571,12 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Gets the localization of this manager utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): CommandUtilManagerLocalization {
+    private static getLocalization(
+        language: Language
+    ): CommandUtilManagerLocalization {
         return new CommandUtilManagerLocalization(language);
     }
 }

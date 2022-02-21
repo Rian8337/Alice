@@ -23,7 +23,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.noPermissionReject
+                )
+            ),
         });
     }
 
@@ -48,7 +52,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (await bindInfo.isDPPBanned()) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("userIsDPPBanned")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("userIsDPPBanned")
+            ),
         });
     }
 

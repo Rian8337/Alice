@@ -12,7 +12,8 @@ export abstract class DateTimeFormatHelper {
      * @returns The formatted date.
      */
     static secondsToDHMS(seconds: number, language: Language = "en"): string {
-        const localization: DateTimeFormatHelperLocalization = this.getLocalization(language);
+        const localization: DateTimeFormatHelperLocalization =
+            this.getLocalization(language);
 
         seconds = Math.trunc(seconds);
 
@@ -27,13 +28,20 @@ export abstract class DateTimeFormatHelper {
 
         const final: string[] = [
             `${days} ${localization.getTranslation(days > 1 ? "days" : "day")}`,
-            `${hours} ${localization.getTranslation(hours > 1 ? "hours" : "hour")}`,
-            `${minutes} ${localization.getTranslation(minutes > 1 ? "minutes" : "minute")}`,
-            `${seconds} ${localization.getTranslation(seconds > 1 ? "seconds" : "second")}`,
+            `${hours} ${localization.getTranslation(
+                hours > 1 ? "hours" : "hour"
+            )}`,
+            `${minutes} ${localization.getTranslation(
+                minutes > 1 ? "minutes" : "minute"
+            )}`,
+            `${seconds} ${localization.getTranslation(
+                seconds > 1 ? "seconds" : "second"
+            )}`,
         ];
 
         return (
-            final.filter((v) => !v.startsWith("0")).join(", ") || `0 ${localization.getTranslation("seconds")}`
+            final.filter((v) => !v.startsWith("0")).join(", ") ||
+            `0 ${localization.getTranslation("seconds")}`
         );
     }
 
@@ -139,10 +147,12 @@ export abstract class DateTimeFormatHelper {
 
     /**
      * Gets the localization of this helper utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): DateTimeFormatHelperLocalization {
+    private static getLocalization(
+        language: Language
+    ): DateTimeFormatHelperLocalization {
         return new DateTimeFormatHelperLocalization(language);
     }
 }

@@ -41,7 +41,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
 
         this.utilityInstance = <
             DatabaseUtilityConstructor<DatabaseBirthday, Birthday>
-            >new Birthday().constructor;
+        >new Birthday().constructor;
     }
 
     /**
@@ -71,10 +71,14 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
         language: Language = "en",
         force?: boolean
     ): Promise<OperationResult> {
-        const localization: BirthdayCollectionManagerLocalization = this.getLocalization(language);
+        const localization: BirthdayCollectionManagerLocalization =
+            this.getLocalization(language);
 
         if ((await this.hasSet(userId)) && !force) {
-            return this.createOperationResult(false, localization.getTranslation("birthdayIsSet"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("birthdayIsSet")
+            );
         }
 
         let maxDate: number = 30;
@@ -91,15 +95,24 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
         }
 
         if (!NumberHelper.isNumberInRange(date, 1, maxDate, true)) {
-            return this.createOperationResult(false, localization.getTranslation("invalidDate"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("invalidDate")
+            );
         }
 
         if (!NumberHelper.isNumberInRange(month, 0, 11, true)) {
-            return this.createOperationResult(false, localization.getTranslation("invalidMonth"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("invalidMonth")
+            );
         }
 
         if (!NumberHelper.isNumberInRange(timezone, -12, 14, true)) {
-            return this.createOperationResult(false, localization.getTranslation("invalidTimezone"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("invalidTimezone")
+            );
         }
 
         // Detect if date entry is 29 Feb
@@ -137,10 +150,12 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
 
     /**
      * Gets the localization of this database manager.
-     * 
+     *
      * @param language The language to localize.
      */
-    private getLocalization(language: Language): BirthdayCollectionManagerLocalization {
+    private getLocalization(
+        language: Language
+    ): BirthdayCollectionManagerLocalization {
         return new BirthdayCollectionManagerLocalization(language);
     }
 }

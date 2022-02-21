@@ -23,7 +23,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tooManyOptions")
+            ),
         });
     }
 
@@ -50,16 +52,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(!!uid || !!username || !!discordid
-                    ? Constants.userNotBindedReject
-                    : Constants.selfNotBindedReject)
+                new ConstantsLocalization(language).getTranslation(
+                    !!uid || !!username || !!discordid
+                        ? Constants.userNotBindedReject
+                        : Constants.selfNotBindedReject
+                )
             ),
         });
     }
 
     if (await bindInfo.isDPPBanned()) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("userIsDPPBanned")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("userIsDPPBanned")
+            ),
         });
     }
 

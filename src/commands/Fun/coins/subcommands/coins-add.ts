@@ -17,10 +17,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(language);
 
     if (!CommandHelper.isExecutedByBotOwner(interaction)) {
-        const constantsLocalization: ConstantsLocalization = new ConstantsLocalization(language);
+        const constantsLocalization: ConstantsLocalization =
+            new ConstantsLocalization(language);
 
         return interaction.editReply({
-            content: MessageCreator.createReject(constantsLocalization.getTranslation(Constants.noPermissionReject)),
+            content: MessageCreator.createReject(
+                constantsLocalization.getTranslation(
+                    Constants.noPermissionReject
+                )
+            ),
         });
     }
 
@@ -30,7 +35,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!NumberHelper.isPositive(addAmount)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("addAmountInvalid")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("addAmountInvalid")
+            ),
         });
     }
 
@@ -47,7 +54,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: OperationResult = await playerInfo.incrementCoins(addAmount, language);
+    const result: OperationResult = await playerInfo.incrementCoins(
+        addAmount,
+        language
+    );
 
     if (!result.success) {
         return interaction.editReply({

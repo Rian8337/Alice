@@ -15,12 +15,13 @@ import { Language } from "@alice-localization/base/Language";
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: BlacklistLocalization = new BlacklistLocalization(language);
+    const localization: BlacklistLocalization = new BlacklistLocalization(
+        language
+    );
 
     const beatmapID: number = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap")!
     )[0];
-
 
     if (!beatmapID) {
         return interaction.editReply({
@@ -50,7 +51,8 @@ export const run: Command["run"] = async (_, interaction) => {
                 {
                     label: localization.getTranslation("unblacklist"),
                     value: "unblacklist",
-                    description: localization.getTranslation("unblacklistAction"),
+                    description:
+                        localization.getTranslation("unblacklistAction"),
                 },
             ],
             Config.botOwners,

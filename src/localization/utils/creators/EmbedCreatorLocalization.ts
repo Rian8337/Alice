@@ -64,9 +64,11 @@ export interface EmbedCreatorStrings {
  * Localizations for the `EmbedCreator` creator utility.
  */
 export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> {
-    protected override readonly translations: Readonly<Translation<EmbedCreatorStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<EmbedCreatorStrings>
+    > = {
         en: {
-            exitMenu: "Type \"exit\" to exit this menu",
+            exitMenu: 'Type "exit" to exit this menu',
             result: "Result",
             droidPP: "Droid pp",
             pcPP: "PC pp",
@@ -74,7 +76,8 @@ export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> 
             droidStars: "droid stars",
             pcStars: "PC stars",
             starRating: "Star Rating",
-            rebalanceCalculationNote: "The resulting values are subject to change.",
+            rebalanceCalculationNote:
+                "The resulting values are subject to change.",
             beatmapInfo: "Beatmap Information",
             dateAchieved: "Achieved on %s",
             penalized: "penalized",
@@ -106,8 +109,10 @@ export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> 
             auctionBidders: "Bidders",
             auctionTopBidders: "Top Bidders",
             broadcast: "Broadcast",
-            broadcast1: "If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using `/report` command (more information is available using `/help report`)",
-            broadcast2: "Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!",
+            broadcast1:
+                "If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using `/report` command (more information is available using `/help report`)",
+            broadcast2:
+                "Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!",
             mapShareSubmission: "Submission by %s",
             mapShareStatusAndSummary: "Status and Summary",
             mapShareStatus: "Status",
@@ -122,6 +127,6 @@ export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> 
             ppProfileTitle: "PP Profile for %s",
             totalPP: "Total PP",
             ppProfile: "PP Profile",
-        }
+        },
     };
 }

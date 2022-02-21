@@ -11,7 +11,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ProfileLocalization = new ProfileLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ProfileLocalization = new ProfileLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const backgrounds: Collection<string, ProfileBackground> =
         await DatabaseManager.aliceDb.collections.profileBackgrounds.get("id");
@@ -49,7 +51,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             const bg: ProfileBackground = backgrounds[i];
             embed.addField(
                 `${i + 1}. ${bg.name}`,
-                `${localization.getTranslation("owned")}: **${ownedBackgrounds.find((v) => v.id === bg.id) ? Symbols.checkmark : Symbols.cross
+                `${localization.getTranslation("owned")}: **${
+                    ownedBackgrounds.find((v) => v.id === bg.id)
+                        ? Symbols.checkmark
+                        : Symbols.cross
                 }**`
             );
         }

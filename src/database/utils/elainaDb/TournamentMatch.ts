@@ -27,7 +27,8 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
  */
 export class TournamentMatch
     extends Manager
-    implements DatabaseTournamentMatch {
+    implements DatabaseTournamentMatch
+{
     matchid: string;
     channelId: Snowflake;
     name: string;
@@ -140,7 +141,11 @@ export class TournamentMatch
      * @param map The beatmap data to verify for.
      * @param language The locale of the user who attempted to verify a team's score. Defaults to English.
      */
-    verifyTeamScore(scores: Score[], map: MainBeatmapData, language: Language = "en"): OperationResult {
+    verifyTeamScore(
+        scores: Score[],
+        map: MainBeatmapData,
+        language: Language = "en"
+    ): OperationResult {
         if (map[0] !== "fm") {
             return this.createOperationResult(true);
         }
@@ -154,7 +159,9 @@ export class TournamentMatch
                         m instanceof ModHardRock
                 )
             ),
-            this.getLocalization(language).getTranslation("teamMembersIncorrectFMmod")
+            this.getLocalization(language).getTranslation(
+                "teamMembersIncorrectFMmod"
+            )
         );
     }
 
@@ -174,10 +181,14 @@ export class TournamentMatch
         forcePR?: boolean,
         language: Language = "en"
     ): Promise<OperationResult> {
-        const localization: TournamentMatchLocalization = this.getLocalization(language);
+        const localization: TournamentMatchLocalization =
+            this.getLocalization(language);
 
         if (score.hash !== map[3]) {
-            return this.createOperationResult(false, localization.getTranslation("scoreNotFound"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("scoreNotFound")
+            );
         }
 
         let mods: Mod[] = score.mods;
@@ -198,7 +209,10 @@ export class TournamentMatch
         await score.downloadReplay();
 
         if (!score.replay || !score.replay.data) {
-            return this.createOperationResult(false, localization.getTranslation("replayNotFound"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("replayNotFound")
+            );
         }
 
         if (score.replay.data.replayVersion > 4) {
@@ -226,7 +240,7 @@ export class TournamentMatch
             case "hd":
                 return this.createOperationResult(
                     mods.length === 2 &&
-                    mods.some((m) => m instanceof ModHidden),
+                        mods.some((m) => m instanceof ModHidden),
                     StringHelper.formatString(
                         localization.getTranslation("modsExceptNotUsed"),
                         forcePR ? "NFHDHR" : "NFHD"
@@ -235,7 +249,7 @@ export class TournamentMatch
             case "hr":
                 return this.createOperationResult(
                     mods.length === 2 &&
-                    mods.some((m) => m instanceof ModHardRock),
+                        mods.some((m) => m instanceof ModHardRock),
                     StringHelper.formatString(
                         localization.getTranslation("modsExceptNotUsed"),
                         forcePR ? "NFHRPR" : "NFHR"
@@ -244,8 +258,8 @@ export class TournamentMatch
             case "dt":
                 return this.createOperationResult(
                     mods.some((m) => m instanceof ModDoubleTime) &&
-                    mods.length ===
-                    (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
+                        mods.length ===
+                            (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
                     StringHelper.formatString(
                         localization.getTranslation("modsExceptNotUsed"),
                         forcePR ? "NF(HD)DTPR" : "NF(HD)DT"
@@ -254,12 +268,10 @@ export class TournamentMatch
             case "fm":
                 return this.createOperationResult(
                     (mods.length > 1 || teamScoreStatus) &&
-                    speedChangingMods.length === 0,
+                        speedChangingMods.length === 0,
                     StringHelper.formatString(
                         localization.getTranslation("modsWasUsed"),
-                        speedChangingMods
-                            .map((m) => m.acronym)
-                            .join("")
+                        speedChangingMods.map((m) => m.acronym).join("")
                     )
                 );
             case "tb":
@@ -267,9 +279,7 @@ export class TournamentMatch
                     mods.length >= 1 && speedChangingMods.length === 0,
                     StringHelper.formatString(
                         localization.getTranslation("modsWasUsed"),
-                        speedChangingMods
-                            .map((m) => m.acronym)
-                            .join("")
+                        speedChangingMods.map((m) => m.acronym).join("")
                     )
                 );
         }
@@ -301,7 +311,7 @@ export class TournamentMatch
 
     /**
      * Gets the localization of this database utility.
-     * 
+     *
      * @param language The language to localize.
      */
     private getLocalization(language: Language): TournamentMatchLocalization {

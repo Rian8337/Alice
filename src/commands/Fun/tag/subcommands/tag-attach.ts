@@ -13,7 +13,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
+    const localization: TagLocalization = new TagLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 
@@ -35,13 +37,17 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tagDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tagDoesntExist")
+            ),
         });
     }
 
     if (tag.author !== interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("notTagOwner")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("notTagOwner")
+            ),
         });
     }
 

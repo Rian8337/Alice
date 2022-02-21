@@ -10,7 +10,9 @@ import { Language } from "@alice-localization/base/Language";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: BirthdayLocalization = new BirthdayLocalization(language);
+    const localization: BirthdayLocalization = new BirthdayLocalization(
+        language
+    );
 
     const user: User = interaction.options.getUser("user", true);
 

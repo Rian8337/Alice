@@ -10,10 +10,12 @@ export interface SelectMenuCreatorStrings {
  * Localizations for the `SelectMenuCreator` creator utility.
  */
 export class SelectMenuCreatorLocalization extends Localization<SelectMenuCreatorStrings> {
-    protected override readonly translations: Readonly<Translation<SelectMenuCreatorStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<SelectMenuCreatorStrings>
+    > = {
         en: {
             pleaseWait: "Please wait...",
             timedOut: "Timed out.",
-        }
+        },
     };
 }

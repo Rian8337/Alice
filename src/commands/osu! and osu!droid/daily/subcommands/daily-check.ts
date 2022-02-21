@@ -22,7 +22,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!challenge) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new DailyLocalization(language).getTranslation("noOngoingChallenge")
+                new DailyLocalization(language).getTranslation(
+                    "noOngoingChallenge"
+                )
             ),
         });
     }

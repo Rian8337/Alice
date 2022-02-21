@@ -18,7 +18,7 @@ import {
 export abstract class DatabaseCollectionManager<
     T extends BaseDocument,
     C extends Manager
-    > extends Manager {
+> extends Manager {
     /**
      * The collection that this manager is responsible for.
      */

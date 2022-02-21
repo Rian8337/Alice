@@ -13,7 +13,10 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: EmojistatisticsLocalization = new EmojistatisticsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: EmojistatisticsLocalization =
+        new EmojistatisticsLocalization(
+            await CommandHelper.getLocale(interaction)
+        );
 
     const stats: EmojiStatistics | null =
         await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(
@@ -49,9 +52,9 @@ export const run: Command["run"] = async (_, interaction) => {
         const months: number = Math.max(
             1,
             (currentDate.getUTCFullYear() - dateCreation.getUTCFullYear()) *
-            12 +
-            currentDate.getUTCMonth() -
-            dateCreation.getUTCMonth()
+                12 +
+                currentDate.getUTCMonth() -
+                dateCreation.getUTCMonth()
         );
 
         validEmojis.push({
@@ -84,11 +87,18 @@ export const run: Command["run"] = async (_, interaction) => {
 
     embed
         .setAuthor({
-            name: StringHelper.formatString(localization.getTranslation("emojiStatisticsForServer"), interaction.guild!.name),
+            name: StringHelper.formatString(
+                localization.getTranslation("emojiStatisticsForServer"),
+                interaction.guild!.name
+            ),
             iconURL: interaction.guild!.iconURL({ dynamic: true })!,
         })
         .setDescription(
-            `**${localization.getTranslation("sortMode")}**: ${localization.getTranslation(sortOption === "overall" ? "overall" : "averagePerMonth")}`
+            `**${localization.getTranslation(
+                "sortMode"
+            )}**: ${localization.getTranslation(
+                sortOption === "overall" ? "overall" : "averagePerMonth"
+            )}`
         );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -99,19 +109,18 @@ export const run: Command["run"] = async (_, interaction) => {
         ) {
             embed.addField(
                 `${i + 1}.${validEmojis[i].emoji.name}`,
-                `**${localization.getTranslation("emoji")}**: ${validEmojis[i].emoji} \n` +
-                `**${localization.getTranslation("dateCreation")}**: ${validEmojis[
-                    i
-                ].emoji.createdAt.toUTCString()
+                `**${localization.getTranslation("emoji")}**: ${
+                    validEmojis[i].emoji
                 } \n` +
-                `**${localization.getTranslation("overallUsage")}**: ${validEmojis[
-                    i
-                ].count.toLocaleString()
-                } \n` +
-                `**${localization.getTranslation("averagePerMonthUsage")}**: ${validEmojis[
-                    i
-                ].averagePerMonth.toLocaleString()
-                } `
+                    `**${localization.getTranslation(
+                        "dateCreation"
+                    )}**: ${validEmojis[i].emoji.createdAt.toUTCString()} \n` +
+                    `**${localization.getTranslation(
+                        "overallUsage"
+                    )}**: ${validEmojis[i].count.toLocaleString()} \n` +
+                    `**${localization.getTranslation(
+                        "averagePerMonthUsage"
+                    )}**: ${validEmojis[i].averagePerMonth.toLocaleString()} `
             );
         }
     };

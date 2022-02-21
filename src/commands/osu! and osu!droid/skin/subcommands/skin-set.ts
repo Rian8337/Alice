@@ -14,7 +14,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            new SkinLocalization(await CommandHelper.getLocale(interaction)).getTranslation("skinSet"),
+            new SkinLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation("skinSet"),
             interaction.user.toString(),
             link
         ),

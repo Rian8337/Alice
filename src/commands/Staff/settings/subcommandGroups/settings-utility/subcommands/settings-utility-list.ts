@@ -13,7 +13,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: SettingsLocalization = new SettingsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
@@ -22,19 +24,25 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.setDescription(
-            `**${localization.getTranslation("eventName")}: \`${client.eventUtilities.keyAt(page - 1)}\`**`
+            `**${localization.getTranslation(
+                "eventName"
+            )}: \`${client.eventUtilities.keyAt(page - 1)}\`**`
         );
 
         for (const [utilName, utility] of client.eventUtilities.at(page - 1)!) {
             embed.addField(
                 `- ${utilName}`,
                 `${utility.config.description}\n` +
-                `**${localization.getTranslation("requiredPermissions")}**: ${PermissionHelper.getPermissionString(
-                    utility.config.togglePermissions
-                )}\n` +
-                `**${localization.getTranslation("toggleableScope")}**: ${utility.config.toggleScope
-                    .map((v) => StringHelper.capitalizeString(v, true))
-                    .join(", ")}`
+                    `**${localization.getTranslation(
+                        "requiredPermissions"
+                    )}**: ${PermissionHelper.getPermissionString(
+                        utility.config.togglePermissions
+                    )}\n` +
+                    `**${localization.getTranslation(
+                        "toggleableScope"
+                    )}**: ${utility.config.toggleScope
+                        .map((v) => StringHelper.capitalizeString(v, true))
+                        .join(", ")}`
             );
         }
     };

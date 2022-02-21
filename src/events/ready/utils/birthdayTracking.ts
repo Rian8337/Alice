@@ -114,7 +114,9 @@ export const run: EventUtil["run"] = async (client) => {
             await user
                 .send(
                     MessageCreator.createPrefixedMessage(
-                        new BirthdayTrackingLocalization(await CommandHelper.getLocale(user.id)).getTranslation("happyBirthday"),
+                        new BirthdayTrackingLocalization(
+                            await CommandHelper.getLocale(user.id)
+                        ).getTranslation("happyBirthday"),
                         Symbols.cake
                     )
                 )

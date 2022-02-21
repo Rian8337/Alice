@@ -10,7 +10,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(await CommandHelper.getLocale(interaction));
+    const localization: DailyLocalization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const allPlayers: Collection<number, PlayerInfo> =
         await DatabaseManager.aliceDb.collections.playerInfo.get(
@@ -43,9 +45,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${localization.getTranslation("username").padEnd(
-            longestUsernameLength
-        )} | ${localization.getTranslation("uid").padEnd(6)} | ${localization.getTranslation("points")}\n`;
+        let output: string = `${"#".padEnd(4)} | ${localization
+            .getTranslation("username")
+            .padEnd(longestUsernameLength)} | ${localization
+            .getTranslation("uid")
+            .padEnd(6)} | ${localization.getTranslation("points")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
             const player: PlayerInfo = entries[i];
@@ -54,8 +58,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username
                     .trim()
                     .padEnd(longestUsernameLength)} | ${player.uid
-                        .toString()
-                        .padEnd(6)} | ${player.points.toLocaleString()}`;
+                    .toString()
+                    .padEnd(6)} | ${player.points.toLocaleString()}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
                     longestUsernameLength

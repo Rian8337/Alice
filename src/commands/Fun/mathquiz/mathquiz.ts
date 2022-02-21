@@ -10,7 +10,9 @@ import { MathquizLocalization } from "@alice-localization/commands/Fun/MathquizL
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: MathquizLocalization = new MathquizLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MathquizLocalization = new MathquizLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
         return interaction.editReply({

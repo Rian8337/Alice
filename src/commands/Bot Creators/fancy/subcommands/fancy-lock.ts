@@ -22,7 +22,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!Number.isFinite(duration)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("durationError")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("durationError")
+            ),
         });
     }
 

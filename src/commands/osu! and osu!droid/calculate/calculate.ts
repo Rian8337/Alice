@@ -24,7 +24,9 @@ import { CalculateLocalization } from "@alice-localization/commands/osu! and osu
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: CalculateLocalization = new CalculateLocalization(await CommandHelper.getLocale(interaction));
+    const localization: CalculateLocalization = new CalculateLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const beatmapID: number = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap") ?? ""
@@ -58,10 +60,10 @@ export const run: Command["run"] = async (_, interaction) => {
         "approachrate"
     )
         ? NumberHelper.clamp(
-            interaction.options.getNumber("approachrate", true),
-            0,
-            12.5
-        )
+              interaction.options.getNumber("approachrate", true),
+              0,
+              12.5
+          )
         : undefined;
 
     const stats: MapStats = new MapStats({
@@ -103,27 +105,27 @@ export const run: Command["run"] = async (_, interaction) => {
         | PerformanceCalculationResult<DroidPerformanceCalculator>
         | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>
         | null = await (interaction.options.getBoolean("lazercalculation")
-            ? DroidBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
-                beatmapID ?? hash,
-                calcParams
-            )
-            : DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
-                beatmapID ?? hash,
-                calcParams
-            ));
+        ? DroidBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+              beatmapID ?? hash,
+              calcParams
+          )
+        : DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+              beatmapID ?? hash,
+              calcParams
+          ));
 
     const osuCalcResult:
         | PerformanceCalculationResult<OsuPerformanceCalculator>
         | RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator>
         | null = await (interaction.options.getBoolean("lazercalculation")
-            ? OsuBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
-                beatmapID ?? hash,
-                calcParams
-            )
-            : OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
-                beatmapID ?? hash,
-                calcParams
-            ));
+        ? OsuBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+              beatmapID ?? hash,
+              calcParams
+          )
+        : OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+              beatmapID ?? hash,
+              calcParams
+          ));
 
     if (!droidCalcResult || !osuCalcResult) {
         return interaction.editReply({
@@ -145,11 +147,19 @@ export const run: Command["run"] = async (_, interaction) => {
     let string: string = "";
 
     if (interaction.options.getBoolean("showdroiddetail")) {
-        string += `${localization.getTranslation("rawDroidSr")}: ${droidCalcResult.result.stars.toString()}\n${localization.getTranslation("rawDroidPp")}: ${droidCalcResult.result.toString()}\n`;
+        string += `${localization.getTranslation(
+            "rawDroidSr"
+        )}: ${droidCalcResult.result.stars.toString()}\n${localization.getTranslation(
+            "rawDroidPp"
+        )}: ${droidCalcResult.result.toString()}\n`;
     }
 
     if (interaction.options.getBoolean("showosudetail")) {
-        string += `${localization.getTranslation("rawPcSr")}: ${osuCalcResult.result.stars.toString()}\n${localization.getTranslation("rawPcPp")}: ${osuCalcResult.result.toString()}`;
+        string += `${localization.getTranslation(
+            "rawPcSr"
+        )}: ${osuCalcResult.result.stars.toString()}\n${localization.getTranslation(
+            "rawPcPp"
+        )}: ${osuCalcResult.result.toString()}`;
     }
 
     if (string) {

@@ -18,9 +18,12 @@ export interface EmojistatisticsStrings {
  * Localizations for the `emojistatistics` command.
  */
 export class EmojistatisticsLocalization extends Localization<EmojistatisticsStrings> {
-    protected override readonly translations: Readonly<Translation<EmojistatisticsStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<EmojistatisticsStrings>
+    > = {
         en: {
-            serverHasNoData: "I'm sorry, this server has no emoji usage statistics!",
+            serverHasNoData:
+                "I'm sorry, this server has no emoji usage statistics!",
             noValidEmojis: "I'm sorry, I couldn't find any valid emojis!",
             emojiStatisticsForServer: "Emoji Statistics for %s",
             sortMode: "Sort Mode",
@@ -30,6 +33,6 @@ export class EmojistatisticsLocalization extends Localization<EmojistatisticsStr
             dateCreation: "Date Creation",
             overallUsage: "Overall Usage",
             averagePerMonthUsage: "Average Per Month Usage",
-        }
+        },
     };
 }

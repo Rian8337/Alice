@@ -60,7 +60,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
     }
 
-    const transferAmount: number = interaction.options.getInteger("amount", true);
+    const transferAmount: number = interaction.options.getInteger(
+        "amount",
+        true
+    );
 
     if (!NumberHelper.isPositive(transferAmount)) {
         return interaction.editReply({

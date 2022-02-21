@@ -39,7 +39,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.selfNotBindedReject
+                )
+            ),
         });
     }
 
@@ -49,7 +53,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!beatmapID) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("beatmapNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("beatmapNotFound")
+            ),
         });
     }
 
@@ -60,7 +66,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!beatmapInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("beatmapNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("beatmapNotFound")
+            ),
         });
     }
 
@@ -83,7 +91,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("uidIsBanned")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("uidIsBanned")
+            ),
         });
     }
 
@@ -118,7 +128,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         case DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED:
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    localization.getTranslation("scoreUsesCustomSpeedMultiplier")
+                    localization.getTranslation(
+                        "scoreUsesCustomSpeedMultiplier"
+                    )
                 ),
             });
     }
@@ -157,8 +169,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const ppDiff: number = totalPP - currentTotalPP;
 
     embed.setDescription(
-        `**${localization.getTranslation("totalPP")}**: ${totalPP.toFixed(2)}pp\n` +
-        `**${localization.getTranslation("ppGained")}**: ${ppDiff.toFixed(2)} pp\n`
+        `**${localization.getTranslation("totalPP")}**: ${totalPP.toFixed(
+            2
+        )}pp\n` +
+            `**${localization.getTranslation("ppGained")}**: ${ppDiff.toFixed(
+                2
+            )} pp\n`
     );
 
     // Ranked score
@@ -185,17 +201,26 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         embed.setDescription(
             embed.description! +
-            `**${localization.getTranslation("rankedScore")}**: ${totalScore.toLocaleString()}\n` +
-            `**${localization.getTranslation("scoreGained")}**: ${scoreDiff.toLocaleString()}\n` +
-            `**${localization.getTranslation("currentLevel")}**: ${Math.floor(level)} (${levelRemain}%)${(rankedScoreInfo?.level ?? 1) > Math.floor(level)
-                ? `\n${Symbols.upIcon} ${localization.getTranslation("levelUp")}!`
-                : ""
-            }\n` +
-            `**${localization.getTranslation("scoreNeeded")}**: ${(
-                RankedScoreHelper.calculateScoreRequirement(
-                    Math.floor(level) + 1
-                ) - totalScore
-            ).toLocaleString()}`
+                `**${localization.getTranslation(
+                    "rankedScore"
+                )}**: ${totalScore.toLocaleString()}\n` +
+                `**${localization.getTranslation(
+                    "scoreGained"
+                )}**: ${scoreDiff.toLocaleString()}\n` +
+                `**${localization.getTranslation(
+                    "currentLevel"
+                )}**: ${Math.floor(level)} (${levelRemain}%)${
+                    (rankedScoreInfo?.level ?? 1) > Math.floor(level)
+                        ? `\n${Symbols.upIcon} ${localization.getTranslation(
+                              "levelUp"
+                          )}!`
+                        : ""
+                }\n` +
+                `**${localization.getTranslation("scoreNeeded")}**: ${(
+                    RankedScoreHelper.calculateScoreRequirement(
+                        Math.floor(level) + 1
+                    ) - totalScore
+                ).toLocaleString()}`
         );
 
         if (rankedScoreInfo) {
@@ -216,13 +241,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     embed
         .setTitle(localization.getTranslation("ppSubmissionInfo"))
         .addField(
-            `${beatmapInfo.fullTitle} +${score.mods.map((v) => v.acronym).join(",") || "No Mod"
+            `${beatmapInfo.fullTitle} +${
+                score.mods.map((v) => v.acronym).join(",") || "No Mod"
             }`,
             fieldContent
         );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("submitSuccessful")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("submitSuccessful")
+        ),
         embeds: [embed],
     });
 };

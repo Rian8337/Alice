@@ -3,7 +3,9 @@ import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!d
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ProfileLocalization = new ProfileLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ProfileLocalization = new ProfileLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     CommandHelper.runSubcommandNotFromInteraction(
         interaction,
@@ -12,12 +14,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             {
                 label: localization.getTranslation("changeBackgroundLabel"),
                 value: "changeBackground",
-                description: localization.getTranslation("changeBackgroundDescription"),
+                description: localization.getTranslation(
+                    "changeBackgroundDescription"
+                ),
             },
             {
                 label: localization.getTranslation("listBackgroundLabel"),
                 value: "listBackgrounds",
-                description: localization.getTranslation("listBackgroundDescription"),
+                description: localization.getTranslation(
+                    "listBackgroundDescription"
+                ),
             },
         ],
         localization.getTranslation("customizationPlaceholder")

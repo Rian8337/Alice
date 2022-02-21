@@ -19,10 +19,14 @@ export interface CreateinviteStrings {
  * Localizations for the `createinvite` command.
  */
 export class CreateinviteLocalization extends Localization<CreateinviteStrings> {
-    protected override readonly translations: Readonly<Translation<CreateinviteStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<CreateinviteStrings>
+    > = {
         en: {
-            expiryTimeInvalid: "Hey, please enter a valid time for invite link expiration!",
-            maximumUsageInvalid: "Hey, please enter a valid maximum invite link usage!",
+            expiryTimeInvalid:
+                "Hey, please enter a valid time for invite link expiration!",
+            maximumUsageInvalid:
+                "Hey, please enter a valid maximum invite link usage!",
             inviteLinkCreated: "Invite Link Created",
             createdInChannel: "Created in %s",
             maxUsage: "Maximum Usage",
@@ -31,7 +35,7 @@ export class CreateinviteLocalization extends Localization<CreateinviteStrings> 
             never: "Never",
             reason: "Reason",
             inviteLink: "Invite Link",
-            notSpecified: "Not specified."
-        }
+            notSpecified: "Not specified.",
+        },
     };
 }

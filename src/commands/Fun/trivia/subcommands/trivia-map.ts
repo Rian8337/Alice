@@ -42,9 +42,9 @@ async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
             `${finalDate.getUTCFullYear()}-${(finalDate.getUTCMonth() + 1)
                 .toString()
                 .padStart(2, "0")}-${finalDate
-                    .getUTCDate()
-                    .toString()
-                    .padStart(2, "0")}`
+                .getUTCDate()
+                .toString()
+                .padStart(2, "0")}`
         )
         .addParameter("m", 0);
 
@@ -140,7 +140,16 @@ function createEmbed(
         })
         .setTitle(`${localization.getTranslation("level")} ${level}`)
         .setDescription(
-            `**${localization.getTranslation("beatmapArtist")}:** ${artist}\n**${localization.getTranslation("beatmapTitle")}**: ${title}${beatmapInfo.source ? `\n**${localization.getTranslation("beatmapSource")}**: ${beatmapInfo.source}` : ""
+            `**${localization.getTranslation(
+                "beatmapArtist"
+            )}:** ${artist}\n**${localization.getTranslation(
+                "beatmapTitle"
+            )}**: ${title}${
+                beatmapInfo.source
+                    ? `\n**${localization.getTranslation("beatmapSource")}**: ${
+                          beatmapInfo.source
+                      }`
+                    : ""
             }`
         )
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
@@ -152,7 +161,9 @@ function createEmbed(
 }
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: TriviaLocalization = new TriviaLocalization(await CommandHelper.getLocale(interaction));
+    const localization: TriviaLocalization = new TriviaLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (CacheManager.stillHasMapTriviaActive.has(interaction.channelId)) {
         return interaction.editReply({
@@ -168,7 +179,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     let hasEnded: boolean = false;
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("mapTriviaStarted"))
+        content: MessageCreator.createAccept(
+            localization.getTranslation("mapTriviaStarted")
+        ),
     });
 
     CacheManager.stillHasMapTriviaActive.add(interaction.channelId);
@@ -311,7 +324,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
 
         const message: Message = await interaction.channel!.send({
-            content: MessageCreator.createWarn(localization.getTranslation("guessBeatmap")),
+            content: MessageCreator.createWarn(
+                localization.getTranslation("guessBeatmap")
+            ),
             embeds: [
                 createEmbed(
                     level,
@@ -339,7 +354,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     score: 0,
                 };
 
-                const playerLocalization: TriviaLocalization = new TriviaLocalization(await CommandHelper.getLocale(i));
+                const playerLocalization: TriviaLocalization =
+                    new TriviaLocalization(await CommandHelper.getLocale(i));
 
                 if (playerStats.lives === 0) {
                     i.reply({
@@ -397,7 +413,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            localization.getTranslation("incorrectCharacterGuess"),
+                            localization.getTranslation(
+                                "incorrectCharacterGuess"
+                            ),
                             i.user.username,
                             char,
                             playerStats.lives.toString()
@@ -506,7 +524,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     await interaction.channel!.send({
                         content: MessageCreator.createAccept(
                             localization.getTranslation("beatmapCorrect"),
-                            ((Date.now() - message.createdTimestamp) / 1000).toFixed(2)
+                            (
+                                (Date.now() - message.createdTimestamp) /
+                                1000
+                            ).toFixed(2)
                         ),
                         embeds: [embed],
                     });
@@ -539,15 +560,21 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     embed
         .setTitle(localization.getTranslation("gameInfo"))
         .setDescription(
-            `**${localization.getTranslation("starter")}**: ${interaction.user}\n` +
-            `**${localization.getTranslation("timeStarted")}**: ${interaction.createdAt.toUTCString()}\n` +
-            `**${localization.getTranslation("duration")}**: ${DateTimeFormatHelper.secondsToDHMS(
-                Math.floor(
-                    (Date.now() - interaction.createdTimestamp) / 1000
-                ),
-                localization.language
-            )}\n` +
-            `**${localization.getTranslation("level")}**: ${level}`
+            `**${localization.getTranslation("starter")}**: ${
+                interaction.user
+            }\n` +
+                `**${localization.getTranslation(
+                    "timeStarted"
+                )}**: ${interaction.createdAt.toUTCString()}\n` +
+                `**${localization.getTranslation(
+                    "duration"
+                )}**: ${DateTimeFormatHelper.secondsToDHMS(
+                    Math.floor(
+                        (Date.now() - interaction.createdTimestamp) / 1000
+                    ),
+                    localization.language
+                )}\n` +
+                `**${localization.getTranslation("level")}**: ${level}`
         )
         .addField(
             localization.getTranslation("leaderboard"),
@@ -562,7 +589,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     CacheManager.stillHasMapTriviaActive.delete(interaction.channelId);
 
     interaction.channel!.send({
-        content: MessageCreator.createAccept(localization.getTranslation("gameEnded")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("gameEnded")
+        ),
         embeds: [embed],
     });
 };

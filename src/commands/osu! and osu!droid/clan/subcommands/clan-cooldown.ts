@@ -30,7 +30,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
-
                     interaction.options.getUser("user")
                         ? Constants.userNotBindedReject
                         : Constants.selfNotBindedReject
@@ -67,9 +66,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 interaction.editReply({
                     content: MessageCreator.createAccept(
                         localization.getTranslation(
-                            interaction.options.getUser("user") ?
-                                "userInBattleCooldown" :
-                                "selfInBattleCooldown"
+                            interaction.options.getUser("user")
+                                ? "userInBattleCooldown"
+                                : "selfInBattleCooldown"
                         ),
                         DateTimeFormatHelper.secondsToDHMS(
                             Math.ceil(battleCooldownDifference / 1000)
@@ -80,9 +79,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 interaction.editReply({
                     content: MessageCreator.createAccept(
                         localization.getTranslation(
-                            interaction.options.getUser("user") ?
-                                "userNotInBattleCooldown" :
-                                "selfNotInBattleCooldown"
+                            interaction.options.getUser("user")
+                                ? "userNotInBattleCooldown"
+                                : "selfNotInBattleCooldown"
                         )
                     ),
                 });
@@ -123,10 +122,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 responses.push(
                     MessageCreator.createAccept(
                         localization.getTranslation(
-                            interaction.options.getUser("user") ?
-                                "userNotInOldJoinCooldown" :
-                                "selfNotInOldJoinCooldown"
-                        ),
+                            interaction.options.getUser("user")
+                                ? "userNotInOldJoinCooldown"
+                                : "selfNotInOldJoinCooldown"
+                        )
                     )
                 );
             }

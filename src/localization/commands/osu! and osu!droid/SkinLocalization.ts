@@ -12,12 +12,15 @@ export interface SkinStrings {
  * Localizations for the `skin` command.
  */
 export class SkinLocalization extends Localization<SkinStrings> {
-    protected override readonly translations: Readonly<Translation<SkinStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<SkinStrings>
+    > = {
         en: {
             skinSet: "%s, successfully set your skin to <%s>.",
             noSkinSetForUser: "I'm sorry, this user doesn't have any skins!",
             userSkinInfo: "%s's skin: %s",
-            tsukushiSite: "For a collection of skins, visit https://tsukushi.site",
-        }
+            tsukushiSite:
+                "For a collection of skins, visit https://tsukushi.site",
+        },
     };
 }

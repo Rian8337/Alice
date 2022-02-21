@@ -13,12 +13,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const match: TournamentMatch | null = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-            interaction.channelId
-        );
+              interaction.channelId
+          );
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new MatchLocalization(await CommandHelper.getLocale(interaction)).getTranslation("matchDoesntExist")),
+            content: MessageCreator.createReject(
+                new MatchLocalization(
+                    await CommandHelper.getLocale(interaction)
+                ).getTranslation("matchDoesntExist")
+            ),
         });
     }
 

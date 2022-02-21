@@ -41,7 +41,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.selfNotBindedReject
+                )
+            ),
         });
     }
 
@@ -140,7 +144,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                             EmbedCreator.createInputEmbed(
                                 interaction,
                                 localization.getTranslation("claimBadge"),
-                                `${StringHelper.formatString(localization.getTranslation("enterBeatmap"), Symbols.star, badge.requirement.toString())}\n\n${localization.getTranslation("enterBeatmapRestriction")}`,
+                                `${StringHelper.formatString(
+                                    localization.getTranslation("enterBeatmap"),
+                                    Symbols.star,
+                                    badge.requirement.toString()
+                                )}\n\n${localization.getTranslation(
+                                    "enterBeatmapRestriction"
+                                )}`,
                                 language
                             ),
                         ],
@@ -159,7 +169,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (isNaN(beatmapID)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        localization.getTranslation("beatmapToClaimBadgeNotValid")
+                        localization.getTranslation(
+                            "beatmapToClaimBadgeNotValid"
+                        )
                     ),
                 });
             }
@@ -172,7 +184,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!beatmapInfo) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        localization.getTranslation("beatmapToClaimBadgeNotFound")
+                        localization.getTranslation(
+                            "beatmapToClaimBadgeNotFound"
+                        )
                     ),
                 });
             }
@@ -183,7 +197,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        localization.getTranslation("beatmapToClaimBadgeNotRankedOrApproved")
+                        localization.getTranslation(
+                            "beatmapToClaimBadgeNotRankedOrApproved"
+                        )
                     ),
                 });
             }
@@ -213,7 +229,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!canUserClaimBadge) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        localization.getTranslation("userDoesntHaveScoreinBeatmap")
+                        localization.getTranslation(
+                            "userDoesntHaveScoreinBeatmap"
+                        )
                     ),
                 });
             }

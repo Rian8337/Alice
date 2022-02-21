@@ -12,7 +12,10 @@ export class UserLocale extends Manager implements DatabaseUserLocale {
     locale: Language;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseUserLocale = DatabaseManager.aliceDb?.collections.userLocale.defaultDocument ?? {}) {
+    constructor(
+        data: DatabaseUserLocale = DatabaseManager.aliceDb?.collections
+            .userLocale.defaultDocument ?? {}
+    ) {
         super();
 
         this._id = data._id;

@@ -13,7 +13,9 @@ import { ScanLocalization } from "@alice-localization/commands/Bot Creators/Scan
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const localization: ScanLocalization = new ScanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ScanLocalization = new ScanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const whitelistDb: MapWhitelistCollectionManager =
         DatabaseManager.elainaDb.collections.mapWhitelist;

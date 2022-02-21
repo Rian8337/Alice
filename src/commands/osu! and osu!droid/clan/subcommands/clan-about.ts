@@ -13,7 +13,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setDescription(
         StringHelper.formatString(
-            new ClanLocalization(await CommandHelper.getLocale(interaction)).getTranslation("guidelineWebsite"),
+            new ClanLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation("guidelineWebsite"),
             "https://osudroidfaq.wordpress.com/clans/"
         )
     );

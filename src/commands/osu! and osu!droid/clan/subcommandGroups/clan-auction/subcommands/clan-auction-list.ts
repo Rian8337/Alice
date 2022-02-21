@@ -12,14 +12,18 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const auctions: Collection<string, ClanAuction> =
         await DatabaseManager.aliceDb.collections.clanAuction.get("name");
 
     if (auctions.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("noActiveAuctions")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("noActiveAuctions")
+            ),
         });
     }
 
@@ -48,19 +52,31 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
             embed.addField(
                 `**${i + 1}. ${auction.name}**`,
-                `**${localization.getTranslation("auctionAuctioneer")}**: ${auction.auctioneer}\n` +
-                `**${localization.getTranslation("creationDate")}**: ${new Date(
-                    auction.creationdate * 1000
-                ).toUTCString()}\n` +
-                `**${localization.getTranslation("expirationDate")}**: ${new Date(
-                    auction.expirydate * 1000
-                ).toUTCString()}\n\n` +
-                `**${localization.getTranslation("auctionPowerup")}**: ${StringHelper.capitalizeString(
-                    auction.powerup
-                )}\n` +
-                `**${localization.getTranslation("auctionAmount")}**: ${auction.amount.toLocaleString()}\n` +
-                `**${localization.getTranslation("auctionMinimumBid")}**: ${auction.min_price.toLocaleString()} Alice coins\n` +
-                `**${localization.getTranslation("auctionBidders")}**: ${auction.bids.size.toLocaleString()}`
+                `**${localization.getTranslation("auctionAuctioneer")}**: ${
+                    auction.auctioneer
+                }\n` +
+                    `**${localization.getTranslation(
+                        "creationDate"
+                    )}**: ${new Date(
+                        auction.creationdate * 1000
+                    ).toUTCString()}\n` +
+                    `**${localization.getTranslation(
+                        "expirationDate"
+                    )}**: ${new Date(
+                        auction.expirydate * 1000
+                    ).toUTCString()}\n\n` +
+                    `**${localization.getTranslation(
+                        "auctionPowerup"
+                    )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
+                    `**${localization.getTranslation(
+                        "auctionAmount"
+                    )}**: ${auction.amount.toLocaleString()}\n` +
+                    `**${localization.getTranslation(
+                        "auctionMinimumBid"
+                    )}**: ${auction.min_price.toLocaleString()} Alice coins\n` +
+                    `**${localization.getTranslation(
+                        "auctionBidders"
+                    )}**: ${auction.bids.size.toLocaleString()}`
             );
         }
     };

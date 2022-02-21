@@ -26,12 +26,15 @@ export interface ClanStrings {
  * Localizations for the `Clan` database utility.
  */
 export class ClanLocalization extends Localization<ClanStrings> {
-    protected override readonly translations: Readonly<Translation<ClanStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<ClanStrings>
+    > = {
         en: {
             clanLeaderNotFound: "clan leader not found",
             userInCurrentClan: "user is already in this clan",
             userInAnotherClan: "user is already in another clan",
-            userInCooldownForOldClan: "user is still in cooldown to join old clan",
+            userInCooldownForOldClan:
+                "user is still in cooldown to join old clan",
             userInCooldownForClan: "user is still in cooldown to join a clan",
             userBindedAccountNotFound: "user's binded accounts not found",
             clanLeaderCannotLeaveClan: "clan leader cannot leave the clan",
@@ -46,6 +49,6 @@ export class ClanLocalization extends Localization<ClanStrings> {
             descriptionTooLong: "description must be less than 2000 characters",
             clanPowerNegativeWarning: "clan power will fall below zero",
             clanPowerInfiniteWarning: "clan power will be infinite",
-        }
+        },
     };
 }

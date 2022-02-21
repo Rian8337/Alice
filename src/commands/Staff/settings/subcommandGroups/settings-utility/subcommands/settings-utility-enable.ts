@@ -18,7 +18,9 @@ import {
 export const run: Subcommand["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: SettingsLocalization = new SettingsLocalization(language);
+    const localization: SettingsLocalization = new SettingsLocalization(
+        language
+    );
 
     const event: string = interaction.options.getString("event", true);
 
@@ -32,7 +34,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!eventUtilities) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("eventNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("eventNotFound")
+            ),
         });
     }
 
@@ -53,7 +57,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.noPermissionReject
+                )
+            ),
         });
     }
 
@@ -79,7 +87,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)
+                        new ConstantsLocalization(language).getTranslation(
+                            Constants.noPermissionReject
+                        )
                     ),
                 });
             }

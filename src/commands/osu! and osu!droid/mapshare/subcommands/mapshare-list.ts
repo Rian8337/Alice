@@ -23,7 +23,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (submissions.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new MapshareLocalization(await CommandHelper.getLocale(interaction)).getTranslation("noSubmissionWithStatus"),
+                new MapshareLocalization(
+                    await CommandHelper.getLocale(interaction)
+                ).getTranslation("noSubmissionWithStatus"),
                 status
             ),
         });
@@ -59,10 +61,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             embed.addField(
                 `${i + 1}. Submission from ${submission.submitter}`,
                 `**User ID**: ${submission.id}\n` +
-                `**Beatmap ID**: ${submission.beatmap_id} ([Beatmap Link](https://osu.ppy.sh/b/${submission.beatmap_id}))\n` +
-                `**Creation Date**: ${new Date(
-                    submission.date * 1000
-                ).toUTCString()}`
+                    `**Beatmap ID**: ${submission.beatmap_id} ([Beatmap Link](https://osu.ppy.sh/b/${submission.beatmap_id}))\n` +
+                    `**Creation Date**: ${new Date(
+                        submission.date * 1000
+                    ).toUTCString()}`
             );
         }
     };

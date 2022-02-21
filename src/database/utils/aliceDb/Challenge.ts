@@ -52,7 +52,10 @@ import {
 import { Score } from "@rian8337/osu-droid-utilities";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { Language } from "@alice-localization/base/Language";
-import { ChallengeLocalization, ChallengeStrings } from "@alice-localization/database/utils/aliceDb/ChallengeLocalization";
+import {
+    ChallengeLocalization,
+    ChallengeStrings,
+} from "@alice-localization/database/utils/aliceDb/ChallengeLocalization";
 
 /**
  * Represents a daily or weekly challenge.
@@ -185,7 +188,8 @@ export class Challenge extends Manager {
      * @returns An object containing information about the operation.
      */
     async start(language: Language = "en"): Promise<OperationResult> {
-        const localization: ChallengeLocalization = this.getLocalization(language);
+        const localization: ChallengeLocalization =
+            this.getLocalization(language);
 
         if (this.status !== "scheduled") {
             return this.createOperationResult(
@@ -249,8 +253,12 @@ export class Challenge extends Manager {
      * @param language The locale of the user who attempted to end the challenge. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async end(force?: boolean, language: Language = "en"): Promise<OperationResult> {
-        const localization: ChallengeLocalization = this.getLocalization(language);
+    async end(
+        force?: boolean,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: ChallengeLocalization =
+            this.getLocalization(language);
 
         if (!this.isOngoing) {
             return this.createOperationResult(
@@ -327,10 +335,14 @@ export class Challenge extends Manager {
 
                 await notificationChannel.send({
                     content: MessageCreator.createAccept(
-                        `Congratulations to <@${winnerBindInfo.discordid
-                        }> for achieving first place in challenge \`${this.challengeid
-                        }\`, earning them \`${this.isWeekly ? "50" : "25"
-                        }\` points and ${coinEmoji}\`${this.isWeekly ? "100" : "50"
+                        `Congratulations to <@${
+                            winnerBindInfo.discordid
+                        }> for achieving first place in challenge \`${
+                            this.challengeid
+                        }\`, earning them \`${
+                            this.isWeekly ? "50" : "25"
+                        }\` points and ${coinEmoji}\`${
+                            this.isWeekly ? "100" : "50"
                         }\` Alice coins!`
                     ),
                 });
@@ -347,22 +359,35 @@ export class Challenge extends Manager {
      * @param language The locale of the user who attempted to check the score. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async checkScoreCompletion(score: Score, language: Language = "en"): Promise<OperationResult> {
-        const localization: ChallengeLocalization = this.getLocalization(language);
+    async checkScoreCompletion(
+        score: Score,
+        language: Language = "en"
+    ): Promise<OperationResult> {
+        const localization: ChallengeLocalization =
+            this.getLocalization(language);
 
         if (!this.isConstrainFulfilled(score.mods)) {
-            return this.createOperationResult(false, localization.getTranslation("constrainNotFulfilled"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("constrainNotFulfilled")
+            );
         }
 
         if (!this.isModFulfilled(score.mods)) {
-            return this.createOperationResult(false, localization.getTranslation("eznfhtUsage"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("eznfhtUsage")
+            );
         }
 
         if (!score.replay) {
             await score.downloadReplay();
 
             if (!score.replay) {
-                return this.createOperationResult(false, localization.getTranslation("replayNotFound"));
+                return this.createOperationResult(
+                    false,
+                    localization.getTranslation("replayNotFound")
+                );
             }
         }
 
@@ -394,7 +419,10 @@ export class Challenge extends Manager {
             );
 
         if (!droidCalcResult || !osuCalcResult) {
-            return this.createOperationResult(false, localization.getTranslation("beatmapNotFound"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("beatmapNotFound")
+            );
         }
 
         const pass: boolean = await this.verifyPassCompletion(
@@ -421,24 +449,34 @@ export class Challenge extends Manager {
         replay: ReplayAnalyzer,
         language: Language = "en"
     ): Promise<OperationResult> {
-        const localization: ChallengeLocalization = this.getLocalization(language);
+        const localization: ChallengeLocalization =
+            this.getLocalization(language);
 
         if (!replay.data) {
             await replay.analyze();
 
             if (!replay.data) {
-                return this.createOperationResult(false, localization.getTranslation("cannotParseReplay"));
+                return this.createOperationResult(
+                    false,
+                    localization.getTranslation("cannotParseReplay")
+                );
             }
         }
 
         const data: ReplayData = replay.data;
 
         if (!this.isConstrainFulfilled(data.convertedMods)) {
-            return this.createOperationResult(false, localization.getTranslation("constrainNotFulfilled"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("constrainNotFulfilled")
+            );
         }
 
         if (!this.isModFulfilled(data.convertedMods)) {
-            return this.createOperationResult(false, localization.getTranslation("eznfhtUsage"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("eznfhtUsage")
+            );
         }
 
         if (data.forcedAR || data.speedModification !== 1) {
@@ -520,9 +558,9 @@ export class Challenge extends Manager {
         } else {
             const calcResult:
                 | [
-                    PerformanceCalculationResult<DroidPerformanceCalculator>,
-                    PerformanceCalculationResult<OsuPerformanceCalculator>
-                ]
+                      PerformanceCalculationResult<DroidPerformanceCalculator>,
+                      PerformanceCalculationResult<OsuPerformanceCalculator>
+                  ]
                 | null = await this.getReplayCalculationResult(scoreOrReplay);
 
             if (calcResult) {
@@ -681,20 +719,25 @@ export class Challenge extends Manager {
 
     /**
      * Gets the pass requirement information of the challenge.
-     * 
+     *
      * @param language The locale to get the information for. Defaults to English.
      */
     getPassInformation(language: Language = "en"): string {
-        return this.getPassOrBonusDescription(this.pass.id, this.pass.value, language);
+        return this.getPassOrBonusDescription(
+            this.pass.id,
+            this.pass.value,
+            language
+        );
     }
 
     /**
      * Gets the bonus requirement information of the challenge.
-     * 
+     *
      * @param language The locale to get the information for. Defaults to English.
      */
     getBonusInformation(language: Language = "en"): BonusDescription[] {
-        const localization: ChallengeLocalization = this.getLocalization(language);
+        const localization: ChallengeLocalization =
+            this.getLocalization(language);
 
         return this.bonus.map((v) => {
             return {
@@ -702,7 +745,8 @@ export class Challenge extends Manager {
                 description: v.list
                     .map(
                         (b) =>
-                            `**${localization.getTranslation("level")} ${b.level
+                            `**${localization.getTranslation("level")} ${
+                                b.level
                             }**: ${this.getPassOrBonusDescription(
                                 v.id,
                                 b.value,
@@ -723,7 +767,7 @@ export class Challenge extends Manager {
         return (
             !this.constrain ||
             StringHelper.sortAlphabet(mods.map((v) => v.acronym).join("")) ===
-            StringHelper.sortAlphabet(this.constrain.toUpperCase())
+                StringHelper.sortAlphabet(this.constrain.toUpperCase())
         );
     }
 
@@ -810,8 +854,8 @@ export class Challenge extends Manager {
                     scoreOrReplay instanceof Score
                         ? await this.calculateChallengeScoreV2(scoreOrReplay)
                         : await this.calculateChallengeScoreV2(
-                            scoreOrReplay.data!
-                        );
+                              scoreOrReplay.data!
+                          );
                 return scoreV2 >= this.pass.value;
             }
             case "rank": {
@@ -904,7 +948,8 @@ export class Challenge extends Manager {
         value: string | number,
         language: Language = "en"
     ): string {
-        const localization: ChallengeLocalization = this.getLocalization(language);
+        const localization: ChallengeLocalization =
+            this.getLocalization(language);
 
         switch (id) {
             case "score":
@@ -926,9 +971,9 @@ export class Challenge extends Manager {
                 return value === 0
                     ? localization.getTranslation("noMisses")
                     : StringHelper.formatString(
-                        localization.getTranslation("missCountDescription"),
-                        `**${value}**`
-                    );
+                          localization.getTranslation("missCountDescription"),
+                          `**${value}**`
+                      );
             case "mod":
                 return StringHelper.formatString(
                     localization.getTranslation("modsDescription"),
@@ -1016,9 +1061,9 @@ export class Challenge extends Manager {
         replay: ReplayAnalyzer
     ): Promise<
         | [
-            PerformanceCalculationResult<DroidPerformanceCalculator>,
-            PerformanceCalculationResult<OsuPerformanceCalculator>
-        ]
+              PerformanceCalculationResult<DroidPerformanceCalculator>,
+              PerformanceCalculationResult<OsuPerformanceCalculator>
+          ]
         | null
     > {
         const data: ReplayData | null = replay.data;
@@ -1114,7 +1159,7 @@ export class Challenge extends Manager {
 
     /**
      * Gets the localization of this database utility.
-     * 
+     *
      * @param language The language to localize.
      */
     private getLocalization(language: Language): ChallengeLocalization {

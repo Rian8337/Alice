@@ -8,7 +8,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MusicLocalization = new MusicLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 

@@ -11,7 +11,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
+    const localization: TagLocalization = new TagLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 
@@ -21,13 +23,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("nameTooLong")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("nameTooLong")
+            ),
         });
     }
 
     if (content.length > 1500) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("contentTooLong")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("contentTooLong")
+            ),
         });
     }
 
@@ -39,7 +45,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tagExists")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tagExists")
+            ),
         });
     }
 
@@ -54,7 +62,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("addTagSuccessful"), name),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("addTagSuccessful"),
+            name
+        ),
     });
 };
 

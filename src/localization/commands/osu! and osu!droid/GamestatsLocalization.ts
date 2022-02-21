@@ -20,16 +20,17 @@ export class GamestatsLocalization extends Localization<GamestatsStrings> {
     protected override readonly translations: Readonly<
         Translation<GamestatsStrings>
     > = {
-            en: {
-                cannotRetrieveGameStatistics: "I'm sorry, I cannot retrieve game statistics!",
-                overallGameStats: "Overall Game Statistics",
-                registeredAccounts: "Registered Accounts",
-                totalRegisteredAccounts: "Total",
-                moreThan5ScoresAcc: "More than 5 scores",
-                moreThan20ScoresAcc: "More than 20 scores",
-                moreThan100ScoresAcc: "More than 100 scores",
-                moreThan200ScoresAcc: "More than 200 scores",
-                totalScores: "Total Online Scores",
-            },
-        };
+        en: {
+            cannotRetrieveGameStatistics:
+                "I'm sorry, I cannot retrieve game statistics!",
+            overallGameStats: "Overall Game Statistics",
+            registeredAccounts: "Registered Accounts",
+            totalRegisteredAccounts: "Total",
+            moreThan5ScoresAcc: "More than 5 scores",
+            moreThan20ScoresAcc: "More than 20 scores",
+            moreThan100ScoresAcc: "More than 100 scores",
+            moreThan200ScoresAcc: "More than 200 scores",
+            totalScores: "Total Online Scores",
+        },
+    };
 }

@@ -7,7 +7,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Role } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: SettingsLocalization = new SettingsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const role: Role = <Role>interaction.options.getRole("role", true);
 

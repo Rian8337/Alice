@@ -13,7 +13,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: SettingsLocalization = new SettingsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const role: Role = <Role>interaction.options.getRole("role", true);
 

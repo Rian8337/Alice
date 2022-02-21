@@ -10,7 +10,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: NamechangeLocalization = new NamechangeLocalization(await CommandHelper.getLocale(interaction));
+    const localization: NamechangeLocalization = new NamechangeLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const nameChanges: Collection<number, NameChange> =
         await DatabaseManager.aliceDb.collections.nameChange.getActiveNameChangeRequests();
@@ -45,11 +47,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (content) {
                 embed.addField(
                     `**${i + 1}**. **Uid ${content.uid}**`,
-                    `**${localization.getTranslation("discordAccount")}**: <@${content.discordid}> (${content.discordid})\n` +
-                    `**${localization.getTranslation("usernameRequested")}**: ${content.new_username}\n` +
-                    `**${localization.getTranslation("creationDate")}**: ${new Date(
-                        (content.cooldown - 86400 * 30) * 1000
-                    ).toUTCString()}`
+                    `**${localization.getTranslation("discordAccount")}**: <@${
+                        content.discordid
+                    }> (${content.discordid})\n` +
+                        `**${localization.getTranslation(
+                            "usernameRequested"
+                        )}**: ${content.new_username}\n` +
+                        `**${localization.getTranslation(
+                            "creationDate"
+                        )}**: ${new Date(
+                            (content.cooldown - 86400 * 30) * 1000
+                        ).toUTCString()}`
                 );
             }
         }

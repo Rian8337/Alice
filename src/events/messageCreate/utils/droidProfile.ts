@@ -35,7 +35,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
         message.channel.send({
             content: MessageCreator.createAccept(
-                new DroidProfileLocalization(await CommandHelper.getLocale(message.author)).getTranslation("droidProfile"),
+                new DroidProfileLocalization(
+                    await CommandHelper.getLocale(message.author)
+                ).getTranslation("droidProfile"),
                 `${player.username}:\n<${ProfileManager.getProfileLink(uid)}>`
             ),
             files: [profileImage],

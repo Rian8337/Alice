@@ -11,11 +11,13 @@ export interface WhitelistManagerStrings {
  * Localizations for the `WhitelistManager` manager utility.
  */
 export class WhitelistManagerLocalization extends Localization<WhitelistManagerStrings> {
-    protected override readonly translations: Readonly<Translation<WhitelistManagerStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<WhitelistManagerStrings>
+    > = {
         en: {
             beatmapIsBlacklisted: "Beatmap is already blacklisted",
             beatmapIsNotBlacklisted: "Beatmap is not blacklisted",
             beatmapIsNotGraveyarded: "Beatmap is not graveyarded",
-        }
+        },
     };
 }

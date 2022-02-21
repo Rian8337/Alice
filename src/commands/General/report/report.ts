@@ -27,7 +27,9 @@ export const run: Command["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(Constants.notAvailableInServerReject)
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.notAvailableInServerReject
+                )
             ),
         });
     }
@@ -54,7 +56,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (toReport.id === interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("selfReportError")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("selfReportError")
+            ),
         });
     }
 
@@ -69,9 +73,13 @@ export const run: Command["run"] = async (_, interaction) => {
     embed
         .setThumbnail(toReport.user.avatarURL({ dynamic: true })!)
         .setDescription(
-            `**${localization.getTranslation("offender")}**: ${toReport} (${toReport.id})\n` +
-            `**${localization.getTranslation("channel")}**: ${interaction.channel}\n` +
-            `**${localization.getTranslation("reason")}**: ${reason}`
+            `**${localization.getTranslation("offender")}**: ${toReport} (${
+                toReport.id
+            })\n` +
+                `**${localization.getTranslation("channel")}**: ${
+                    interaction.channel
+                }\n` +
+                `**${localization.getTranslation("reason")}**: ${reason}`
         );
 
     const reportChannel: TextChannel = <TextChannel>(
@@ -92,10 +100,14 @@ export const run: Command["run"] = async (_, interaction) => {
             name: localization.getTranslation("reportSummary"),
         })
         .setDescription(
-            `**${localization.getTranslation("offender")}**: ${toReport} (${toReport.id})\n` +
-            `**${localization.getTranslation("channel")}**: ${interaction.channel}\n` +
-            `**${localization.getTranslation("reason")}**: ${reason}\n\n` +
-            localization.getTranslation("saveEvidence")
+            `**${localization.getTranslation("offender")}**: ${toReport} (${
+                toReport.id
+            })\n` +
+                `**${localization.getTranslation("channel")}**: ${
+                    interaction.channel
+                }\n` +
+                `**${localization.getTranslation("reason")}**: ${reason}\n\n` +
+                localization.getTranslation("saveEvidence")
         );
 
     interaction.user.send({ embeds: [replyEmbed] }).catch(() =>

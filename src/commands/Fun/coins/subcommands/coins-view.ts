@@ -14,7 +14,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply(
         MessageCreator.createAccept(
-            new CoinsLocalization(await CommandHelper.getLocale(interaction)).getTranslation(user.id === interaction.user.id ? "selfCoinAmountInfo" : "userCoinAmountInfo"),
+            new CoinsLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation(
+                user.id === interaction.user.id
+                    ? "selfCoinAmountInfo"
+                    : "userCoinAmountInfo"
+            ),
             (playerInfo?.alicecoins ?? 0).toLocaleString()
         )
     );

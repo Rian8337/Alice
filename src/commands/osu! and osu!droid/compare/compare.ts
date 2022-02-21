@@ -14,7 +14,9 @@ import { CompareLocalization } from "@alice-localization/commands/osu! and osu!d
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: CompareLocalization = new CompareLocalization(await CommandHelper.getLocale(interaction));
+    const localization: CompareLocalization = new CompareLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const cachedBeatmapHash: string | undefined =
         BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
@@ -34,7 +36,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tooManyOptions")
+            ),
         });
     }
 
@@ -84,7 +88,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("playerNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("playerNotFound")
+            ),
         });
     }
 
@@ -96,7 +102,11 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!score.title) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                localization.getTranslation(!!uid || !!discordid || !!username ? "userScoreNotFound" : "selfScoreNotFound")
+                localization.getTranslation(
+                    !!uid || !!discordid || !!username
+                        ? "userScoreNotFound"
+                        : "selfScoreNotFound"
+                )
             ),
         });
     }

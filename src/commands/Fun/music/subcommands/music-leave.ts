@@ -27,7 +27,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("leaveChannelSuccess")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("leaveChannelSuccess")
+        ),
     });
 };
 

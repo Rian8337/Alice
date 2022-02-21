@@ -9,9 +9,11 @@ export interface TriviaHelperStrings {
  * Localizations for the `TriviaHelper` helper utility.
  */
 export class TriviaHelperLocalization extends Localization<TriviaHelperStrings> {
-    protected override readonly translations: Readonly<Translation<TriviaHelperStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<TriviaHelperStrings>
+    > = {
         en: {
             latestChoiceRecorded: "Your latest choice (%s) has been recorded!",
-        }
+        },
     };
 }

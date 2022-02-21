@@ -22,7 +22,9 @@ export const run: Command["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            new MaintenanceLocalization(await CommandHelper.getLocale(interaction)).getTranslation("maintenanceToggle"),
+            new MaintenanceLocalization(
+                await CommandHelper.getLocale(interaction)
+            ).getTranslation("maintenanceToggle"),
             String(Config.maintenance),
             Config.maintenanceReason
         ),

@@ -12,7 +12,9 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: NamechangeLocalization = new NamechangeLocalization(await CommandHelper.getLocale(interaction));
+    const localization: NamechangeLocalization = new NamechangeLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const uid: number = interaction.options.getInteger("uid", true);
 
@@ -24,7 +26,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("invalidUid")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("invalidUid")
+            ),
         });
     }
 

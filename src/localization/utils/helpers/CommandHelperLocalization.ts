@@ -10,10 +10,13 @@ export interface CommandHelperStrings {
  * Localizations for the `CommandHelper` helper utility.
  */
 export class CommandHelperLocalization extends Localization<CommandHelperStrings> {
-    protected override readonly translations: Readonly<Translation<CommandHelperStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<CommandHelperStrings>
+    > = {
         en: {
-            commandNotFound: "I'm sorry, I cannot find the command that you are looking for!",
+            commandNotFound:
+                "I'm sorry, I cannot find the command that you are looking for!",
             permissionsRequired: "You need these permissions:",
-        }
+        },
     };
 }

@@ -15,7 +15,9 @@ export interface ProfileCardCreatorStrings {
  * Localizations for the `ProfileCardCreator` creator utility.
  */
 export class ProfileCardCreatorLocalization extends Localization<ProfileCardCreatorStrings> {
-    protected override readonly translations: Readonly<Translation<ProfileCardCreatorStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<ProfileCardCreatorStrings>
+    > = {
         en: {
             totalScore: "Total Score",
             rankedScore: "Ranked Score",
@@ -24,6 +26,6 @@ export class ProfileCardCreatorLocalization extends Localization<ProfileCardCrea
             droidPP: "Droid pp",
             clan: "Clan",
             challengePoints: "Challenge Points",
-        }
+        },
     };
 }

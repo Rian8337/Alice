@@ -18,7 +18,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(await CommandHelper.getLocale(interaction)).getTranslation(Constants.noPermissionReject)
+                new ConstantsLocalization(
+                    await CommandHelper.getLocale(interaction)
+                ).getTranslation(Constants.noPermissionReject)
             ),
         });
     }

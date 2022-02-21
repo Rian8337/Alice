@@ -8,7 +8,10 @@ import { Command } from "@alice-interfaces/core/Command";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Language } from "@alice-localization/base/Language";
-import { PPcompareLocalization, PPcompareStrings } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/PPcompareLocalization";
+import {
+    PPcompareLocalization,
+    PPcompareStrings,
+} from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/PPcompareLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -20,7 +23,9 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: PPcompareLocalization = new PPcompareLocalization(language);
+    const localization: PPcompareLocalization = new PPcompareLocalization(
+        language
+    );
 
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
@@ -93,7 +98,9 @@ export const run: Command["run"] = async (_, interaction) => {
         if (!secondBindInfo && !otherUid && !otherUser && !otherUsername) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+                    new ConstantsLocalization(language).getTranslation(
+                        Constants.selfNotBindedReject
+                    )
                 ),
             });
         }
@@ -157,10 +164,11 @@ export const run: Command["run"] = async (_, interaction) => {
     if (firstBindInfo.pptotal < secondBindInfo.pptotal) {
         ppDescription = `**${firstBindInfo.pptotal.toFixed(
             2
-        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${Symbols.crown
-            } ${secondBindInfo.pptotal.toFixed(
-                2
-            )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
+        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${
+            Symbols.crown
+        } ${secondBindInfo.pptotal.toFixed(
+            2
+        )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
     } else if (firstBindInfo.pptotal > secondBindInfo.pptotal) {
         ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(
             2
@@ -178,8 +186,10 @@ export const run: Command["run"] = async (_, interaction) => {
     embed
         .setTitle(localization.getTranslation("topPlaysComparison"))
         .setDescription(
-            `${localization.getTranslation("player")}: **${firstBindInfo.username}** vs **${secondBindInfo.username}**\n` +
-            `${localization.getTranslation("totalPP")}: ${ppDescription}`
+            `${localization.getTranslation("player")}: **${
+                firstBindInfo.username
+            }** vs **${secondBindInfo.username}**\n` +
+                `${localization.getTranslation("totalPP")}: ${ppDescription}`
         );
 
     const getModString = (pp: PPEntry): string => {
@@ -221,12 +231,16 @@ export const run: Command["run"] = async (_, interaction) => {
             const firstPP: PPEntry = firstPlayerPP.get(key)!;
             const secondPP: PPEntry = secondPlayerPP.get(key)!;
 
-            let firstPlayerDescription: string = `${firstPP.combo
-                }x | ${firstPP.accuracy.toFixed(2)}% | ${firstPP.miss} ${Symbols.missIcon
-                } | ${firstPP.pp}pp (${getModString(firstPP)})`;
-            let secondPlayerDescription: string = `${secondPP.combo
-                }x | ${secondPP.accuracy.toFixed(2)}% | ${secondPP.miss} ${Symbols.missIcon
-                } | ${secondPP.pp}pp (${getModString(secondPP)})`;
+            let firstPlayerDescription: string = `${
+                firstPP.combo
+            }x | ${firstPP.accuracy.toFixed(2)}% | ${firstPP.miss} ${
+                Symbols.missIcon
+            } | ${firstPP.pp}pp (${getModString(firstPP)})`;
+            let secondPlayerDescription: string = `${
+                secondPP.combo
+            }x | ${secondPP.accuracy.toFixed(2)}% | ${secondPP.miss} ${
+                Symbols.missIcon
+            } | ${secondPP.pp}pp (${getModString(secondPP)})`;
 
             if (firstPP.pp < secondPP.pp) {
                 secondPlayerDescription = `**${secondPlayerDescription}** ${Symbols.crown}`;
@@ -237,8 +251,9 @@ export const run: Command["run"] = async (_, interaction) => {
             embed.addField(
                 `${i + 1}. ${firstPP.title}`,
                 `**${firstBindInfo!.username}**: ${firstPlayerDescription}\n` +
-                `**${secondBindInfo!.username
-                }**: ${secondPlayerDescription}`
+                    `**${
+                        secondBindInfo!.username
+                    }**: ${secondPlayerDescription}`
             );
         }
     };

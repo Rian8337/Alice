@@ -9,9 +9,11 @@ export interface ManualTimeoutCheckStrings {
  * Localizations for the `manualTimeoutCheck` event utility for `guildMemberUpdate` event.
  */
 export class ManualTimeoutCheckLocalization extends Localization<ManualTimeoutCheckStrings> {
-    protected override readonly translations: Readonly<Translation<ManualTimeoutCheckStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<ManualTimeoutCheckStrings>
+    > = {
         en: {
             notSpecified: "Not specified.",
-        }
+        },
     };
 }

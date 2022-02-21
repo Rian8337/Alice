@@ -21,7 +21,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("selfIsNotInClan")
+            ),
         });
     }
 
@@ -30,7 +32,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    embed.setTitle(`${localization.getTranslation("activePowerups")} ${clan.name}`);
+    embed.setTitle(
+        `${localization.getTranslation("activePowerups")} ${clan.name}`
+    );
 
     let desc: string = "";
 

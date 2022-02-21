@@ -65,7 +65,9 @@ function endGame(
     const answerString: string = ArrayHelper.collectionToArray(gameStats)
         .map(
             (v, i) =>
-                `#${i + 1}: <@${v.key}> - ${v.value} ${localization.getTranslation("answers")}`
+                `#${i + 1}: <@${v.key}> - ${
+                    v.value
+                } ${localization.getTranslation("answers")}`
         )
         .join("\n");
 
@@ -82,17 +84,33 @@ function endGame(
     embed
         .setTitle(localization.getTranslation("gameStatistics"))
         .setDescription(
-            `**${localization.getTranslation("gameStarter")}**: ${interaction.user}\n` +
-            `**${localization.getTranslation("timeStarted")}**: ${interaction.createdAt.toUTCString()}\n` +
-            `**${localization.getTranslation("duration")}**: ${DateTimeFormatHelper.secondsToDHMS(
-                Math.floor(
-                    (Date.now() - interaction.createdTimestamp) / 1000
-                ),
-                localization.language
-            )}\n` +
-            `**${localization.getTranslation("levelReached")}**: ${localization.getTranslation("operatorCount")} ${operatorCount}, ${localization.getTranslation("level")} ${level}\n\n` +
-            `**${localization.getTranslation("totalCorrectAnswers")}**: ${totalAnswers} ${localization.getTranslation("answers")}}\n` +
-            answerString
+            `**${localization.getTranslation("gameStarter")}**: ${
+                interaction.user
+            }\n` +
+                `**${localization.getTranslation(
+                    "timeStarted"
+                )}**: ${interaction.createdAt.toUTCString()}\n` +
+                `**${localization.getTranslation(
+                    "duration"
+                )}**: ${DateTimeFormatHelper.secondsToDHMS(
+                    Math.floor(
+                        (Date.now() - interaction.createdTimestamp) / 1000
+                    ),
+                    localization.language
+                )}\n` +
+                `**${localization.getTranslation(
+                    "levelReached"
+                )}**: ${localization.getTranslation(
+                    "operatorCount"
+                )} ${operatorCount}, ${localization.getTranslation(
+                    "level"
+                )} ${level}\n\n` +
+                `**${localization.getTranslation(
+                    "totalCorrectAnswers"
+                )}**: ${totalAnswers} ${localization.getTranslation(
+                    "answers"
+                )}}\n` +
+                answerString
         );
 
     CacheManager.stillHasMathGameActive.delete(
@@ -106,7 +124,9 @@ function endGame(
 }
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: MathgameLocalization = new MathgameLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MathgameLocalization = new MathgameLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const mode: MathGameType = <MathGameType>(
         (!interaction.inGuild()
@@ -185,18 +205,18 @@ export const run: Command["run"] = async (_, interaction) => {
             const questionString: string = MessageCreator.createWarn(
                 mode === "single"
                     ? StringHelper.formatString(
-                        localization.getTranslation("singleGamemodeQuestion"),
-                        interaction.user.toString(),
-                        operatorAmount.toString(),
-                        level.toString(),
-                        realEquation
-                    )
+                          localization.getTranslation("singleGamemodeQuestion"),
+                          interaction.user.toString(),
+                          operatorAmount.toString(),
+                          level.toString(),
+                          realEquation
+                      )
                     : StringHelper.formatString(
-                        localization.getTranslation("multiGamemodeQuestion"),
-                        level.toString(),
-                        operatorAmount.toString(),
-                        realEquation
-                    )
+                          localization.getTranslation("multiGamemodeQuestion"),
+                          level.toString(),
+                          operatorAmount.toString(),
+                          realEquation
+                      )
             );
 
             if (!interaction.replied) {
@@ -211,15 +231,15 @@ export const run: Command["run"] = async (_, interaction) => {
                 const collector: MessageCollector =
                     mode === "single"
                         ? msg.channel.createMessageCollector({
-                            filter: (m) =>
-                                parseInt(m.content) === answer &&
-                                m.author.id === interaction.user.id,
-                            time: 30000,
-                        })
+                              filter: (m) =>
+                                  parseInt(m.content) === answer &&
+                                  m.author.id === interaction.user.id,
+                              time: 30000,
+                          })
                         : msg.channel.createMessageCollector({
-                            filter: (m) => parseInt(m.content) === answer,
-                            time: 30000,
-                        });
+                              filter: (m) => parseInt(m.content) === answer,
+                              time: 30000,
+                          });
 
                 let correct: boolean = false;
 

@@ -1,6 +1,9 @@
 import { Manager } from "@alice-utils/base/Manager";
 import { GuildPunishmentConfigCollectionManager } from "@alice-database/managers/aliceDb/GuildPunishmentConfigCollectionManager";
-import { PunishmentManagerLocalization, PunishmentManagerStrings } from "@alice-localization/utils/managers/PunishmentManagerLocalization";
+import {
+    PunishmentManagerLocalization,
+    PunishmentManagerStrings,
+} from "@alice-localization/utils/managers/PunishmentManagerLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 /**
@@ -27,10 +30,12 @@ export abstract class PunishmentManager extends Manager {
 
     /**
      * Gets the localization of this manager.
-     * 
-     * @param language The language to localize. 
+     *
+     * @param language The language to localize.
      */
-    protected static getPunishmentManagerLocalization(language: Language): PunishmentManagerLocalization {
+    protected static getPunishmentManagerLocalization(
+        language: Language
+    ): PunishmentManagerLocalization {
         return new PunishmentManagerLocalization(language);
     }
 }

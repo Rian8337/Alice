@@ -11,7 +11,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 
@@ -41,20 +43,30 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     embed
         .setTitle(localization.getTranslation("auctionInfo"))
         .setDescription(
-            `**${localization.getTranslation("auctionName")}**: ${auction.name}\n` +
-            `**${localization.getTranslation("auctionAuctioneer")}**: ${auction.auctioneer}\n` +
-            `**${localization.getTranslation("creationDate")}**: ${new Date(
-                auction.creationdate * 1000
-            ).toUTCString()}\n` +
-            `**${localization.getTranslation("expirationDate")}**: ${new Date(
-                auction.expirydate * 1000
-            ).toUTCString()}`
+            `**${localization.getTranslation("auctionName")}**: ${
+                auction.name
+            }\n` +
+                `**${localization.getTranslation("auctionAuctioneer")}**: ${
+                    auction.auctioneer
+                }\n` +
+                `**${localization.getTranslation("creationDate")}**: ${new Date(
+                    auction.creationdate * 1000
+                ).toUTCString()}\n` +
+                `**${localization.getTranslation(
+                    "expirationDate"
+                )}**: ${new Date(auction.expirydate * 1000).toUTCString()}`
         )
         .addField(
             localization.getTranslation("auctionItem"),
-            `**${localization.getTranslation("auctionPowerup")}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
-            `**${localization.getTranslation("auctionAmount")}**: ${auction.amount.toLocaleString()}\n` +
-            `**${localization.getTranslation("auctionMinimumBid")}**: ${auction.min_price.toLocaleString()} Alice coins`
+            `**${localization.getTranslation(
+                "auctionPowerup"
+            )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
+                `**${localization.getTranslation(
+                    "auctionAmount"
+                )}**: ${auction.amount.toLocaleString()}\n` +
+                `**${localization.getTranslation(
+                    "auctionMinimumBid"
+                )}**: ${auction.min_price.toLocaleString()} Alice coins`
         );
 
     const bids: AuctionBid[] = [...auction.bids.values()];
@@ -67,8 +79,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const bid: AuctionBid = bids[i];
 
         if (bid) {
-            biddersDescription += `#${i + 1}: ${bid.clan
-                } - **${bid.amount.toLocaleString()}** Alice coins\n`;
+            biddersDescription += `#${i + 1}: ${
+                bid.clan
+            } - **${bid.amount.toLocaleString()}** Alice coins\n`;
         } else {
             biddersDescription += `#${i + 1}: -\n`;
         }
@@ -81,7 +94,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ].amount.toLocaleString()}** Alice coins`;
     }
 
-    embed.addField(localization.getTranslation("auctionBidInfo"), biddersDescription);
+    embed.addField(
+        localization.getTranslation("auctionBidInfo"),
+        biddersDescription
+    );
 
     interaction.editReply({
         embeds: [embed],

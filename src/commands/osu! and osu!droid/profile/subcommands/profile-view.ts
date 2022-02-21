@@ -24,7 +24,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tooManyOptions")
+            ),
         });
     }
 
@@ -64,7 +66,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!uid) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(Constants.userNotBindedReject)
+                        new ConstantsLocalization(language).getTranslation(
+                            Constants.userNotBindedReject
+                        )
                     ),
                 });
             }
@@ -87,7 +91,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!player.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                localization.getTranslation(uid || username || discordid ? "userProfileNotFound" : "selfProfileNotFound")
+                localization.getTranslation(
+                    uid || username || discordid
+                        ? "userProfileNotFound"
+                        : "selfProfileNotFound"
+                )
             ),
         });
     }

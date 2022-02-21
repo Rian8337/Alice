@@ -38,7 +38,7 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
 
         this.utilityInstance = <
             DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>
-            >new GuildSettings().constructor;
+        >new GuildSettings().constructor;
     }
 
     /**
@@ -57,19 +57,26 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
      * @param channelId The ID of the channel.
      * @returns The guild setting, `null` if not found.
      */
-    getGuildSettingWithChannel(channelId: Snowflake): Promise<GuildSettings | null> {
+    getGuildSettingWithChannel(
+        channelId: Snowflake
+    ): Promise<GuildSettings | null> {
         return this.getOne({ "channelSettings.id": channelId });
     }
 
     /**
      * Sets a server's preferred locale.
-     * 
+     *
      * @param guildId The ID of the guild.
      * @param language The language to set the preferred locale to.
      * @returns An object containing information about the operation.
      */
-    async setServerLocale(guildId: Snowflake, language: Language): Promise<OperationResult> {
-        let guildSetting: GuildSettings | null = await this.getGuildSetting(guildId);
+    async setServerLocale(
+        guildId: Snowflake,
+        language: Language
+    ): Promise<OperationResult> {
+        let guildSetting: GuildSettings | null = await this.getGuildSetting(
+            guildId
+        );
 
         if (!guildSetting) {
             guildSetting = this.defaultInstance;
@@ -83,25 +90,32 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
 
     /**
      * Sets a channel's preferred locale.
-     * 
+     *
      * @param guildId The ID of the guild the channel is in.
      * @param channelId The ID of the channel.
      * @param language The language to set the preferred locale to.
      * @returns An object containing information about the operation.
      */
-    async setChannelLocale(guildId: Snowflake, channelId: Snowflake, language: Language): Promise<OperationResult> {
-        let guildSetting: GuildSettings | null = await this.getGuildSetting(guildId);
+    async setChannelLocale(
+        guildId: Snowflake,
+        channelId: Snowflake,
+        language: Language
+    ): Promise<OperationResult> {
+        let guildSetting: GuildSettings | null = await this.getGuildSetting(
+            guildId
+        );
 
         if (!guildSetting) {
             guildSetting = this.defaultInstance;
             guildSetting.id = guildId;
         }
 
-        const channelSetting: GuildChannelSettings = guildSetting.channelSettings.get(channelId) ?? {
-            id: channelId,
-            disabledCommands: [],
-            disabledEventUtils: []
-        };
+        const channelSetting: GuildChannelSettings =
+            guildSetting.channelSettings.get(channelId) ?? {
+                id: channelId,
+                disabledCommands: [],
+                disabledEventUtils: [],
+            };
 
         if (channelSetting.preferredLocale === language) {
             // Don't need to make a call to database

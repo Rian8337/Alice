@@ -15,7 +15,9 @@ export interface TournamentMatchStrings {
  * Localizations for the `TournamentMatch` database utility.
  */
 export class TournamentMatchLocalization extends Localization<TournamentMatchStrings> {
-    protected override readonly translations: Readonly<Translation<TournamentMatchStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<TournamentMatchStrings>
+    > = {
         en: {
             scoreNotFound: "Score not found",
             modsIsNotUsed: "%s is not used",
@@ -24,6 +26,6 @@ export class TournamentMatchLocalization extends Localization<TournamentMatchStr
             modsExceptNotUsed: "Other mods except %s was used",
             modsWasUsed: "%s was used",
             teamMembersIncorrectFMmod: "No team members enabled HD/HR/EZ",
-        }
+        },
     };
 }

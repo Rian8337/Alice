@@ -16,12 +16,12 @@ export class PingLocalization extends Localization<PingStrings> {
     protected override readonly translations: Readonly<
         Translation<PingStrings>
     > = {
-            en: {
-                pong: "Pong!",
-                discordWs: "Discord Websocket",
-                droidServer: "osu!droid Server",
-                elainaDb: "Elaina Database",
-                aliceDb: "Alice Database",
-            },
-        };
+        en: {
+            pong: "Pong!",
+            discordWs: "Discord Websocket",
+            droidServer: "osu!droid Server",
+            elainaDb: "Elaina Database",
+            aliceDb: "Alice Database",
+        },
+    };
 }

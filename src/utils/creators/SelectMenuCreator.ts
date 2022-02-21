@@ -39,7 +39,8 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         users: Snowflake[],
         duration: number
     ): Promise<string[]> {
-        const localization: SelectMenuCreatorLocalization = this.getLocalization(await CommandHelper.getLocale(interaction));
+        const localization: SelectMenuCreatorLocalization =
+            this.getLocalization(await CommandHelper.getLocale(interaction));
 
         const selectMenu: MessageSelectMenu = new MessageSelectMenu()
             .setCustomId("whatever")
@@ -88,12 +89,16 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
             collector.on("end", async (collected) => {
                 if (collected.size > 0) {
                     await interaction.editReply({
-                        content: MessageCreator.createAccept(localization.getTranslation("pleaseWait")),
+                        content: MessageCreator.createAccept(
+                            localization.getTranslation("pleaseWait")
+                        ),
                         components: [],
                     });
                 } else {
                     await interaction.editReply({
-                        content: MessageCreator.createReject(localization.getTranslation("timedOut")),
+                        content: MessageCreator.createReject(
+                            localization.getTranslation("timedOut")
+                        ),
                         components: [],
                     });
 
@@ -114,10 +119,12 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
 
     /**
      * Gets the localization of this creator utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): SelectMenuCreatorLocalization {
+    private static getLocalization(
+        language: Language
+    ): SelectMenuCreatorLocalization {
         return new SelectMenuCreatorLocalization(language);
     }
 }

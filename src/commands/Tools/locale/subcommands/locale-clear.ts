@@ -13,7 +13,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const localization: LocaleLocalization = new LocaleLocalization(language);
 
-    const constantsLocalization: ConstantsLocalization = new ConstantsLocalization(language);
+    const constantsLocalization: ConstantsLocalization =
+        new ConstantsLocalization(language);
 
     const scope: string = interaction.options.getString("scope", true);
 
@@ -21,46 +22,76 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     switch (scope) {
         case "server":
-            if (!interaction.inCachedGuild() || !CommandHelper.userFulfillsCommandPermission(interaction, ["MANAGE_GUILD"])) {
+            if (
+                !interaction.inCachedGuild() ||
+                !CommandHelper.userFulfillsCommandPermission(interaction, [
+                    "MANAGE_GUILD",
+                ])
+            ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        constantsLocalization.getTranslation(Constants.noPermissionReject)
-                    )
+                        constantsLocalization.getTranslation(
+                            Constants.noPermissionReject
+                        )
+                    ),
                 });
             }
 
-            result = await DatabaseManager.aliceDb.collections.guildSettings.setServerLocale(interaction.guildId, "en");
+            result =
+                await DatabaseManager.aliceDb.collections.guildSettings.setServerLocale(
+                    interaction.guildId,
+                    "en"
+                );
 
             break;
         case "channel":
-            if (!interaction.inCachedGuild() || !CommandHelper.userFulfillsCommandPermission(interaction, ["MANAGE_CHANNELS"])) {
+            if (
+                !interaction.inCachedGuild() ||
+                !CommandHelper.userFulfillsCommandPermission(interaction, [
+                    "MANAGE_CHANNELS",
+                ])
+            ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        constantsLocalization.getTranslation(Constants.noPermissionReject)
-                    )
+                        constantsLocalization.getTranslation(
+                            Constants.noPermissionReject
+                        )
+                    ),
                 });
             }
 
-            result = await DatabaseManager.aliceDb.collections.guildSettings.setChannelLocale(interaction.guildId, interaction.channelId, "en");
+            result =
+                await DatabaseManager.aliceDb.collections.guildSettings.setChannelLocale(
+                    interaction.guildId,
+                    interaction.channelId,
+                    "en"
+                );
 
             break;
         default:
-            result = await DatabaseManager.aliceDb.collections.userLocale.setUserLocale(interaction.user.id, "en");
+            result =
+                await DatabaseManager.aliceDb.collections.userLocale.setUserLocale(
+                    interaction.user.id,
+                    "en"
+                );
     }
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("clearLocaleFailed"), result.reason!)
+            content: MessageCreator.createReject(
+                localization.getTranslation("clearLocaleFailed"),
+                result.reason!
+            ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("clearLocaleSuccess")
-        )
+        ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: []
+    permissions: [],
 };

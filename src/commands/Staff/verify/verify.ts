@@ -23,7 +23,11 @@ export const run: Command["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.noPermissionReject
+                )
+            ),
         });
     }
 
@@ -79,7 +83,9 @@ export const run: Command["run"] = async (_, interaction) => {
     await toVerify.roles.set([memberRole], "Verification");
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("verificationSuccess")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("verificationSuccess")
+        ),
     });
 
     await HelperFunctions.sleep(1);
@@ -93,12 +99,13 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     general.send({
-        content: `Welcome ${(await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
-            toVerify.id
-        ))
-            ? "back "
-            : ""
-            }to ${interaction.guild!.name}, ${toVerify}!`,
+        content: `Welcome ${
+            (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
+                toVerify.id
+            ))
+                ? "back "
+                : ""
+        }to ${interaction.guild!.name}, ${toVerify}!`,
         files: [Constants.welcomeImageLink],
     });
 };

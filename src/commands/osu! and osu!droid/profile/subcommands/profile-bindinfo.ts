@@ -12,7 +12,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: ProfileLocalization = new ProfileLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ProfileLocalization = new ProfileLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -21,7 +23,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tooManyOptions")
+            ),
         });
     }
 
@@ -73,25 +77,43 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed
         .setAuthor({
-            name: StringHelper.formatString(localization.getTranslation("playerBindInfo"), player.username),
+            name: StringHelper.formatString(
+                localization.getTranslation("playerBindInfo"),
+                player.username
+            ),
             iconURL: interaction.user.avatarURL({ dynamic: true })!,
             url: `http://ops.dgsrz.com/profile.php?uid=${player.uid}`,
         })
         .setThumbnail(player.avatarURL)
         .setDescription(
-            `[${localization.getTranslation("avatarLink")}](${player.avatarURL})\n\n` +
-            `**${localization.getTranslation("uid")}**: ${player.uid}\n` +
-            `**${localization.getTranslation("rank")}**: ${player.rank.toLocaleString()}\n` +
-            `**${localization.getTranslation("playCount")}**: ${player.playCount.toLocaleString()}\n` +
-            `**${localization.getTranslation("country")}**: ${player.location}\n\n` +
-            `**${localization.getTranslation("bindInformation")}**: ${bindInfo
-                ? StringHelper.formatString(localization.getTranslation("binded"), bindInfo.discordid, bindInfo.discordid)
-                : localization.getTranslation((await ScoreHelper.hasPlayedVerificationMap(
-                    player.uid
-                ))
-                    ? "playedVerificationMap"
-                    : "notBinded")
-            }`
+            `[${localization.getTranslation("avatarLink")}](${
+                player.avatarURL
+            })\n\n` +
+                `**${localization.getTranslation("uid")}**: ${player.uid}\n` +
+                `**${localization.getTranslation(
+                    "rank"
+                )}**: ${player.rank.toLocaleString()}\n` +
+                `**${localization.getTranslation(
+                    "playCount"
+                )}**: ${player.playCount.toLocaleString()}\n` +
+                `**${localization.getTranslation("country")}**: ${
+                    player.location
+                }\n\n` +
+                `**${localization.getTranslation("bindInformation")}**: ${
+                    bindInfo
+                        ? StringHelper.formatString(
+                              localization.getTranslation("binded"),
+                              bindInfo.discordid,
+                              bindInfo.discordid
+                          )
+                        : localization.getTranslation(
+                              (await ScoreHelper.hasPlayedVerificationMap(
+                                  player.uid
+                              ))
+                                  ? "playedVerificationMap"
+                                  : "notBinded"
+                          )
+                }`
         );
 
     interaction.editReply({

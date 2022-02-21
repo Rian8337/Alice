@@ -6,7 +6,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildChannel } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: SettingsLocalization = new SettingsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const channel: GuildChannel = <GuildChannel>(
         interaction.options.getChannel("channel", true)

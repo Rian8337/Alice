@@ -21,7 +21,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("selfIsNotInClan")
+            ),
         });
     }
 
@@ -56,7 +58,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("setIconSuccessful")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("setIconSuccessful")
+        ),
     });
 };
 

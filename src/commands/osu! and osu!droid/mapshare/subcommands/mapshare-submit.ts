@@ -16,7 +16,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: MapshareLocalization = new MapshareLocalization(language);
+    const localization: MapshareLocalization = new MapshareLocalization(
+        language
+    );
 
     const beatmapId: number = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap", true)
@@ -198,7 +200,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("submitSuccess")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("submitSuccess")
+        ),
     });
 };
 

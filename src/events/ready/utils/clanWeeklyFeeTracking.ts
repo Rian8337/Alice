@@ -56,7 +56,8 @@ export const run: EventUtil["run"] = async (client) => {
                     .fetch(member.id)
                     .catch(() => null);
 
-                const language: Language = await CommandHelper.getUserPreferredLocale(member.id);
+                const language: Language =
+                    await CommandHelper.getUserPreferredLocale(member.id);
 
                 // If the person is not in the server, kick the person
                 if (!guildMember) {
@@ -157,7 +158,10 @@ export const run: EventUtil["run"] = async (client) => {
                         }
                     }
 
-                    await clan.removeMember(userToKick, await CommandHelper.getLocale(userToKick));
+                    await clan.removeMember(
+                        userToKick,
+                        await CommandHelper.getLocale(userToKick)
+                    );
                     ++kickedCount;
                     continue;
                 }
@@ -174,7 +178,8 @@ export const run: EventUtil["run"] = async (client) => {
 
             await clan.updateClan();
             await clan.notifyLeader(
-                `Hey, your clan upkeep has been picked up from your members! ${clan.member_list.size
+                `Hey, your clan upkeep has been picked up from your members! ${
+                    clan.member_list.size
                 } member(s) have successfully paid their upkeep. A total of ${kickedCount} member(s) were kicked. Your next clan upkeep will be picked in ${new Date(
                     clan.weeklyfee * 1000
                 ).toUTCString()}.`

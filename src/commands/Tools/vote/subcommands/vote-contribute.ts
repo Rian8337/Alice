@@ -9,7 +9,9 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: VoteLocalization = new VoteLocalization(await CommandHelper.getLocale(interaction));
+    const localization: VoteLocalization = new VoteLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const voteInfo: Voting | null =
         await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
@@ -37,7 +39,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("invalidVoteChoice")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("invalidVoteChoice")
+            ),
         });
     }
 
@@ -93,13 +97,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { $set: { choices: choices } }
     );
 
-    let string: string = `**${localization.getTranslation("topic")}: ${voteInfo.topic}**\n\n`;
+    let string: string = `**${localization.getTranslation("topic")}: ${
+        voteInfo.topic
+    }**\n\n`;
 
     for (let i = 0; i < voteInfo.choices.length; ++i) {
         const choice: VoteChoice = voteInfo.choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length
-            }\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${
+            choice.voters.length
+        }\`\n\n`;
     }
 
     if (choiceIndex === -1) {

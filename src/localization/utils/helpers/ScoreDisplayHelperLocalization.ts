@@ -9,9 +9,11 @@ export interface ScoreDisplayHelperStrings {
  * Localizations for the `ScoreDisplayHelper` helper utility.
  */
 export class ScoreDisplayHelperLocalization extends Localization<ScoreDisplayHelperStrings> {
-    protected override readonly translations: Readonly<Translation<ScoreDisplayHelperStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<ScoreDisplayHelperStrings>
+    > = {
         en: {
             recentPlays: "Recent plays for %s",
-        }
+        },
     };
 }

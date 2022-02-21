@@ -9,7 +9,10 @@ import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHel
 import { Collection, Guild, TextChannel } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const localization: MessageanalyticsLocalization = new MessageanalyticsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MessageanalyticsLocalization =
+        new MessageanalyticsLocalization(
+            await CommandHelper.getLocale(interaction)
+        );
 
     const fromDateEntries: number[] = interaction.options
         .getString("fromdate", true)

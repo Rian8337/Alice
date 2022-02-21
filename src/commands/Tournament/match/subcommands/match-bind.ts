@@ -8,7 +8,9 @@ import { MatchLocalization } from "@alice-localization/commands/Tournament/Match
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: MatchLocalization = new MatchLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MatchLocalization = new MatchLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const id: string = interaction.options.getString("id", true);
 
@@ -27,7 +29,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("matchDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("matchDoesntExist")
+            ),
         });
     }
 

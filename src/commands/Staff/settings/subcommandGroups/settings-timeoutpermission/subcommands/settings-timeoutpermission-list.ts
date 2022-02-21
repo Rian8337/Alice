@@ -16,7 +16,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
+    const localization: SettingsLocalization = new SettingsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
@@ -51,9 +53,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map(
                     (v) =>
-                        `- <@&${v.id}> (${v.maxTime === -1
-                            ? localization.getTranslation("indefinite")
-                            : DateTimeFormatHelper.secondsToDHMS(v.maxTime, localization.language)
+                        `- <@&${v.id}> (${
+                            v.maxTime === -1
+                                ? localization.getTranslation("indefinite")
+                                : DateTimeFormatHelper.secondsToDHMS(
+                                      v.maxTime,
+                                      localization.language
+                                  )
                         })`
                 )
                 .join("\n")

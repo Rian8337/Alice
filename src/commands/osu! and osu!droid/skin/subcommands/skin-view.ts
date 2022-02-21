@@ -7,7 +7,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: SkinLocalization = new SkinLocalization(await CommandHelper.getLocale(interaction));
+    const localization: SkinLocalization = new SkinLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
@@ -17,8 +19,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!skinInfo) {
         return interaction.editReply({
             content:
-                MessageCreator.createReject(localization.getTranslation("noSkinSetForUser")) +
-                `\n\n${localization.getTranslation("tsukushiSite")}`,
+                MessageCreator.createReject(
+                    localization.getTranslation("noSkinSetForUser")
+                ) + `\n\n${localization.getTranslation("tsukushiSite")}`,
         });
     }
 

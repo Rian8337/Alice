@@ -55,7 +55,7 @@ export abstract class CommandHelper extends Manager {
         interaction: CommandInteraction,
         mainCommandDirectory: string,
         subcommandChoices: MessageSelectOptionData[],
-        placeholder: string,
+        placeholder: string
     ): Promise<unknown> {
         const pickedSubcommand: string = (
             await SelectMenuCreator.createSelectMenu(
@@ -84,7 +84,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the preferred locale of an interaction.
-     * 
+     *
      * @param interaction The interaction.
      * @returns The preferred locale of the channel or server, either set locally to bot or from the interaction.
      */
@@ -92,7 +92,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the preferred locale of a channel.
-     * 
+     *
      * @param channel The channel.
      * @returns The preferred locale of the channel or server, English if the channel doesn't have a preferred locale.
      */
@@ -100,9 +100,9 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the preferred locale of a user.
-     * 
+     *
      * Keep in mind that this is only for command usage (e.g. in DM). To directly retrieve a user's locale information, use `<UserLocaleCollectionManager>.getUserLocale()`.
-     * 
+     *
      * @param user The user.
      * @returns The preferred locale of the user, English if the user doesn't have a preferred locale.
      */
@@ -110,33 +110,50 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the preferred locale of a channel.
-     * 
+     *
      * @param channelId The ID of the channel.
      * @returns The preferred locale of the channel or server, English if the channel doesn't have a preferred locale.
      */
     static async getLocale(channelId: Snowflake): Promise<Language>;
 
-    static async getLocale(input: Interaction | GuildChannel | Snowflake | User): Promise<Language> {
-        if ((input instanceof Interaction && input.channel instanceof DMChannel) || input instanceof User) {
-            const userLocale: UserLocale | null = await DatabaseManager.aliceDb.collections.userLocale.getUserLocale(input.id);
+    static async getLocale(
+        input: Interaction | GuildChannel | Snowflake | User
+    ): Promise<Language> {
+        if (
+            (input instanceof Interaction &&
+                input.channel instanceof DMChannel) ||
+            input instanceof User
+        ) {
+            const userLocale: UserLocale | null =
+                await DatabaseManager.aliceDb.collections.userLocale.getUserLocale(
+                    input.id
+                );
 
             return userLocale?.locale ?? "en";
         }
 
-        const channelId: Snowflake = input instanceof Interaction ?
-            input.locale :
-            input instanceof GuildChannel ?
-                input.id :
-                input;
+        const channelId: Snowflake =
+            input instanceof Interaction
+                ? input.locale
+                : input instanceof GuildChannel
+                ? input.id
+                : input;
 
-        let language: Language | undefined = CacheManager.channelLocale.get(channelId);
+        let language: Language | undefined =
+            CacheManager.channelLocale.get(channelId);
 
         if (!language) {
-            const guildSetting: GuildSettings | null = await DatabaseManager.aliceDb.collections.guildSettings.getGuildSettingWithChannel(channelId);
+            const guildSetting: GuildSettings | null =
+                await DatabaseManager.aliceDb.collections.guildSettings.getGuildSettingWithChannel(
+                    channelId
+                );
 
-            const channelSetting: GuildChannelSettings | undefined = guildSetting?.channelSettings.get(channelId);
+            const channelSetting: GuildChannelSettings | undefined =
+                guildSetting?.channelSettings.get(channelId);
 
-            language = channelSetting?.preferredLocale ?? guildSetting?.preferredLocale;
+            language =
+                channelSetting?.preferredLocale ??
+                guildSetting?.preferredLocale;
 
             // No point in caching guild locale since database always
             // gets called if channel locale isn't available
@@ -160,15 +177,17 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the preferred locale of a user.
-     * 
+     *
      * @param interaction The interaction between the user.
      * @returns The user's preferred locale, English if the user doesn't have a preferred locale.
      */
-    static async getUserPreferredLocale(interaction: Interaction): Promise<Language>;
+    static async getUserPreferredLocale(
+        interaction: Interaction
+    ): Promise<Language>;
 
     /**
      * Gets the preferred locale of a user.
-     * 
+     *
      * @param user The user.
      * @returns The user's preferred locale, English if the user doesn't have a preferred locale.
      */
@@ -176,25 +195,29 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the preferred locale of a user.
-     * 
+     *
      * @param userId The ID of the user.
      * @returns The user's preferred locale, English if the user doesn't have a preferred locale.
      */
     static async getUserPreferredLocale(userId: Snowflake): Promise<Language>;
 
-    static async getUserPreferredLocale(input: Interaction | Snowflake | User): Promise<Language> {
-        const id: Snowflake = input instanceof Interaction ?
-            input.user.id :
-            input instanceof User ?
-                input.id :
-                input;
+    static async getUserPreferredLocale(
+        input: Interaction | Snowflake | User
+    ): Promise<Language> {
+        const id: Snowflake =
+            input instanceof Interaction
+                ? input.user.id
+                : input instanceof User
+                ? input.id
+                : input;
 
         let language: Language | undefined = CacheManager.userLocale.get(id);
 
         if (!language) {
-            const userLocale: UserLocale | null = await DatabaseManager.aliceDb.collections.userLocale.getUserLocale(
-                id
-            );
+            const userLocale: UserLocale | null =
+                await DatabaseManager.aliceDb.collections.userLocale.getUserLocale(
+                    id
+                );
 
             language = userLocale?.locale;
 
@@ -234,7 +257,11 @@ export abstract class CommandHelper extends Manager {
         interaction: CommandInteraction,
         language: Language = "en"
     ): Promise<unknown> {
-        return this.runSubOrGroup(interaction, this.getSubcommand(interaction), language);
+        return this.runSubOrGroup(
+            interaction,
+            this.getSubcommand(interaction),
+            language
+        );
     }
 
     /**
@@ -266,7 +293,8 @@ export abstract class CommandHelper extends Manager {
         subcommand?: Subcommand,
         language: Language = "en"
     ): Promise<unknown> {
-        const localization: CommandHelperLocalization = this.getLocalization(language);
+        const localization: CommandHelperLocalization =
+            this.getLocalization(language);
 
         if (!subcommand) {
             return interaction.editReply({
@@ -284,8 +312,11 @@ export abstract class CommandHelper extends Manager {
         ) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    `${new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)
-                    } ${localization.getTranslation("permissionsRequired")}: \`${PermissionHelper.getPermissionString(
+                    `${new ConstantsLocalization(language).getTranslation(
+                        Constants.noPermissionReject
+                    )} ${localization.getTranslation(
+                        "permissionsRequired"
+                    )}: \`${PermissionHelper.getPermissionString(
                         subcommand.config.permissions
                     )}\`.`
                 ),
@@ -451,8 +482,8 @@ export abstract class CommandHelper extends Manager {
             const guildSetting:
                 | Collection<string, DisabledCommand>
                 | undefined = CommandUtilManager.guildDisabledCommands.get(
-                    interaction.guildId
-                );
+                interaction.guildId
+            );
 
             if (guildSetting?.get(interaction.commandName)?.cooldown === -1) {
                 return false;
@@ -548,10 +579,12 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the localization of this helper utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): CommandHelperLocalization {
+    private static getLocalization(
+        language: Language
+    ): CommandHelperLocalization {
         return new CommandHelperLocalization(language);
     }
 }

@@ -10,7 +10,9 @@ import { GuildMember, MessageEmbed } from "discord.js";
 import { VideoSearchResult } from "yt-search";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MusicLocalization = new MusicLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const musicInformation: MusicInfo | undefined =
         MusicManager.musicInformations.get(interaction.guildId!);
@@ -30,7 +32,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed
         .setTitle(localization.getTranslation("musicInfo"))
-        .addField(localization.getTranslation("playingSince"), musicInformation.createdAt.toUTCString());
+        .addField(
+            localization.getTranslation("playingSince"),
+            musicInformation.createdAt.toUTCString()
+        );
 
     const information: VideoSearchResult | undefined =
         musicInformation.currentlyPlaying?.information;
@@ -39,19 +44,32 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         embed
             .addField(
                 localization.getTranslation("currentlyPlaying"),
-                `[${information.title}](${information.url})\n\n${localization.getTranslation("channel")}: ${information.author.name
-                }\n\n${localization.getTranslation("duration")}: ${information.duration.toString()}\n\n${localization.getTranslation("requestedBy")} <@${musicInformation.currentlyPlaying!.queuer
-                }>`
+                `[${information.title}](${
+                    information.url
+                })\n\n${localization.getTranslation("channel")}: ${
+                    information.author.name
+                }\n\n${localization.getTranslation(
+                    "duration"
+                )}: ${information.duration.toString()}\n\n${localization.getTranslation(
+                    "requestedBy"
+                )} <@${musicInformation.currentlyPlaying!.queuer}>`
             )
             .setThumbnail(information.thumbnail);
     } else {
-        embed.addField(localization.getTranslation("currentlyPlaying"), localization.getTranslation("none"));
+        embed.addField(
+            localization.getTranslation("currentlyPlaying"),
+            localization.getTranslation("none")
+        );
     }
 
     embed
         .addField(
             localization.getTranslation("playbackSettings"),
-            `${Symbols.repeatSingleButton} ${localization.getTranslation("repeatMode")}: ${localization.getTranslation(musicInformation.repeat ? "enabled" : "disabled")}`
+            `${Symbols.repeatSingleButton} ${localization.getTranslation(
+                "repeatMode"
+            )}: ${localization.getTranslation(
+                musicInformation.repeat ? "enabled" : "disabled"
+            )}`
         )
         .addField(
             localization.getTranslation("queue"),

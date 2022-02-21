@@ -13,13 +13,15 @@ export interface LocaleStrings {
  * Localization for the `locale` command.
  */
 export class LocaleLocalization extends Localization<LocaleStrings> {
-    protected override readonly translations: Readonly<Translation<LocaleStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<LocaleStrings>
+    > = {
         en: {
             selectLanguage: "Choose a language.",
             clearLocaleFailed: "I'm sorry, I couldn't clear the locale: %s.",
             clearLocaleSuccess: "Successfully cleared locale.",
             setLocaleFailed: "I'm sorry, I couldn't set the locale: %s.",
             setLocaleSuccess: "Successfully set locale.",
-        }
+        },
     };
 }

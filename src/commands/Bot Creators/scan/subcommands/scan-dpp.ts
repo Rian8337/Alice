@@ -9,7 +9,9 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { Collection, Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const localization: ScanLocalization = new ScanLocalization(await CommandHelper.getLocale(interaction));
+    const localization: ScanLocalization = new ScanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;

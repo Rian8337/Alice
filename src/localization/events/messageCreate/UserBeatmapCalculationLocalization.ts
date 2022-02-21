@@ -13,13 +13,16 @@ export interface UserBeatmapCalculationStrings {
  * Localizations for the `userBeatmapCalculation` event utility in `messageCreate` event.
  */
 export class UserBeatmapCalculationLocalization extends Localization<UserBeatmapCalculationStrings> {
-    protected override readonly translations: Readonly<Translation<UserBeatmapCalculationStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<UserBeatmapCalculationStrings>
+    > = {
         en: {
             droidStars: "Raw droid stars",
             droidPP: "Raw droid pp",
             pcStars: "Raw PC stars",
             pcPP: "Raw PC pp",
-            beatmapLimitation: "I found %s maps, but only displaying up to 3 due to my limitations.",
-        }
+            beatmapLimitation:
+                "I found %s maps, but only displaying up to 3 due to my limitations.",
+        },
     };
 }

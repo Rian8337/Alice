@@ -17,17 +17,21 @@ export interface PPcompareStrings {
  * Localizations for the `ppcompare` command.
  */
 export class PPcompareLocalization extends Localization<PPcompareStrings> {
-    protected override readonly translations: Readonly<Translation<PPcompareStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<PPcompareStrings>
+    > = {
         en: {
-            cannotCompareSamePlayers: "Hey, you cannot compare two of the same players!",
+            cannotCompareSamePlayers:
+                "Hey, you cannot compare two of the same players!",
             playerNotBinded: 'I\'m sorry, the %s "%s" is not binded!',
             uid: "uid",
             username: "username",
             user: "user",
-            noSimilarPlayFound: "I'm sorry, both players do not have any intersecting top plays!",
+            noSimilarPlayFound:
+                "I'm sorry, both players do not have any intersecting top plays!",
             topPlaysComparison: "Top PP Plays Comparison",
             player: "Player",
             totalPP: "Total PP",
-        }
+        },
     };
 }

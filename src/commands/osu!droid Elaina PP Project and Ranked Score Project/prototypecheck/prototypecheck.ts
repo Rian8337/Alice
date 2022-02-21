@@ -16,7 +16,10 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: PrototypecheckLocalization = new PrototypecheckLocalization(await CommandHelper.getLocale(interaction));
+    const localization: PrototypecheckLocalization =
+        new PrototypecheckLocalization(
+            await CommandHelper.getLocale(interaction)
+        );
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -69,16 +72,29 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 
     embed.setDescription(
-        `**${StringHelper.formatString(localization.getTranslation("ppProfileTitle"), `<@${ppInfo.discordid}>`)} (${ppInfo.username})**\n` +
-        `${localization.getTranslation("totalPP")}: **${ppInfo.pptotal.toFixed(2)} pp (#${(
-            await dbManager.getUserDPPRank(ppInfo.pptotal)
-        ).toLocaleString()})**\n` +
-        `${localization.getTranslation("prevTotalPP")}: **${ppInfo.prevpptotal.toFixed(2)} pp**\n` +
-        `Difference: **${(ppInfo.pptotal - ppInfo.prevpptotal).toFixed(
-            2
-        )} pp**\n` +
-        `[${localization.getTranslation("ppProfile")}](https://droidppboard.herokuapp.com/prototype/profile?uid=${ppInfo.uid})\n` +
-        `${localization.getTranslation("lastUpdate")}: **${new Date(ppInfo.lastUpdate).toUTCString()}**`
+        `**${StringHelper.formatString(
+            localization.getTranslation("ppProfileTitle"),
+            `<@${ppInfo.discordid}>`
+        )} (${ppInfo.username})**\n` +
+            `${localization.getTranslation(
+                "totalPP"
+            )}: **${ppInfo.pptotal.toFixed(2)} pp (#${(
+                await dbManager.getUserDPPRank(ppInfo.pptotal)
+            ).toLocaleString()})**\n` +
+            `${localization.getTranslation(
+                "prevTotalPP"
+            )}: **${ppInfo.prevpptotal.toFixed(2)} pp**\n` +
+            `Difference: **${(ppInfo.pptotal - ppInfo.prevpptotal).toFixed(
+                2
+            )} pp**\n` +
+            `[${localization.getTranslation(
+                "ppProfile"
+            )}](https://droidppboard.herokuapp.com/prototype/profile?uid=${
+                ppInfo.uid
+            })\n` +
+            `${localization.getTranslation("lastUpdate")}: **${new Date(
+                ppInfo.lastUpdate
+            ).toUTCString()}**`
     );
 
     const onPageChange: OnButtonPageChange = async (
@@ -117,7 +133,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
                 embed.addField(
                     `${i + 1}. ${pp.title} ${modstring}`,
-                    `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss
+                    `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
+                        pp.miss
                     } ❌ | **${pp.prevPP}** ⮕ **${pp.pp}** pp (${(
                         pp.pp - pp.prevPP
                     ).toFixed(2)} pp)`

@@ -18,7 +18,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.selfNotBindedReject
+                )
+            ),
         });
     }
 

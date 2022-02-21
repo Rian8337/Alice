@@ -12,7 +12,9 @@ import { Language } from "@alice-localization/base/Language";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
-    const localization: NamechangeLocalization = new NamechangeLocalization(language);
+    const localization: NamechangeLocalization = new NamechangeLocalization(
+        language
+    );
 
     const uid: number = interaction.options.getInteger("uid", true);
 
@@ -24,7 +26,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("invalidUid")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("invalidUid")
+            ),
         });
     }
 
@@ -51,7 +55,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(localization.getTranslation("acceptSuccess")),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("acceptSuccess")
+        ),
     });
 };
 

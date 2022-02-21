@@ -21,11 +21,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("clanDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("clanDoesntExist")
+            ),
         });
     }
 
-    const incrementResult: OperationResult = clan.incrementPower(amount, language);
+    const incrementResult: OperationResult = clan.incrementPower(
+        amount,
+        language
+    );
 
     if (!incrementResult.success) {
         return interaction.editReply({

@@ -29,9 +29,7 @@ export abstract class Localization<T extends Record<keyof T, string>> {
      * @param language The language to translate to. Defaults to English.
      * @returns The translated string literal, English if not available.
      */
-    getTranslation(
-        name: keyof T
-    ): string {
+    getTranslation(name: keyof T): string {
         return (
             this.translations[this.language][name] ||
             this.translations["en"][name]

@@ -31,7 +31,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!staffMembers.has(interaction.user.id)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)
+                    new ConstantsLocalization(language).getTranslation(
+                        Constants.noPermissionReject
+                    )
                 ),
             });
         }
@@ -48,7 +50,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!bindInfo) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+                    new ConstantsLocalization(language).getTranslation(
+                        Constants.selfNotBindedReject
+                    )
                 ),
             });
         }
@@ -71,7 +75,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("clanDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("clanDoesntExist")
+            ),
         });
     }
 

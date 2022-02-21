@@ -9,9 +9,11 @@ export interface LoungeLockManagerStrings {
  * Localizations for the `LoungeLockManager` manager utility.
  */
 export class LoungeLockManagerLocalization extends Localization<LoungeLockManagerStrings> {
-    protected override readonly translations: Readonly<Translation<LoungeLockManagerStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<LoungeLockManagerStrings>
+    > = {
         en: {
-            userNotLocked: "User is not locked from lounge"
-        }
+            userNotLocked: "User is not locked from lounge",
+        },
     };
 }

@@ -31,7 +31,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            localization.getTranslation(repeatMode ? "repeatModeEnableSuccess" : "repeatModeDisableSuccess")
+            localization.getTranslation(
+                repeatMode
+                    ? "repeatModeEnableSuccess"
+                    : "repeatModeDisableSuccess"
+            )
         ),
     });
 };

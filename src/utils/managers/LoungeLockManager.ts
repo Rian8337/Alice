@@ -78,12 +78,15 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 this.mainServer
             );
 
-        const punishmentManagerLocalization: PunishmentManagerLocalization = this.getPunishmentManagerLocalization(language);
+        const punishmentManagerLocalization: PunishmentManagerLocalization =
+            this.getPunishmentManagerLocalization(language);
 
         if (!guildConfig) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotFoundReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotFoundReject
+                )
             );
         }
 
@@ -93,7 +96,9 @@ export abstract class LoungeLockManager extends PunishmentManager {
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotValidReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotValidReject
+                )
             );
         }
 
@@ -110,15 +115,16 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setTitle("Lounge Lock Extended")
                 .setDescription(
                     `**User**: <@${userId}>\n` +
-                    `**Updated Reason**: ${reason}\n` +
-                    `**New Expiration Date**: ${!Number.isFinite(
-                        lockInfo.expiration + duration * 1000
-                    )
-                        ? "Never"
-                        : new Date(
-                            lockInfo.expiration + duration * 1000
-                        ).toUTCString()
-                    }`
+                        `**Updated Reason**: ${reason}\n` +
+                        `**New Expiration Date**: ${
+                            !Number.isFinite(
+                                lockInfo.expiration + duration * 1000
+                            )
+                                ? "Never"
+                                : new Date(
+                                      lockInfo.expiration + duration * 1000
+                                  ).toUTCString()
+                        }`
                 );
         } else {
             // Insert new lock
@@ -129,13 +135,14 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setTitle("Lounge Lock Added")
                 .setDescription(
                     `**User**: <@${userId}>\n` +
-                    `**Reason**: ${reason}\n` +
-                    `**Expiration Date**: ${!Number.isFinite(duration * 1000)
-                        ? "Never"
-                        : new Date(
-                            Date.now() + duration * 1000
-                        ).toUTCString()
-                    }`
+                        `**Reason**: ${reason}\n` +
+                        `**Expiration Date**: ${
+                            !Number.isFinite(duration * 1000)
+                                ? "Never"
+                                : new Date(
+                                      Date.now() + duration * 1000
+                                  ).toUTCString()
+                        }`
                 );
         }
 
@@ -159,9 +166,11 @@ export abstract class LoungeLockManager extends PunishmentManager {
         const lockInfo: LoungeLock | null =
             await this.loungeLockDb.getUserLockInfo(userId);
 
-        const localization: LoungeLockManagerLocalization = this.getLocalization(language);
+        const localization: LoungeLockManagerLocalization =
+            this.getLocalization(language);
 
-        const punishmentManagerLocalization: PunishmentManagerLocalization = this.getPunishmentManagerLocalization(language);
+        const punishmentManagerLocalization: PunishmentManagerLocalization =
+            this.getPunishmentManagerLocalization(language);
 
         if (!lockInfo) {
             return this.createOperationResult(
@@ -178,7 +187,9 @@ export abstract class LoungeLockManager extends PunishmentManager {
         if (!guildConfig) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotFoundReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotFoundReject
+                )
             );
         }
 
@@ -188,14 +199,18 @@ export abstract class LoungeLockManager extends PunishmentManager {
         if (!logChannel) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotFoundReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotFoundReject
+                )
             );
         }
 
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotValidReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotValidReject
+                )
             );
         }
 
@@ -220,10 +235,12 @@ export abstract class LoungeLockManager extends PunishmentManager {
 
     /**
      * Gets the localization of this manager.
-     * 
-     * @param language The language to localize. 
+     *
+     * @param language The language to localize.
      */
-    private static getLocalization(language: Language): LoungeLockManagerLocalization {
+    private static getLocalization(
+        language: Language
+    ): LoungeLockManagerLocalization {
         return new LoungeLockManagerLocalization(language);
     }
 }

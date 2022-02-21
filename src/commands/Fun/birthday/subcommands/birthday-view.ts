@@ -9,7 +9,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed, User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: BirthdayLocalization = new BirthdayLocalization(await CommandHelper.getLocale(interaction));
+    const localization: BirthdayLocalization = new BirthdayLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
@@ -21,7 +23,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!birthday) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                localization.getTranslation(user.id === interaction.user.id ? "selfBirthdayNotExist" : "userBirthdayNotExist")
+                localization.getTranslation(
+                    user.id === interaction.user.id
+                        ? "selfBirthdayNotExist"
+                        : "userBirthdayNotExist"
+                )
             ),
         });
     }
@@ -32,12 +38,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     embed.setDescription(
-        `__**${StringHelper.formatString(localization.getTranslation("birthdayInfo"), user.toString())}**__\n` +
-        `**${localization.getTranslation("date")}**: ${birthday.date}/${birthday.month + 1}\n` +
-        `**${localization.getTranslation("timezone")}**: UTC${birthday.timezone >= 0
-            ? `+${birthday.timezone}`
-            : birthday.timezone
-        }`
+        `__**${StringHelper.formatString(
+            localization.getTranslation("birthdayInfo"),
+            user.toString()
+        )}**__\n` +
+            `**${localization.getTranslation("date")}**: ${birthday.date}/${
+                birthday.month + 1
+            }\n` +
+            `**${localization.getTranslation("timezone")}**: UTC${
+                birthday.timezone >= 0
+                    ? `+${birthday.timezone}`
+                    : birthday.timezone
+            }`
     );
 
     interaction.editReply({

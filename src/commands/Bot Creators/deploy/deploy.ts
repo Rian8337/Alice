@@ -7,7 +7,9 @@ import { DeployLocalization } from "@alice-localization/commands/Bot Creators/De
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
-    const localization: DeployLocalization = new DeployLocalization(await CommandHelper.getLocale(interaction));
+    const localization: DeployLocalization = new DeployLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const commandName: string = interaction.options.getString("command", true);
 
@@ -15,7 +17,9 @@ export const run: Command["run"] = async (client, interaction) => {
 
     if (!command) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("commandNotFound")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("commandNotFound")
+            ),
         });
     }
 

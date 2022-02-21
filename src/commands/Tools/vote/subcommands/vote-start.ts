@@ -8,13 +8,17 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: VoteLocalization = new VoteLocalization(await CommandHelper.getLocale(interaction));
+    const localization: VoteLocalization = new VoteLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const xpReq: number | null = interaction.options.getInteger("xpreq");
 
     if (xpReq && !NumberHelper.isPositive(xpReq)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("invalidXpReq")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("invalidXpReq")
+            ),
         });
     }
 
@@ -32,7 +36,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (choices.length <= 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tooFewChoices")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tooFewChoices")
+            ),
         });
     }
 
@@ -57,19 +63,23 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         choices: choices,
     });
 
-    let string: string = `**${localization.getTranslation("topic")}: ${topic}**\n\n`;
+    let string: string = `**${localization.getTranslation(
+        "topic"
+    )}: ${topic}**\n\n`;
 
     for (let i = 0; i < choices.length; ++i) {
         const choice: VoteChoice = choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length
-            }\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${
+            choice.voters.length
+        }\`\n\n`;
     }
 
     interaction.editReply({
         content:
-            MessageCreator.createAccept(localization.getTranslation("voteStartSuccess")) +
-            `\n${string}`,
+            MessageCreator.createAccept(
+                localization.getTranslation("voteStartSuccess")
+            ) + `\n${string}`,
     });
 };
 

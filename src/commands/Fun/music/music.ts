@@ -13,7 +13,9 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!(<GuildMember>interaction.member).voice.channelId) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new MusicLocalization(language).getTranslation("userIsNotInVoiceChannel")
+                new MusicLocalization(language).getTranslation(
+                    "userIsNotInVoiceChannel"
+                )
             ),
         });
     }

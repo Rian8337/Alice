@@ -14,10 +14,10 @@ export class PlayertrackLocalization extends Localization<PlayertrackStrings> {
     protected override readonly translations: Readonly<
         Translation<PlayertrackStrings>
     > = {
-            en: {
-                incorrectUid: "Hey, please enter a correct uid!",
-                nowTrackingUid: "Now tracking uid %s.",
-                noLongerTrackingUid: "No longer tracking uid %s.",
-            },
-        };
+        en: {
+            incorrectUid: "Hey, please enter a correct uid!",
+            nowTrackingUid: "Now tracking uid %s.",
+            noLongerTrackingUid: "No longer tracking uid %s.",
+        },
+    };
 }

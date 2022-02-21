@@ -12,7 +12,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
+    const localization: TagLocalization = new TagLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 
@@ -24,7 +26,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(localization.getTranslation("tagDoesntExist")),
+            content: MessageCreator.createReject(
+                localization.getTranslation("tagDoesntExist")
+            ),
         });
     }
 
@@ -37,9 +41,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .setTitle(localization.getTranslation("tagInfo"))
         .setDescription(
             `**${localization.getTranslation("tagName")}**: ${tag.name}\n` +
-            `**${localization.getTranslation("tagName")}**: <@${tag.author}>\n` +
-            `**${localization.getTranslation("tagCreationDate")}**: ${new Date(tag.date).toUTCString()}\n` +
-            `**${localization.getTranslation("tagAttachmentAmount")}**: ${tag.attachments.length}`
+                `**${localization.getTranslation("tagName")}**: <@${
+                    tag.author
+                }>\n` +
+                `**${localization.getTranslation(
+                    "tagCreationDate"
+                )}**: ${new Date(tag.date).toUTCString()}\n` +
+                `**${localization.getTranslation("tagAttachmentAmount")}**: ${
+                    tag.attachments.length
+                }`
         );
 
     interaction.editReply({

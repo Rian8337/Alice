@@ -7,7 +7,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: AskcountLocalization = new AskcountLocalization(await CommandHelper.getLocale(interaction));
+    const localization: AskcountLocalization = new AskcountLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const askCount: AskCount | null =
         await DatabaseManager.aliceDb.collections.askCount.getUserAskCount(
@@ -16,7 +18,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!askCount) {
         return interaction.editReply(
-            MessageCreator.createReject(localization.getTranslation("haveNotAsked"))
+            MessageCreator.createReject(
+                localization.getTranslation("haveNotAsked")
+            )
         );
     }
 
@@ -25,7 +29,7 @@ export const run: Command["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("askCount"),
-            count.toLocaleString(),
+            count.toLocaleString()
         ),
     });
 };

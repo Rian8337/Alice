@@ -97,7 +97,8 @@ export class MapShare extends Manager implements DatabaseMapShare {
      * @returns An object containing the result of the operation.
      */
     async post(language: Language = "en"): Promise<OperationResult> {
-        const localization: MapShareLocalization = this.getLocalization(language);
+        const localization: MapShareLocalization =
+            this.getLocalization(language);
 
         if (this.status !== "accepted") {
             return this.createOperationResult(
@@ -110,8 +111,10 @@ export class MapShare extends Manager implements DatabaseMapShare {
             await EmbedCreator.createMapShareEmbed(this);
 
         if (!embedOptions) {
-            return this.createOperationResult(false, localization
-                .getTranslation("beatmapNotFound"));
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("beatmapNotFound")
+            );
         }
 
         const coinAward: number =
@@ -167,7 +170,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
     /**
      * Gets the localization of this database utility.
-     * 
+     *
      * @param language The language to localize.
      */
     private getLocalization(language: Language): MapShareLocalization {

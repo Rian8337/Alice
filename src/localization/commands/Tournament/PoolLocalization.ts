@@ -10,10 +10,13 @@ export interface PoolStrings {
  * Localizations for the `pool` command.
  */
 export class PoolLocalization extends Localization<PoolStrings> {
-    protected override readonly translations: Readonly<Translation<PoolStrings>> = {
+    protected override readonly translations: Readonly<
+        Translation<PoolStrings>
+    > = {
         en: {
-            poolNotFound: "I'm sorry, I cannot find the mappool that you are looking for!",
+            poolNotFound:
+                "I'm sorry, I cannot find the mappool that you are looking for!",
             length: "Length",
-        }
+        },
     };
 }

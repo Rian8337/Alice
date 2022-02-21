@@ -11,7 +11,9 @@ import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
 import yts, { VideoMetadataResult } from "yt-search";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MusicLocalization = new MusicLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 

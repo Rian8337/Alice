@@ -59,10 +59,14 @@ export abstract class CacheManager {
     /**
      * The locales that a user has, mapped by user ID.
      */
-    static readonly userLocale: LimitedCapacityCollection<Snowflake, Language> = new LimitedCapacityCollection(150, 300);
+    static readonly userLocale: LimitedCapacityCollection<Snowflake, Language> =
+        new LimitedCapacityCollection(150, 300);
 
     /**
      * The locales that a guild channel has, mapped by channel ID.
      */
-    static readonly channelLocale: LimitedCapacityCollection<Snowflake, Language> = new LimitedCapacityCollection(100, 300);
+    static readonly channelLocale: LimitedCapacityCollection<
+        Snowflake,
+        Language
+    > = new LimitedCapacityCollection(100, 300);
 }

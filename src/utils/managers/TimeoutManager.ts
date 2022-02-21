@@ -55,7 +55,8 @@ export abstract class TimeoutManager extends PunishmentManager {
         duration: number,
         language: Language = "en"
     ): Promise<OperationResult> {
-        const localization: TimeoutManagerLocalization = this.getLocalization(language);
+        const localization: TimeoutManagerLocalization =
+            this.getLocalization(language);
 
         if (this.isUserTimeouted(member)) {
             return this.createOperationResult(
@@ -110,12 +111,15 @@ export abstract class TimeoutManager extends PunishmentManager {
         const guildConfig: GuildPunishmentConfig | null =
             await this.punishmentDb.getGuildConfig(member.guild);
 
-        const punishmentManagerLocalization: PunishmentManagerLocalization = this.getPunishmentManagerLocalization(language);
+        const punishmentManagerLocalization: PunishmentManagerLocalization =
+            this.getPunishmentManagerLocalization(language);
 
         if (!guildConfig) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotFoundReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotFoundReject
+                )
             );
         }
 
@@ -125,7 +129,9 @@ export abstract class TimeoutManager extends PunishmentManager {
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotValidReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotValidReject
+                )
             );
         }
 
@@ -141,17 +147,30 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTitle(localization.getTranslation("timeoutExecuted"))
             .setFooter({
-                text: `${localization.getTranslation("userId")}: ${member.id} | ${localization.getTranslation("channelId")}: ${interaction.channel?.id}`,
+                text: `${localization.getTranslation("userId")}: ${
+                    member.id
+                } | ${localization.getTranslation("channelId")}: ${
+                    interaction.channel?.id
+                }`,
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(localization.getTranslation("inChannel"), interaction.channel!.toString())}: ${DateTimeFormatHelper.secondsToDHMS(duration, language)}**\n\n` +
-                `=========================\n\n` +
-                `**${localization.getTranslation("reason")}**:\n` +
-                reason
+                `**${member} ${StringHelper.formatString(
+                    localization.getTranslation("inChannel"),
+                    interaction.channel!.toString()
+                )}: ${DateTimeFormatHelper.secondsToDHMS(
+                    duration,
+                    language
+                )}**\n\n` +
+                    `=========================\n\n` +
+                    `**${localization.getTranslation("reason")}**:\n` +
+                    reason
             );
 
-        const userLocalization: TimeoutManagerLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(member.id));
+        const userLocalization: TimeoutManagerLocalization =
+            this.getLocalization(
+                await CommandHelper.getUserPreferredLocale(member.id)
+            );
 
         const userTimeoutEmbed: MessageEmbed = new MessageEmbed()
             .setAuthor({
@@ -160,14 +179,24 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTitle(userLocalization.getTranslation("timeoutExecuted"))
             .setFooter({
-                text: `${userLocalization.getTranslation("userId")}: ${member.id} | ${userLocalization.getTranslation("channelId")}: ${interaction.channel?.id}`,
+                text: `${userLocalization.getTranslation("userId")}: ${
+                    member.id
+                } | ${userLocalization.getTranslation("channelId")}: ${
+                    interaction.channel?.id
+                }`,
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(userLocalization.getTranslation("inChannel"), interaction.channel!.toString())}: ${DateTimeFormatHelper.secondsToDHMS(duration, userLocalization.language)}**\n\n` +
-                `=========================\n\n` +
-                `**${userLocalization.getTranslation("reason")}**:\n` +
-                reason
+                `**${member} ${StringHelper.formatString(
+                    userLocalization.getTranslation("inChannel"),
+                    interaction.channel!.toString()
+                )}: ${DateTimeFormatHelper.secondsToDHMS(
+                    duration,
+                    userLocalization.language
+                )}**\n\n` +
+                    `=========================\n\n` +
+                    `**${userLocalization.getTranslation("reason")}**:\n` +
+                    reason
             );
 
         try {
@@ -224,7 +253,8 @@ export abstract class TimeoutManager extends PunishmentManager {
         reason: string,
         language: Language = "en"
     ): Promise<OperationResult> {
-        const localization: TimeoutManagerLocalization = this.getLocalization(language);
+        const localization: TimeoutManagerLocalization =
+            this.getLocalization(language);
 
         if (!this.isUserTimeouted(member)) {
             return this.createOperationResult(
@@ -243,12 +273,15 @@ export abstract class TimeoutManager extends PunishmentManager {
         const guildConfig: GuildPunishmentConfig | null =
             await this.punishmentDb.getGuildConfig(member.guild);
 
-        const punishmentManagerLocalization: PunishmentManagerLocalization = this.getPunishmentManagerLocalization(language);
+        const punishmentManagerLocalization: PunishmentManagerLocalization =
+            this.getPunishmentManagerLocalization(language);
 
         if (!guildConfig) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotFoundReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotFoundReject
+                )
             );
         }
 
@@ -258,7 +291,9 @@ export abstract class TimeoutManager extends PunishmentManager {
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
                 false,
-                punishmentManagerLocalization.getTranslation(this.logChannelNotValidReject)
+                punishmentManagerLocalization.getTranslation(
+                    this.logChannelNotValidReject
+                )
             );
         }
 
@@ -269,17 +304,27 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTitle(localization.getTranslation("untimeoutExecuted"))
             .setFooter({
-                text: `${localization.getTranslation("userId")}: ${member.id} | ${localization.getTranslation("channelId")}: ${interaction.channel?.id}`,
+                text: `${localization.getTranslation("userId")}: ${
+                    member.id
+                } | ${localization.getTranslation("channelId")}: ${
+                    interaction.channel?.id
+                }`,
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(localization.getTranslation("inChannel"), interaction.channel!.toString())}**\n\n` +
-                `=========================\n\n` +
-                `**${localization.getTranslation("reason")}**:\n` +
-                reason
+                `**${member} ${StringHelper.formatString(
+                    localization.getTranslation("inChannel"),
+                    interaction.channel!.toString()
+                )}**\n\n` +
+                    `=========================\n\n` +
+                    `**${localization.getTranslation("reason")}**:\n` +
+                    reason
             );
 
-        const userLocalization: TimeoutManagerLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(member.id));
+        const userLocalization: TimeoutManagerLocalization =
+            this.getLocalization(
+                await CommandHelper.getUserPreferredLocale(member.id)
+            );
 
         const userUntimeoutEmbed: MessageEmbed = new MessageEmbed()
             .setAuthor({
@@ -288,21 +333,31 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTitle(userLocalization.getTranslation("untimeoutExecuted"))
             .setFooter({
-                text: `${userLocalization.getTranslation("userId")}: ${member.id} | ${userLocalization.getTranslation("channelId")}: ${interaction.channel?.id}`,
+                text: `${userLocalization.getTranslation("userId")}: ${
+                    member.id
+                } | ${userLocalization.getTranslation("channelId")}: ${
+                    interaction.channel?.id
+                }`,
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(userLocalization.getTranslation("inChannel"), interaction.channel!.toString())}**\n\n` +
-                `=========================\n\n` +
-                `**${userLocalization.getTranslation("reason")}**:\n` +
-                reason
+                `**${member} ${StringHelper.formatString(
+                    userLocalization.getTranslation("inChannel"),
+                    interaction.channel!.toString()
+                )}**\n\n` +
+                    `=========================\n\n` +
+                    `**${userLocalization.getTranslation("reason")}**:\n` +
+                    reason
             );
 
         await logChannel.send({ embeds: [untimeoutEmbed] });
 
         await this.notifyMember(
             member,
-            StringHelper.formatString(userLocalization.getTranslation("untimeoutUserNotification"), reason),
+            StringHelper.formatString(
+                userLocalization.getTranslation("untimeoutUserNotification"),
+                reason
+            ),
             userUntimeoutEmbed
         );
 
@@ -418,10 +473,12 @@ export abstract class TimeoutManager extends PunishmentManager {
 
     /**
      * Gets the localization of this manager utility.
-     * 
+     *
      * @param language The language to localize.
      */
-    private static getLocalization(language: Language): TimeoutManagerLocalization {
+    private static getLocalization(
+        language: Language
+    ): TimeoutManagerLocalization {
         return new TimeoutManagerLocalization(language);
     }
 }

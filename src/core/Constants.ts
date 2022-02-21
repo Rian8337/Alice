@@ -8,7 +8,8 @@ export class Constants {
     /**
      * Default message to send when a user doesn't meet required permissions to use a command.
      */
-    static readonly noPermissionReject: keyof ConstantsStrings = "noPermissionToExecuteCommand";
+    static readonly noPermissionReject: keyof ConstantsStrings =
+        "noPermissionToExecuteCommand";
 
     /**
      * Default message to send when a Discord user doesn't have a binded osu!droid account.

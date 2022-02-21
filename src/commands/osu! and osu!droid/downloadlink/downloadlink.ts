@@ -9,7 +9,9 @@ import { DownloadlinkLocalization } from "@alice-localization/commands/osu! and 
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const localization: DownloadlinkLocalization = new DownloadlinkLocalization(await CommandHelper.getLocale(interaction));
+    const localization: DownloadlinkLocalization = new DownloadlinkLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const beatmapHash: string | undefined =
         BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
@@ -35,8 +37,11 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const embedOptions: MessageOptions =
-        EmbedCreator.createBeatmapEmbed(beatmapInfo, undefined, localization.language);
+    const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
+        beatmapInfo,
+        undefined,
+        localization.language
+    );
 
     const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 

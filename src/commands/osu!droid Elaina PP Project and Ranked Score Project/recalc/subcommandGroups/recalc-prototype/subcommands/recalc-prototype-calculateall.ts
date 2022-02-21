@@ -8,7 +8,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const localization: RecalcLocalization = new RecalcLocalization(await CommandHelper.getLocale(interaction));
+    const localization: RecalcLocalization = new RecalcLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const dbManager: PrototypePPCollectionManager =
         DatabaseManager.aliceDb.collections.prototypePP;

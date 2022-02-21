@@ -10,9 +10,9 @@ export class AskcountLocalization extends Localization<AskcountStrings> {
     protected override readonly translations: Readonly<
         Translation<AskcountStrings>
     > = {
-            en: {
-                haveNotAsked: "I'm sorry, looks like you haven't asked me yet!",
-                askCount: "You have asked me %s time(s).",
-            },
-        };
+        en: {
+            haveNotAsked: "I'm sorry, looks like you haven't asked me yet!",
+            askCount: "You have asked me %s time(s).",
+        },
+    };
 }

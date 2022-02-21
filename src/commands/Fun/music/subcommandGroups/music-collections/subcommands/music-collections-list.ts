@@ -10,7 +10,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+    const localization: MusicLocalization = new MusicLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
@@ -22,7 +24,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (collections.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                localization.getTranslation(user.id === interaction.user.id ? "selfHasNoCollection" : "userHasNoCollection")
+                localization.getTranslation(
+                    user.id === interaction.user.id
+                        ? "selfHasNoCollection"
+                        : "userHasNoCollection"
+                )
             ),
         });
     }
@@ -32,7 +38,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    embed.setDescription(`${localization.getTranslation("totalCollections")}: ${collections.size}`);
+    embed.setDescription(
+        `${localization.getTranslation("totalCollections")}: ${
+            collections.size
+        }`
+    );
 
     const onPageChange: OnButtonPageChange = async (
         _,
@@ -42,7 +52,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
             embed.addField(
                 `${i + 1}. ${collections[i].name}`,
-                `${localization.getTranslation("createdAt")} ${new Date(collections[i].createdAt).toUTCString()}`
+                `${localization.getTranslation("createdAt")} ${new Date(
+                    collections[i].createdAt
+                ).toUTCString()}`
             );
         }
     };

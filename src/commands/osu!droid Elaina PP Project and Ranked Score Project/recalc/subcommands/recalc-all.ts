@@ -8,7 +8,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Message } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const localization: RecalcLocalization = new RecalcLocalization(await CommandHelper.getLocale(interaction));
+    const localization: RecalcLocalization = new RecalcLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
