@@ -37,7 +37,7 @@ export class GuildSettings extends Manager {
     /**
      * The preferred locale of this guild. Should be defaulted to English if unavailable.
      */
-    preferredLocale?: Language;
+    preferredLocale: Language;
 
     /**
      * The BSON object ID of this document in the database.
@@ -61,7 +61,7 @@ export class GuildSettings extends Manager {
             "name"
         );
         this.disabledEventUtils = data.disabledEventUtils ?? [];
-        this.preferredLocale = data.preferredLocale;
+        this.preferredLocale = data.preferredLocale ?? "en";
     }
 
     /**
