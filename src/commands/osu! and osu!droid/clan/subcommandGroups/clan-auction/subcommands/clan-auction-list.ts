@@ -1,22 +1,25 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+
     const auctions: Collection<string, ClanAuction> =
         await DatabaseManager.aliceDb.collections.clanAuction.get("name");
 
     if (auctions.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.noActiveAuctions),
+            content: MessageCreator.createReject(localization.getTranslation("noActiveAuctions")),
         });
     }
 
@@ -45,19 +48,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
             embed.addField(
                 `**${i + 1}. ${auction.name}**`,
-                `**Auctioneer**: ${auction.auctioneer}\n` +
-                    `**Creation Date**: ${new Date(
-                        auction.creationdate * 1000
-                    ).toUTCString()}\n` +
-                    `**Expiration Date**: ${new Date(
-                        auction.expirydate * 1000
-                    ).toUTCString()}\n\n` +
-                    `**Powerup**: ${StringHelper.capitalizeString(
-                        auction.powerup
-                    )}\n` +
-                    `**Amount**: ${auction.amount.toLocaleString()}\n` +
-                    `**Minimum Bid Amount**: ${auction.min_price.toLocaleString()} Alice coins\n` +
-                    `**Bidders**: ${auction.bids.size.toLocaleString()}`
+                `**${localization.getTranslation("auctionAuctioneer")}**: ${auction.auctioneer}\n` +
+                `**${localization.getTranslation("creationDate")}**: ${new Date(
+                    auction.creationdate * 1000
+                ).toUTCString()}\n` +
+                `**${localization.getTranslation("expirationDate")}**: ${new Date(
+                    auction.expirydate * 1000
+                ).toUTCString()}\n\n` +
+                `**${localization.getTranslation("auctionPowerup")}**: ${StringHelper.capitalizeString(
+                    auction.powerup
+                )}\n` +
+                `**${localization.getTranslation("auctionAmount")}**: ${auction.amount.toLocaleString()}\n` +
+                `**${localization.getTranslation("auctionMinimumBid")}**: ${auction.min_price.toLocaleString()} Alice coins\n` +
+                `**${localization.getTranslation("auctionBidders")}**: ${auction.bids.size.toLocaleString()}`
             );
         }
     };

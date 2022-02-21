@@ -2,12 +2,16 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: DailyLocalization = new DailyLocalization(await CommandHelper.getLocale(interaction));
+
     const allPlayers: Collection<number, PlayerInfo> =
         await DatabaseManager.aliceDb.collections.playerInfo.get(
             "uid",
@@ -39,9 +43,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${"Username".padEnd(
+        let output: string = `${"#".padEnd(4)} | ${localization.getTranslation("username").padEnd(
             longestUsernameLength
-        )} | ${"UID".padEnd(6)} | Points\n`;
+        )} | ${localization.getTranslation("uid").padEnd(6)} | ${localization.getTranslation("points")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
             const player: PlayerInfo = entries[i];
@@ -50,8 +54,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username
                     .trim()
                     .padEnd(longestUsernameLength)} | ${player.uid
-                    .toString()
-                    .padEnd(6)} | ${player.points.toLocaleString()}`;
+                        .toString()
+                        .padEnd(6)} | ${player.points.toLocaleString()}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
                     longestUsernameLength

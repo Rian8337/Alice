@@ -4,6 +4,8 @@ import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    // TODO: attachment option
+
     CommandHelper.runSubcommandFromInteraction(interaction);
 };
 

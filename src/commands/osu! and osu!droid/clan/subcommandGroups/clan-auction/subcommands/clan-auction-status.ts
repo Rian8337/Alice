@@ -1,15 +1,18 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { AuctionBid } from "@alice-interfaces/clan/AuctionBid";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+
     const name: string = interaction.options.getString("name", true);
 
     const clan: Clan | null =
@@ -25,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!auction) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.auctionDoesntExist
+                localization.getTranslation("auctionDoesntExist")
             ),
         });
     }
@@ -36,22 +39,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     embed
-        .setTitle("Auction Information")
+        .setTitle(localization.getTranslation("auctionInfo"))
         .setDescription(
-            `**Name**: ${auction.name}\n` +
-                `**Auctioneer**: ${auction.auctioneer}\n` +
-                `**Creation Date**: ${new Date(
-                    auction.creationdate * 1000
-                ).toUTCString()}\n` +
-                `**Expiration Date**: ${new Date(
-                    auction.expirydate * 1000
-                ).toUTCString()}`
+            `**${localization.getTranslation("auctionName")}**: ${auction.name}\n` +
+            `**${localization.getTranslation("auctionAuctioneer")}**: ${auction.auctioneer}\n` +
+            `**${localization.getTranslation("creationDate")}**: ${new Date(
+                auction.creationdate * 1000
+            ).toUTCString()}\n` +
+            `**${localization.getTranslation("expirationDate")}**: ${new Date(
+                auction.expirydate * 1000
+            ).toUTCString()}`
         )
         .addField(
-            "Auction Item",
-            `**Powerup**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
-                `**Amount**: ${auction.amount.toLocaleString()}\n` +
-                `**Minimum Bid Amount**: ${auction.min_price.toLocaleString()} Alice coins`
+            localization.getTranslation("auctionItem"),
+            `**${localization.getTranslation("auctionPowerup")}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
+            `**${localization.getTranslation("auctionAmount")}**: ${auction.amount.toLocaleString()}\n` +
+            `**${localization.getTranslation("auctionMinimumBid")}**: ${auction.min_price.toLocaleString()} Alice coins`
         );
 
     const bids: AuctionBid[] = [...auction.bids.values()];
@@ -64,9 +67,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const bid: AuctionBid = bids[i];
 
         if (bid) {
-            biddersDescription += `#${i + 1}: ${
-                bid.clan
-            } - **${bid.amount.toLocaleString()}** Alice coins\n`;
+            biddersDescription += `#${i + 1}: ${bid.clan
+                } - **${bid.amount.toLocaleString()}** Alice coins\n`;
         } else {
             biddersDescription += `#${i + 1}: -\n`;
         }
@@ -79,7 +81,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ].amount.toLocaleString()}** Alice coins`;
     }
 
-    embed.addField("Bid Information", biddersDescription);
+    embed.addField(localization.getTranslation("auctionBidInfo"), biddersDescription);
 
     interaction.editReply({
         embeds: [embed],

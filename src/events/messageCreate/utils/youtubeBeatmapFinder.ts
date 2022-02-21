@@ -16,11 +16,15 @@ import {
     DroidStarRating,
     OsuStarRating,
 } from "@rian8337/osu-difficulty-calculator";
+import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/YoutubeBeatmapFinderLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
         return;
     }
+
+    const localization: YoutubeBeatmapFinderLocalization = new YoutubeBeatmapFinderLocalization(await CommandHelper.getLocale(message.author));
 
     const ytRegex: RegExp =
         /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]+).*/;
@@ -84,7 +88,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 );
 
                 const embedOptions: MessageOptions =
-                    EmbedCreator.createBeatmapEmbed(beatmapInfo);
+                    EmbedCreator.createBeatmapEmbed(beatmapInfo, undefined, localization.language);
 
                 const embed: MessageEmbed = <MessageEmbed>(
                     embedOptions.embeds![0]
@@ -110,14 +114,15 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
                 if (beatmapInformations.length > 3) {
                     string = MessageCreator.createAccept(
-                        `I found ${beatmapInformations.length} maps, but only displaying up to 3 due to my limitations.`
+                        localization.getTranslation("beatmapLimitation"),
+                        beatmapInformations.length.toString()
                     );
                 }
 
                 const firstBeatmap: MapInfo = beatmapInformations[0];
 
                 const embedOptions: MessageOptions =
-                    EmbedCreator.createBeatmapEmbed(firstBeatmap);
+                    EmbedCreator.createBeatmapEmbed(firstBeatmap, undefined, localization.language);
 
                 if (string) {
                     embedOptions.content = string;
@@ -143,9 +148,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                     .setDescription(
                         `${firstBeatmap.showStatistics(1, stats)}\n` +
-                            `**BPM**: ${firstBeatmap.convertBPM(
-                                stats
-                            )} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                        `**BPM**: ${firstBeatmap.convertBPM(
+                            stats
+                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                     );
 
                 for (const beatmapInfo of beatmapInformations) {
@@ -170,19 +175,15 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     }
 
                     embed.addField(
-                        `__${
-                            beatmapInfo.version
-                        }__ (${droidCalcResult.result.total.toFixed(2)} ${
-                            Symbols.star
-                        } | ${osuCalcResult.result.total.toFixed(2)} ${
-                            Symbols.star
+                        `__${beatmapInfo.version
+                        }__ (${droidCalcResult.result.total.toFixed(2)} ${Symbols.star
+                        } | ${osuCalcResult.result.total.toFixed(2)} ${Symbols.star
                         })`,
                         `${beatmapInfo.showStatistics(2, stats)}\n` +
-                            `**Max score**: ${beatmapInfo
-                                .maxScore(stats)
-                                .toLocaleString()} - **Max combo**: ${
-                                beatmapInfo.maxCombo
-                            }x`
+                        `**Max score**: ${beatmapInfo
+                            .maxScore(stats)
+                            .toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo
+                        }x`
                     );
                 }
 

@@ -51,6 +51,7 @@
       "@alice-enums/*": ["enums/*"],
       "@alice-events/*": ["events/*"],
       "@alice-interfaces/*": ["interfaces/*"],
+      "@alice-localization/*": ["localization/*"],
       "@alice-types/*": ["types/*"],
       "@alice-utils/*": ["utils/*"]
     },                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */

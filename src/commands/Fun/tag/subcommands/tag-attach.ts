@@ -2,15 +2,18 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Message, MessageAttachment, TextChannel } from "discord.js";
-import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     if (!interaction.inGuild()) {
         return;
     }
+
+    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
 
     const name: string = interaction.options.getString("name", true);
 
@@ -19,7 +22,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!StringHelper.isValidImage(url)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                tagStrings.tagAttachmentURLInvalid
+                localization.getTranslation("tagAttachmentURLInvalid")
             ),
         });
     }
@@ -32,20 +35,20 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("tagDoesntExist")),
         });
     }
 
     if (tag.author !== interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.notTagOwner),
+            content: MessageCreator.createReject(localization.getTranslation("notTagOwner")),
         });
     }
 
     if (tag.attachments.length >= 3) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                tagStrings.noTagAttachmentSlot
+                localization.getTranslation("noTagAttachmentSlot")
             ),
         });
     }
@@ -81,14 +84,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    tagStrings.attachToTagSuccessful,
+                    localization.getTranslation("attachToTagSuccessful"),
                     name
                 ),
             });
         } catch {
             interaction.editReply({
                 content: MessageCreator.createReject(
-                    tagStrings.tagAttachmentTooBig
+                    localization.getTranslation("tagAttachmentTooBig")
                 ),
             });
         }
@@ -110,14 +113,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    tagStrings.attachToTagSuccessful,
+                    localization.getTranslation("attachToTagSuccessful"),
                     name
                 ),
             });
         } catch {
             interaction.editReply({
                 content: MessageCreator.createReject(
-                    tagStrings.tagAttachmentTooBig
+                    localization.getTranslation("tagAttachmentTooBig")
                 ),
             });
         }

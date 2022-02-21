@@ -3,18 +3,21 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { downloadlinkStrings } from "./downloadlinkStrings";
 import { MessageEmbed, MessageOptions } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { DownloadlinkLocalization } from "@alice-localization/commands/osu! and osu!droid/DownloadlinkLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: DownloadlinkLocalization = new DownloadlinkLocalization(await CommandHelper.getLocale(interaction));
+
     const beatmapHash: string | undefined =
         BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
 
     if (!beatmapHash) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                downloadlinkStrings.noCachedBeatmap
+                localization.getTranslation("noCachedBeatmap")
             ),
         });
     }
@@ -27,13 +30,13 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!beatmapInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                downloadlinkStrings.beatmapNotAvailable
+                localization.getTranslation("beatmapNotAvailable")
             ),
         });
     }
 
     const embedOptions: MessageOptions =
-        EmbedCreator.createBeatmapEmbed(beatmapInfo);
+        EmbedCreator.createBeatmapEmbed(beatmapInfo, undefined, localization.language);
 
     const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 

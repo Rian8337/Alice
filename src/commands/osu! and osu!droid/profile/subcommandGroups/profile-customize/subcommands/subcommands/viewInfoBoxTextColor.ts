@@ -1,8 +1,9 @@
-import { profileStrings } from "@alice-commands/osu! and osu!droid/profile/profileStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null =
@@ -13,8 +14,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            profileStrings.infoBoxColorInfo,
-            "text " + color.includes(",") ? "RGBA color" : "color hex code",
+            new ProfileLocalization(await CommandHelper.getLocale(interaction)).getTranslation("infoBoxTextColorInfo"),
             color
         ),
     });

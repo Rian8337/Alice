@@ -1,7 +1,6 @@
 import { Player } from "@rian8337/osu-droid-utilities";
 import { Guild, GuildMember, Role } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { userbindStrings } from "../userbindStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -10,8 +9,15 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/UserbindLocalization";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: UserbindLocalization = new UserbindLocalization(language);
+
     const username: string = interaction.options.getString("username", true);
 
     const dbManager: UserBindCollectionManager =
@@ -27,7 +33,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                userbindStrings.accountHasBeenBindedError
+                localization.getTranslation("accountHasBeenBindedError")
             ),
         });
     }
@@ -41,7 +47,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!player.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                userbindStrings.profileNotFound
+                localization.getTranslation("profileNotFound")
             ),
         });
     }
@@ -56,7 +62,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (interaction.guild?.id !== mainServer.id) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        userbindStrings.newAccountBindNotInMainServer
+                        localization.getTranslation("newAccountBindNotInMainServer")
                     ),
                 });
             }
@@ -68,7 +74,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (!(<GuildMember>interaction.member).roles.cache.has(role.id)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        userbindStrings.newAccountBindNotVerified
+                        localization.getTranslation("newAccountBindNotVerified")
                     ),
                 });
             }
@@ -78,7 +84,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 2;
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        userbindStrings.verificationMapNotFound
+                        localization.getTranslation("verificationMapNotFound")
                     ),
                 });
             }
@@ -88,13 +94,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     interaction,
                     {
                         content: MessageCreator.createWarn(
-                            userbindStrings.newAccountBindConfirmation,
-                            "username",
+                            localization.getTranslation("newAccountUsernameBindConfirmation"),
                             username
                         ),
                     },
                     [interaction.user.id],
-                    10
+                    10,
+                    language
                 );
 
             if (!confirmation) {
@@ -102,13 +108,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
         }
 
-        const result: OperationResult = await userBindInfo.bind(player);
+        const result: OperationResult = await userBindInfo.bind(player, language);
 
         if (!result.success) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    userbindStrings.accountBindError,
-                    "username",
+                    localization.getTranslation("accountUsernameBindError"),
                     player.username,
                     result.reason!
                 ),
@@ -118,16 +123,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (userBindInfo.isUidBinded(player.uid)) {
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    userbindStrings.oldAccountBindSuccessful,
-                    "username",
+                    localization.getTranslation("oldAccountUsernameBindSuccessful"),
                     player.username
                 ),
             });
         } else {
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    userbindStrings.newAccountBindSuccessful,
-                    "username",
+                    localization.getTranslation("newAccountUsernameBindSuccessful"),
                     player.username,
                     (1 - userBindInfo.previous_bind.length).toString(),
                     1 - userBindInfo.previous_bind.length !== 1 ? "s" : ""
@@ -139,7 +142,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!(await ScoreHelper.hasPlayedVerificationMap(player.uid))) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    userbindStrings.verificationMapNotFound
+                    localization.getTranslation("verificationMapNotFound")
                 ),
             });
         }
@@ -154,7 +157,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!result.success) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    userbindStrings.accountBindError,
+                    localization.getTranslation("accountUsernameBindError"),
                     result.reason!
                 ),
             });
@@ -162,8 +165,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         interaction.editReply({
             content: MessageCreator.createAccept(
-                userbindStrings.newAccountBindSuccessful,
-                "username",
+                localization.getTranslation("newAccountUsernameBindSuccessful"),
                 player.username,
                 "1",
                 ""

@@ -2,15 +2,21 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { unbindStrings } from "./unbindStrings";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { Constants } from "@alice-core/Constants";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
+import { UnbindLocalization } from "@alice-localization/commands/Bot Creators/UnbindLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: UnbindLocalization = new UnbindLocalization(language);
+
     const uid: number = interaction.options.getInteger("uid", true);
 
     if (
@@ -22,7 +28,7 @@ export const run: Command["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: unbindStrings.invalidUid,
+            content: localization.getTranslation("invalidUid"),
         });
     }
 
@@ -33,16 +39,18 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(unbindStrings.uidNotBinded),
+            content: MessageCreator.createReject(
+                localization.getTranslation("uidNotBinded")
+            ),
         });
     }
 
-    const result: OperationResult = await bindInfo.unbind(uid);
+    const result: OperationResult = await bindInfo.unbind(uid, language);
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                unbindStrings.unbindFailed,
+                localization.getTranslation("unbindFailed"),
                 result.reason!
             ),
         });
@@ -50,7 +58,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            unbindStrings.unbindSuccessful,
+            localization.getTranslation("unbindSuccessful"),
             uid.toString()
         ),
     });

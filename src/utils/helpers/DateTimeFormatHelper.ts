@@ -1,3 +1,6 @@
+import { Language } from "@alice-localization/base/Language";
+import { DateTimeFormatHelperLocalization } from "@alice-localization/utils/helpers/DateTimeFormatHelperLocalization";
+
 /**
  * Helper methods for processing custom time formats and dates.
  */
@@ -8,7 +11,9 @@ export abstract class DateTimeFormatHelper {
      * @param seconds The amount of seconds to convert.
      * @returns The formatted date.
      */
-    static secondsToDHMS(seconds: number): string {
+    static secondsToDHMS(seconds: number, language: Language = "en"): string {
+        const localization: DateTimeFormatHelperLocalization = this.getLocalization(language);
+
         seconds = Math.trunc(seconds);
 
         const days: number = Math.floor(seconds / 86400);
@@ -21,14 +26,14 @@ export abstract class DateTimeFormatHelper {
         seconds -= minutes * 60;
 
         const final: string[] = [
-            days + " day" + (days > 1 ? "s" : ""),
-            hours + " hour" + (hours > 1 ? "s" : ""),
-            minutes + " minute" + (minutes > 1 ? "s" : ""),
-            seconds + " second" + (seconds > 1 ? "s" : ""),
+            `${days} ${localization.getTranslation(days > 1 ? "days" : "day")}`,
+            `${hours} ${localization.getTranslation(hours > 1 ? "hours" : "hour")}`,
+            `${minutes} ${localization.getTranslation(minutes > 1 ? "minutes" : "minute")}`,
+            `${seconds} ${localization.getTranslation(seconds > 1 ? "seconds" : "second")}`,
         ];
 
         return (
-            final.filter((v) => !v.startsWith("0")).join(", ") || "0 seconds"
+            final.filter((v) => !v.startsWith("0")).join(", ") || `0 ${localization.getTranslation("seconds")}`
         );
     }
 
@@ -130,5 +135,14 @@ export abstract class DateTimeFormatHelper {
         } else {
             return time - Date.now();
         }
+    }
+
+    /**
+     * Gets the localization of this helper utility.
+     * 
+     * @param language The language to localize.
+     */
+    private static getLocalization(language: Language): DateTimeFormatHelperLocalization {
+        return new DateTimeFormatHelperLocalization(language);
     }
 }

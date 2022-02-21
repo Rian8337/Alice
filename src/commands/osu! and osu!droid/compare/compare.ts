@@ -10,16 +10,19 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { compareStrings } from "./compareStrings";
+import { CompareLocalization } from "@alice-localization/commands/osu! and osu!droid/CompareLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: CompareLocalization = new CompareLocalization(await CommandHelper.getLocale(interaction));
+
     const cachedBeatmapHash: string | undefined =
         BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
 
     if (!cachedBeatmapHash) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                compareStrings.noCachedBeatmap
+                localization.getTranslation("noCachedBeatmap")
             ),
         });
     }
@@ -31,7 +34,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(compareStrings.tooManyOptions),
+            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
         });
     }
 
@@ -81,7 +84,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(compareStrings.playerNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("playerNotFound")),
         });
     }
 
@@ -93,10 +96,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!score.title) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                compareStrings.scoreNotFound,
-                !!uid || !!discordid || !!username
-                    ? "this user has"
-                    : "you have"
+                localization.getTranslation(!!uid || !!discordid || !!username ? "userScoreNotFound" : "selfScoreNotFound")
             ),
         });
     }
@@ -109,7 +109,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            compareStrings.comparePlayDisplay,
+            localization.getTranslation("comparePlayDisplay"),
             player.username
         ),
         embeds: [embed],

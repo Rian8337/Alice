@@ -1,15 +1,18 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { MessageEmbed } from "discord.js";
-import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
         return;
     }
+
+    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
 
     const name: string = interaction.options.getString("name", true);
 
@@ -21,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("tagDoesntExist")),
         });
     }
 
@@ -31,12 +34,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     embed
-        .setTitle("Tag Information")
+        .setTitle(localization.getTranslation("tagInfo"))
         .setDescription(
-            `**Name**: ${tag.name}\n` +
-                `**Author**: <@${tag.author}>\n` +
-                `**Creation Date**: ${new Date(tag.date).toUTCString()}\n` +
-                `**Attachments**: ${tag.attachments.length}`
+            `**${localization.getTranslation("tagName")}**: ${tag.name}\n` +
+            `**${localization.getTranslation("tagName")}**: <@${tag.author}>\n` +
+            `**${localization.getTranslation("tagCreationDate")}**: ${new Date(tag.date).toUTCString()}\n` +
+            `**${localization.getTranslation("tagAttachmentAmount")}**: ${tag.attachments.length}`
         );
 
     interaction.editReply({

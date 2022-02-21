@@ -7,13 +7,20 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { mapshareStrings } from "../mapshareStrings";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { Language } from "@alice-localization/base/Language";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MapshareLocalization = new MapshareLocalization(language);
+
     if (interaction.channelId !== Constants.mapShareChannel) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                Constants.notAvailableInChannelReject
+                new ConstantsLocalization(language).getTranslation(Constants.notAvailableInChannelReject)
             ),
         });
     }
@@ -25,7 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapId) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.noBeatmapFound
+                localization.getTranslation("noBeatmapFound")
             ),
         });
     }
@@ -38,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!submission) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.noSubmissionWithBeatmap
+                localization.getTranslation("noSubmissionWithBeatmap")
             ),
         });
     }
@@ -57,13 +64,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.beatmapIsOutdated
+                localization.getTranslation("beatmapIsOutdated")
             ),
         });
     }
 
     const embedOptions: MessageOptions =
-        (await EmbedCreator.createMapShareEmbed(submission))!;
+        (await EmbedCreator.createMapShareEmbed(submission, language))!;
 
     interaction.editReply(embedOptions);
 };

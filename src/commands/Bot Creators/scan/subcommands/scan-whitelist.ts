@@ -3,20 +3,25 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { Collection } from "discord.js";
-import { scanStrings } from "../scanStrings";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { MapWhitelistCollectionManager } from "@alice-database/managers/elainaDb/MapWhitelistCollectionManager";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
 import { WhitelistValidity } from "@alice-enums/utils/WhitelistValidity";
 import { MapInfo } from "@rian8337/osu-base";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { ScanLocalization } from "@alice-localization/commands/Bot Creators/ScanLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: ScanLocalization = new ScanLocalization(await CommandHelper.getLocale(interaction));
+
     const whitelistDb: MapWhitelistCollectionManager =
         DatabaseManager.elainaDb.collections.mapWhitelist;
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(scanStrings.scanStarted),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("scanStarted")
+        ),
     });
 
     let scannedCount: number = 0;
@@ -66,7 +71,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            scanStrings.scanComplete,
+            localization.getTranslation("scanComplete"),
             interaction.user.toString()
         ),
     });

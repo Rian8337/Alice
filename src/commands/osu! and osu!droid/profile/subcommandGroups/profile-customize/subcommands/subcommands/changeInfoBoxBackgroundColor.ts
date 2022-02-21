@@ -1,4 +1,3 @@
-import { profileStrings } from "@alice-commands/osu! and osu!droid/profile/profileStrings";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
@@ -6,15 +5,23 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
+import { Language } from "@alice-localization/base/Language";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ProfileLocalization = new ProfileLocalization(language);
+
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user
@@ -22,10 +29,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+            ),
         });
     }
 
+    // TODO: replace with modals/text input interaction
     const color: string | undefined =
         await MessageInputCreator.createInputDetector(
             interaction,
@@ -33,8 +43,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 embeds: [
                     EmbedCreator.createInputEmbed(
                         interaction,
-                        "Change Information Box Background Color",
-                        "Enter the color that you want to use.\n\nThis can be in RGBA format (e.g. 255,0,0,1) or hex code (e.g. #008BFF)"
+                        localization.getTranslation("changeInfoBoxBackgroundColorTitle"),
+                        `${localization.getTranslation("enterColor")}\n\n${localization.getTranslation("supportedColorFormat")}`,
+                        language
                     ),
                 ],
             },
@@ -51,36 +62,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (color.includes(",")) {
         const RGBA: number[] = color.split(",").map((v) => parseFloat(v));
 
-        if (RGBA.length !== 4) {
-            return interaction.editReply({
-                content: MessageCreator.createReject(
-                    profileStrings.invalidRGBAformat
-                ),
-            });
-        }
-
-        if (
+        if (RGBA.length !== 4 ||
             RGBA.slice(0, 3).some(
                 (v) => !NumberHelper.isNumberInRange(v, 0, 255, true)
-            )
+            ) || !NumberHelper.isNumberInRange(RGBA[3], 0, 1, true)
         ) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    profileStrings.invalidRGBAformat
-                ),
-            });
-        }
-
-        if (!NumberHelper.isNumberInRange(RGBA[3], 0, 1, true)) {
-            return interaction.editReply({
-                content: MessageCreator.createReject(
-                    profileStrings.invalidRGBAformat
+                    localization.getTranslation("invalidRGBAformat")
                 ),
             });
         }
     } else if (!StringHelper.isValidHexCode(color)) {
         return interaction.editReply({
-            content: MessageCreator.createAccept(profileStrings.invalidHexCode),
+            content: MessageCreator.createAccept(localization.getTranslation("invalidHexCode")),
         });
     }
 
@@ -109,8 +104,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!image) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.profileNotFound,
-                "your"
+                localization.getTranslation("selfProfileNotFound")
             ),
         });
     }
@@ -119,16 +113,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                profileStrings.changeInfoColorConfirmation,
+                localization.getTranslation("changeInfoBackgroundColorConfirmation"),
                 interaction.user.toString(),
-                "background",
                 color
             ),
             files: [image],
             embeds: [],
         },
         [interaction.user.id],
-        15
+        15,
+        language
     );
 
     if (!confirmation) {
@@ -151,9 +145,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            profileStrings.changeInfoColorSuccess,
+            localization.getTranslation("changeInfoBackgroundColorSuccess"),
             interaction.user.toString(),
-            "background",
             color
         ),
     });

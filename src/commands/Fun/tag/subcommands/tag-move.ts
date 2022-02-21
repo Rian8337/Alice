@@ -1,8 +1,9 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { User } from "discord.js";
-import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -27,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            tagStrings.transferTagSuccessful,
+            new TagLocalization(await CommandHelper.getLocale(interaction)).getTranslation("transferTagSuccessful"),
             oldUser.toString(),
             newUser.toString()
         ),

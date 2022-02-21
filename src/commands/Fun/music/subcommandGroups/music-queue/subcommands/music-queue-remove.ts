@@ -5,9 +5,15 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { GuildMember } from "discord.js";
-import { musicStrings } from "../../../musicStrings";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MusicLocalization = new MusicLocalization(language);
+
     const queue: MusicQueue[] = MusicManager.musicInformations.get(
         (<GuildMember>interaction.member).voice.channelId!
     )!.queue;
@@ -22,13 +28,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const result: OperationResult = MusicManager.dequeue(
         (<GuildMember>interaction.member).voice.channel!,
-        position
+        position,
+        language
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.removeQueueFailed,
+                localization.getTranslation("removeQueueFailed"),
                 result.reason!
             ),
         });
@@ -36,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.removeQueueSuccess,
+            localization.getTranslation("removeQueueSuccess"),
             title
         ),
     });

@@ -10,9 +10,15 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
-import { poolStrings } from "./poolStrings";
+import { PoolLocalization } from "@alice-localization/commands/Tournament/PoolLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: PoolLocalization = new PoolLocalization(language);
+
     const id: string = interaction.options.getString("id", true);
 
     const mappoolMainData: TournamentMappool | null =
@@ -22,7 +28,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!mappoolMainData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(poolStrings.poolNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("poolNotFound")),
         });
     }
 
@@ -33,7 +39,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!mappoolDurationData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(poolStrings.poolNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("poolNotFound")),
         });
     }
 
@@ -49,8 +55,9 @@ export const run: Command["run"] = async (_, interaction) => {
         ) {
             embed.addField(
                 mappoolMainData.map[i][1],
-                `**Length**: ${DateTimeFormatHelper.secondsToDHMS(
-                    parseInt(<string>mappoolDurationData.map[i][1])
+                `**${localization.getTranslation("length")}**: ${DateTimeFormatHelper.secondsToDHMS(
+                    parseInt(<string>mappoolDurationData.map[i][1]),
+                    language
                 )}`
             );
         }

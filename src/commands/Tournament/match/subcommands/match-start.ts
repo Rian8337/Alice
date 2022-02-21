@@ -2,13 +2,19 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMapLengthInfo } from "@alice-database/utils/aliceDb/TournamentMapLengthInfo";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
-import { matchStrings } from "../matchStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MatchLocalization = new MatchLocalization(language);
+
     const pick: string = interaction.options
         .getString("pick", true)
         .toUpperCase();
@@ -20,7 +26,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("matchDoesntExist")),
         });
     }
 
@@ -33,7 +39,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!mappoolDurationData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.mappoolNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("mappoolNotFound")),
         });
     }
 
@@ -41,7 +47,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!map) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.mapNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("mapNotFound")),
         });
     }
 
@@ -55,24 +61,24 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 
     embed
-        .setTitle("Round Info")
-        .addField("Match ID", match.matchid, true)
-        .addField("Map", map[0], true)
+        .setTitle(localization.getTranslation("roundInfo"))
+        .addField(localization.getTranslation("matchId"), match.matchid, true)
+        .addField(localization.getTranslation("map"), map[0], true)
         .addField(
-            "Map Length",
-            DateTimeFormatHelper.secondsToDHMS(timeLimit),
+            localization.getTranslation("mapLength"),
+            DateTimeFormatHelper.secondsToDHMS(timeLimit, language),
             true
         );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(matchStrings.roundInitiated),
+        content: MessageCreator.createAccept(localization.getTranslation("roundInitiated")),
         embeds: [embed],
     });
 
     setTimeout(() => {
         setTimeout(() => {
             interaction.channel!.send({
-                content: MessageCreator.createAccept(matchStrings.roundEnded),
+                content: MessageCreator.createAccept(localization.getTranslation("roundEnded")),
             });
 
             client.subcommands
@@ -83,7 +89,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         interaction.channel!.send({
             content: MessageCreator.createAccept(
-                matchStrings.roundCountdownFinished
+                localization.getTranslation("roundCountdownFinished")
             ),
         });
     }, timeLimit * 1000);

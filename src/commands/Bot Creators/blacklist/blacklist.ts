@@ -6,19 +6,26 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { blacklistStrings } from "./blacklistStrings";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { BlacklistLocalization } from "@alice-localization/commands/Bot Creators/BlacklistLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: BlacklistLocalization = new BlacklistLocalization(language);
+
     const beatmapID: number = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap")!
     )[0];
 
+
     if (!beatmapID) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                blacklistStrings.noBeatmapProvided
+                localization.getTranslation("noBeatmapProvided")
             ),
         });
     }
@@ -30,19 +37,20 @@ export const run: Command["run"] = async (_, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    `Detected Beatmap ID: ${beatmapID}. Choose the action that you want to do.`
+                    localization.getTranslation("detectedBeatmapId"),
+                    beatmapID.toString()
                 ),
             },
             [
                 {
-                    label: "Blacklist",
+                    label: localization.getTranslation("blacklist"),
                     value: "blacklist",
-                    description: `Blacklist the beatmap.`,
+                    description: localization.getTranslation("blacklistAction"),
                 },
                 {
-                    label: "Unblacklist",
+                    label: localization.getTranslation("unblacklist"),
                     value: "unblacklist",
-                    description: `Unblacklist the beatmap.`,
+                    description: localization.getTranslation("unblacklistAction"),
                 },
             ],
             Config.botOwners,
@@ -62,7 +70,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!beatmapInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                blacklistStrings.beatmapNotFound
+                localization.getTranslation("beatmapNotFound")
             ),
         });
     }
@@ -72,18 +80,18 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!reason) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        blacklistStrings.noBlacklistReasonProvided
+                        localization.getTranslation("noBlacklistReasonProvided")
                     ),
                 });
             }
 
             const blacklistResult: OperationResult =
-                await WhitelistManager.blacklist(beatmapInfo, reason);
+                await WhitelistManager.blacklist(beatmapInfo, reason, language);
 
             if (!blacklistResult.success) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        blacklistStrings.blacklistFailed,
+                        localization.getTranslation("blacklistFailed"),
                         blacklistResult.reason!
                     ),
                 });
@@ -91,7 +99,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    blacklistStrings.blacklistSuccess,
+                    localization.getTranslation("blacklistSuccess"),
                     beatmapInfo.fullTitle
                 ),
             });
@@ -100,12 +108,12 @@ export const run: Command["run"] = async (_, interaction) => {
         }
         case "unblacklist": {
             const unblacklistResult: OperationResult =
-                await WhitelistManager.unblacklist(beatmapInfo);
+                await WhitelistManager.unblacklist(beatmapInfo, language);
 
             if (!unblacklistResult.success) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        blacklistStrings.unblacklistFailed,
+                        localization.getTranslation("unblacklistFailed"),
                         unblacklistResult.reason!
                     ),
                 });
@@ -113,7 +121,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    blacklistStrings.unblacklistSuccess,
+                    localization.getTranslation("unblacklistSuccess"),
                     beatmapInfo.fullTitle
                 ),
             });

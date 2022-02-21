@@ -3,6 +3,10 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ClanCheckLocalization } from "@alice-localization/events/guildMemberRemove/ClanCheckLocalization";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     if (member.guild.id !== Constants.mainServer) {
@@ -17,10 +21,12 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     }
 
     if (clan.member_list.get(member.id)) {
-        await clan.removeMember(member.id, true);
+        const language: Language = await CommandHelper.getUserPreferredLocale(member.id);
+        await clan.removeMember(member.id, language, true);
         if (clan.exists) {
+            const localization: ClanCheckLocalization = new ClanCheckLocalization(language);
             await clan.notifyLeader(
-                `Hey, your member (${member}) has left the server, therefore they have been kicked from your clan!`
+                StringHelper.formatString(localization.getTranslation("memberKicked"), member.toString())
             );
             await clan.updateClan();
         }

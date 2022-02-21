@@ -1,4 +1,3 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
@@ -7,8 +6,16 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Role } from "discord.js";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
             interaction.user
@@ -16,14 +23,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
     if (clan.roleIconUnlocked) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.shopItemIsUnlocked
+                localization.getTranslation("shopItemIsUnlocked")
             ),
         });
     }
@@ -31,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!clan.isLeader(interaction.user)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -41,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (clan.power < powerReq) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanPowerNotEnoughToBuyItem,
+                localization.getTranslation("clanPowerNotEnoughToBuyItem"),
                 powerReq.toLocaleString()
             ),
         });
@@ -52,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!clanRole) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanDoesntHaveClanRole
+                localization.getTranslation("clanDoesntHaveClanRole")
             ),
         });
     }
@@ -67,8 +74,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!playerInfo || playerInfo.alicecoins < cost) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.notEnoughCoins,
-                "buy a clan role icon unlock ability",
+                localization.getTranslation("notEnoughCoins"),
+                StringHelper.formatString(
+                    localization.getTranslation("buyShopItem"),
+                    localization.getTranslation("clanRoleIconUnlock")
+                ),
                 cost.toLocaleString()
             ),
         });
@@ -78,25 +88,26 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.buyShopItemConfirmation,
-                "clan role icon unlock ability",
+                localization.getTranslation("buyShopItemConfirmation"),
+                localization.getTranslation("clanRoleIconUnlock"),
                 cost.toLocaleString()
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        language
     );
 
     if (!confirmation) {
         return;
     }
 
-    const firstResult: OperationResult = await playerInfo.incrementCoins(-cost);
+    const firstResult: OperationResult = await playerInfo.incrementCoins(-cost, language);
 
     if (!firstResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed,
+                localization.getTranslation("buyShopItemFailed"),
                 firstResult.reason!
             ),
         });
@@ -109,7 +120,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed,
+                localization.getTranslation("buyShopItemFailed"),
                 finalResult.reason!
             ),
         });
@@ -117,7 +128,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.buyShopItemSuccessful,
+            localization.getTranslation("buyShopItemSuccessful"),
             cost.toLocaleString()
         ),
     });

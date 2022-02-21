@@ -9,6 +9,9 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
+import { PlayerInfoLocalization } from "@alice-localization/database/utils/aliceDb/PlayerInfoLocalization";
+import { Language } from "@alice-localization/base/Language";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 /**
  * Represents an information about a Discord user regarding the bot (amount of Alice coins and its streak, daily/weekly challenges status, profile picture format, etc).
@@ -116,14 +119,20 @@ export class PlayerInfo extends Manager {
      * Increments the user's coins.
      *
      * @param amount The amount to increment.
+     * @param language The locale of the user who attempted to increment this user's coins. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async incrementCoins(amount: number): Promise<OperationResult> {
+    async incrementCoins(amount: number, language: Language = "en"): Promise<OperationResult> {
+        const localization: PlayerInfoLocalization = this.getLocalization(language);
+
         if (this.alicecoins + amount < 0) {
             // This would only happen if the amount incremented is negative
             return this.createOperationResult(
                 false,
-                `too much coin deduction; can only deduct at most ${this.alicecoins.toLocaleString()} Alice coins`
+                StringHelper.formatString(
+                    localization.getTranslation("tooMuchCoinDeduction"),
+                    this.alicecoins.toLocaleString()
+                )
             );
         }
 
@@ -139,12 +148,15 @@ export class PlayerInfo extends Manager {
      * Claims daily coins.
      *
      * @param coinAmount The amount of coins the user has gained.
+     * @param language The locale of the user who attempted to claim. Defaults to English.
      */
-    async claimDailyCoins(coinAmount: number): Promise<OperationResult> {
+    async claimDailyCoins(coinAmount: number, language: Language = "en"): Promise<OperationResult> {
+        const localization: PlayerInfoLocalization = this.getLocalization(language);
+
         if (this.hasClaimedDaily) {
             return this.createOperationResult(
                 false,
-                "daily claim has been used"
+                localization.getTranslation("dailyClaimUsed")
             );
         }
 
@@ -178,13 +190,17 @@ export class PlayerInfo extends Manager {
      * @param amount The amount of coins to transfer.
      * @param thisPlayer The `Player` instance of this user.
      * @param to The player to transfer the Alice coins to.
+     * @param language The locale of the user who attempted the transfer. Defaults to English.
      * @returns An object containing information about the operation.
      */
     async transferCoins(
         amount: number,
         thisPlayer: Player,
-        to: PlayerInfo
+        to: PlayerInfo,
+        language: Language = "en"
     ): Promise<OperationResult> {
+        const localization: PlayerInfoLocalization = this.getLocalization(language);
+
         let limit: number;
 
         switch (true) {
@@ -214,9 +230,10 @@ export class PlayerInfo extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                `transferred amount is beyond daily limit—can only transfer ${(
-                    limit - this.transferred
-                ).toLocaleString()} Alice coins left.`
+                StringHelper.formatString(
+                    localization.getTranslation("dailyLimitReached"),
+                    (limit - this.transferred).toLocaleString()
+                )
             );
         }
 
@@ -226,5 +243,14 @@ export class PlayerInfo extends Manager {
         );
 
         return to.incrementCoins(amount);
+    }
+
+    /**
+     * Gets the localization of this database utility.
+     * 
+     * @param language The language to localize.
+     */
+    private getLocalization(language: Language): PlayerInfoLocalization {
+        return new PlayerInfoLocalization(language);
     }
 }

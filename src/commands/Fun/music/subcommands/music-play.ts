@@ -5,10 +5,16 @@ import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
-import { musicStrings } from "../musicStrings";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
+import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MusicLocalization = new MusicLocalization(language);
+
     const searchResult: SearchResult = await yts(
         interaction.options.getString("query", true)
     );
@@ -17,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (videos.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.noTracksFound),
+            content: MessageCreator.createReject(localization.getTranslation("noTracksFound")),
         });
     }
 
@@ -26,7 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    "Choose the video that you want to play."
+                    localization.getTranslation("chooseVideo")
                 ),
             },
             videos.map((v) => {
@@ -52,13 +58,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await MusicManager.enqueue(
         (<GuildMember>interaction.member).voice.channel!,
         <TextChannel | ThreadChannel>interaction.channel!,
-        new MusicQueue(info, interaction.user.id)
+        new MusicQueue(info, interaction.user.id),
+        language
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.playTrackFailed,
+                localization.getTranslation("playTrackFailed"),
                 result.reason!
             ),
         });
@@ -66,7 +73,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.playTrackSuccess,
+            localization.getTranslation("playTrackSuccess"),
             info.title
         ),
     });

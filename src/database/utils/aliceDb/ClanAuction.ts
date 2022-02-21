@@ -10,6 +10,8 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Powerup } from "@alice-interfaces/clan/Powerup";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { Language } from "@alice-localization/base/Language";
+import { ClanAuctionLocalization } from "@alice-localization/database/utils/aliceDb/ClanAuctionLocalization";
 
 /**
  * Represents a clan auction.
@@ -101,16 +103,19 @@ export class ClanAuction extends Manager {
      * Ends the auction.
      *
      * @param force Whether to forcefully end the auction.
+     * @param language The locale of the user who attempted to the end the auction. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async end(force?: boolean): Promise<OperationResult> {
+    async end(force?: boolean, language: Language = "en"): Promise<OperationResult> {
+        const localization: ClanAuctionLocalization = this.getLocalization(language);
+
         if (
             !force &&
             DateTimeFormatHelper.getTimeDifference(this.expirydate * 1000) > 0
         ) {
             return this.createOperationResult(
                 false,
-                "not the time to end auction yet"
+                localization.getTranslation("auctionHasntExpired")
             );
         }
 
@@ -143,13 +148,16 @@ export class ClanAuction extends Manager {
      * Gives the auctioned item into a clan.
      *
      * @param clan The clan. If unspecified, the winning clan will be given. This can also be used to save database requests.
+     * @param language The locale of the user who attempted to give the auctioned item. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async giveItemTo(clan?: Clan): Promise<OperationResult> {
+    async giveItemTo(clan?: Clan, language: Language = "en"): Promise<OperationResult> {
+        const localization: ClanAuctionLocalization = this.getLocalization(language);
+
         if (!clan) {
             clan = <Clan>await this.getWinnerClan();
             if (!clan) {
-                return this.createOperationResult(false, "no winning clan");
+                return this.createOperationResult(false, localization.getTranslation("noWinningClan"));
             }
         }
 
@@ -164,15 +172,19 @@ export class ClanAuction extends Manager {
 
     /**
      * Returns the auctioned item to the auctioneer.
+     * 
+     * @param language The locale of the user who attempted to return the auctioned item. Defaults to English.
      */
-    async returnItemToAuctioneer(): Promise<OperationResult> {
+    async returnItemToAuctioneer(language: Language = "en"): Promise<OperationResult> {
+        const localization: ClanAuctionLocalization = this.getLocalization(language);
+
         const clan: Clan | null =
             await DatabaseManager.elainaDb.collections.clan.getFromName(
                 this.auctioneer
             );
 
         if (!clan) {
-            return this.createOperationResult(false, "auctioneer not found");
+            return this.createOperationResult(false, localization.getTranslation("auctioneerNotFound"));
         }
 
         const powerup: Powerup = clan.powerups.get(this.powerup)!;
@@ -207,5 +219,14 @@ export class ClanAuction extends Manager {
                 },
             }
         );
+    }
+
+    /**
+     * Gets the localization of this database utility.
+     * 
+     * @param language The language to localize.
+     */
+    private getLocalization(language: Language): ClanAuctionLocalization {
+        return new ClanAuctionLocalization(language);
     }
 }

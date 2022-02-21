@@ -3,16 +3,19 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandData } from "discord.js";
-import { deployStrings } from "./deployStrings";
+import { DeployLocalization } from "@alice-localization/commands/Bot Creators/DeployLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
+    const localization: DeployLocalization = new DeployLocalization(await CommandHelper.getLocale(interaction));
+
     const commandName: string = interaction.options.getString("command", true);
 
     const command: Command | undefined = client.commands.get(commandName);
 
     if (!command) {
         return interaction.editReply({
-            content: MessageCreator.createReject(deployStrings.commandNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("commandNotFound")),
         });
     }
 
@@ -30,7 +33,7 @@ export const run: Command["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            deployStrings.commandDeploySuccessful,
+            localization.getTranslation("commandDeploySuccessful"),
             commandName
         ),
     });

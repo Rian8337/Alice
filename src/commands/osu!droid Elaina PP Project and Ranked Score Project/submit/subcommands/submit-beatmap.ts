@@ -1,7 +1,6 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { submitStrings } from "../submitStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
@@ -19,8 +18,16 @@ import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapD
 import { MapInfo } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/SubmitLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: SubmitLocalization = new SubmitLocalization(language);
+
     const bindDbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
     const rankedScoreDbManager: RankedScoreCollectionManager =
@@ -32,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject),
+            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)),
         });
     }
 
@@ -42,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!beatmapID) {
         return interaction.editReply({
-            content: MessageCreator.createReject(submitStrings.beatmapNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("beatmapNotFound")),
         });
     }
 
@@ -53,7 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!beatmapInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(submitStrings.beatmapNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("beatmapNotFound")),
         });
     }
 
@@ -65,7 +72,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!score.title) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                submitStrings.noScoreSubmitted
+                localization.getTranslation("noScoreSubmitted")
             ),
         });
     }
@@ -76,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(submitStrings.uidIsBanned),
+            content: MessageCreator.createReject(localization.getTranslation("uidIsBanned")),
         });
     }
 
@@ -87,31 +94,31 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         case DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED:
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    submitStrings.beatmapIsBlacklisted
+                    localization.getTranslation("beatmapIsBlacklisted")
                 ),
             });
         case DPPSubmissionValidity.BEATMAP_NOT_WHITELISTED:
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    submitStrings.beatmapNotWhitelisted
+                    localization.getTranslation("beatmapNotWhitelisted")
                 ),
             });
         case DPPSubmissionValidity.BEATMAP_TOO_SHORT:
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    submitStrings.beatmapTooShort
+                    localization.getTranslation("beatmapTooShort")
                 ),
             });
         case DPPSubmissionValidity.SCORE_USES_FORCE_AR:
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    submitStrings.scoreUsesForceAR
+                    localization.getTranslation("scoreUsesForceAR")
                 ),
             });
         case DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED:
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    submitStrings.scoreUsesCustomSpeedMultiplier
+                    localization.getTranslation("scoreUsesCustomSpeedMultiplier")
                 ),
             });
     }
@@ -150,8 +157,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const ppDiff: number = totalPP - currentTotalPP;
 
     embed.setDescription(
-        `**Total PP**: ${totalPP.toFixed(2)}pp\n` +
-            `**PP gained**: ${ppDiff.toFixed(2)} pp\n`
+        `**${localization.getTranslation("totalPP")}**: ${totalPP.toFixed(2)}pp\n` +
+        `**${localization.getTranslation("ppGained")}**: ${ppDiff.toFixed(2)} pp\n`
     );
 
     // Ranked score
@@ -178,18 +185,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         embed.setDescription(
             embed.description! +
-                `**Ranked score**: ${totalScore.toLocaleString()}\n` +
-                `**Score gained**: ${scoreDiff.toLocaleString()}\n` +
-                `**Current level**: ${Math.floor(level)} (${levelRemain}%)${
-                    (rankedScoreInfo?.level ?? 1) > Math.floor(level)
-                        ? `\n${Symbols.upIcon} Level up!`
-                        : ""
-                }\n` +
-                `**Score needed to level up**: ${(
-                    RankedScoreHelper.calculateScoreRequirement(
-                        Math.floor(level) + 1
-                    ) - totalScore
-                ).toLocaleString()}`
+            `**${localization.getTranslation("rankedScore")}**: ${totalScore.toLocaleString()}\n` +
+            `**${localization.getTranslation("scoreGained")}**: ${scoreDiff.toLocaleString()}\n` +
+            `**${localization.getTranslation("currentLevel")}**: ${Math.floor(level)} (${levelRemain}%)${(rankedScoreInfo?.level ?? 1) > Math.floor(level)
+                ? `\n${Symbols.upIcon} ${localization.getTranslation("levelUp")}!`
+                : ""
+            }\n` +
+            `**${localization.getTranslation("scoreNeeded")}**: ${(
+                RankedScoreHelper.calculateScoreRequirement(
+                    Math.floor(level) + 1
+                ) - totalScore
+            ).toLocaleString()}`
         );
 
         if (rankedScoreInfo) {
@@ -208,16 +214,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     // Finalization
     embed
-        .setTitle("PP submission info")
+        .setTitle(localization.getTranslation("ppSubmissionInfo"))
         .addField(
-            `${beatmapInfo.fullTitle} +${
-                score.mods.map((v) => v.acronym).join(",") || "No Mod"
+            `${beatmapInfo.fullTitle} +${score.mods.map((v) => v.acronym).join(",") || "No Mod"
             }`,
             fieldContent
         );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(submitStrings.submitSuccessful),
+        content: MessageCreator.createAccept(localization.getTranslation("submitSuccessful")),
         embeds: [embed],
     });
 };

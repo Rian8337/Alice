@@ -3,14 +3,17 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
-import { namechangeStrings } from "../namechangeStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: NamechangeLocalization = new NamechangeLocalization(await CommandHelper.getLocale(interaction));
+
     const uid: number = interaction.options.getInteger("uid", true);
 
     if (
@@ -21,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.invalidUid),
+            content: MessageCreator.createReject(localization.getTranslation("invalidUid")),
         });
     }
 
@@ -31,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!nameChange) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.userHasNoHistory
+                localization.getTranslation("userHasNoHistory")
             ),
         });
     }
@@ -41,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    embed.setTitle(`Name History For Uid ${nameChange.uid}`);
+    embed.setTitle(localization.getTranslation("nameHistoryForUid"));
 
     const onPageChange: OnButtonPageChange = async (
         _,
@@ -49,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         contents: string[]
     ) => {
         embed.addField(
-            "Name History",
+            localization.getTranslation("nameHistory"),
             contents
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map((v, i) => `**${10 * (page - 1) + i + 1}.** ${v}`)

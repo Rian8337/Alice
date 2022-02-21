@@ -3,15 +3,22 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { User } from "discord.js";
-import { mapshareStrings } from "../mapshareStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MapshareLocalization = new MapshareLocalization(language);
+
     if (interaction.channelId !== Constants.mapShareChannel) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                Constants.notAvailableInServerReject
+                new ConstantsLocalization(language).getTranslation(Constants.notAvailableInServerReject)
             ),
         });
     }
@@ -26,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!playerInfo || playerInfo.isBannedFromMapShare) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.userIsNotBanned
+                localization.getTranslation("userIsNotBanned")
             ),
         });
     }
@@ -45,14 +52,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.unbanFailed,
+                localization.getTranslation("unbanFailed"),
                 result.reason!
             ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(mapshareStrings.unbanSuccess),
+        content: MessageCreator.createAccept(localization.getTranslation("unbanSuccess")),
     });
 };
 

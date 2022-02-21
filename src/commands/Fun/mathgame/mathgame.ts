@@ -14,12 +14,13 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
-import { mathgameStrings } from "./mathgameStrings";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { MathgameLocalization } from "@alice-localization/commands/Fun/MathgameLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**
  * Generates an equation and loops the game.
@@ -45,6 +46,8 @@ function generateEquation(
  * @param level The level at the moment the game was ended.
  * @param operatorCount The operator count at the moment the game was ended.
  * @param endMessage The message to be sent along with game statistics.
+ * @param localization The localization of the interaction.
+ * @param language The locale of the localization.
  */
 function endGame(
     interaction: CommandInteraction,
@@ -52,7 +55,8 @@ function endGame(
     gameStats: Collection<Snowflake, number>,
     level: number,
     operatorCount: number,
-    endMessage: string
+    endMessage: string,
+    localization: MathgameLocalization
 ): void {
     gameStats.sort((a, b) => {
         return b - a;
@@ -61,9 +65,7 @@ function endGame(
     const answerString: string = ArrayHelper.collectionToArray(gameStats)
         .map(
             (v, i) =>
-                `#${i + 1}: <@${v.key}> - ${v.value} ${
-                    v.value === 1 ? "answer" : "answers"
-                }`
+                `#${i + 1}: <@${v.key}> - ${v.value} ${localization.getTranslation("answers")}`
         )
         .join("\n");
 
@@ -77,21 +79,21 @@ function endGame(
         timestamp: true,
     });
 
+    // TODO: replace
     embed
         .setTitle("Math Game Statistics")
         .setDescription(
-            `**Game starter**: ${interaction.user}\n` +
-                `**Time started**: ${interaction.createdAt.toUTCString()}\n` +
-                `**Duration**: ${DateTimeFormatHelper.secondsToDHMS(
-                    Math.floor(
-                        (Date.now() - interaction.createdTimestamp) / 1000
-                    )
-                )}\n` +
-                `**Level reached**: Operator count ${operatorCount}, level ${level}\n\n` +
-                `**Total correct answers**: ${totalAnswers} ${
-                    totalAnswers === 1 ? "answer" : "answers"
-                }\n` +
-                answerString
+            `**${localization.getTranslation("gameStarter")}**: ${interaction.user}\n` +
+            `**${localization.getTranslation("timeStarted")}**: ${interaction.createdAt.toUTCString()}\n` +
+            `**${localization.getTranslation("duration")}**: ${DateTimeFormatHelper.secondsToDHMS(
+                Math.floor(
+                    (Date.now() - interaction.createdTimestamp) / 1000
+                ),
+                localization.language
+            )}\n` +
+            `**${localization.getTranslation("levelReached")}**: ${localization.getTranslation("operatorCount")} ${operatorCount}, ${localization.getTranslation("level")} ${level}\n\n` +
+            `**${localization.getTranslation("totalCorrectAnswers")}**: ${totalAnswers} ${localization.getTranslation("answers")}}\n` +
+            answerString
         );
 
     CacheManager.stillHasMathGameActive.delete(
@@ -105,6 +107,8 @@ function endGame(
 }
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: MathgameLocalization = new MathgameLocalization(await CommandHelper.getLocale(interaction));
+
     const mode: MathGameType = <MathGameType>(
         (!interaction.inGuild()
             ? "single"
@@ -116,7 +120,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        mathgameStrings.userHasOngoingGame
+                        localization.getTranslation("userHasOngoingGame")
                     ),
                 });
             }
@@ -129,7 +133,7 @@ export const run: Command["run"] = async (_, interaction) => {
             ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        mathgameStrings.channelHasOngoingGame
+                        localization.getTranslation("channelHasOngoingGame")
                     ),
                 });
             }
@@ -162,7 +166,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 }
 
                 const endString: string = StringHelper.formatString(
-                    mathgameStrings.couldNotFetchEquationGameEnd,
+                    localization.getTranslation("couldNotFetchEquationGameEnd"),
                     (fetchAttempt * 500).toString()
                 );
 
@@ -172,7 +176,8 @@ export const run: Command["run"] = async (_, interaction) => {
                     gameStats,
                     level,
                     operatorAmount,
-                    endString
+                    endString,
+                    localization
                 );
             }
 
@@ -181,24 +186,24 @@ export const run: Command["run"] = async (_, interaction) => {
             const questionString: string = MessageCreator.createWarn(
                 mode === "single"
                     ? StringHelper.formatString(
-                          mathgameStrings.singleGamemodeQuestion,
-                          interaction.user.toString(),
-                          operatorAmount.toString(),
-                          level.toString(),
-                          realEquation
-                      )
+                        localization.getTranslation("singleGamemodeQuestion"),
+                        interaction.user.toString(),
+                        operatorAmount.toString(),
+                        level.toString(),
+                        realEquation
+                    )
                     : StringHelper.formatString(
-                          mathgameStrings.multiGamemodeQuestion,
-                          level.toString(),
-                          operatorAmount.toString(),
-                          realEquation
-                      )
+                        localization.getTranslation("multiGamemodeQuestion"),
+                        level.toString(),
+                        operatorAmount.toString(),
+                        realEquation
+                    )
             );
 
             if (!interaction.replied) {
                 await interaction.editReply({
                     content: MessageCreator.createAccept(
-                        mathgameStrings.gameStartedNotification
+                        localization.getTranslation("gameStartedNotification")
                     ),
                 });
             }
@@ -207,15 +212,15 @@ export const run: Command["run"] = async (_, interaction) => {
                 const collector: MessageCollector =
                     mode === "single"
                         ? msg.channel.createMessageCollector({
-                              filter: (m) =>
-                                  parseInt(m.content) === answer &&
-                                  m.author.id === interaction.user.id,
-                              time: 30000,
-                          })
+                            filter: (m) =>
+                                parseInt(m.content) === answer &&
+                                m.author.id === interaction.user.id,
+                            time: 30000,
+                        })
                         : msg.channel.createMessageCollector({
-                              filter: (m) => parseInt(m.content) === answer,
-                              time: 30000,
-                          });
+                            filter: (m) => parseInt(m.content) === answer,
+                            time: 30000,
+                        });
 
                 let correct: boolean = false;
 
@@ -231,7 +236,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
                     msg.channel.send(
                         MessageCreator.createAccept(
-                            mathgameStrings.correctAnswer,
+                            localization.getTranslation("correctAnswer"),
                             mode === "multi" ? `${m.author}, you` : "You",
                             (
                                 (Date.now() - msg.createdTimestamp) /
@@ -250,7 +255,7 @@ export const run: Command["run"] = async (_, interaction) => {
                         msg.delete();
 
                         const endString: string = StringHelper.formatString(
-                            mathgameStrings.noAnswerGameEnd,
+                            localization.getTranslation("noAnswerGameEnd"),
                             mode === "multi"
                                 ? "Game ended"
                                 : `${interaction.user}, game ended`,
@@ -264,7 +269,8 @@ export const run: Command["run"] = async (_, interaction) => {
                             gameStats,
                             level,
                             operatorAmount,
-                            endString
+                            endString,
+                            localization
                         );
                     }
 

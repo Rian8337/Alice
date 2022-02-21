@@ -9,6 +9,8 @@ import { ObjectId } from "bson";
 import { MessageOptions, Snowflake, TextChannel } from "discord.js";
 import { UserBind } from "../elainaDb/UserBind";
 import { PlayerInfo } from "./PlayerInfo";
+import { Language } from "@alice-localization/base/Language";
+import { MapShareLocalization } from "@alice-localization/database/utils/aliceDb/MapShareLocalization";
 
 /**
  * Represents a shared beatmap.
@@ -91,13 +93,16 @@ export class MapShare extends Manager implements DatabaseMapShare {
     /**
      * Posts this submission in the map share channel.
      *
+     * @param language The locale of the user who attempted to post this submission. Defaults to English.
      * @returns An object containing the result of the operation.
      */
-    async post(): Promise<OperationResult> {
+    async post(language: Language = "en"): Promise<OperationResult> {
+        const localization: MapShareLocalization = this.getLocalization(language);
+
         if (this.status !== "accepted") {
             return this.createOperationResult(
                 false,
-                "submission is not accepted yet"
+                localization.getTranslation("submissionNotAccepted")
             );
         }
 
@@ -105,7 +110,8 @@ export class MapShare extends Manager implements DatabaseMapShare {
             await EmbedCreator.createMapShareEmbed(this);
 
         if (!embedOptions) {
-            return this.createOperationResult(false, "beatmap not found");
+            return this.createOperationResult(false, localization
+                .getTranslation("beatmapNotFound"));
         }
 
         const coinAward: number =
@@ -117,7 +123,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
             );
 
         if (playerInfo) {
-            await playerInfo.incrementCoins(coinAward);
+            await playerInfo.incrementCoins(coinAward, language);
         } else {
             const bindInfo: UserBind | null =
                 await DatabaseManager.elainaDb.collections.userBind.getFromUser(
@@ -127,7 +133,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
             if (!bindInfo) {
                 return this.createOperationResult(
                     false,
-                    "submitter is not binded"
+                    localization.getTranslation("submitterNotBinded")
                 );
             }
 
@@ -157,5 +163,14 @@ export class MapShare extends Manager implements DatabaseMapShare {
                 },
             }
         );
+    }
+
+    /**
+     * Gets the localization of this database utility.
+     * 
+     * @param language The language to localize.
+     */
+    private getLocalization(language: Language): MapShareLocalization {
+        return new MapShareLocalization(language);
     }
 }

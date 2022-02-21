@@ -8,6 +8,9 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
+import { Language } from "@alice-localization/base/Language";
+import { NameChangeLocalization } from "@alice-localization/database/utils/aliceDb/NameChangeLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**
  * Represents an osu!droid name change request.
@@ -40,13 +43,16 @@ export class NameChange extends Manager implements DatabaseNameChange {
     /**
      * Accepts this name change request if this account requests a name change.
      *
+     * @param language The locale of the user who attempted to accept this name change request. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async accept(): Promise<OperationResult> {
+    async accept(language: Language = "en"): Promise<OperationResult> {
+        const localization: NameChangeLocalization = this.getLocalization(language);
+
         if (this.isProcessed) {
             return this.createOperationResult(
                 false,
-                "name change request is not active"
+                localization.getTranslation("requestNotActive")
             );
         }
 
@@ -68,7 +74,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
         if (apiResult.statusCode !== 200) {
             return this.createOperationResult(
                 false,
-                "cannot create request to osu!droid server"
+                localization.getTranslation("droidServerRequestFailed")
             );
         }
 
@@ -132,14 +138,16 @@ export class NameChange extends Manager implements DatabaseNameChange {
      * Denies this name change request if this account requests a name change.
      *
      * @param reason The reason for denying the name change request.
-     *
+     * @param language The locale of the user who attempted to deny the name change request.
      * @returns An object containing information about the operation.
      */
-    async deny(reason?: string): Promise<OperationResult> {
+    async deny(reason?: string, language: Language = "en"): Promise<OperationResult> {
+        const localization: NameChangeLocalization = this.getLocalization(language);
+
         if (this.isProcessed) {
             return this.createOperationResult(
                 false,
-                "name change request is not active"
+                localization.getTranslation("requestNotActive")
             );
         }
 
@@ -177,6 +185,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 return;
             }
 
+            const localization: NameChangeLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(user));
+
             this.player ??= await Player.getInformation({ uid: this.uid });
 
             const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
@@ -185,25 +195,25 @@ export class NameChange extends Manager implements DatabaseNameChange {
             });
 
             embed
-                .setTitle("Request Details")
+                .setTitle(localization.getTranslation("requestDetails"))
                 .setDescription(
-                    `**Current Username**: ${this.player.username}\n` +
-                        `**Requested Username**: ${this.new_username}\n` +
-                        `**Creation Date**: ${new Date(
-                            (this.cooldown - 86400 * 30) * 1000
-                        ).toUTCString()}\n\n` +
-                        "**Status**: Accepted"
+                    `**${localization.getTranslation("currentUsername")}**: ${this.player.username}\n` +
+                    `**${localization.getTranslation("requestedUsername")}**: ${this.new_username}\n` +
+                    `**${localization.getTranslation("creationDate")}**: ${new Date(
+                        (this.cooldown - 86400 * 30) * 1000
+                    ).toUTCString()}\n\n` +
+                    `**${localization.getTranslation("accepted")}**: ${localization.getTranslation("accepted")}`
                 );
 
             user.send({
-                content: MessageCreator.createReject(
-                    "Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in %s.",
+                content: MessageCreator.createAccept(
+                    localization.getTranslation("acceptedNotification"),
                     new Date(this.cooldown * 1000).toUTCString()
                 ),
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch {}
+        } catch { }
     }
 
     /**
@@ -219,6 +229,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 return;
             }
 
+            const localization: NameChangeLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(user));
+
             this.player ??= await Player.getInformation({ uid: this.uid });
 
             const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
@@ -227,25 +239,34 @@ export class NameChange extends Manager implements DatabaseNameChange {
             });
 
             embed
-                .setTitle("Request Details")
+                .setTitle(localization.getTranslation("requestDetails"))
                 .setDescription(
-                    `**Current Username**: ${this.player.username}\n` +
-                        `**Requested Username**: ${this.new_username}\n` +
-                        `**Creation Date**: ${new Date(
-                            (this.cooldown - 86400 * 30) * 1000
-                        ).toUTCString()}\n\n` +
-                        "**Status**: Denied\n" +
-                        `**Reason**: ${reason}`
+                    `**${localization.getTranslation("currentUsername")}**: ${this.player.username}\n` +
+                    `**${localization.getTranslation("requestedUsername")}**: ${this.new_username}\n` +
+                    `**${localization.getTranslation("creationDate")}**: ${new Date(
+                        (this.cooldown - 86400 * 30) * 1000
+                    ).toUTCString()}\n\n` +
+                    `**${localization.getTranslation("status")}**: ${localization.getTranslation("denied")}\n` +
+                    `**${localization.getTranslation("reason")}**: ${reason}`
                 );
 
             user.send({
                 content: MessageCreator.createReject(
-                    "Hey, I would like to inform you that your name change request was denied due to `%s`. You are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!",
+                    localization.getTranslation("deniedNotification"),
                     reason
                 ),
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
-        } catch {}
+        } catch { }
+    }
+
+    /**
+     * Gets the localization of this database utility.
+     * 
+     * @param language The language to localize.
+     */
+    private getLocalization(language: Language): NameChangeLocalization {
+        return new NameChangeLocalization(language);
     }
 }

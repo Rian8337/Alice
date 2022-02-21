@@ -4,15 +4,18 @@ import { Command } from "@alice-interfaces/core/Command";
 import { MathEquation } from "@alice-interfaces/utils/MathEquation";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { mathquizStrings } from "./mathquizStrings";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { MathquizLocalization } from "@alice-localization/commands/Fun/MathquizLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: MathquizLocalization = new MathquizLocalization(await CommandHelper.getLocale(interaction));
+
     if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mathquizStrings.userStillHasActiveGame
+                localization.getTranslation("userStillHasActiveGame")
             ),
         });
     }
@@ -32,14 +35,14 @@ export const run: Command["run"] = async (_, interaction) => {
     if (isNaN(answer)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mathquizStrings.equationGeneratorError
+                localization.getTranslation("equationGeneratorError")
             ),
         });
     }
 
     const msg: Message = <Message>await interaction.editReply({
         content: MessageCreator.createWarn(
-            mathquizStrings.equationQuestion,
+            localization.getTranslation("equationQuestion"),
             interaction.user.toString(),
             operatorAmount.toString(),
             level.toString(),
@@ -65,7 +68,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
         interaction.followUp({
             content: MessageCreator.createAccept(
-                mathquizStrings.correctAnswer,
+                localization.getTranslation("correctAnswer"),
                 interaction.user.toString(),
                 ((Date.now() - msg.createdTimestamp) / 1000).toString(),
                 realEquation,
@@ -80,7 +83,7 @@ export const run: Command["run"] = async (_, interaction) => {
         if (!correct) {
             interaction.editReply(
                 MessageCreator.createReject(
-                    mathquizStrings.wrongAnswer,
+                    localization.getTranslation("wrongAnswer"),
                     interaction.user.toString(),
                     realEquation,
                     answer.toString()

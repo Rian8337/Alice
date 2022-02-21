@@ -1,6 +1,9 @@
 import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -11,9 +14,12 @@ import {
     TextChannel,
     ThreadChannel,
 } from "discord.js";
-import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: SettingsLocalization = new SettingsLocalization(language);
+
     const event: string = interaction.options.getString("event", true);
 
     const utility: string = interaction.options.getString("utility", true);
@@ -26,7 +32,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!eventUtilities) {
         return interaction.editReply({
-            content: MessageCreator.createReject(settingsStrings.eventNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("eventNotFound")),
         });
     }
 
@@ -35,7 +41,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!util) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.eventUtilityNotFound
+                localization.getTranslation("eventUtilityNotFound")
             ),
         });
     }
@@ -47,7 +53,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject),
+            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)),
         });
     }
 
@@ -73,7 +79,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.noPermissionReject
+                        new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)
                     ),
                 });
             }
@@ -83,8 +89,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.eventUtilityToggleSuccess,
-            "disabled",
+            localization.getTranslation("eventUtilityDisableSuccess"),
             utility,
             event
         ),

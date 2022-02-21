@@ -1,3 +1,4 @@
+import { Language } from "@alice-localization/base/Language";
 import { Snowflake } from "discord.js";
 import { DisabledCommand } from "./DisabledCommand";
 import { DisabledEventUtil } from "./DisabledEventUtil";
@@ -20,4 +21,9 @@ export interface GuildChannelSettings {
      * The event utilities that are disabled in this channel.
      */
     disabledEventUtils: DisabledEventUtil[];
+
+    /**
+     * The preferred locale of this channel. Should be defaulted to English.
+     */
+    preferredLocale?: Language;
 }

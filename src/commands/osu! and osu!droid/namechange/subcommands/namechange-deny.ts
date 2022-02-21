@@ -1,13 +1,19 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { namechangeStrings } from "../namechangeStrings";
 import { Constants } from "@alice-core/Constants";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: NamechangeLocalization = new NamechangeLocalization(language);
+
     const uid: number = interaction.options.getInteger("uid", true);
 
     if (
@@ -18,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.invalidUid),
+            content: MessageCreator.createReject(localization.getTranslation("invalidUid")),
         });
     }
 
@@ -30,18 +36,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!nameChange || nameChange.isProcessed) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.uidHasNoActiveRequest
+                localization.getTranslation("uidHasNoActiveRequest")
             ),
         });
     }
 
-    // Update database first, then we can deal with notifying the user
-    const result: OperationResult = await nameChange.deny();
+    const result: OperationResult = await nameChange.deny(reason, language);
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.denyFailed,
+                localization.getTranslation("denyFailed"),
                 result.reason!
             ),
         });
@@ -49,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            namechangeStrings.denySuccess,
+            localization.getTranslation("denySuccess"),
             reason
         ),
     });

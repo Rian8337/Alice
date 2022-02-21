@@ -70,6 +70,7 @@
     "@alice-enums": "dist/enums",
     "@alice-events": "dist/events",
     "@alice-interfaces": "dist/interfaces",
+    "@alice-localization": "dist/localization",
     "@alice-types": "dist/types",
     "@alice-utils": "dist/utils"
   },

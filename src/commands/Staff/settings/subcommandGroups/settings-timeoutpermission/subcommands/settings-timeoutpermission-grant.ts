@@ -1,16 +1,19 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Role } from "discord.js";
-import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
         return;
     }
+
+    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
 
     const role: Role = <Role>interaction.options.getRole("role", true);
 
@@ -28,10 +31,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             interaction.guildId
         );
 
-    if (!guildConfig || !guildConfig.getGuildLogChannel(interaction.guild!)) {
+    if (!guildConfig?.getGuildLogChannel(interaction.guild!)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.noLogChannelConfigured
+                localization.getTranslation("noLogChannelConfigured")
             ),
         });
     }
@@ -47,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.invalidTimeoutPermissionDuration
+                localization.getTranslation("invalidTimeoutPermissionDuration")
             ),
         });
     }
@@ -56,8 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.grantOrRevokeTimeoutPermissionSuccess,
-            "granted",
+            localization.getTranslation("grantTimeoutPermissionSuccess"),
             role.name
         ),
     });

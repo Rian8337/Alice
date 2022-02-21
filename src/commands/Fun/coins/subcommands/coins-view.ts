@@ -2,8 +2,9 @@ import { User } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { coinsStrings } from "../coinsStrings";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
@@ -13,8 +14,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply(
         MessageCreator.createAccept(
-            coinsStrings.coinAmountInfo,
-            user.id === interaction.user.id ? "You have" : "That user has",
+            new CoinsLocalization(await CommandHelper.getLocale(interaction)).getTranslation(user.id === interaction.user.id ? "selfCoinAmountInfo" : "userCoinAmountInfo"),
             (playerInfo?.alicecoins ?? 0).toLocaleString()
         )
     );

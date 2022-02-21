@@ -8,9 +8,13 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { GuildEmoji, GuildMember, MessageEmbed } from "discord.js";
-import { emojistatisticsStrings } from "./emojistatisticsStrings";
+import { EmojistatisticsLocalization } from "@alice-localization/commands/Tools/EmojistatisticsLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: EmojistatisticsLocalization = new EmojistatisticsLocalization(await CommandHelper.getLocale(interaction));
+
     const stats: EmojiStatistics | null =
         await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(
             interaction.guild!
@@ -19,7 +23,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!stats) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                emojistatisticsStrings.serverHasNoData
+                localization.getTranslation("serverHasNoData")
             ),
         });
     }
@@ -45,9 +49,9 @@ export const run: Command["run"] = async (_, interaction) => {
         const months: number = Math.max(
             1,
             (currentDate.getUTCFullYear() - dateCreation.getUTCFullYear()) *
-                12 +
-                currentDate.getUTCMonth() -
-                dateCreation.getUTCMonth()
+            12 +
+            currentDate.getUTCMonth() -
+            dateCreation.getUTCMonth()
         );
 
         validEmojis.push({
@@ -60,7 +64,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (validEmojis.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                emojistatisticsStrings.noValidEmojis
+                localization.getTranslation("noValidEmojis")
             ),
         });
     }
@@ -80,13 +84,11 @@ export const run: Command["run"] = async (_, interaction) => {
 
     embed
         .setAuthor({
-            name: `Emoji Statistics for ${interaction.guild!.name}`,
+            name: StringHelper.formatString(localization.getTranslation("emojiStatisticsForServer"), interaction.guild!.name),
             iconURL: interaction.guild!.iconURL({ dynamic: true })!,
         })
         .setDescription(
-            `**Sort Mode**: ${
-                sortOption === "overall" ? "Overall" : "Average per month"
-            } usage`
+            `**${localization.getTranslation("sortMode")}**: ${localization.getTranslation(sortOption === "overall" ? "overall" : "averagePerMonth")}`
         );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -96,17 +98,20 @@ export const run: Command["run"] = async (_, interaction) => {
             ++i
         ) {
             embed.addField(
-                `${i + 1}. ${validEmojis[i].emoji.name}`,
-                `**Emoji**: ${validEmojis[i].emoji}\n` +
-                    `**Date Creation**: ${validEmojis[
-                        i
-                    ].emoji.createdAt.toUTCString()}\n` +
-                    `**Overall Usage**: ${validEmojis[
-                        i
-                    ].count.toLocaleString()}\n` +
-                    `**Average Per Month Usage**: ${validEmojis[
-                        i
-                    ].averagePerMonth.toLocaleString()}`
+                `${i + 1}.${validEmojis[i].emoji.name}`,
+                `**${localization.getTranslation("emoji")}**: ${validEmojis[i].emoji} \n` +
+                `**${localization.getTranslation("dateCreation")}**: ${validEmojis[
+                    i
+                ].emoji.createdAt.toUTCString()
+                } \n` +
+                `**${localization.getTranslation("overallUsage")}**: ${validEmojis[
+                    i
+                ].count.toLocaleString()
+                } \n` +
+                `**${localization.getTranslation("averagePerMonthUsage")}**: ${validEmojis[
+                    i
+                ].averagePerMonth.toLocaleString()
+                } `
             );
         }
     };

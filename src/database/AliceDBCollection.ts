@@ -24,6 +24,7 @@ import { PrototypePPCollectionManager } from "./managers/aliceDb/PrototypePPColl
 import { ProfileBadgeCollectionManager } from "./managers/aliceDb/ProfileBadgeCollectionManager";
 import { MusicCollectionManager } from "./managers/aliceDb/MusicCollectionManager";
 import { IllegalMapCollectionManager } from "./managers/aliceDb/IllegalMapCollectionManager";
+import { UserLocaleCollectionManager } from "./managers/aliceDb/UserLocaleCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -158,6 +159,11 @@ export class AliceDBCollection {
     readonly illegalMap: IllegalMapCollectionManager;
 
     /**
+     * The database collection for user locales.
+     */
+    readonly userLocale: UserLocaleCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -234,6 +240,9 @@ export class AliceDBCollection {
         this.voting = new VotingCollectionManager(aliceDb.collection("voting"));
         this.illegalMap = new IllegalMapCollectionManager(
             aliceDb.collection("illegalmap")
+        );
+        this.userLocale = new UserLocaleCollectionManager(
+            aliceDb.collection("userlocale")
         );
     }
 }

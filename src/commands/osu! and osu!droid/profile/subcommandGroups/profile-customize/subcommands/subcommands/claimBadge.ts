@@ -1,4 +1,3 @@
-import { profileStrings } from "@alice-commands/osu! and osu!droid/profile/profileStrings";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -21,8 +20,17 @@ import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalc
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { OsuStarRating } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
+import { Language } from "@alice-localization/base/Language";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ProfileLocalization = new ProfileLocalization(language);
+
     const playerInfoDbManager: PlayerInfoCollectionManager =
         DatabaseManager.aliceDb.collections.playerInfo;
 
@@ -33,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject),
+            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)),
         });
     }
 
@@ -45,7 +53,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    "Choose the badge that you want to claim."
+                    localization.getTranslation("chooseClaimBadge")
                 ),
             },
             badgeList.map((v) => {
@@ -76,7 +84,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (pictureConfig.badges.find((b) => b.id === badge.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.badgeIsAlreadyClaimed
+                localization.getTranslation("badgeIsAlreadyClaimed")
             ),
         });
     }
@@ -86,8 +94,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!player.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.profileNotFound,
-                "your"
+                localization.getTranslation("selfProfileNotFound")
             ),
         });
     }
@@ -132,8 +139,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         embeds: [
                             EmbedCreator.createInputEmbed(
                                 interaction,
-                                "Claim a Profile Badge",
-                                `Enter the beatmap ID or link that is at least ${badge.requirement}${Symbols.star} in PC rating and you have a full combo on.\n\nThe beatmap must be a ranked or approved beatmap.`
+                                localization.getTranslation("claimBadge"),
+                                `${StringHelper.formatString(localization.getTranslation("enterBeatmap"), Symbols.star, badge.requirement.toString())}\n\n${localization.getTranslation("enterBeatmapRestriction")}`,
+                                language
                             ),
                         ],
                     },
@@ -151,7 +159,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (isNaN(beatmapID)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        profileStrings.beatmapToClaimBadgeNotValid
+                        localization.getTranslation("beatmapToClaimBadgeNotValid")
                     ),
                 });
             }
@@ -164,7 +172,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!beatmapInfo) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        profileStrings.beatmapToClaimBadgeNotFound
+                        localization.getTranslation("beatmapToClaimBadgeNotFound")
                     ),
                 });
             }
@@ -175,7 +183,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        profileStrings.beatmapToClaimBadgeNotRankedOrApproved
+                        localization.getTranslation("beatmapToClaimBadgeNotRankedOrApproved")
                     ),
                 });
             }
@@ -205,7 +213,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!canUserClaimBadge) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        profileStrings.userDoesntHaveScoreinBeatmap
+                        localization.getTranslation("userDoesntHaveScoreinBeatmap")
                     ),
                 });
             }
@@ -219,7 +227,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         case "unclaimable":
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    profileStrings.badgeUnclaimable
+                    localization.getTranslation("badgeUnclaimable")
                 ),
             });
     }
@@ -227,7 +235,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!canUserClaimBadge) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.userCannotClaimBadge
+                localization.getTranslation("userCannotClaimBadge")
             ),
         });
     }
@@ -253,7 +261,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            profileStrings.claimBadgeSuccess,
+            localization.getTranslation("claimBadgeSuccess"),
             interaction.user.toString(),
             badge.id
         ),

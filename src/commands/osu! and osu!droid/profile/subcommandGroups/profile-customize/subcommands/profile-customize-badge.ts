@@ -1,39 +1,41 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ProfileLocalization = new ProfileLocalization(await CommandHelper.getLocale(interaction));
+
     CommandHelper.runSubcommandNotFromInteraction(
         interaction,
         __dirname,
         [
             {
-                label: "Show Badge Template",
+                label: localization.getTranslation("showBadgeTemplateLabel"),
                 value: "showBadgeTemplate",
-                description: "Show the template of badges in a profile card.",
+                description: localization.getTranslation("showBadgeTemplateDescription"),
             },
             {
-                label: "Claim Badge",
+                label: localization.getTranslation("claimBadgeLabel"),
                 value: "claimBadge",
-                description: "Claim a badge.",
+                description: localization.getTranslation("claimBadgeDescription"),
             },
             {
-                label: "Equip Badge",
+                label: localization.getTranslation("equipBadgeLabel"),
                 value: "equipBadge",
-                description: "Equip a badge.",
+                description: localization.getTranslation("equipBadgeDescription"),
             },
             {
-                label: "Unequip Badge",
+                label: localization.getTranslation("unequipBadgeLabel"),
                 value: "unequipBadge",
-                description: "Unequip a badge.",
+                description: localization.getTranslation("unequipBadgeDescription"),
             },
             {
-                label: "List Badges",
+                label: localization.getTranslation("listBadgeLabel"),
                 value: "listBadges",
-                description:
-                    "List all profile card badges, including those that you own.",
+                description: localization.getTranslation("listBadgeDescription"),
             },
         ],
-        "Choose what you want to customize."
+        localization.getTranslation("customizationPlaceholder")
     );
 };
 

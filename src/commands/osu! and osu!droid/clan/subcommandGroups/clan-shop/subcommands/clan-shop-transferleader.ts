@@ -1,4 +1,3 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
@@ -7,8 +6,15 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const toTransfer: User = interaction.options.getUser("member", true);
 
     const clan: Clan | null =
@@ -18,14 +24,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
     if (!clan.isLeader(interaction.user)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -33,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!clan.member_list.has(toTransfer.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.userIsNotInExecutorClan
+                localization.getTranslation("userIsNotInExecutorClan")
             ),
         });
     }
@@ -43,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (clan.power < powerReq) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanPowerNotEnoughToBuyItem,
+                localization.getTranslation("clanPowerNotEnoughToBuyItem"),
                 powerReq.toLocaleString()
             ),
         });
@@ -59,8 +65,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!playerInfo || playerInfo.alicecoins < cost) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.notEnoughCoins,
-                "transfer leadership",
+                localization.getTranslation("notEnoughCoins"),
+                localization.getTranslation("leadershipTransfer"),
                 cost.toLocaleString()
             ),
         });
@@ -70,13 +76,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.buyShopItemConfirmation,
-                "leadership transfer",
+                localization.getTranslation("buyShopItemConfirmation"),
+                localization.getTranslation("leadershipTransfer"),
                 cost.toLocaleString()
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        language
     );
 
     if (!confirmation) {
@@ -84,12 +91,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const coinDeductionResult: OperationResult =
-        await playerInfo.incrementCoins(-cost);
+        await playerInfo.incrementCoins(-cost, language);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed,
+                localization.getTranslation("buyShopItemFailed"),
                 coinDeductionResult.reason!
             ),
         });
@@ -102,7 +109,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!changeLeaderResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed,
+                localization.getTranslation("buyShopItemFailed"),
                 changeLeaderResult.reason!
             ),
         });
@@ -113,7 +120,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.buyShopItemFailed,
+                localization.getTranslation("buyShopItemFailed"),
                 finalResult.reason!
             ),
         });
@@ -121,7 +128,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.buyShopItemSuccessful,
+            localization.getTranslation("buyShopItemSuccessful"),
             cost.toLocaleString()
         ),
     });

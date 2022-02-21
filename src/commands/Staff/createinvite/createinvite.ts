@@ -9,11 +9,14 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { createinviteStrings } from "./createinviteStrings";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { CreateinviteLocalization } from "@alice-localization/commands/Staff/CreateinviteLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: CreateinviteLocalization = new CreateinviteLocalization(await CommandHelper.getLocale(interaction));
+
     const maxAge: number = DateTimeFormatHelper.DHMStoSeconds(
         interaction.options.getString("validduration") ?? "0"
     );
@@ -21,7 +24,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!NumberHelper.isNumeric(maxAge) || maxAge < 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                createinviteStrings.expiryTimeInvalid
+                localization.getTranslation("expiryTimeInvalid")
             ),
         });
     }
@@ -31,13 +34,13 @@ export const run: Command["run"] = async (_, interaction) => {
     if (maxUsage < 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                createinviteStrings.maximumUsageInvalid
+                localization.getTranslation("maximumUsageInvalid")
             ),
         });
     }
 
     const reason: string =
-        interaction.options.getString("reason") ?? "Not specified.";
+        interaction.options.getString("reason") ?? localization.getTranslation("notSpecified");
 
     (<TextChannel | NewsChannel>interaction.channel)
         .createInvite({ maxAge: maxAge, maxUses: maxUsage, reason: reason })
@@ -49,19 +52,19 @@ export const run: Command["run"] = async (_, interaction) => {
             });
 
             embed
-                .setTitle("Invite Link Created")
-                .addField("Created in", interaction.channel!.toString(), true)
+                .setTitle(localization.getTranslation("inviteLinkCreated"))
+                .addField(localization.getTranslation("createdInChannel"), interaction.channel!.toString(), true)
                 .addField(
-                    "Maximum Usage",
-                    maxUsage === 0 ? "Infinite" : maxUsage.toString()
+                    localization.getTranslation("maxUsage"),
+                    maxUsage === 0 ? localization.getTranslation("infinite") : maxUsage.toString()
                 )
                 .addField(
-                    "Expiration Time",
-                    DateTimeFormatHelper.secondsToDHMS(maxAge) || "Never",
+                    localization.getTranslation("expirationTime"),
+                    DateTimeFormatHelper.secondsToDHMS(maxAge, localization.language) || localization.getTranslation("never"),
                     true
                 )
-                .addField("Reason", reason)
-                .addField("Invite Link", invite.url);
+                .addField(localization.getTranslation("reason"), reason)
+                .addField(localization.getTranslation("inviteLink"), invite.url);
 
             interaction.editReply({
                 embeds: [embed],

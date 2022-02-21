@@ -1,24 +1,26 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ProfileLocalization = new ProfileLocalization(await CommandHelper.getLocale(interaction));
+
     CommandHelper.runSubcommandNotFromInteraction(
         interaction,
         __dirname,
         [
             {
-                label: "Change Background",
+                label: localization.getTranslation("changeBackgroundLabel"),
                 value: "changeBackground",
-                description: "Change your profile card's background.",
+                description: localization.getTranslation("changeBackgroundDescription"),
             },
             {
-                label: "List Backgrounds",
+                label: localization.getTranslation("listBackgroundLabel"),
                 value: "listBackgrounds",
-                description:
-                    "List all profile card backgrounds, including those that you own.",
+                description: localization.getTranslation("listBackgroundDescription"),
             },
         ],
-        "Choose what you want to customize."
+        localization.getTranslation("customizationPlaceholder")
     );
 };
 

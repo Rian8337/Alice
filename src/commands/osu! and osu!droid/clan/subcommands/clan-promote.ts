@@ -5,9 +5,12 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
-import { clanStrings } from "../clanStrings";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+
     const toPromote: User = interaction.options.getUser("member", true);
 
     const clan: Clan | null =
@@ -17,14 +20,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
     if (!clan.isLeader(interaction.user)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -32,7 +35,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!clan.member_list.has(toPromote.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.userIsNotInExecutorClan
+                localization.getTranslation("userIsNotInExecutorClan")
             ),
         });
     }
@@ -40,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (clan.hasAdministrativePower(toPromote)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.userIsAlreadyCoLeader
+                localization.getTranslation("userIsAlreadyCoLeader")
             ),
         });
     }
@@ -49,11 +52,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.promoteMemberConfirmation
+                localization.getTranslation("promoteMemberConfirmation")
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        localization.language
     );
 
     if (!confirmation) {
@@ -67,7 +71,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.promoteMemberFailed,
+                localization.getTranslation("promoteMemberFailed"),
                 result.reason!
             ),
         });
@@ -75,7 +79,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.promoteMemberSuccessful
+            localization.getTranslation("promoteMemberSuccessful")
         ),
     });
 };

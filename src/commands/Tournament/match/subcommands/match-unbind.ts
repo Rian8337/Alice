@@ -4,20 +4,23 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ThreadChannel } from "discord.js";
-import { matchStrings } from "../matchStrings";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: MatchLocalization = new MatchLocalization(await CommandHelper.getLocale(interaction));
+
     const id: string | null = interaction.options.getString("id");
 
     const match: TournamentMatch | null = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-              interaction.channelId
-          );
+            interaction.channelId
+        );
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("matchDoesntExist")),
         });
     }
 
@@ -32,7 +35,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.unbindMatchFailed,
+                localization.getTranslation("unbindMatchFailed"),
                 result.reason!
             ),
         });
@@ -40,7 +43,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     await interaction.editReply({
         content: MessageCreator.createAccept(
-            matchStrings.unbindMatchSuccessful,
+            localization.getTranslation("unbindMatchSuccessful"),
             match.matchid
         ),
     });

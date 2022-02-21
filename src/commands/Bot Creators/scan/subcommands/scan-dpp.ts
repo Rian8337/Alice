@@ -2,19 +2,24 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ScanLocalization } from "@alice-localization/commands/Bot Creators/ScanLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { Collection, Snowflake } from "discord.js";
-import { scanStrings } from "../scanStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: ScanLocalization = new ScanLocalization(await CommandHelper.getLocale(interaction));
+
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
     let calculatedCount: number = 0;
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(scanStrings.scanStarted),
+        content: MessageCreator.createAccept(
+            localization.getTranslation("scanStarted")
+        ),
     });
 
     let players: Collection<Snowflake, UserBind>;
@@ -38,7 +43,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            scanStrings.scanComplete,
+            localization.getTranslation("scanComplete"),
             interaction.user.toString()
         ),
     });

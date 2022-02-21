@@ -3,14 +3,20 @@ import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { BonusDescription } from "@alice-interfaces/challenge/BonusDescription";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { Language } from "@alice-localization/base/Language";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
-import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: DailyLocalization = new DailyLocalization(language);
+
     const type: ChallengeType =
         <ChallengeType>interaction.options.getString("type") ?? "daily";
 
@@ -22,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!challenge) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.noOngoingChallenge
+                localization.getTranslation("noOngoingChallenge")
             ),
         });
     }
@@ -33,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     const bonusDescription: BonusDescription[] =
-        challenge.getBonusInformation();
+        challenge.getBonusInformation(language);
 
     const onPageChange: OnButtonPageChange = async (
         _,

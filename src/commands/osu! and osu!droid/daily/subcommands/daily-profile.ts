@@ -3,13 +3,17 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
-import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: DailyLocalization = new DailyLocalization(await CommandHelper.getLocale(interaction));
+
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
@@ -40,7 +44,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!playerInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.userHasNotPlayedAnyChallenge
+                localization.getTranslation("userHasNotPlayedAnyChallenge")
             ),
         });
     }
@@ -51,13 +55,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     embed
         .setAuthor({
-            name: `Daily/Weekly Challenge Profile for ${playerInfo.username}`,
+            name: StringHelper.formatString(localization.getTranslation("profile"), playerInfo.username),
             iconURL: "https://image.frl/p/beyefgeq5m7tobjg.jpg",
             url: ProfileManager.getProfileLink(playerInfo.uid).toString(),
         })
         .addField(
-            "Statistics",
-            `**Points**: ${playerInfo.points}\n**Alice Coins**: ${coin}${playerInfo.alicecoins}\n**Challenges completed**: ${playerInfo.challenges.size}`
+            localization.getTranslation("statistics"),
+            `**${localization.getTranslation("points")}**: ${playerInfo.points}\n**Alice Coins**: ${coin}${playerInfo.alicecoins}\n**${localization.getTranslation("challengesCompleted")}**: ${playerInfo.challenges.size}`
         );
 
     interaction.editReply({

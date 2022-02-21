@@ -16,11 +16,15 @@ import {
     DroidPerformanceCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
+import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/UserBeatmapCalculationLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (Config.maintenance || message.author.bot) {
         return;
     }
+
+    const localization: UserBeatmapCalculationLocalization = new UserBeatmapCalculationLocalization(await CommandHelper.getLocale(message.author));
 
     const calcParams: PerformanceCalculationParameters =
         BeatmapDifficultyHelper.getCalculationParamsFromMessage(
@@ -77,17 +81,18 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     calcParams,
                     droidCalcResult,
                     osuCalcResult,
-                    message.member?.displayHexColor
+                    message.member?.displayHexColor,
+                    localization.language
                 );
 
             let string: string = "";
 
             if (message.content.includes("-d")) {
-                string += `Raw droid stars: ${droidCalcResult.result.stars.toString()}\nRaw droid pp: ${droidCalcResult.result.toString()}\n`;
+                string += `${localization.getTranslation("droidStars")}: ${droidCalcResult.result.stars.toString()}\n${localization.getTranslation("droidPP")}: ${droidCalcResult.result.toString()}\n`;
             }
 
             if (message.content.includes("-p")) {
-                string += `Raw PC stars: ${osuCalcResult.result.stars.toString()}\nRaw PC pp: ${osuCalcResult.result.toString()}`;
+                string += `${localization.getTranslation("pcStars")}: ${osuCalcResult.result.stars.toString()}\n${localization.getTranslation("pcPP")}: ${osuCalcResult.result.toString()}`;
             }
 
             if (string) {
@@ -112,14 +117,15 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
             if (beatmapInformations.length > 3) {
                 string = MessageCreator.createAccept(
-                    `I found ${beatmapInformations.length} maps, but only displaying up to 3 due to my limitations.`
+                    localization.getTranslation("beatmapLimitation"),
+                    beatmapInformations.length.toString()
                 );
             }
 
             const firstBeatmap: MapInfo = beatmapInformations[0];
 
             const embedOptions: MessageOptions =
-                EmbedCreator.createBeatmapEmbed(firstBeatmap);
+                EmbedCreator.createBeatmapEmbed(firstBeatmap, undefined, localization.language);
 
             if (string) {
                 embedOptions.content = string;
@@ -143,9 +149,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                 .setDescription(
                     `${firstBeatmap.showStatistics(1, stats)}\n` +
-                        `**BPM**: ${firstBeatmap.convertBPM(
-                            stats
-                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                    `**BPM**: ${firstBeatmap.convertBPM(
+                        stats
+                    )} - **Length**: ${firstBeatmap.convertTime(stats)}`
                 );
 
             for (const beatmapInfo of beatmapInformations) {
@@ -170,22 +176,18 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 }
 
                 embed.addField(
-                    `__${
-                        beatmapInfo.version
-                    }__ (${droidCalcResult.result.stars.total.toFixed(2)} ${
-                        Symbols.star
-                    } | ${osuCalcResult.result.stars.total.toFixed(2)} ${
-                        Symbols.star
+                    `__${beatmapInfo.version
+                    }__ (${droidCalcResult.result.stars.total.toFixed(2)} ${Symbols.star
+                    } | ${osuCalcResult.result.stars.total.toFixed(2)} ${Symbols.star
                     })`,
                     `${beatmapInfo.showStatistics(2, stats)}\n` +
-                        `**Max score**: ${beatmapInfo
-                            .maxScore(stats)
-                            .toLocaleString()} - **Max combo**: ${
-                            beatmapInfo.maxCombo
-                        }x\n` +
-                        `**${droidCalcResult.result.total.toFixed(
-                            2
-                        )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`
+                    `**Max score**: ${beatmapInfo
+                        .maxScore(stats)
+                        .toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo
+                    }x\n` +
+                    `**${droidCalcResult.result.total.toFixed(
+                        2
+                    )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`
                 );
             }
 

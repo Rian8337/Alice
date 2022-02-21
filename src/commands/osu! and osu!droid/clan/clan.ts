@@ -4,16 +4,19 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { clanStrings } from "./clanStrings";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
     if (interaction.guildId! !== Constants.mainServer) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.notInMainGuild),
+            content: MessageCreator.createReject(new ClanLocalization(language).getTranslation("notInMainGuild")),
         });
     }
 
-    CommandHelper.runSubcommandOrGroup(interaction);
+    CommandHelper.runSubcommandOrGroup(interaction, language);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;

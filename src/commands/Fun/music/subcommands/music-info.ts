@@ -1,21 +1,24 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { VideoSearchResult } from "yt-search";
-import { musicStrings } from "../musicStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+
     const musicInformation: MusicInfo | undefined =
         MusicManager.musicInformations.get(interaction.guildId!);
 
     if (!musicInformation) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.botIsNotInVoiceChannel
+                localization.getTranslation("botIsNotInVoiceChannel")
             ),
         });
     }
@@ -26,8 +29,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     embed
-        .setTitle("Music Information")
-        .addField("Playing Since", musicInformation.createdAt.toUTCString());
+        .setTitle(localization.getTranslation("musicInfo"))
+        .addField(localization.getTranslation("playingSince"), musicInformation.createdAt.toUTCString());
 
     const information: VideoSearchResult | undefined =
         musicInformation.currentlyPlaying?.information;
@@ -35,30 +38,26 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (information) {
         embed
             .addField(
-                "Currently Playing",
-                `[${information.title}](${information.url})\n\nChannel: ${
-                    information.author.name
-                }\n\nDuration: ${information.duration.toString()}\n\nQueued/requested by <@${
-                    musicInformation.currentlyPlaying!.queuer
+                localization.getTranslation("currentlyPlaying"),
+                `[${information.title}](${information.url})\n\n${localization.getTranslation("channel")}: ${information.author.name
+                }\n\n${localization.getTranslation("duration")}: ${information.duration.toString()}\n\n${localization.getTranslation("requestedBy")} <@${musicInformation.currentlyPlaying!.queuer
                 }>`
             )
             .setThumbnail(information.thumbnail);
     } else {
-        embed.addField("Currently Playing", "None");
+        embed.addField(localization.getTranslation("currentlyPlaying"), localization.getTranslation("none"));
     }
 
     embed
         .addField(
-            "Playback Settings",
-            `${Symbols.repeatSingleButton} Repeat mode: ${
-                musicInformation.repeat ? "Enabled" : "Disabled"
-            }`
+            localization.getTranslation("playbackSettings"),
+            `${Symbols.repeatSingleButton} ${localization.getTranslation("repeatMode")}: ${localization.getTranslation(musicInformation.repeat ? "enabled" : "disabled")}`
         )
         .addField(
-            "Queue",
+            localization.getTranslation("queue"),
             musicInformation.queue
                 .map((v, i) => `${i + 1}. ${v.information.title}`)
-                .join("\n") || "None"
+                .join("\n") || localization.getTranslation("none")
         );
 
     interaction.editReply({

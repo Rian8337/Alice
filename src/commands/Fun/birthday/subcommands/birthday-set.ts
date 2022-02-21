@@ -2,9 +2,15 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { birthdayStrings } from "../birthdayStrings";
+import { BirthdayLocalization } from "@alice-localization/commands/Fun/BirthdayLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: BirthdayLocalization = new BirthdayLocalization(language);
+
     const date: number = interaction.options.getInteger("date", true);
 
     const month: number = interaction.options.getInteger("month", true) - 1;
@@ -16,13 +22,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             interaction.user.id,
             date,
             month,
-            timezone
+            timezone,
+            language
         );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                birthdayStrings.setBirthdayFailed,
+                localization.getTranslation("setBirthdayFailed"),
                 result.reason!
             ),
         });
@@ -30,7 +37,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            birthdayStrings.setBirthdaySuccess,
+            localization.getTranslation("setBirthdaySuccess"),
             date.toString(),
             (month + 1).toString(),
             timezone >= 0 ? `+${timezone}` : timezone.toString()

@@ -1,11 +1,12 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createReject(
-            clanStrings.noSpecialClanShopEvent
+            new ClanLocalization(await CommandHelper.getLocale(interaction)).getTranslation("noSpecialClanShopEvent")
         ),
     });
 };

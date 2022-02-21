@@ -3,11 +3,14 @@ import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/Pl
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, Snowflake } from "discord.js";
-import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: DailyLocalization = new DailyLocalization(await CommandHelper.getLocale(interaction));
+
     const challengeID: string = interaction.options.getString(
         "challengeid",
         true
@@ -20,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.tooManyOptions),
+            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
         });
     }
 
@@ -53,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (completionData) {
         interaction.editReply({
             content: MessageCreator.createAccept(
-                dailyStrings.userHasPlayedChallenge,
+                localization.getTranslation("userHasPlayedChallenge"),
                 challengeID,
                 completionData.highestLevel.toString()
             ),
@@ -61,7 +64,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     } else {
         interaction.editReply({
             content: MessageCreator.createAccept(
-                dailyStrings.userHasNotPlayedChallenge,
+                localization.getTranslation("userHasNotPlayedChallenge"),
                 challengeID
             ),
         });

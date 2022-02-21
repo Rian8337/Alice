@@ -2,17 +2,20 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/RecalcLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Message } from "discord.js";
-import { recalcStrings } from "../recalcStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: RecalcLocalization = new RecalcLocalization(await CommandHelper.getLocale(interaction));
+
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
     await interaction.editReply({
         content: MessageCreator.createAccept(
-            recalcStrings.fullRecalcInProgress
+            localization.getTranslation("fullRecalcInProgress")
         ),
     });
 
@@ -26,7 +29,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const message: Message = await interaction.channel!.send({
         content: MessageCreator.createWarn(
-            recalcStrings.fullRecalcTrackProgress,
+            localization.getTranslation("fullRecalcTrackProgress"),
             calculatedCount.toLocaleString(),
             total.toLocaleString(),
             ((calculatedCount * 100) / total).toFixed(2)
@@ -48,7 +51,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         await message.edit({
             content: MessageCreator.createWarn(
-                recalcStrings.fullRecalcTrackProgress,
+                localization.getTranslation("fullRecalcTrackProgress"),
                 calculatedCount.toLocaleString(),
                 total.toLocaleString(),
                 ((calculatedCount * 100) / total).toFixed(2)
@@ -60,7 +63,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            recalcStrings.fullRecalcSuccess,
+            localization.getTranslation("fullRecalcSuccess"),
             interaction.user.toString()
         ),
     });

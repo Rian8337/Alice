@@ -1,4 +1,3 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
@@ -7,8 +6,15 @@ import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { loadImage, Image } from "canvas";
 import { Role } from "discord.js";
 import { Precision, RequestResponse } from "@rian8337/osu-base";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const iconURL: string | null = interaction.options.getString("url");
 
     const clan: Clan | null =
@@ -18,14 +24,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
     if (!clan.roleIconUnlocked) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.roleIconIsNotUnlocked
+                localization.getTranslation("roleIconIsNotUnlocked")
             ),
         });
     }
@@ -33,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -43,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!clanRole) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanDoesntHaveClanRole
+                localization.getTranslation("clanDoesntHaveClanRole")
             ),
         });
     }
@@ -56,7 +62,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (req.statusCode !== 200) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    clanStrings.cannotDownloadRoleIcon
+                    localization.getTranslation("cannotDownloadRoleIcon")
                 ),
             });
         }
@@ -70,7 +76,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         } catch {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    clanStrings.invalidRoleIconURL
+                    localization.getTranslation("invalidRoleIconURL")
                 ),
             });
         }
@@ -78,7 +84,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (Buffer.byteLength(icon) > 256e3) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    clanStrings.roleIconFileSizeTooBig
+                    localization.getTranslation("roleIconFileSizeTooBig")
                 ),
             });
         }
@@ -93,7 +99,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    clanStrings.invalidRoleIconSize
+                    localization.getTranslation("invalidRoleIconSize")
                 ),
             });
         }
@@ -103,7 +109,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.changeRoleIconSuccessful
+            localization.getTranslation("changeRoleIconSuccessful")
         ),
     });
 };

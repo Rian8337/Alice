@@ -5,11 +5,18 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { profileStrings } from "../profileStrings";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ProfileLocalization = new ProfileLocalization(language);
+
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
@@ -17,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(profileStrings.tooManyOptions),
+            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
         });
     }
 
@@ -35,8 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!uid) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        profileStrings.profileNotFound,
-                        "the player's"
+                        localization.getTranslation("userProfileNotFound")
                     ),
                 });
             }
@@ -47,8 +53,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!uid) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        profileStrings.profileNotFound,
-                        "the player's"
+                        localization.getTranslation("userProfileNotFound")
                     ),
                 });
             }
@@ -59,7 +64,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!uid) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.userNotBindedReject
+                        new ConstantsLocalization(language).getTranslation(Constants.userNotBindedReject)
                     ),
                 });
             }
@@ -82,8 +87,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!player.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.profileNotFound,
-                uid || username || discordid ? "that account's" : "your"
+                localization.getTranslation(uid || username || discordid ? "userProfileNotFound" : "selfProfileNotFound")
             ),
         });
     }
@@ -94,12 +98,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         bindInfo,
         undefined,
         undefined,
-        (interaction.options.getString("type") ?? "simplified") === "detailed"
+        (interaction.options.getString("type") ?? "simplified") === "detailed",
+        language
     ))!;
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            profileStrings.viewingProfile,
+            localization.getTranslation("viewingProfile"),
             player.username,
             ProfileManager.getProfileLink(player.uid).toString()
         ),

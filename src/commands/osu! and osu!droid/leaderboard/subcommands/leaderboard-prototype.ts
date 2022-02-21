@@ -2,21 +2,24 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { leaderboardStrings } from "../leaderboardStrings";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Collection, Snowflake } from "discord.js";
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
+import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: LeaderboardLocalization = new LeaderboardLocalization(await CommandHelper.getLocale(interaction));
+
     const res: Collection<Snowflake, PrototypePP> =
         await DatabaseManager.aliceDb.collections.prototypePP.getLeaderboard();
 
     if (res.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                leaderboardStrings.noPrototypeEntriesFound
+                localization.getTranslation("noPrototypeEntriesFound")
             ),
         });
     }
@@ -41,9 +44,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${"Username".padEnd(
+        let output: string = `${"#".padEnd(4)} | ${localization.getTranslation("username").padEnd(
             longestUsernameLength
-        )} | ${"UID".padEnd(6)} | PP\n`;
+        )} | ${localization.getTranslation("uid").padEnd(6)} | ${localization.getTranslation("pp")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
             const player: PrototypePP = entries[i];
@@ -52,8 +55,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username
                     .trim()
                     .padEnd(longestUsernameLength)} | ${player.uid
-                    .toString()
-                    .padEnd(6)} | ${player.pptotal.toFixed(2)}`;
+                        .toString()
+                        .padEnd(6)} | ${player.pptotal.toFixed(2)}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
                     longestUsernameLength

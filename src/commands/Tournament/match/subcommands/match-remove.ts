@@ -4,9 +4,12 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { AnyChannel, ThreadChannel } from "discord.js";
-import { matchStrings } from "../matchStrings";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: MatchLocalization = new MatchLocalization(await CommandHelper.getLocale(interaction));
+
     const id: string = interaction.options.getString("id", true);
 
     const match: TournamentMatch | null =
@@ -14,13 +17,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("matchDoesntExist")),
         });
     }
 
     if (match.status === "completed") {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchHasEnded),
+            content: MessageCreator.createReject(localization.getTranslation("matchHasEnded")),
         });
     }
 
@@ -32,7 +35,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.removeMatchFailed,
+                localization.getTranslation("removeMatchFailed"),
                 result.reason!
             ),
         });
@@ -50,7 +53,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            matchStrings.removeMatchSuccessful,
+            localization.getTranslation("removeMatchSuccessful"),
             match.matchid
         ),
     });

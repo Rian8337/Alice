@@ -1,19 +1,22 @@
 import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TriviaQuestionResult } from "@alice-interfaces/trivia/TriviaQuestionResult";
+import { TriviaLocalization } from "@alice-localization/commands/Fun/TriviaLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { TriviaHelper } from "@alice-utils/helpers/TriviaHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { GuildMember, MessageEmbed } from "discord.js";
-import { triviaStrings } from "../triviaStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: TriviaLocalization = new TriviaLocalization(await CommandHelper.getLocale(interaction));
+
     if (CacheManager.stillHasQuestionTriviaActive.has(interaction.channelId)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                triviaStrings.channelHasTriviaQuestionActive
+                localization.getTranslation("channelHasTriviaQuestionActive")
             ),
         });
     }
@@ -26,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 interaction,
                 {
                     content: MessageCreator.createWarn(
-                        "Choose the category that you want to enforce."
+                        localization.getTranslation("chooseCategory")
                     ),
                 },
                 TriviaHelper.getCategoryChoices(),
@@ -55,7 +58,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (result.correctAnswers.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                triviaStrings.categoryHasNoQuestionType,
+                localization.getTranslation("categoryHasNoQuestionType"),
                 TriviaHelper.getCategoryName(result.category)
             ),
         });
@@ -68,28 +71,26 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (result.results.length > 0) {
         embed.setDescription(
-            `Hey, someone got that correctly.\n\n` +
-                result.results
-                    .sort((a, b) => {
-                        return a.timeTaken - b.timeTaken;
-                    })
-                    .map((v) => `${v.user.username} - ${v.timeTaken / 1000} s`)
-                    .join("\n") +
-                "\n\n" +
-                `${
-                    result.correctAnswers.length === 1
-                        ? "The correct answer is"
-                        : "Correct answers are"
-                } **${result.correctAnswers.join(", ")}**.`
+            `${localization.getTranslation("correctAnswerGotten")}.\n\n` +
+            result.results
+                .sort((a, b) => {
+                    return a.timeTaken - b.timeTaken;
+                })
+                .map((v) => `${v.user.username} - ${v.timeTaken / 1000} s`)
+                .join("\n") +
+            "\n\n" +
+            `${localization.getTranslation(result.correctAnswers.length === 1
+                ? "oneCorrectAnswer"
+                : "multipleCorrectAnswers"
+            )} **${result.correctAnswers.join(", ")}**.`
         );
     } else {
         embed.setDescription(
-            "Looks like no one got that right.\n\n" +
-                `${
-                    result.correctAnswers.length === 1
-                        ? "The correct answer is"
-                        : "Correct answers are"
-                } **${result.correctAnswers.join(", ")}**.`
+            `${localization.getTranslation("correctAnswerNotGotten")}.\n\n` +
+            `${localization.getTranslation(result.correctAnswers.length === 1
+                ? "oneCorrectAnswer"
+                : "multipleCorrectAnswers"
+            )} **${result.correctAnswers.join(", ")}**.`
         );
     }
 

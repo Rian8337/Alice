@@ -7,14 +7,21 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { Command } from "@alice-interfaces/core/Command";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { Language } from "@alice-localization/base/Language";
+import { PPcompareLocalization, PPcompareStrings } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/PPcompareLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
-import { ppcompareStrings } from "./ppcompareStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: PPcompareLocalization = new PPcompareLocalization(language);
+
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
     const subcommand: string = interaction.options.getSubcommand();
@@ -39,7 +46,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (uidToCompare === otherUid) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        ppcompareStrings.cannotCompareSamePlayers
+                        localization.getTranslation("cannotCompareSamePlayers")
                     ),
                 });
             }
@@ -54,7 +61,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (userToCompare!.id === (otherUser ?? interaction.user).id) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        ppcompareStrings.cannotCompareSamePlayers
+                        localization.getTranslation("cannotCompareSamePlayers")
                     ),
                 });
             }
@@ -69,7 +76,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (usernameToCompare === otherUsername) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        ppcompareStrings.cannotCompareSamePlayers
+                        localization.getTranslation("cannotCompareSamePlayers")
                     ),
                 });
             }
@@ -86,7 +93,7 @@ export const run: Command["run"] = async (_, interaction) => {
         if (!secondBindInfo && !otherUid && !otherUser && !otherUsername) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    Constants.selfNotBindedReject
+                    new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
                 ),
             });
         }
@@ -113,8 +120,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
         return interaction.editReply({
             content: MessageCreator.createReject(
-                ppcompareStrings.playerNotBinded,
-                subcommand,
+                localization.getTranslation("playerNotBinded"),
+                localization.getTranslation(<keyof PPcompareStrings>subcommand),
                 comparedRejectValue
             ),
         });
@@ -128,7 +135,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (ppToCompare.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                ppcompareStrings.noSimilarPlayFound
+                localization.getTranslation("noSimilarPlayFound")
             ),
         });
     }
@@ -150,11 +157,10 @@ export const run: Command["run"] = async (_, interaction) => {
     if (firstBindInfo.pptotal < secondBindInfo.pptotal) {
         ppDescription = `**${firstBindInfo.pptotal.toFixed(
             2
-        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${
-            Symbols.crown
-        } ${secondBindInfo.pptotal.toFixed(
-            2
-        )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
+        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${Symbols.crown
+            } ${secondBindInfo.pptotal.toFixed(
+                2
+            )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
     } else if (firstBindInfo.pptotal > secondBindInfo.pptotal) {
         ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(
             2
@@ -170,10 +176,10 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     embed
-        .setTitle("Top PP Plays Comparison")
+        .setTitle(localization.getTranslation("topPlaysComparison"))
         .setDescription(
-            `Player: **${firstBindInfo.username}** vs **${secondBindInfo.username}**\n` +
-                `Total PP: ${ppDescription}`
+            `${localization.getTranslation("player")}: **${firstBindInfo.username}** vs **${secondBindInfo.username}**\n` +
+            `${localization.getTranslation("totalPP")}: ${ppDescription}`
         );
 
     const getModString = (pp: PPEntry): string => {
@@ -215,16 +221,12 @@ export const run: Command["run"] = async (_, interaction) => {
             const firstPP: PPEntry = firstPlayerPP.get(key)!;
             const secondPP: PPEntry = secondPlayerPP.get(key)!;
 
-            let firstPlayerDescription: string = `${
-                firstPP.combo
-            }x | ${firstPP.accuracy.toFixed(2)}% | ${firstPP.miss} ${
-                Symbols.missIcon
-            } | ${firstPP.pp}pp (${getModString(firstPP)})`;
-            let secondPlayerDescription: string = `${
-                secondPP.combo
-            }x | ${secondPP.accuracy.toFixed(2)}% | ${secondPP.miss} ${
-                Symbols.missIcon
-            } | ${secondPP.pp}pp (${getModString(secondPP)})`;
+            let firstPlayerDescription: string = `${firstPP.combo
+                }x | ${firstPP.accuracy.toFixed(2)}% | ${firstPP.miss} ${Symbols.missIcon
+                } | ${firstPP.pp}pp (${getModString(firstPP)})`;
+            let secondPlayerDescription: string = `${secondPP.combo
+                }x | ${secondPP.accuracy.toFixed(2)}% | ${secondPP.miss} ${Symbols.missIcon
+                } | ${secondPP.pp}pp (${getModString(secondPP)})`;
 
             if (firstPP.pp < secondPP.pp) {
                 secondPlayerDescription = `**${secondPlayerDescription}** ${Symbols.crown}`;
@@ -235,9 +237,8 @@ export const run: Command["run"] = async (_, interaction) => {
             embed.addField(
                 `${i + 1}. ${firstPP.title}`,
                 `**${firstBindInfo!.username}**: ${firstPlayerDescription}\n` +
-                    `**${
-                        secondBindInfo!.username
-                    }**: ${secondPlayerDescription}`
+                `**${secondBindInfo!.username
+                }**: ${secondPlayerDescription}`
             );
         }
     };

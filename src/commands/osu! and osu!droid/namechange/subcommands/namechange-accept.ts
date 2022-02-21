@@ -2,12 +2,18 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { namechangeStrings } from "../namechangeStrings";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: NamechangeLocalization = new NamechangeLocalization(language);
+
     const uid: number = interaction.options.getInteger("uid", true);
 
     if (
@@ -18,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(namechangeStrings.invalidUid),
+            content: MessageCreator.createReject(localization.getTranslation("invalidUid")),
         });
     }
 
@@ -28,24 +34,24 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!nameChange || nameChange.isProcessed) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.uidHasNoActiveRequest
+                localization.getTranslation("uidHasNoActiveRequest")
             ),
         });
     }
 
-    const result: OperationResult = await nameChange.accept();
+    const result: OperationResult = await nameChange.accept(language);
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.acceptFailed,
+                localization.getTranslation("acceptFailed"),
                 result.reason!
             ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(namechangeStrings.acceptSuccess),
+        content: MessageCreator.createAccept(localization.getTranslation("acceptSuccess")),
     });
 };
 

@@ -4,14 +4,20 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { switchbindStrings } from "./switchbindStrings";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { SwitchbindLocalization } from "@alice-localization/commands/Bot Creators/SwitchbindLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (client, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: SwitchbindLocalization = new SwitchbindLocalization(language);
+
     const uid: number = interaction.options.getInteger("uid", true);
 
     if (
@@ -23,7 +29,7 @@ export const run: Command["run"] = async (client, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: switchbindStrings.invalidUid,
+            content: localization.getTranslation("invalidUid"),
         });
     }
 
@@ -39,25 +45,25 @@ export const run: Command["run"] = async (client, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                switchbindStrings.uidNotBinded
+                localization.getTranslation("uidNotBinded")
             ),
         });
     }
 
-    const result: OperationResult = await bindInfo.moveBind(uid, user.id);
+    const result: OperationResult = await bindInfo.moveBind(uid, user.id, language);
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                switchbindStrings.switchFailed,
-                <string>result.reason
+                localization.getTranslation("switchFailed"),
+                result.reason!
             ),
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            switchbindStrings.switchSuccessful
+            localization.getTranslation("switchSuccessful")
         ),
     });
 };

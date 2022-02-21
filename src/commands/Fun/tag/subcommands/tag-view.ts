@@ -1,20 +1,23 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { MessageOptions } from "discord.js";
-import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
         return;
     }
 
+    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
+
     const name: string = interaction.options.getString("name", true);
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.nameTooLong),
+            content: MessageCreator.createReject(localization.getTranslation("nameTooLong")),
         });
     }
 
@@ -26,14 +29,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("tagDoesntExist")),
         });
     }
 
     if (!tag.content && tag.attachments.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                tagStrings.tagDoesntHaveContentAndAttachments
+                localization.getTranslation("tagDoesntHaveContentAndAttachments")
             ),
         });
     }

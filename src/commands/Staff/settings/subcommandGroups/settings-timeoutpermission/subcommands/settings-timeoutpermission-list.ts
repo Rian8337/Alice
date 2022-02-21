@@ -3,17 +3,20 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { Collection, MessageEmbed } from "discord.js";
-import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
         return;
     }
+
+    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
 
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
@@ -23,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!guildConfig) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.noLogChannelConfigured
+                localization.getTranslation("noLogChannelConfigured")
             ),
         });
     }
@@ -36,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: interaction.member.displayColor,
     });
 
-    embed.setTitle("Roles with Timeout Permission");
+    embed.setTitle(localization.getTranslation("rolesWithTimeoutPermission"));
 
     const onPageChange: OnButtonPageChange = async (
         _,
@@ -48,10 +51,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map(
                     (v) =>
-                        `- <@&${v.id}> (${
-                            v.maxTime === -1
-                                ? "Indefinite"
-                                : DateTimeFormatHelper.secondsToDHMS(v.maxTime)
+                        `- <@&${v.id}> (${v.maxTime === -1
+                            ? localization.getTranslation("indefinite")
+                            : DateTimeFormatHelper.secondsToDHMS(v.maxTime, localization.language)
                         })`
                 )
                 .join("\n")

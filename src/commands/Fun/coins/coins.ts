@@ -3,11 +3,13 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { coinsStrings } from "./coinsStrings";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: CoinsLocalization = new CoinsLocalization(await CommandHelper.getLocale(interaction));
+
     if (
         DateTimeFormatHelper.getTimeDifference(
             (<GuildMember>interaction.member).joinedAt!
@@ -16,7 +18,7 @@ export const run: Command["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.userNotInServerForAWeek
+                localization.getTranslation("userNotInServerForAWeek")
             ),
         });
     }

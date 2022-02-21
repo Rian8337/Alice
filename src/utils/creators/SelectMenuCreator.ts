@@ -1,5 +1,5 @@
 import {
-    CommandInteraction,
+    BaseCommandInteraction,
     InteractionCollector,
     InteractionReplyOptions,
     Message,
@@ -14,6 +14,9 @@ import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollec
 import { MessageCreator } from "./MessageCreator";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { MessageButtonCreator } from "./MessageButtonCreator";
+import { Language } from "@alice-localization/base/Language";
+import { SelectMenuCreatorLocalization } from "@alice-localization/utils/creators/SelectMenuCreatorLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**
  * A utility to create message select menus.
@@ -30,12 +33,14 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * @returns The choices that the user picked.
      */
     static async createSelectMenu(
-        interaction: CommandInteraction | MessageComponentInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         choices: MessageSelectOptionData[],
         users: Snowflake[],
         duration: number
     ): Promise<string[]> {
+        const localization: SelectMenuCreatorLocalization = this.getLocalization(await CommandHelper.getLocale(interaction));
+
         const selectMenu: MessageSelectMenu = new MessageSelectMenu()
             .setCustomId("whatever")
             .addOptions(choices.slice(0, 25));
@@ -83,12 +88,12 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
             collector.on("end", async (collected) => {
                 if (collected.size > 0) {
                     await interaction.editReply({
-                        content: MessageCreator.createAccept("Please wait..."),
+                        content: MessageCreator.createAccept(localization.getTranslation("pleaseWait")),
                         components: [],
                     });
                 } else {
                     await interaction.editReply({
-                        content: MessageCreator.createReject("Timed out."),
+                        content: MessageCreator.createReject(localization.getTranslation("timedOut")),
                         components: [],
                     });
 
@@ -105,5 +110,14 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 );
             });
         });
+    }
+
+    /**
+     * Gets the localization of this creator utility.
+     * 
+     * @param language The language to localize.
+     */
+    private static getLocalization(language: Language): SelectMenuCreatorLocalization {
+        return new SelectMenuCreatorLocalization(language);
     }
 }

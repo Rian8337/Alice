@@ -1,4 +1,3 @@
-import { profileStrings } from "@alice-commands/osu! and osu!droid/profile/profileStrings";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
@@ -7,11 +6,19 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
+import { Language } from "@alice-localization/base/Language";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ProfileLocalization = new ProfileLocalization(language);
+
     const playerInfoDbManager: PlayerInfoCollectionManager =
         DatabaseManager.aliceDb.collections.playerInfo;
 
@@ -22,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject),
+            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)),
         });
     }
 
@@ -39,7 +46,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (ownedBadges.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.userDoesntOwnAnyBadge
+                localization.getTranslation("userDoesntOwnAnyBadge")
             ),
         });
     }
@@ -49,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    "Choose the badge that you want to equip."
+                    localization.getTranslation("chooseEquipBadge")
                 ),
             },
             ownedBadges.map((v) => {
@@ -105,7 +112,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            profileStrings.equipBadgeSuccess,
+            localization.getTranslation("equipBadgeSuccess"),
             interaction.user.toString(),
             badge.id,
             (badgeIndex + 1).toString()

@@ -5,18 +5,25 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { verifyStrings } from "./verifyStrings";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { VerifyLocalization } from "@alice-localization/commands/Staff/VerifyLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: VerifyLocalization = new VerifyLocalization(language);
+
     if (
         !(<GuildMember>interaction.member).roles.cache.hasAny(
             ...Config.verifyPerm
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject),
+            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)),
         });
     }
 
@@ -26,7 +33,7 @@ export const run: Command["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                verifyStrings.commandNotAvailableInChannel
+                localization.getTranslation("commandNotAvailableInChannel")
             ),
         });
     }
@@ -40,7 +47,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!interaction.channel!.members.cache.has(toVerify.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                verifyStrings.userIsNotInThread
+                localization.getTranslation("userIsNotInThread")
             ),
         });
     }
@@ -56,7 +63,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!toVerify.roles.cache.has(onVerificationRole.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                verifyStrings.userIsNotInVerification
+                localization.getTranslation("userIsNotInVerification")
             ),
         });
     }
@@ -64,7 +71,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (toVerify.roles.cache.has(memberRole.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                verifyStrings.userIsAlreadyVerifiedError
+                localization.getTranslation("userIsAlreadyVerifiedError")
             ),
         });
     }
@@ -72,7 +79,7 @@ export const run: Command["run"] = async (_, interaction) => {
     await toVerify.roles.set([memberRole], "Verification");
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(verifyStrings.verificationSuccess),
+        content: MessageCreator.createAccept(localization.getTranslation("verificationSuccess")),
     });
 
     await HelperFunctions.sleep(1);
@@ -86,13 +93,12 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     general.send({
-        content: `Welcome ${
-            (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
-                toVerify.id
-            ))
-                ? "back "
-                : ""
-        }to ${interaction.guild!.name}, ${toVerify}!`,
+        content: `Welcome ${(await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
+            toVerify.id
+        ))
+            ? "back "
+            : ""
+            }to ${interaction.guild!.name}, ${toVerify}!`,
         files: [Constants.welcomeImageLink],
     });
 };

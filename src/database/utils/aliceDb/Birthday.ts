@@ -4,6 +4,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
+import { Language } from "@alice-localization/base/Language";
 
 /**
  * Represents an information about a Discord user's birthday.
@@ -36,12 +37,14 @@ export class Birthday extends Manager implements DatabaseBirthday {
      * @param date The new birthday date.
      * @param month The new birthday month.
      * @param timezone The new timezone of the user.
+     * @param language The locale of the user who attempted to set the birthday of this user. Defaults to English.
      * @returns An object containing information about the operation.
      */
     forceSetBirthday(
         date: number,
         month: number,
-        timezone?: number
+        timezone?: number,
+        language: Language = "en"
     ): Promise<OperationResult> {
         this.date = date;
         this.month = month;
@@ -52,6 +55,7 @@ export class Birthday extends Manager implements DatabaseBirthday {
             this.date,
             this.month,
             this.timezone,
+            language,
             true
         );
     }

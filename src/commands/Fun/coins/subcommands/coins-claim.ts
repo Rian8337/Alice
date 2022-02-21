@@ -2,12 +2,19 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { coinsStrings } from "../coinsStrings";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: CoinsLocalization = new CoinsLocalization(language);
+
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             interaction.user
@@ -23,22 +30,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
 
         const result: OperationResult = await playerInfo.claimDailyCoins(
-            dailyCoin
+            dailyCoin,
+            language
         );
 
         if (!result.success) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    coinsStrings.dailyClaimFailed,
-                    <string>result.reason
+                    localization.getTranslation("dailyClaimFailed"),
+                    result.reason!
                 ),
             });
         }
 
         interaction.editReply({
             content: MessageCreator.createAccept(
-                coinsStrings.dailyClaimSuccess,
-                streakComplete ? "completed a streak and " : "",
+                localization.getTranslation(streakComplete ? "dailyClaimWithStreakSuccess" : "dailyClaimSuccess"),
                 dailyCoin.toLocaleString(),
                 streak.toString(),
                 (playerInfo.alicecoins + dailyCoin).toLocaleString()
@@ -51,9 +58,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
 
         if (!bindInfo) {
+            const constantsLocalization: ConstantsLocalization = new ConstantsLocalization(language);
+
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    Constants.selfNotBindedReject
+                    constantsLocalization.getTranslation(Constants.selfNotBindedReject)
                 ),
             });
         }
@@ -71,7 +80,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (!result.success) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    coinsStrings.dailyClaimFailed,
+                    localization.getTranslation("dailyClaimFailed"),
                     result.reason!
                 ),
             });
@@ -79,7 +88,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         interaction.editReply({
             content: MessageCreator.createAccept(
-                coinsStrings.dailyClaimSuccess,
+                localization.getTranslation("dailyClaimSuccess"),
                 "",
                 "50",
                 "1",

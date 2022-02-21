@@ -1,6 +1,7 @@
 import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
 import { DisabledEventUtil } from "@alice-interfaces/moderation/DisabledEventUtil";
 import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
+import { Language } from "@alice-localization/base/Language";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 
@@ -27,4 +28,9 @@ export interface DatabaseGuildSettings extends BaseDocument {
      * The event utilities that are disabled in the guild.
      */
     disabledEventUtils: DisabledEventUtil[];
+
+    /**
+     * The preferred locale of this guild. Should be defaulted to English if unavailable.
+     */
+    preferredLocale?: Language;
 }

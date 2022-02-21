@@ -1,5 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
@@ -16,7 +17,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         !staffMembers.has(interaction.user.id)
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(await CommandHelper.getLocale(interaction)).getTranslation(Constants.noPermissionReject)
+            ),
         });
     }
 

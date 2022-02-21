@@ -1,15 +1,18 @@
-import { musicStrings } from "@alice-commands/Fun/music/musicStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MusicCollection } from "@alice-database/utils/aliceDb/MusicCollection";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
 import yts, { VideoMetadataResult } from "yt-search";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
@@ -20,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!collection) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.noCollectionWithName
+                localization.getTranslation("noCollectionWithName")
             ),
         });
     }
@@ -45,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.enqueueFromCollectionSuccess,
+            localization.getTranslation("enqueueFromCollectionSuccess"),
             enqueuedCount.toLocaleString()
         ),
     });

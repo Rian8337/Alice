@@ -1,37 +1,38 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ProfileLocalization = new ProfileLocalization(await CommandHelper.getLocale(interaction));
+
     CommandHelper.runSubcommandNotFromInteraction(
         interaction,
         __dirname,
         [
             {
-                label: "View Background Color",
+                label: localization.getTranslation("viewBackgroundColorLabel"),
                 value: "viewInfoBoxBackgroundColor",
-                description:
-                    "View the background color of your profile card's information box.",
+                description: localization.getTranslation("viewBackgroundColorDescription"),
             },
             {
-                label: "Change Background Color",
+                label: localization.getTranslation("changeBackgroundColorLabel"),
                 value: "changeInfoBoxBackgroundColor",
                 description:
-                    "Change the background color of your profile card's information box.",
+                    localization.getTranslation("changeBackgroundColorDescription"),
             },
             {
-                label: "View Text Color",
+                label: localization.getTranslation("viewTextColorLabel"),
                 value: "viewInfoBoxTextColor",
-                description:
-                    "View the text color of your profile card's information box.",
+                description: localization.getTranslation("viewTextColorDescription"),
             },
             {
-                label: "Change Text Color",
+                label: localization.getTranslation("changeTextColorLabel"),
                 value: "changeInfoBoxTextColor",
                 description:
-                    "Change the text color of your profile card's information box.",
+                    localization.getTranslation("changeTextColorDescription"),
             },
         ],
-        "Choose what you want to customize."
+        localization.getTranslation("customizationPlaceholder")
     );
 };
 

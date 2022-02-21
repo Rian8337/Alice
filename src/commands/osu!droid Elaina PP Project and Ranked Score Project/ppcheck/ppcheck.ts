@@ -12,10 +12,17 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MessageEmbed, Snowflake } from "discord.js";
-import { ppcheckStrings } from "./ppcheckStrings";
 import { Symbols } from "@alice-enums/utils/Symbols";
+import { PPcheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/PPcheckLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: PPcheckLocalization = new PPcheckLocalization(language);
+
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
@@ -23,7 +30,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(ppcheckStrings.tooManyOptions),
+            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
         });
     }
 
@@ -50,9 +57,11 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                !!uid || !!username || !!discordid
-                    ? Constants.userNotBindedReject
-                    : Constants.selfNotBindedReject
+                new ConstantsLocalization(language).getTranslation(
+                    !!uid || !!username || !!discordid
+                        ? Constants.userNotBindedReject
+                        : Constants.selfNotBindedReject
+                )
             ),
         });
     }
@@ -62,7 +71,8 @@ export const run: Command["run"] = async (_, interaction) => {
     const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(
         interaction,
         bindInfo,
-        ppRank
+        ppRank,
+        language
     );
 
     const onPageChange: OnButtonPageChange = async (
@@ -101,8 +111,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
                 embed.addField(
                     `${i + 1}. ${pp.title} ${modstring}`,
-                    `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ${
-                        Symbols.missIcon
+                    `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ${Symbols.missIcon
                     } | __${pp.pp} pp__ (Net pp: ${(
                         pp.pp * Math.pow(0.95, i)
                     ).toFixed(2)} pp)`

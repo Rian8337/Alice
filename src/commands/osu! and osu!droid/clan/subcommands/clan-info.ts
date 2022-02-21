@@ -3,8 +3,10 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanCollectionManager } from "@alice-database/managers/elainaDb/ClanCollectionManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import {
     Canvas,
     createCanvas,
@@ -19,24 +21,27 @@ import {
     MessageEmbed,
     MessageOptions,
 } from "discord.js";
-import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+
     const dbManager: ClanCollectionManager =
         DatabaseManager.elainaDb.collections.clan;
 
     const clan: Clan | null = interaction.options.getString("name")
         ? await dbManager.getFromName(
-              interaction.options.getString("name", true)
-          )
+            interaction.options.getString("name", true)
+        )
         : await dbManager.getFromUser(interaction.user);
 
     if (!clan) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                interaction.options.getString("name")
-                    ? clanStrings.clanDoesntExist
-                    : clanStrings.selfIsNotInClan
+                localization.getTranslation(
+                    interaction.options.getString("name")
+                        ? "clanDoesntExist"
+                        : "selfIsNotInClan"
+                )
             ),
         });
     }
@@ -54,16 +59,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     embed
         .setTitle(clan.name)
-        .addField("Clan Leader", `<@${clan.leader}> (${clan.leader})`, true)
-        .addField("Power", clan.power.toLocaleString(), true)
-        .addField("Members", `${clan.member_list.size}/25`, true)
+        .addField(localization.getTranslation("clanLeader"), `<@${clan.leader}> (${clan.leader})`, true)
+        .addField(localization.getTranslation("clanPower"), clan.power.toLocaleString(), true)
+        .addField(localization.getTranslation("clanMemberCount"), `${clan.member_list.size}/25`, true)
         .addField(
-            "Creation Date",
+            localization.getTranslation("creationDate"),
             new Date(clan.createdAt * 1000).toUTCString(),
             true
         )
         .addField(
-            "Total Upkeep Estimation",
+            localization.getTranslation("clanTotalUpkeepEstimation"),
             `${coinEmoji}${clan
                 .calculateOverallUpkeep()
                 .toLocaleString()} Alice coins`,

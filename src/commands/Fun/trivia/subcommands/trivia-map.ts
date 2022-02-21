@@ -21,7 +21,8 @@ import {
     OsuAPIResponse,
     RequestResponse,
 } from "@rian8337/osu-base";
-import { triviaStrings } from "../triviaStrings";
+import { TriviaLocalization } from "@alice-localization/commands/Fun/TriviaLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     if (fetchAttempt === 5) {
@@ -41,9 +42,9 @@ async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
             `${finalDate.getUTCFullYear()}-${(finalDate.getUTCMonth() + 1)
                 .toString()
                 .padStart(2, "0")}-${finalDate
-                .getUTCDate()
-                .toString()
-                .padStart(2, "0")}`
+                    .getUTCDate()
+                    .toString()
+                    .padStart(2, "0")}`
         )
         .addParameter("m", 0);
 
@@ -126,7 +127,8 @@ function createEmbed(
     level: number,
     beatmapInfo: MapInfo,
     artist: string,
-    title: string
+    title: string,
+    localization: TriviaLocalization
 ): MessageEmbed {
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         color: "#fccf03",
@@ -134,12 +136,11 @@ function createEmbed(
 
     embed
         .setAuthor({
-            name: "Beatmap Hint",
+            name: localization.getTranslation("beatmapHint"),
         })
-        .setTitle(`Level ${level}`)
+        .setTitle(`${localization.getTranslation("level")} ${level}`)
         .setDescription(
-            `**Artist:** ${artist}\n**Title**: ${title}${
-                beatmapInfo.source ? `\n**Source**: ${beatmapInfo.source}` : ""
+            `**${localization.getTranslation("beatmapArtist")}:** ${artist}\n**${localization.getTranslation("beatmapTitle")}**: ${title}${beatmapInfo.source ? `\n**${localization.getTranslation("beatmapSource")}**: ${beatmapInfo.source}` : ""
             }`
         )
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
@@ -151,10 +152,12 @@ function createEmbed(
 }
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: TriviaLocalization = new TriviaLocalization(await CommandHelper.getLocale(interaction));
+
     if (CacheManager.stillHasMapTriviaActive.has(interaction.channelId)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                triviaStrings.channelHasMapTriviaActive
+                localization.getTranslation("channelHasMapTriviaActive")
             ),
         });
     }
@@ -165,7 +168,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     let hasEnded: boolean = false;
 
     await interaction.editReply({
-        content: MessageCreator.createAccept(triviaStrings.mapTriviaStarted),
+        content: MessageCreator.createAccept(localization.getTranslation("mapTriviaStarted"))
     });
 
     CacheManager.stillHasMapTriviaActive.add(interaction.channelId);
@@ -195,7 +198,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (beatmapInfoIndex === -1) {
             await interaction.channel!.send({
                 content: MessageCreator.createReject(
-                    triviaStrings.couldNotRetrieveBeatmaps
+                    localization.getTranslation("couldNotRetrieveBeatmaps")
                 ),
             });
 
@@ -308,13 +311,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
 
         const message: Message = await interaction.channel!.send({
-            content: MessageCreator.createWarn("Guess the beatmap!"),
+            content: MessageCreator.createWarn(localization.getTranslation("guessBeatmap")),
             embeds: [
                 createEmbed(
                     level,
                     beatmapInfo,
                     artistGuessData.splittedString.join("").trim(),
-                    titleGuessData.splittedString.join("").trim()
+                    titleGuessData.splittedString.join("").trim(),
+                    localization
                 ),
             ],
             components: components,
@@ -335,10 +339,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     score: 0,
                 };
 
+                const playerLocalization: TriviaLocalization = new TriviaLocalization(await CommandHelper.getLocale(i));
+
                 if (playerStats.lives === 0) {
                     i.reply({
                         content: MessageCreator.createReject(
-                            "I'm sorry, you have run out of lives to guess!"
+                            playerLocalization.getTranslation("outOfLives")
                         ),
                         ephemeral: true,
                     });
@@ -389,9 +395,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         components: components,
                     });
 
-                    await i.followUp({
+                    await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            `${i.user.username} has guessed an incorrect character (${char})! They have ${playerStats.lives} live(s) left.`
+                            localization.getTranslation("incorrectCharacterGuess"),
+                            i.user.username,
+                            char,
+                            playerStats.lives.toString()
                         ),
                     });
 
@@ -427,9 +436,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
                 playerStats.score += level / 10;
 
-                await i.followUp({
+                await interaction.channel!.send({
                     content: MessageCreator.createAccept(
-                        `${i.user.username} has guessed a correct character (${char})!`
+                        localization.getTranslation("correctCharacterGuess"),
+                        i.user.username,
+                        char
                     ),
                 });
 
@@ -447,7 +458,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                                 level,
                                 beatmapInfo,
                                 artistGuessData.splittedString.join("").trim(),
-                                titleGuessData.splittedString.join("").trim()
+                                titleGuessData.splittedString.join("").trim(),
+                                localization
                             ),
                         ],
                         components: components,
@@ -460,7 +472,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     level,
                     beatmapInfo,
                     beatmapInfo.artist,
-                    beatmapInfo.title
+                    beatmapInfo.title,
+                    localization
                 );
 
                 // Remove buttons from original message
@@ -471,7 +484,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
                 embed
                     .setAuthor({
-                        name: "Beatmap Information",
+                        name: localization.getTranslation("beatmapInfo"),
                     })
                     .setTitle(
                         `${beatmapInfo.artist} - ${beatmapInfo.title} by ${beatmapInfo.creator}`
@@ -492,10 +505,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 ) {
                     await interaction.channel!.send({
                         content: MessageCreator.createAccept(
-                            `Everyone got the beatmap correct (it took ${(
-                                (Date.now() - message.createdTimestamp) /
-                                1000
-                            ).toFixed(2)} seconds)!`
+                            localization.getTranslation("beatmapCorrect"),
+                            ((Date.now() - message.createdTimestamp) / 1000).toFixed(2)
                         ),
                         embeds: [embed],
                     });
@@ -504,7 +515,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 } else {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
-                            "No one guessed the beatmap!"
+                            localization.getTranslation("beatmapIncorrect")
                         ),
                         embeds: [embed],
                     });
@@ -526,31 +537,32 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     embed
-        .setTitle("Game Information")
+        .setTitle(localization.getTranslation("gameInfo"))
         .setDescription(
-            `**Starter**: ${interaction.user}\n` +
-                `**Time started**: ${interaction.createdAt.toUTCString()}\n` +
-                `**Duration**: ${DateTimeFormatHelper.secondsToDHMS(
-                    Math.floor(
-                        (Date.now() - interaction.createdTimestamp) / 1000
-                    )
-                )}\n` +
-                `**Level**: ${level}`
+            `**${localization.getTranslation("starter")}**: ${interaction.user}\n` +
+            `**${localization.getTranslation("timeStarted")}**: ${interaction.createdAt.toUTCString()}\n` +
+            `**${localization.getTranslation("duration")}**: ${DateTimeFormatHelper.secondsToDHMS(
+                Math.floor(
+                    (Date.now() - interaction.createdTimestamp) / 1000
+                ),
+                localization.language
+            )}\n` +
+            `**${localization.getTranslation("level")}**: ${level}`
         )
         .addField(
-            "Leaderboard",
+            localization.getTranslation("leaderboard"),
             [...statistics.values()]
                 .slice(0, 10)
                 .map(
                     (v, i) => `**#${i + 1}**: <@${v.id}>: ${v.score.toFixed(2)}`
                 )
-                .join("\n") || "None"
+                .join("\n") || localization.getTranslation("none")
         );
 
     CacheManager.stillHasMapTriviaActive.delete(interaction.channelId);
 
     interaction.channel!.send({
-        content: MessageCreator.createAccept("Game ended!"),
+        content: MessageCreator.createAccept(localization.getTranslation("gameEnded")),
         embeds: [embed],
     });
 };

@@ -4,12 +4,19 @@ import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ClanMember } from "@alice-interfaces/clan/ClanMember";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { User } from "discord.js";
-import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const type: "battle" | "join" = <"battle" | "join">(
         interaction.options.getString("type", true)
     );
@@ -22,9 +29,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                interaction.options.getUser("user")
-                    ? Constants.userNotBindedReject
-                    : Constants.selfNotBindedReject
+                new ConstantsLocalization(language).getTranslation(
+
+                    interaction.options.getUser("user")
+                        ? Constants.userNotBindedReject
+                        : Constants.selfNotBindedReject
+                )
             ),
         });
     }
@@ -34,9 +44,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!bindInfo.clan) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        interaction.options.getUser("user")
-                            ? clanStrings.userIsNotInClan
-                            : clanStrings.selfIsNotInClan
+                        localization.getTranslation(
+                            interaction.options.getUser("user")
+                                ? "userIsNotInClan"
+                                : "selfIsNotInClan"
+                        )
                     ),
                 });
             }
@@ -54,10 +66,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (battleCooldownDifference > 0) {
                 interaction.editReply({
                     content: MessageCreator.createAccept(
-                        clanStrings.userInBattleCooldown,
-                        interaction.options.getUser("user")
-                            ? "The user"
-                            : "You",
+                        localization.getTranslation(
+                            interaction.options.getUser("user") ?
+                                "userInBattleCooldown" :
+                                "selfInBattleCooldown"
+                        ),
                         DateTimeFormatHelper.secondsToDHMS(
                             Math.ceil(battleCooldownDifference / 1000)
                         )
@@ -66,10 +79,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             } else {
                 interaction.editReply({
                     content: MessageCreator.createAccept(
-                        clanStrings.userNotInBattleCooldown,
-                        interaction.options.getUser("user")
-                            ? "The user is"
-                            : "You are"
+                        localization.getTranslation(
+                            interaction.options.getUser("user") ?
+                                "userNotInBattleCooldown" :
+                                "selfNotInBattleCooldown"
+                        )
                     ),
                 });
             }
@@ -80,7 +94,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (bindInfo.clan) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        clanStrings.userIsAlreadyInClan
+                        localization.getTranslation("userIsAlreadyInClan")
                     ),
                 });
             }
@@ -95,11 +109,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (oldJoinCooldownDifference > 0) {
                 responses.push(
                     MessageCreator.createAccept(
-                        clanStrings.userInOldJoinCooldown,
-                        interaction.options.getUser("user")
-                            ? "The user"
-                            : "You",
-                        interaction.options.getUser("user") ? "their" : "your",
+                        localization.getTranslation(
+                            interaction.options.getUser("user")
+                                ? "userInOldJoinCooldown"
+                                : "selfInOldJoinCooldown"
+                        ),
                         DateTimeFormatHelper.secondsToDHMS(
                             Math.ceil(oldJoinCooldownDifference / 1000)
                         ).toString()
@@ -108,11 +122,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             } else {
                 responses.push(
                     MessageCreator.createAccept(
-                        clanStrings.userNotInOldJoinCooldown,
-                        interaction.options.getUser("user")
-                            ? "The user is"
-                            : "You are",
-                        interaction.options.getUser("user") ? "their" : "your"
+                        localization.getTranslation(
+                            interaction.options.getUser("user") ?
+                                "userNotInOldJoinCooldown" :
+                                "selfNotInOldJoinCooldown"
+                        ),
                     )
                 );
             }
@@ -125,10 +139,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (joinCooldownDifference > 0) {
                 responses.push(
                     MessageCreator.createAccept(
-                        clanStrings.userInJoinCooldown,
-                        interaction.options.getUser("user")
-                            ? "The user"
-                            : "You",
+                        localization.getTranslation(
+                            interaction.options.getUser("user")
+                                ? "userInJoinCooldown"
+                                : "selfInJoinCooldown"
+                        ),
                         DateTimeFormatHelper.secondsToDHMS(
                             Math.ceil(joinCooldownDifference / 1000)
                         ).toString()
@@ -137,10 +152,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             } else {
                 responses.push(
                     MessageCreator.createAccept(
-                        clanStrings.userNotInJoinCooldown,
-                        interaction.options.getUser("user")
-                            ? "The user is"
-                            : "You are"
+                        localization.getTranslation(
+                            interaction.options.getUser("user")
+                                ? "userNotInJoinCooldown"
+                                : "selfNotInJoinCooldown"
+                        )
                     )
                 );
             }

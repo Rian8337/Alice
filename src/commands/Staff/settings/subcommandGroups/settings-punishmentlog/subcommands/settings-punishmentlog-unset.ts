@@ -1,7 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { settingsStrings } from "../../../settingsStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.guildPunishmentConfig.unsetGuildLogChannel(
@@ -10,7 +11,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.unsetLogChannelSuccess
+            new SettingsLocalization(await CommandHelper.getLocale(interaction)).getTranslation("unsetLogChannelSuccess")
         ),
     });
 };

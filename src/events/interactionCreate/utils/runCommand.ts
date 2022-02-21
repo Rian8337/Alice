@@ -3,6 +3,9 @@ import { Constants } from "@alice-core/Constants";
 import { Command } from "@alice-interfaces/core/Command";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { RunCommandLocalization } from "@alice-localization/events/interactionCreate/RunCommandLocalization";
 import {
     ChannelCooldownKey,
     GlobalCooldownKey,
@@ -10,6 +13,7 @@ import {
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import {
     CacheType,
@@ -30,13 +34,18 @@ export const run: EventUtil["run"] = async (
         return;
     }
 
+    // 3 seconds should be enough to get the user's locale
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: RunCommandLocalization = new RunCommandLocalization(language);
+
     const botOwnerExecution: boolean =
         CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                "I'm sorry, I'm in debug mode now. I cannot accept commands from anyone beside bot owners!"
+                localization.getTranslation("debugModeActive")
             ),
             ephemeral: true,
         });
@@ -49,7 +58,7 @@ export const run: EventUtil["run"] = async (
     if (!command) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                "I'm sorry, I cannot find the command with that name."
+                localization.getTranslation("commandNotFound")
             ),
         });
     }
@@ -58,7 +67,10 @@ export const run: EventUtil["run"] = async (
     if (Config.maintenance && !botOwnerExecution) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                `I'm sorry, I'm currently under maintenance due to \`${Config.maintenanceReason}\`. Please try again later!`
+                StringHelper.formatString(
+                    localization.getTranslation("maintenanceMode"),
+                    Config.maintenanceReason
+                )
             ),
             ephemeral: true,
         });
@@ -73,7 +85,7 @@ export const run: EventUtil["run"] = async (
     ) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                "I'm sorry, this command is not executable in this channel."
+                localization.getTranslation("commandNotExecutableInChannel")
             ),
             ephemeral: true,
         });
@@ -88,11 +100,10 @@ export const run: EventUtil["run"] = async (
     ) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                `${
-                    Constants.noPermissionReject
-                } You need these permissions: \`${PermissionHelper.getPermissionString(
+                `${new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)} ${localization.getTranslation("requiredPermissions")}`,
+                PermissionHelper.getPermissionString(
                     command.config.permissions
-                )}\`.`
+                )
             ),
         });
     }
@@ -118,7 +129,7 @@ export const run: EventUtil["run"] = async (
         ) {
             return interaction.reply({
                 content: MessageCreator.createReject(
-                    "Hey, calm down with the command! I need to rest too, you know."
+                    localization.getTranslation("commandInCooldown")
                 ),
                 ephemeral: true,
             });
@@ -164,15 +175,13 @@ export const run: EventUtil["run"] = async (
     }
 
     // Log used command along with its subcommand group, subcommand, and options
-    let logMessage: string = `${interaction.user.tag} (${
-        interaction.channel instanceof DMChannel
-            ? "DM"
-            : `#${
-                  (<TextChannel | NewsChannel | ThreadChannel>(
-                      interaction.channel!
-                  )).name
-              }`
-    }): ${interaction.commandName}`;
+    let logMessage: string = `${interaction.user.tag} (${interaction.channel instanceof DMChannel
+        ? "DM"
+        : `#${(<TextChannel | NewsChannel | ThreadChannel>(
+            interaction.channel!
+        )).name
+        }`
+        }): ${interaction.commandName}`;
 
     if (interaction.options.getSubcommandGroup(false)) {
         logMessage += ` ${interaction.options.getSubcommandGroup()}`;
@@ -246,7 +255,8 @@ export const run: EventUtil["run"] = async (
     command.run(client, interaction).catch((e: Error) => {
         interaction.editReply(
             MessageCreator.createReject(
-                `Unable to execute command: ${e.message}`
+                localization.getTranslation("commandExecutionFailed"),
+                e.message
             )
         );
 

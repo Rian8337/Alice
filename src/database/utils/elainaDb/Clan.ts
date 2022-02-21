@@ -25,6 +25,9 @@ import { Precision } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "./UserBind";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/database/utils/elainaDb/ClanLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 /**
  * Represents a clan.
@@ -215,25 +218,29 @@ export class Clan extends Manager {
      * Adds a member to the clan.
      *
      * @param user The user to add.
+     * @param language The locale of the user who attempted to add the user to the clan. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async addMember(user: User): Promise<OperationResult>;
+    async addMember(user: User, language?: Language): Promise<OperationResult>;
 
     /**
      * Adds a member to the clan.
      *
      * @param userID The ID of the user to add.
+     * @param language The locale of the user who attempted to add the user to the clan. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async addMember(userID: Snowflake): Promise<OperationResult>;
+    async addMember(userID: Snowflake, language?: Language): Promise<OperationResult>;
 
-    async addMember(userOrId: User | Snowflake): Promise<OperationResult> {
+    async addMember(userOrId: User | Snowflake, language: Language = "en"): Promise<OperationResult> {
+        const localization: ClanLocalization = this.getLocalization(language);
+
         const id: Snowflake = userOrId instanceof User ? userOrId.id : userOrId;
 
         if (this.member_list.has(id)) {
             return this.createOperationResult(
                 false,
-                "user is already in this clan"
+                localization.getTranslation("userInCurrentClan")
             );
         }
 
@@ -243,14 +250,14 @@ export class Clan extends Manager {
         if (!toAcceptBindInfo) {
             return this.createOperationResult(
                 false,
-                Constants.userNotBindedReject
+                new ConstantsLocalization(language).getTranslation(Constants.userNotBindedReject)
             );
         }
 
         if (toAcceptBindInfo.clan) {
             return this.createOperationResult(
                 false,
-                "user is already in another clan"
+                localization.getTranslation("userInAnotherClan")
             );
         }
 
@@ -260,12 +267,12 @@ export class Clan extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                "user is still in cooldown to join old clan"
+                localization.getTranslation("userInCooldownForOldClan")
             );
         } else if (Date.now() / 1000 < (toAcceptBindInfo.joincooldown ?? 0)) {
             return this.createOperationResult(
                 false,
-                "user is still in cooldown to join a clan"
+                localization.getTranslation("userInCooldownForClan")
             );
         }
 
@@ -284,7 +291,7 @@ export class Clan extends Manager {
         if (!player.username) {
             return this.createOperationResult(
                 false,
-                "user's binded accounts not found"
+                localization.getTranslation("userBindedAccountNotFound")
             );
         }
 
@@ -318,9 +325,11 @@ export class Clan extends Manager {
      * be checked by using the `exists` field.
      *
      * @param user The user to remove.
+     * @param language The locale of the user who attemped to remove the user.
+     * @param force Whether to forcefully remove the user even if they're the leader.
      * @returns An object containing information about the operation.
      */
-    async removeMember(user: User, force?: boolean): Promise<OperationResult>;
+    async removeMember(user: User, language?: Language, force?: boolean): Promise<OperationResult>;
 
     /**
      * Removes a member from the clan.
@@ -332,29 +341,34 @@ export class Clan extends Manager {
      * be checked by using the `exists` field.
      *
      * @param userID The ID of the user to remove.
+     * @param language The locale of the user who attemped to remove the user.
      * @param force Whether to forcefully remove the user even if they're the leader.
      * @returns An object containing information about the operation.
      */
     async removeMember(
         userID: Snowflake,
+        language?: Language,
         force?: boolean
     ): Promise<OperationResult>;
 
     async removeMember(
         userOrId: User | Snowflake,
+        language: Language = "en",
         force: boolean = false
     ): Promise<OperationResult> {
+        const localization: ClanLocalization = this.getLocalization(language);
+
         const id: Snowflake = userOrId instanceof User ? userOrId.id : userOrId;
 
         if (id === this.leader && !force) {
             return this.createOperationResult(
                 false,
-                "clan leader cannot leave the clan"
+                localization.getTranslation("clanLeaderCannotLeaveClan")
             );
         }
 
         if (!this.member_list.delete(id)) {
-            return this.createOperationResult(false, "user is not in the clan");
+            return this.createOperationResult(false, localization.getTranslation("userNotInClan"));
         }
 
         if (this.member_list.size === 0) {
@@ -386,13 +400,16 @@ export class Clan extends Manager {
      * Changes the leader of the clan.
      *
      * @param newLeader The Discord ID of the new leader. If unspecified, a random clan member will be picked.
+     * @param language The locale of the user who attempted to change the leader of the clan. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async changeLeader(newLeader?: Snowflake): Promise<OperationResult> {
+    async changeLeader(newLeader?: Snowflake, language: Language = "en"): Promise<OperationResult> {
+        const localization: ClanLocalization = this.getLocalization(language);
+
         if (newLeader === this.leader) {
             return this.createOperationResult(
                 false,
-                "new leader is the same as the old leader"
+                localization.getTranslation("leaderIsTheSame")
             );
         }
 
@@ -400,7 +417,7 @@ export class Clan extends Manager {
             if (!this.member_list.has(newLeader)) {
                 return this.createOperationResult(
                     false,
-                    "cannot find new leader"
+                    localization.getTranslation("cannotFindNewLeader")
                 );
             }
 
@@ -796,13 +813,16 @@ export class Clan extends Manager {
      * Sets the clan's icon.
      *
      * @param iconURL The URL of the icon. Omit this parameter to delete the current icon.
+     * @param language The locale of the user who attempted to set the clan's icon. Defaults to English.
      */
-    async setIcon(iconURL?: string): Promise<OperationResult> {
+    async setIcon(iconURL?: string, language: Language = "en"): Promise<OperationResult> {
+        const localization: ClanLocalization = this.getLocalization(language);
+
         const channel: TextChannel = await this.getAttachmentChannel();
 
         if (iconURL) {
             if (!(await RESTManager.downloadImage(iconURL))) {
-                return this.createOperationResult(false, "invalid image");
+                return this.createOperationResult(false, localization.getTranslation("invalidImage"));
             }
 
             // Delete original message
@@ -844,8 +864,11 @@ export class Clan extends Manager {
      * Sets the clan's banner.
      *
      * @param bannerURL The URL of the banner. Omit this parameter to delete the current banner.
+     * @param language The locale of the user who attemped to set the clan's banner. Defaults to English.
      */
-    async setBanner(bannerURL?: string): Promise<OperationResult> {
+    async setBanner(bannerURL?: string, language: Language = "en"): Promise<OperationResult> {
+        const localization: ClanLocalization = this.getLocalization(language);
+
         const channel: TextChannel = await this.getAttachmentChannel();
 
         if (bannerURL) {
@@ -854,7 +877,7 @@ export class Clan extends Manager {
             );
 
             if (!image) {
-                return this.createOperationResult(false, "invalid image");
+                return this.createOperationResult(false, localization.getTranslation("invalidImage"));
             }
 
             if (
@@ -865,7 +888,7 @@ export class Clan extends Manager {
             ) {
                 return this.createOperationResult(
                     false,
-                    "image ratio is not 18:5"
+                    localization.getTranslation("invalidImageRatio")
                 );
             }
 
@@ -908,13 +931,16 @@ export class Clan extends Manager {
      * Sets the clan's description.
      *
      * @param description The clan's new description. Omit this parameter to clear the current description.
+     * @param language The locale of the user who attempted to set the clan's description. Defaults to English.
      */
-    setDescription(description?: string): OperationResult {
+    setDescription(description?: string, language: Language = "en"): OperationResult {
+        const localization: ClanLocalization = this.getLocalization(language);
+
         if (description) {
             if (description.length >= 2000) {
                 return this.createOperationResult(
                     false,
-                    "description must be less than 2000 characters"
+                    localization.getTranslation("descriptionTooLong")
                 );
             }
 
@@ -930,19 +956,22 @@ export class Clan extends Manager {
      * Increments the clan's power by the specified amount.
      *
      * @param amount The amount to increment the clan power for.
+     * @param language The locale of the user who attempted to increment the clan's power. Defaults to English.
      */
-    incrementPower(amount: number): OperationResult {
+    incrementPower(amount: number, language: Language = "en"): OperationResult {
+        const localization: ClanLocalization = this.getLocalization(language);
+
         if (this.power + amount < 0) {
             return this.createOperationResult(
                 false,
-                "clan power will fall below zero"
+                localization.getTranslation("clanPowerNegativeWarning")
             );
         }
 
         if (!Number.isFinite(this.power + amount)) {
             return this.createOperationResult(
                 false,
-                "clan power will be infinite"
+                localization.getTranslation("clanPowerInfiniteWarning")
             );
         }
 
@@ -960,5 +989,14 @@ export class Clan extends Manager {
         );
 
         return channel;
+    }
+
+    /**
+     * Gets the localization of this database utility.
+     * 
+     * @param language The language to localize.
+     */
+    private getLocalization(language: Language): ClanLocalization {
+        return new ClanLocalization(language);
     }
 }

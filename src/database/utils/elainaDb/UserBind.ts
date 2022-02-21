@@ -28,6 +28,9 @@ import {
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
+import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBindLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -193,7 +196,7 @@ export class UserBind extends Manager {
             if (
                 !beatmapInfo ||
                 (await DPPHelper.checkSubmissionValidity(beatmapInfo)) !==
-                    DPPSubmissionValidity.VALID
+                DPPSubmissionValidity.VALID
             ) {
                 this.pp.delete(ppEntry.hash);
                 this.playc = Math.max(0, this.playc - 1);
@@ -353,8 +356,7 @@ export class UserBind extends Manager {
             };
 
             this.client.logger.info(
-                `${calcResult.map.fullTitle}${
-                    entry.mods ? ` +${entry.mods}` : ""
+                `${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""
                 }: ${entry.prevPP} ⮕  ${entry.pp}`
             );
 
@@ -626,20 +628,23 @@ export class UserBind extends Manager {
      *
      * @param uid The uid of the osu!droid account.
      * @param to The ID of the Discord account to move to.
+     * @param language The locale of the user who attempted to move the bind. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async moveBind(uid: number, to: Snowflake): Promise<OperationResult> {
+    async moveBind(uid: number, to: Snowflake, language: Language = "en"): Promise<OperationResult> {
+        const localization: UserBindLocalization = this.getLocalization(language);
+
         if (!this.previous_bind.includes(uid)) {
             return this.createOperationResult(
                 false,
-                "uid is not binded to this Discord account"
+                localization.getTranslation("uidNotBindedToAccount")
             );
         }
 
         if (this.discordid === to) {
             return this.createOperationResult(
                 false,
-                "cannot rebind to the same Discord account"
+                localization.getTranslation("cannotRebindToSameAccount")
             );
         }
 
@@ -651,7 +656,7 @@ export class UserBind extends Manager {
         if (otherPreviousBind.length >= 2) {
             return this.createOperationResult(
                 false,
-                "bind limit reached in other Discord account"
+                localization.getTranslation("bindLimitReachedInOtherAccount")
             );
         }
 
@@ -666,7 +671,7 @@ export class UserBind extends Manager {
         if (!player.username) {
             this.previous_bind.push(uid);
 
-            return this.createOperationResult(false, "player not found");
+            return this.createOperationResult(false, localization.getTranslation("playerNotFound"));
         }
 
         this.username = player.username;
@@ -762,42 +767,48 @@ export class UserBind extends Manager {
      * Binds an osu!droid account to this Discord account.
      *
      * @param uid The uid of the osu!droid account.
+     * @param language The locale of the user who attempted to bind. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async bind(uid: number): Promise<OperationResult>;
+    async bind(uid: number, language?: Language): Promise<OperationResult>;
 
     /**
      * Binds an osu!droid account to this Discord account.
      *
      * @param username The username of the osu!droid account.
+     * @param language The locale of the user who attempted to bind. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async bind(username: string): Promise<OperationResult>;
+    async bind(username: string, language?: Language): Promise<OperationResult>;
 
     /**
      * Binds an osu!droid account to this Discord account.
      *
      * @param player The `Player` instance of the osu!droid account.
+     * @param language The locale of the user who attempted to bind. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async bind(player: Player): Promise<OperationResult>;
+    async bind(player: Player, language?: Language): Promise<OperationResult>;
 
     async bind(
-        uidOrUsernameOrPlayer: string | number | Player
+        uidOrUsernameOrPlayer: string | number | Player,
+        language: Language = "en"
     ): Promise<OperationResult> {
         const player: Player =
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(
-                      typeof uidOrUsernameOrPlayer === "string"
-                          ? { username: uidOrUsernameOrPlayer }
-                          : { uid: uidOrUsernameOrPlayer }
-                  );
+                    typeof uidOrUsernameOrPlayer === "string"
+                        ? { username: uidOrUsernameOrPlayer }
+                        : { uid: uidOrUsernameOrPlayer }
+                );
+
+        const localization: UserBindLocalization = this.getLocalization(language);
 
         if (!player.username || !player.uid) {
             return this.createOperationResult(
                 false,
-                "player with such uid or username is not found"
+                localization.getTranslation("playerWithUidOrUsernameNotFound")
             );
         }
 
@@ -805,7 +816,7 @@ export class UserBind extends Manager {
             if (this.previous_bind.length >= 2) {
                 return this.createOperationResult(
                     false,
-                    "account bind limit reached"
+                    localization.getTranslation("bindLimitReached")
                 );
             }
 
@@ -831,13 +842,16 @@ export class UserBind extends Manager {
      * Unbinds an osu!droid account from this Discord account.
      *
      * @param uid The uid of the osu!droid account.
+     * @param language The locale of the user who attempted to unbind.
      * @returns An object containing information about the operation.
      */
-    async unbind(uid: number): Promise<OperationResult> {
+    async unbind(uid: number, language: Language = "en"): Promise<OperationResult> {
+        const localization: UserBindLocalization = this.getLocalization(language);
+
         if (!this.isUidBinded(uid)) {
             return this.createOperationResult(
                 false,
-                "uid is not binded to this Discord account"
+                localization.getTranslation("uidNotBindedToAccount")
             );
         }
 
@@ -855,9 +869,7 @@ export class UserBind extends Manager {
                     await clan.removeMember(this.discordid);
 
                     if (!clan.exists) {
-                        await clan.notifyLeader(
-                            "Hey, your Discord account has been unbinded from any osu!droid accounts! Therefore, your clan has been disbanded!"
-                        );
+                        await clan.notifyLeader(new UserBindLocalization(await CommandHelper.getLocale(this.discordid)).getTranslation("unbindClanDisbandNotification"));
                     }
                 }
             }
@@ -945,5 +957,15 @@ export class UserBind extends Manager {
         }
 
         return null;
+    }
+
+    /**
+     * Gets the localization of this database utility.
+     * 
+     * @param language 
+     * @returns 
+     */
+    private getLocalization(language: Language): UserBindLocalization {
+        return new UserBindLocalization(language);
     }
 }

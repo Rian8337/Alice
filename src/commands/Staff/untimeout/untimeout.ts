@@ -5,9 +5,12 @@ import { Command } from "@alice-interfaces/core/Command";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
-import { untimeoutStrings } from "./untimeoutStrings";
+import { UntimeoutLocalization } from "@alice-localization/commands/Staff/UntimeoutLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: UntimeoutLocalization = new UntimeoutLocalization(await CommandHelper.getLocale(interaction));
+
     const toUntimeout: GuildMember = await interaction.guild!.members.fetch(
         interaction.options.getUser("user", true)
     );
@@ -20,7 +23,7 @@ export const run: Command["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                untimeoutStrings.userCannotUntimeoutError
+                localization.getTranslation("userCannotUntimeoutError")
             ),
         });
     }
@@ -31,13 +34,14 @@ export const run: Command["run"] = async (_, interaction) => {
     const result: OperationResult = await TimeoutManager.removeTimeout(
         toUntimeout,
         interaction,
-        reason
+        reason,
+        localization.language
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                untimeoutStrings.untimeoutFailed,
+                localization.getTranslation("untimeoutFailed"),
                 result.reason!
             ),
         });
@@ -45,7 +49,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            untimeoutStrings.untimeoutSuccessful
+            localization.getTranslation("untimeoutSuccessful")
         ),
     });
 };

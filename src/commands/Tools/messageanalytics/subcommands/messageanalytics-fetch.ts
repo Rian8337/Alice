@@ -2,12 +2,15 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { MessageanalyticsLocalization } from "@alice-localization/commands/Tools/MessageanalyticsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
 import { Collection, Guild, TextChannel } from "discord.js";
-import { messageanalyticsStrings } from "../messageanalyticsStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: MessageanalyticsLocalization = new MessageanalyticsLocalization(await CommandHelper.getLocale(interaction));
+
     const fromDateEntries: number[] = interaction.options
         .getString("fromdate", true)
         .split("-")
@@ -16,7 +19,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (fromDateEntries.length !== 3 || fromDateEntries.some(Number.isNaN)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                messageanalyticsStrings.incorrectDateFormat
+                localization.getTranslation("incorrectDateFormat")
             ),
         });
     }
@@ -44,7 +47,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (toDateEntries.length !== 3 || toDateEntries.some(Number.isNaN)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    messageanalyticsStrings.incorrectDateFormat
+                    localization.getTranslation("incorrectDateFormat")
                 ),
             });
         }
@@ -64,7 +67,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (interaction.guildId !== guild.id) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    messageanalyticsStrings.wrongServer
+                    localization.getTranslation("wrongServer")
                 ),
             });
         }
@@ -72,7 +75,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!(interaction.channel instanceof TextChannel)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    messageanalyticsStrings.notATextChannel
+                    localization.getTranslation("notATextChannel")
                 ),
             });
         }
@@ -80,7 +83,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (MessageAnalyticsHelper.isChannelFiltered(interaction.channel)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    messageanalyticsStrings.channelIsFiltered
+                    localization.getTranslation("channelIsFiltered")
                 ),
             });
         }
@@ -96,7 +99,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     await interaction.editReply({
         content: MessageCreator.createAccept(
-            messageanalyticsStrings.messageFetchStarted
+            localization.getTranslation("messageFetchStarted")
         ),
     });
 
@@ -155,7 +158,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            messageanalyticsStrings.messageFetchDone,
+            localization.getTranslation("messageFetchDone"),
             interaction.user.toString()
         ),
     });

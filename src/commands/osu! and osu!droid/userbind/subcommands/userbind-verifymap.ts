@@ -2,7 +2,8 @@ import { readFile } from "fs/promises";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageAttachment } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { userbindStrings } from "../userbindStrings";
+import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/UserbindLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const data: Buffer = await readFile(
@@ -16,7 +17,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     return interaction.editReply({
         content: MessageCreator.createWarn(
-            userbindStrings.verificationMapInformation
+            new UserbindLocalization(await CommandHelper.getLocale(interaction)).getTranslation("verificationMapInformation")
         ),
         files: [attachment],
     });

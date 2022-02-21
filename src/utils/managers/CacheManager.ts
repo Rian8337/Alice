@@ -5,6 +5,7 @@ import {
 import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollection";
 import { Snowflake } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
+import { Language } from "@alice-localization/base/Language";
 
 /**
  * A manager that holds anything that is cached.
@@ -54,4 +55,14 @@ export abstract class CacheManager {
      * This is used to prevent collector creation spam.
      */
     static readonly userHasActiveVerificationMenu: Set<Snowflake> = new Set();
+
+    /**
+     * The locales that a user has, mapped by user ID.
+     */
+    static readonly userLocale: LimitedCapacityCollection<Snowflake, Language> = new LimitedCapacityCollection(150, 300);
+
+    /**
+     * The locales that a guild channel has, mapped by channel ID.
+     */
+    static readonly channelLocale: LimitedCapacityCollection<Snowflake, Language> = new LimitedCapacityCollection(100, 300);
 }

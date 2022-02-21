@@ -10,6 +10,8 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
@@ -54,10 +56,12 @@ export const run: EventUtil["run"] = async (client) => {
                     .fetch(member.id)
                     .catch(() => null);
 
+                const language: Language = await CommandHelper.getUserPreferredLocale(member.id);
+
                 // If the person is not in the server, kick the person
                 if (!guildMember) {
                     upkeepDistribution.shift();
-                    await clan.removeMember(member.id);
+                    await clan.removeMember(member.id, language);
                     ++kickedCount;
                     continue;
                 }
@@ -69,7 +73,7 @@ export const run: EventUtil["run"] = async (client) => {
 
                 if (!bindInfo) {
                     upkeepDistribution.shift();
-                    await clan.removeMember(member.id);
+                    await clan.removeMember(member.id, language);
                     ++kickedCount;
                     continue;
                 }
@@ -107,7 +111,7 @@ export const run: EventUtil["run"] = async (client) => {
                 if (!memberPlayerInfo) {
                     // Clan member doesn't have any Alice coins info, possibly being banned from the server or the game.
                     // In that case, simply kick.
-                    await clan.removeMember(member.id);
+                    await clan.removeMember(member.id, language);
                     ++kickedCount;
                     continue;
                 }
@@ -153,13 +157,13 @@ export const run: EventUtil["run"] = async (client) => {
                         }
                     }
 
-                    await clan.removeMember(userToKick);
+                    await clan.removeMember(userToKick, await CommandHelper.getLocale(userToKick));
                     ++kickedCount;
                     continue;
                 }
 
                 // Pay for upkeep
-                await memberPlayerInfo.incrementCoins(-upkeep);
+                await memberPlayerInfo.incrementCoins(-upkeep, language);
             }
 
             if (!clan.exists) {
@@ -170,8 +174,7 @@ export const run: EventUtil["run"] = async (client) => {
 
             await clan.updateClan();
             await clan.notifyLeader(
-                `Hey, your clan upkeep has been picked up from your members! ${
-                    clan.member_list.size
+                `Hey, your clan upkeep has been picked up from your members! ${clan.member_list.size
                 } member(s) have successfully paid their upkeep. A total of ${kickedCount} member(s) were kicked. Your next clan upkeep will be picked in ${new Date(
                     clan.weeklyfee * 1000
                 ).toUTCString()}.`

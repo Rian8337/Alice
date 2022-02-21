@@ -1,13 +1,16 @@
-import { musicStrings } from "@alice-commands/Fun/music/musicStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MusicCollection } from "@alice-database/utils/aliceDb/MusicCollection";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
@@ -18,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (collection) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.collectionWithNameAlreadyExists
+                localization.getTranslation("collectionWithNameAlreadyExists")
             ),
         });
     }
@@ -31,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (videos.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.noTracksFound),
+            content: MessageCreator.createReject(localization.getTranslation("noTracksFound")),
         });
     }
 
@@ -40,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    "Choose the video that you want to insert to the music collection."
+                    localization.getTranslation("chooseVideo")
                 ),
             },
             videos.map((v) => {
@@ -73,7 +76,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.createCollectionFailed,
+                localization.getTranslation("createCollectionFailed"),
                 result.reason!
             ),
         });
@@ -81,7 +84,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.createCollectionSuccess,
+            localization.getTranslation("createCollectionSuccess"),
             name
         ),
     });

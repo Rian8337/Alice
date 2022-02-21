@@ -1,10 +1,13 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { clanStrings } from "../clanStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
             interaction.user
@@ -12,7 +15,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("clanDoesntExist")),
         });
     }
 
@@ -22,12 +25,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.clanUpkeepInformation,
-            clan.upkeepBaseValue % clan.member_list.size
-                ? `somewhere between ${upkeep.toLocaleString()}-${(
-                      upkeep + 1
-                  ).toLocaleString()}`
-                : upkeep.toLocaleString(),
+            localization.getTranslation("clanUpkeepInformation"),
+            upkeep.toLocaleString(),
             new Date(clan.weeklyfee * 1000).toUTCString(),
             totalUpkeep.toLocaleString()
         ),

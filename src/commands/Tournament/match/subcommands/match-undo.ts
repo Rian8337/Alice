@@ -3,26 +3,29 @@ import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch"
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { matchStrings } from "../matchStrings";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MatchLocalization = new MatchLocalization(await CommandHelper.getLocale(interaction));
+
     const id: string | null = interaction.options.getString("id");
 
     const match: TournamentMatch | null = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-              interaction.channelId
-          );
+            interaction.channelId
+        );
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("matchDoesntExist")),
         });
     }
 
     if (!match.result[0]) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchHasNoResult),
+            content: MessageCreator.createReject(localization.getTranslation("matchHasNoResult")),
         });
     }
 
@@ -47,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.undoMatchFailed,
+                localization.getTranslation("undoMatchFailed"),
                 result.reason!
             ),
         });
@@ -55,7 +58,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            matchStrings.undoMatchSuccessful,
+            localization.getTranslation("undoMatchSuccessful"),
             match.matchid
         ),
     });

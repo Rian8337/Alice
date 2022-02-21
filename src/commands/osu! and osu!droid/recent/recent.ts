@@ -10,9 +10,16 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { recentStrings } from "./recentStrings";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { RecentLocalization } from "@alice-localization/commands/osu! and osu!droid/RecentLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: RecentLocalization = new RecentLocalization(language);
+
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
@@ -20,7 +27,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recentStrings.tooManyOptions),
+            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
         });
     }
 
@@ -46,7 +53,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.userNotBindedReject
+                        new ConstantsLocalization(language).getTranslation(Constants.userNotBindedReject)
                     ),
                 });
             }
@@ -60,7 +67,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.selfNotBindedReject
+                        new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
                     ),
                 });
             }
@@ -70,14 +77,14 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recentStrings.playerNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("playerNotFound")),
         });
     }
 
     if (player.recentPlays.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                recentStrings.playerHasNoRecentPlays
+                localization.getTranslation("playerHasNoRecentPlays")
             ),
         });
     }
@@ -87,7 +94,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!player.recentPlays[index - 1]) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                recentStrings.playIndexOutOfBounds,
+                localization.getTranslation("playIndexOutOfBounds"),
                 index.toString()
             ),
         });
@@ -101,12 +108,13 @@ export const run: Command["run"] = async (_, interaction) => {
     const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
         player.recentPlays[index - 1],
         player.avatarURL,
-        (<GuildMember | null>interaction.member)?.displayColor
+        (<GuildMember | null>interaction.member)?.displayColor,
+        language
     );
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            recentStrings.recentPlayDisplay,
+            localization.getTranslation("recentPlayDisplay"),
             player.username
         ),
         embeds: [embed],

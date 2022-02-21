@@ -8,9 +8,13 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
@@ -21,14 +25,17 @@ import {
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { Collection, GuildMember, MessageEmbed, Snowflake } from "discord.js";
-import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: DailyLocalization = new DailyLocalization(language);
+
     const url: string = interaction.options.getString("replayurl", true);
 
     if (!StringHelper.isValidURL(url)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.invalidReplayURL),
+            content: MessageCreator.createReject(localization.getTranslation("invalidReplayURL")),
         });
     }
 
@@ -39,16 +46,19 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+            ),
         });
     }
 
+    // TODO: replace with attachments
     const replayData: RequestResponse = await RESTManager.request(url);
 
     if (replayData.statusCode !== 200) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.replayDownloadFail
+                localization.getTranslation("replayDownloadFail")
             ),
         });
     }
@@ -61,7 +71,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await replayAnalyzer.analyze();
     } catch {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.replayInvalid),
+            content: MessageCreator.createReject(localization.getTranslation("replayInvalid")),
         });
     }
 
@@ -70,14 +80,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (data.playerName !== bindInfo.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.replayDoesntHaveSameUsername
+                localization.getTranslation("replayDoesntHaveSameUsername")
             ),
         });
     }
 
     if (data.replayVersion < 3) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.replayTooOld),
+            content: MessageCreator.createReject(localization.getTranslation("replayTooOld")),
         });
     }
 
@@ -89,7 +99,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!challenge) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.challengeFromReplayNotFound
+                localization.getTranslation("challengeFromReplayNotFound")
             ),
         });
     }
@@ -97,18 +107,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!challenge.isOngoing) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.challengeNotOngoing
+                localization.getTranslation("challengeNotOngoing")
             ),
         });
     }
 
     const completionStatus: OperationResult =
-        await challenge.checkReplayCompletion(replayAnalyzer);
+        await challenge.checkReplayCompletion(replayAnalyzer, language);
 
     if (!completionStatus.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.challengeNotCompleted,
+                localization.getTranslation("challengeNotCompleted"),
                 completionStatus.reason!
             ),
         });
@@ -135,30 +145,31 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 
     embed
-        .setTitle("Score Statistics")
+        .setTitle(localization.getTranslation("scoreStatistics"))
         .setDescription(
-            `**Total Score**: ${data.score}\n` +
-                `**Max Combo**: ${data.maxCombo}x\n` +
-                `**Accuracy**: ${(data.accuracy.value() * 100).toFixed(2)}%\n` +
-                `**Rank**: ${data.rank}\n` +
-                `**Time**: ${data.time.toUTCString()}\n\n` +
-                `**Hit Great (300)**: ${data.accuracy.n300} (${data.hit300k} geki and katu)\n` +
-                `**Hit good (100)**: ${data.accuracy.n100} (${data.hit100k} katu)\n` +
-                `**Hit meh (50)**: ${data.accuracy.n50}\n` +
-                `**Misses**: ${data.accuracy.nmiss}\n\n` +
-                `**Bonus Level Reached**: ${bonusLevel}`
+            `**${localization.getTranslation("totalScore")}**: ${data.score}\n` +
+            `**${localization.getTranslation("maxCombo")}**: ${data.maxCombo}x\n` +
+            `**${localization.getTranslation("accuracy")}**: ${(data.accuracy.value() * 100).toFixed(2)}%\n` +
+            `**${localization.getTranslation("rank")}**: ${data.rank}\n` +
+            `**${localization.getTranslation("time")}**: ${data.time.toUTCString()}\n\n` +
+            `**${localization.getTranslation("hitGreat")}**: ${data.accuracy.n300} (${data.hit300k} ${localization.getTranslation("geki")} + ${localization.getTranslation("katu")})\n` +
+            `**${localization.getTranslation("hitGood")}**: ${data.accuracy.n100} (${data.hit100k} ${localization.getTranslation("katu")})\n` +
+            `**${localization.getTranslation("hitMeh")}**: ${data.accuracy.n50}\n` +
+            `**${localization.getTranslation("misses")}**: ${data.accuracy.nmiss}\n\n` +
+            `**${localization.getTranslation("bonusLevelReached")}**: ${bonusLevel}`
         );
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
         {
             content: MessageCreator.createWarn(
-                dailyStrings.manualSubmissionConfirmation
+                localization.getTranslation("manualSubmissionConfirmation")
             ),
             embeds: [embed],
         },
         [...staffMembers.keys()],
-        30
+        30,
+        language
     );
 
     if (!confirmation) {
@@ -179,7 +190,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 challenge.points +
                 (challengeData.highestLevel -
                     Math.max(0, bonusLevel - challengeData.highestLevel)) *
-                    2;
+                2;
 
             challengeData.highestLevel = Math.max(
                 bonusLevel,
@@ -237,7 +248,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            dailyStrings.challengeCompleted,
+            localization.getTranslation("challengeCompleted"),
             challenge.challengeid,
             bonusLevel.toLocaleString(),
             pointsGained.toLocaleString(),

@@ -5,11 +5,16 @@ import { GuildMember } from "discord.js";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { timeoutStrings } from "./timeoutStrings";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { TimeoutLocalization } from "@alice-localization/commands/Staff/TimeoutLocalization";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: TimeoutLocalization = new TimeoutLocalization(language);
+
     const toTimeout: GuildMember = await interaction.guild!.members.fetch(
         interaction.options.getUser("user", true)
     );
@@ -17,7 +22,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!toTimeout) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                timeoutStrings.userToTimeoutNotFound
+                localization.getTranslation("userToTimeoutNotFound")
             ),
         });
     }
@@ -32,13 +37,14 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction,
         toTimeout,
         reason,
-        duration
+        duration,
+        language
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                timeoutStrings.timeoutFailed,
+                localization.getTranslation("timeoutFailed"),
                 result.reason!
             ),
         });
@@ -46,8 +52,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            timeoutStrings.timeoutSuccess,
-            DateTimeFormatHelper.secondsToDHMS(duration)
+            localization.getTranslation("timeoutSuccess"),
+            DateTimeFormatHelper.secondsToDHMS(duration, language)
         ),
     });
 };

@@ -4,9 +4,12 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { gamestatsStrings } from "./gamestatsStrings";
+import { GamestatsLocalization } from "@alice-localization/commands/osu! and osu!droid/GamestatsLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: GamestatsLocalization = new GamestatsLocalization(await CommandHelper.getLocale(interaction));
+
     const apiRequestBuilder: DroidAPIRequestBuilder =
         new DroidAPIRequestBuilder().setEndpoint("usergeneral.php");
 
@@ -15,7 +18,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (result.statusCode !== 200) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                gamestatsStrings.cannotRetrieveGameStatistics
+                localization.getTranslation("cannotRetrieveGameStatistics")
             ),
         });
     }
@@ -38,16 +41,16 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 
     embed
-        .setTitle("Overall Game Statistics")
+        .setTitle(localization.getTranslation("overallGameStats"))
         .addField(
-            "Registered Accounts",
-            `**Total**: ${totalUserCount.toLocaleString()}\n` +
-                `**More than 5 scores**: ${userCountAbove5Scores.toLocaleString()}\n` +
-                `**More than 20 scores**: ${userCountAbove20Scores.toLocaleString()}\n` +
-                `**More than 100 scores**: ${userCountAbove100Scores.toLocaleString()}\n` +
-                `**More than 200 scores**: ${userCountAbove200Scores.toLocaleString()}`
+            localization.getTranslation("registeredAccounts"),
+            `**${localization.getTranslation("totalRegisteredAccounts")}**: ${totalUserCount.toLocaleString()}\n` +
+            `**${localization.getTranslation("moreThan5ScoresAcc")}**: ${userCountAbove5Scores.toLocaleString()}\n` +
+            `**${localization.getTranslation("moreThan20ScoresAcc")}**: ${userCountAbove20Scores.toLocaleString()}\n` +
+            `**${localization.getTranslation("moreThan100ScoresAcc")}**: ${userCountAbove100Scores.toLocaleString()}\n` +
+            `**${localization.getTranslation("moreThan200ScoresAcc")}**: ${userCountAbove200Scores.toLocaleString()}`
         )
-        .addField("Total Online Scores", totalScoreCount.toLocaleString());
+        .addField(localization.getTranslation("totalScores"), totalScoreCount.toLocaleString());
 
     interaction.editReply({
         embeds: [embed],

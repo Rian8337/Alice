@@ -7,13 +7,20 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
-import { mapshareStrings } from "../mapshareStrings";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MapshareLocalization = new MapshareLocalization(language);
+
     if (interaction.channelId !== Constants.mapShareChannel) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                Constants.notAvailableInServerReject
+                new ConstantsLocalization(language).getTranslation(Constants.notAvailableInServerReject)
             ),
         });
     }
@@ -28,7 +35,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (playerInfo?.isBannedFromMapShare) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.userIsAlreadyBanned
+                localization.getTranslation("userIsAlreadyBanned")
             ),
         });
     }
@@ -71,14 +78,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.banFailed,
+                localization.getTranslation("banFailed"),
                 result.reason!
             ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(mapshareStrings.banSuccess),
+        content: MessageCreator.createAccept(localization.getTranslation("banSuccess")),
     });
 };
 

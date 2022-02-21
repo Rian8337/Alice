@@ -9,9 +9,15 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
-import { mapshareStrings } from "../mapshareStrings";
+import { Language } from "@alice-localization/base/Language";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MapshareLocalization = new MapshareLocalization(language);
+
     const beatmapId: number = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap", true)
     )[0];
@@ -19,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapId) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.noBeatmapFound
+                localization.getTranslation("noBeatmapFound")
             ),
         });
     }
@@ -45,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.noBeatmapFound
+                localization.getTranslation("noBeatmapFound")
             ),
         });
     }
@@ -53,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (beatmapInfo.totalDifficulty < 3) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.beatmapIsTooEasy
+                localization.getTranslation("beatmapIsTooEasy")
             ),
         });
     }
@@ -61,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (beatmapInfo.objects < 50) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.beatmapHasLessThan50Objects
+                localization.getTranslation("beatmapHasLessThan50Objects")
             ),
         });
     }
@@ -69,7 +75,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (beatmapInfo.circles + beatmapInfo.sliders === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.beatmapHasNoCirclesOrSliders
+                localization.getTranslation("beatmapHasNoCirclesOrSliders")
             ),
         });
     }
@@ -77,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (beatmapInfo.hitLength < 30) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.beatmapDurationIsLessThan30Secs
+                localization.getTranslation("beatmapDurationIsLessThan30Secs")
             ),
         });
     }
@@ -88,7 +94,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.beatmapIsWIPOrQualified
+                localization.getTranslation("beatmapIsWIPOrQualified")
             ),
         });
     }
@@ -100,7 +106,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    mapshareStrings.beatmapWasJustSubmitted
+                    localization.getTranslation("beatmapWasJustSubmitted")
                 ),
             });
         }
@@ -111,7 +117,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    mapshareStrings.beatmapWasJustUpdated
+                    localization.getTranslation("beatmapWasJustUpdated")
                 ),
             });
         }
@@ -125,7 +131,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (submission) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.beatmapHasBeenUsed
+                localization.getTranslation("beatmapHasBeenUsed")
             ),
         });
     }
@@ -135,7 +141,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (wordCount < 50 || wordCount > 120) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.summaryWordCountNotValid,
+                localization.getTranslation("summaryWordCountNotValid"),
                 wordCount.toLocaleString()
             ),
         });
@@ -144,7 +150,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (summary.length < 100 || summary.length > 900) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.summaryCharacterCountNotValid,
+                localization.getTranslation("summaryCharacterCountNotValid"),
                 summary.length.toLocaleString()
             ),
         });
@@ -185,14 +191,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.submitFailed,
+                localization.getTranslation("submitFailed"),
                 result.reason!
             ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(mapshareStrings.submitSuccess),
+        content: MessageCreator.createAccept(localization.getTranslation("submitSuccess")),
     });
 };
 

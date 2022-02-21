@@ -3,9 +3,15 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
-import { birthdayStrings } from "../birthdayStrings";
+import { BirthdayLocalization } from "@alice-localization/commands/Fun/BirthdayLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: BirthdayLocalization = new BirthdayLocalization(language);
+
     const user: User = interaction.options.getUser("user", true);
 
     const date: number = interaction.options.getInteger("date", true);
@@ -20,13 +26,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             date,
             month,
             timezone,
+            language,
             true
         );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                birthdayStrings.setBirthdayFailed,
+                localization.getTranslation("setBirthdayFailed"),
                 result.reason!
             ),
         });
@@ -34,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            birthdayStrings.setBirthdaySuccess,
+            localization.getTranslation("setBirthdaySuccess"),
             date.toString(),
             (month + 1).toString(),
             timezone >= 0 ? `+${timezone}` : timezone.toString()

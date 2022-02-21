@@ -8,10 +8,14 @@ import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
-import { matchStrings } from "../matchStrings";
 import { Symbols } from "@alice-enums/utils/Symbols";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MatchLocalization = new MatchLocalization(await CommandHelper.getLocale(interaction));
+
     const id: string = interaction.options.getString("id", true);
 
     const pick: string = interaction.options.getString("pick", true);
@@ -31,14 +35,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("matchDoesntExist")),
         });
     }
 
     if (Math.ceil(match.player.length / 2) !== team1Scores.length) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.teamPlayerCountDoesntMatch,
+                localization.getTranslation("teamPlayerCountDoesntMatch"),
                 "1",
                 Math.ceil(match.player.length / 2).toLocaleString(),
                 team1Scores.length.toLocaleString()
@@ -49,7 +53,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (Math.floor(match.player.length / 2) !== team2Scores.length) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.teamPlayerCountDoesntMatch,
+                localization.getTranslation("teamPlayerCountDoesntMatch"),
                 "2",
                 Math.floor(match.player.length / 2).toLocaleString(),
                 team2Scores.length.toLocaleString()
@@ -64,7 +68,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!mappoolDurationData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.mappoolNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("mappoolNotFound")),
         });
     }
 
@@ -75,7 +79,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!mappoolMainData) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.mappoolNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("mappoolNotFound")),
         });
     }
 
@@ -85,7 +89,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (pickIndex === -1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.mapNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("mapNotFound")),
         });
     }
 
@@ -110,7 +114,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    matchStrings.scoreDataInvalid,
+                    localization.getTranslation("scoreDataInvalid"),
                     ((i % 2) + 1).toLocaleString(),
                     Math.floor(i / 2).toLocaleString(),
                     scoreData.join(" ")
@@ -134,12 +138,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         scoreList.push(scoreV2);
 
-        const scoreString: string = `${
-            match.player[i][0]
-        } - (N/A): **${scoreV2}** - ${parseFloat(scoreData[1]).toFixed(2)}% - ${
-            scoreData[2]
-        } ${Symbols.missIcon}\n`;
-        const failString: string = `${match.player[i][0]} - (N/A): **0** - **Failed**`;
+        const scoreString: string = `${match.player[i][0]
+            } - (N/A): **${scoreV2}** - ${parseFloat(scoreData[1]).toFixed(2)}% - ${scoreData[2]
+            } ${Symbols.missIcon}\n`;
+        const failString: string = `${match.player[i][0]} - (N/A): **0** - **${localization.getTranslation("failed")}**`;
 
         if (i % 2 === 0) {
             team1OverallScore += scoreV2;
@@ -150,22 +152,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     }
 
-    team1String ||= "None";
-    team2String ||= "None";
+    team1String ||= localization.getTranslation("none");
+    team2String ||= localization.getTranslation("none");
 
     let embedColor: number = 0;
-    let description: string = `${
-        team1OverallScore > team2OverallScore
-            ? match.team[0][0]
-            : match.team[1][0]
-    } won by ${Math.abs(team1OverallScore - team2OverallScore)}`;
+    let description: string = StringHelper.formatString(
+        localization.getTranslation("won"),
+        team1OverallScore > team2OverallScore ? match.team[0][0] : match.team[1][0],
+        Math.abs(team1OverallScore - team2OverallScore).toLocaleString()
+    );
 
     if (team1OverallScore > team2OverallScore) {
         embedColor = 16711680;
     } else if (team1OverallScore < team2OverallScore) {
         embedColor = 262399;
     } else {
-        description = "It's a draw";
+        description = localization.getTranslation("draw");
     }
 
     const resultEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
@@ -199,7 +201,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.submitMatchFailed,
+                localization.getTranslation("submitMatchFailed"),
                 finalResult.reason!
             ),
         });
@@ -207,7 +209,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            matchStrings.submitMatchSuccessful
+            localization.getTranslation("submitMatchSuccessful")
         ),
         embeds: [resultEmbed, summaryEmbed],
     });

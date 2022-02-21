@@ -2,10 +2,13 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { AskCount } from "@alice-database/utils/aliceDb/AskCount";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
+import { AskcountLocalization } from "@alice-localization/commands/Fun/AskcountLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { askcountStrings } from "./askcountStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: AskcountLocalization = new AskcountLocalization(await CommandHelper.getLocale(interaction));
+
     const askCount: AskCount | null =
         await DatabaseManager.aliceDb.collections.askCount.getUserAskCount(
             interaction.user.id
@@ -13,7 +16,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!askCount) {
         return interaction.editReply(
-            MessageCreator.createReject(askcountStrings.haveNotAsked)
+            MessageCreator.createReject(localization.getTranslation("haveNotAsked"))
         );
     }
 
@@ -21,9 +24,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            askcountStrings.askCount,
+            localization.getTranslation("askCount"),
             count.toLocaleString(),
-            count === 1 ? "time" : "times"
         ),
     });
 };

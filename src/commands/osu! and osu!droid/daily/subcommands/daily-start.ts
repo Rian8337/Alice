@@ -3,9 +3,15 @@ import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { dailyStrings } from "../dailyStrings";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: DailyLocalization = new DailyLocalization(language);
+
     const id: string = interaction.options.getString("challengeid", true);
 
     const challenge: Challenge | null =
@@ -14,17 +20,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!challenge) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.challengeNotFound
+                localization.getTranslation("challengeNotFound")
             ),
         });
     }
 
-    const result: OperationResult = await challenge.start();
+    const result: OperationResult = await challenge.start(language);
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.startChallengeFailed,
+                localization.getTranslation("startChallengeFailed"),
                 result.reason!
             ),
         });
@@ -32,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            dailyStrings.startChallengeSuccess,
+            localization.getTranslation("startChallengeSuccess"),
             id
         ),
     });

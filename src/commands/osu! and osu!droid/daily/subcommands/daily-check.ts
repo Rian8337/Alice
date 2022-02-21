@@ -1,12 +1,16 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { dailyStrings } from "../dailyStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
     const type: ChallengeType =
         <ChallengeType>interaction.options.getString("type") ?? "daily";
 
@@ -18,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!challenge) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.noOngoingChallenge
+                new DailyLocalization(language).getTranslation("noOngoingChallenge")
             ),
         });
     }
@@ -26,7 +30,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply(
         await EmbedCreator.createChallengeEmbed(
             challenge,
-            challenge.type === "weekly" ? "#af46db" : "#e3b32d"
+            challenge.type === "weekly" ? "#af46db" : "#e3b32d",
+            language
         )
     );
 };

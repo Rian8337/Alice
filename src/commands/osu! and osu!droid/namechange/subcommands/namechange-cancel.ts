@@ -2,10 +2,13 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { namechangeStrings } from "../namechangeStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: NamechangeLocalization = new NamechangeLocalization(await CommandHelper.getLocale(interaction));
+
     const nameChange: NameChange | null =
         await DatabaseManager.aliceDb.collections.nameChange.getFromUser(
             interaction.user
@@ -14,7 +17,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!nameChange || nameChange.isProcessed) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.userHasNoActiveRequest
+                localization.getTranslation("userHasNoActiveRequest")
             ),
         });
     }
@@ -24,13 +27,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.cancelFailed
+                localization.getTranslation("cancelFailed")
             ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createReject(namechangeStrings.cancelSuccess),
+        content: MessageCreator.createReject(localization.getTranslation("cancelSuccess")),
     });
 };
 

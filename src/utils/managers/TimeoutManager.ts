@@ -18,6 +18,11 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 import { LoungeLockManager } from "./LoungeLockManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Constants } from "@alice-core/Constants";
+import { Language } from "@alice-localization/base/Language";
+import { TimeoutManagerLocalization } from "@alice-localization/utils/managers/TimeoutManagerLocalization";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManagerLocalization";
 
 /**
  * A manager for timeouts.
@@ -40,39 +45,43 @@ export abstract class TimeoutManager extends PunishmentManager {
      * @param member The guild member to timeout.
      * @param reason Reason for timeout.
      * @param duration The duration to timeout the user for, in seconds.
+     * @param language The locale of the user who attempted to mute the guild member.
      * @returns An object containing information about the operation.
      */
     static async addTimeout(
         interaction: CommandInteraction,
         member: GuildMember,
         reason: string,
-        duration: number
+        duration: number,
+        language: Language = "en"
     ): Promise<OperationResult> {
+        const localization: TimeoutManagerLocalization = this.getLocalization(language);
+
         if (this.isUserTimeouted(member)) {
             return this.createOperationResult(
                 false,
-                "user is already timeouted"
+                localization.getTranslation("userAlreadyTimeouted")
             );
         }
 
         if (await this.userIsImmune(member)) {
             return this.createOperationResult(
                 false,
-                "user has timeout immunity"
+                localization.getTranslation("userImmuneToTimeout")
             );
         }
 
         if (isNaN(duration)) {
             return this.createOperationResult(
                 false,
-                "invalid timeout duration"
+                localization.getTranslation("invalidTimeoutDuration")
             );
         }
 
         if (!NumberHelper.isNumberInRange(duration, 30, 28 * 86400, true)) {
             return this.createOperationResult(
                 false,
-                "timeout duration must be between 30 seconds and 28 days (4 weeks)"
+                localization.getTranslation("timeoutDurationOutOfRange")
             );
         }
 
@@ -84,26 +93,29 @@ export abstract class TimeoutManager extends PunishmentManager {
         ) {
             return this.createOperationResult(
                 false,
-                `not enough permission to timeout for ${DateTimeFormatHelper.secondsToDHMS(
-                    duration
-                )}`
+                StringHelper.formatString(
+                    localization.getTranslation("notEnoughPermissionToTimeout"),
+                    DateTimeFormatHelper.secondsToDHMS(duration, language)
+                )
             );
         }
 
         if (reason.length > 1500) {
             return this.createOperationResult(
                 false,
-                "timeout reason is too long; maximum is 1500 characters"
+                localization.getTranslation("timeoutReasonTooLong")
             );
         }
 
         const guildConfig: GuildPunishmentConfig | null =
             await this.punishmentDb.getGuildConfig(member.guild);
 
+        const punishmentManagerLocalization: PunishmentManagerLocalization = this.getPunishmentManagerLocalization(language);
+
         if (!guildConfig) {
             return this.createOperationResult(
                 false,
-                this.logChannelNotFoundReject
+                punishmentManagerLocalization.getTranslation(this.logChannelNotFoundReject)
             );
         }
 
@@ -113,7 +125,7 @@ export abstract class TimeoutManager extends PunishmentManager {
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
                 false,
-                this.logChannelNotValidReject
+                punishmentManagerLocalization.getTranslation(this.logChannelNotValidReject)
             );
         }
 
@@ -122,34 +134,54 @@ export abstract class TimeoutManager extends PunishmentManager {
             reason
         );
 
-        // TODO: get user locale and translate timeout embed to locale
-
         const timeoutEmbed: MessageEmbed = new MessageEmbed()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL({ dynamic: true })!,
             })
-            .setTitle("Timeout executed")
+            .setTitle(localization.getTranslation("timeoutExecuted"))
             .setFooter({
-                text: `User ID: ${member.id} | Channel ID: ${interaction.channel?.id}`,
+                text: `${localization.getTranslation("userId")}: ${member.id} | ${localization.getTranslation("channelId")}: ${interaction.channel?.id}`,
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} in ${
-                    interaction.channel
-                } for ${DateTimeFormatHelper.secondsToDHMS(duration)}**\n\n` +
-                    `=========================\n\n` +
-                    `**Reason**:\n` +
-                    reason
+                `**${member} ${StringHelper.formatString(localization.getTranslation("inChannel"), interaction.channel!.toString())}: ${DateTimeFormatHelper.secondsToDHMS(duration, language)}**\n\n` +
+                `=========================\n\n` +
+                `**${localization.getTranslation("reason")}**:\n` +
+                reason
+            );
+
+        const userLocalization: TimeoutManagerLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(member.id));
+
+        const userTimeoutEmbed: MessageEmbed = new MessageEmbed()
+            .setAuthor({
+                name: interaction.user.tag,
+                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+            })
+            .setTitle(userLocalization.getTranslation("timeoutExecuted"))
+            .setFooter({
+                text: `${userLocalization.getTranslation("userId")}: ${member.id} | ${userLocalization.getTranslation("channelId")}: ${interaction.channel?.id}`,
+            })
+            .setTimestamp(new Date())
+            .setDescription(
+                `**${member} ${StringHelper.formatString(userLocalization.getTranslation("inChannel"), interaction.channel!.toString())}: ${DateTimeFormatHelper.secondsToDHMS(duration, userLocalization.language)}**\n\n` +
+                `=========================\n\n` +
+                `**${userLocalization.getTranslation("reason")}**:\n` +
+                reason
             );
 
         try {
             await this.notifyMember(
                 member,
-                `Hey, you were timeouted for \`${DateTimeFormatHelper.secondsToDHMS(
-                    duration
-                )}\` for \`${reason}\`. Sorry!`,
-                timeoutEmbed
+                StringHelper.formatString(
+                    userLocalization.getTranslation("timeoutUserNotification"),
+                    DateTimeFormatHelper.secondsToDHMS(
+                        duration,
+                        userLocalization.language
+                    ),
+                    reason
+                ),
+                userTimeoutEmbed
             );
         } catch {
             interaction.channel!.send(
@@ -183,34 +215,40 @@ export abstract class TimeoutManager extends PunishmentManager {
      * @param member The guild member to untimeout.
      * @param interaction The interaction that triggered the untimeout, if any.
      * @param reason The reason for untimeouting.
+     * @param language The locale of the user who attempted to remove the guild member's timeout. Defaults to English.
      * @returns An object containing information about the operation.
      */
     static async removeTimeout(
         member: GuildMember,
         interaction: CommandInteraction,
-        reason: string
+        reason: string,
+        language: Language = "en"
     ): Promise<OperationResult> {
+        const localization: TimeoutManagerLocalization = this.getLocalization(language);
+
         if (!this.isUserTimeouted(member)) {
             return this.createOperationResult(
                 false,
-                "the user is not timeouted"
+                localization.getTranslation("userNotTimeouted")
             );
         }
 
         if (reason.length > 1500) {
             return this.createOperationResult(
                 false,
-                "timeout reason is too long; maximum is 1500 characters"
+                localization.getTranslation("untimeoutReasonTooLong")
             );
         }
 
         const guildConfig: GuildPunishmentConfig | null =
             await this.punishmentDb.getGuildConfig(member.guild);
 
+        const punishmentManagerLocalization: PunishmentManagerLocalization = this.getPunishmentManagerLocalization(language);
+
         if (!guildConfig) {
             return this.createOperationResult(
                 false,
-                this.logChannelNotFoundReject
+                punishmentManagerLocalization.getTranslation(this.logChannelNotFoundReject)
             );
         }
 
@@ -220,7 +258,7 @@ export abstract class TimeoutManager extends PunishmentManager {
         if (!(logChannel instanceof TextChannel)) {
             return this.createOperationResult(
                 false,
-                this.logChannelNotValidReject
+                punishmentManagerLocalization.getTranslation(this.logChannelNotValidReject)
             );
         }
 
@@ -229,24 +267,43 @@ export abstract class TimeoutManager extends PunishmentManager {
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL({ dynamic: true })!,
             })
-            .setTitle("Untimeout executed")
+            .setTitle(localization.getTranslation("untimeoutExecuted"))
             .setFooter({
-                text: `User ID: ${member.id} | Channel ID: ${interaction.channel?.id}`,
+                text: `${localization.getTranslation("userId")}: ${member.id} | ${localization.getTranslation("channelId")}: ${interaction.channel?.id}`,
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} in ${interaction.channel}**\n\n` +
-                    `=========================\n\n` +
-                    `**Reason**:\n` +
-                    reason
+                `**${member} ${StringHelper.formatString(localization.getTranslation("inChannel"), interaction.channel!.toString())}**\n\n` +
+                `=========================\n\n` +
+                `**${localization.getTranslation("reason")}**:\n` +
+                reason
+            );
+
+        const userLocalization: TimeoutManagerLocalization = this.getLocalization(await CommandHelper.getUserPreferredLocale(member.id));
+
+        const userUntimeoutEmbed: MessageEmbed = new MessageEmbed()
+            .setAuthor({
+                name: interaction.user.tag,
+                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+            })
+            .setTitle(userLocalization.getTranslation("untimeoutExecuted"))
+            .setFooter({
+                text: `${userLocalization.getTranslation("userId")}: ${member.id} | ${userLocalization.getTranslation("channelId")}: ${interaction.channel?.id}`,
+            })
+            .setTimestamp(new Date())
+            .setDescription(
+                `**${member} ${StringHelper.formatString(userLocalization.getTranslation("inChannel"), interaction.channel!.toString())}**\n\n` +
+                `=========================\n\n` +
+                `**${userLocalization.getTranslation("reason")}**:\n` +
+                reason
             );
 
         await logChannel.send({ embeds: [untimeoutEmbed] });
 
         await this.notifyMember(
             member,
-            `Hey, you were untimeouted for ${reason}.`,
-            untimeoutEmbed
+            StringHelper.formatString(userLocalization.getTranslation("untimeoutUserNotification"), reason),
+            userUntimeoutEmbed
         );
 
         await member.disableCommunicationUntil(null, reason);
@@ -357,5 +414,14 @@ export abstract class TimeoutManager extends PunishmentManager {
             content: MessageCreator.createWarn(content),
             embeds: [embed],
         });
+    }
+
+    /**
+     * Gets the localization of this manager utility.
+     * 
+     * @param language The language to localize.
+     */
+    private static getLocalization(language: Language): TimeoutManagerLocalization {
+        return new TimeoutManagerLocalization(language);
     }
 }

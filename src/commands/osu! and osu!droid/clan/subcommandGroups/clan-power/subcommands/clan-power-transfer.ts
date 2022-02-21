@@ -1,4 +1,3 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -8,8 +7,15 @@ import { PowerupType } from "@alice-types/clan/PowerupType";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const from: User = interaction.options.getUser("fromclan", true);
 
     const to: User = interaction.options.getUser("toclan", true);
@@ -25,7 +31,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!fromClan) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.userToTransferFromNotInClan
+                localization.getTranslation("userToTransferFromNotInClan")
             ),
         });
     }
@@ -33,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!fromClan.isMatch) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanToTransferFromNotInMatchMode
+                localization.getTranslation("clanToTransferFromNotInMatchMode")
             ),
         });
     }
@@ -44,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!toClan) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.userToTransferToNotInClan
+                localization.getTranslation("userToTransferToNotInClan")
             ),
         });
     }
@@ -52,7 +58,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!toClan.isMatch) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanToTransferToNotInMatchMode
+                localization.getTranslation("clanToTransferToNotInMatchMode")
             ),
         });
     }
@@ -86,7 +92,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         allResponses.push(
             MessageCreator.createPrefixedMessage(
-                clanStrings.clanHasPowerupActive,
+                localization.getTranslation("clanHasPowerupActive"),
                 Symbols.downArrow,
                 fromClan.name,
                 powerup
@@ -127,7 +133,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         allResponses.push(
             MessageCreator.createPrefixedMessage(
-                clanStrings.clanHasPowerupActive,
+                localization.getTranslation("clanHasPowerupActive"),
                 Symbols.upArrow,
                 toClan.name,
                 powerup
@@ -170,14 +176,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.clanPowerTransferConfirmation,
+                localization.getTranslation("clanPowerTransferConfirmation"),
                 totalGivenPower.toLocaleString(),
                 fromClan.name,
                 toClan.name
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        language
     );
 
     if (!confirmation) {
@@ -202,7 +209,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!fromClanResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanPowerTransferFailed,
+                localization.getTranslation("clanPowerTransferFailed"),
                 fromClanResult.reason!
             ),
         });
@@ -213,7 +220,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!toClanResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanPowerTransferFailed,
+                localization.getTranslation("clanPowerTransferFailed"),
                 toClanResult.reason!
             ),
         });
@@ -221,7 +228,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.clanPowerTransferSuccessful,
+            localization.getTranslation("clanPowerTransferSuccessful"),
             totalGivenPower.toLocaleString(),
             fromClan.name,
             toClan.name

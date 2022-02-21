@@ -18,14 +18,16 @@ import {
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { TournamentMapLengthInfo } from "../aliceDb/TournamentMapLengthInfo";
 import { TournamentMappool } from "./TournamentMappool";
+import { Language } from "@alice-localization/base/Language";
+import { TournamentMatchLocalization } from "@alice-localization/database/utils/elainaDb/TournamentMatchLocalization";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 /**
  * Represents a tournament match.
  */
 export class TournamentMatch
     extends Manager
-    implements DatabaseTournamentMatch
-{
+    implements DatabaseTournamentMatch {
     matchid: string;
     channelId: Snowflake;
     name: string;
@@ -136,8 +138,9 @@ export class TournamentMatch
      *
      * @param scores The scores to verify.
      * @param map The beatmap data to verify for.
+     * @param language The locale of the user who attempted to verify a team's score. Defaults to English.
      */
-    verifyTeamScore(scores: Score[], map: MainBeatmapData): OperationResult {
+    verifyTeamScore(scores: Score[], map: MainBeatmapData, language: Language = "en"): OperationResult {
         if (map[0] !== "fm") {
             return this.createOperationResult(true);
         }
@@ -151,7 +154,7 @@ export class TournamentMatch
                         m instanceof ModHardRock
                 )
             ),
-            "No team members enabled HD/HR/EZ"
+            this.getLocalization(language).getTranslation("teamMembersIncorrectFMmod")
         );
     }
 
@@ -162,15 +165,19 @@ export class TournamentMatch
      * @param map The beatmap data to verify for.
      * @param teamScoreStatus Whether the team fulfills the criteria of submitting a score.
      * @param forcePR Whether this match enforces the PR mod.
+     * @param language The locale of the user who attempted to verify the score. Defaults to English.
      */
     async verifyScore(
         score: Score,
         map: MainBeatmapData,
         teamScoreStatus: boolean,
-        forcePR?: boolean
+        forcePR?: boolean,
+        language: Language = "en"
     ): Promise<OperationResult> {
+        const localization: TournamentMatchLocalization = this.getLocalization(language);
+
         if (score.hash !== map[3]) {
-            return this.createOperationResult(false, "Score not found");
+            return this.createOperationResult(false, localization.getTranslation("scoreNotFound"));
         }
 
         let mods: Mod[] = score.mods;
@@ -181,20 +188,23 @@ export class TournamentMatch
         ) {
             return this.createOperationResult(
                 false,
-                forcePR ? "NFPR is not used" : "NF is not used"
+                StringHelper.formatString(
+                    localization.getTranslation("modsIsNotUsed"),
+                    forcePR ? "NFPR" : "NF"
+                )
             );
         }
 
         await score.downloadReplay();
 
         if (!score.replay || !score.replay.data) {
-            return this.createOperationResult(false, "Replay not found");
+            return this.createOperationResult(false, localization.getTranslation("replayNotFound"));
         }
 
         if (score.replay.data.replayVersion > 4) {
             return this.createOperationResult(
                 false,
-                "Unsupported osu!droid version"
+                localization.getTranslation("unsupportedGameVersion")
             );
         }
 
@@ -208,43 +218,59 @@ export class TournamentMatch
             case "nm":
                 return this.createOperationResult(
                     mods.length === 1,
-                    `Other mods except ${forcePR ? "NFPR" : "NF"} was used`
+                    StringHelper.formatString(
+                        localization.getTranslation("modsExceptNotUsed"),
+                        forcePR ? "NFPR" : "NF"
+                    )
                 );
             case "hd":
                 return this.createOperationResult(
                     mods.length === 2 &&
-                        mods.some((m) => m instanceof ModHidden),
-                    `Other mods except ${forcePR ? "NFHDPR" : "NFHD"} was used`
+                    mods.some((m) => m instanceof ModHidden),
+                    StringHelper.formatString(
+                        localization.getTranslation("modsExceptNotUsed"),
+                        forcePR ? "NFHDHR" : "NFHD"
+                    )
                 );
             case "hr":
                 return this.createOperationResult(
                     mods.length === 2 &&
-                        mods.some((m) => m instanceof ModHardRock),
-                    `Other mods except ${forcePR ? "NFHRPR" : "NFHR"} was used`
+                    mods.some((m) => m instanceof ModHardRock),
+                    StringHelper.formatString(
+                        localization.getTranslation("modsExceptNotUsed"),
+                        forcePR ? "NFHRPR" : "NFHR"
+                    )
                 );
             case "dt":
                 return this.createOperationResult(
                     mods.some((m) => m instanceof ModDoubleTime) &&
-                        mods.length ===
-                            (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
-                    `Other mods except ${forcePR ? "NFDTPR" : "NFDT"} or ${
-                        forcePR ? "NFHDDTPR" : "NFHDDT"
-                    } was used`
+                    mods.length ===
+                    (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
+                    StringHelper.formatString(
+                        localization.getTranslation("modsExceptNotUsed"),
+                        forcePR ? "NF(HD)DTPR" : "NF(HD)DT"
+                    )
                 );
             case "fm":
                 return this.createOperationResult(
                     (mods.length > 1 || teamScoreStatus) &&
-                        speedChangingMods.length === 0,
-                    `${speedChangingMods
-                        .map((m) => m.acronym)
-                        .join("")} was used`
+                    speedChangingMods.length === 0,
+                    StringHelper.formatString(
+                        localization.getTranslation("modsWasUsed"),
+                        speedChangingMods
+                            .map((m) => m.acronym)
+                            .join("")
+                    )
                 );
             case "tb":
                 return this.createOperationResult(
                     mods.length >= 1 && speedChangingMods.length === 0,
-                    `${speedChangingMods
-                        .map((m) => m.acronym)
-                        .join("")} was used`
+                    StringHelper.formatString(
+                        localization.getTranslation("modsWasUsed"),
+                        speedChangingMods
+                            .map((m) => m.acronym)
+                            .join("")
+                    )
                 );
         }
     }
@@ -271,5 +297,14 @@ export class TournamentMatch
             Math.pow(accuracy, 2) * 1e6 * (1 - comboPortion);
 
         return Math.max(0, tempScoreV2 - misses * 5e-3 * tempScoreV2);
+    }
+
+    /**
+     * Gets the localization of this database utility.
+     * 
+     * @param language The language to localize.
+     */
+    private getLocalization(language: Language): TournamentMatchLocalization {
+        return new TournamentMatchLocalization(language);
     }
 }

@@ -2,16 +2,19 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
 import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { VoteLocalization } from "@alice-localization/commands/Tools/VoteLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { voteStrings } from "../voteStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: VoteLocalization = new VoteLocalization(await CommandHelper.getLocale(interaction));
+
     const xpReq: number | null = interaction.options.getInteger("xpreq");
 
     if (xpReq && !NumberHelper.isPositive(xpReq)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(voteStrings.invalidXpReq),
+            content: MessageCreator.createReject(localization.getTranslation("invalidXpReq")),
         });
     }
 
@@ -29,7 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (choices.length <= 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(voteStrings.tooFewChoices),
+            content: MessageCreator.createReject(localization.getTranslation("tooFewChoices")),
         });
     }
 
@@ -41,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (voteInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                voteStrings.ongoingVoteInChannel
+                localization.getTranslation("ongoingVoteInChannel")
             ),
         });
     }
@@ -54,19 +57,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         choices: choices,
     });
 
-    let string: string = `**Topic: ${topic}**\n\n`;
+    let string: string = `**${localization.getTranslation("topic")}: ${topic}**\n\n`;
 
     for (let i = 0; i < choices.length; ++i) {
         const choice: VoteChoice = choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${
-            choice.voters.length
-        }\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length
+            }\`\n\n`;
     }
 
     interaction.editReply({
         content:
-            MessageCreator.createAccept(voteStrings.voteStartSuccess) +
+            MessageCreator.createAccept(localization.getTranslation("voteStartSuccess")) +
             `\n${string}`,
     });
 };

@@ -2,16 +2,19 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, MessageEmbed, User } from "discord.js";
-import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
         return;
     }
+
+    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
@@ -24,10 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (tags.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                tagStrings.userDoesntHaveTags,
-                user.id === interaction.user.id
-                    ? "you don't"
-                    : "this user doesn't"
+                localization.getTranslation(user.id === interaction.user.id ? "selfDoesntHaveTags" : "userDoesntHaveTags")
             ),
         });
     }
@@ -43,12 +43,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         contents: GuildTag[]
     ) => {
         embed.setDescription(
-            `**Tags for ${interaction.user}**\n` +
-                `**Total tags**: ${contents.length}\n\n` +
-                contents
-                    .slice(10 * (page - 1), 10 + 10 * (page - 1))
-                    .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
-                    .join("\n")
+            `**${localization.getTranslation("tagsForUser")} ${interaction.user}**\n` +
+            `**${localization.getTranslation("totalTags")}**: ${contents.length}\n\n` +
+            contents
+                .slice(10 * (page - 1), 10 + 10 * (page - 1))
+                .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
+                .join("\n")
         );
     };
 

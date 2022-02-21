@@ -1,14 +1,17 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Util } from "discord.js";
-import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
         return;
     }
+
+    const localization: TagLocalization = new TagLocalization(await CommandHelper.getLocale(interaction));
 
     const name: string = interaction.options.getString("name", true);
 
@@ -18,13 +21,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.nameTooLong),
+            content: MessageCreator.createReject(localization.getTranslation("nameTooLong")),
         });
     }
 
     if (content.length > 1500) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.contentTooLong),
+            content: MessageCreator.createReject(localization.getTranslation("contentTooLong")),
         });
     }
 
@@ -36,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagStrings.tagExists),
+            content: MessageCreator.createReject(localization.getTranslation("tagExists")),
         });
     }
 
@@ -51,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     interaction.editReply({
-        content: MessageCreator.createAccept(tagStrings.addTagSuccessful, name),
+        content: MessageCreator.createAccept(localization.getTranslation("addTagSuccessful"), name),
     });
 };
 

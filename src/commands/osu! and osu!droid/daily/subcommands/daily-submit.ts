@@ -8,12 +8,18 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: DailyLocalization = new DailyLocalization(language);
+
     const type: ChallengeType =
         <ChallengeType>interaction.options.getString("type") ?? "daily";
 
@@ -25,7 +31,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!challenge) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.noOngoingChallenge
+                localization.getTranslation("noOngoingChallenge")
             ),
         });
     }
@@ -49,17 +55,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!score) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.scoreNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("scoreNotFound")),
         });
     }
 
     const completionStatus: OperationResult =
-        await challenge.checkScoreCompletion(score);
+        await challenge.checkScoreCompletion(score, language);
 
     if (!completionStatus.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                dailyStrings.challengeNotCompleted,
+                localization.getTranslation("challengeNotCompleted"),
                 completionStatus.reason!
             ),
         });
@@ -88,7 +94,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 challenge.points +
                 (challengeData.highestLevel -
                     Math.max(0, bonusLevel - challengeData.highestLevel)) *
-                    2;
+                2;
 
             challengeData.highestLevel = Math.max(
                 bonusLevel,
@@ -142,7 +148,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            dailyStrings.challengeCompleted,
+            localization.getTranslation("challengeCompleted"),
             challenge.challengeid,
             bonusLevel.toLocaleString(),
             pointsGained.toLocaleString(),

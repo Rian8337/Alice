@@ -2,16 +2,19 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { MessageEmbed, Snowflake } from "discord.js";
-import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
         return;
     }
+
+    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
 
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
@@ -21,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!guildConfig) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.noLogChannelConfigured
+                localization.getTranslation("noLogChannelConfigured")
             ),
         });
     }
@@ -33,7 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: interaction.member.displayColor,
     });
 
-    embed.setTitle("Roles with Timeout Immunity");
+    embed.setTitle(localization.getTranslation("rolesWithTimeoutImmunity"));
 
     const onPageChange: OnButtonPageChange = async (
         _,

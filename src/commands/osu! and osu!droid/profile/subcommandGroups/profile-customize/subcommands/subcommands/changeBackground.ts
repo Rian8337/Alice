@@ -1,5 +1,4 @@
 import { Collection, GuildEmoji } from "discord.js";
-import { profileStrings } from "@alice-commands/osu! and osu!droid/profile/profileStrings";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
@@ -12,8 +11,16 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ProfileLocalization = new ProfileLocalization(language);
+
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user
@@ -21,7 +28,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+            ),
         });
     }
 
@@ -35,7 +44,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    "Choose the background that you want to use."
+                    localization.getTranslation("chooseBackground")
                 ),
             },
             backgroundList.map((v) => {
@@ -73,7 +82,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if ((playerInfo?.alicecoins ?? 0) < 500) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    profileStrings.coinsToBuyBackgroundNotEnough,
+                    localization.getTranslation("coinsToBuyBackgroundNotEnough"),
                     coin.toString(),
                     coin.toString(),
                     coin.toString(),
@@ -99,8 +108,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!image) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.profileNotFound,
-                "your"
+                localization.getTranslation("selfProfileNotFound")
             ),
         });
     }
@@ -111,20 +119,21 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             content: MessageCreator.createWarn(
                 isBackgroundOwned
                     ? StringHelper.formatString(
-                          profileStrings.switchBackgroundConfirmation,
-                          interaction.user.toString()
-                      )
+                        localization.getTranslation("switchBackgroundConfirmation"),
+                        interaction.user.toString()
+                    )
                     : StringHelper.formatString(
-                          profileStrings.buyBackgroundConfirmation,
-                          interaction.user.toString(),
-                          coin.toString()
-                      )
+                        localization.getTranslation("buyBackgroundConfirmation"),
+                        interaction.user.toString(),
+                        coin.toString()
+                    )
             ),
             files: [image],
             embeds: [],
         },
         [interaction.user.id],
-        15
+        15,
+        language
     );
 
     if (!confirmation) {
@@ -143,12 +152,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            profileStrings.switchBackgroundSuccess,
-            interaction.user.toString(),
-            bgId,
-            isBackgroundOwned
+            localization.getTranslation("switchBackgroundSuccess") + (isBackgroundOwned
                 ? ""
-                : ` You now have ${coin}\`${playerInfo?.alicecoins}\` Alice coins.`
+                : ` ${StringHelper.formatString(localization.getTranslation("aliceCoinAmount"), coin.toString(), playerInfo!.alicecoins.toLocaleString())}`),
+            interaction.user.toString(),
+            bgId
         ),
         embeds: [],
         files: [],

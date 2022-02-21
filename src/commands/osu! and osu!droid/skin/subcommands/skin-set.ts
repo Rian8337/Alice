@@ -1,10 +1,11 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SkinLocalization } from "@alice-localization/commands/osu! and osu!droid/SkinLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { skinStrings } from "../skinStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const link: string = <string>interaction.options.getString("url");
+    const link: string = interaction.options.getString("url", true);
 
     await DatabaseManager.aliceDb.collections.playerSkins.insertNewSkin(
         interaction.user,
@@ -13,7 +14,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            skinStrings.skinSet,
+            new SkinLocalization(await CommandHelper.getLocale(interaction)).getTranslation("skinSet"),
             interaction.user.toString(),
             link
         ),

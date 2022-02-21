@@ -4,13 +4,20 @@ import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { Collection, GuildMember, Snowflake } from "discord.js";
-import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     let clanName: string;
 
     const allowedConfirmations: Snowflake[] = [];
@@ -22,7 +29,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!staffMembers.has(interaction.user.id)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    Constants.noPermissionReject
+                    new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)
                 ),
             });
         }
@@ -39,7 +46,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!bindInfo) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    Constants.selfNotBindedReject
+                    new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
                 ),
             });
         }
@@ -47,7 +54,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!bindInfo.clan) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    clanStrings.selfIsNotInClan
+                    localization.getTranslation("selfIsNotInClan")
                 ),
             });
         }
@@ -62,7 +69,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clanDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("clanDoesntExist")),
         });
     }
 
@@ -70,7 +77,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!clan.isLeader(interaction.user) && allowedConfirmations.length === 1) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -79,11 +86,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.disbandClanConfirmation
+                localization.getTranslation("disbandClanConfirmation")
             ),
         },
         allowedConfirmations,
-        20
+        20,
+        localization.language
     );
 
     if (!confirmation) {
@@ -95,14 +103,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.disbandClanFailed,
+                localization.getTranslation("disbandClanFailed"),
                 result.reason!
             ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.disbandClanSuccessful),
+        content: MessageCreator.createAccept(localization.getTranslation("disbandClanSuccessful")),
     });
 };
 

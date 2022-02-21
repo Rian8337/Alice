@@ -1,4 +1,3 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
@@ -13,8 +12,11 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildEmoji, MessageEmbed, TextChannel } from "discord.js";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+
     const name: string = interaction.options.getString("name", true);
 
     const powerup: PowerupType = <PowerupType>(
@@ -35,7 +37,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (name.length > 20) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanAuctionNameIsTooLong
+                localization.getTranslation("clanAuctionNameIsTooLong")
             ),
         });
     }
@@ -43,7 +45,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!NumberHelper.isPositive(amount)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.invalidClanAuctionAmount
+                localization.getTranslation("invalidClanAuctionAmount")
             ),
         });
     }
@@ -51,7 +53,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!NumberHelper.isPositive(minBidAmount)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.invalidClanAuctionMinimumBid
+                localization.getTranslation("invalidClanAuctionMinimumBid")
             ),
         });
     }
@@ -59,7 +61,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!NumberHelper.isNumberInRange(duration, 60, 86400, true)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.invalidClanAuctionDuration
+                localization.getTranslation("invalidClanAuctionDuration")
             ),
         });
     }
@@ -71,14 +73,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -93,7 +95,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanAuctionAmountOutOfBounds,
+                localization.getTranslation("clanAuctionAmountOutOfBounds"),
                 (clan.powerups.get(powerup)?.amount ?? 0).toLocaleString()
             ),
         });
@@ -105,7 +107,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (auctionCheck) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.auctionNameIsTaken
+                localization.getTranslation("auctionNameIsTaken")
             ),
         });
     }
@@ -114,11 +116,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.clanAuctionCreateConfirmation
+                localization.getTranslation("clanAuctionCreateConfirmation")
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        localization.language
     );
 
     if (!confirmation) {
@@ -132,7 +135,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanAuctionCreateFailed,
+                localization.getTranslation("clanAuctionCreateFailed"),
                 result.reason!
             ),
         });
@@ -164,7 +167,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const embed: MessageEmbed = EmbedCreator.createClanAuctionEmbed(
         newAuction,
-        coinEmoji
+        coinEmoji,
+        localization.language
     );
 
     embed.spliceFields(embed.fields.length - 1, 1);
@@ -178,7 +182,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createReject(
-            clanStrings.clanAuctionCreateSuccessful
+            localization.getTranslation("clanAuctionCreateSuccessful")
         ),
     });
 };

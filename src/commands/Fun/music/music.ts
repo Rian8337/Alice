@@ -4,18 +4,21 @@ import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember } from "discord.js";
-import { musicStrings } from "./musicStrings";
+import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
+import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
     if (!(<GuildMember>interaction.member).voice.channelId) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.userIsNotInVoiceChannel
+                new MusicLocalization(language).getTranslation("userIsNotInVoiceChannel")
             ),
         });
     }
 
-    CommandHelper.runSubcommandOrGroup(interaction);
+    CommandHelper.runSubcommandOrGroup(interaction, language);
 };
 
 export const category: Command["category"] = CommandCategory.FUN;

@@ -13,9 +13,12 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { rankedStatus, RequestResponse } from "@rian8337/osu-base";
-import { mapsearchStrings } from "./mapsearchStrings";
+import { MapsearchLocalization } from "@alice-localization/commands/osu! and osu!droid/MapsearchLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: MapsearchLocalization = new MapsearchLocalization(await CommandHelper.getLocale(interaction));
+
     // Documentation: https://docs.qq.com/doc/DS0lDWndpc0FlVU5B.
     // Defaults to std, type "search for", limit at 100 beatmaps.
     let url: string = "https://api.sayobot.cn/beatmaplist?T=4&L=100&M=1";
@@ -30,9 +33,8 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction.options.data.filter((v) => v.name !== "keyword").length > 0
     ) {
         const getInputRange = (mainstr: string): string => {
-            return `${interaction.options.getNumber(`min${mainstr}`) ?? 0}~${
-                interaction.options.getNumber(`max${mainstr}`) ?? ""
-            }`;
+            return `${interaction.options.getNumber(`min${mainstr}`) ?? 0}~${interaction.options.getNumber(`max${mainstr}`) ?? ""
+                }`;
         };
 
         url +=
@@ -43,10 +45,9 @@ export const run: Command["run"] = async (_, interaction) => {
             `HP:${getInputRange("hp")},` +
             `length:${DateTimeFormatHelper.DHMStoSeconds(
                 interaction.options.getString("minduration") ?? "0"
-            )}~${
-                DateTimeFormatHelper.DHMStoSeconds(
-                    interaction.options.getString("minduration") ?? ""
-                ) || ""
+            )}~${DateTimeFormatHelper.DHMStoSeconds(
+                interaction.options.getString("minduration") ?? ""
+            ) || ""
             },` +
             `BPM:${getInputRange("bpm")}` +
             'end"';
@@ -57,7 +58,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (result.statusCode !== 200) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapsearchStrings.requestFailed
+                localization.getTranslation("requestFailed")
             ),
         });
     }
@@ -69,7 +70,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (beatmaps.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapsearchStrings.noBeatmapsFound
+                localization.getTranslation("noBeatmapsFound")
             ),
         });
     }
@@ -77,11 +78,11 @@ export const run: Command["run"] = async (_, interaction) => {
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
-        footerText: "Service provided by Sayobot",
+        footerText: localization.getTranslation("serviceProvider"),
     });
 
     embed.setDescription(
-        `**Beatmaps Found**: ${data.results.toLocaleString()}`
+        `**${localization.getTranslation("beatmapsFound")}**: ${data.results.toLocaleString()}`
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -101,9 +102,9 @@ export const run: Command["run"] = async (_, interaction) => {
                     status =
                         rankedStatus[stat] !== "WIP"
                             ? StringHelper.capitalizeString(
-                                  rankedStatus[stat],
-                                  true
-                              )
+                                rankedStatus[stat],
+                                true
+                            )
                             : rankedStatus[stat];
                     break;
                 }
@@ -111,29 +112,20 @@ export const run: Command["run"] = async (_, interaction) => {
 
             embed.addField(
                 `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`,
-                `**Download**: [osu!](https://osu.ppy.sh/d/${
-                    d.sid
-                }) [(no video)](https://osu.ppy.sh/d/${
-                    d.sid
-                }n) - [Chimu](https://chimu.moe/en/d/${
-                    d.sid
-                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
-                    d.sid
-                }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${
-                    d.sid
-                }) - [Beatconnect](https://beatconnect.io/b/${
-                    d.sid
-                }/) - [Nerina](https://nerina.pw/d/${d.sid})${
-                    d.approved >= rankedStatus.RANKED &&
+                `**${localization.getTranslation("download")}**: [osu!](https://osu.ppy.sh/d/${d.sid
+                }) [(no video)](https://osu.ppy.sh/d/${d.sid
+                }n) - [Chimu](https://chimu.moe/en/d/${d.sid
+                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${d.sid
+                }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid
+                }) - [Beatconnect](https://beatconnect.io/b/${d.sid
+                }/) - [Nerina](https://nerina.pw/d/${d.sid})${d.approved >= rankedStatus.RANKED &&
                     d.approved !== rankedStatus.QUALIFIED
-                        ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})`
-                        : ""
+                    ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})`
+                    : ""
                 }\n**Last Update**: ${new Date(
                     d.lastupdate * 1000
-                ).toUTCString()} | **${status}**\n${
-                    Symbols.heart
-                } **${d.favourite_count.toLocaleString()}** - ${
-                    Symbols.playButton
+                ).toUTCString()} | **${status}**\n${Symbols.heart
+                } **${d.favourite_count.toLocaleString()}** - ${Symbols.playButton
                 } **${d.play_count.toLocaleString()}**`
             );
         }

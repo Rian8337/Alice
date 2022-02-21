@@ -9,12 +9,19 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { recent5Strings } from "./recent5Strings";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Recent5Localization } from "@alice-localization/commands/osu! and osu!droid/Recent5Localization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: Recent5Localization = new Recent5Localization(language);
+
     if (interaction.options.data.length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recent5Strings.tooManyOptions),
+            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
         });
     }
 
@@ -45,7 +52,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.userNotBindedReject
+                        new ConstantsLocalization(language).getTranslation(Constants.userNotBindedReject)
                     ),
                 });
             }
@@ -59,7 +66,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.selfNotBindedReject
+                        new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
                     ),
                 });
             }
@@ -69,19 +76,19 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!player.username) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recent5Strings.playerNotFound),
+            content: MessageCreator.createReject(localization.getTranslation("playerNotFound")),
         });
     }
 
     if (player.recentPlays.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                recent5Strings.playerHasNoRecentPlays
+                localization.getTranslation("playerHasNoRecentPlays")
             ),
         });
     }
 
-    ScoreDisplayHelper.showRecentPlays(interaction, player);
+    ScoreDisplayHelper.showRecentPlays(interaction, player, language);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;

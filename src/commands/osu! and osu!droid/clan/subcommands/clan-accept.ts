@@ -5,9 +5,15 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
-import { clanStrings } from "../clanStrings";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const toAccept: User = interaction.options.getUser("user", true);
 
     const clan: Clan | null =
@@ -17,14 +23,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -33,24 +39,25 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.acceptClanInvitationConfirmation,
+                localization.getTranslation("acceptClanInvitationConfirmation"),
                 toAccept.toString()
             ),
         },
         [toAccept.id],
-        20
+        20,
+        language
     );
 
     if (!confirmation) {
         return;
     }
 
-    const firstResult: OperationResult = await clan.addMember(toAccept);
+    const firstResult: OperationResult = await clan.addMember(toAccept, language);
 
     if (!firstResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.acceptClanInvitationFailed,
+                localization.getTranslation("acceptClanInvitationFailed"),
                 toAccept.toString(),
                 firstResult.reason!
             ),
@@ -62,7 +69,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.acceptClanInvitationFailed,
+                localization.getTranslation("acceptClanInvitationFailed"),
                 toAccept.toString(),
                 finalResult.reason!
             ),
@@ -71,7 +78,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.acceptClanInvitationSuccessful,
+            localization.getTranslation("acceptClanInvitationSuccessful"),
             toAccept.toString(),
             clan.name
         ),

@@ -3,7 +3,8 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { maintenanceStrings } from "./maintenanceStrings";
+import { MaintenanceLocalization } from "@alice-localization/commands/Bot Creators/MaintenanceLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
     const reason: string = interaction.options.getString("reason") ?? "Unknown";
@@ -21,7 +22,7 @@ export const run: Command["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            maintenanceStrings.maintenanceToggle,
+            new MaintenanceLocalization(await CommandHelper.getLocale(interaction)).getTranslation("maintenanceToggle"),
             String(Config.maintenance),
             Config.maintenanceReason
         ),

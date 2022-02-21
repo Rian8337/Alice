@@ -2,12 +2,15 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
 import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { VoteLocalization } from "@alice-localization/commands/Tools/VoteLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { voteStrings } from "../voteStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: VoteLocalization = new VoteLocalization(await CommandHelper.getLocale(interaction));
+
     const voteInfo: Voting | null =
         await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
             interaction.channel!.id
@@ -16,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!voteInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                voteStrings.noOngoingVoteInChannel
+                localization.getTranslation("noOngoingVoteInChannel")
             ),
         });
     }
@@ -34,7 +37,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(voteStrings.invalidVoteChoice),
+            content: MessageCreator.createReject(localization.getTranslation("invalidVoteChoice")),
         });
     }
 
@@ -48,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (pickedChoice === choiceIndex) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                voteStrings.voteChoiceIsSameAsBefore
+                localization.getTranslation("voteChoiceIsSameAsBefore")
             ),
         });
     }
@@ -62,7 +65,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (userXP === null) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    voteStrings.cannotRetrieveTatsuXP
+                    localization.getTranslation("cannotRetrieveTatsuXP")
                 ),
             });
         }
@@ -70,7 +73,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (userXP < voteInfo.xpReq) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    voteStrings.tatsuXPTooSmall
+                    localization.getTranslation("tatsuXPTooSmall")
                 ),
             });
         }
@@ -90,28 +93,34 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { $set: { choices: choices } }
     );
 
-    let string: string = `**Topic: ${voteInfo.topic}**\n\n`;
+    let string: string = `**${localization.getTranslation("topic")}: ${voteInfo.topic}**\n\n`;
 
     for (let i = 0; i < voteInfo.choices.length; ++i) {
         const choice: VoteChoice = voteInfo.choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${
-            choice.voters.length
-        }\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length
+            }\`\n\n`;
     }
 
-    interaction.editReply({
-        content:
-            MessageCreator.createAccept(
-                voteStrings.voteRegistered,
-                interaction.user.toString(),
-                choiceIndex === -1
-                    ? "your vote has been registered"
-                    : `your vote has been moved from option \`${
-                          choiceIndex + 1
-                      }\` to \`${pickedChoice + 1}\``
-            ) + `\n${string}`,
-    });
+    if (choiceIndex === -1) {
+        interaction.editReply({
+            content:
+                MessageCreator.createAccept(
+                    localization.getTranslation("voteRegistered"),
+                    interaction.user.toString()
+                ) + `\n${string}`,
+        });
+    } else {
+        interaction.editReply({
+            content:
+                MessageCreator.createAccept(
+                    localization.getTranslation("voteMoved"),
+                    interaction.user.toString(),
+                    (choiceIndex + 1).toString(),
+                    (pickedChoice + 1).toString()
+                ) + `\n${string}`,
+        });
+    }
 };
 
 export const config: Subcommand["config"] = {

@@ -1,12 +1,15 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/WhitelistLocalization";
 import { WhitelistStatus } from "@alice-types/dpp/WhitelistStatus";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { MapInfo } from "@rian8337/osu-base";
-import { whitelistStrings } from "../whitelistStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: WhitelistLocalization = new WhitelistLocalization(await CommandHelper.getLocale(interaction));
+
     // Prioritize beatmap ID over hash
     const beatmapID: number = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap") ?? ""
@@ -18,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapID && !hash) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                whitelistStrings.noCachedBeatmapFound
+                localization.getTranslation("noCachedBeatmapFound")
             ),
         });
     }
@@ -31,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                whitelistStrings.beatmapNotFound
+                localization.getTranslation("beatmapNotFound")
             ),
         });
     }
@@ -39,7 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                whitelistStrings.beatmapDoesntNeedWhitelist
+                localization.getTranslation("beatmapDoesntNeedWhitelist")
             ),
         });
     }
@@ -51,27 +54,27 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         case "updated":
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    whitelistStrings.whitelistStatus,
+                    localization.getTranslation("whitelistStatus"),
                     beatmapInfo.fullTitle,
-                    "whitelisted and updated"
+                    localization.getTranslation("whitelistedAndUpdated")
                 ),
             });
             break;
         case "whitelisted":
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    whitelistStrings.whitelistStatus,
+                    localization.getTranslation("whitelistStatus"),
                     beatmapInfo.fullTitle,
-                    "whitelisted, but not updated"
+                    localization.getTranslation("whitelistedNotUpdated")
                 ),
             });
             break;
         case "not whitelisted":
             interaction.editReply({
                 content: MessageCreator.createAccept(
-                    whitelistStrings.whitelistStatus,
+                    localization.getTranslation("whitelistStatus"),
                     beatmapInfo.fullTitle,
-                    "not whitelisted"
+                    localization.getTranslation("notWhitelisted")
                 ),
             });
             break;

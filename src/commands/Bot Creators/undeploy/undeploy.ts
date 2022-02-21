@@ -3,9 +3,12 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommand } from "discord.js";
-import { undeployStrings } from "./undeployStrings";
+import { UndeployLocalization } from "@alice-localization/commands/Bot Creators/UndeployLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
+    const localization: UndeployLocalization = new UndeployLocalization(await CommandHelper.getLocale(interaction));
+
     const commandName: string = interaction.options.getString("command", true);
 
     const isDebug: boolean = interaction.options.getBoolean("debug") ?? false;
@@ -23,7 +26,7 @@ export const run: Command["run"] = async (client, interaction) => {
     if (!command) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                undeployStrings.commandNotFound
+                localization.getTranslation("commandNotFound")
             ),
         });
     }
@@ -34,7 +37,7 @@ export const run: Command["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            undeployStrings.commandUndeploySuccessful,
+            localization.getTranslation("commandUndeploySuccessful"),
             commandName
         ),
     });

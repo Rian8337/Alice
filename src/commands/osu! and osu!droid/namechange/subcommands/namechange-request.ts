@@ -3,13 +3,20 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { namechangeStrings } from "../namechangeStrings";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Language } from "@alice-localization/base/Language";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: NamechangeLocalization = new NamechangeLocalization(language);
+
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user
@@ -17,7 +24,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.selfNotBindedReject),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(Constants.selfNotBindedReject)
+            ),
         });
     }
 
@@ -30,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (!nameChange.isProcessed) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    namechangeStrings.activeRequestExists
+                    localization.getTranslation("activeRequestExists")
                 ),
             });
         }
@@ -38,7 +47,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (nameChange?.cooldown > Math.floor(Date.now() / 1000)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    namechangeStrings.requestCooldownNotExpired,
+                    localization.getTranslation("requestCooldownNotExpired"),
                     new Date(nameChange.cooldown * 1000).toUTCString()
                 ),
             });
@@ -50,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!player.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.currentBindedAccountDoesntExist
+                localization.getTranslation("currentBindedAccountDoesntExist")
             ),
         });
     }
@@ -60,14 +69,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (email !== player.email) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.emailNotEqualToBindedAccount
+                localization.getTranslation("emailNotEqualToBindedAccount")
             ),
         });
     }
 
-    const newUsername: string = <string>(
-        interaction.options.getString("newusername")
-    );
+    const newUsername: string = interaction.options.getString("newusername", true);
 
     if (
         StringHelper.hasUnicode(newUsername) ||
@@ -75,7 +82,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.newUsernameContainsUnicode
+                localization.getTranslation("newUsernameContainsUnicode")
             ),
         });
     }
@@ -83,7 +90,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!NumberHelper.isNumberInRange(newUsername.length, 2, 20, true)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.newUsernameTooLong
+                localization.getTranslation("newUsernameTooLong")
             ),
         });
     }
@@ -95,9 +102,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (newPlayer.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                namechangeStrings.newNameAlreadyTaken
+                localization.getTranslation("newNameAlreadyTaken")
             ),
-        });
+        }); 2
     }
 
     await DatabaseManager.aliceDb.collections.nameChange.requestNameChange(
@@ -108,7 +115,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(namechangeStrings.requestSuccess),
+        content: MessageCreator.createAccept(localization.getTranslation("requestSuccess")),
     });
 };
 

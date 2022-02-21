@@ -4,6 +4,8 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { DroidProfileLocalization } from "@alice-localization/events/messageCreate/DroidProfileLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -33,9 +35,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
         message.channel.send({
             content: MessageCreator.createAccept(
-                `osu!droid profile for ${
-                    player.username
-                }:\n<${ProfileManager.getProfileLink(uid)}>`
+                new DroidProfileLocalization(await CommandHelper.getLocale(message.author)).getTranslation("droidProfile"),
+                `${player.username}:\n<${ProfileManager.getProfileLink(uid)}>`
             ),
             files: [profileImage],
         });

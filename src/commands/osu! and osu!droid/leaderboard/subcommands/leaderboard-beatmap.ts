@@ -11,7 +11,6 @@ import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalc
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Collection, MessageEmbed, MessageOptions } from "discord.js";
-import { leaderboardStrings } from "../leaderboardStrings";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { Score } from "@rian8337/osu-droid-utilities";
@@ -23,8 +22,12 @@ import {
     OsuStarRating,
 } from "@rian8337/osu-difficulty-calculator";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: LeaderboardLocalization = new LeaderboardLocalization(await CommandHelper.getLocale(interaction));
+
     const beatmapID: number = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap") ?? ""
     )[0];
@@ -38,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapID && !hash) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                leaderboardStrings.noBeatmapFound
+                localization.getTranslation("noBeatmapFound")
             ),
         });
     }
@@ -46,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!NumberHelper.isPositive(page)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                leaderboardStrings.invalidPage
+                localization.getTranslation("invalidPage")
             ),
         });
     }
@@ -84,7 +87,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!firstPageScores[0]) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                leaderboardStrings.beatmapHasNoScores
+                localization.getTranslation("beatmapHasNoScores")
             ),
         });
     }
@@ -104,18 +107,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
             beatmapInfo
                 ? droidCalculationCache.get(score.scoreID) ??
-                  (await DroidBeatmapDifficultyHelper.calculateScorePerformance(
-                      score,
-                      false
-                  ))
+                (await DroidBeatmapDifficultyHelper.calculateScorePerformance(
+                    score,
+                    false
+                ))
                 : null;
 
         const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
             beatmapInfo
                 ? osuCalculationCache.get(score.scoreID) ??
-                  (await OsuBeatmapDifficultyHelper.calculateScorePerformance(
-                      score
-                  ))
+                (await OsuBeatmapDifficultyHelper.calculateScorePerformance(
+                    score
+                ))
                 : null;
 
         if (!droidCalculationCache.has(score.scoreID)) {
@@ -138,17 +141,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return (
             `${arrow} **${BeatmapManager.getRankEmote(
                 <ScoreRank>score.rank
-            )}** ${
-                calcResult[0] && calcResult[1]
-                    ? `${arrow} **${calcResult[0].result.total.toFixed(
-                          2
-                      )}DPP | ${calcResult[1].result.total.toFixed(2)}PP**`
-                    : ""
+            )}** ${calcResult[0] && calcResult[1]
+                ? `${arrow} **${calcResult[0].result.total.toFixed(
+                    2
+                )}DPP | ${calcResult[1].result.total.toFixed(2)}PP**`
+                : ""
             } ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-            `${arrow} ${score.score.toLocaleString()} ${arrow} ${
-                score.combo
-            }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
-                score.accuracy.n50
+            `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo
+            }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50
             }/${score.accuracy.nmiss}]\n` +
             `\`${score.date.toUTCString()}\``
         );
@@ -176,21 +176,21 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const noModDroidCalcResult: StarRatingCalculationResult<DroidStarRating> | null =
             beatmapInfo
                 ? await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
-                      beatmapInfo.hash,
-                      noModCalcParams
-                  )
+                    beatmapInfo.hash,
+                    noModCalcParams
+                )
                 : null;
 
         const noModOsuCalcResult: StarRatingCalculationResult<OsuStarRating> | null =
             beatmapInfo
                 ? await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
-                      beatmapInfo.hash,
-                      noModCalcParams
-                  )
+                    beatmapInfo.hash,
+                    noModCalcParams
+                )
                 : null;
 
         const embedOptions: MessageOptions = beatmapInfo
-            ? EmbedCreator.createBeatmapEmbed(beatmapInfo)
+            ? EmbedCreator.createBeatmapEmbed(beatmapInfo, undefined, localization.language)
             : { embeds: [EmbedCreator.createNormalEmbed()] };
 
         const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
@@ -202,20 +202,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         } else if (noModDroidCalcResult && noModOsuCalcResult) {
             embed.setTitle(
                 embed.title +
-                    ` [${noModDroidCalcResult.result.total.toFixed(2)}${
-                        Symbols.star
-                    } | ${noModOsuCalcResult.result.total.toFixed(2)}${
-                        Symbols.star
-                    }]`
+                ` [${noModDroidCalcResult.result.total.toFixed(2)}${Symbols.star
+                } | ${noModOsuCalcResult.result.total.toFixed(2)}${Symbols.star
+                }]`
             );
         }
 
         embed.addField(
-            "**Top Score**",
-            `**${topScore.username}${
-                topScore.mods.length > 0
-                    ? ` (${topScore.getCompleteModString()})`
-                    : ""
+            `**${localization.getTranslation("topScore")}**`,
+            `**${topScore.username}${topScore.mods.length > 0
+                ? ` (${topScore.getCompleteModString()})`
+                : ""
             }**\n` + (await getScoreDescription(topScore))
         );
 
@@ -228,10 +225,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         for (const score of displayedScores) {
             embed.addField(
-                `**#${++i} ${score.username}${
-                    score.mods.length > 0
-                        ? ` (${score.getCompleteModString()})`
-                        : ""
+                `**#${++i} ${score.username}${score.mods.length > 0
+                    ? ` (${score.getCompleteModString()})`
+                    : ""
                 }**`,
                 await getScoreDescription(score)
             );

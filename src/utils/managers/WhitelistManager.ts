@@ -11,6 +11,8 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { UpdateFilter } from "mongodb";
+import { WhitelistManagerLocalization } from "@alice-localization/utils/managers/WhitelistManagerLocalization";
+import { Language } from "@alice-localization/base/Language";
 
 /**
  * A manager for whitelisted and blacklisted beatmaps.
@@ -42,16 +44,20 @@ export abstract class WhitelistManager extends Manager {
      *
      * @param beatmap The beatmap to blacklist.
      * @param reason The reason for blacklisting the beatmap.
+     * @param language The locale of the user who attemped to blacklist the beatmap. Defaults to English.
      * @returns An object containing information about the operation.
      */
     static async blacklist(
         beatmap: MapInfo,
-        reason: string
+        reason: string,
+        language: Language = "en"
     ): Promise<OperationResult> {
+        const localization: WhitelistManagerLocalization = this.getLocalization(language);
+
         if (await this.isBlacklisted(beatmap.beatmapID)) {
             return this.createOperationResult(
                 false,
-                "Beatmap is already blacklisted"
+                localization.getTranslation("beatmapIsBlacklisted")
             );
         }
 
@@ -63,7 +69,7 @@ export abstract class WhitelistManager extends Manager {
         await DPPHelper.deletePlays(beatmap.hash);
 
         const embedOptions: MessageOptions =
-            EmbedCreator.createBeatmapEmbed(beatmap);
+            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -79,13 +85,16 @@ export abstract class WhitelistManager extends Manager {
      * Unblacklists a beatmap.
      *
      * @param beatmap The beatmap to unblacklist.
+     * @param language The locale of the user who attempted to unblacklist the beatmap. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    static async unblacklist(beatmap: MapInfo): Promise<OperationResult> {
+    static async unblacklist(beatmap: MapInfo, language: Language = "en"): Promise<OperationResult> {
+        const localization: WhitelistManagerLocalization = this.getLocalization(language);
+
         if (!(await this.isBlacklisted(beatmap.beatmapID))) {
             return this.createOperationResult(
                 false,
-                "Beatmap is not blacklisted"
+                localization.getTranslation("beatmapIsNotGraveyarded")
             );
         }
 
@@ -94,7 +103,7 @@ export abstract class WhitelistManager extends Manager {
         });
 
         const embedOptions: MessageOptions =
-            EmbedCreator.createBeatmapEmbed(beatmap);
+            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -110,13 +119,16 @@ export abstract class WhitelistManager extends Manager {
      * Whitelists a beatmap.
      *
      * @param beatmaps The beatmap to whitelist.
+     * @param language The locale of the user who attempted to blacklist the beatmap. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    static async whitelist(beatmap: MapInfo): Promise<OperationResult> {
+    static async whitelist(beatmap: MapInfo, language: Language = "en"): Promise<OperationResult> {
+        const localization: WhitelistManagerLocalization = this.getLocalization(language);
+
         if (!this.isEligibleForWhitelist(beatmap)) {
             return this.createOperationResult(
                 false,
-                "Beatmap is not graveyarded"
+                localization.getTranslation("beatmapIsNotGraveyarded")
             );
         }
 
@@ -142,7 +154,7 @@ export abstract class WhitelistManager extends Manager {
         );
 
         const embedOptions: MessageOptions =
-            EmbedCreator.createBeatmapEmbed(beatmap);
+            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -158,13 +170,16 @@ export abstract class WhitelistManager extends Manager {
      * Unwhitelists a beatmap.
      *
      * @param beatmap The beatmap to unwhitelist.
+     * @param language The locale of the user who attempted to unwhitelist the beatmap.
      * @returns An object containing information about the operation.
      */
-    static async unwhitelist(beatmap: MapInfo): Promise<OperationResult> {
+    static async unwhitelist(beatmap: MapInfo, language: Language = "en"): Promise<OperationResult> {
+        const localization: WhitelistManagerLocalization = this.getLocalization(language);
+
         if (!this.isEligibleForWhitelist(beatmap)) {
             return this.createOperationResult(
                 false,
-                "Beatmap is not graveyarded"
+                localization.getTranslation("beatmapIsNotGraveyarded")
             );
         }
 
@@ -175,7 +190,7 @@ export abstract class WhitelistManager extends Manager {
         await DPPHelper.deletePlays(beatmap.hash);
 
         const embedOptions: MessageOptions =
-            EmbedCreator.createBeatmapEmbed(beatmap);
+            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -244,5 +259,14 @@ export abstract class WhitelistManager extends Manager {
      */
     private static isEligibleForWhitelist(beatmap: MapInfo): boolean {
         return beatmap.approved === rankedStatus.GRAVEYARD;
+    }
+
+    /**
+     * Gets the localization of this manager.
+     * 
+     * @param language The language to localize. 
+     */
+    private static getLocalization(language: Language): WhitelistManagerLocalization {
+        return new WhitelistManagerLocalization(language);
     }
 }

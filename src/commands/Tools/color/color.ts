@@ -4,15 +4,18 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { colorStrings } from "./colorStrings";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { ColorLocalization } from "@alice-localization/commands/Tools/ColorLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: ColorLocalization = new ColorLocalization(await CommandHelper.getLocale(interaction));
+
     const color: string = interaction.options.getString("hexcode", true);
 
     if (!StringHelper.isValidHexCode(color)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(colorStrings.invalidHexCode),
+            content: MessageCreator.createReject(localization.getTranslation("invalidHexCode")),
         });
     }
 
@@ -28,7 +31,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            colorStrings.showingHexColor,
+            localization.getTranslation("showingHexColor"),
             color
         ),
         files: [attachment],

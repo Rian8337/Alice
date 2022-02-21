@@ -1,14 +1,17 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Role } from "discord.js";
-import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
         return;
     }
+
+    const localization: SettingsLocalization = new SettingsLocalization(await CommandHelper.getLocale(interaction));
 
     const role: Role = interaction.options.getRole("role", true);
 
@@ -20,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!guildConfig || !guildConfig.getGuildLogChannel(interaction.guild)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.noLogChannelConfigured
+                localization.getTranslation("noLogChannelConfigured")
             ),
         });
     }
@@ -29,8 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.grantOrRevokeTimeoutImmunitySuccess,
-            "granted",
+            localization.getTranslation("grantTimeoutImmunitySuccess"),
             role.name
         ),
     });

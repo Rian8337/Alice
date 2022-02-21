@@ -1,4 +1,3 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
@@ -8,8 +7,15 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const name: string = interaction.options.getString("name", true);
 
     const amount: number = interaction.options.getInteger("amount", true);
@@ -20,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!auction) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.auctionDoesntExist
+                localization.getTranslation("auctionDoesntExist")
             ),
         });
     }
@@ -28,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!NumberHelper.isPositive(amount)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.invalidClanAuctionBidAmount
+                localization.getTranslation("invalidClanAuctionBidAmount")
             ),
         });
     }
@@ -40,7 +46,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
@@ -52,8 +58,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!playerInfo || playerInfo.alicecoins < amount) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.notEnoughCoins,
-                "bid",
+                localization.getTranslation("notEnoughCoins"),
+                localization.getTranslation("bidToAuction"),
                 amount.toLocaleString()
             ),
         });
@@ -63,11 +69,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.clanAuctionBidConfirmation
+                localization.getTranslation("clanAuctionBidConfirmation")
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        language
     );
 
     if (!confirmation) {
@@ -77,12 +84,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     auction.bid(clan, amount);
 
     const coinDeductionResult: OperationResult =
-        await playerInfo.incrementCoins(-amount);
+        await playerInfo.incrementCoins(-amount, language);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanAuctionBidFailed,
+                localization.getTranslation("clanAuctionBidFailed"),
                 coinDeductionResult.reason!
             ),
         });
@@ -93,7 +100,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanAuctionBidFailed,
+                localization.getTranslation("clanAuctionBidFailed"),
                 finalResult.reason!
             ),
         });
@@ -101,7 +108,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.clanAuctionBidSuccessful
+            localization.getTranslation("clanAuctionBidSuccessful")
         ),
     });
 };

@@ -4,9 +4,11 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { playertrackStrings } from "./playertrackStrings";
+import { PlayertrackLocalization } from "@alice-localization/commands/Bot Creators/PlayertrackLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const localization: PlayertrackLocalization = new PlayertrackLocalization(await CommandHelper.getLocale(interaction));
+
     const uid: number = interaction.options.getInteger("uid", true);
 
     if (
@@ -18,7 +20,7 @@ export const run: Command["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: playertrackStrings.incorrectUid,
+            content: localization.getTranslation("incorrectUid"),
         });
     }
 

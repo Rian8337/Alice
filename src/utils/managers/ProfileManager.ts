@@ -6,6 +6,7 @@ import { ProfileCardCreator } from "@alice-utils/creators/ProfileCardCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
+import { Language } from "@alice-localization/base/Language";
 
 /**
  * A manager for osu!droid accounts' profile.
@@ -32,6 +33,7 @@ export abstract class ProfileManager extends Manager {
      * @param bindInfo The bind information, if available (this will save a request towards bot database).
      * @param playerInfo The database player information, if available (this will save a request towards bot database).
      * @param detailed Whether to give a detailed statistics.
+     * @param language The locale of the user who attempted to get the player's statistics. Defaults to English.
      * @returns An image containing the player's statistics, `null` if the player is not found.
      */
     static async getProfileStatistics(
@@ -40,7 +42,8 @@ export abstract class ProfileManager extends Manager {
         bindInfo?: UserBind | null,
         playerInfo?: PlayerInfo | null,
         rankedScoreInfo?: RankedScore | null,
-        detailed: boolean = false
+        detailed: boolean = false,
+        language: Language = "en"
     ): Promise<Buffer | null> {
         if (bindInfo === undefined) {
             bindInfo =
@@ -77,7 +80,8 @@ export abstract class ProfileManager extends Manager {
             detailed,
             bindInfo,
             rankedScoreInfo,
-            playerInfo
+            playerInfo,
+            language
         ).generateCard();
     }
 
@@ -98,19 +102,24 @@ export abstract class ProfileManager extends Manager {
      * @param uid The uid of the player.
      * @param bindInfo The bind information of the player.
      * @param player The player instance, if available (this will save an API request towards the osu!droid server).
+     * @param language The locale of the user who requested the profile template. Defaults to English.
      * @returns A profile statistics template.
      */
     static async getProfileTemplate(
         uid: number,
         bindInfo: UserBind,
-        player?: Player
+        player?: Player,
+        language: Language = "en"
     ): Promise<Buffer> {
         player ??= await Player.getInformation({ uid: uid });
 
         return new ProfileCardCreator(
             player,
             false,
-            bindInfo
+            bindInfo,
+            undefined,
+            undefined,
+            language
         ).generateTemplateCard();
     }
 }

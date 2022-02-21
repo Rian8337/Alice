@@ -1,7 +1,10 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { Language } from "@alice-localization/base/Language";
+import { MessageButtonCreatorLocalization } from "@alice-localization/utils/creators/MessageButtonCreatorLocalization";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import {
+    BaseCommandInteraction,
     ButtonInteraction,
     CommandInteraction,
     InteractionCollector,
@@ -36,7 +39,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @returns The collector that collects the button-pressing event.
      */
     static createLimitedButtonBasedPaging(
-        interaction: CommandInteraction | MessageComponentInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
         contents: unknown[],
@@ -74,7 +77,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @returns The collector that collects the button-pressing event.
      */
     static createLimitlessButtonBasedPaging(
-        interaction: CommandInteraction | MessageComponentInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
         contents: unknown[],
@@ -104,14 +107,18 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param options Options of the confirmation message.
      * @param users The users who can perform confirmation.
      * @param duration The duration the confirmation button collector will remain active, in seconds.
+     * @param language The locale of the user who attempted to create the confirmation interaction. Defaults to English.
      * @returns A boolean determining whether the user confirmed.
      */
     static async createConfirmation(
         interaction: CommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
-        duration: number
+        duration: number,
+        language: Language = "en"
     ): Promise<boolean> {
+        const localization: MessageButtonCreatorLocalization = this.getLocalization(language);
+
         const buttons: MessageButton[] = this.createConfirmationButtons();
 
         const component: MessageActionRow =
@@ -138,7 +145,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     if (pressed.customId === "yes") {
                         await interaction.editReply({
                             content: MessageCreator.createPrefixedMessage(
-                                "Please wait...",
+                                localization.getTranslation("pleaseWait"),
                                 Symbols.timer
                             ),
                             components: [],
@@ -147,7 +154,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         await interaction.editReply({
                             content:
                                 MessageCreator.createReject(
-                                    "Action cancelled."
+                                    localization.getTranslation("actionCancelled")
                                 ),
                             components: [],
                         });
@@ -160,7 +167,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     }
                 } else {
                     await interaction.editReply({
-                        content: MessageCreator.createReject("Timed out."),
+                        content: MessageCreator.createReject(localization.getTranslation("timedOut")),
                         components: [],
                     });
 
@@ -170,6 +177,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         }, 5 * 1000);
                     }
                 }
+
+                options.components!.pop();
 
                 resolve(collected.first()?.customId === "yes");
             });
@@ -194,7 +203,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @returns The collector that collects the button-pressing event.
      */
     private static async createButtonBasedPaging(
-        interaction: CommandInteraction | MessageComponentInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
         contents: unknown[],
@@ -301,10 +310,14 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 component.setDisabled(true);
             });
 
+            if (pages !== 1) {
+                options.components!.pop();
+            }
+
             try {
                 await interaction.editReply(options);
                 // eslint-disable-next-line no-empty
-            } catch {}
+            } catch { }
         });
 
         return message;
@@ -373,5 +386,14 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 .setLabel("No")
                 .setStyle("DANGER"),
         ];
+    }
+
+    /**
+     * Gets the localization of this creator utility.
+     * 
+     * @param language The language to localize.
+     */
+    private static getLocalization(language: Language): MessageButtonCreatorLocalization {
+        return new MessageButtonCreatorLocalization(language);
     }
 }

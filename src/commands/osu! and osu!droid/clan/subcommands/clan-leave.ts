@@ -2,11 +2,17 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { clanStrings } from "../clanStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
             interaction.user
@@ -14,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
@@ -22,11 +28,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.leaveClanConfirmation
+                localization.getTranslation("leaveClanConfirmation")
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        language
     );
 
     if (!confirmation) {
@@ -34,13 +41,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const firstResult: OperationResult = await clan.removeMember(
-        interaction.user
+        interaction.user, language
     );
 
     if (!firstResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.leaveClanFailed,
+                localization.getTranslation("leaveClanFailed"),
                 firstResult.reason!
             ),
         });
@@ -51,7 +58,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.leaveClanFailed,
+                localization.getTranslation("leaveClanFailed"),
                 finalResult.reason!
             ),
         });
@@ -59,7 +66,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.leaveClanSuccessful,
+            localization.getTranslation("leaveClanSuccessful"),
             clan.name
         ),
     });

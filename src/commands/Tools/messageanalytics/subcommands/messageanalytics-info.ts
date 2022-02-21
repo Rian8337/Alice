@@ -16,8 +16,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { ChannelDataCollectionManager } from "@alice-database/managers/aliceDb/ChannelDataCollectionManager";
-import { messageanalyticsStrings } from "../messageanalyticsStrings";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { MessageanalyticsLocalization, MessageanalyticsStrings } from "@alice-localization/commands/Tools/MessageanalyticsLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**
  * Converts days to milliseconds.
@@ -30,6 +31,8 @@ function daysToMilliseconds(days: number): number {
 }
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: MessageanalyticsLocalization = new MessageanalyticsLocalization(await CommandHelper.getLocale(interaction));
+
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
     const dbManager: ChannelDataCollectionManager =
         DatabaseManager.aliceDb.collections.channelData;
@@ -45,7 +48,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (dateEntries.length !== 3 || dateEntries.some(Number.isNaN)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    messageanalyticsStrings.incorrectDateFormat
+                    localization.getTranslation("incorrectDateFormat")
                 ),
             });
         }
@@ -58,7 +61,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (date.getTime() < guild.createdTimestamp) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                messageanalyticsStrings.dateBeforeGuildCreationError
+                localization.getTranslation("dateBeforeGuildCreationError")
             ),
         });
     }
@@ -66,7 +69,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (date.getTime() > Date.now()) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                messageanalyticsStrings.dateHasntPassed
+                localization.getTranslation("dateHasntPassed")
             ),
         });
     }
@@ -116,7 +119,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (activityData.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                messageanalyticsStrings.noActivityDataOnDate
+                localization.getTranslation("noActivityDataOnDate")
             ),
         });
     }
@@ -150,7 +153,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             continue;
         }
 
-        const msg: string = `${channel}: ${count.toLocaleString()} messages\n`;
+        const msg: string = `${channel}: ${count.toLocaleString()} ${localization.getTranslation("messageCount")}\n`;
 
         if (
             [generalParent, droidParent].includes(<Snowflake>channel.parentId)
@@ -165,15 +168,15 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const activityCategories: ActivityCategory[] = [
         {
-            category: "General Channels",
+            category: localization.getTranslation("generalChannels"),
             description: generalDescription,
         },
         {
-            category: "Language Channels",
+            category: localization.getTranslation("languageChannels"),
             description: languageDescription,
         },
         {
-            category: "Clan Channels",
+            category: localization.getTranslation("clanChannels"),
             description: clansDescription,
         },
     ];
@@ -184,10 +187,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 
     embed.setTitle(
-        `${StringHelper.capitalizeString(
-            type
-        )} channel activity per ${DateTimeFormatHelper.dateToHumanReadable(
-            date
+        `${localization.getTranslation(
+            <keyof MessageanalyticsStrings>type || "overall"
+        )} ${StringHelper.formatString(
+            localization.getTranslation("channelActivity"),
+            DateTimeFormatHelper.dateToHumanReadable(date)
         )}`
     );
 

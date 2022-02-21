@@ -11,16 +11,23 @@ import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { reportStrings } from "./reportStrings";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ReportLocalization } from "@alice-localization/commands/General/ReportLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ReportLocalization = new ReportLocalization(language);
+
     if (
         !interaction.inCachedGuild() ||
         interaction.guildId !== Constants.mainServer
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                Constants.notAvailableInServerReject
+                new ConstantsLocalization(language).getTranslation(Constants.notAvailableInServerReject)
             ),
         });
     }
@@ -32,7 +39,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!toReport) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                reportStrings.userToReportNotFound
+                localization.getTranslation("userToReportNotFound")
             ),
         });
     }
@@ -40,14 +47,14 @@ export const run: Command["run"] = async (_, interaction) => {
     if (toReport.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                reportStrings.userNotReportable
+                localization.getTranslation("userNotReportable")
             ),
         });
     }
 
     if (toReport.id === interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(reportStrings.selfReportError),
+            content: MessageCreator.createReject(localization.getTranslation("selfReportError")),
         });
     }
 
@@ -62,9 +69,9 @@ export const run: Command["run"] = async (_, interaction) => {
     embed
         .setThumbnail(toReport.user.avatarURL({ dynamic: true })!)
         .setDescription(
-            `**Offender**: ${toReport} (${toReport.id})\n` +
-                `**Channel**: ${interaction.channel}\n` +
-                `**Reason**: ${reason}`
+            `**${localization.getTranslation("offender")}**: ${toReport} (${toReport.id})\n` +
+            `**${localization.getTranslation("channel")}**: ${interaction.channel}\n` +
+            `**${localization.getTranslation("reason")}**: ${reason}`
         );
 
     const reportChannel: TextChannel = <TextChannel>(
@@ -82,19 +89,19 @@ export const run: Command["run"] = async (_, interaction) => {
 
     replyEmbed
         .setAuthor({
-            name: "Report Summary",
+            name: localization.getTranslation("reportSummary"),
         })
         .setDescription(
-            `**Offender**: ${toReport} (${toReport.id})\n` +
-                `**Channel**: ${interaction.channel}\n` +
-                `**Reason**: ${reason}\n\n` +
-                `Remember to save your evidence in case it is needed.`
+            `**${localization.getTranslation("offender")}**: ${toReport} (${toReport.id})\n` +
+            `**${localization.getTranslation("channel")}**: ${interaction.channel}\n` +
+            `**${localization.getTranslation("reason")}**: ${reason}\n\n` +
+            localization.getTranslation("saveEvidence")
         );
 
     interaction.user.send({ embeds: [replyEmbed] }).catch(() =>
         interaction.editReply({
             content: MessageCreator.createWarn(
-                reportStrings.reporterDmLocked,
+                localization.getTranslation("reporterDmLocked"),
                 interaction.user.toString()
             ),
         })

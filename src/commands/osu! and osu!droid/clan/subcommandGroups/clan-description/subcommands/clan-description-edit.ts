@@ -1,12 +1,18 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const description: string = interaction.options.getString(
         "description",
         true
@@ -15,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (description.length >= 2000) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanDescriptionTooLong
+                localization.getTranslation("clanDescriptionTooLong")
             ),
         });
     }
@@ -27,14 +33,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -43,23 +49,24 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.editDescriptionConfirmation
+                localization.getTranslation("editDescriptionConfirmation")
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        language
     );
 
     if (!confirmation) {
         return;
     }
 
-    const editDescResult: OperationResult = clan.setDescription(description);
+    const editDescResult: OperationResult = clan.setDescription(description, language);
 
     if (!editDescResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.editDescriptionFailed,
+                localization.getTranslation("editDescriptionFailed"),
                 editDescResult.reason!
             ),
         });
@@ -70,7 +77,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.editDescriptionFailed,
+                localization.getTranslation("editDescriptionFailed"),
                 finalResult.reason!
             ),
         });
@@ -78,7 +85,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.editDescriptionSuccessful
+            localization.getTranslation("editDescriptionSuccessful")
         ),
     });
 };

@@ -5,8 +5,11 @@ import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Snowflake } from "discord.js";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
+    const constantsLocalization: ConstantsLocalization = new ConstantsLocalization(await CommandHelper.getLocale(interaction));
+
     const whitelistedGuilds: Snowflake[] = [
         Constants.mainServer,
         Constants.testingServer,
@@ -19,14 +22,16 @@ export const run: Command["run"] = async (_, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                Constants.notAvailableInServerReject
+                constantsLocalization.getTranslation(Constants.notAvailableInServerReject)
             ),
         });
     }
 
     if (!interaction.member.roles.cache.find((r) => r.name === "Referee")) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject),
+            content: MessageCreator.createReject(
+                constantsLocalization.getTranslation(Constants.noPermissionReject)
+            ),
         });
     }
 

@@ -21,11 +21,11 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     const unbanLog:
         | GuildAuditLogsEntry<
-              "MEMBER_BAN_REMOVE",
-              "MEMBER_BAN_REMOVE",
-              "CREATE",
-              "USER"
-          >
+            "MEMBER_BAN_REMOVE",
+            "MEMBER_BAN_REMOVE",
+            "CREATE",
+            "USER"
+        >
         | undefined = auditLogEntries.entries.first();
 
     if (!unbanLog) {
@@ -60,7 +60,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     embed
         .setTitle("Unban Executed")
-        .setThumbnail(<string>guildBan.user.avatarURL({ dynamic: true }))
+        .setThumbnail(guildBan.user.avatarURL({ dynamic: true })!)
         .addField(
             `Unbanned user: ${guildBan.user.tag}`,
             `User ID: ${guildBan.user.id}`

@@ -4,9 +4,12 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { TextBasedChannel, TextChannel, ThreadChannel } from "discord.js";
-import { matchStrings } from "../matchStrings";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MatchLocalization = new MatchLocalization(await CommandHelper.getLocale(interaction));
+
     const id: string = interaction.options.getString("id", true);
 
     const channel: TextBasedChannel = interaction.channel!;
@@ -14,7 +17,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!(channel instanceof TextChannel)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.invalidChannelToBind
+                localization.getTranslation("invalidChannelToBind")
             ),
         });
     }
@@ -24,7 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!match) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.matchDoesntExist),
+            content: MessageCreator.createReject(localization.getTranslation("matchDoesntExist")),
         });
     }
 
@@ -55,7 +58,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                matchStrings.bindMatchFailed,
+                localization.getTranslation("bindMatchFailed"),
                 result.reason!
             ),
         });
@@ -63,7 +66,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            matchStrings.bindMatchSuccessful,
+            localization.getTranslation("bindMatchSuccessful"),
             id
         ),
     });

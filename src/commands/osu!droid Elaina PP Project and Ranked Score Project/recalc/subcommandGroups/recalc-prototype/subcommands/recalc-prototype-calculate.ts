@@ -3,12 +3,19 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Language } from "@alice-localization/base/Language";
+import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/RecalcLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { RecalculationManager } from "@alice-utils/managers/RecalculationManager";
 import { Snowflake } from "discord.js";
-import { recalcStrings } from "../../../recalcStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: RecalcLocalization = new RecalcLocalization(language);
+
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
@@ -16,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.tooManyOptions),
+            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
         });
     }
 
@@ -43,16 +50,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                !!uid || !!username || !!discordid
+                new ConstantsLocalization(language).getTranslation(!!uid || !!username || !!discordid
                     ? Constants.userNotBindedReject
-                    : Constants.selfNotBindedReject
+                    : Constants.selfNotBindedReject)
             ),
         });
     }
 
     if (await bindInfo.isDPPBanned()) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.userIsDPPBanned),
+            content: MessageCreator.createReject(localization.getTranslation("userIsDPPBanned")),
         });
     }
 
@@ -60,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            recalcStrings.userQueued,
+            localization.getTranslation("userQueued"),
             `uid ${bindInfo.uid}`
         ),
     });

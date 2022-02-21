@@ -1,14 +1,17 @@
-import { musicStrings } from "@alice-commands/Fun/music/musicStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MusicCollection } from "@alice-database/utils/aliceDb/MusicCollection";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MusicLocalization = new MusicLocalization(await CommandHelper.getLocale(interaction));
+
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const collections: Collection<string, MusicCollection> =
@@ -19,8 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (collections.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.userHasNoCollection,
-                user.id === interaction.user.id ? "you have" : "this user has"
+                localization.getTranslation(user.id === interaction.user.id ? "selfHasNoCollection" : "userHasNoCollection")
             ),
         });
     }
@@ -30,6 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
+    // TODO: replace
     embed.setDescription(`Total collections: ${collections.size}`);
 
     const onPageChange: OnButtonPageChange = async (

@@ -4,7 +4,9 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
+import { BirthdayTrackingLocalization } from "@alice-localization/events/ready/BirthdayTrackingLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
 
@@ -112,7 +114,7 @@ export const run: EventUtil["run"] = async (client) => {
             await user
                 .send(
                     MessageCreator.createPrefixedMessage(
-                        "Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.",
+                        new BirthdayTrackingLocalization(await CommandHelper.getLocale(user.id)).getTranslation("happyBirthday"),
                         Symbols.cake
                     )
                 )

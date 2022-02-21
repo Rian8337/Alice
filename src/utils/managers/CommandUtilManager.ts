@@ -4,6 +4,8 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
 import { DisabledEventUtil } from "@alice-interfaces/moderation/DisabledEventUtil";
 import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
+import { Language } from "@alice-localization/base/Language";
+import { CommandUtilManagerLocalization } from "@alice-localization/utils/managers/CommandUtilManagerLocalization";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
@@ -565,5 +567,14 @@ export abstract class CommandUtilManager extends Manager {
         } else {
             this.globallyDisabledCommands.delete(commandName);
         }
+    }
+
+    /**
+     * Gets the localization of this manager utility.
+     * 
+     * @param language The language to localize.
+     */
+    private static getLocalization(language: Language): CommandUtilManagerLocalization {
+        return new CommandUtilManagerLocalization(language);
     }
 }

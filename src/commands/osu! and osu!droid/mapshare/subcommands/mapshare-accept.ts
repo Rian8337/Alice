@@ -5,13 +5,20 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { mapshareStrings } from "../mapshareStrings";
+import { Language } from "@alice-localization/base/Language";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MapshareLocalization = new MapshareLocalization(language);
+
     if (interaction.channelId !== Constants.mapShareChannel) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                Constants.notAvailableInChannelReject
+                new ConstantsLocalization(language).getTranslation(Constants.notAvailableInChannelReject)
             ),
         });
     }
@@ -23,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapId) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.noBeatmapFound
+                localization.getTranslation("noBeatmapFound")
             ),
         });
     }
@@ -36,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!submission) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.noSubmissionWithBeatmap
+                localization.getTranslation("noSubmissionWithBeatmap")
             ),
         });
     }
@@ -44,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (submission.status !== "pending") {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.submissionIsNotPending
+                localization.getTranslation("submissionIsNotPending")
             ),
         });
     }
@@ -54,14 +61,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                mapshareStrings.acceptFailed,
+                localization.getTranslation("acceptFailed"),
                 result.reason!
             ),
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(mapshareStrings.acceptSuccess),
+        content: MessageCreator.createAccept(localization.getTranslation("acceptSuccess")),
     });
 };
 

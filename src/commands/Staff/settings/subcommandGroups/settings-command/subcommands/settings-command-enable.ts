@@ -7,9 +7,17 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { NewsChannel, TextChannel, ThreadChannel } from "discord.js";
-import { settingsStrings } from "../../../settingsStrings";
+import { Language } from "@alice-localization/base/Language";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: SettingsLocalization = new SettingsLocalization(language);
+
+    const constantsLocalization: ConstantsLocalization = new ConstantsLocalization(language);
+
     const commandName: string = interaction.options.getString("command", true);
 
     const scope: CommandUtilScope =
@@ -20,7 +28,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!command) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.commandNotFound
+                localization.getTranslation("commandNotFound")
             ),
         });
     }
@@ -36,7 +44,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.noPermissionReject
+                        constantsLocalization.getTranslation(Constants.noPermissionReject)
                     ),
                 });
             }
@@ -57,7 +65,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             ) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.noPermissionReject
+                        constantsLocalization.getTranslation(Constants.noPermissionReject)
                     ),
                 });
             }
@@ -73,7 +81,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.noPermissionReject
+                        constantsLocalization.getTranslation(Constants.noPermissionReject)
                     ),
                 });
             }
@@ -85,7 +93,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (result && !result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                settingsStrings.enableCommandFailed,
+                localization.getTranslation("enableCommandFailed"),
                 result.reason!
             ),
         });
@@ -93,7 +101,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            settingsStrings.enableCommandSuccess,
+            localization.getTranslation("enableCommandSuccess"),
             commandName
         ),
     });

@@ -1,4 +1,3 @@
-import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Powerup } from "@alice-interfaces/clan/Powerup";
@@ -7,8 +6,15 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { Language } from "@alice-localization/base/Language";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: ClanLocalization = new ClanLocalization(language);
+
     const powerupType: PowerupType = <PowerupType>(
         interaction.options.getString("name", true)
     );
@@ -20,14 +26,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!clan) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.selfIsNotInClan),
+            content: MessageCreator.createReject(localization.getTranslation("selfIsNotInClan")),
         });
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.selfHasNoAdministrativePermission
+                localization.getTranslation("selfHasNoAdministrativePermission")
             ),
         });
     }
@@ -35,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (clan.isMatch) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.powerupActivateInMatchMode
+                localization.getTranslation("powerupActivateInMatchMode")
             ),
         });
     }
@@ -43,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (clan.active_powerups.includes(powerupType)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.powerupIsAlreadyActive
+                localization.getTranslation("powerupIsAlreadyActive")
             ),
         });
     }
@@ -52,12 +58,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                clanStrings.activatePowerupConfirmation,
+                localization.getTranslation("activatePowerupConfirmation"),
                 powerupType
             ),
         },
         [interaction.user.id],
-        20
+        20,
+        language
     );
 
     if (!confirmation) {
@@ -69,7 +76,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!powerup || powerup.amount === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.clanDoesntHavePowerup
+                localization.getTranslation("clanDoesntHavePowerup")
             ),
         });
     }
@@ -83,7 +90,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.activatePowerupFailed,
+                localization.getTranslation("activatePowerupFailed"),
                 result.reason!
             ),
         });
@@ -91,7 +98,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            clanStrings.activatePowerupSuccessful
+            localization.getTranslation("activatePowerupSuccessful")
         ),
     });
 };

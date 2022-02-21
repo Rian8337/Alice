@@ -10,31 +10,38 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
 import { ModDoubleTime, ModHidden } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { matchStrings } from "../matchStrings";
 import { Symbols } from "@alice-enums/utils/Symbols";
+import { Language } from "@alice-localization/base/Language";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: MatchLocalization = new MatchLocalization(language);
+
     const id: string | null = interaction.options.getString("id");
 
     const match: TournamentMatch | null = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-              interaction.channelId
-          );
+            interaction.channelId
+        );
 
     // Need to make cross-compatibility since this command is also called from match-start
     if (!match) {
         interaction.replied
             ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      matchStrings.matchDoesntExist
-                  ),
-              })
+                content: MessageCreator.createReject(
+                    localization.getTranslation("matchDoesntExist")
+                ),
+            })
             : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      matchStrings.matchDoesntExist
-                  ),
-              });
+                content: MessageCreator.createReject(
+                    localization.getTranslation("matchDoesntExist")
+                ),
+            });
 
         return;
     }
@@ -49,15 +56,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!mappoolMainData) {
         interaction.replied
             ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      matchStrings.mappoolNotFound
-                  ),
-              })
+                content: MessageCreator.createReject(
+                    localization.getTranslation("mappoolNotFound")
+                ),
+            })
             : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      matchStrings.mappoolNotFound
-                  ),
-              });
+                content: MessageCreator.createReject(
+                    localization.getTranslation("mappoolNotFound")
+                ),
+            });
 
         return;
     }
@@ -70,15 +77,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!mappoolDurationData) {
         interaction.replied
             ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      matchStrings.mappoolNotFound
-                  ),
-              })
+                content: MessageCreator.createReject(
+                    localization.getTranslation("mappoolNotFound")
+                ),
+            })
             : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      matchStrings.mappoolNotFound
-                  ),
-              });
+                content: MessageCreator.createReject(
+                    localization.getTranslation("mappoolNotFound")
+                ),
+            });
 
         return;
     }
@@ -93,17 +100,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (!player.username) {
             interaction.replied
                 ? interaction.channel!.send({
-                      content: MessageCreator.createReject(
-                          matchStrings.playerNotFound,
-                          p[1]
-                      ),
-                  })
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("playerNotFound"),
+                        p[1]
+                    ),
+                })
                 : interaction.editReply({
-                      content: MessageCreator.createReject(
-                          matchStrings.playerNotFound,
-                          p[1]
-                      ),
-                  });
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("playerNotFound"),
+                        p[1]
+                    ),
+                });
 
             return;
         }
@@ -122,15 +129,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (index === -1) {
         interaction.replied
             ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      matchStrings.mapNotFound
-                  ),
-              })
+                content: MessageCreator.createReject(
+                    localization.getTranslation("mapNotFound")
+                ),
+            })
             : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      matchStrings.mapNotFound
-                  ),
-              });
+                content: MessageCreator.createReject(
+                    localization.getTranslation("mapNotFound")
+                ),
+            });
 
         return;
     }
@@ -148,11 +155,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const team1ScoreStatus: OperationResult = match.verifyTeamScore(
         team1ScoreList,
-        map
+        map,
+        language
     );
     const team2ScoreStatus: OperationResult = match.verifyTeamScore(
         team2ScoreList,
-        map
+        map,
+        language
     );
 
     const scoreV2List: number[] = [];
@@ -172,7 +181,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             score,
             map,
             teamScoreStatus.success,
-            mappoolMainData.forcePR
+            mappoolMainData.forcePR,
+            language
         );
 
         if (verificationResult.success && teamScoreStatus.success) {
@@ -200,13 +210,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const scoreString: string = `${match.player[i][0]} - (${score.mods
             .map((v) => v.name)
             .join(", ")}): **${scoreV2List.at(-1)!}** - ${score.rank} - ${(
-            score.accuracy.value() * 100
-        ).toFixed(2)}% - ${score.accuracy.nmiss} ${Symbols.missIcon}\n`;
-        const failString: string = `${match.player[i][0]} - (N/A): **0** - **${
-            !teamScoreStatus.success
-                ? teamScoreStatus.reason
-                : verificationResult.reason
-        }**\n`;
+                score.accuracy.value() * 100
+            ).toFixed(2)}% - ${score.accuracy.nmiss} ${Symbols.missIcon}\n`;
+        const failString: string = `${match.player[i][0]} - (N/A): **0** - **${!teamScoreStatus.success
+            ? teamScoreStatus.reason
+            : verificationResult.reason
+            }**\n`;
 
         if (i % 2 === 0) {
             if (teamScoreStatus.success) {
@@ -231,14 +240,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     }
 
-    team1String ||= "None";
-    team2String ||= "None";
+    team1String ||= localization.getTranslation("none");
+    team2String ||= localization.getTranslation("none");
 
-    let description: string = `${
-        team1OverallScore > team2OverallScore
-            ? match.team[0][0]
-            : match.team[1][0]
-    } won by ${Math.abs(team1OverallScore - team2OverallScore)}`;
+    let description: string = StringHelper.formatString(
+        localization.getTranslation("won"),
+        team1OverallScore > team2OverallScore ? match.team[0][0] : match.team[1][0],
+        Math.abs(team1OverallScore - team2OverallScore).toLocaleString()
+    );
     let embedColor: number = 0;
 
     if (team1OverallScore > team2OverallScore) {
@@ -246,7 +255,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     } else if (team1OverallScore < team2OverallScore) {
         embedColor = 262399;
     } else {
-        description = "It's a draw";
+        description = localization.getTranslation("draw");
     }
 
     const resultEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
@@ -264,7 +273,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.replied) {
         await interaction.editReply({
             content: MessageCreator.createAccept(
-                matchStrings.matchDataInProcess
+                localization.getTranslation("matchDataInProcess")
             ),
         });
     }
@@ -286,7 +295,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!finalResult.success) {
         return interaction.channel!.send({
             content: MessageCreator.createReject(
-                matchStrings.submitMatchFailed,
+                localization.getTranslation("submitMatchFailed"),
                 finalResult.reason!
             ),
         });
@@ -294,7 +303,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            matchStrings.submitMatchSuccessful
+            localization.getTranslation("submitMatchSuccessful")
         ),
         embeds: [resultEmbed, summaryEmbed],
     });

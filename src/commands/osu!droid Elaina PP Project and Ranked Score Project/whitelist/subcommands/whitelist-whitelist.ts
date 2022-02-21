@@ -8,9 +8,15 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { GuildMember, MessageEmbed, MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { whitelistStrings } from "../whitelistStrings";
+import { Language } from "@alice-localization/base/Language";
+import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/WhitelistLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: WhitelistLocalization = new WhitelistLocalization(language);
+
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         !(<GuildMember>interaction.member).roles.cache.has(
@@ -18,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject),
+            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)),
         });
     }
 
@@ -27,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapLink) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                whitelistStrings.noBeatmapProvided
+                localization.getTranslation("noBeatmapProvided")
             ),
         });
     }
@@ -38,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!beatmapID && !beatmapsetID) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                whitelistStrings.noBeatmapIDorSetIDFound
+                localization.getTranslation("noBeatmapIDorSetIDFound")
             ),
         });
     }
@@ -71,13 +77,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (beatmaps.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                whitelistStrings.noBeatmapsFound
+                localization.getTranslation("noBeatmapsFound")
             ),
         });
     }
 
     const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
-        beatmaps[0]
+        beatmaps[0],
+        undefined,
+        language
     );
 
     const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
@@ -86,11 +94,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .spliceFields(0, embed.fields.length)
         .addField(
             beatmaps[0].showStatistics(4),
-            `Star Rating:\n${beatmaps
+            `${localization.getTranslation("starRating")}:\n${beatmaps
                 .map(
                     (v) =>
-                        `- [${v.version}](https://osu.ppy.sh/b/${
-                            v.beatmapID
+                        `- [${v.version}](https://osu.ppy.sh/b/${v.beatmapID
                         }) - **${v.totalDifficulty.toFixed(2)}**`
                 )
                 .join("\n")}`
@@ -100,12 +107,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     for (const beatmap of beatmaps) {
         const whitelistResult: OperationResult =
-            await WhitelistManager.whitelist(beatmap);
+            await WhitelistManager.whitelist(beatmap, language);
 
         if (!whitelistResult.success) {
             whitelistResponseStrings.push(
                 MessageCreator.createReject(
-                    whitelistStrings.whitelistFailed,
+                    localization.getTranslation("whitelistFailed"),
                     beatmap.fullTitle,
                     whitelistResult.reason!
                 )
@@ -115,7 +122,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         whitelistResponseStrings.push(
             MessageCreator.createAccept(
-                whitelistStrings.whitelistSuccess,
+                localization.getTranslation("whitelistSuccess"),
                 beatmap.fullTitle
             )
         );

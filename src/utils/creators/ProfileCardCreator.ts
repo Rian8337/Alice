@@ -13,6 +13,8 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
+import { Language } from "@alice-localization/base/Language";
+import { ProfileCardCreatorLocalization } from "@alice-localization/utils/creators/ProfileCardCreatorLocalization";
 
 /**
  * A utility to create profile cards.
@@ -60,6 +62,8 @@ export class ProfileCardCreator {
      */
     private template: boolean = false;
 
+    private readonly localization: ProfileCardCreatorLocalization;
+
     /**
      * @param player The player to draw.
      * @param detailed Whether to show detailed statistics in the profile card.
@@ -72,13 +76,15 @@ export class ProfileCardCreator {
         detailed: boolean,
         bindInfo?: UserBind | null,
         rankedScoreInfo?: RankedScore | null,
-        playerInfo?: PlayerInfo | null
+        playerInfo?: PlayerInfo | null,
+        language: Language = "en"
     ) {
         this.player = player;
         this.detailed = detailed;
         this.bindInfo = bindInfo;
         this.rankedScoreInfo = rankedScoreInfo;
         this.playerInfo = playerInfo;
+        this.localization = new ProfileCardCreatorLocalization(language);
 
         this.canvas = createCanvas(500, this.detailed ? 500 : 200);
     }
@@ -204,9 +210,8 @@ export class ProfileCardCreator {
         this.context.save();
 
         try {
-            const flagPath: string = `${process.cwd()}/files/flags/${
-                this.player.location
-            }.png`;
+            const flagPath: string = `${process.cwd()}/files/flags/${this.player.location
+                }.png`;
             const flagStats: Stats = await promises.stat(flagPath);
 
             if (flagStats.isFile()) {
@@ -231,7 +236,7 @@ export class ProfileCardCreator {
                 );
             }
             // eslint-disable-next-line no-empty
-        } catch {}
+        } catch { }
 
         this.context.restore();
     }
@@ -374,7 +379,7 @@ export class ProfileCardCreator {
         this.context.font =
             this.detailed || this.template ? "18px Exo" : "16px Exo";
         this.context.fillText(
-            `Total Score: ${this.player.score.toLocaleString()}`,
+            `${this.localization.getTranslation("totalScore")}: ${this.player.score.toLocaleString()}`,
             x,
             y + yOffset
         );
@@ -382,7 +387,7 @@ export class ProfileCardCreator {
 
         if (this.rankedScoreInfo) {
             this.context.fillText(
-                `Ranked Score: ${this.rankedScoreInfo.score.toLocaleString()}`,
+                `${this.localization.getTranslation("rankedScore")}: ${this.rankedScoreInfo.score.toLocaleString()}`,
                 x,
                 y + yOffset
             );
@@ -394,15 +399,14 @@ export class ProfileCardCreator {
                 ...this.bindInfo.pp.values(),
             ]);
             this.context.fillText(
-                `Accuracy: ${
-                    this.player.accuracy
+                `${this.localization.getTranslation("accuracy")}: ${this.player.accuracy
                 }% | ${weightedAccuracy.toFixed(2)}%`,
                 x,
                 y + yOffset
             );
         } else {
             this.context.fillText(
-                `Accuracy: ${this.player.accuracy}%`,
+                `${this.localization.getTranslation("accuracy")}: ${this.player.accuracy}%`,
                 x,
                 y + yOffset
             );
@@ -410,7 +414,7 @@ export class ProfileCardCreator {
         increaseYOffset();
 
         this.context.fillText(
-            `Play Count: ${this.player.playCount.toLocaleString()}`,
+            `${this.localization.getTranslation("playCount")}: ${this.player.playCount.toLocaleString()}`,
             x,
             y + yOffset
         );
@@ -419,7 +423,7 @@ export class ProfileCardCreator {
         if (this.bindInfo) {
             const ppRank: number = await this.getPlayerPPRank(this.bindInfo);
             this.context.fillText(
-                `Droid pp: ${this.bindInfo.pptotal.toFixed(
+                `${this.localization.getTranslation("droidPP")}: ${this.bindInfo.pptotal.toFixed(
                     2
                 )}pp (#${ppRank.toLocaleString()})`,
                 x,
@@ -429,7 +433,7 @@ export class ProfileCardCreator {
 
             if (this.bindInfo.clan) {
                 this.context.fillText(
-                    `Clan: ${this.bindInfo.clan}`,
+                    `${this.localization.getTranslation("clan")}: ${this.bindInfo.clan}`,
                     x,
                     y + yOffset
                 );
@@ -557,7 +561,7 @@ export class ProfileCardCreator {
                 this.playerInfo?.alicecoins ?? 0
             ).toLocaleString()} Alice Coins | ${(
                 this.playerInfo?.points ?? 0
-            ).toLocaleString()} Challenge Points`,
+            ).toLocaleString()} ${this.localization.getTranslation("challengePoints")}`,
             75,
             280
         );

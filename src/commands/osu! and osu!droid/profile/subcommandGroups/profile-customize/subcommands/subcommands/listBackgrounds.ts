@@ -6,8 +6,13 @@ import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ProfileLocalization = new ProfileLocalization(await CommandHelper.getLocale(interaction));
+
     const backgrounds: Collection<string, ProfileBackground> =
         await DatabaseManager.aliceDb.collections.profileBackgrounds.get("id");
 
@@ -44,8 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             const bg: ProfileBackground = backgrounds[i];
             embed.addField(
                 `${i + 1}. ${bg.name}`,
-                `Owned: **${
-                    ownedBackgrounds.find((v) => v.id === bg.id) ? "Yes" : "No"
+                `${localization.getTranslation("owned")}: **${ownedBackgrounds.find((v) => v.id === bg.id) ? Symbols.checkmark : Symbols.cross
                 }**`
             );
         }

@@ -6,10 +6,16 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember, User } from "discord.js";
-import { recalcStrings } from "../recalcStrings";
 import { RecalculationManager } from "@alice-utils/managers/RecalculationManager";
+import { Language } from "@alice-localization/base/Language";
+import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/RecalcLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: RecalcLocalization = new RecalcLocalization(language);
+
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         !(<GuildMember>interaction.member).roles.cache.hasAny(
@@ -17,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     ) {
         return interaction.editReply({
-            content: MessageCreator.createReject(Constants.noPermissionReject),
+            content: MessageCreator.createReject(new ConstantsLocalization(language).getTranslation(Constants.noPermissionReject)),
         });
     }
 
@@ -35,14 +41,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (bindInfo.hasAskedForRecalc) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                recalcStrings.userHasRequestedRecalc
+                localization.getTranslation("userHasRequestedRecalc")
             ),
         });
     }
 
     if (await bindInfo.isDPPBanned()) {
         return interaction.editReply({
-            content: MessageCreator.createReject(recalcStrings.userIsDPPBanned),
+            content: MessageCreator.createReject(localization.getTranslation("userIsDPPBanned")),
         });
     }
 
@@ -50,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            recalcStrings.userQueued,
+            localization.getTranslation("userQueued"),
             user.toString()
         ),
     });

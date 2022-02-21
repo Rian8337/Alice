@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { submitStrings } from "./submitStrings";
+import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/SubmitLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
     if (
@@ -14,7 +14,7 @@ export const run: Command["run"] = async (_, interaction) => {
         return interaction
             .editReply({
                 content: MessageCreator.createReject(
-                    submitStrings.commandNotAllowed
+                    new SubmitLocalization(await CommandHelper.getLocale(interaction)).getTranslation("commandNotAllowed")
                 ),
             })
             .then(() => setTimeout(() => interaction.deleteReply(), 5 * 1000));

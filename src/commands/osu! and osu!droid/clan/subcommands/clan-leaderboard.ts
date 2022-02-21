@@ -2,14 +2,17 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
-import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ClanLocalization = new ClanLocalization(await CommandHelper.getLocale(interaction));
+
     const clans: Collection<string, Clan> =
         await DatabaseManager.elainaDb.collections.clan.get(
             "name",
@@ -19,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (clans.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.noAvailableClans),
+            content: MessageCreator.createReject(localization.getTranslation("noAvailableClans")),
         });
     }
 
@@ -45,9 +48,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${"Clan Name".padEnd(
+        let output: string = `${"#".padEnd(4)} | ${localization.getTranslation("clanName").padEnd(
             longestNameLength
-        )} | ${"Members".padEnd(7)} | Power\n`;
+        )} | ${localization.getTranslation("clanMemberCount").padEnd(7)} | ${localization.getTranslation("clanPower")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
             const clan: Clan = entries[i];
@@ -56,8 +59,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 output += `${(i + 1).toString().padEnd(4)} | ${clan.name
                     .trim()
                     .padEnd(longestNameLength)} | ${clan.member_list.size
-                    .toString()
-                    .padEnd(6)} | ${clan.power.toLocaleString().padEnd(4)}`;
+                        .toString()
+                        .padEnd(6)} | ${clan.power.toLocaleString().padEnd(4)}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
                     longestNameLength

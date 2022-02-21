@@ -3,14 +3,20 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { coinsStrings } from "../coinsStrings";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@alice-localization/base/Language";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    const localization: CoinsLocalization = new CoinsLocalization(language);
+
     const toTransfer: User = interaction.options.getUser("user", true);
 
     const toTransferGuildMember: GuildMember | null = await interaction
@@ -20,7 +26,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!toTransferGuildMember) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.userToTransferNotFound
+                localization.getTranslation("userToTransferNotFound")
             ),
         });
     }
@@ -28,7 +34,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (toTransferGuildMember.user.bot) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.userToTransferIsBot
+                localization.getTranslation("userToTransferIsBot")
             ),
         });
     }
@@ -36,7 +42,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (toTransferGuildMember.id === interaction.user.id) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.userToTransferIsSelf
+                localization.getTranslation("userToTransferIsSelf")
             ),
         });
     }
@@ -49,19 +55,17 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     ) {
         return interaction.editReply(
             MessageCreator.createReject(
-                coinsStrings.userToTransferNotInServerForAWeek
+                localization.getTranslation("userToTransferNotInServerForAWeek")
             )
         );
     }
 
-    const transferAmount: number = <number>(
-        interaction.options.getInteger("amount")
-    );
+    const transferAmount: number = interaction.options.getInteger("amount", true);
 
     if (!NumberHelper.isPositive(transferAmount)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.transferAmountInvalid
+                localization.getTranslation("transferAmountInvalid")
             ),
         });
     }
@@ -74,7 +78,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!userPlayerInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.userDoesntHaveCoinsInfo
+                localization.getTranslation("userDoesntHaveCoinsInfo")
             ),
         });
     }
@@ -88,7 +92,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     ) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.notEnoughCoinsToTransfer
+                localization.getTranslation("notEnoughCoinsToTransfer")
             ),
         });
     }
@@ -101,7 +105,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!toTransferPlayerInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.otherUserDoesntHaveCoinsInfo
+                localization.getTranslation("otherUserDoesntHaveCoinsInfo")
             ),
         });
     }
@@ -113,7 +117,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!player.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.cannotFetchPlayerInformation
+                localization.getTranslation("cannotFetchPlayerInformation")
             ),
         });
     }
@@ -143,13 +147,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                coinsStrings.coinTransferConfirmation,
+                localization.getTranslation("coinTransferConfirmation"),
                 transferAmount.toLocaleString(),
                 toTransferGuildMember.toString()
             ),
         },
         [interaction.user.id],
-        15
+        15,
+        language
     );
 
     if (!confirmation) {
@@ -159,13 +164,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const result: OperationResult = await userPlayerInfo.transferCoins(
         transferAmount,
         player,
-        toTransferPlayerInfo
+        toTransferPlayerInfo,
+        language
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                coinsStrings.coinTransferFailed,
+                localization.getTranslation("coinTransferFailed"),
                 result.reason!
             ),
         });
@@ -173,7 +179,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            coinsStrings.coinTransferSuccess,
+            localization.getTranslation("coinTransferSuccess"),
             transferAmount.toLocaleString(),
             toTransferGuildMember.toString(),
             (limit - transferAmount - transferredAmount).toLocaleString(),

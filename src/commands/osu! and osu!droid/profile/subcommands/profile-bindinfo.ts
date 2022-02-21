@@ -2,14 +2,18 @@ import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { profileStrings } from "../profileStrings";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: ProfileLocalization = new ProfileLocalization(await CommandHelper.getLocale(interaction));
+
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
@@ -17,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(profileStrings.tooManyOptions),
+            content: MessageCreator.createReject(localization.getTranslation("tooManyOptions")),
         });
     }
 
@@ -58,8 +62,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!player?.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                profileStrings.profileNotFound,
-                "the player's"
+                localization.getTranslation("userProfileNotFound")
             ),
         });
     }
@@ -70,26 +73,25 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed
         .setAuthor({
-            name: `Player Information for ${player.username} (click to view profile)`,
+            name: StringHelper.formatString(localization.getTranslation("playerBindInfo"), player.username),
             iconURL: interaction.user.avatarURL({ dynamic: true })!,
             url: `http://ops.dgsrz.com/profile.php?uid=${player.uid}`,
         })
         .setThumbnail(player.avatarURL)
         .setDescription(
-            `[Avatar Link](${player.avatarURL})\n\n` +
-                `**Uid**: ${player.uid}\n` +
-                `**Rank**: ${player.rank.toLocaleString()}\n` +
-                `**Play Count**: ${player.playCount.toLocaleString()}\n` +
-                `**Country**: ${player.location}\n\n` +
-                `**Bind Information**: ${
-                    bindInfo
-                        ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})`
-                        : (await ScoreHelper.hasPlayedVerificationMap(
-                              player.uid
-                          ))
-                        ? "Has played verification beatmap"
-                        : "Not binded"
-                }`
+            `[${localization.getTranslation("avatarLink")}](${player.avatarURL})\n\n` +
+            `**${localization.getTranslation("uid")}**: ${player.uid}\n` +
+            `**${localization.getTranslation("rank")}**: ${player.rank.toLocaleString()}\n` +
+            `**${localization.getTranslation("playCount")}**: ${player.playCount.toLocaleString()}\n` +
+            `**${localization.getTranslation("country")}**: ${player.location}\n\n` +
+            `**${localization.getTranslation("bindInformation")}**: ${bindInfo
+                ? StringHelper.formatString(localization.getTranslation("binded"), bindInfo.discordid, bindInfo.discordid)
+                : localization.getTranslation((await ScoreHelper.hasPlayedVerificationMap(
+                    player.uid
+                ))
+                    ? "playedVerificationMap"
+                    : "notBinded")
+            }`
         );
 
     interaction.editReply({

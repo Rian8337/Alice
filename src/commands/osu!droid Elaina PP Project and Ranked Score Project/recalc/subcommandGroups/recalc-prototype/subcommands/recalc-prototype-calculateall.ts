@@ -3,10 +3,13 @@ import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/P
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/RecalcLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { recalcStrings } from "../../../recalcStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
+    const localization: RecalcLocalization = new RecalcLocalization(await CommandHelper.getLocale(interaction));
+
     const dbManager: PrototypePPCollectionManager =
         DatabaseManager.aliceDb.collections.prototypePP;
 
@@ -14,7 +17,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     await interaction.editReply({
         content: MessageCreator.createAccept(
-            recalcStrings.fullRecalcInProgress
+            localization.getTranslation("fullRecalcInProgress")
         ),
     });
 
@@ -44,7 +47,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            recalcStrings.fullRecalcSuccess,
+            localization.getTranslation("fullRecalcSuccess"),
             interaction.user.toString()
         ),
     });

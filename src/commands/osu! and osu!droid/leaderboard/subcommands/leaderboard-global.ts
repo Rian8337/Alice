@@ -6,7 +6,8 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
-import { leaderboardStrings } from "../leaderboardStrings";
+import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**
  * Retrieves the global leaderboard.
@@ -33,12 +34,14 @@ async function retrieveLeaderboard(page: number): Promise<string[]> {
 }
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: LeaderboardLocalization = new LeaderboardLocalization(await CommandHelper.getLocale(interaction));
+
     const page: number = interaction.options.getInteger("page") ?? 1;
 
     if (!NumberHelper.isPositive(page)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                leaderboardStrings.invalidPage
+                localization.getTranslation("invalidPage")
             ),
         });
     }
@@ -65,9 +68,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             16
         );
 
-        let output: string = `${"#".padEnd(4)} | ${"Username".padEnd(
+        let output: string = `${"#".padEnd(4)} | ${localization.getTranslation("username").padEnd(
             longestUsernameLength
-        )} | ${"UID".padEnd(6)} | ${"Play".padEnd(5)} | Accuracy | Score\n`;
+        )} | ${localization.getTranslation("uid").padEnd(6)} | ${localization.getTranslation("playCount").padEnd(5)} | ${localization.getTranslation("accuracy")} | ${localization.getTranslation("score")}\n`;
 
         for (
             let i = 20 * pageRemainder;
@@ -81,10 +84,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             output += `${(actualPage * 100 + i + 1)
                 .toString()
                 .padEnd(4)} | ${c[1].padEnd(
-                longestUsernameLength
-            )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
-                (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
-            ).padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
+                    longestUsernameLength
+                )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
+                    (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
+                ).padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
         }
 
         options.content = "```c\n" + output + "```";

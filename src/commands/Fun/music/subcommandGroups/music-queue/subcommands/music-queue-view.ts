@@ -5,7 +5,8 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { musicStrings } from "@alice-commands/Fun/music/musicStrings";
+import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const musicInformation: MusicInfo | undefined =
@@ -15,7 +16,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (queue.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.queueIsEmpty),
+            content: MessageCreator.createReject(
+                new MusicLocalization(await CommandHelper.getLocale(interaction)).getTranslation("queueIsEmpty")
+            ),
         });
     }
 
