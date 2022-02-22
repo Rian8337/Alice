@@ -3,6 +3,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUserLocale } from "@alice-interfaces/database/aliceDb/DatabaseUserLocale";
 import { Language } from "@alice-localization/base/Language";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Snowflake } from "discord.js";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
@@ -57,6 +58,10 @@ export class UserLocaleCollectionManager extends DatabaseCollectionManager<
         userId: Snowflake,
         language: Language
     ): Promise<OperationResult> {
+        if (CacheManager.userLocale.has(userId)) {
+            CacheManager.userLocale.set(userId, language);
+        }
+
         return this.update(
             { discordId: userId },
             {

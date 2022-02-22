@@ -5,6 +5,7 @@ import { DatabaseGuildSettings } from "@alice-interfaces/database/aliceDb/Databa
 import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
 import { Language } from "@alice-localization/base/Language";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Snowflake } from "discord.js";
 import { Collection as MongoDBCollection } from "mongodb";
 
@@ -125,6 +126,10 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
         channelSetting.preferredLocale = language;
 
         guildSetting.channelSettings.set(channelId, channelSetting);
+
+        if (CacheManager.channelLocale.has(channelId)) {
+            CacheManager.channelLocale.set(channelId, language);
+        }
 
         return guildSetting.updateData();
     }
