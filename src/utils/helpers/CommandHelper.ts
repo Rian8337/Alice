@@ -9,6 +9,7 @@ import {
     PermissionResolvable,
     Snowflake,
     TextChannel,
+    ThreadChannel,
     User,
 } from "discord.js";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
@@ -135,6 +136,8 @@ export abstract class CommandHelper extends Manager {
         const channelId: Snowflake =
             input instanceof Interaction
                 ? input.locale
+                : input instanceof ThreadChannel
+                ? input.parentId!
                 : input instanceof GuildChannel
                 ? input.id
                 : input;
