@@ -4,6 +4,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocaliz
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { GuildMember, MessageEmbed } from "discord.js";
@@ -50,9 +51,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     information.author.name
                 }\n\n${localization.getTranslation(
                     "duration"
-                )}: ${information.duration.toString()}\n\n${localization.getTranslation(
-                    "requestedBy"
-                )} <@${musicInformation.currentlyPlaying!.queuer}>`
+                )}: ${information.duration.toString()}\n\n${StringHelper.formatString(
+                    localization.getTranslation("requestedBy"),
+                    `<@${musicInformation.currentlyPlaying!.queuer}>`
+                )}`
             )
             .setThumbnail(information.thumbnail);
     } else {

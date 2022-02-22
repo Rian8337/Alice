@@ -7,8 +7,13 @@ import { GuildMember, MessageEmbed } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MusicLocalization = new MusicLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
+
     const musicInformation: MusicInfo | undefined =
         MusicManager.musicInformations.get(interaction.guildId!);
 
@@ -17,9 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (queue.length === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new MusicLocalization(
-                    await CommandHelper.getLocale(interaction)
-                ).getTranslation("queueIsEmpty")
+                localization.getTranslation("queueIsEmpty")
             ),
         });
     }
@@ -29,12 +32,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    embed.setTitle("Current Queue");
+    embed.setTitle(localization.getTranslation("currentQueue"));
 
     for (let i = 0; i < queue.length; ++i) {
         embed.addField(
             `${i + 1}. ${queue[i].information.title}`,
-            `Queued/requested by <@${queue[i].queuer}>`
+            StringHelper.formatString(
+                localization.getTranslation("requestedBy"),
+                `<@${queue[i].queuer}>`
+            )
         );
     }
 
