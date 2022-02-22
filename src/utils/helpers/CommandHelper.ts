@@ -135,7 +135,7 @@ export abstract class CommandHelper extends Manager {
 
         const channelId: Snowflake =
             input instanceof Interaction
-                ? input.locale
+                ? input.channelId!
                 : input instanceof ThreadChannel
                 ? input.parentId!
                 : input instanceof GuildChannel
@@ -167,8 +167,11 @@ export abstract class CommandHelper extends Manager {
 
         if (!language && input instanceof Interaction) {
             switch (input.locale) {
-                case "en":
+                case "en-US":
                     language = "en";
+                    break;
+                case "ko":
+                    language = "kr";
                     break;
                 default:
                     language = "en";
