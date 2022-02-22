@@ -141,7 +141,7 @@ export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> 
             beatmapInfo: "비트맵 정보",
             dateAchieved: "%s에 달성함",
             penalized: "패널티를 받음",
-            forFC: "for FC",
+            forFC: "for %s% FC",
             sliderTicks: "슬라이더 틱",
             sliderEnds: "슬라이더 끝(ends)",
             hitErrorAvg: "평균 타격 오차(hit error avg)",
