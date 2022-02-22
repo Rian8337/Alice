@@ -16,5 +16,8 @@ export class BirthdayTrackingLocalization extends Localization<BirthdayTrackingS
             happyBirthday:
                 "Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.",
         },
+        kr: {
+            happyBirthday: "",
+        },
     };
 }

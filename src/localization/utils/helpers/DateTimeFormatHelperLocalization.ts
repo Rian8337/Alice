@@ -29,5 +29,15 @@ export class DateTimeFormatHelperLocalization extends Localization<DateTimeForma
             second: "second",
             seconds: "seconds",
         },
+        kr: {
+            day: "일",
+            days: "",
+            hour: "시간",
+            hours: "",
+            minute: "분",
+            minutes: "",
+            second: "초",
+            seconds: "초",
+        },
     };
 }

@@ -14,5 +14,9 @@ export class AskcountLocalization extends Localization<AskcountStrings> {
             haveNotAsked: "I'm sorry, looks like you haven't asked me yet!",
             askCount: "You have asked me %s time(s).",
         },
+        kr: {
+            haveNotAsked: "죄송해요, 아직 저한테 질문한 적이 없으신 것 같네요!",
+            askCount: "저한테 %s번 질문하셨어요.",
+        },
     };
 }

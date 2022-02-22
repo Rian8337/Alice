@@ -19,5 +19,10 @@ export class MessageButtonCreatorLocalization extends Localization<MessageButton
             actionCancelled: "Action cancelled.",
             timedOut: "Timed out.",
         },
+        kr: {
+            pleaseWait: "잠시 기다려주세요...",
+            actionCancelled: "행동이 취소됐어요.",
+            timedOut: "시간이 초과됐어요.",
+        },
     };
 }

@@ -15,5 +15,8 @@ export class ScoreDisplayHelperLocalization extends Localization<ScoreDisplayHel
         en: {
             recentPlays: "Recent plays for %s",
         },
+        kr: {
+            recentPlays: "%s의 최근 플레이",
+        },
     };
 }

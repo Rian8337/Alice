@@ -24,5 +24,13 @@ export class UserBeatmapCalculationLocalization extends Localization<UserBeatmap
             beatmapLimitation:
                 "I found %s maps, but only displaying up to 3 due to my limitations.",
         },
+        kr: {
+            droidStars: "Raw droid stars",
+            droidPP: "Raw droid pp",
+            pcStars: "Raw PC stars",
+            pcPP: "Raw PC pp",
+            beatmapLimitation:
+                "%s개의 맵을 찾았지만, 제 한계로 인해 3개만 보여드려요.",
+        },
     };
 }

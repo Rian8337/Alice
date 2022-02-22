@@ -16,5 +16,9 @@ export class YoutubeBeatmapFinderLocalization extends Localization<YoutubeBeatma
             beatmapLimitation:
                 "I found %s maps, but only displaying up to 3 due to my limitations.",
         },
+        kr: {
+            beatmapLimitation:
+                "%s개의 맵을 찾았지만, 제 한계로 인해 3개만 보여드려요.",
+        },
     };
 }

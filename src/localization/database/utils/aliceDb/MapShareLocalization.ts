@@ -19,5 +19,10 @@ export class MapShareLocalization extends Localization<MapShareStrings> {
             beatmapNotFound: "beatmap not found",
             submitterNotBinded: "submitter is not binded",
         },
+        kr: {
+            submissionNotAccepted: "제출이 아직 받아들여지지 않음",
+            beatmapNotFound: "비트맵이 발견되지 않음",
+            submitterNotBinded: "제출자가 바인딩되어있지 않음",
+        },
     };
 }

@@ -18,5 +18,10 @@ export class ColorLocalization extends Localization<ColorStrings> {
                 "I'm sorry, that doesn't look like a valid hex code color!",
             showingHexColor: "Showing color with hex code `%s`:",
         },
+        kr: {
+            invalidHexCode:
+                "죄송해요, 그건 유효한 hex코드 값이 아닌 것 같네요!",
+            showingHexColor: "hex코드 %s의 색상을 보여드릴게요:",
+        },
     };
 }

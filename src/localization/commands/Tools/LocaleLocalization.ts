@@ -23,5 +23,12 @@ export class LocaleLocalization extends Localization<LocaleStrings> {
             setLocaleFailed: "I'm sorry, I couldn't set the locale: %s.",
             setLocaleSuccess: "Successfully set locale.",
         },
+        kr: {
+            selectLanguage: "",
+            clearLocaleFailed: "",
+            clearLocaleSuccess: "",
+            setLocaleFailed: "",
+            setLocaleSuccess: "",
+        },
     };
 }

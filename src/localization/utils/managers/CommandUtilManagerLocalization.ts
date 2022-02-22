@@ -17,5 +17,9 @@ export class CommandUtilManagerLocalization extends Localization<CommandUtilMana
             cooldownOutOfRange: "cooldown must be between 5 and 3600 seconds",
             commandAlreadyDisabled: "command is already disabled",
         },
+        kr: {
+            cooldownOutOfRange: "쿨다운은 5초에서 3600초 사이여야 함.",
+            commandAlreadyDisabled: "명령어가 이미 비활성화됨",
+        },
     };
 }

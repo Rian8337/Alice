@@ -42,5 +42,20 @@ export class BlacklistLocalization extends Localization<BlacklistStrings> {
             unblacklist: "Unblacklist",
             unblacklistAction: "Unblacklist the beatmap.",
         },
+        kr: {
+            noBeatmapProvided: "",
+            beatmapNotFound: "",
+            noBlacklistReasonProvided: "",
+            blacklistFailed: "",
+            blacklistSuccess: "",
+            unblacklistFailed: "",
+            unblacklistSuccess: "",
+            detectedBeatmapId:
+                "감지된 비트맵 ID: %s. 원하는 행동을 선택해 주세요.",
+            blacklist: "블랙리스트",
+            blacklistAction: "비트맵을 블랙리스트에 넣어요.",
+            unblacklist: "언블랙리스트",
+            unblacklistAction: "비트맵을 블랙리스트에서 제거해요.",
+        },
     };
 }
