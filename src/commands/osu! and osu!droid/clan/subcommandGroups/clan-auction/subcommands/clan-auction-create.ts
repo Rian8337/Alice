@@ -163,7 +163,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         partialData
     );
 
-    // TODO: insert auction to database
+    await DatabaseManager.aliceDb.collections.clanAuction.insert(partialData);
 
     const coinEmoji: GuildEmoji = client.emojis.cache.get(
         Constants.aliceCoinEmote
