@@ -31,6 +31,7 @@ import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
+import { RankedScore } from "../aliceDb/RankedScore";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -450,7 +451,7 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            let page = 0;
+            let page: number = 0;
 
             if (isDPPRecalc && this.calculationInfo) {
                 page = this.calculationInfo.page;
@@ -468,6 +469,14 @@ export class UserBind extends Manager {
                     uid: uid,
                 });
             }
+
+            const rankedScoreData: RankedScore | null =
+                await DatabaseManager.aliceDb.collections.rankedScore.getOne(
+                    { uid: uid },
+                    { projection: { _id: 0, score: 1 } }
+                );
+
+            let rankedScore: number = rankedScoreData?.score ?? 0;
 
             let scores: Score[];
 
@@ -529,6 +538,8 @@ export class UserBind extends Manager {
                             beatmapInfo.hash,
                             score.score
                         );
+
+                        rankedScore += score.score;
                     }
                 }
 
@@ -536,10 +547,6 @@ export class UserBind extends Manager {
                     { uid: uid },
                     {
                         $inc: {
-                            score: rankedScoreCollection.reduce(
-                                (acc, value) => acc + value,
-                                0
-                            ),
                             playc: rankedScoreCollection.size,
                         },
                         $addToSet: {
@@ -551,6 +558,12 @@ export class UserBind extends Manager {
                         },
                         $setOnInsert: {
                             username: player.username,
+                        },
+                        $set: {
+                            score: rankedScore,
+                            level: RankedScoreHelper.calculateLevel(
+                                rankedScore
+                            ),
                         },
                     },
                     { upsert: true }
