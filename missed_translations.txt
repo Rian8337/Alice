@@ -51,7 +51,6 @@ BirthdayCollectionManager.ts (4)
 music-queue-view.ts (2)
 
 6.1. Current Queue
-6.2. Queued/requested by %s
 
 ============================================
 
@@ -108,179 +107,194 @@ trivia-map.ts (4)
 
 ============================================
 
-help.ts (1)
-
-12.1. None
-
-============================================
-
 clan-create.ts (1)
 
-13.1. create a clan
+12.1. create a clan
 
 ============================================
 
 clan-members.ts (1)
 
-14.1. Upkeep Value
+13.1. Upkeep Value
 
 ============================================
 
-daily-about.ts (3)
+daily-about.ts (1)
 
-15.1. How can I submit challenges?
-15.2. There will be a separate beatmap set for you to download in case you have played the original map. In fact, you **must** download the set in order to submit your play.
-15.3. Once you complete a challenge, use the `/daily submit` command to submit your play.
+14.1. There is no leaderboard for %sAlice coins, however there is a leaderboard for points. You can use \`/daily leaderboard\` to view the leaderboard.
 
 ============================================
 
 daily-leaderboard.ts (1)
 
-16.2. Points
+15.2. Points
 
 ============================================
 
 daily-manualsubmit.ts (10)
 
-17.1. Score Statistics
-17.2. Total Score
-17.3. Max Combo
-17.4. Accuracy
-17.5. Rank
-17.6. Time
-17.7. Hit Great (300)
-17.8. Hit Good (100)
-17.9. Hit Meh (50)
-17.10. Misses
-17.11. Bonus Level Reached
-17.12. geki
-17.13. katu
+16.1. Score Statistics
+16.2. Total Score
+16.3. Max Combo
+16.4. Accuracy
+16.5. Rank
+16.6. Time
+16.7. Hit Great (300)
+16.8. Hit Good (100)
+16.9. Hit Meh (50)
+16.10. Misses
+16.11. Bonus Level Reached
+16.12. geki
+16.13. katu
 
 ============================================
 
 daily-profile.ts (3)
 
-18.1. Daily/Weekly Challenge Profile for %s
+17.1. Daily/Weekly Challenge Profile for %s
     (e.g. Daily/Weekly Challenge Profile for Sexia)
-18.2. Statistics
-18.3. Challenges completed
+17.2. Statistics
+17.3. Challenges completed
     (amount of challenges completed)
 
 ============================================
 
 fetchreplay.ts (3)
 
-19.1. Play Information for %s
+18.1. Play Information for %s
     (e.g. Play Information for Sexia)
-19.2. Hit Error Information
-19.3. hit error avg
+18.2. Hit Error Information
+18.3. hit error avg
     (hit error average)
 
 ============================================
 
 gamestats.ts (1)
 
-20.1. I'm sorry, I cannot retrieve game statistics!
+19.1. I'm sorry, I cannot retrieve game statistics!
 
 ============================================
 
 profile-customize-background.ts (5)
 
-21.1. Change Background
-21.2. Change your profile card's background.
-21.3. List Backgrounds
-21.4. List all profile card backgrounds, including those that you own.
-21.5. Choose what you want to customize.
+20.1. Change Background
+20.2. Change your profile card's background.
+20.3. List Backgrounds
+20.4. List all profile card backgrounds, including those that you own.
+20.5. Choose what you want to customize.
 
 ============================================
 
 profle-customize-badge.ts (10)
 
-22.1. Show Badge Template
-22.2. Show the template of badges in a profile card.
-22.3. Claim Badge
-22.4. Claim a badge.
-22.5. Equip Badge
-22.6. Equip a badge.
-22.7. Unequip Badge
-22.8. Unequip a badge.
-22.9. List Badges
-22.10. List all profile card badges, including those that you own.
+21.1. Show Badge Template
+21.2. Show the template of badges in a profile card.
+21.3. Claim Badge
+21.4. Claim a badge.
+21.5. Equip Badge
+21.6. Equip a badge.
+21.7. Unequip Badge
+21.8. Unequip a badge.
+21.9. List Badges
+21.10. List all profile card badges, including those that you own.
 
 ============================================
 
 profile-customize-infobox.ts (8)
 
-23.1. View Background Color
-23.2. View the background color of your profile card's information box.
-23.3. Change Background Color
-23.4. Change the background color of your profile card's information box.
-23.5. View Text Color
-23.6. View the text color of your profile card's information box.
-23.7. Change Text Color
-23.8. Change the text color of your profile card's information box.
+22.1. View Background Color
+22.2. View the background color of your profile card's information box.
+22.3. Change Background Color
+22.4. Change the background color of your profile card's information box.
+22.5. View Text Color
+22.6. View the text color of your profile card's information box.
+22.7. Change Text Color
+22.8. Change the text color of your profile card's information box.
 
 ============================================
 
-profile-bindinfo.ts (10)
+profile-bindinfo.ts (9)
 
-24.1. Player Information for %s (click to view profile)
+23.1. Player Information for %s (click to view profile)
     (e.g. Player Information for Sexia (click to view profile))
-24.2. Avatar Link
-24.3. Uid
-24.4. Rank
-24.5. Play Count
-24.6. Country
-24.7. Bind Information
-24.8. Binded to %s (user ID: %s)
-24.9. Has played verification beatmap
-24.10. Not binded
+23.2. Avatar Link
+23.3. Rank
+23.4. Play Count
+23.5. Country
+23.6. Bind Information
+23.7. Binded to %s (user ID: %s)
+23.8. Has played verification beatmap
+23.9. Not binded
 
 ============================================
 
-ppcompare.ts (3)
+ppcompare.ts (2)
 
-25.1. Top PP Plays Comparison
-25.2. Player
-25.3. Total PP
+24.1. Top PP Plays Comparison
+24.2. Player
 
 ============================================
 
 DateTimeFormatHelper.ts (3)
 
-26.1. days
-26.2. hours
-26.3. minutes
+25.1. days
+25.2. hours
+25.3. minutes
 
 ============================================
 
 TimeoutManager.ts (2)
 
-27.1. Channel ID
-27.2. Untimeout executed
+26.1. Channel ID
+26.2. Untimeout executed
 
 ============================================
 
 messageanalytics.ts (3)
 
-28.1. Overall
-28.2. Monthly
-28.3. Daily
+27.1. Overall
+27.2. Monthly
+27.3. Daily
 
 ============================================
 
 TournamentMatch.ts (1)
 
-29.1. No team members enabled HD/HR/EZ
+28.1. No team members enabled HD/HR/EZ
 
 ============================================
 
 ready -> birthdayTracking.ts (1)
 
-30.1. Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.
+29.1. Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.
 
 ============================================
 
 settings-timeoutpermission-grant.ts (1)
 
-31.1. Hey, please enter a proper maximum timeout duration!
+30.1. Hey, please enter a proper maximum timeout duration!
+
+============================================
+
+blacklist.ts (7)
+
+31.1. Hey, please enter a beatmap to blacklist or unblacklist!
+31.2. Hey, I cannot find the beatmap with the provided link or ID!
+31.3. Hey, please enter a reason for blacklisting the beatmap!
+31.4. I'm sorry, I cannot blacklist the beatmap: `%s`.
+31.5. Successfully blacklisted `%s`.
+31.6. I'm sorry, I cannot unblacklist the beatmap: `%s`.
+31.7. Successfully unblacklisted `%s`.
+
+============================================
+
+whitelist-unwhitelist.ts (2)
+
+32.1. Successfully unwhitelisted `%s`.
+32.2. I'm sorry, I'm unable to unwhitelist `%s`: `%s`.
+
+============================================
+
+settings.ts (1)
+
+33.1. Indefinite

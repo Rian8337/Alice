@@ -510,7 +510,7 @@ compare.ts (6)
 
 ============================================
 
-daily.ts (32)
+daily.ts (30)
 
 24.1. I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!
 24.2. I'm sorry, there are no players as of now!
@@ -761,7 +761,7 @@ skin.ts (5)
 
 ============================================
 
-userbind.ts (14)
+userbind.ts (12)
 
 36.1. I'm sorry, I couldn't find that account's profile!
 36.2. I'm sorry, this account has not played the verification beatmap! Please use `/userbind verifymap` to get the verification beatmap.
