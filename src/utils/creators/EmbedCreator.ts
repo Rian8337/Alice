@@ -246,7 +246,9 @@ export abstract class EmbedCreator {
                 localization.getTranslation("ppProfileTitle"),
                 `<@${bindInfo.discordid}> (${bindInfo.username})`
             )}**\n` +
-                `: **${bindInfo.pptotal.toFixed(
+                `${localization.getTranslation(
+                    "totalPP"
+                )}: **${bindInfo.pptotal.toFixed(
                     2
                 )} pp (#${ppRank.toLocaleString()})**\n` +
                 `[${localization.getTranslation(
