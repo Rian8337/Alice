@@ -23,7 +23,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const commandName: string = interaction.options.getString("command", true);
 
-    const cooldown: number = interaction.options.getInteger("duration", true);
+    const cooldown: number = interaction.options.getNumber("duration", true);
 
     const scope: CommandUtilScope =
         <CommandUtilScope>interaction.options.getString("scope") ?? "channel";
