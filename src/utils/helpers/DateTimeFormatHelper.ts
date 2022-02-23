@@ -166,7 +166,7 @@ export abstract class DateTimeFormatHelper {
                 localeToConvert = "en-US";
         }
 
-        return date.toLocaleString(localeToConvert, { timeZone: "UTC" });
+        return localeToConvert === "en-US" ? date.toUTCString() : date.toLocaleString(localeToConvert, { timeZone: "UTC" });
     }
 
     /**
