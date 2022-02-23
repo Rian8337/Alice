@@ -4,6 +4,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocaliz
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
@@ -35,7 +36,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .setTitle(localization.getTranslation("musicInfo"))
         .addField(
             localization.getTranslation("playingSince"),
-            musicInformation.createdAt.toUTCString()
+            DateTimeFormatHelper.dateToLocaleString(
+                musicInformation.createdAt,
+                localization.language
+            )
         );
 
     const information: VideoSearchResult | undefined =

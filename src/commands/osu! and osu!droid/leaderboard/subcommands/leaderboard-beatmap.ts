@@ -24,6 +24,7 @@ import {
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
@@ -155,7 +156,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
                 score.accuracy.n50
             }/${score.accuracy.nmiss}]\n` +
-            `\`${score.date.toUTCString()}\``
+            `\`${DateTimeFormatHelper.dateToLocaleString(
+                score.date,
+                localization.language
+            )}\``
         );
     };
 

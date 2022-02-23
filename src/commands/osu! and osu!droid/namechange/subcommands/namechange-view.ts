@@ -8,6 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
@@ -55,9 +56,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         )}**: ${content.new_username}\n` +
                         `**${localization.getTranslation(
                             "creationDate"
-                        )}**: ${new Date(
-                            (content.cooldown - 86400 * 30) * 1000
-                        ).toUTCString()}`
+                        )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                            new Date((content.cooldown - 86400 * 30) * 1000),
+                            localization.language
+                        )}`
                 );
             }
         }

@@ -7,6 +7,7 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
@@ -49,12 +50,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 `**${localization.getTranslation("auctionAuctioneer")}**: ${
                     auction.auctioneer
                 }\n` +
-                `**${localization.getTranslation("creationDate")}**: ${new Date(
-                    auction.creationdate * 1000
-                ).toUTCString()}\n` +
+                `**${localization.getTranslation(
+                    "creationDate"
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(auction.creationdate * 1000),
+                    localization.language
+                )}\n` +
                 `**${localization.getTranslation(
                     "expirationDate"
-                )}**: ${new Date(auction.expirydate * 1000).toUTCString()}`
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(auction.expirydate * 1000),
+                    localization.language
+                )}`
         )
         .addField(
             localization.getTranslation("auctionItem"),

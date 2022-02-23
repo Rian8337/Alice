@@ -137,9 +137,12 @@ export const run: Command["run"] = async (_, interaction) => {
                     d.approved !== rankedStatus.QUALIFIED
                         ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})`
                         : ""
-                }\n**Last Update**: ${new Date(
-                    d.lastupdate * 1000
-                ).toUTCString()} | **${status}**\n${
+                }\n**${localization.getTranslation(
+                    "lastUpdate"
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(d.lastupdate * 1000),
+                    localization.language
+                )} | **${status}**\n${
                     Symbols.heart
                 } **${d.favourite_count.toLocaleString()}** - ${
                     Symbols.playButton

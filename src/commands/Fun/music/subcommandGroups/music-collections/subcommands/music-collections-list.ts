@@ -7,6 +7,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -52,9 +53,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
             embed.addField(
                 `${i + 1}. ${collections[i].name}`,
-                `${localization.getTranslation("createdAt")} ${new Date(
-                    collections[i].createdAt
-                ).toUTCString()}`
+                `${localization.getTranslation(
+                    "createdAt"
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(collections[i].createdAt),
+                    localization.language
+                )}`
             );
         }
     };

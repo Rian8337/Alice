@@ -8,13 +8,13 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
@@ -27,9 +27,9 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import { Collection, GuildMember, MessageEmbed, Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: DailyLocalization = new DailyLocalization(language);
+    const localization: DailyLocalization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const url: string = interaction.options.getString("replayurl", true);
 
@@ -49,7 +49,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
                 )
             ),
@@ -121,7 +121,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     const completionStatus: OperationResult =
-        await challenge.checkReplayCompletion(replayAnalyzer, language);
+        await challenge.checkReplayCompletion(
+            replayAnalyzer,
+            localization.language
+        );
 
     if (!completionStatus.success) {
         return interaction.editReply({
@@ -167,7 +170,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 `**${localization.getTranslation("rank")}**: ${data.rank}\n` +
                 `**${localization.getTranslation(
                     "time"
-                )}**: ${data.time.toUTCString()}\n\n` +
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    data.time,
+                    localization.language
+                )}\n\n` +
                 `**${localization.getTranslation("hitGreat")}**: ${
                     data.accuracy.n300
                 } (${data.hit300k} ${localization.getTranslation(
@@ -197,7 +203,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         },
         [...staffMembers.keys()],
         30,
-        language
+        localization.language
     );
 
     if (!confirmation) {

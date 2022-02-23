@@ -503,7 +503,7 @@ export abstract class EmbedCreator {
             color: embedColor,
             footerText: StringHelper.formatString(
                 localization.getTranslation("dateAchieved"),
-                score.date.toUTCString()
+                DateTimeFormatHelper.dateToLocaleString(score.date, language)
             ),
         });
 
@@ -850,9 +850,10 @@ export abstract class EmbedCreator {
                     }\n` +
                     `**${localization.getTranslation(
                         "creationDate"
-                    )}**: ${new Date(
-                        auction.creationdate * 1000
-                    ).toUTCString()}\n` +
+                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        new Date(auction.creationdate * 1000),
+                        language
+                    )}\n` +
                     `**${localization.getTranslation(
                         "auctionMinimumBid"
                     )}**: ${coinEmoji}${auction.min_price} Alice coins`

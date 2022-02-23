@@ -89,7 +89,10 @@ function endGame(
             }\n` +
                 `**${localization.getTranslation(
                     "timeStarted"
-                )}**: ${interaction.createdAt.toUTCString()}\n` +
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    interaction.createdAt,
+                    localization.language
+                )}\n` +
                 `**${localization.getTranslation(
                     "duration"
                 )}**: ${DateTimeFormatHelper.secondsToDHMS(

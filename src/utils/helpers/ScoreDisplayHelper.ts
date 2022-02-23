@@ -15,6 +15,7 @@ import { NumberHelper } from "./NumberHelper";
 import { Language } from "@alice-localization/base/Language";
 import { ScoreDisplayHelperLocalization } from "@alice-localization/utils/helpers/ScoreDisplayHelperLocalization";
 import { StringHelper } from "./StringHelper";
+import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
 
 /**
  * A helper for displaying scores to a user.
@@ -74,7 +75,10 @@ export abstract class ScoreDisplayHelper {
                     ).toFixed(2)}% / [${score.accuracy.n300}/${
                         score.accuracy.n100
                     }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
-                        `\`${score.date.toUTCString()}\``
+                        `\`${DateTimeFormatHelper.dateToLocaleString(
+                            score.date,
+                            language
+                        )}\``
                 );
             }
         };

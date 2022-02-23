@@ -11,6 +11,7 @@ import { GuildEmoji, GuildMember, MessageEmbed } from "discord.js";
 import { EmojistatisticsLocalization } from "@alice-localization/commands/Tools/EmojistatisticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: EmojistatisticsLocalization =
@@ -114,7 +115,10 @@ export const run: Command["run"] = async (_, interaction) => {
                 } \n` +
                     `**${localization.getTranslation(
                         "dateCreation"
-                    )}**: ${validEmojis[i].emoji.createdAt.toUTCString()} \n` +
+                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        validEmojis[i].emoji.createdAt,
+                        localization.language
+                    )} \n` +
                     `**${localization.getTranslation(
                         "overallUsage"
                     )}**: ${validEmojis[i].count.toLocaleString()} \n` +

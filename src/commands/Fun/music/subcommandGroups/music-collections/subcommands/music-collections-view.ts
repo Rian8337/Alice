@@ -5,6 +5,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocaliz
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -38,7 +39,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
         .addField(
             localization.getTranslation("creationDate"),
-            new Date(collection.createdAt).toUTCString()
+            DateTimeFormatHelper.dateToLocaleString(
+                new Date(collection.createdAt),
+                localization.language
+            )
         )
         .addField(
             localization.getTranslation("collectionLinks"),

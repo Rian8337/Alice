@@ -8,11 +8,16 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    const localization: MapshareLocalization = new MapshareLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
+
     const status: MapShareSubmissionStatus =
         <MapShareSubmissionStatus>interaction.options.getString("status") ??
         "pending";
@@ -23,9 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (submissions.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new MapshareLocalization(
-                    await CommandHelper.getLocale(interaction)
-                ).getTranslation("noSubmissionWithStatus"),
+                localization.getTranslation("noSubmissionWithStatus"),
                 status
             ),
         });
@@ -43,7 +46,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     embed.setTitle(
-        `Submissions with ${StringHelper.capitalizeString(status)} status`
+        StringHelper.formatString(
+            localization.getTranslation("submissionStatusList"),
+            StringHelper.capitalizeString(status)
+        )
     );
 
     const onPageChange: OnButtonPageChange = async (
@@ -59,12 +65,24 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             const submission: MapShare = contents[i];
 
             embed.addField(
-                `${i + 1}. Submission from ${submission.submitter}`,
-                `**User ID**: ${submission.id}\n` +
-                    `**Beatmap ID**: ${submission.beatmap_id} ([Beatmap Link](https://osu.ppy.sh/b/${submission.beatmap_id}))\n` +
-                    `**Creation Date**: ${new Date(
-                        submission.date * 1000
-                    ).toUTCString()}`
+                `${i + 1}. ${StringHelper.formatString(
+                    localization.getTranslation("submissionFromUser"),
+                    submission.submitter
+                )}`,
+                `**${localization.getTranslation("userId")}**: ${
+                    submission.id
+                }\n` +
+                    `**${localization.getTranslation("beatmapId")}**: ${
+                        submission.beatmap_id
+                    } ([${localization.getTranslation(
+                        "beatmapLink"
+                    )}](https://osu.ppy.sh/b/${submission.beatmap_id}))\n` +
+                    `**${localization.getTranslation(
+                        "creationDate"
+                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        new Date(submission.date * 1000),
+                        localization.language
+                    )}`
             );
         }
     };

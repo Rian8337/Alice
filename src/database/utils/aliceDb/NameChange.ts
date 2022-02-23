@@ -11,6 +11,7 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import { Language } from "@alice-localization/base/Language";
 import { NameChangeLocalization } from "@alice-localization/database/utils/aliceDb/NameChangeLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 /**
  * Represents an osu!droid name change request.
@@ -212,9 +213,10 @@ export class NameChange extends Manager implements DatabaseNameChange {
                         )}**: ${this.new_username}\n` +
                         `**${localization.getTranslation(
                             "creationDate"
-                        )}**: ${new Date(
-                            (this.cooldown - 86400 * 30) * 1000
-                        ).toUTCString()}\n\n` +
+                        )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                            new Date((this.cooldown - 86400 * 30) * 1000),
+                            localization.language
+                        )}\n\n` +
                         `**${localization.getTranslation(
                             "accepted"
                         )}**: ${localization.getTranslation("accepted")}`
@@ -223,7 +225,10 @@ export class NameChange extends Manager implements DatabaseNameChange {
             user.send({
                 content: MessageCreator.createAccept(
                     localization.getTranslation("acceptedNotification"),
-                    new Date(this.cooldown * 1000).toUTCString()
+                    DateTimeFormatHelper.dateToLocaleString(
+                        new Date(this.cooldown * 1000),
+                        localization.language
+                    )
                 ),
                 embeds: [embed],
             });
@@ -266,9 +271,10 @@ export class NameChange extends Manager implements DatabaseNameChange {
                         )}**: ${this.new_username}\n` +
                         `**${localization.getTranslation(
                             "creationDate"
-                        )}**: ${new Date(
-                            (this.cooldown - 86400 * 30) * 1000
-                        ).toUTCString()}\n\n` +
+                        )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                            new Date((this.cooldown - 86400 * 30) * 1000),
+                            localization.language
+                        )}\n\n` +
                         `**${localization.getTranslation(
                             "status"
                         )}**: ${localization.getTranslation("denied")}\n` +

@@ -5,6 +5,7 @@ import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalizatio
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -46,7 +47,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 }>\n` +
                 `**${localization.getTranslation(
                     "tagCreationDate"
-                )}**: ${new Date(tag.date).toUTCString()}\n` +
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(tag.date),
+                    localization.language
+                )}\n` +
                 `**${localization.getTranslation("tagAttachmentAmount")}**: ${
                     tag.attachments.length
                 }`

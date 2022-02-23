@@ -7,6 +7,7 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import {
     Canvas,
     createCanvas,
@@ -78,7 +79,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )
         .addField(
             localization.getTranslation("creationDate"),
-            new Date(clan.createdAt * 1000).toUTCString(),
+            DateTimeFormatHelper.dateToLocaleString(
+                new Date(clan.createdAt * 1000),
+                localization.language
+            ),
             true
         )
         .addField(

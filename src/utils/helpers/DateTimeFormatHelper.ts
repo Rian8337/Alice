@@ -146,6 +146,30 @@ export abstract class DateTimeFormatHelper {
     }
 
     /**
+     * Converts a date to its string literal.
+     *
+     * @param date The date.
+     * @param language The language to convert to.
+     * @returns The formatted date.
+     */
+    static dateToLocaleString(date: Date, language: Language): string {
+        let localeToConvert: string;
+
+        switch (language) {
+            case "kr":
+                localeToConvert = "ko-KR";
+                break;
+            case "id":
+                localeToConvert = "id-ID";
+                break;
+            default:
+                localeToConvert = "en-US";
+        }
+
+        return date.toLocaleString(localeToConvert, { timeZone: "UTC" });
+    }
+
+    /**
      * Gets the localization of this helper utility.
      *
      * @param language The language to localize.

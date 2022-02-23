@@ -7,6 +7,7 @@ export interface MapsearchStrings {
     readonly serviceProvider: string;
     readonly beatmapsFound: string;
     readonly download: string; // see 63.22
+    readonly lastUpdate: string; // see PrototypecheckLocalization
 }
 
 /**
@@ -24,6 +25,7 @@ export class MapsearchLocalization extends Localization<MapsearchStrings> {
             serviceProvider: "Service provided by Sayobot",
             beatmapsFound: "Beatmaps Found",
             download: "Download",
+            lastUpdate: "Last Update",
         },
         kr: {
             requestFailed:
@@ -33,6 +35,7 @@ export class MapsearchLocalization extends Localization<MapsearchStrings> {
             serviceProvider: "서비스는 Sayobot에 의해 제공돼요",
             beatmapsFound: "찾은 비트맵:",
             download: "다운로드",
+            lastUpdate: "최근 업데이트",
         },
         id: {
             requestFailed: "",
@@ -40,6 +43,7 @@ export class MapsearchLocalization extends Localization<MapsearchStrings> {
             serviceProvider: "",
             beatmapsFound: "",
             download: "",
+            lastUpdate: "",
         },
     };
 }

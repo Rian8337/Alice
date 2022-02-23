@@ -7,16 +7,14 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { Language } from "@alice-localization/base/Language";
 import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: NamechangeLocalization = new NamechangeLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const bindInfo: UserBind | null =
@@ -27,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
                 )
             ),
@@ -52,7 +50,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             return interaction.editReply({
                 content: MessageCreator.createReject(
                     localization.getTranslation("requestCooldownNotExpired"),
-                    new Date(nameChange.cooldown * 1000).toUTCString()
+                    DateTimeFormatHelper.dateToLocaleString(
+                        new Date(nameChange.cooldown * 1000),
+                        localization.language
+                    )
                 ),
             });
         }

@@ -14,6 +14,7 @@ import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { PrototypecheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/PrototypecheckLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: PrototypecheckLocalization =
@@ -92,9 +93,12 @@ export const run: Command["run"] = async (_, interaction) => {
             )}](https://droidppboard.herokuapp.com/prototype/profile?uid=${
                 ppInfo.uid
             })\n` +
-            `${localization.getTranslation("lastUpdate")}: **${new Date(
-                ppInfo.lastUpdate
-            ).toUTCString()}**`
+            `${localization.getTranslation(
+                "lastUpdate"
+            )}: **${DateTimeFormatHelper.dateToLocaleString(
+                new Date(ppInfo.lastUpdate),
+                localization.language
+            )}**`
     );
 
     const onPageChange: OnButtonPageChange = async (
