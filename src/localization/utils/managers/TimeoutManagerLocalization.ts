@@ -40,7 +40,7 @@ export class TimeoutManagerLocalization extends Localization<TimeoutManagerStrin
             timeoutExecuted: "Timeout executed",
             untimeoutExecuted: "Untimeout executed",
             inChannel: "in %s",
-            reason: "reason",
+            reason: "Reason",
             timeoutUserNotification:
                 "Hey, you were timeouted for %s for %s. Sorry!",
             userNotTimeouted: "the user is not timeouted",
