@@ -54,5 +54,19 @@ export class LeaderboardLocalization extends Localization<LeaderboardStrings> {
             accuracy: "정확도",
             score: "점수",
         },
+        id: {
+            invalidPage: "",
+            dppLeaderboardClanNotFound: "",
+            noPrototypeEntriesFound: "",
+            noBeatmapFound: "",
+            beatmapHasNoScores: "",
+            topScore: "",
+            username: "",
+            uid: "",
+            playCount: "",
+            pp: "",
+            accuracy: "",
+            score: "",
+        },
     };
 }

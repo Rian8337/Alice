@@ -20,5 +20,8 @@ export class ClanCheckLocalization extends Localization<ClanCheckStrings> {
             memberKicked:
                 "저기, 당신의 클랜 멤버 (%s) 가 서버를 떠나서 클랜에서 추방당했어요!",
         },
+        id: {
+            memberKicked: "",
+        },
     };
 }

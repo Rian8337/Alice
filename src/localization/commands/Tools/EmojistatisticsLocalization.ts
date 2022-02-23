@@ -46,5 +46,17 @@ export class EmojistatisticsLocalization extends Localization<EmojistatisticsStr
             overallUsage: "총 사용 횟수",
             averagePerMonthUsage: "한달 평균 사용 횟수",
         },
+        id: {
+            serverHasNoData: "",
+            noValidEmojis: "",
+            emojiStatisticsForServer: "",
+            sortMode: "",
+            overall: "",
+            averagePerMonth: "",
+            emoji: "",
+            dateCreation: "",
+            overallUsage: "",
+            averagePerMonthUsage: "",
+        },
     };
 }

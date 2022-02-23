@@ -72,5 +72,23 @@ export class TimeoutManagerLocalization extends Localization<TimeoutManagerStrin
             untimeoutUserNotification:
                 "저기, 당신은 다음 이유로 타임아웃이 해제되었어요: %s.",
         },
+        id: {
+            userAlreadyTimeouted: "",
+            userImmuneToTimeout: "",
+            invalidTimeoutDuration: "",
+            timeoutDurationOutOfRange: "",
+            notEnoughPermissionToTimeout: "",
+            timeoutReasonTooLong: "",
+            timeoutExecuted: "",
+            untimeoutExecuted: "",
+            inChannel: "",
+            reason: "",
+            userId: "",
+            channelId: "",
+            timeoutUserNotification: "",
+            userNotTimeouted: "",
+            untimeoutReasonTooLong: "",
+            untimeoutUserNotification: "",
+        },
     };
 }

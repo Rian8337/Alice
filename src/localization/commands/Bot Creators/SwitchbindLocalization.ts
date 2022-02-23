@@ -28,5 +28,11 @@ export class SwitchbindLocalization extends Localization<SwitchbindStrings> {
             switchFailed: "죄송해요, 바인딩을 변경할 수 없어요: %s.",
             switchSuccessful: "성공적으로 바인딩을 변경했어요.",
         },
+        id: {
+            invalidUid: "Hei, mohon berikan uid yang benar!",
+            uidNotBinded: "Maaf, uid ini tidak terhubung ke seorang pengguna!",
+            switchFailed: "Maaf, aku tidak bisa memindahkan uid tersebut: %s.",
+            switchSuccessful: "Berhasil memindahkan uid.",
+        },
     };
 }

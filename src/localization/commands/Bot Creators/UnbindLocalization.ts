@@ -28,5 +28,12 @@ export class UnbindLocalization extends Localization<UnbindStrings> {
                 "죄송해요, 다음 uid의 바인딩을 해제할 수 없었어요: %s.",
             unbindSuccessful: "성공적으로 uid %s 의 바인딩을 해제했어요.",
         },
+        id: {
+            invalidUid: "Hei, mohon berikan uid yang benar!",
+            uidNotBinded: "Maaf, uid tersebut tidak terhubung!",
+            unbindFailed:
+                "Maaf, aku tidak bisa melepas hubungan uid tersebut: %s.",
+            unbindSuccessful: "Berhasil melepas hubungan uid %s.",
+        },
     };
 }

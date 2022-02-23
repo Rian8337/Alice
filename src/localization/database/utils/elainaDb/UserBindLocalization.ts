@@ -45,5 +45,14 @@ export class UserBindLocalization extends Localization<UserBindStrings> {
             unbindClanDisbandNotification:
                 "저기, 당신의 디스코드 계정이 모든 osu!droid 계정들로부터 바인드가 해제되었어요! 따라서, 당신의 클랜이 해체되었어요!",
         },
+        id: {
+            uidNotBindedToAccount: "",
+            cannotRebindToSameAccount: "",
+            bindLimitReachedInOtherAccount: "",
+            playerNotFound: "",
+            playerWithUidOrUsernameNotFound: "",
+            bindLimitReached: "",
+            unbindClanDisbandNotification: "",
+        },
     };
 }

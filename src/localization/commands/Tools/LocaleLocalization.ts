@@ -30,5 +30,12 @@ export class LocaleLocalization extends Localization<LocaleStrings> {
             setLocaleFailed: "",
             setLocaleSuccess: "",
         },
+        id: {
+            selectLanguage: "",
+            clearLocaleFailed: "",
+            clearLocaleSuccess: "",
+            setLocaleFailed: "",
+            setLocaleSuccess: "",
+        },
     };
 }

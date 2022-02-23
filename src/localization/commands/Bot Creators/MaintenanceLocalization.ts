@@ -18,7 +18,11 @@ export class MaintenanceLocalization extends Localization<MaintenanceStrings> {
         },
         kr: {
             maintenanceToggle:
-                "%s에 다음과 같은 이유로 점검 모드가 적용되었어요: %s",
+                "`%s`에 다음과 같은 이유로 점검 모드가 적용되었어요: `%s`",
+        },
+        id: {
+            maintenanceToggle:
+                "Berhasil mengubah mode pemeliharaan ke `%s` dengan alasan `%s`.",
         },
     };
 }

@@ -40,5 +40,14 @@ export class RecalcLocalization extends Localization<RecalcStrings> {
             fullRecalcTrackProgress: "재계산 진행중 (%s/%s (%s%))...",
             fullRecalcSuccess: "%s, 재계산이 완료됐어요!",
         },
+        id: {
+            tooManyOptions: "",
+            userIsDPPBanned: "",
+            userHasRequestedRecalc: "",
+            userQueued: "",
+            fullRecalcInProgress: "",
+            fullRecalcTrackProgress: "",
+            fullRecalcSuccess: "",
+        },
     };
 }

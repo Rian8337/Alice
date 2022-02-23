@@ -21,5 +21,9 @@ export class ScanLocalization extends Localization<ScanStrings> {
             scanComplete: "%s, 스캔 완료!",
             scanStarted: "스캔 시작!",
         },
+        id: {
+            scanComplete: "%s, pemindaian selesai!",
+            scanStarted: "Pemindaian dimulai!",
+        },
     };
 }

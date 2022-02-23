@@ -29,5 +29,10 @@ export class Recent5Localization extends Localization<Recent5Strings> {
             playerHasNoRecentPlays:
                 "죄송해요, 이 유저는 아무 기록도 제출하지 않았어요!",
         },
+        id: {
+            tooManyOptions: "",
+            playerNotFound: "",
+            playerHasNoRecentPlays: "",
+        },
     };
 }

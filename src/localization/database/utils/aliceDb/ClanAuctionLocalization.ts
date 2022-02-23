@@ -24,5 +24,10 @@ export class ClanAuctionLocalization extends Localization<ClanAuctionStrings> {
             noWinningClan: "경매 낙찰 클랜 없음",
             auctioneerNotFound: "경매인(경매 시작자)이 발견되지 않음",
         },
+        id: {
+            auctionHasntExpired: "",
+            noWinningClan: "",
+            auctioneerNotFound: "",
+        },
     };
 }

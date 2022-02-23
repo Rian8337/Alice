@@ -21,5 +21,9 @@ export class SelectMenuCreatorLocalization extends Localization<SelectMenuCreato
             pleaseWait: "잠시 기다려주세요...",
             timedOut: "시간이 초과됐어요.",
         },
+        id: {
+            pleaseWait: "",
+            timedOut: "",
+        },
     };
 }

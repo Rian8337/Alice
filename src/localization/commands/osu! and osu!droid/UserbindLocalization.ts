@@ -84,5 +84,21 @@ export class UserbindLocalization extends Localization<UserbindStrings> {
             verificationMapInformation:
                 "당신이 osu!droid 계정을 소유하고 있다는 것을 인증하기 위해 이 비트맵을 사용하세요. 바인딩을 처음 수행하려면 필요한 과정이에요.",
         },
+        id: {
+            profileNotFound: "",
+            verificationMapNotFound: "",
+            newAccountBindNotInMainServer: "",
+            newAccountBindNotVerified: "",
+            newAccountUidBindConfirmation: "",
+            newAccountUsernameBindConfirmation: "",
+            newAccountUidBindSuccessful: "",
+            newAccountUsernameBindSuccessful: "",
+            accountUidBindError: "",
+            accountUsernameBindError: "",
+            accountHasBeenBindedError: "",
+            oldAccountUidBindSuccessful: "",
+            oldAccountUsernameBindSuccessful: "",
+            verificationMapInformation: "",
+        },
     };
 }

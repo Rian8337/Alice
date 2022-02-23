@@ -30,5 +30,12 @@ export class RecalculationManagerLocalization extends Localization<Recalculation
             userHasAskedForRecalc: "유저 재계산을 요청함",
             userDPPBanned: "유저가 DPP-ban당함",
         },
+        id: {
+            recalculationSuccessful: "",
+            recalculationFailed: "",
+            userNotBinded: "",
+            userHasAskedForRecalc: "",
+            userDPPBanned: "",
+        },
     };
 }

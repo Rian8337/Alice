@@ -30,5 +30,12 @@ export class PingLocalization extends Localization<PingStrings> {
             elainaDb: "Elaina 데이터베이스",
             aliceDb: "Alice 데이터베이스",
         },
+        id: {
+            pong: "",
+            discordWs: "",
+            droidServer: "",
+            elainaDb: "",
+            aliceDb: "",
+        },
     };
 }

@@ -74,5 +74,23 @@ export class VoteLocalization extends Localization<VoteStrings> {
                 "죄송해요, 이 투표에 참여하기 위한 Tatsu XP가 부족해요!",
             topic: "주제",
         },
+        id: {
+            ongoingVoteInChannel: "",
+            noOngoingVoteInChannel: "",
+            noEndVotePermission: "",
+            endVoteSuccess: "",
+            voteChoiceIsSameAsBefore: "",
+            notVotedYet: "",
+            invalidVoteChoice: "",
+            voteRegistered: "",
+            voteCancelled: "",
+            voteMoved: "",
+            tooFewChoices: "",
+            voteStartSuccess: "",
+            invalidXpReq: "",
+            cannotRetrieveTatsuXP: "",
+            tatsuXPTooSmall: "",
+            topic: "",
+        },
     };
 }

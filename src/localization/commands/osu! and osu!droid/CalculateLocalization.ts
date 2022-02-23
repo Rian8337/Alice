@@ -39,5 +39,14 @@ export class CalculateLocalization extends Localization<CalculateStrings> {
             rawPcSr: "Raw PC stars",
             rawPcPp: "Raw PC pp",
         },
+        id: {
+            noBeatmapProvided: "",
+            beatmapProvidedIsInvalid: "",
+            beatmapNotFound: "",
+            rawDroidSr: "",
+            rawDroidPp: "",
+            rawPcSr: "",
+            rawPcPp: "",
+        },
     };
 }

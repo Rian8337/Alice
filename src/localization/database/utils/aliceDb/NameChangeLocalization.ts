@@ -62,5 +62,21 @@ export class NameChangeLocalization extends Localization<NameChangeStrings> {
             deniedNotification:
                 "저기, 당신의 유저네임 변경 요청이 `%s` 때문에 거부되었음을 알려드리려 왔어요. 30일 쿨다운은 적용되지 않았으니, 바로 다른 변경 요청을 하셔도 돼요. 미리 죄송해요!",
         },
+        id: {
+            requestNotActive: "",
+            playerNotFound: "",
+            droidServerRequestFailed: "",
+            newUsernameTaken: "",
+            requestDetails: "",
+            currentUsername: "",
+            requestedUsername: "",
+            creationDate: "",
+            status: "",
+            accepted: "",
+            acceptedNotification: "",
+            denied: "",
+            reason: "",
+            deniedNotification: "",
+        },
     };
 }

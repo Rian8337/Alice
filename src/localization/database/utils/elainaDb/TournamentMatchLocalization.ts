@@ -36,5 +36,14 @@ export class TournamentMatchLocalization extends Localization<TournamentMatchStr
             modsWasUsed: "%s(이)가 사용됨",
             teamMembersIncorrectFMmod: "",
         },
+        id: {
+            scoreNotFound: "",
+            modsIsNotUsed: "",
+            replayNotFound: "",
+            unsupportedGameVersion: "",
+            modsExceptNotUsed: "",
+            modsWasUsed: "",
+            teamMembersIncorrectFMmod: "",
+        },
     };
 }

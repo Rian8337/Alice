@@ -34,5 +34,12 @@ export class MapsearchLocalization extends Localization<MapsearchStrings> {
             beatmapsFound: "찾은 비트맵:",
             download: "다운로드",
         },
+        id: {
+            requestFailed: "",
+            noBeatmapsFound: "",
+            serviceProvider: "",
+            beatmapsFound: "",
+            download: "",
+        },
     };
 }

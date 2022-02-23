@@ -39,5 +39,18 @@ export class BirthdayLocalization extends Localization<BirthdayStrings> {
             date: "",
             timezone: "",
         },
+        id: {
+            selfBirthdayNotExist:
+                "Maaf, kamu belum mengatur informasi ulang tahunmu!",
+            userBirthdayNotExist:
+                "Maaf, pengguna tersebut belum mengatur informasi ulang tahunnya!",
+            setBirthdayFailed:
+                "Maaf, aku tidak bisa mengatur informasi ulang tahun: %s.",
+            setBirthdaySuccess:
+                "Berhasil mengatur ulang tahun pada tanggal %s/%s di zona waktu UTC%s.",
+            birthdayInfo: "Informasi Ulang Tahun untuk %s",
+            date: "Tanggal",
+            timezone: "Zona Waktu",
+        },
     };
 }

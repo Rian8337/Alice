@@ -27,5 +27,11 @@ export class BirthdayCollectionManagerLocalization extends Localization<Birthday
             invalidMonth: "",
             invalidTimezone: "",
         },
+        id: {
+            birthdayIsSet: "",
+            invalidDate: "",
+            invalidMonth: "",
+            invalidTimezone: "",
+        },
     };
 }

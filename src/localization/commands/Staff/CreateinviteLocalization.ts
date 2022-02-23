@@ -52,5 +52,18 @@ export class CreateinviteLocalization extends Localization<CreateinviteStrings> 
             inviteLink: "초대 링크",
             notSpecified: "지정되지 않음.",
         },
+        id: {
+            expiryTimeInvalid: "",
+            maximumUsageInvalid: "",
+            inviteLinkCreated: "",
+            createdInChannel: "",
+            maxUsage: "",
+            infinite: "",
+            expirationTime: "",
+            never: "",
+            reason: "",
+            inviteLink: "",
+            notSpecified: "",
+        },
     };
 }

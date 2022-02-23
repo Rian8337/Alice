@@ -39,5 +39,15 @@ export class DateTimeFormatHelperLocalization extends Localization<DateTimeForma
             second: "초",
             seconds: "초",
         },
+        id: {
+            day: "",
+            days: "",
+            hour: "",
+            hours: "",
+            minute: "",
+            minutes: "",
+            second: "",
+            seconds: "",
+        },
     };
 }

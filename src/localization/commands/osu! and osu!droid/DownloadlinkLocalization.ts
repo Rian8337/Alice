@@ -24,5 +24,9 @@ export class DownloadlinkLocalization extends Localization<DownloadlinkStrings> 
             beatmapNotAvailable:
                 "죄송해요, 이 비트맵은 다운로드가 가능하지 않아요!",
         },
+        id: {
+            noCachedBeatmap: "",
+            beatmapNotAvailable: "",
+        },
     };
 }

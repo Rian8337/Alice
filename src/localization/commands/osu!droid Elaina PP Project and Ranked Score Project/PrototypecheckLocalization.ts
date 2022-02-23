@@ -48,5 +48,16 @@ export class PrototypecheckLocalization extends Localization<PrototypecheckStrin
             ppProfile: "PP 프로필",
             lastUpdate: "최근 업데이트",
         },
+        id: {
+            tooManyOptions: "",
+            selfInfoNotAvailable: "",
+            userInfoNotAvailable: "",
+            ppProfileTitle: "",
+            totalPP: "",
+            prevTotalPP: "",
+            diff: "",
+            ppProfile: "",
+            lastUpdate: "",
+        },
     };
 }

@@ -31,8 +31,7 @@ export abstract class Localization<T extends Record<keyof T, string>> {
      */
     getTranslation(name: keyof T): string {
         return (
-            this.translations[this.language][name] ||
-            this.translations["en"][name]
+            this.translations[this.language][name] || this.translations.en[name]
         );
     }
 }

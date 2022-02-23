@@ -19,5 +19,8 @@ export class BirthdayTrackingLocalization extends Localization<BirthdayTrackingS
         kr: {
             happyBirthday: "",
         },
+        id: {
+            happyBirthday: "",
+        },
     };
 }

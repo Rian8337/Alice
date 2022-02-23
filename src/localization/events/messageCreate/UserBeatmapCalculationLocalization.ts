@@ -32,5 +32,12 @@ export class UserBeatmapCalculationLocalization extends Localization<UserBeatmap
             beatmapLimitation:
                 "%s개의 맵을 찾았지만, 제 한계로 인해 3개만 보여드려요.",
         },
+        id: {
+            droidStars: "",
+            droidPP: "",
+            pcStars: "",
+            pcPP: "",
+            beatmapLimitation: "",
+        },
     };
 }

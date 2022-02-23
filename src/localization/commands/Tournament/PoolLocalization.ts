@@ -22,5 +22,9 @@ export class PoolLocalization extends Localization<PoolStrings> {
             poolNotFound: "죄송해요, 찾으시는 맵풀을 찾을 수 없었어요!",
             length: "길이",
         },
+        id: {
+            poolNotFound: "",
+            length: "",
+        },
     };
 }

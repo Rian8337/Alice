@@ -26,5 +26,10 @@ export class TimeoutLocalization extends Localization<TimeoutStrings> {
             timeoutSuccess:
                 "성공적으로 그 유저를 다음 시간만큼 타임아웃 시켰어요: %s.",
         },
+        id: {
+            userToTimeoutNotFound: "",
+            timeoutFailed: "",
+            timeoutSuccess: "",
+        },
     };
 }

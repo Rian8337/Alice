@@ -19,5 +19,8 @@ export class CuteNoLewdLocalization extends Localization<CuteNoLewdStrings> {
         kr: {
             imageSentTooFast: "%s, 5초에 한 개의 이미지만 올릴 수 있어요!",
         },
+        id: {
+            imageSentTooFast: "",
+        },
     };
 }

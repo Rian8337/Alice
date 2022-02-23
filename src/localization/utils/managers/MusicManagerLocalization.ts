@@ -37,5 +37,14 @@ export class MusicManagerLocalization extends Localization<MusicManagerStrings> 
             noMusicPlaying: "재생중인 음악 없음",
             playbackNotPaused: "재생이 일시정지되지 않음",
         },
+        id: {
+            failedToJoinVc: "",
+            videoAlreadyQueued: "",
+            queueLimitReached: "",
+            botNotInVc: "",
+            botNotInUserVc: "",
+            noMusicPlaying: "",
+            playbackNotPaused: "",
+        },
     };
 }

@@ -22,5 +22,9 @@ export class CommandHelperLocalization extends Localization<CommandHelperStrings
             commandNotFound: "죄송해요, 찾으시려는 명령어를 찾지 못했어요!",
             permissionsRequired: "이 권한들이 필요해요:",
         },
+        id: {
+            commandNotFound: "",
+            permissionsRequired: "",
+        },
     };
 }

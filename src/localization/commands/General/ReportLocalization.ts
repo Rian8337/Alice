@@ -45,5 +45,16 @@ export class ReportLocalization extends Localization<ReportStrings> {
             reportSummary: "신고 요약",
             saveEvidence: "필요할 경우 증거를 저장해 놓는 걸 잊지 마세요.",
         },
+        id: {
+            userToReportNotFound: "",
+            userNotReportable: "",
+            selfReportError: "",
+            reporterDmLocked: "",
+            offender: "",
+            channel: "",
+            reason: "",
+            reportSummary: "",
+            saveEvidence: "",
+        },
     };
 }

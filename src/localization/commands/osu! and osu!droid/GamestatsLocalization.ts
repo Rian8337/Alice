@@ -43,5 +43,16 @@ export class GamestatsLocalization extends Localization<GamestatsStrings> {
             moreThan200ScoresAcc: "기록 200개 이상",
             totalScores: "총 온라인 기록 수",
         },
+        id: {
+            cannotRetrieveGameStatistics: "",
+            overallGameStats: "",
+            registeredAccounts: "",
+            totalRegisteredAccounts: "",
+            moreThan5ScoresAcc: "",
+            moreThan20ScoresAcc: "",
+            moreThan100ScoresAcc: "",
+            moreThan200ScoresAcc: "",
+            totalScores: "",
+        },
     };
 }

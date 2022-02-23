@@ -28,5 +28,10 @@ export class UntimeoutLocalization extends Localization<UntimeoutStrings> {
             untimeoutSuccessful:
                 "성공적으로 해당 유저의 타임아웃을 해제했어요.",
         },
+        id: {
+            userCannotUntimeoutError: "",
+            untimeoutFailed: "",
+            untimeoutSuccessful: "",
+        },
     };
 }

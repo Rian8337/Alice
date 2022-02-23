@@ -24,5 +24,11 @@ export class UndeployLocalization extends Localization<UndeployStrings> {
             commandUndeploySuccessful:
                 "성공적으로 %s 명령어를 등록 해제했어요.",
         },
+        id: {
+            commandNotFound:
+                "Maaf, aku tidak dapat menemukan perintah dengan nama tersebut!",
+            commandUndeploySuccessful:
+                "Berhasil menghapus registrasi perintah `%s`.",
+        },
     };
 }

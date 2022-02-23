@@ -47,5 +47,15 @@ export class FetchreplayLocalization extends Localization<FetchreplayStrings> {
             hitErrorInfo: "",
             hitErrorAvg: "",
         },
+        id: {
+            beatmapNotProvided: "",
+            selfScoreNotFound: "",
+            userScoreNotFound: "",
+            noReplayFound: "",
+            fetchReplayNoBeatmapSuccessful: "",
+            playInfo: "",
+            hitErrorInfo: "",
+            hitErrorAvg: "",
+        },
     };
 }

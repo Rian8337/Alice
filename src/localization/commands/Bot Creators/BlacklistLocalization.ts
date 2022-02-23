@@ -57,5 +57,24 @@ export class BlacklistLocalization extends Localization<BlacklistStrings> {
             unblacklist: "언블랙리스트",
             unblacklistAction: "비트맵을 블랙리스트에서 제거해요.",
         },
+        id: {
+            noBeatmapProvided:
+                "Hei, mohon berikan beatmap untuk dimasukkan atau dikeluarkan dari daftar hitam!",
+            beatmapNotFound:
+                "Hei, aku tidak dapat menemukan beatmap dari link atau ID yang diberikan!",
+            noBlacklistReasonProvided:
+                "Hei, mohon berikan alasanmu untuk mendaftarhitamkan beatmap ini!",
+            blacklistFailed:
+                "Maaf, aku tidak bisa mendaftarhitamkan beatmap tersebut: %s.",
+            blacklistSuccess: "Berhasil mendaftarhitamkan `%s`.",
+            unblacklistFailed:
+                "Maaf, aku tidak bisa mengeluarkan beatmap tersebut dari daftar hitam: %s.",
+            unblacklistSuccess: "Berhasil mengeluarkan `%s` dari daftar hitam.",
+            detectedBeatmapId: "ID beatmap yang terdeteksi:",
+            blacklist: "Masukkan ke daftar hitam",
+            blacklistAction: "Masukkan beatmap tersebut ke daftar hitam.",
+            unblacklist: "Keluarkan dari daftar hitam",
+            unblacklistAction: "Keluarkan beatmap tersebut dari daftar hitam.",
+        },
     };
 }

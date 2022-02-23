@@ -18,5 +18,8 @@ export class DroidProfileLocalization extends Localization<DroidProfileStrings> 
         kr: {
             droidProfile: "%s의 osu!droid 프로필:",
         },
+        id: {
+            droidProfile: "",
+        },
     };
 }

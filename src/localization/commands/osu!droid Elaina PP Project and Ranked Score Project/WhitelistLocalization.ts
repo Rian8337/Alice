@@ -72,5 +72,22 @@ export class WhitelistLocalization extends Localization<WhitelistStrings> {
             notWhitelisted: "화이트리스트에 없음",
             starRating: "스타 레이팅",
         },
+        id: {
+            noBeatmapProvided: "",
+            noBeatmapIDorSetIDFound: "",
+            noBeatmapsFound: "",
+            whitelistSuccess: "",
+            whitelistFailed: "",
+            unwhitelistSuccess: "",
+            unwhitelistFailed: "",
+            noCachedBeatmapFound: "",
+            beatmapNotFound: "",
+            beatmapDoesntNeedWhitelist: "",
+            whitelistStatus: "",
+            whitelistedAndUpdated: "",
+            whitelistedNotUpdated: "",
+            notWhitelisted: "",
+            starRating: "",
+        },
     };
 }

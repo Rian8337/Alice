@@ -18,5 +18,8 @@ export class TriviaHelperLocalization extends Localization<TriviaHelperStrings> 
         kr: {
             latestChoiceRecorded: "당신의 최근 선택 (%s) (이)가 기록되었어요!",
         },
+        id: {
+            latestChoiceRecorded: "",
+        },
     };
 }

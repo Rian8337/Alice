@@ -45,5 +45,14 @@ export class RunCommandLocalization extends Localization<RunCommandStrings> {
                 "저기, 명령어를 천천히 사용해 주세요! 아시다시피, 저도 좀 쉬어야죠.",
             commandExecutionFailed: "명령어 실행 불가: %s",
         },
+        id: {
+            debugModeActive: "",
+            commandNotFound: "",
+            maintenanceMode: "",
+            commandNotExecutableInChannel: "",
+            requiredPermissions: "",
+            commandInCooldown: "",
+            commandExecutionFailed: "",
+        },
     };
 }

@@ -40,5 +40,12 @@ export class ConstantsLocalization extends Localization<ConstantsStrings> {
             userAccountNotBinded:
                 "죄송해요, 해당 계정은 바인드되어있지 않아요. 그 유저는 먼저 `/userbind`로 계정을 바인드 해야해요.",
         },
+        id: {
+            noPermissionToExecuteCommand: "",
+            selfAccountNotBinded: "",
+            commandNotAvailableInServer: "",
+            commandNotAvailableInChannel: "",
+            userAccountNotBinded: "",
+        },
     };
 }

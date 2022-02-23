@@ -36,6 +36,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     label: "Korean",
                     value: "kr",
                 },
+                {
+                    label: "Indonesian",
+                    value: "id",
+                },
             ],
             [interaction.user.id],
             20

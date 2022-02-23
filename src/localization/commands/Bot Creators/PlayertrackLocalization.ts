@@ -24,5 +24,10 @@ export class PlayertrackLocalization extends Localization<PlayertrackStrings> {
             nowTrackingUid: "이제부터 uid %s를 추적할게요.",
             noLongerTrackingUid: "더이상 uid %s를 추적하지 않을게요.",
         },
+        id: {
+            incorrectUid: "Hei, mohon berikan uid yang benar!",
+            nowTrackingUid: "Sekarang melacak uid %s.",
+            noLongerTrackingUid: "Tidak lagi melacak uid %s.",
+        },
     };
 }

@@ -24,5 +24,11 @@ export class DeployLocalization extends Localization<DeployStrings> {
             commandDeploySuccessful:
                 "성공적으로 %s 명령어를 등록했어요. 디스코드에서 업데이트 되기를 기다려 주세요.",
         },
+        id: {
+            commandNotFound:
+                "Maaf, aku tidak dapat menemukan perintah dengan nama tersebut!",
+            commandDeploySuccessful:
+                "Berhasil meregistrasi perintah `%s`. Mohon tunggu agar perintahnya diperbarui di Discord.",
+        },
     };
 }

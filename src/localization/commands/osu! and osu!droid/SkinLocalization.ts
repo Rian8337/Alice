@@ -30,5 +30,11 @@ export class SkinLocalization extends Localization<SkinStrings> {
             tsukushiSite:
                 "스킨 모음집을 확인하시려면, https://tsukushi.site 를 방문해 주세요",
         },
+        id: {
+            skinSet: "",
+            noSkinSetForUser: "",
+            userSkinInfo: "",
+            tsukushiSite: "",
+        },
     };
 }

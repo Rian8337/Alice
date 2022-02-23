@@ -41,5 +41,13 @@ export class CompareLocalization extends Localization<CompareStrings> {
                 "죄송해요, 이 유저는 해당 비트맵에 아무런 기록도 남기지 않았네요!",
             comparePlayDisplay: "%s의 플레이 비교:",
         },
+        id: {
+            tooManyOptions: "",
+            noCachedBeatmap: "",
+            playerNotFound: "",
+            selfScoreNotFound: "",
+            userScoreNotFound: "",
+            comparePlayDisplay: "",
+        },
     };
 }

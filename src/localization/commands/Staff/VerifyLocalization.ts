@@ -38,5 +38,12 @@ export class VerifyLocalization extends Localization<VerifyStrings> {
             verificationSuccess:
                 "성공적으로 유저를 인증했어요. 스레드를 닫을게요.",
         },
+        id: {
+            commandNotAvailableInChannel: "",
+            userIsNotInThread: "",
+            userIsNotInVerification: "",
+            userIsAlreadyVerifiedError: "",
+            verificationSuccess: "",
+        },
     };
 }

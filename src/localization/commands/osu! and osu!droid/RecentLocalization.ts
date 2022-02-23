@@ -37,5 +37,12 @@ export class RecentLocalization extends Localization<RecentStrings> {
                 "죄송해요, 이 유저는 %s번째 최근 기록이 없어요!",
             recentPlayDisplay: "%s의 최근 플레이 기록:",
         },
+        id: {
+            tooManyOptions: "",
+            playerNotFound: "",
+            playerHasNoRecentPlays: "",
+            playIndexOutOfBounds: "",
+            recentPlayDisplay: "",
+        },
     };
 }

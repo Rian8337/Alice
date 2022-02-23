@@ -21,5 +21,9 @@ export class PunishmentManagerLocalization extends Localization<PunishmentManage
             cannotFindLogChannel: "서버의 로그 채널을 찾을 수 없음",
             invalidLogChannel: "서버의 로그 채널이 텍스트 채널이 아님",
         },
+        id: {
+            cannotFindLogChannel: "",
+            invalidLogChannel: "",
+        },
     };
 }

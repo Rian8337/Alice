@@ -36,5 +36,14 @@ export class ProfileCardCreatorLocalization extends Localization<ProfileCardCrea
             clan: "클랜",
             challengePoints: "챌린지 포인트",
         },
+        id: {
+            totalScore: "",
+            rankedScore: "",
+            accuracy: "",
+            playCount: "",
+            droidPP: "",
+            clan: "",
+            challengePoints: "",
+        },
     };
 }

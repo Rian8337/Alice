@@ -18,5 +18,8 @@ export class LoungeLockManagerLocalization extends Localization<LoungeLockManage
         kr: {
             userNotLocked: "유저가 라운지로부터 잠겨있지 않음",
         },
+        id: {
+            userNotLocked: "",
+        },
     };
 }

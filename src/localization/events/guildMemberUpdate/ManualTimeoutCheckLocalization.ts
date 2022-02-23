@@ -18,5 +18,8 @@ export class ManualTimeoutCheckLocalization extends Localization<ManualTimeoutCh
         kr: {
             notSpecified: "지정되지 않음.",
         },
+        id: {
+            notSpecified: "",
+        },
     };
 }

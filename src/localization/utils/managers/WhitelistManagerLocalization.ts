@@ -24,5 +24,10 @@ export class WhitelistManagerLocalization extends Localization<WhitelistManagerS
             beatmapIsNotBlacklisted: "비트맵이 블랙리스트에 없음",
             beatmapIsNotGraveyarded: "비트맵이 무덤에 간(graveyard)상태가 아님",
         },
+        id: {
+            beatmapIsBlacklisted: "",
+            beatmapIsNotBlacklisted: "",
+            beatmapIsNotGraveyarded: "",
+        },
     };
 }

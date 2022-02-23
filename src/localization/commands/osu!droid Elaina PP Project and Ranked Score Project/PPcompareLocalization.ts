@@ -45,5 +45,16 @@ export class PPcompareLocalization extends Localization<PPcompareStrings> {
             player: "",
             totalPP: "총 PP",
         },
+        id: {
+            cannotCompareSamePlayers: "",
+            playerNotBinded: "",
+            uid: "",
+            username: "",
+            user: "",
+            noSimilarPlayFound: "",
+            topPlaysComparison: "",
+            player: "",
+            totalPP: "",
+        },
     };
 }

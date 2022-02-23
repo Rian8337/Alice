@@ -28,5 +28,10 @@ export class PlayerInfoLocalization extends Localization<PlayerInfoStrings> {
             dailyLimitReached:
                 "전달한 양이 일일 최대치를 넘음 - 오늘 %s 앨리스 코인을 더 전달 가능.",
         },
+        id: {
+            tooMuchCoinDeduction: "",
+            dailyClaimUsed: "",
+            dailyLimitReached: "",
+        },
     };
 }

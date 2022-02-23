@@ -58,5 +58,20 @@ export class HelpLocalization extends Localization<HelpStrings> {
             details: "상세 정보",
             none: "없음",
         },
+        id: {
+            noCommandFound: "",
+            aliceHelp: "",
+            creator: "",
+            useHelpCommand: "",
+            issuesContact: "",
+            category: "",
+            requiredPermissions: "",
+            examples: "",
+            usage: "",
+            required: "",
+            optional: "",
+            details: "",
+            none: "",
+        },
     };
 }
