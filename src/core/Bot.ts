@@ -22,6 +22,7 @@ import { Config } from "./Config";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Manager } from "@alice-utils/base/Manager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { WarningManager } from "@alice-utils/managers/WarningManager";
 
 /**
  * The starting point of the bot.
@@ -310,14 +311,13 @@ export class Bot extends Client {
 
     /**
      * Initializes utilities.
-     *
-     * @param client The instance of the bot.
      */
     private async initUtils(): Promise<void> {
         ProfileManager.init();
         await CommandUtilManager.init();
         await LoungeLockManager.init();
-        await TimeoutManager.init();
+        TimeoutManager.init();
+        WarningManager.init();
         await WhitelistManager.init();
     }
 

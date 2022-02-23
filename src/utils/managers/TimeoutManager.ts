@@ -31,7 +31,7 @@ export abstract class TimeoutManager extends PunishmentManager {
     /**
      * Initializes the manager.
      */
-    static override async init(): Promise<void> {
+    static override init(): void {
         this.punishmentDb =
             DatabaseManager.aliceDb.collections.guildPunishmentConfig;
     }
@@ -213,13 +213,13 @@ export abstract class TimeoutManager extends PunishmentManager {
                 userTimeoutEmbed
             );
         } catch {
-            interaction.channel!.send(
-                MessageCreator.createWarn(
+            interaction.channel!.send({
+                content: MessageCreator.createWarn(
                     `A user has been timeouted, but their DMs are locked. The user will be timeouted for \`${DateTimeFormatHelper.secondsToDHMS(
                         duration
                     )}\`.`
-                )
-            );
+                ),
+            });
         }
 
         await logChannel.send({ embeds: [timeoutEmbed] });
@@ -377,6 +377,11 @@ export abstract class TimeoutManager extends PunishmentManager {
         member: GuildMember,
         duration: number
     ): Promise<boolean> {
+        // TODO: move to PunishmentManager for WarningManager and rename
+        if (member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)) {
+            return true;
+        }
+
         const guildConfig: GuildPunishmentConfig | null =
             await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
                 member.guild
@@ -455,7 +460,6 @@ export abstract class TimeoutManager extends PunishmentManager {
     /**
      * Notifies a guild member about their timeout status.
      *
-     * @param client The instance of the bot.
      * @param member The member to notify.
      * @param content The content of the notification.
      * @param embed The embed for notification.
