@@ -26,7 +26,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
     const localization: UserBeatmapCalculationLocalization =
         new UserBeatmapCalculationLocalization(
-            await CommandHelper.getLocale(message.author)
+            message.channel.type === "DM"
+                ? await CommandHelper.getLocale(message.author)
+                : await CommandHelper.getLocale(message.channel.id)
         );
 
     const calcParams: PerformanceCalculationParameters =
