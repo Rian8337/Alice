@@ -58,6 +58,13 @@ export interface EmbedCreatorStrings {
     readonly ppProfileTitle: string; // see PrototypecheckLocalization
     readonly totalPP: string;
     readonly ppProfile: string;
+    readonly warningInfo: string;
+    readonly warnedUser: string;
+    readonly warningId: string;
+    readonly warningIssuedBy: string;
+    readonly expirationDate: string; // see 22.140
+    readonly reason: string; // see 43.9
+    readonly channel: string;
 }
 
 /**
@@ -127,6 +134,13 @@ export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> 
             ppProfileTitle: "PP Profile for %s",
             totalPP: "Total PP",
             ppProfile: "PP Profile",
+            warningInfo: "Warning Info",
+            warningId: "Warning ID",
+            warnedUser: "Warned User",
+            warningIssuedBy: "Issued by <@%s> (%s)",
+            expirationDate: "Expiration Date",
+            reason: "Reason",
+            channel: "Channel",
         },
         kr: {
             exitMenu: '이 메뉴를 종료하려면 "exit"을 입력하세요',
@@ -188,6 +202,13 @@ export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> 
             ppProfileTitle: "%s의 PP 프로필",
             totalPP: "총 PP",
             ppProfile: "PP 프로필",
+            warningInfo: "",
+            warningId: "",
+            warnedUser: "",
+            warningIssuedBy: "",
+            expirationDate: "만료일",
+            reason: "이유",
+            channel: "채널",
         },
         id: {
             exitMenu: "",
@@ -240,12 +261,19 @@ export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> 
             mapShareStatusDenied: "",
             mapShareStatusPending: "",
             mapShareStatusPosted: "",
-            musicYoutubeChannel: "",
+            musicYoutubeChannel: "채널",
             musicDuration: "",
             musicQueuer: "",
             ppProfileTitle: "",
             totalPP: "",
             ppProfile: "",
+            warningInfo: "",
+            warningId: "",
+            warnedUser: "",
+            warningIssuedBy: "",
+            expirationDate: "",
+            reason: "",
+            channel: "",
         },
     };
 }

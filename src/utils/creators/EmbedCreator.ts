@@ -68,6 +68,7 @@ import {
     EmbedCreatorLocalization,
     EmbedCreatorStrings,
 } from "@alice-localization/utils/creators/EmbedCreatorLocalization";
+import { Warning } from "@alice-database/utils/aliceDb/Warning";
 
 /**
  * Utility to create message embeds.
@@ -1054,6 +1055,60 @@ export abstract class EmbedCreator {
                 )}`
             )
             .setURL(queue.information.url);
+
+        return embed;
+    }
+
+    /**
+     * Gets an embed representing a user's warning.
+     *
+     * @param warning The warning.
+     * @param language The locale of the user who attempted to create this embed. Defaults to English.
+     */
+    static createWarningEmbed(
+        warning: Warning,
+        language: Language = "en"
+    ): MessageEmbed {
+        const localization: EmbedCreatorLocalization =
+            this.getLocalization(language);
+
+        const embed: MessageEmbed = this.createNormalEmbed({
+            color: "BLURPLE",
+            footerText: `${localization.getTranslation("warningId")}: ${
+                warning.guildSpecificId
+            }`,
+        });
+
+        embed
+            .setTitle(localization.getTranslation("warningInfo"))
+            .setDescription(
+                `**${StringHelper.formatString(
+                    localization.getTranslation("warningIssuedBy"),
+                    warning.issuerId,
+                    warning.issuerId
+                )}**\n\n` +
+                    `**${localization.getTranslation("warnedUser")}**: <@${
+                        warning.discordId
+                    }> (${warning.discordId})\n` +
+                    `**${localization.getTranslation("channel")}**: <#${
+                        warning.channelId
+                    }> (${warning.channelId})\n` +
+                    `**${localization.getTranslation(
+                        "creationDate"
+                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        new Date(warning.creationDate * 1000),
+                        language
+                    )}\n` +
+                    `**${localization.getTranslation(
+                        "expirationDate"
+                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        new Date(warning.expirationDate * 1000),
+                        language
+                    )}\n\n` +
+                    `**${localization.getTranslation("reason")}**:\n${
+                        warning.reason
+                    }`
+            );
 
         return embed;
     }

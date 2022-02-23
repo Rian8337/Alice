@@ -77,6 +77,8 @@ export class ProfileCardCreator {
         bindInfo?: UserBind | null,
         rankedScoreInfo?: RankedScore | null,
         playerInfo?: PlayerInfo | null,
+        // Disable temporarily while finding a solution for unicode characters
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         language: Language = "en"
     ) {
         this.player = player;
@@ -84,7 +86,7 @@ export class ProfileCardCreator {
         this.bindInfo = bindInfo;
         this.rankedScoreInfo = rankedScoreInfo;
         this.playerInfo = playerInfo;
-        this.localization = new ProfileCardCreatorLocalization(language);
+        this.localization = new ProfileCardCreatorLocalization("en");
 
         this.canvas = createCanvas(500, this.detailed ? 500 : 200);
     }

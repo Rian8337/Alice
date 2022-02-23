@@ -25,6 +25,7 @@ import { ProfileBadgeCollectionManager } from "./managers/aliceDb/ProfileBadgeCo
 import { MusicCollectionManager } from "./managers/aliceDb/MusicCollectionManager";
 import { IllegalMapCollectionManager } from "./managers/aliceDb/IllegalMapCollectionManager";
 import { UserLocaleCollectionManager } from "./managers/aliceDb/UserLocaleCollectionManager";
+import { WarningCollectionManager } from "./managers/aliceDb/WarningCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -164,6 +165,11 @@ export class AliceDBCollection {
     readonly userLocale: UserLocaleCollectionManager;
 
     /**
+     * The database collection for user warnings.
+     */
+    readonly userWarning: WarningCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -243,6 +249,9 @@ export class AliceDBCollection {
         );
         this.userLocale = new UserLocaleCollectionManager(
             aliceDb.collection("userlocale")
+        );
+        this.userWarning = new WarningCollectionManager(
+            aliceDb.collection("userwarning")
         );
     }
 }
