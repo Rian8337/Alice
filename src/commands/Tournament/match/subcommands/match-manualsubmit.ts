@@ -1,10 +1,9 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMapLengthInfo } from "@alice-database/utils/aliceDb/TournamentMapLengthInfo";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
+import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
@@ -65,12 +64,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const mappoolDurationData: TournamentMapLengthInfo | null =
-        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(
+    const pool: TournamentMappool | null =
+        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
             match.matchid.split(".").shift()!
         );
 
-    if (!mappoolDurationData) {
+    if (!pool) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("mappoolNotFound")
@@ -78,21 +77,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const mappoolMainData: TournamentMappool | null =
-        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
-            mappoolDurationData.poolid
-        );
-
-    if (!mappoolMainData) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(
-                localization.getTranslation("mappoolNotFound")
-            ),
-        });
-    }
-
-    const pickIndex: number = mappoolDurationData.map.findIndex(
-        (m) => m[0].toUpperCase() === pick.toUpperCase()
+    const pickIndex: number = pool.map.findIndex(
+        (m) => m.pick.toUpperCase() === pick.toUpperCase()
     );
 
     if (pickIndex === -1) {
@@ -103,7 +89,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const mapData: MainBeatmapData = mappoolMainData.map[pickIndex];
+    const mapData: TournamentBeatmap = pool.map[pickIndex];
 
     const scoreList: number[] = [];
 
@@ -132,19 +118,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
         }
 
-        let scoreV2: number = match.calculateScoreV2(
+        const scoreV2: number = pool.calculateScoreV2(
+            pick,
             parseInt(scoreData[0]),
             parseFloat(scoreData[1]) / 100,
             parseInt(scoreData[2]),
-            parseInt(<string>mapData[2]),
-            mapData[4] ?? 0.6
+            mapData.mode === "dt" && scoreData[0].endsWith("h")
         );
-
-        if (mapData[0] === "dt" && scoreData[0].endsWith("h")) {
-            scoreV2 /= 0.59 / 0.56;
-        }
-
-        scoreV2 = Math.round(scoreV2);
 
         scoreList.push(scoreV2);
 
@@ -195,7 +175,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .setAuthor({
             name: match.name,
         })
-        .setTitle(mapData[1])
+        .setTitle(mapData.name)
         .addField(`${match.team[0][0]}: ${team1OverallScore}`, team1String)
         .addField(`${match.team[1][0]}: ${team2OverallScore}`, team2String)
         .addField("=================================", `**${description}**`);

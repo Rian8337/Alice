@@ -1,10 +1,9 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMapLengthInfo } from "@alice-database/utils/aliceDb/TournamentMapLengthInfo";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
+import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
@@ -48,33 +47,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const poolId: string = match.matchid.split(".").shift()!;
 
-    const mappoolMainData: TournamentMappool | null =
+    const pool: TournamentMappool | null =
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
             poolId
         );
 
-    if (!mappoolMainData) {
-        interaction.replied
-            ? interaction.channel!.send({
-                  content: MessageCreator.createReject(
-                      localization.getTranslation("mappoolNotFound")
-                  ),
-              })
-            : interaction.editReply({
-                  content: MessageCreator.createReject(
-                      localization.getTranslation("mappoolNotFound")
-                  ),
-              });
-
-        return;
-    }
-
-    const mappoolDurationData: TournamentMapLengthInfo | null =
-        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(
-            poolId
-        );
-
-    if (!mappoolDurationData) {
+    if (!pool) {
         interaction.replied
             ? interaction.channel!.send({
                   content: MessageCreator.createReject(
@@ -120,8 +98,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     // Find latest played beatmap if not set
     const index: number = match.getLastPlayedBeatmap(
-        mappoolMainData,
-        mappoolDurationData,
+        pool,
         playerList,
         interaction.options.getString("pick")?.toUpperCase()
     );
@@ -142,7 +119,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const map: MainBeatmapData = mappoolMainData.map[index];
+    const map: TournamentBeatmap = pool.map[index];
 
     const team1ScoreList: Score[] = [];
     const team2ScoreList: Score[] = [];
@@ -181,17 +158,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             score,
             map,
             teamScoreStatus.success,
-            mappoolMainData.forcePR,
+            pool.forcePR,
             language
         );
 
         if (verificationResult.success && teamScoreStatus.success) {
-            let scorev2: number = match.calculateScoreV2(
+            let scorev2: number = pool.calculateScoreV2(
+                map.pick,
                 score.score,
                 score.accuracy.value(),
                 score.accuracy.nmiss,
-                parseInt(<string>map[2]),
-                map[4] ?? 0.6
+                score.mods.filter(
+                    (m) => m instanceof ModHidden || m instanceof ModDoubleTime
+                ).length >= 2
             );
 
             if (
@@ -268,7 +247,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     resultEmbed
         .setAuthor({ name: match.name })
-        .setTitle(map[1])
+        .setTitle(map.name)
         .addField(`${match.team[0][0]}: ${team1OverallScore}`, team1String)
         .addField(`${match.team[1][0]}: ${team2OverallScore}`, team2String)
         .addField("=================================", `**${description}**`);

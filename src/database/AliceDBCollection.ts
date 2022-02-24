@@ -16,7 +16,6 @@ import { NameChangeCollectionManager } from "./managers/aliceDb/NameChangeCollec
 import { OsuBindCollectionManager } from "./managers/aliceDb/OsuBindCollectionManager";
 import { PlayerInfoCollectionManager } from "./managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerSkinCollectionManager } from "./managers/aliceDb/PlayerSkinCollectionManager";
-import { TournamentMapLengthInfoCollectionManager } from "./managers/aliceDb/TournamentMapLengthInfoCollectionManager";
 import { RankedScoreCollectionManager } from "./managers/aliceDb/RankedScoreCollectionManager";
 import { ProfileBackgroundCollectionManager } from "./managers/aliceDb/ProfileBackgroundCollectionManager";
 import { VotingCollectionManager } from "./managers/aliceDb/VotingCollectionManager";
@@ -70,11 +69,6 @@ export class AliceDBCollection {
      * The database collection for Discord users' lounge lock.
      */
     readonly loungeLock: LoungeLockCollectionManager;
-
-    /**
-     * The database collection for tournament beatmaps' lengths for each difficulty.
-     */
-    readonly tournamentMapLengthInfo: TournamentMapLengthInfoCollectionManager;
 
     /**
      * The database collection for shared beatmaps.
@@ -197,10 +191,6 @@ export class AliceDBCollection {
         this.loungeLock = new LoungeLockCollectionManager(
             aliceDb.collection("loungelock")
         );
-        this.tournamentMapLengthInfo =
-            new TournamentMapLengthInfoCollectionManager(
-                aliceDb.collection("mapinfolength")
-            );
         this.mapShare = new MapShareCollectionManager(
             aliceDb.collection("mapshare")
         );

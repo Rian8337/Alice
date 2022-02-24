@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMapLengthInfo } from "@alice-database/utils/aliceDb/TournamentMapLengthInfo";
+import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Language } from "@alice-localization/base/Language";
@@ -34,12 +34,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const poolId: string = match.matchid.split(".").shift()!;
 
-    const mappoolDurationData: TournamentMapLengthInfo | null =
-        await DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.getFromId(
+    const pool: TournamentMappool | null =
+        await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
             poolId
         );
 
-    if (!mappoolDurationData) {
+    if (!pool) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("mappoolNotFound")
@@ -47,7 +47,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const map = mappoolDurationData.map.find((m) => m[0] === pick);
+    const map = pool.map.find((m) => m.pick === pick);
 
     if (!map) {
         return interaction.editReply({
@@ -58,7 +58,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     const timeLimit: number = Math.ceil(
-        parseInt(<string>map[1]) / (pick.includes("DT") ? 1.5 : 1)
+        map.duration / (pick.includes("DT") ? 1.5 : 1)
     );
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
@@ -69,7 +69,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     embed
         .setTitle(localization.getTranslation("roundInfo"))
         .addField(localization.getTranslation("matchId"), match.matchid, true)
-        .addField(localization.getTranslation("map"), map[0], true)
+        .addField(localization.getTranslation("map"), map.pick, true)
         .addField(
             localization.getTranslation("mapLength"),
             DateTimeFormatHelper.secondsToDHMS(timeLimit, language),

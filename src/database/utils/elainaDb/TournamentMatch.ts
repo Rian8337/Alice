@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseTournamentMatch } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMatch";
-import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
+import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
@@ -16,7 +16,6 @@ import {
     ModUtil,
 } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { TournamentMapLengthInfo } from "../aliceDb/TournamentMapLengthInfo";
 import { TournamentMappool } from "./TournamentMappool";
 import { Language } from "@alice-localization/base/Language";
 import { TournamentMatchLocalization } from "@alice-localization/database/utils/elainaDb/TournamentMatchLocalization";
@@ -95,15 +94,13 @@ export class TournamentMatch
     /**
      * Gets the last played beatmap from players.
      *
-     * @param poolMainData The tournament mappool of this match.
-     * @param poolDurationData The mappool duration data of this match's mappool.
+     * @param pool The tournament mappool of this match.
      * @param players The list of players who played in this match.
      * @param pick The beatmap that was picked, if any.
      * @returns The index of the last played beatmap.
      */
     getLastPlayedBeatmap(
-        poolMainData: TournamentMappool,
-        poolDurationData: TournamentMapLengthInfo,
+        pool: TournamentMappool,
         players: Player[],
         pick?: string
     ): number {
@@ -112,9 +109,9 @@ export class TournamentMatch
         let index: number = -1;
 
         if (pick) {
-            index = poolDurationData.map.findIndex((v) => v[0] === pick);
+            index = pool.map.findIndex((v) => v.pick === pick);
             if (index !== -1) {
-                hash = <string>poolMainData.map[index][3];
+                hash = pool.map[index].hash;
             }
         } else {
             for (const player of players) {
@@ -127,7 +124,7 @@ export class TournamentMatch
                 hash = recentPlay.hash;
                 minTime = recentPlay.date.getTime();
 
-                index = poolMainData.map.findIndex((v) => v[3] === hash);
+                index = pool.map.findIndex((v) => v.hash === hash);
             }
         }
 
@@ -143,10 +140,10 @@ export class TournamentMatch
      */
     verifyTeamScore(
         scores: Score[],
-        map: MainBeatmapData,
+        map: TournamentBeatmap,
         language: Language = "en"
     ): OperationResult {
-        if (map[0] !== "fm") {
+        if (map.mode !== "fm") {
             return this.createOperationResult(true);
         }
 
@@ -176,7 +173,7 @@ export class TournamentMatch
      */
     async verifyScore(
         score: Score,
-        map: MainBeatmapData,
+        map: TournamentBeatmap,
         teamScoreStatus: boolean,
         forcePR?: boolean,
         language: Language = "en"
@@ -184,7 +181,7 @@ export class TournamentMatch
         const localization: TournamentMatchLocalization =
             this.getLocalization(language);
 
-        if (score.hash !== map[3]) {
+        if (score.hash !== map.hash) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("scoreNotFound")
@@ -228,7 +225,7 @@ export class TournamentMatch
             ModUtil.speedChangingMods.find((mod) => mod.acronym === m.acronym)
         );
 
-        switch (map[0]) {
+        switch (map.mode) {
             case "nm":
                 return this.createOperationResult(
                     mods.length === 1,
@@ -283,30 +280,6 @@ export class TournamentMatch
                     )
                 );
         }
-    }
-
-    /**
-     * Calculates ScoreV2 of a score.
-     *
-     * @param score The score achieved.
-     * @param accuracy The accuracy achieved, from 0 to 1.
-     * @param misses The amount of misses achieved.
-     * @param maxScore The maximum score value to use against the score.
-     * @param comboPortion The value of how much combo affects ScoreV2, from 0 to 1.
-     * @returns The final ScoreV2.
-     */
-    calculateScoreV2(
-        score: number,
-        accuracy: number,
-        misses: number,
-        maxScore: number,
-        comboPortion: number
-    ): number {
-        const tempScoreV2: number =
-            Math.sqrt(score / maxScore) * 1e6 * comboPortion +
-            Math.pow(accuracy, 2) * 1e6 * (1 - comboPortion);
-
-        return Math.max(0, tempScoreV2 - misses * 5e-3 * tempScoreV2);
     }
 
     /**

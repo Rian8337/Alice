@@ -1,4 +1,4 @@
-import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
+import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { BaseDocument } from "../BaseDocument";
 
 /**
@@ -18,5 +18,5 @@ export interface DatabaseTournamentMappool extends BaseDocument {
     /**
      * The beatmaps in this tournament.
      */
-    map: MainBeatmapData[];
+    map: TournamentBeatmap[];
 }
