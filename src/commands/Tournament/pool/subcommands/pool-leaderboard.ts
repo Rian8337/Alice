@@ -17,7 +17,7 @@ import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { ModHidden, ModDoubleTime, ModNoFail } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { MessageEmbed } from "discord.js";
+import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
@@ -99,9 +99,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return b.scoreV2 - a.scoreV2;
     });
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed().setTitle(
-        map.name
-    );
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    }).setTitle(map.name);
 
     const topScore: TournamentScore = scores[0];
 
