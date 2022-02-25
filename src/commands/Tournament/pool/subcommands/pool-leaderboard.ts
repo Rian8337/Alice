@@ -15,7 +15,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { ModHidden, ModDoubleTime } from "@rian8337/osu-base";
+import { ModHidden, ModDoubleTime, ModNoFail } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { MessageEmbed } from "discord.js";
 
@@ -52,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const scores: TournamentScore[] = [];
-    let page: number = 0;
+    let page: number = 1;
     let retrievedScores: Score[];
 
     while (
@@ -69,11 +69,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         v.score,
                         v.accuracy.value(),
                         v.accuracy.nmiss,
-                        v.mods.filter(
-                            (m) =>
-                                m instanceof ModHidden ||
-                                m instanceof ModDoubleTime
-                        ).length >= 2
+                        {
+                            applyHiddenPenalty:
+                                v.mods.filter(
+                                    (m) =>
+                                        m instanceof ModHidden ||
+                                        m instanceof ModDoubleTime
+                                ).length >= 2,
+                            isNoFail: v.mods.some(
+                                (m) => m instanceof ModNoFail
+                            ),
+                        }
                     ),
                     score: v,
                 };
@@ -93,7 +99,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return b.scoreV2 - a.scoreV2;
     });
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed();
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed().setTitle(
+        map.name
+    );
 
     const topScore: TournamentScore = scores[0];
 
@@ -106,12 +114,37 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             )}** ${arrow} ${(score.score.accuracy.value() * 100).toFixed(
                 2
             )}%\n` +
-            `${arrow} ${score.scoreV2.toLocaleString(
+            `${arrow} **${score.scoreV2.toLocaleString(
                 LocaleHelper.convertToBCP47(localization.language)
-            )} ScoreV2 ${arrow} ${score.score.score.toLocaleString(
+            )}** ScoreV2 (**${pool
+                .calculateScorePortionScoreV2(
+                    pick,
+                    score.score.score,
+                    score.score.accuracy.nmiss,
+                    score.score.mods.filter(
+                        (m) =>
+                            m instanceof ModHidden || m instanceof ModDoubleTime
+                    ).length >= 2,
+                    score.score.mods.some((m) => m instanceof ModNoFail)
+                )
+                .toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}** score, **${pool
+                .calculateAccuracyPortionScoreV2(
+                    pick,
+                    score.score.accuracy.value(),
+                    score.score.accuracy.nmiss
+                )
+                .toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}** accuracy)\n` +
+            `${arrow} ${score.score.score.toLocaleString(
                 LocaleHelper.convertToBCP47(localization.language)
-            )} ScoreV1\n` +
-            `${arrow} ${score.score.combo}x ${arrow} [${score.score.accuracy.n300}/${score.score.accuracy.n100}/${score.score.accuracy.n50}/${score.score.accuracy.nmiss}]\n` +
+            )} ScoreV1 ${arrow} ${score.score.combo}x ${arrow} [${
+                score.score.accuracy.n300
+            }/${score.score.accuracy.n100}/${score.score.accuracy.n50}/${
+                score.score.accuracy.nmiss
+            }]\n` +
             `\`${DateTimeFormatHelper.dateToLocaleString(
                 score.score.date,
                 localization.language
@@ -122,9 +155,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.addField(
             `**${localization.getTranslation("topScore")}**`,
-            `**${topScore.score.username}${topScore.score.mods.length > 0
-                ? ` (${topScore.score.getCompleteModString()})`
-                : ""
+            `**${topScore.score.username}${
+                topScore.score.mods.length > 0
+                    ? ` (${topScore.score.getCompleteModString()})`
+                    : ""
             }**\n` + getScoreDescription(topScore)
         );
 
@@ -141,9 +175,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         for (const score of displayedScores) {
             embed.addField(
-                `**#${++i} ${score.score.username}${score.score.mods.length > 0
-                    ? ` (${score.score.getCompleteModString()})`
-                    : ""
+                `**#${++i} ${score.score.username}${
+                    score.score.mods.length > 0
+                        ? ` (${score.score.getCompleteModString()})`
+                        : ""
                 }**`,
                 getScoreDescription(score)
             );

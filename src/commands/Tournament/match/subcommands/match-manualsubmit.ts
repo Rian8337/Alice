@@ -132,7 +132,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             parseInt(scoreData[0]),
             parseFloat(scoreData[1]) / 100,
             parseInt(scoreData[2]),
-            map.mode === "dt" && scoreData[0].endsWith("h")
+            {
+                applyHiddenPenalty:
+                    map.mode === "dt" && scoreData[0].includes("h"),
+                isNoFail: scoreData[0].includes("n"),
+            }
         );
 
         scoreList.push(scoreV2);

@@ -188,15 +188,12 @@ export class TournamentMatch
 
         let mods: Mod[] = score.mods;
 
-        if (
-            !mods.some((m) => m instanceof ModNoFail) ||
-            (forcePR && !mods.some((m) => m instanceof ModPrecise))
-        ) {
+        if (forcePR && !mods.some((m) => m instanceof ModPrecise)) {
             return this.createOperationResult(
                 false,
                 StringHelper.formatString(
                     localization.getTranslation("modsIsNotUsed"),
-                    forcePR ? "NFPR" : "NF"
+                    forcePR ? "PR" : ""
                 )
             );
         }
@@ -210,14 +207,16 @@ export class TournamentMatch
             );
         }
 
-        if (score.replay.data.replayVersion > 4) {
-            return this.createOperationResult(
-                false,
-                localization.getTranslation("unsupportedGameVersion")
-            );
-        }
+        // if (score.replay.data.replayVersion > 4) {
+        //     return this.createOperationResult(
+        //         false,
+        //         localization.getTranslation("unsupportedGameVersion")
+        //     );
+        // }
 
-        mods = mods.filter((m) => !(m instanceof ModPrecise));
+        mods = mods.filter(
+            (m) => !(m instanceof ModPrecise) && !(m instanceof ModNoFail)
+        );
 
         const speedChangingMods: Mod[] = mods.filter((m) =>
             ModUtil.speedChangingMods.find((mod) => mod.acronym === m.acronym)
@@ -226,43 +225,41 @@ export class TournamentMatch
         switch (map.mode) {
             case "nm":
                 return this.createOperationResult(
-                    mods.length === 1,
+                    mods.length === 0,
                     StringHelper.formatString(
                         localization.getTranslation("modsExceptNotUsed"),
-                        forcePR ? "NFPR" : "NF"
+                        forcePR ? "PR" : ""
                     )
                 );
             case "hd":
                 return this.createOperationResult(
-                    mods.length === 2 &&
-                        mods.some((m) => m instanceof ModHidden),
+                    mods[0] instanceof ModHidden,
                     StringHelper.formatString(
                         localization.getTranslation("modsExceptNotUsed"),
-                        forcePR ? "NFHDHR" : "NFHD"
+                        forcePR ? "HDPR" : "HD"
                     )
                 );
             case "hr":
                 return this.createOperationResult(
-                    mods.length === 2 &&
-                        mods.some((m) => m instanceof ModHardRock),
+                    mods[0] instanceof ModHardRock,
                     StringHelper.formatString(
                         localization.getTranslation("modsExceptNotUsed"),
-                        forcePR ? "NFHRPR" : "NFHR"
+                        forcePR ? "HRPR" : "HR"
                     )
                 );
             case "dt":
                 return this.createOperationResult(
                     mods.some((m) => m instanceof ModDoubleTime) &&
                         mods.length ===
-                            (mods.some((m) => m instanceof ModHidden) ? 3 : 2),
+                            (mods.some((m) => m instanceof ModHidden) ? 2 : 1),
                     StringHelper.formatString(
                         localization.getTranslation("modsExceptNotUsed"),
-                        forcePR ? "NF(HD)DTPR" : "NF(HD)DT"
+                        forcePR ? "(HD)DTPR" : "(HD)DT"
                     )
                 );
             case "fm":
                 return this.createOperationResult(
-                    (mods.length > 1 || teamScoreStatus) &&
+                    (mods.length > 0 || teamScoreStatus) &&
                         speedChangingMods.length === 0,
                     StringHelper.formatString(
                         localization.getTranslation("modsWasUsed"),
@@ -271,7 +268,7 @@ export class TournamentMatch
                 );
             case "tb":
                 return this.createOperationResult(
-                    mods.length >= 1 && speedChangingMods.length === 0,
+                    speedChangingMods.length === 0,
                     StringHelper.formatString(
                         localization.getTranslation("modsWasUsed"),
                         speedChangingMods.map((m) => m.acronym).join("")

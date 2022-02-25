@@ -43,7 +43,7 @@ export class TournamentMappool extends Manager {
     }
 
     /**
-     * Calculates ScoreV2 of a score.
+     * Calculates the ScoreV2 for a pick with respect to a score.
      *
      * @param pick The pick to calculate for.
      * @param score The score achieved.
@@ -57,7 +57,38 @@ export class TournamentMappool extends Manager {
         score: number,
         accuracy: number,
         misses: number,
-        applyHiddenPenalty: boolean
+        options?: Partial<{
+            applyHiddenPenalty: boolean;
+            isNoFail: boolean;
+        }>
+    ): number {
+        return (
+            this.calculateScorePortionScoreV2(
+                pick,
+                score,
+                misses,
+                options?.applyHiddenPenalty ?? false,
+                options?.isNoFail ?? false
+            ) + this.calculateAccuracyPortionScoreV2(pick, accuracy, misses)
+        );
+    }
+
+    /**
+     * Calculates the score portion of ScoreV2.
+     *
+     * @param pick The pick to calculate for.
+     * @param score The score achieved.
+     * @param misses The amount of misses achieved.
+     * @param applyHiddenPenalty Whether to calculate for HD penalty with DT in mind.
+     * @param isNoFail Whether the NF mod was used.
+     * @returns The score portion of ScoreV2 for the pick, 0 if the pick is not found.
+     */
+    calculateScorePortionScoreV2(
+        pick: string,
+        score: number,
+        misses: number,
+        applyHiddenPenalty: boolean,
+        isNoFail: boolean
     ): number {
         const pickData: TournamentBeatmap | undefined = this.map.get(
             pick.toUpperCase()
@@ -68,12 +99,13 @@ export class TournamentMappool extends Manager {
         }
 
         const tempScoreV2: number =
-            Math.sqrt(score / pickData.maxScore) * 1e6 * pickData.scorePortion +
-            Math.pow(accuracy, 2) * 1e6 * (1 - pickData.scorePortion);
+            Math.sqrt((score * (isNoFail ? 2 : 1)) / pickData.maxScore) *
+            1e6 *
+            pickData.scorePortion;
 
         let scoreV2: number = Math.max(
             0,
-            tempScoreV2 - misses * 5e-3 * tempScoreV2
+            tempScoreV2 - this.getMissPenalty(tempScoreV2, misses)
         );
 
         if (applyHiddenPenalty) {
@@ -81,6 +113,36 @@ export class TournamentMappool extends Manager {
         }
 
         return Math.round(scoreV2);
+    }
+
+    /**
+     * Calculates the accuracy portion of ScoreV2.
+     *
+     * @param pick The pick to calculate for.
+     * @param accuracy The accuracy achieved, from 0 to 1.
+     * @param misses The amount of misses achieved.
+     * @returns The accuracy portion of ScoreV2 for the pick, 0 if the pick is not found.
+     */
+    calculateAccuracyPortionScoreV2(
+        pick: string,
+        accuracy: number,
+        misses: number
+    ): number {
+        const pickData: TournamentBeatmap | undefined = this.map.get(
+            pick.toUpperCase()
+        );
+
+        if (!pickData) {
+            return 0;
+        }
+
+        const tempScoreV2: number =
+            Math.pow(accuracy, 2) * 1e6 * (1 - pickData.scorePortion);
+
+        return Math.max(
+            0,
+            Math.round(tempScoreV2 - this.getMissPenalty(tempScoreV2, misses))
+        );
     }
 
     /**
@@ -101,5 +163,15 @@ export class TournamentMappool extends Manager {
      */
     getBeatmapFromHash(hash: string): TournamentBeatmap | null {
         return this.map.find((v) => v.hash === hash) ?? null;
+    }
+
+    /**
+     * Gets the penalty for misses.
+     *
+     * @param tempScoreV2 The temporary score V2 to calculate for.
+     * @param misses The amount of misses achieved.
+     */
+    private getMissPenalty(tempScoreV2: number, misses: number): number {
+        return misses * 5e-3 * tempScoreV2;
     }
 }
