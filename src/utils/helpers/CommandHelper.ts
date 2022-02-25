@@ -121,16 +121,12 @@ export abstract class CommandHelper extends Manager {
         input: Interaction | GuildChannel | Snowflake | User
     ): Promise<Language> {
         if (
-            (input instanceof Interaction &&
-                input.channel instanceof DMChannel) ||
+            (input instanceof Interaction && input.channel?.type === "DM") ||
             input instanceof User
         ) {
-            const userLocale: UserLocale | null =
-                await DatabaseManager.aliceDb.collections.userLocale.getUserLocale(
-                    input.id
-                );
-
-            return userLocale?.locale ?? "en";
+            return this.getUserPreferredLocale(
+                input instanceof Interaction ? input.user.id : input.id
+            );
         }
 
         const channelId: Snowflake =
