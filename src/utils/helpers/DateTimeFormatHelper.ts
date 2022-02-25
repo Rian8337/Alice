@@ -1,5 +1,6 @@
 import { Language } from "@alice-localization/base/Language";
 import { DateTimeFormatHelperLocalization } from "@alice-localization/utils/helpers/DateTimeFormatHelperLocalization";
+import { LocaleHelper } from "./LocaleHelper";
 
 /**
  * Helper methods for processing custom time formats and dates.
@@ -153,18 +154,7 @@ export abstract class DateTimeFormatHelper {
      * @returns The formatted date.
      */
     static dateToLocaleString(date: Date, language: Language): string {
-        let localeToConvert: string;
-
-        switch (language) {
-            case "kr":
-                localeToConvert = "ko-KR";
-                break;
-            case "id":
-                localeToConvert = "id-ID";
-                break;
-            default:
-                localeToConvert = "en-US";
-        }
+        const localeToConvert: string = LocaleHelper.convertToBCP47(language);
 
         return localeToConvert === "en-US"
             ? date.toUTCString()

@@ -7,14 +7,14 @@ import { PowerupType } from "@alice-types/clan/PowerupType";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const from: User = interaction.options.getUser("fromclan", true);
 
@@ -177,14 +177,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         {
             content: MessageCreator.createWarn(
                 localization.getTranslation("clanPowerTransferConfirmation"),
-                totalGivenPower.toLocaleString(),
+                totalGivenPower.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
                 fromClan.name,
                 toClan.name
             ),
         },
         [interaction.user.id],
         20,
-        language
+        localization.language
     );
 
     if (!confirmation) {
@@ -229,7 +231,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("clanPowerTransferSuccessful"),
-            totalGivenPower.toLocaleString(),
+            totalGivenPower.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
             fromClan.name,
             toClan.name
         ),

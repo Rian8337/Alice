@@ -8,6 +8,7 @@ import { Collection } from "discord.js";
 import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**
  * Retrieves the global leaderboard.
@@ -95,7 +96,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 longestUsernameLength
             )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
                 (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
-            ).padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
+            ).padEnd(8)} | ${parseInt(c[3]).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )}\n`;
         }
 
         options.content = "```c\n" + output + "```";

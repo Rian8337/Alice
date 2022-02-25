@@ -15,6 +15,7 @@ import { GuildMember, MessageEmbed } from "discord.js";
 import { rankedStatus, RequestResponse } from "@rian8337/osu-base";
 import { MapsearchLocalization } from "@alice-localization/commands/osu! and osu!droid/MapsearchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: MapsearchLocalization = new MapsearchLocalization(
@@ -88,7 +89,9 @@ export const run: Command["run"] = async (_, interaction) => {
     embed.setDescription(
         `**${localization.getTranslation(
             "beatmapsFound"
-        )}**: ${data.results.toLocaleString()}`
+        )}**: ${data.results.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )}`
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -144,9 +147,11 @@ export const run: Command["run"] = async (_, interaction) => {
                     localization.language
                 )} | **${status}**\n${
                     Symbols.heart
-                } **${d.favourite_count.toLocaleString()}** - ${
-                    Symbols.playButton
-                } **${d.play_count.toLocaleString()}**`
+                } **${d.favourite_count.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}** - ${Symbols.playButton} **${d.play_count.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}**`
             );
         }
     };

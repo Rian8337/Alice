@@ -18,6 +18,7 @@ import {
 } from "@rian8337/osu-difficulty-calculator";
 import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -198,9 +199,11 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         `${beatmapInfo.showStatistics(2, stats)}\n` +
                             `**Max score**: ${beatmapInfo
                                 .maxScore(stats)
-                                .toLocaleString()} - **Max combo**: ${
-                                beatmapInfo.maxCombo
-                            }x`
+                                .toLocaleString(
+                                    LocaleHelper.convertToBCP47(
+                                        localization.language
+                                    )
+                                )} - **Max combo**: ${beatmapInfo.maxCombo}x`
                     );
                 }
 

@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
@@ -51,7 +52,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("enqueueFromCollectionSuccess"),
-            enqueuedCount.toLocaleString()
+            enqueuedCount.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         ),
     });
 };

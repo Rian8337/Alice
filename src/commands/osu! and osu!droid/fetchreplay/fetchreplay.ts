@@ -33,6 +33,7 @@ import { FetchreplayLocalization } from "@alice-localization/commands/osu! and o
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -160,7 +161,9 @@ export const run: Command["run"] = async (_, interaction) => {
             content: MessageCreator.createAccept(
                 localization.getTranslation("fetchReplayNoBeatmapSuccessful"),
                 score.rank,
-                score.score.toLocaleString(),
+                score.score.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
                 score.combo.toString(),
                 (score.accuracy.value() * 100).toFixed(2),
                 score.accuracy.n300.toString(),

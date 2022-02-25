@@ -25,6 +25,7 @@ import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
@@ -151,11 +152,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                       )}DPP | ${calcResult[1].result.total.toFixed(2)}PP**`
                     : ""
             } ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-            `${arrow} ${score.score.toLocaleString()} ${arrow} ${
-                score.combo
-            }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
-                score.accuracy.n50
-            }/${score.accuracy.nmiss}]\n` +
+            `${arrow} ${score.score.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${
+                score.accuracy.n100
+            }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
             `\`${DateTimeFormatHelper.dateToLocaleString(
                 score.date,
                 localization.language

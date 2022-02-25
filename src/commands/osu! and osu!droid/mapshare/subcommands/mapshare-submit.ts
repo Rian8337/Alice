@@ -9,15 +9,13 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
-import { Language } from "@alice-localization/base/Language";
 import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: MapshareLocalization = new MapshareLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const beatmapId: number = BeatmapManager.getBeatmapID(
@@ -144,7 +142,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("summaryWordCountNotValid"),
-                wordCount.toLocaleString()
+                wordCount.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     }
@@ -153,7 +153,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("summaryCharacterCountNotValid"),
-                summary.length.toLocaleString()
+                summary.length.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     }

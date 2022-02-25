@@ -6,6 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { GamestatsLocalization } from "@alice-localization/commands/osu! and osu!droid/GamestatsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: GamestatsLocalization = new GamestatsLocalization(
@@ -48,23 +49,35 @@ export const run: Command["run"] = async (_, interaction) => {
             localization.getTranslation("registeredAccounts"),
             `**${localization.getTranslation(
                 "totalRegisteredAccounts"
-            )}**: ${totalUserCount.toLocaleString()}\n` +
+            )}**: ${totalUserCount.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )}\n` +
                 `**${localization.getTranslation(
                     "moreThan5ScoresAcc"
-                )}**: ${userCountAbove5Scores.toLocaleString()}\n` +
+                )}**: ${userCountAbove5Scores.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}\n` +
                 `**${localization.getTranslation(
                     "moreThan20ScoresAcc"
-                )}**: ${userCountAbove20Scores.toLocaleString()}\n` +
+                )}**: ${userCountAbove20Scores.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}\n` +
                 `**${localization.getTranslation(
                     "moreThan100ScoresAcc"
-                )}**: ${userCountAbove100Scores.toLocaleString()}\n` +
+                )}**: ${userCountAbove100Scores.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}\n` +
                 `**${localization.getTranslation(
                     "moreThan200ScoresAcc"
-                )}**: ${userCountAbove200Scores.toLocaleString()}`
+                )}**: ${userCountAbove200Scores.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}`
         )
         .addField(
             localization.getTranslation("totalScores"),
-            totalScoreCount.toLocaleString()
+            totalScoreCount.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         );
 
     interaction.editReply({

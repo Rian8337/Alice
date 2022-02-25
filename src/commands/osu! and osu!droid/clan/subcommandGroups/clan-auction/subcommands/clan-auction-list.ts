@@ -8,6 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
@@ -73,13 +74,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                     `**${localization.getTranslation(
                         "auctionAmount"
-                    )}**: ${auction.amount.toLocaleString()}\n` +
+                    )}**: ${auction.amount.toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    )}\n` +
                     `**${localization.getTranslation(
                         "auctionMinimumBid"
-                    )}**: ${auction.min_price.toLocaleString()} Alice coins\n` +
+                    )}**: ${auction.min_price.toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    )} Alice coins\n` +
                     `**${localization.getTranslation(
                         "auctionBidders"
-                    )}**: ${auction.bids.size.toLocaleString()}`
+                    )}**: ${auction.bids.size.toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    )}`
             );
         }
     };

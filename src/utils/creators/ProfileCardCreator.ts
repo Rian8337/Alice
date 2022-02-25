@@ -15,6 +15,7 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { Language } from "@alice-localization/base/Language";
 import { ProfileCardCreatorLocalization } from "@alice-localization/utils/creators/ProfileCardCreatorLocalization";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**
  * A utility to create profile cards.
@@ -272,7 +273,13 @@ export class ProfileCardCreator {
             default:
                 this.context.fillStyle = "#787878";
         }
-        this.context.fillText(`#${this.player.rank.toLocaleString()}`, 12, 187);
+        this.context.fillText(
+            `#${this.player.rank.toLocaleString(
+                LocaleHelper.convertToBCP47(this.localization.language)
+            )}`,
+            12,
+            187
+        );
 
         this.context.restore();
     }
@@ -384,7 +391,9 @@ export class ProfileCardCreator {
         this.context.fillText(
             `${this.localization.getTranslation(
                 "totalScore"
-            )}: ${this.player.score.toLocaleString()}`,
+            )}: ${this.player.score.toLocaleString(
+                LocaleHelper.convertToBCP47(this.localization.language)
+            )}`,
             x,
             y + yOffset
         );
@@ -394,7 +403,9 @@ export class ProfileCardCreator {
             this.context.fillText(
                 `${this.localization.getTranslation(
                     "rankedScore"
-                )}: ${this.rankedScoreInfo.score.toLocaleString()}`,
+                )}: ${this.rankedScoreInfo.score.toLocaleString(
+                    LocaleHelper.convertToBCP47(this.localization.language)
+                )}`,
                 x,
                 y + yOffset
             );
@@ -426,7 +437,9 @@ export class ProfileCardCreator {
         this.context.fillText(
             `${this.localization.getTranslation(
                 "playCount"
-            )}: ${this.player.playCount.toLocaleString()}`,
+            )}: ${this.player.playCount.toLocaleString(
+                LocaleHelper.convertToBCP47(this.localization.language)
+            )}`,
             x,
             y + yOffset
         );
@@ -439,7 +452,9 @@ export class ProfileCardCreator {
                     "droidPP"
                 )}: ${this.bindInfo.pptotal.toFixed(
                     2
-                )}pp (#${ppRank.toLocaleString()})`,
+                )}pp (#${ppRank.toLocaleString(
+                    LocaleHelper.convertToBCP47(this.localization.language)
+                )})`,
                 x,
                 y + yOffset
             );
@@ -573,13 +588,11 @@ export class ProfileCardCreator {
         this.context.textBaseline = "middle";
 
         this.context.fillText(
-            `${(
-                this.playerInfo?.alicecoins ?? 0
-            ).toLocaleString()} Alice Coins | ${(
-                this.playerInfo?.points ?? 0
-            ).toLocaleString()} ${this.localization.getTranslation(
-                "challengePoints"
-            )}`,
+            `${(this.playerInfo?.alicecoins ?? 0).toLocaleString(
+                LocaleHelper.convertToBCP47(this.localization.language)
+            )} Alice Coins | ${(this.playerInfo?.points ?? 0).toLocaleString(
+                LocaleHelper.convertToBCP47(this.localization.language)
+            )} ${this.localization.getTranslation("challengePoints")}`,
             75,
             280
         );

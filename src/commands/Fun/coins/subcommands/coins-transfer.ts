@@ -10,12 +10,12 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: CoinsLocalization = new CoinsLocalization(language);
+    const localization: CoinsLocalization = new CoinsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const toTransfer: User = interaction.options.getUser("user", true);
 
@@ -151,13 +151,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         {
             content: MessageCreator.createWarn(
                 localization.getTranslation("coinTransferConfirmation"),
-                transferAmount.toLocaleString(),
+                transferAmount.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
                 toTransferGuildMember.toString()
             ),
         },
         [interaction.user.id],
         15,
-        language
+        localization.language
     );
 
     if (!confirmation) {
@@ -168,7 +170,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         transferAmount,
         player,
         toTransferPlayerInfo,
-        language
+        localization.language
     );
 
     if (!result.success) {
@@ -183,10 +185,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("coinTransferSuccess"),
-            transferAmount.toLocaleString(),
+            transferAmount.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
             toTransferGuildMember.toString(),
-            (limit - transferAmount - transferredAmount).toLocaleString(),
-            (userPlayerInfo.alicecoins - transferAmount).toLocaleString()
+            (limit - transferAmount - transferredAmount).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            (userPlayerInfo.alicecoins - transferAmount).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         ),
     });
 };

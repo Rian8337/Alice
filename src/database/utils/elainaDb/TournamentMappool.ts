@@ -2,18 +2,32 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseTournamentMappool } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMappool";
 import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { Manager } from "@alice-utils/base/Manager";
+import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
+import { Collection } from "discord.js";
 
 /**
  * Represents a mappool for tournament.
  */
-export class TournamentMappool
-    extends Manager
-    implements DatabaseTournamentMappool
-{
-    forcePR: boolean;
+export class TournamentMappool extends Manager {
+    /**
+     * The ID of the mappool.
+     */
     poolid: string;
-    map: TournamentBeatmap[];
+
+    /**
+     * Whether this mappool enforces the PR mod.
+     */
+    forcePR: boolean;
+
+    /**
+     * The beatmaps in this tournament, mapped by pick ID.
+     */
+    map: Collection<string, TournamentBeatmap>;
+
+    /**
+     * The BSON object ID of this document in the database.
+     */
     readonly _id?: ObjectId;
 
     constructor(
@@ -25,7 +39,7 @@ export class TournamentMappool
         this._id = data._id;
         this.forcePR = data.forcePR;
         this.poolid = data.poolid;
-        this.map = data.map ?? [];
+        this.map = ArrayHelper.arrayToCollection(data.map ?? [], "pick");
     }
 
     /**
@@ -45,8 +59,8 @@ export class TournamentMappool
         misses: number,
         applyHiddenPenalty: boolean
     ): number {
-        const pickData: TournamentBeatmap | undefined = this.map.find(
-            (v) => v.pick === pick
+        const pickData: TournamentBeatmap | undefined = this.map.get(
+            pick.toUpperCase()
         );
 
         if (!pickData) {
@@ -76,10 +90,7 @@ export class TournamentMappool
      * @returns The beatmap, `null` if not found.
      */
     getBeatmapFromPick(pick: string): TournamentBeatmap | null {
-        return (
-            this.map.find((v) => v.pick.toUpperCase() === pick.toUpperCase()) ??
-            null
-        );
+        return this.map.get(pick.toUpperCase()) ?? null;
     }
 
     /**

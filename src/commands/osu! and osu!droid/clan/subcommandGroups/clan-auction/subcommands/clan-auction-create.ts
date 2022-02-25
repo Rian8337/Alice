@@ -13,6 +13,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildEmoji, MessageEmbed, TextChannel } from "discord.js";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -100,7 +101,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionAmountOutOfBounds"),
-                (clan.powerups.get(powerup)?.amount ?? 0).toLocaleString()
+                (clan.powerups.get(powerup)?.amount ?? 0).toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     }

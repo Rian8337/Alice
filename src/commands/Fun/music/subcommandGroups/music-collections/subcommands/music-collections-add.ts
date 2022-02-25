@@ -6,6 +6,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocaliz
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 
@@ -110,7 +111,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("addVideoToCollectionSuccess"),
             name,
-            position.toLocaleString()
+            position.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         ),
     });
 };

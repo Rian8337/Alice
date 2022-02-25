@@ -2,6 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { Language } from "@alice-localization/base/Language";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const map = pool.map.find((m) => m.pick === pick);
+    const map: TournamentBeatmap | null = pool.getBeatmapFromPick(pick);
 
     if (!map) {
         return interaction.editReply({

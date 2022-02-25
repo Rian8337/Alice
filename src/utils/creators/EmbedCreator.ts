@@ -69,6 +69,7 @@ import {
     EmbedCreatorStrings,
 } from "@alice-localization/utils/creators/EmbedCreatorLocalization";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**
  * Utility to create message embeds.
@@ -251,7 +252,9 @@ export abstract class EmbedCreator {
                     "totalPP"
                 )}: **${bindInfo.pptotal.toFixed(
                     2
-                )} pp (#${ppRank.toLocaleString()})**\n` +
+                )} pp (#${ppRank.toLocaleString(
+                    LocaleHelper.convertToBCP47(language)
+                )})**\n` +
                 `[${localization.getTranslation(
                     "ppProfile"
                 )}](https://droidppboard.herokuapp.com/profile?uid=${
@@ -526,11 +529,11 @@ export abstract class EmbedCreator {
         if (!droidCalcResult || !osuCalcResult) {
             beatmapInformation +=
                 `${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-                `${arrow} ${score.score.toLocaleString()} ${arrow} ${
-                    score.combo
-                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
-                    score.accuracy.n50
-                }/${score.accuracy.nmiss}]`;
+                `${arrow} ${score.score.toLocaleString(
+                    LocaleHelper.convertToBCP47(language)
+                )} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${
+                    score.accuracy.n100
+                }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
 
             embed.setDescription(beatmapInformation);
             return embed;
@@ -609,13 +612,13 @@ export abstract class EmbedCreator {
 
         beatmapInformation +=
             `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-            `${arrow} ${score.score.toLocaleString()} ${arrow} ${
-                score.combo
-            }x/${osuCalcResult.map.maxCombo}x ${arrow} [${
-                score.accuracy.n300
-            }/${score.accuracy.n100}/${score.accuracy.n50}/${
-                score.accuracy.nmiss
-            }]`;
+            `${arrow} ${score.score.toLocaleString(
+                LocaleHelper.convertToBCP47(language)
+            )} ${arrow} ${score.combo}x/${
+                osuCalcResult.map.maxCombo
+            }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
+                score.accuracy.n50
+            }/${score.accuracy.nmiss}]`;
 
         if (!score.replay) {
             await score.downloadReplay();
@@ -866,13 +869,17 @@ export abstract class EmbedCreator {
                 )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                     `**${localization.getTranslation(
                         "auctionItemAmount"
-                    )}**: ${auction.amount.toLocaleString()}`
+                    )}**: ${auction.amount.toLocaleString(
+                        LocaleHelper.convertToBCP47(language)
+                    )}`
             )
             .addField(
                 localization.getTranslation("auctionBidInfo"),
                 `**${localization.getTranslation(
                     "auctionBidders"
-                )}**: ${auction.bids.size.toLocaleString()}\n` +
+                )}**: ${auction.bids.size.toLocaleString(
+                    LocaleHelper.convertToBCP47(language)
+                )}\n` +
                     `**${localization.getTranslation(
                         "auctionTopBidders"
                     )}**:\n` +

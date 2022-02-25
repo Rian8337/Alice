@@ -8,6 +8,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
@@ -70,10 +71,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                 `**${localization.getTranslation(
                     "auctionAmount"
-                )}**: ${auction.amount.toLocaleString()}\n` +
+                )}**: ${auction.amount.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}\n` +
                 `**${localization.getTranslation(
                     "auctionMinimumBid"
-                )}**: ${auction.min_price.toLocaleString()} Alice coins`
+                )}**: ${auction.min_price.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )} Alice coins`
         );
 
     const bids: AuctionBid[] = [...auction.bids.values()];
@@ -88,7 +93,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (bid) {
             biddersDescription += `#${i + 1}: ${
                 bid.clan
-            } - **${bid.amount.toLocaleString()}** Alice coins\n`;
+            } - **${bid.amount.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )}** Alice coins\n`;
         } else {
             biddersDescription += `#${i + 1}: -\n`;
         }
@@ -98,7 +105,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         biddersDescription += ".\n".repeat(Math.min(bidIndex - 4, 3));
         biddersDescription += `#${bidIndex + 1}: ${clanName} - **${bids[
             bidIndex
-        ].amount.toLocaleString()}** Alice coins`;
+        ].amount.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )}** Alice coins`;
     }
 
     embed.addField(

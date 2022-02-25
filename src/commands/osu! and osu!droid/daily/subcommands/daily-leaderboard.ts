@@ -5,6 +5,7 @@ import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
@@ -59,7 +60,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     .trim()
                     .padEnd(longestUsernameLength)} | ${player.uid
                     .toString()
-                    .padEnd(6)} | ${player.points.toLocaleString()}`;
+                    .padEnd(6)} | ${player.points.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
                     longestUsernameLength

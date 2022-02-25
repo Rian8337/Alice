@@ -12,6 +12,7 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import { PlayerInfoLocalization } from "@alice-localization/database/utils/aliceDb/PlayerInfoLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**
  * Represents an information about a Discord user regarding the bot (amount of Alice coins and its streak, daily/weekly challenges status, profile picture format, etc).
@@ -135,7 +136,9 @@ export class PlayerInfo extends Manager {
                 false,
                 StringHelper.formatString(
                     localization.getTranslation("tooMuchCoinDeduction"),
-                    this.alicecoins.toLocaleString()
+                    this.alicecoins.toLocaleString(
+                        LocaleHelper.convertToBCP47(language)
+                    )
                 )
             );
         }
@@ -241,7 +244,9 @@ export class PlayerInfo extends Manager {
                 false,
                 StringHelper.formatString(
                     localization.getTranslation("dailyLimitReached"),
-                    (limit - this.transferred).toLocaleString()
+                    (limit - this.transferred).toLocaleString(
+                        LocaleHelper.convertToBCP47(language)
+                    )
                 )
             );
         }

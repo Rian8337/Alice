@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -57,7 +58,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("removeVideoFromCollectionSuccess"),
-            position.toLocaleString(),
+            position.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
             name
         ),
     });

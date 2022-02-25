@@ -15,6 +15,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
@@ -284,11 +285,21 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("challengeCompleted"),
             challenge.challengeid,
-            bonusLevel.toLocaleString(),
-            pointsGained.toLocaleString(),
-            (pointsGained * 2).toLocaleString(),
-            ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(),
-            ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString()
+            bonusLevel.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            pointsGained.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            (pointsGained * 2).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         ),
     });
 };

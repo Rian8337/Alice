@@ -37,15 +37,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 5 * (page - 1);
-            i < Math.min(pool.map.length, 5 + 5 * (page - 1));
+            i < Math.min(pool.map.size, 5 + 5 * (page - 1));
             ++i
         ) {
             embed.addField(
-                pool.map[i].name,
+                pool.map.at(i)!.name,
                 `**${localization.getTranslation(
                     "length"
                 )}**: ${DateTimeFormatHelper.secondsToDHMS(
-                    pool.map[i].duration,
+                    pool.map.at(i)!.duration,
                     localization.language
                 )}`
             );
@@ -56,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        pool.map,
+        [...pool.map.values()],
         5,
         1,
         60,

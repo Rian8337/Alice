@@ -8,6 +8,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import {
     Canvas,
     createCanvas,
@@ -69,7 +70,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )
         .addField(
             localization.getTranslation("clanPower"),
-            clan.power.toLocaleString(),
+            clan.power.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
             true
         )
         .addField(
@@ -89,7 +92,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             localization.getTranslation("clanTotalUpkeepEstimation"),
             `${coinEmoji}${clan
                 .calculateOverallUpkeep()
-                .toLocaleString()} Alice coins`,
+                .toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )} Alice coins`,
             true
         );
 

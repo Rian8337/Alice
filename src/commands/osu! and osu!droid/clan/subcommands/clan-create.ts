@@ -4,19 +4,19 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const name: string = interaction.options.getString("name", true);
 
@@ -44,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
                 )
             ),
@@ -71,7 +71,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),
                 localization.getTranslation("createClan"),
-                price.toLocaleString()
+                price.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     }
@@ -103,12 +105,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 localization.getTranslation("createClanConfirmation"),
                 name,
-                price.toLocaleString()
+                price.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         },
         [interaction.user.id],
         20,
-        language
+        localization.language
     );
 
     if (!confirmation) {
@@ -117,7 +121,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await bindInfo.setClan(name);
 
-    await playerInfo.incrementCoins(-price, language);
+    await playerInfo.incrementCoins(-price, localization.language);
 
     await DatabaseManager.elainaDb.collections.clan.insert({
         leader: interaction.user.id,

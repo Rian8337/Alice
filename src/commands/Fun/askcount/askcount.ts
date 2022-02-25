@@ -5,6 +5,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { AskcountLocalization } from "@alice-localization/commands/Fun/AskcountLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: AskcountLocalization = new AskcountLocalization(
@@ -29,7 +30,9 @@ export const run: Command["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("askCount"),
-            count.toLocaleString()
+            count.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         ),
     });
 };

@@ -8,12 +8,12 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
-import { Language } from "@alice-localization/base/Language";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: CoinsLocalization = new CoinsLocalization(language);
+    const localization: CoinsLocalization = new CoinsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
@@ -31,7 +31,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         const result: OperationResult = await playerInfo.claimDailyCoins(
             dailyCoin,
-            language
+            localization.language
         );
 
         if (!result.success) {
@@ -50,9 +50,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         ? "dailyClaimWithStreakSuccess"
                         : "dailyClaimSuccess"
                 ),
-                dailyCoin.toLocaleString(),
+                dailyCoin.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
                 streak.toString(),
-                (playerInfo.alicecoins + dailyCoin).toLocaleString()
+                (playerInfo.alicecoins + dailyCoin).toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     } else {
@@ -63,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         if (!bindInfo) {
             const constantsLocalization: ConstantsLocalization =
-                new ConstantsLocalization(language);
+                new ConstantsLocalization(localization.language);
 
             return interaction.editReply({
                 content: MessageCreator.createReject(

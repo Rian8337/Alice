@@ -8,17 +8,17 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: DailyLocalization = new DailyLocalization(language);
+    const localization: DailyLocalization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const type: ChallengeType =
         <ChallengeType>interaction.options.getString("type") ?? "daily";
@@ -62,7 +62,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const completionStatus: OperationResult =
-        await challenge.checkScoreCompletion(score, language);
+        await challenge.checkScoreCompletion(score, localization.language);
 
     if (!completionStatus.success) {
         return interaction.editReply({
@@ -152,11 +152,21 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("challengeCompleted"),
             challenge.challengeid,
-            bonusLevel.toLocaleString(),
-            pointsGained.toLocaleString(),
-            (pointsGained * 2).toLocaleString(),
-            ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(),
-            ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString()
+            bonusLevel.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            pointsGained.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            (pointsGained * 2).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         ),
     });
 };

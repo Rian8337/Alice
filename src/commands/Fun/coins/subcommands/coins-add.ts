@@ -7,18 +7,18 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { Language } from "@alice-localization/base/Language";
 import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: CoinsLocalization = new CoinsLocalization(language);
+    const localization: CoinsLocalization = new CoinsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (!CommandHelper.isExecutedByBotOwner(interaction)) {
         const constantsLocalization: ConstantsLocalization =
-            new ConstantsLocalization(language);
+            new ConstantsLocalization(localization.language);
 
         return interaction.editReply({
             content: MessageCreator.createReject(
@@ -56,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const result: OperationResult = await playerInfo.incrementCoins(
         addAmount,
-        language
+        localization.language
     );
 
     if (!result.success) {
@@ -71,8 +71,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply(
         MessageCreator.createAccept(
             localization.getTranslation("addCoinSuccess"),
-            addAmount.toLocaleString(),
-            (playerInfo.alicecoins + addAmount).toLocaleString()
+            addAmount.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            (playerInfo.alicecoins + addAmount).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         )
     );
 };

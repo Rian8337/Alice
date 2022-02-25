@@ -10,6 +10,7 @@ import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -92,10 +93,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 `**${localization.getTranslation("uid")}**: ${player.uid}\n` +
                 `**${localization.getTranslation(
                     "rank"
-                )}**: ${player.rank.toLocaleString()}\n` +
+                )}**: ${player.rank.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}\n` +
                 `**${localization.getTranslation(
                     "playCount"
-                )}**: ${player.playCount.toLocaleString()}\n` +
+                )}**: ${player.playCount.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )}\n` +
                 `**${localization.getTranslation("country")}**: ${
                     player.location
                 }\n\n` +

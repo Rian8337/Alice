@@ -15,6 +15,7 @@ import { PrototypecheckLocalization } from "@alice-localization/commands/osu!dro
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: PrototypecheckLocalization =
@@ -81,7 +82,9 @@ export const run: Command["run"] = async (_, interaction) => {
                 "totalPP"
             )}: **${ppInfo.pptotal.toFixed(2)} pp (#${(
                 await dbManager.getUserDPPRank(ppInfo.pptotal)
-            ).toLocaleString()})**\n` +
+            ).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )})**\n` +
             `${localization.getTranslation(
                 "prevTotalPP"
             )}: **${ppInfo.prevpptotal.toFixed(2)} pp**\n` +

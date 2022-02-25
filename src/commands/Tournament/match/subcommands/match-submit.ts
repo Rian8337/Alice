@@ -10,15 +10,15 @@ import { MessageEmbed } from "discord.js";
 import { ModDoubleTime, ModHidden } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { Language } from "@alice-localization/base/Language";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: MatchLocalization = new MatchLocalization(language);
+    const localization: MatchLocalization = new MatchLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const id: string | null = interaction.options.getString("id");
 
@@ -131,12 +131,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const team1ScoreStatus: OperationResult = match.verifyTeamScore(
         team1ScoreList,
         map,
-        language
+        localization.language
     );
     const team2ScoreStatus: OperationResult = match.verifyTeamScore(
         team2ScoreList,
         map,
-        language
+        localization.language
     );
 
     const scoreV2List: number[] = [];
@@ -157,7 +157,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             map,
             teamScoreStatus.success,
             pool.forcePR,
-            language
+            localization.language
         );
 
         if (verificationResult.success && teamScoreStatus.success) {
@@ -218,7 +218,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         team1OverallScore > team2OverallScore
             ? match.team[0][0]
             : match.team[1][0],
-        Math.abs(team1OverallScore - team2OverallScore).toLocaleString()
+        Math.abs(team1OverallScore - team2OverallScore).toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )
     );
     let embedColor: number = 0;
 

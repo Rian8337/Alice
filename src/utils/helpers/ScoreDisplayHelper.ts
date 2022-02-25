@@ -16,6 +16,7 @@ import { Language } from "@alice-localization/base/Language";
 import { ScoreDisplayHelperLocalization } from "@alice-localization/utils/helpers/ScoreDisplayHelperLocalization";
 import { StringHelper } from "./StringHelper";
 import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
+import { LocaleHelper } from "./LocaleHelper";
 
 /**
  * A helper for displaying scores to a user.
@@ -70,7 +71,9 @@ export abstract class ScoreDisplayHelper {
                     `${i + 1}. **${BeatmapManager.getRankEmote(
                         <ScoreRank>score.rank
                     )}** | ${score.title} ${score.getCompleteModString()}`,
-                    `${score.score.toLocaleString()} / ${score.combo}x / ${(
+                    `${score.score.toLocaleString(
+                        LocaleHelper.convertToBCP47(language)
+                    )} / ${score.combo}x / ${(
                         score.accuracy.value() * 100
                     ).toFixed(2)}% / [${score.accuracy.n300}/${
                         score.accuracy.n100

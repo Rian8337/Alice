@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/RecalcLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Message } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -32,8 +33,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const message: Message = await interaction.channel!.send({
         content: MessageCreator.createWarn(
             localization.getTranslation("fullRecalcTrackProgress"),
-            calculatedCount.toLocaleString(),
-            total.toLocaleString(),
+            calculatedCount.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            total.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
             ((calculatedCount * 100) / total).toFixed(2)
         ),
     });
@@ -54,8 +59,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await message.edit({
             content: MessageCreator.createWarn(
                 localization.getTranslation("fullRecalcTrackProgress"),
-                calculatedCount.toLocaleString(),
-                total.toLocaleString(),
+                calculatedCount.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
+                total.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
                 ((calculatedCount * 100) / total).toFixed(2)
             ),
         });

@@ -8,11 +8,12 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: CoinsLocalization = new CoinsLocalization(language);
+    const localization: CoinsLocalization = new CoinsLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const userToRemove: User = interaction.options.getUser("user", true);
 
@@ -41,7 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const result: OperationResult = await playerInfo.incrementCoins(
         -removeAmount,
-        language
+        localization.language
     );
 
     if (!result.success) {
@@ -56,8 +57,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("removeCoinSuccess"),
-            removeAmount.toLocaleString(),
-            (playerInfo.alicecoins - removeAmount).toLocaleString()
+            removeAmount.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
+            (playerInfo.alicecoins - removeAmount).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         ),
     });
 };

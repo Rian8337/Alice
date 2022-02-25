@@ -12,6 +12,7 @@ import { EmojistatisticsLocalization } from "@alice-localization/commands/Tools/
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: EmojistatisticsLocalization =
@@ -121,10 +122,14 @@ export const run: Command["run"] = async (_, interaction) => {
                     )} \n` +
                     `**${localization.getTranslation(
                         "overallUsage"
-                    )}**: ${validEmojis[i].count.toLocaleString()} \n` +
+                    )}**: ${validEmojis[i].count.toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    )} \n` +
                     `**${localization.getTranslation(
                         "averagePerMonthUsage"
-                    )}**: ${validEmojis[i].averagePerMonth.toLocaleString()} `
+                    )}**: ${validEmojis[i].averagePerMonth.toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    )} `
             );
         }
     };

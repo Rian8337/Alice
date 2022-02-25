@@ -10,6 +10,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -62,7 +63,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),
                 localization.getTranslation("bidToAuction"),
-                amount.toLocaleString()
+                amount.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     }

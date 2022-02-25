@@ -23,6 +23,7 @@ import { Language } from "@alice-localization/base/Language";
 import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/SubmitLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -183,7 +184,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 score
             );
 
-            fieldContent += `**${score.score.toLocaleString()}** | *+${scoreDiff.toLocaleString()}*`;
+            fieldContent += `**${score.score.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )}** | *+${scoreDiff.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )}*`;
             totalScore += scoreDiff;
         }
 
@@ -211,10 +216,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             )}pp**\n` +
             `${localization.getTranslation(
                 "rankedScore"
-            )}: **${totalScore.toLocaleString()}**\n` +
+            )}: **${totalScore.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )}**\n` +
             `${localization.getTranslation(
                 "scoreGained"
-            )}: **${scoreDiff.toLocaleString()}**\n` +
+            )}: **${scoreDiff.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )}**\n` +
             `${localization.getTranslation("currentLevel")}: **${Math.floor(
                 level
             )} (${levelRemain}%)**${
@@ -228,7 +237,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 RankedScoreHelper.calculateScoreRequirement(
                     Math.floor(level) + 1
                 ) - totalScore
-            ).toLocaleString()}**`
+            ).toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )}**`
     );
 
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);

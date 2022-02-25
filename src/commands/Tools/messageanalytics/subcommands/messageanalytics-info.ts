@@ -22,6 +22,7 @@ import {
     MessageanalyticsStrings,
 } from "@alice-localization/commands/Tools/MessageanalyticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**
  * Converts days to milliseconds.
@@ -159,9 +160,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             continue;
         }
 
-        const msg: string = `${channel}: ${count.toLocaleString()} ${localization.getTranslation(
-            "messageCount"
-        )}\n`;
+        const msg: string = `${channel}: ${count.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )} ${localization.getTranslation("messageCount")}\n`;
 
         if (
             [generalParent, droidParent].includes(<Snowflake>channel.parentId)

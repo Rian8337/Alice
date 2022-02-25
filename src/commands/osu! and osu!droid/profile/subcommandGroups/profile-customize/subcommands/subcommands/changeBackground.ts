@@ -15,6 +15,7 @@ import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -90,7 +91,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     coin.toString(),
                     coin.toString(),
                     coin.toString(),
-                    (playerInfo?.alicecoins ?? 0).toLocaleString()
+                    (playerInfo?.alicecoins ?? 0).toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    )
                 ),
             });
         }
@@ -166,7 +169,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     : ` ${StringHelper.formatString(
                           localization.getTranslation("aliceCoinAmount"),
                           coin.toString(),
-                          playerInfo!.alicecoins.toLocaleString()
+                          playerInfo!.alicecoins.toLocaleString(
+                              LocaleHelper.convertToBCP47(localization.language)
+                          )
                       )}`),
             interaction.user.toString(),
             bgId

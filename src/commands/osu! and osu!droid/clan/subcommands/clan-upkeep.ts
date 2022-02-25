@@ -5,6 +5,7 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -31,12 +32,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("clanUpkeepInformation"),
-            upkeep.toLocaleString(),
+            upkeep.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            ),
             DateTimeFormatHelper.dateToLocaleString(
                 new Date(clan.weeklyfee * 1000),
                 localization.language
             ),
-            totalUpkeep.toLocaleString()
+            totalUpkeep.toLocaleString(
+                LocaleHelper.convertToBCP47(localization.language)
+            )
         ),
     });
 };

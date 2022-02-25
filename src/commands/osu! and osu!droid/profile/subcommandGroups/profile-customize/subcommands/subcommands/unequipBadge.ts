@@ -13,6 +13,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -65,7 +66,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             },
             ArrayHelper.initializeArray(10, 1).map((v, i) => {
                 return {
-                    label: (v + i).toLocaleString(),
+                    label: (v + i).toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    ),
                     value: (v + i).toString(),
                 };
             }),

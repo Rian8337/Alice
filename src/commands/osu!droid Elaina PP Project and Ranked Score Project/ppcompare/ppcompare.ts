@@ -17,6 +17,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 
@@ -164,23 +165,33 @@ export const run: Command["run"] = async (_, interaction) => {
     if (firstBindInfo.pptotal < secondBindInfo.pptotal) {
         ppDescription = `**${firstBindInfo.pptotal.toFixed(
             2
-        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${
-            Symbols.crown
-        } ${secondBindInfo.pptotal.toFixed(
+        )}pp (#${firstPlayerPPRank.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )})** vs **${Symbols.crown} ${secondBindInfo.pptotal.toFixed(
             2
-        )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
+        )}pp (#${secondPlayerPPRank.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )})**`;
     } else if (firstBindInfo.pptotal > secondBindInfo.pptotal) {
         ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(
             2
-        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(
+        )}pp (#${firstPlayerPPRank.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )})** vs **${secondBindInfo.pptotal.toFixed(
             2
-        )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
+        )}pp (#${secondPlayerPPRank.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )})**`;
     } else {
         ppDescription = `**${firstBindInfo.pptotal.toFixed(
             2
-        )}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(
+        )}pp (#${firstPlayerPPRank.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )})** vs **${secondBindInfo.pptotal.toFixed(
             2
-        )}pp (#${secondPlayerPPRank.toLocaleString()})**`;
+        )}pp (#${secondPlayerPPRank.toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )})**`;
     }
 
     embed

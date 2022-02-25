@@ -6,15 +6,15 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
@@ -44,7 +44,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     localization.getTranslation("buyShopItem"),
                     localization.getTranslation("clanPowerup")
                 ),
-                cost.toLocaleString()
+                cost.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     }
@@ -55,12 +57,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 localization.getTranslation("buyShopItemConfirmation"),
                 localization.getTranslation("clanPowerup"),
-                cost.toLocaleString()
+                cost.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         },
         [interaction.user.id],
         20,
-        language
+        localization.language
     );
 
     if (!confirmation) {
@@ -68,7 +72,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const coinDeductionResult: OperationResult =
-        await playerInfo.incrementCoins(-cost, language);
+        await playerInfo.incrementCoins(-cost, localization.language);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
@@ -142,7 +146,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ),
             MessageCreator.createAccept(
                 localization.getTranslation("buyShopItemSuccessful"),
-                cost.toLocaleString()
+                cost.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         ].join("\n"),
     });

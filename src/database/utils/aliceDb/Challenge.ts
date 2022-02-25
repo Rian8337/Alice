@@ -56,6 +56,7 @@ import {
     ChallengeLocalization,
     ChallengeStrings,
 } from "@alice-localization/database/utils/aliceDb/ChallengeLocalization";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**
  * Represents a daily or weekly challenge.
@@ -955,7 +956,9 @@ export class Challenge extends Manager {
             case "score":
                 return StringHelper.formatString(
                     localization.getTranslation("scoreV1Description"),
-                    `**${value.toLocaleString()}**`
+                    `**${value.toLocaleString(
+                        LocaleHelper.convertToBCP47(language)
+                    )}**`
                 );
             case "acc":
                 return StringHelper.formatString(
@@ -965,7 +968,9 @@ export class Challenge extends Manager {
             case "scorev2":
                 return StringHelper.formatString(
                     localization.getTranslation("scoreV2Description"),
-                    `**${value.toLocaleString()}**`
+                    `**${value.toLocaleString(
+                        LocaleHelper.convertToBCP47(language)
+                    )}**`
                 );
             case "miss":
                 return value === 0

@@ -11,6 +11,7 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -47,8 +48,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("teamPlayerCountDoesntMatch"),
                 "1",
-                Math.ceil(match.player.length / 2).toLocaleString(),
-                team1Scores.length.toLocaleString()
+                Math.ceil(match.player.length / 2).toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
+                team1Scores.length.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     }
@@ -58,8 +63,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("teamPlayerCountDoesntMatch"),
                 "2",
-                Math.floor(match.player.length / 2).toLocaleString(),
-                team2Scores.length.toLocaleString()
+                Math.floor(match.player.length / 2).toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
+                team2Scores.length.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )
             ),
         });
     }
@@ -107,8 +116,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             return interaction.editReply({
                 content: MessageCreator.createReject(
                     localization.getTranslation("scoreDataInvalid"),
-                    ((i % 2) + 1).toLocaleString(),
-                    Math.floor(i / 2).toLocaleString(),
+                    ((i % 2) + 1).toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    ),
+                    Math.floor(i / 2).toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language)
+                    ),
                     scoreData.join(" ")
                 ),
             });
@@ -151,7 +164,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         team1OverallScore > team2OverallScore
             ? match.team[0][0]
             : match.team[1][0],
-        Math.abs(team1OverallScore - team2OverallScore).toLocaleString()
+        Math.abs(team1OverallScore - team2OverallScore).toLocaleString(
+            LocaleHelper.convertToBCP47(localization.language)
+        )
     );
 
     if (team1OverallScore > team2OverallScore) {
