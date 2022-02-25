@@ -68,4 +68,27 @@ export class TournamentMappool
 
         return Math.round(scoreV2);
     }
+
+    /**
+     * Gets a beatmap from this tournament mappool by pick ID.
+     *
+     * @param pick The pick ID of the beatmap.
+     * @returns The beatmap, `null` if not found.
+     */
+    getBeatmapFromPick(pick: string): TournamentBeatmap | null {
+        return (
+            this.map.find((v) => v.pick.toUpperCase() === pick.toUpperCase()) ??
+            null
+        );
+    }
+
+    /**
+     * Gets a beatmap from this tournament mappool by MD5 hash.
+     *
+     * @param hash The MD5 hash of the beatmap.
+     * @returns The beatmap, `null` if not found.
+     */
+    getBeatmapFromHash(hash: string): TournamentBeatmap | null {
+        return this.map.find((v) => v.hash === hash) ?? null;
+    }
 }

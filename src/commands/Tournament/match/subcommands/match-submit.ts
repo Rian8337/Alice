@@ -97,13 +97,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     // Find latest played beatmap if not set
-    const index: number = match.getLastPlayedBeatmap(
+    const map: TournamentBeatmap | null = match.getLastPlayedBeatmap(
         pool,
         playerList,
         interaction.options.getString("pick")?.toUpperCase()
     );
 
-    if (index === -1) {
+    if (!map) {
         interaction.replied
             ? interaction.channel!.send({
                   content: MessageCreator.createReject(
@@ -118,8 +118,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         return;
     }
-
-    const map: TournamentBeatmap = pool.map[index];
 
     const team1ScoreList: Score[] = [];
     const team2ScoreList: Score[] = [];
@@ -163,7 +161,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
         if (verificationResult.success && teamScoreStatus.success) {
-            let scorev2: number = pool.calculateScoreV2(
+            const scorev2: number = pool.calculateScoreV2(
                 map.pick,
                 score.score,
                 score.accuracy.value(),
@@ -173,15 +171,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 ).length >= 2
             );
 
-            if (
-                score.mods.filter(
-                    (m) => m instanceof ModHidden || m instanceof ModDoubleTime
-                ).length >= 2
-            ) {
-                scorev2 /= 0.59 / 0.56;
-            }
-
-            scoreV2List.push(Math.round(scorev2));
+            scoreV2List.push(scorev2);
         } else {
             scoreV2List.push(0);
         }

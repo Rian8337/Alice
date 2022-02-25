@@ -77,19 +77,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const pickIndex: number = pool.map.findIndex(
-        (m) => m.pick.toUpperCase() === pick.toUpperCase()
-    );
+    const map: TournamentBeatmap | null = pool.getBeatmapFromPick(pick);
 
-    if (pickIndex === -1) {
+    if (!map) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("mapNotFound")
             ),
         });
     }
-
-    const mapData: TournamentBeatmap = pool.map[pickIndex];
 
     const scoreList: number[] = [];
 
@@ -123,7 +119,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             parseInt(scoreData[0]),
             parseFloat(scoreData[1]) / 100,
             parseInt(scoreData[2]),
-            mapData.mode === "dt" && scoreData[0].endsWith("h")
+            map.mode === "dt" && scoreData[0].endsWith("h")
         );
 
         scoreList.push(scoreV2);
@@ -175,7 +171,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .setAuthor({
             name: match.name,
         })
-        .setTitle(mapData.name)
+        .setTitle(map.name)
         .addField(`${match.team[0][0]}: ${team1OverallScore}`, team1String)
         .addField(`${match.team[1][0]}: ${team2OverallScore}`, team2String)
         .addField("=================================", `**${description}**`);

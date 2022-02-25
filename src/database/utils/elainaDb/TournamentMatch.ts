@@ -103,17 +103,15 @@ export class TournamentMatch
         pool: TournamentMappool,
         players: Player[],
         pick?: string
-    ): number {
-        let minTime: number = Number.NEGATIVE_INFINITY;
-        let hash: string = "";
-        let index: number = -1;
+    ): TournamentBeatmap | null {
+        let map: TournamentBeatmap | null = null;
 
         if (pick) {
-            index = pool.map.findIndex((v) => v.pick === pick);
-            if (index !== -1) {
-                hash = pool.map[index].hash;
-            }
+            map = pool.getBeatmapFromPick(pick);
         } else {
+            let minTime: number = Number.NEGATIVE_INFINITY;
+            let hash: string = "";
+
             for (const player of players) {
                 const recentPlay: Score = player.recentPlays[0];
 
@@ -124,11 +122,11 @@ export class TournamentMatch
                 hash = recentPlay.hash;
                 minTime = recentPlay.date.getTime();
 
-                index = pool.map.findIndex((v) => v.hash === hash);
+                map = pool.getBeatmapFromHash(hash);
             }
         }
 
-        return index;
+        return map;
     }
 
     /**
