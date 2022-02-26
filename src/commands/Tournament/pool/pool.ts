@@ -4,7 +4,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(
+    CommandHelper.runSubcommandOrGroup(
         interaction,
         await CommandHelper.getLocale(interaction)
     );
@@ -18,21 +18,48 @@ export const config: Command["config"] = {
     options: [
         {
             name: "leaderboard",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description:
-                "Views the ScoreV2 leaderboard of a beatmap in a registered tournament mappool.",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            description: "Leaderboard commands for tournament mappools.",
             options: [
                 {
-                    name: "id",
-                    required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
-                    description: "The ID of the mappool.",
+                    name: "output",
+                    description:
+                        "Outputs the ScoreV2 leaderboard of a tournament beatmap to a CSV file.",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    options: [
+                        {
+                            name: "id",
+                            required: true,
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description: "The ID of the mappool.",
+                        },
+                        {
+                            name: "pick",
+                            required: true,
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description: "The pick to output (NM1, NM2, etc).",
+                        },
+                    ],
                 },
                 {
-                    name: "pick",
-                    required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
-                    description: "The pick to view (NM1, NM2, etc).",
+                    name: "view",
+                    description:
+                        "Views the ScoreV2 leaderboard of a tournament beatmap in a registered tournament mappool.",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    options: [
+                        {
+                            name: "id",
+                            required: true,
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description: "The ID of the mappool.",
+                        },
+                        {
+                            name: "pick",
+                            required: true,
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description: "The pick to view (NM1, NM2, etc).",
+                        },
+                    ],
                 },
             ],
         },

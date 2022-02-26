@@ -1,8 +1,12 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseTournamentMappool } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMappool";
 import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
+import { TournamentScore } from "@alice-interfaces/tournament/TournamentScore";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { ModHidden, ModDoubleTime, ModNoFail } from "@rian8337/osu-base";
+import { Score } from "@rian8337/osu-droid-utilities";
 import { ObjectId } from "bson";
 import { Collection } from "discord.js";
 
@@ -163,6 +167,64 @@ export class TournamentMappool extends Manager {
      */
     getBeatmapFromHash(hash: string): TournamentBeatmap | null {
         return this.map.find((v) => v.hash === hash) ?? null;
+    }
+
+    /**
+     * Retrieves the leaderboard of a beatmap from this tournament pool.
+     *
+     * @param pick The pick ID of the beatmap.
+     * @returns The leaderboard of the beatmap.
+     */
+    async getBeatmapLeaderboard(pick: string): Promise<TournamentScore[]> {
+        const pickData: TournamentBeatmap | undefined = this.map.get(
+            pick.toUpperCase()
+        );
+
+        if (!pickData) {
+            return [];
+        }
+
+        const scores: TournamentScore[] = [];
+        let page: number = 1;
+        let retrievedScores: Score[];
+
+        while (
+            (retrievedScores = await ScoreHelper.fetchDroidLeaderboard(
+                pickData.hash,
+                page++
+            )).length > 0
+        ) {
+            scores.push(
+                ...retrievedScores.map<TournamentScore>((v) => {
+                    return {
+                        scoreV2: this.calculateScoreV2(
+                            pick,
+                            v.score,
+                            v.accuracy.value(),
+                            v.accuracy.nmiss,
+                            {
+                                applyHiddenPenalty:
+                                    v.mods.filter(
+                                        (m) =>
+                                            m instanceof ModHidden ||
+                                            m instanceof ModDoubleTime
+                                    ).length >= 2,
+                                isNoFail: v.mods.some(
+                                    (m) => m instanceof ModNoFail
+                                ),
+                            }
+                        ),
+                        score: v,
+                    };
+                })
+            );
+        }
+
+        scores.sort((a, b) => {
+            return b.scoreV2 - a.scoreV2;
+        });
+
+        return scores;
     }
 
     /**

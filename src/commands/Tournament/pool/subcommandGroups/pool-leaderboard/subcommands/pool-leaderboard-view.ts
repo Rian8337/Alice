@@ -13,10 +13,8 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { ModHidden, ModDoubleTime, ModNoFail } from "@rian8337/osu-base";
-import { Score } from "@rian8337/osu-droid-utilities";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -51,41 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const scores: TournamentScore[] = [];
-    let page: number = 1;
-    let retrievedScores: Score[];
-
-    while (
-        (retrievedScores = await ScoreHelper.fetchDroidLeaderboard(
-            map.hash,
-            page++
-        )).length > 0
-    ) {
-        scores.push(
-            ...retrievedScores.map<TournamentScore>((v) => {
-                return {
-                    scoreV2: pool.calculateScoreV2(
-                        pick,
-                        v.score,
-                        v.accuracy.value(),
-                        v.accuracy.nmiss,
-                        {
-                            applyHiddenPenalty:
-                                v.mods.filter(
-                                    (m) =>
-                                        m instanceof ModHidden ||
-                                        m instanceof ModDoubleTime
-                                ).length >= 2,
-                            isNoFail: v.mods.some(
-                                (m) => m instanceof ModNoFail
-                            ),
-                        }
-                    ),
-                    score: v,
-                };
-            })
-        );
-    }
+    const scores: TournamentScore[] = await pool.getBeatmapLeaderboard(pick);
 
     if (scores.length === 0) {
         return interaction.editReply({
@@ -94,10 +58,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ),
         });
     }
-
-    scores.sort((a, b) => {
-        return b.scoreV2 - a.scoreV2;
-    });
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
