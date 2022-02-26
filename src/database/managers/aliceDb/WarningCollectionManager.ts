@@ -62,8 +62,8 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
      * @param guildId The ID of the guild the warning is issued in.
      * @returns The guild-specific ID of the new warning.
      */
-    getNewGuildSpecificWarningId(guildId: Snowflake): Promise<number> {
-        return this.collection.countDocuments({ guildId: guildId });
+    async getNewGuildSpecificWarningId(guildId: Snowflake): Promise<number> {
+        return (await this.collection.countDocuments({ guildId: guildId })) + 1;
     }
 
     /**
