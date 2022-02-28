@@ -8,6 +8,10 @@ import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Message, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
+    if (!Config.isDebug) {
+        return;
+    }
+
     const channel: TextChannel = <TextChannel>(
         await client.channels.fetch("546135349533868072")
     );
