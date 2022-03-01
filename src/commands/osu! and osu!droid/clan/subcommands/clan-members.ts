@@ -81,7 +81,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                                   )
                         }\n` +
                         `**${localization.getTranslation(
-                            "clanUpkeepInformation"
+                            "clanMemberUpkeepValue"
                         )}**: ${clan.calculateUpkeep(v.id)} Alice coins`
                 )
                 .join("\n\n")
