@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { AskCount } from "@alice-database/utils/aliceDb/AskCount";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { AskcountLocalization } from "@alice-localization/commands/Fun/AskcountLocalization";
+import { AskcountLocalization } from "@alice-localization/commands/Fun/askcount/AskcountLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

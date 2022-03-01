@@ -5,7 +5,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
-import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

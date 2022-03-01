@@ -7,7 +7,7 @@ import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { GuildMember } from "discord.js";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);

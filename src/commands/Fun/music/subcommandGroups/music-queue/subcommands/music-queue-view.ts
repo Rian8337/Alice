@@ -5,7 +5,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 

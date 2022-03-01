@@ -3,7 +3,7 @@ import { GuildPunishmentConfigCollectionManager } from "@alice-database/managers
 import {
     PunishmentManagerLocalization,
     PunishmentManagerStrings,
-} from "@alice-localization/utils/managers/PunishmentManagerLocalization";
+} from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 /**

@@ -5,7 +5,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
-import { UntimeoutLocalization } from "@alice-localization/commands/Staff/UntimeoutLocalization";
+import { UntimeoutLocalization } from "@alice-localization/commands/Staff/untimeout/UntimeoutLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {

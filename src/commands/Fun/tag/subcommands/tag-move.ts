@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalization";
+import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { User } from "discord.js";

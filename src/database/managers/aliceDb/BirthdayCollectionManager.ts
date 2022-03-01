@@ -6,7 +6,7 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Snowflake } from "discord.js";
 import { Collection as MongoDBCollection } from "mongodb";
-import { BirthdayCollectionManagerLocalization } from "@alice-localization/database/managers/aliceDb/BirthdayCollectionManagerLocalization";
+import { BirthdayCollectionManagerLocalization } from "@alice-localization/database/managers/aliceDb/BirthdayCollectionManager/BirthdayCollectionManagerLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 /**

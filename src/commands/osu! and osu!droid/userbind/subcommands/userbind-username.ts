@@ -10,7 +10,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/UserbindLocalization";
+import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (client, interaction) => {

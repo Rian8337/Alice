@@ -11,8 +11,8 @@ import { Language } from "@alice-localization/base/Language";
 import {
     PPcompareLocalization,
     PPcompareStrings,
-} from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/PPcompareLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+} from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcompare/PPcompareLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

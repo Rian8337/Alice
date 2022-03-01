@@ -1,5 +1,5 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/WhitelistLocalization";
+import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
 import { WhitelistStatus } from "@alice-types/dpp/WhitelistStatus";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

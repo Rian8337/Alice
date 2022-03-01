@@ -3,7 +3,7 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { CuteNoLewdLocalization } from "@alice-localization/events/messageCreate/CuteNoLewdLocalization";
+import { CuteNoLewdLocalization } from "@alice-localization/events/messageCreate/cuteNoLewd/CuteNoLewdLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 const pictureCooldown: Set<Snowflake> = new Set();

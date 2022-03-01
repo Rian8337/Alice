@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { PoolLocalization } from "@alice-localization/commands/Tournament/PoolLocalization";
+import { PoolLocalization } from "@alice-localization/commands/Tournament/pool/PoolLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

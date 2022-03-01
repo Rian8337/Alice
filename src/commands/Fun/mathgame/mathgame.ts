@@ -19,7 +19,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { MathgameLocalization } from "@alice-localization/commands/Fun/MathgameLocalization";
+import { MathgameLocalization } from "@alice-localization/commands/Fun/mathgame/MathgameLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**

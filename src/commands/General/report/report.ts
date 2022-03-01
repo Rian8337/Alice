@@ -11,10 +11,10 @@ import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ReportLocalization } from "@alice-localization/commands/General/ReportLocalization";
+import { ReportLocalization } from "@alice-localization/commands/General/report/ReportLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);

@@ -16,7 +16,7 @@ import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { HelpLocalization } from "@alice-localization/commands/General/HelpLocalization";
+import { HelpLocalization } from "@alice-localization/commands/General/help/HelpLocalization";
 
 /**
  * Gets the list of commands that the bot has.

@@ -10,7 +10,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { CompareLocalization } from "@alice-localization/commands/osu! and osu!droid/CompareLocalization";
+import { CompareLocalization } from "@alice-localization/commands/osu! and osu!droid/compare/CompareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {

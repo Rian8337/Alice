@@ -20,7 +20,7 @@ import {
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
     OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
-import { CalculateLocalization } from "@alice-localization/commands/osu! and osu!droid/CalculateLocalization";
+import { CalculateLocalization } from "@alice-localization/commands/osu! and osu!droid/calculate/CalculateLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {

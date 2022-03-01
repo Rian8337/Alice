@@ -9,7 +9,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { PlayerInfoLocalization } from "@alice-localization/database/utils/aliceDb/PlayerInfoLocalization";
+import { PlayerInfoLocalization } from "@alice-localization/database/utils/aliceDb/PlayerInfo/PlayerInfoLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

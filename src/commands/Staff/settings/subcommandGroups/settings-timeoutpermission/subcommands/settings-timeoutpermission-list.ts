@@ -3,7 +3,7 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

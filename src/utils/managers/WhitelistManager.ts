@@ -11,7 +11,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { UpdateFilter } from "mongodb";
-import { WhitelistManagerLocalization } from "@alice-localization/utils/managers/WhitelistManagerLocalization";
+import { WhitelistManagerLocalization } from "@alice-localization/utils/managers/WhitelistManager/WhitelistManagerLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 /**

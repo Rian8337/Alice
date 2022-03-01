@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/SubmitLocalization";
+import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/submit/SubmitLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
     if (

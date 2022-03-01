@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

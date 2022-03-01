@@ -19,10 +19,10 @@ import { LoungeLockManager } from "./LoungeLockManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Constants } from "@alice-core/Constants";
 import { Language } from "@alice-localization/base/Language";
-import { TimeoutManagerLocalization } from "@alice-localization/utils/managers/TimeoutManagerLocalization";
+import { TimeoutManagerLocalization } from "@alice-localization/utils/managers/TimeoutManager/TimeoutManagerLocalization";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManagerLocalization";
+import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
 
 /**
  * A manager for timeouts.

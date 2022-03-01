@@ -6,9 +6,9 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Language } from "@alice-localization/base/Language";
-import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);

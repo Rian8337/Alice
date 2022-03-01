@@ -4,7 +4,7 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { DroidProfileLocalization } from "@alice-localization/events/messageCreate/DroidProfileLocalization";
+import { DroidProfileLocalization } from "@alice-localization/events/messageCreate/droidProfile/DroidProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {

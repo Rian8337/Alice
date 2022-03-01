@@ -7,9 +7,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { Language } from "@alice-localization/base/Language";
-import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

@@ -7,7 +7,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Collection, Snowflake } from "discord.js";
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
-import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
+import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

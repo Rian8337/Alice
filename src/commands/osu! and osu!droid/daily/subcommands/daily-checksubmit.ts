@@ -3,7 +3,7 @@ import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/Pl
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, Snowflake } from "discord.js";

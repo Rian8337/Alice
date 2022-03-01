@@ -13,8 +13,8 @@ import { PunishmentManager } from "./PunishmentManager";
 import { LoungeLockCollectionManager } from "@alice-database/managers/aliceDb/LoungeLockCollectionManager";
 import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
-import { LoungeLockManagerLocalization } from "@alice-localization/utils/managers/LoungeLockManagerLocalization";
-import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManagerLocalization";
+import { LoungeLockManagerLocalization } from "@alice-localization/utils/managers/LoungeLockManager/LoungeLockManagerLocalization";
+import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 /**

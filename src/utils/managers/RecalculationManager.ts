@@ -5,7 +5,7 @@ import { Language } from "@alice-localization/base/Language";
 import {
     RecalculationManagerLocalization,
     RecalculationManagerStrings,
-} from "@alice-localization/utils/managers/RecalculationManagerLocalization";
+} from "@alice-localization/utils/managers/RecalculationManager/RecalculationManagerLocalization";
 import { Manager } from "@alice-utils/base/Manager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

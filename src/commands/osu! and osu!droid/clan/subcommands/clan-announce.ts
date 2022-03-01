@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

@@ -10,7 +10,7 @@ import { MessageOptions, Snowflake, TextChannel } from "discord.js";
 import { UserBind } from "../elainaDb/UserBind";
 import { PlayerInfo } from "./PlayerInfo";
 import { Language } from "@alice-localization/base/Language";
-import { MapShareLocalization } from "@alice-localization/database/utils/aliceDb/MapShareLocalization";
+import { MapShareLocalization } from "@alice-localization/database/utils/aliceDb/MapShare/MapShareLocalization";
 
 /**
  * Represents a shared beatmap.

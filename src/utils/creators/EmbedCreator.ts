@@ -67,7 +67,7 @@ import { Language } from "@alice-localization/base/Language";
 import {
     EmbedCreatorLocalization,
     EmbedCreatorStrings,
-} from "@alice-localization/utils/creators/EmbedCreatorLocalization";
+} from "@alice-localization/utils/creators/EmbedCreator/EmbedCreatorLocalization";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 

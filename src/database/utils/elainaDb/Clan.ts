@@ -26,8 +26,8 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "./UserBind";
 import { Language } from "@alice-localization/base/Language";
-import { ClanLocalization } from "@alice-localization/database/utils/elainaDb/ClanLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ClanLocalization } from "@alice-localization/database/utils/elainaDb/Clan/ClanLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 /**
  * Represents a clan.

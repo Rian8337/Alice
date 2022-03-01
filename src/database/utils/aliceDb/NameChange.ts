@@ -9,7 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { Language } from "@alice-localization/base/Language";
-import { NameChangeLocalization } from "@alice-localization/database/utils/aliceDb/NameChangeLocalization";
+import { NameChangeLocalization } from "@alice-localization/database/utils/aliceDb/NameChange/NameChangeLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 

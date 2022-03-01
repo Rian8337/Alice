@@ -12,7 +12,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildEmoji, MessageEmbed, TextChannel } from "discord.js";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {

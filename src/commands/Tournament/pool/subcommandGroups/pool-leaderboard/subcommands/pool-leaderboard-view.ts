@@ -5,7 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { TournamentScore } from "@alice-interfaces/tournament/TournamentScore";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { PoolLocalization } from "@alice-localization/commands/Tournament/PoolLocalization";
+import { PoolLocalization } from "@alice-localization/commands/Tournament/pool/PoolLocalization";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

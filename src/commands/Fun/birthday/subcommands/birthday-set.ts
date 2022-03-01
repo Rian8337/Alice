@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BirthdayLocalization } from "@alice-localization/commands/Fun/BirthdayLocalization";
+import { BirthdayLocalization } from "@alice-localization/commands/Fun/birthday/BirthdayLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 

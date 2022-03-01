@@ -13,9 +13,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MessageEmbed, Snowflake } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { PPcheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/PPcheckLocalization";
+import { PPcheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcheck/PPcheckLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {

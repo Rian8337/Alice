@@ -8,7 +8,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
-import { BlacklistLocalization } from "@alice-localization/commands/Bot Creators/BlacklistLocalization";
+import { BlacklistLocalization } from "@alice-localization/commands/Bot Creators/blacklist/BlacklistLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 

@@ -1,6 +1,6 @@
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { WarningLocalization } from "@alice-localization/commands/Staff/WarningLocalization";
+import { WarningLocalization } from "@alice-localization/commands/Staff/warning/WarningLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";

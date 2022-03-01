@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";

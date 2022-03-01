@@ -1,5 +1,5 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

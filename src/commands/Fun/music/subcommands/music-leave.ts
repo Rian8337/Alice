@@ -1,7 +1,7 @@
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Language } from "@alice-localization/base/Language";
-import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";

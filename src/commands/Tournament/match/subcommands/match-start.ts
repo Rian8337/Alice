@@ -4,7 +4,7 @@ import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch"
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { Language } from "@alice-localization/base/Language";
-import { MatchLocalization } from "@alice-localization/commands/Tournament/MatchLocalization";
+import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

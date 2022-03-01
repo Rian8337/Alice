@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerSkin } from "@alice-database/utils/aliceDb/PlayerSkin";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { SkinLocalization } from "@alice-localization/commands/osu! and osu!droid/SkinLocalization";
+import { SkinLocalization } from "@alice-localization/commands/osu! and osu!droid/skin/SkinLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { User } from "discord.js";

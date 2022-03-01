@@ -9,8 +9,8 @@ import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { VerifyLocalization } from "@alice-localization/commands/Staff/VerifyLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { VerifyLocalization } from "@alice-localization/commands/Staff/verify/VerifyLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);

@@ -4,7 +4,7 @@ import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
-import { VoteLocalization } from "@alice-localization/commands/Tools/VoteLocalization";
+import { VoteLocalization } from "@alice-localization/commands/Tools/vote/VoteLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

@@ -2,7 +2,7 @@ import { readFile } from "fs/promises";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageAttachment } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/UserbindLocalization";
+import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

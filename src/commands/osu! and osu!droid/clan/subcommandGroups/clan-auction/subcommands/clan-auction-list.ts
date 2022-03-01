@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

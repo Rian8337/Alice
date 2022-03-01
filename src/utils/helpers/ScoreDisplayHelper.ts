@@ -13,7 +13,7 @@ import {
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { NumberHelper } from "./NumberHelper";
 import { Language } from "@alice-localization/base/Language";
-import { ScoreDisplayHelperLocalization } from "@alice-localization/utils/helpers/ScoreDisplayHelperLocalization";
+import { ScoreDisplayHelperLocalization } from "@alice-localization/utils/helpers/ScoreDisplayHelper/ScoreDisplayHelperLocalization";
 import { StringHelper } from "./StringHelper";
 import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
 import { LocaleHelper } from "./LocaleHelper";

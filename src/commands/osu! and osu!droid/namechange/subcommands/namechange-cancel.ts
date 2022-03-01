@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 

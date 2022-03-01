@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {

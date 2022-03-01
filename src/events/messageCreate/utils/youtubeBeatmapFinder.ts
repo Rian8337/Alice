@@ -16,7 +16,7 @@ import {
     DroidStarRating,
     OsuStarRating,
 } from "@rian8337/osu-difficulty-calculator";
-import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/YoutubeBeatmapFinderLocalization";
+import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 

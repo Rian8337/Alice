@@ -4,7 +4,7 @@ import { BonusDescription } from "@alice-interfaces/challenge/BonusDescription";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Language } from "@alice-localization/base/Language";
-import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

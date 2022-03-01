@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 

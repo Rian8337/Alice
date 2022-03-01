@@ -9,8 +9,8 @@ import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { GuildMember, MessageEmbed, MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
-import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/WhitelistLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);

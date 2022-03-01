@@ -55,7 +55,7 @@ import { Language } from "@alice-localization/base/Language";
 import {
     ChallengeLocalization,
     ChallengeStrings,
-} from "@alice-localization/database/utils/aliceDb/ChallengeLocalization";
+} from "@alice-localization/database/utils/aliceDb/Challenge/ChallengeLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**

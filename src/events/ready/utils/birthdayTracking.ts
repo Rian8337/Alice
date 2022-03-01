@@ -4,7 +4,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
-import { BirthdayTrackingLocalization } from "@alice-localization/events/ready/BirthdayTrackingLocalization";
+import { BirthdayTrackingLocalization } from "@alice-localization/events/ready/birthdayTracking/BirthdayTrackingLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";

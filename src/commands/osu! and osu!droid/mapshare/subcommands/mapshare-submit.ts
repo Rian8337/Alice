@@ -9,7 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
-import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 

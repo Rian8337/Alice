@@ -21,6 +21,8 @@ import { ArrayHelper } from "./ArrayHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { TriviaQuestionResult } from "@alice-interfaces/trivia/TriviaQuestionResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { Language } from "@alice-localization/base/Language";
+import { TriviaHelperLocalization } from "@alice-localization/utils/helpers/TriviaHelper/TriviaHelperLocalization";
 
 /**
  * Helper methods for trivia-related features.
@@ -37,8 +39,12 @@ export abstract class TriviaHelper {
     static async askQuestion(
         interaction: CommandInteraction,
         category?: TriviaQuestionCategory,
-        type?: TriviaQuestionType
+        type?: TriviaQuestionType,
+        language: Language = "en"
     ): Promise<TriviaQuestionResult> {
+        const localization: TriviaHelperLocalization =
+            this.getLocalization(language);
+
         category ??= ArrayHelper.getRandomArrayElement(
             <TriviaQuestionCategory[]>(
                 Object.values(TriviaQuestionCategory).filter(
@@ -208,7 +214,8 @@ export abstract class TriviaHelper {
 
                     i.reply({
                         content: MessageCreator.createAccept(
-                            `Your latest choice (${i.customId}) has been recorded!`
+                            localization.getTranslation("latestChoiceRecorded"),
+                            i.customId
                         ),
                         ephemeral: true,
                     });
@@ -428,5 +435,16 @@ export abstract class TriviaHelper {
             case TriviaQuestionCategory.LOGICAL_REASONING:
                 return "logic.txt";
         }
+    }
+
+    /**
+     * Gets the localization of this helper utility.
+     *
+     * @param language The language to localize.
+     */
+    private static getLocalization(
+        language: Language
+    ): TriviaHelperLocalization {
+        return new TriviaHelperLocalization(language);
     }
 }

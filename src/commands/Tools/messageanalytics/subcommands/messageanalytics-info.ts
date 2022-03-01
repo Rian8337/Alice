@@ -20,7 +20,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import {
     MessageanalyticsLocalization,
     MessageanalyticsStrings,
-} from "@alice-localization/commands/Tools/MessageanalyticsLocalization";
+} from "@alice-localization/commands/Tools/messageanalytics/MessageanalyticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 

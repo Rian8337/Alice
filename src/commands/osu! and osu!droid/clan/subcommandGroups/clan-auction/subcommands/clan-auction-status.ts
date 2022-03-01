@@ -3,7 +3,7 @@ import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { AuctionBid } from "@alice-interfaces/clan/AuctionBid";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

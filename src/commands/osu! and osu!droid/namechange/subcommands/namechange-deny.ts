@@ -5,7 +5,7 @@ import { Constants } from "@alice-core/Constants";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 

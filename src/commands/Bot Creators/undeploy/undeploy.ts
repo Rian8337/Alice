@@ -3,7 +3,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommand } from "discord.js";
-import { UndeployLocalization } from "@alice-localization/commands/Bot Creators/UndeployLocalization";
+import { UndeployLocalization } from "@alice-localization/commands/Bot Creators/undeploy/UndeployLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (client, interaction) => {

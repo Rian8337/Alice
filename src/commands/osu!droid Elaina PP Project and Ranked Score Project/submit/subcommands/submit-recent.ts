@@ -20,9 +20,9 @@ import { MapInfo } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { Language } from "@alice-localization/base/Language";
-import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/SubmitLocalization";
+import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/submit/SubmitLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

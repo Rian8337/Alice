@@ -4,7 +4,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 import { User } from "discord.js";
-import { FancyLocalization } from "@alice-localization/commands/Bot Creators/FancyLocalization";
+import { FancyLocalization } from "@alice-localization/commands/Bot Creators/fancy/FancyLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

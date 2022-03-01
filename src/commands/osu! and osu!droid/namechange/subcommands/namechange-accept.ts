@@ -6,7 +6,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

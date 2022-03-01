@@ -35,8 +35,8 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
 import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
 import { UserLocale } from "@alice-database/utils/aliceDb/UserLocale";
-import { CommandHelperLocalization } from "@alice-localization/utils/helpers/CommandHelperLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { CommandHelperLocalization } from "@alice-localization/utils/helpers/CommandHelper/CommandHelperLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 /**
  * Helpers for commands.

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { PlayertrackLocalization } from "@alice-localization/commands/Bot Creators/PlayertrackLocalization";
+import { PlayertrackLocalization } from "@alice-localization/commands/Bot Creators/playertrack/PlayertrackLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 

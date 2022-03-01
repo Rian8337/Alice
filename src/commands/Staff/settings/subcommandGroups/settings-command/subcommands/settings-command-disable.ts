@@ -8,8 +8,8 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { NewsChannel, TextChannel, ThreadChannel } from "discord.js";
 import { Language } from "@alice-localization/base/Language";
-import { SettingsLocalization } from "@alice-localization/commands/Staff/SettingsLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);

@@ -22,7 +22,7 @@ import {
     OsuStarRating,
 } from "@rian8337/osu-difficulty-calculator";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
-import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
+import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

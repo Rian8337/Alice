@@ -9,7 +9,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
-import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/UserbindLocalization";
+import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 

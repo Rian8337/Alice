@@ -11,7 +11,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
-import { PrototypecheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/PrototypecheckLocalization";
+import { PrototypecheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/prototypecheck/PrototypecheckLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";

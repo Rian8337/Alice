@@ -1,14 +1,14 @@
 import { Language } from "./Language";
-import { Translation } from "./Translation";
+import { Translations } from "./Translations";
 
 /**
  * Represents a localization for various things (commands, managers, database utilities, etc).
  */
 export abstract class Localization<T extends Record<keyof T, string>> {
     /**
-     * Available translations, mapped by language code (see {@link Language}).
+     * Available localizations, mapped by language code (see {@link Language}).
      */
-    protected abstract readonly translations: Readonly<Translation<T>>;
+    protected abstract readonly localizations: Readonly<Translations<T>>;
 
     /**
      * The language this localization is handling.
@@ -31,7 +31,8 @@ export abstract class Localization<T extends Record<keyof T, string>> {
      */
     getTranslation(name: keyof T): string {
         return (
-            this.translations[this.language][name] || this.translations.en[name]
+            this.localizations[this.language].translations[name] ||
+            this.localizations.en.translations[name]
         );
     }
 }

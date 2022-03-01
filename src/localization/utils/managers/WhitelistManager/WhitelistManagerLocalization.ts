@@ -1,0 +1,24 @@
+import { Localization } from "@alice-localization/base/Localization";
+import { Translations } from "@alice-localization/base/Translations";
+import { WhitelistManagerENTranslation } from "./translations/WhitelistManagerENTranslation";
+import { WhitelistManagerIDTranslation } from "./translations/WhitelistManagerIDTranslation";
+import { WhitelistManagerKRTranslation } from "./translations/WhitelistManagerKRTranslation";
+
+export interface WhitelistManagerStrings {
+    readonly beatmapIsBlacklisted: string;
+    readonly beatmapIsNotBlacklisted: string;
+    readonly beatmapIsNotGraveyarded: string;
+}
+
+/**
+ * Localizations for the `WhitelistManager` manager utility.
+ */
+export class WhitelistManagerLocalization extends Localization<WhitelistManagerStrings> {
+    protected override readonly localizations: Readonly<
+        Translations<WhitelistManagerStrings>
+    > = {
+        en: new WhitelistManagerENTranslation(),
+        kr: new WhitelistManagerKRTranslation(),
+        id: new WhitelistManagerIDTranslation(),
+    };
+}

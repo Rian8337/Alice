@@ -7,7 +7,7 @@ import { PowerupType } from "@alice-types/clan/PowerupType";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(

@@ -1,0 +1,37 @@
+import { Localization } from "@alice-localization/base/Localization";
+import { Translations } from "@alice-localization/base/Translations";
+import { TimeoutManagerENTranslation } from "./translations/TimeoutManagerENTranslation";
+import { TimeoutManagerIDTranslation } from "./translations/TimeoutManagerIDTranslation";
+import { TimeoutManagerKRTranslation } from "./translations/TimeoutManagerKRTranslation";
+
+export interface TimeoutManagerStrings {
+    readonly userAlreadyTimeouted: string;
+    readonly userImmuneToTimeout: string;
+    readonly invalidTimeoutDuration: string;
+    readonly timeoutDurationOutOfRange: string;
+    readonly notEnoughPermissionToTimeout: string;
+    readonly timeoutReasonTooLong: string;
+    readonly timeoutExecuted: string;
+    readonly untimeoutExecuted: string;
+    readonly inChannel: string;
+    readonly reason: string;
+    readonly userId: string; // see 30.34
+    readonly channelId: string;
+    readonly timeoutUserNotification: string;
+    readonly userNotTimeouted: string;
+    readonly untimeoutReasonTooLong: string;
+    readonly untimeoutUserNotification: string;
+}
+
+/**
+ * Localizations for the `TimeoutManager` manager utility.
+ */
+export class TimeoutManagerLocalization extends Localization<TimeoutManagerStrings> {
+    protected override readonly localizations: Readonly<
+        Translations<TimeoutManagerStrings>
+    > = {
+        en: new TimeoutManagerENTranslation(),
+        kr: new TimeoutManagerKRTranslation(),
+        id: new TimeoutManagerIDTranslation(),
+    };
+}

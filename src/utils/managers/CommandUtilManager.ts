@@ -5,7 +5,7 @@ import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
 import { DisabledEventUtil } from "@alice-interfaces/moderation/DisabledEventUtil";
 import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
 import { Language } from "@alice-localization/base/Language";
-import { CommandUtilManagerLocalization } from "@alice-localization/utils/managers/CommandUtilManagerLocalization";
+import { CommandUtilManagerLocalization } from "@alice-localization/utils/managers/CommandUtilManager/CommandUtilManagerLocalization";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";

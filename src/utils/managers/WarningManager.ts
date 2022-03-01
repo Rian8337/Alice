@@ -4,8 +4,8 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Language } from "@alice-localization/base/Language";
-import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManagerLocalization";
-import { WarningManagerLocalization } from "@alice-localization/utils/managers/WarningManagerLocalization";
+import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
+import { WarningManagerLocalization } from "@alice-localization/utils/managers/WarningManager/WarningManagerLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";

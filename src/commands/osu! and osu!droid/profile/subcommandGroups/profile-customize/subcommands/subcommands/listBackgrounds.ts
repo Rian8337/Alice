@@ -6,7 +6,7 @@ import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 

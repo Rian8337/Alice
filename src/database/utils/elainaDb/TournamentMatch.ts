@@ -18,7 +18,7 @@ import {
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { TournamentMappool } from "./TournamentMappool";
 import { Language } from "@alice-localization/base/Language";
-import { TournamentMatchLocalization } from "@alice-localization/database/utils/elainaDb/TournamentMatchLocalization";
+import { TournamentMatchLocalization } from "@alice-localization/database/utils/elainaDb/TournamentMatch/TournamentMatchLocalization";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 /**

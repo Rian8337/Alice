@@ -1,6 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/DailyLocalization";
+import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";

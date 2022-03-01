@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { PlayertrackLocalization } from "@alice-localization/commands/Bot Creators/PlayertrackLocalization";
+import { PlayertrackLocalization } from "@alice-localization/commands/Bot Creators/playertrack/PlayertrackLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: PlayertrackLocalization = new PlayertrackLocalization(

@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Birthday } from "@alice-database/utils/aliceDb/Birthday";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { BirthdayLocalization } from "@alice-localization/commands/Fun/BirthdayLocalization";
+import { BirthdayLocalization } from "@alice-localization/commands/Fun/birthday/BirthdayLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

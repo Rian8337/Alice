@@ -1,7 +1,7 @@
 import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TriviaQuestionResult } from "@alice-interfaces/trivia/TriviaQuestionResult";
-import { TriviaLocalization } from "@alice-localization/commands/Fun/TriviaLocalization";
+import { TriviaLocalization } from "@alice-localization/commands/Fun/trivia/TriviaLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
@@ -52,7 +52,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: TriviaQuestionResult = await TriviaHelper.askQuestion(
         interaction,
         category,
-        interaction.options.getInteger("type") ?? undefined
+        interaction.options.getInteger("type") ?? undefined,
+        localization.language
     );
 
     CacheManager.stillHasQuestionTriviaActive.delete(interaction.channelId);

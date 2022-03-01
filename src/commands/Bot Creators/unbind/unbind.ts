@@ -8,7 +8,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { UnbindLocalization } from "@alice-localization/commands/Bot Creators/UnbindLocalization";
+import { UnbindLocalization } from "@alice-localization/commands/Bot Creators/unbind/UnbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 

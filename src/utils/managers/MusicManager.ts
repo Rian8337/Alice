@@ -18,7 +18,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { Language } from "@alice-localization/base/Language";
-import { MusicManagerLocalization } from "@alice-localization/utils/managers/MusicManagerLocalization";
+import { MusicManagerLocalization } from "@alice-localization/utils/managers/MusicManager/MusicManagerLocalization";
 
 /**
  * A manager for playing music in voice channels.

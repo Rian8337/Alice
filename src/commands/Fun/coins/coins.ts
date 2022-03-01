@@ -5,7 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { CoinsLocalization } from "@alice-localization/commands/Fun/CoinsLocalization";
+import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(

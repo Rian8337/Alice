@@ -7,7 +7,7 @@ import { loadImage, Image } from "canvas";
 import { Role } from "discord.js";
 import { Precision, RequestResponse } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

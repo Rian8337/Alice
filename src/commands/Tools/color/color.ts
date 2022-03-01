@@ -5,7 +5,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { ColorLocalization } from "@alice-localization/commands/Tools/ColorLocalization";
+import { ColorLocalization } from "@alice-localization/commands/Tools/color/ColorLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {

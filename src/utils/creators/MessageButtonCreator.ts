@@ -1,7 +1,7 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Language } from "@alice-localization/base/Language";
-import { MessageButtonCreatorLocalization } from "@alice-localization/utils/creators/MessageButtonCreatorLocalization";
+import { MessageButtonCreatorLocalization } from "@alice-localization/utils/creators/MessageButtonCreator/MessageButtonCreatorLocalization";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import {
     BaseCommandInteraction,

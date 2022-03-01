@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { TagLocalization } from "@alice-localization/commands/Fun/TagLocalization";
+import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";

@@ -4,7 +4,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember } from "discord.js";
-import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {

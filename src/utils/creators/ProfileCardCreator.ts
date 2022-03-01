@@ -14,7 +14,7 @@ import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { Language } from "@alice-localization/base/Language";
-import { ProfileCardCreatorLocalization } from "@alice-localization/utils/creators/ProfileCardCreatorLocalization";
+import { ProfileCardCreatorLocalization } from "@alice-localization/utils/creators/ProfileCardCreator/ProfileCardCreatorLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**

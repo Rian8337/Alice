@@ -28,7 +28,7 @@ import {
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
-import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBindLocalization";
+import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 import { RankedScore } from "../aliceDb/RankedScore";

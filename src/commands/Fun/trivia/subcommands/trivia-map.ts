@@ -21,7 +21,7 @@ import {
     OsuAPIResponse,
     RequestResponse,
 } from "@rian8337/osu-base";
-import { TriviaLocalization } from "@alice-localization/commands/Fun/TriviaLocalization";
+import { TriviaLocalization } from "@alice-localization/commands/Fun/trivia/TriviaLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {

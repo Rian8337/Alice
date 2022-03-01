@@ -7,7 +7,7 @@ import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { TimeoutLocalization } from "@alice-localization/commands/Staff/TimeoutLocalization";
+import { TimeoutLocalization } from "@alice-localization/commands/Staff/timeout/TimeoutLocalization";
 import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {

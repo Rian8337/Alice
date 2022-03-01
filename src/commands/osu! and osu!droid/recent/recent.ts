@@ -12,8 +12,8 @@ import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { RecentLocalization } from "@alice-localization/commands/osu! and osu!droid/RecentLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { RecentLocalization } from "@alice-localization/commands/osu! and osu!droid/recent/RecentLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);

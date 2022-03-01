@@ -21,9 +21,9 @@ import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { OsuStarRating } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { Language } from "@alice-localization/base/Language";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { MessageanalyticsLocalization } from "@alice-localization/commands/Tools/MessageanalyticsLocalization";
+import { MessageanalyticsLocalization } from "@alice-localization/commands/Tools/messageanalytics/MessageanalyticsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";

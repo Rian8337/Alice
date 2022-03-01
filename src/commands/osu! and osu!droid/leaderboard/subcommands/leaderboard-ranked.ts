@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/LeaderboardLocalization";
+import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

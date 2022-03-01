@@ -1,5 +1,5 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember, MessageEmbed } from "discord.js";

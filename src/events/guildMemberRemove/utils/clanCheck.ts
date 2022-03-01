@@ -5,7 +5,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ClanCheckLocalization } from "@alice-localization/events/guildMemberRemove/ClanCheckLocalization";
+import { ClanCheckLocalization } from "@alice-localization/events/guildMemberRemove/clanCheck/ClanCheckLocalization";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: EventUtil["run"] = async (_, member: GuildMember) => {

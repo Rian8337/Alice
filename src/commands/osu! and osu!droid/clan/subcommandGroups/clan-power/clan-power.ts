@@ -1,6 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";

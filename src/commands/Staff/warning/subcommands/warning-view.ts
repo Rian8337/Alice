@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { WarningLocalization } from "@alice-localization/commands/Staff/WarningLocalization";
+import { WarningLocalization } from "@alice-localization/commands/Staff/warning/WarningLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

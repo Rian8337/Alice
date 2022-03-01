@@ -7,9 +7,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/NamechangeLocalization";
+import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {

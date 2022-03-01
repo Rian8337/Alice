@@ -6,7 +6,7 @@ import { MusicManager } from "@alice-utils/managers/MusicManager";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { MusicLocalization } from "@alice-localization/commands/Fun/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 

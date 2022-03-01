@@ -16,7 +16,7 @@ import {
     DroidPerformanceCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
-import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/UserBeatmapCalculationLocalization";
+import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 

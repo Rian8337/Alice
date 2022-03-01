@@ -11,7 +11,7 @@ import { Powerup } from "@alice-interfaces/clan/Powerup";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Language } from "@alice-localization/base/Language";
-import { ClanAuctionLocalization } from "@alice-localization/database/utils/aliceDb/ClanAuctionLocalization";
+import { ClanAuctionLocalization } from "@alice-localization/database/utils/aliceDb/ClanAuction/ClanAuctionLocalization";
 
 /**
  * Represents a clan auction.

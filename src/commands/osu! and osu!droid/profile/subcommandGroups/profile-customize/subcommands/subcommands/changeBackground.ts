@@ -13,8 +13,8 @@ import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackgrou
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/ProfileLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {

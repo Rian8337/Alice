@@ -4,8 +4,8 @@ import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/Pl
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Language } from "@alice-localization/base/Language";
-import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/MapshareLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/ConstantsLocalization";
+import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { User } from "discord.js";
