@@ -22,7 +22,7 @@ export class SettingsKRTranslation extends Translation<SettingsStrings> {
         revokeTimeoutPermissionSuccess:
             "성공적으로 %s 역할의 타임아웃 권한을 제거했어요.",
         invalidTimeoutPermissionDuration:
-            "저기, 해당 역할이 부여할 수 있는 타임아웃 최대 지속시간을 지정해 주세요!",
+            "저기, 적절한 최대 타임아웃 시간을 입력해 주세요!",
         eventNotFound: "죄송해요, 지정하신 이벤트를 찾지 못했어요!",
         eventUtilityNotFound:
             "죄송해요, 지정하신 이벤트 유틸리티를 찾지 못했어요!",
@@ -47,6 +47,6 @@ export class SettingsKRTranslation extends Translation<SettingsStrings> {
         eventName: "이벤트명",
         requiredPermissions: "필요 권한",
         toggleableScope: "토글 가능 범위",
-        indefinite: "",
+        indefinite: "무기한(Indefinite)",
     };
 }

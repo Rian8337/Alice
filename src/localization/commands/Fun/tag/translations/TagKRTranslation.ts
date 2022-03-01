@@ -32,12 +32,12 @@ export class TagKRTranslation extends Translation<TagStrings> {
             "죄송해요, 당신은 이 서버에서 저장한 태그가 없네요!",
         userDoesntHaveTags:
             "죄송해요, 해당 유저는 이 서버에서 저장한 태그가 없어요!",
-        tagInfo: "",
-        tagName: "",
-        tagAuthor: "",
-        tagCreationDate: "",
-        tagAttachmentAmount: "",
-        tagsForUser: "",
-        totalTags: "",
+        tagInfo: "태그 정보",
+        tagName: "제작자",
+        tagAuthor: "이름",
+        tagCreationDate: "만들어진 날짜",
+        tagAttachmentAmount: "첨부물 수",
+        tagsForUser: "%s의 태그",
+        totalTags: "총 태그 수",
     };
 }

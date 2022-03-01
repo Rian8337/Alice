@@ -15,10 +15,10 @@ export class TriviaKRTranslation extends Translation<TriviaStrings> {
             "죄송해요, 비트맵을 검색할 수 없었어요.. 그래서 게임이 종료됐어요.",
         categoryHasNoQuestionType:
             "죄송해요, 선택된 질문 카테고리(%s)에 요청하신 유형의 질문이 없어요!",
-        beatmapHint: "",
-        beatmapArtist: "",
-        beatmapTitle: "",
-        beatmapSource: "",
+        beatmapHint: "비트맵",
+        beatmapArtist: "아티스트",
+        beatmapTitle: "제목",
+        beatmapSource: "Source",
         guessBeatmap: "",
         outOfLives: "죄송하지만, 추측에 사용할 라이프가 다 떨어지셨어요!",
         incorrectCharacterGuess:
@@ -37,9 +37,9 @@ export class TriviaKRTranslation extends Translation<TriviaStrings> {
         gameEnded: "게임 종료!",
         chooseCategory: "강제하고자 하는 카테고리를 선택하세요.",
         choiceRecorded: "당신의 가장 최근 선택(%s)이 기록되었어요!",
-        correctAnswerGotten: "",
-        correctAnswerNotGotten: "",
-        oneCorrectAnswer: "",
-        multipleCorrectAnswers: "",
+        correctAnswerGotten: "저기, 누군가가 이미 정답을 맞췄어요.",
+        correctAnswerNotGotten: "아무도 정답을 못 맞춘 것 같네요.",
+        oneCorrectAnswer: "정답은.. ",
+        multipleCorrectAnswers: "정답은..",
     };
 }

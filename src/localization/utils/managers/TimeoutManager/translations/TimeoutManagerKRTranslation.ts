@@ -15,7 +15,7 @@ export class TimeoutManagerKRTranslation extends Translation<TimeoutManagerStrin
             "%s 동안 타임아웃을 적용시킬 권한이 부족함",
         timeoutReasonTooLong: "타임아웃 이유가 너무 김 - 최대 1500자",
         timeoutExecuted: "타임아웃 실행됨",
-        untimeoutExecuted: "",
+        untimeoutExecuted: "타임아웃 해제 실행됨",
         inChannel: "%s에서",
         reason: "이유",
         userId: "유저 ID",

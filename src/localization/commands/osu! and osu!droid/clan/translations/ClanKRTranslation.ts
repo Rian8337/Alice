@@ -186,7 +186,7 @@ export class ClanKRTranslation extends Translation<ClanStrings> {
             "성공적으로 %s 파워 포인트를 %s 클랜에서 %s 클랜으로 전달했어요.",
         changeRoleColorSuccessful: "성공적으로 클랜 역할 색상을 변경했어요.",
         changeRoleIconSuccessful: "성공적으로 클랜 역할 아이콘을 변경했어요.",
-        createClan: "",
+        createClan: "클랜 생성",
         clanChannel: "클랜 채널",
         clanPowerup: "클랜 파워업",
         clanRename: "클랜 이름 바꾸기",
@@ -220,6 +220,6 @@ export class ClanKRTranslation extends Translation<ClanStrings> {
         clanMemberRoleLeader: "리더",
         clanMemberRoleCoLeader: "공동리더",
         clanMemberRoleMember: "멤버",
-        clanMemberUpkeepValue: "",
+        clanMemberUpkeepValue: "유지비",
     };
 }

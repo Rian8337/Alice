@@ -12,6 +12,7 @@ export class TournamentMatchKRTranslation extends Translation<TournamentMatchStr
         unsupportedGameVersion: "지원하지 않는 osu!droid 버전",
         modsExceptNotUsed: "%s(이)가 아닌 다른 모드가 사용됨",
         modsWasUsed: "%s(이)가 사용됨",
-        teamMembersIncorrectFMmod: "",
+        teamMembersIncorrectFMmod:
+            "팀 멤버중 아무도 HD/HR/EZ를 활성화하지 않음",
     };
 }

@@ -7,11 +7,11 @@ import { DateTimeFormatHelperStrings } from "../DateTimeFormatHelperLocalization
 export class DateTimeFormatHelperKRTranslation extends Translation<DateTimeFormatHelperStrings> {
     override readonly translations: DateTimeFormatHelperStrings = {
         day: "일",
-        days: "",
+        days: "일",
         hour: "시간",
-        hours: "",
+        hours: "시간",
         minute: "분",
-        minutes: "",
+        minutes: "분",
         second: "초",
         seconds: "초",
     };

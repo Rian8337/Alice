@@ -20,7 +20,7 @@ export class MathgameKRTranslation extends Translation<MathgameStrings> {
         multiGamemodeQuestion:
             "이 문제를 30초 내에 풀어보세요(레벨 %s, 연산자 %s개)!\n```fix\n%s = ...```",
         correctAnswer: "%s가 정답을 맞췄습니다! %s초 걸렸네요.",
-        gameStatistics: "",
+        gameStatistics: "Math Game 통계",
         gameStarter: "게임 시작자",
         timeStarted: "시작한 시간",
         duration: "플레이 시간",
@@ -28,6 +28,6 @@ export class MathgameKRTranslation extends Translation<MathgameStrings> {
         operatorCount: "맞춘 총 정답 수",
         level: "레벨",
         totalCorrectAnswers: "맞춘 총 정답 수",
-        answers: "",
+        answers: "정답",
     };
 }

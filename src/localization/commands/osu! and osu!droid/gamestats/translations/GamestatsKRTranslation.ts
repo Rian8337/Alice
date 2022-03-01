@@ -6,7 +6,8 @@ import { GamestatsStrings } from "../GamestatsLocalization";
  */
 export class GamestatsKRTranslation extends Translation<GamestatsStrings> {
     override readonly translations: GamestatsStrings = {
-        cannotRetrieveGameStatistics: "",
+        cannotRetrieveGameStatistics:
+            "죄송해요, 게임 통계를 가져올 수 없었어요!",
         overallGameStats: "종합 게임 통계",
         registeredAccounts: "가입된 계정",
         totalRegisteredAccounts: "총 계정 수",

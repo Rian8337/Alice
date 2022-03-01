@@ -13,8 +13,8 @@ export class PPcompareKRTranslation extends Translation<PPcompareStrings> {
         user: "유저네임",
         noSimilarPlayFound:
             "죄송해요, 두 플레이어가 겹치는 최고 성과(Top play)가 없네요!",
-        topPlaysComparison: "",
-        player: "",
+        topPlaysComparison: "Top PP 기록 비교",
+        player: "플레이어",
         totalPP: "총 PP",
     };
 }

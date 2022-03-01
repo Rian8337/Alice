@@ -23,8 +23,8 @@ export class MessageanalyticsKRTranslation extends Translation<MessageanalyticsS
         languageChannels: "언어 채널",
         clanChannels: "클랜 채널",
         channelActivity: "%s의 채널 활동",
-        overall: "",
-        monthly: "",
-        daily: "",
+        overall: "Overall",
+        monthly: "Monthly",
+        daily: "Daily",
     };
 }

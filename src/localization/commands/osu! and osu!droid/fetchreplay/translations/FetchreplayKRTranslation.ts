@@ -13,8 +13,8 @@ export class FetchreplayKRTranslation extends Translation<FetchreplayStrings> {
         noReplayFound: "죄송해요, 기록의 리플레이를 찾을 수 없어요!",
         fetchReplayNoBeatmapSuccessful:
             "성공적으로 리플레이를 가져왔어요.\n\n랭크: %s\n점수: %s\n최대 콤보: %sx\n정확도: %s% [%s/%s/%s/%s]",
-        playInfo: "",
-        hitErrorInfo: "",
-        hitErrorAvg: "",
+        playInfo: "%s의 플레이 정보",
+        hitErrorInfo: "Hit Error 정보",
+        hitErrorAvg: "hit error 평균",
     };
 }
