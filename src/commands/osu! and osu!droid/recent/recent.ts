@@ -10,15 +10,14 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { RecentLocalization } from "@alice-localization/commands/osu! and osu!droid/recent/RecentLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: RecentLocalization = new RecentLocalization(language);
+    const localization: RecentLocalization = new RecentLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -55,9 +54,9 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(
-                            Constants.userNotBindedReject
-                        )
+                        new ConstantsLocalization(
+                            localization.language
+                        ).getTranslation(Constants.userNotBindedReject)
                     ),
                 });
             }
@@ -71,9 +70,9 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(
-                            Constants.selfNotBindedReject
-                        )
+                        new ConstantsLocalization(
+                            localization.language
+                        ).getTranslation(Constants.selfNotBindedReject)
                     ),
                 });
             }
@@ -117,7 +116,7 @@ export const run: Command["run"] = async (_, interaction) => {
         player.recentPlays[index - 1],
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
-        language
+        localization.language
     );
 
     interaction.editReply({
