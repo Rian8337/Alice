@@ -106,12 +106,12 @@ export class MusicInfo {
         this.executionChannel = executionChannel;
         this.createdAt = new Date();
 
-        this.connection.on("stateChange", async (_, newState) => {
+        this.connection.on<"stateChange">("stateChange", async (_, newState) => {
             switch (newState.status) {
                 case VoiceConnectionStatus.Disconnected:
                     if (
                         newState.reason ===
-                            VoiceConnectionDisconnectReason.WebSocketClose &&
+                        VoiceConnectionDisconnectReason.WebSocketClose &&
                         newState.closeCode === 4014
                     ) {
                         try {
@@ -166,7 +166,7 @@ export class MusicInfo {
             }
         });
 
-        this.player.on("stateChange", (oldState, newState) => {
+        this.player.on<"stateChange">("stateChange", (oldState, newState) => {
             if (
                 newState.status === AudioPlayerStatus.Idle &&
                 oldState.status !== AudioPlayerStatus.Idle
