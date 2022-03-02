@@ -93,7 +93,7 @@ export abstract class ProfileManager extends Manager {
      */
     static getProfileLink(uid: number): URL {
         // TODO: maybe separate the host to an API request handler
-        return new URL(`http://ops.dgsrz.com/profile.php?uid=${uid}`);
+        return new URL(`https://osudroid.moe/profile.php?uid=${uid}`);
     }
 
     /**
