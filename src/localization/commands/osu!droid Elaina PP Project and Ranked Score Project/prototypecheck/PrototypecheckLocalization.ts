@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { PrototypecheckENTranslation } from "./translations/PrototypecheckENTranslation";
+import { PrototypecheckESTranslation } from "./translations/PrototypecheckESTranslation";
 import { PrototypecheckIDTranslation } from "./translations/PrototypecheckIDTranslation";
 import { PrototypecheckKRTranslation } from "./translations/PrototypecheckKRTranslation";
 
@@ -26,5 +27,6 @@ export class PrototypecheckLocalization extends Localization<PrototypecheckStrin
         en: new PrototypecheckENTranslation(),
         kr: new PrototypecheckKRTranslation(),
         id: new PrototypecheckIDTranslation(),
+        es: new PrototypecheckESTranslation(),
     };
 }

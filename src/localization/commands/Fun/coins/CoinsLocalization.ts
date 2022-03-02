@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { CoinsENTranslation } from "./translations/CoinsENTranslation";
+import { CoinsESTranslation } from "./translations/CoinsESTranslation";
 import { CoinsIDTranslation } from "./translations/CoinsIDTranslation";
 import { CoinsKRTranslation } from "./translations/CoinsKRTranslation";
 
@@ -41,5 +42,6 @@ export class CoinsLocalization extends Localization<CoinsStrings> {
         en: new CoinsENTranslation(),
         kr: new CoinsKRTranslation(),
         id: new CoinsIDTranslation(),
+        es: new CoinsESTranslation(),
     };
 }

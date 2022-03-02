@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MapsearchENTranslation } from "./translations/MapsearchENTranslation";
+import { MapsearchESTranslation } from "./translations/MapsearchESTranslation";
 import { MapsearchIDTranslation } from "./translations/MapsearchIDTranslation";
 import { MapsearchKRTranslation } from "./translations/MapsearchKRTranslation";
 
@@ -23,5 +24,6 @@ export class MapsearchLocalization extends Localization<MapsearchStrings> {
         en: new MapsearchENTranslation(),
         kr: new MapsearchKRTranslation(),
         id: new MapsearchIDTranslation(),
+        es: new MapsearchESTranslation(),
     };
 }

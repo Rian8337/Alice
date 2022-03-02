@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { PingENTranslation } from "./translations/PingENTranslation";
+import { PingESTranslation } from "./translations/PingESTranslation";
 import { PingIDTranslation } from "./translations/PingIDTranslation";
 import { PingKRTranslation } from "./translations/PingKRTranslation";
 
@@ -22,5 +23,6 @@ export class PingLocalization extends Localization<PingStrings> {
         en: new PingENTranslation(),
         kr: new PingKRTranslation(),
         id: new PingIDTranslation(),
+        es: new PingESTranslation(),
     };
 }

@@ -169,6 +169,9 @@ export abstract class CommandHelper extends Manager {
                 case "ko":
                     language = "kr";
                     break;
+                case "es-ES":
+                    language = "es";
+                    break;
                 default:
                     language = "en";
             }

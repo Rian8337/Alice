@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { CalculateENTranslation } from "./translations/CalculateENTranslation";
+import { CalculateESTranslation } from "./translations/CalculateESTranslation";
 import { CalculateIDTranslation } from "./translations/CalculateIDTranslation";
 import { CalculateKRTranslation } from "./translations/CalculateKRTranslation";
 
@@ -24,5 +25,6 @@ export class CalculateLocalization extends Localization<CalculateStrings> {
         en: new CalculateENTranslation(),
         kr: new CalculateKRTranslation(),
         id: new CalculateIDTranslation(),
+        es: new CalculateESTranslation(),
     };
 }

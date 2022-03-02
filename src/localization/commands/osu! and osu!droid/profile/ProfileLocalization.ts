@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ProfileENTranslation } from "./translations/ProfileENTranslation";
+import { ProfileESTranslation } from "./translations/ProfileESTranslation";
 import { ProfileIDTranslation } from "./translations/ProfileIDTranslation";
 import { ProfileKRTranslation } from "./translations/ProfileKRTranslation";
 
@@ -96,5 +97,6 @@ export class ProfileLocalization extends Localization<ProfileStrings> {
         en: new ProfileENTranslation(),
         kr: new ProfileKRTranslation(),
         id: new ProfileIDTranslation(),
+        es: new ProfileESTranslation(),
     };
 }

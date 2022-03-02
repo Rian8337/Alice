@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MaintenanceENTranslation } from "./translations/MaintenanceENTranslation";
+import { MaintenanceESTranslation } from "./translations/MaintenanceESTranslation";
 import { MaintenanceIDTranslation } from "./translations/MaintenanceIDTranslation";
 import { MaintenanceKRTranslation } from "./translations/MaintenanceKRTranslation";
 
@@ -18,5 +19,6 @@ export class MaintenanceLocalization extends Localization<MaintenanceStrings> {
         en: new MaintenanceENTranslation(),
         kr: new MaintenanceKRTranslation(),
         id: new MaintenanceIDTranslation(),
+        es: new MaintenanceESTranslation(),
     };
 }

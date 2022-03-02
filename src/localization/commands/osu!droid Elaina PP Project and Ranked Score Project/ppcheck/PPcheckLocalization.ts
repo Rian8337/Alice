@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { PPcheckENTranslation } from "./translations/PPcheckENTranslation";
+import { PPcheckESTranslation } from "./translations/PPcheckESTranslation";
 import { PPcheckIDTranslation } from "./translations/PPcheckIDTranslation";
 import { PPcheckKRTranslation } from "./translations/PPcheckKRTranslation";
 
@@ -18,5 +19,6 @@ export class PPcheckLocalization extends Localization<PPcheckStrings> {
         en: new PPcheckENTranslation(),
         kr: new PPcheckKRTranslation(),
         id: new PPcheckIDTranslation(),
+        es: new PPcheckESTranslation(),
     };
 }

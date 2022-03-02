@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MusicENTranslation } from "./translations/MusicENTranslation";
+import { MusicESTranslation } from "./translations/MusicESTranslation";
 import { MusicIDTranslation } from "./translations/MusicIDTranslation";
 import { MusicKRTranslation } from "./translations/MusicKRTranslation";
 
@@ -75,5 +76,6 @@ export class MusicLocalization extends Localization<MusicStrings> {
         en: new MusicENTranslation(),
         kr: new MusicKRTranslation(),
         id: new MusicIDTranslation(),
+        es: new MusicESTranslation(),
     };
 }

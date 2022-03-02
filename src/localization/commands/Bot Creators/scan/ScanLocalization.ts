@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ScanENTranslation } from "./translations/ScanENTranslation";
+import { ScanESTranslation } from "./translations/ScanESTranslation";
 import { ScanIDTranslation } from "./translations/ScanIDTranslation";
 import { ScanKRTranslation } from "./translations/ScanKRTranslation";
 
@@ -19,5 +20,6 @@ export class ScanLocalization extends Localization<ScanStrings> {
         en: new ScanENTranslation(),
         kr: new ScanKRTranslation(),
         id: new ScanIDTranslation(),
+        es: new ScanESTranslation(),
     };
 }

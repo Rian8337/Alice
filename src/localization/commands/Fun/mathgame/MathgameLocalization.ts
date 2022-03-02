@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MathgameENTranslation } from "./translations/MathgameENTranslation";
+import { MathgameESTranslation } from "./translations/MathgameESTranslation";
 import { MathgameIDTranslation } from "./translations/MathgameIDTranslation";
 import { MathgameKRTranslation } from "./translations/MathgameKRTranslation";
 
@@ -34,5 +35,6 @@ export class MathgameLocalization extends Localization<MathgameStrings> {
         en: new MathgameENTranslation(),
         kr: new MathgameKRTranslation(),
         id: new MathgameIDTranslation(),
+        es: new MathgameESTranslation(),
     };
 }

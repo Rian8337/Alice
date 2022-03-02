@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { GamestatsENTranslation } from "./translations/GamestatsENTranslation";
+import { GamestatsESTranslation } from "./translations/GamestatsESTranslation";
 import { GamestatsIDTranslation } from "./translations/GamestatsIDTranslation";
 import { GamestatsKRTranslation } from "./translations/GamestatsKRTranslation";
 
@@ -26,5 +27,6 @@ export class GamestatsLocalization extends Localization<GamestatsStrings> {
         en: new GamestatsENTranslation(),
         kr: new GamestatsKRTranslation(),
         id: new GamestatsIDTranslation(),
+        es: new GamestatsESTranslation(),
     };
 }

@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { PPcompareENTranslation } from "./translations/PPcompareENTranslation";
+import { PPcompareESTranslation } from "./translations/PPcompareESTranslation";
 import { PPcompareIDTranslation } from "./translations/PPcompareIDTranslation";
 import { PPcompareKRTranslation } from "./translations/PPcompareKRTranslation";
 
@@ -26,5 +27,6 @@ export class PPcompareLocalization extends Localization<PPcompareStrings> {
         en: new PPcompareENTranslation(),
         kr: new PPcompareKRTranslation(),
         id: new PPcompareIDTranslation(),
+        es: new PPcompareESTranslation(),
     };
 }

@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { Recent5ENTranslation } from "./translations/Recent5ENTranslation";
+import { Recent5ESTranslation } from "./translations/Recent5ESTranslation";
 import { Recent5IDTranslation } from "./translations/Recent5IDTranslation";
 import { Recent5KRTranslation } from "./translations/Recent5KRTranslation";
 
@@ -20,5 +21,6 @@ export class Recent5Localization extends Localization<Recent5Strings> {
         en: new Recent5ENTranslation(),
         kr: new Recent5KRTranslation(),
         id: new Recent5IDTranslation(),
+        es: new Recent5ESTranslation(),
     };
 }

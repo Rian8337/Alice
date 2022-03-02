@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { LeaderboardENTranslation } from "./translations/LeaderboardENTranslation";
+import { LeaderboardESTranslation } from "./translations/LeaderboardESTranslation";
 import { LeaderboardIDTranslation } from "./translations/LeaderboardIDTranslation";
 import { LeaderboardKRTranslation } from "./translations/LeaderboardKRTranslation";
 
@@ -29,5 +30,6 @@ export class LeaderboardLocalization extends Localization<LeaderboardStrings> {
         en: new LeaderboardENTranslation(),
         kr: new LeaderboardKRTranslation(),
         id: new LeaderboardIDTranslation(),
+        es: new LeaderboardESTranslation(),
     };
 }

@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { SwitchbindENTranslation } from "./translations/SwitchbindENTranslation";
+import { SwitchbindESTranslation } from "./translations/SwitchbindESTranslation";
 import { SwitchbindIDTranslation } from "./translations/SwitchbindIDTranslation";
 import { SwitchbindKRTranslation } from "./translations/SwitchbindKRTranslation";
 
@@ -21,5 +22,6 @@ export class SwitchbindLocalization extends Localization<SwitchbindStrings> {
         en: new SwitchbindENTranslation(),
         kr: new SwitchbindKRTranslation(),
         id: new SwitchbindIDTranslation(),
+        es: new SwitchbindESTranslation(),
     };
 }

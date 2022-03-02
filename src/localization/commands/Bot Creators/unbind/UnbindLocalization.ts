@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { UnbindENTranslation } from "./translations/UnbindENTranslation";
+import { UnbindESTranslation } from "./translations/UnbindESTranslation";
 import { UnbindIDTranslation } from "./translations/UnbindIDTranslation";
 import { UnbindKRTranslation } from "./translations/UnbindKRTranslation";
 
@@ -21,5 +22,6 @@ export class UnbindLocalization extends Localization<UnbindStrings> {
         en: new UnbindENTranslation(),
         kr: new UnbindKRTranslation(),
         id: new UnbindIDTranslation(),
+        es: new UnbindESTranslation(),
     };
 }

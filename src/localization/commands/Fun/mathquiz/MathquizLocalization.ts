@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MathquizENTranslation } from "./translations/MathquizENTranslation";
+import { MathquizESTranslation } from "./translations/MathquizESTranslation";
 import { MathquizIDTranslation } from "./translations/MathquizIDTranslation";
 import { MathquizKRTranslation } from "./translations/MathquizKRTranslation";
 
@@ -24,5 +25,6 @@ export class MathquizLocalization extends Localization<MathquizStrings> {
         en: new MathquizENTranslation(),
         kr: new MathquizKRTranslation(),
         id: new MathquizIDTranslation(),
+        es: new MathquizESTranslation(),
     };
 }

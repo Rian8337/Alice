@@ -40,7 +40,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     label: "Indonesian",
                     value: "id",
                 },
-            ],
+                {
+                    label: "Spanish",
+                    value: "es",
+                },
+            ].sort((a, b) => a.label.localeCompare(b.label)),
             [interaction.user.id],
             20
         )

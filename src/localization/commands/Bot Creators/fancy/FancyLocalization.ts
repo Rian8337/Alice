@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { FancyENTranslation } from "./translations/FancyENTranslation";
+import { FancyESTranslation } from "./translations/FancyESTranslation";
 import { FancyIDTranslation } from "./translations/FancyIDTranslation";
 import { FancyKRTranslation } from "./translations/FancyKRTranslation";
 
@@ -22,5 +23,6 @@ export class FancyLocalization extends Localization<FancyStrings> {
         en: new FancyENTranslation(),
         kr: new FancyKRTranslation(),
         id: new FancyIDTranslation(),
+        es: new FancyESTranslation(),
     };
 }

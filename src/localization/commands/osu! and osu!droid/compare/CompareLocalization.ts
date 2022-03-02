@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { CompareENTranslation } from "./translations/CompareENTranslation";
+import { CompareESTranslation } from "./translations/CompareESTranslation";
 import { CompareIDTranslation } from "./translations/CompareIDTranslation";
 import { CompareKRTranslation } from "./translations/CompareKRTranslation";
 
@@ -23,5 +24,6 @@ export class CompareLocalization extends Localization<CompareStrings> {
         en: new CompareENTranslation(),
         kr: new CompareKRTranslation(),
         id: new CompareIDTranslation(),
+        es: new CompareESTranslation(),
     };
 }

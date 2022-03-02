@@ -15,6 +15,8 @@ export abstract class LocaleHelper {
                 return "ko-KR";
             case "id":
                 return "id-ID";
+            case "es":
+                return "es-ES";
             default:
                 return "en-US";
         }

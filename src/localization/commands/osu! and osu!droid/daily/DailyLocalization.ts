@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { DailyENTranslation } from "./translations/DailyENTranslation";
+import { DailyESTranslation } from "./translations/DailyESTranslation";
 import { DailyIDTranslation } from "./translations/DailyIDTranslation";
 import { DailyKRTranslation } from "./translations/DailyKRTranslation";
 
@@ -67,5 +68,6 @@ export class DailyLocalization extends Localization<DailyStrings> {
         en: new DailyENTranslation(),
         kr: new DailyKRTranslation(),
         id: new DailyIDTranslation(),
+        es: new DailyESTranslation(),
     };
 }

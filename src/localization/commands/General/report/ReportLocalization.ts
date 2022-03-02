@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ReportENTranslation } from "./translations/ReportENTranslation";
+import { ReportESTranslation } from "./translations/ReportESTranslation";
 import { ReportIDTranslation } from "./translations/ReportIDTranslation";
 import { ReportKRTranslation } from "./translations/ReportKRTranslation";
 
@@ -26,5 +27,6 @@ export class ReportLocalization extends Localization<ReportStrings> {
         en: new ReportENTranslation(),
         kr: new ReportKRTranslation(),
         id: new ReportIDTranslation(),
+        es: new ReportESTranslation(),
     };
 }
