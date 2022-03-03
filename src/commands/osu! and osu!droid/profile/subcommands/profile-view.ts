@@ -80,7 +80,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!uid) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        Constants.selfNotBindedReject
+                        new ConstantsLocalization(language).getTranslation(
+                            Constants.selfNotBindedReject
+                        )
                     ),
                 });
             }
