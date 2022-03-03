@@ -172,7 +172,7 @@ export abstract class WarningManager extends PunishmentManager {
             .setTitle(userLocalization.getTranslation("warningIssued"))
             .setFooter({
                 text: `${userLocalization.getTranslation("warningId")}: ${
-                    warningId.split
+                    warningId.split("-")[1]
                 } | ${userLocalization.getTranslation("userId")}: ${
                     member.id
                 } | ${userLocalization.getTranslation(
