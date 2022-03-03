@@ -12,8 +12,8 @@ export class BirthdayESTranslation extends Translation<BirthdayStrings> {
         setBirthdayFailed: "Lo siento, no pude registrar el cumpleaños: %s.",
         setBirthdaySuccess:
             "Cumpleaños registrado correctamente para %s/%s a las UTC%s.",
-        birthdayInfo: "",
-        date: "",
-        timezone: "",
+        birthdayInfo: "Información de cumpleaños de %s",
+        date: "Fecha",
+        timezone: "Zona horaria",
     };
 }

@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { DroidProfileENTranslation } from "./translations/DroidProfileENTranslation";
+import { DroidProfileESTranslation } from "./translations/DroidProfileESTranslation";
 import { DroidProfileIDTranslation } from "./translations/DroidProfileIDTranslation";
 import { DroidProfileKRTranslation } from "./translations/DroidProfileKRTranslation";
 
@@ -18,5 +19,6 @@ export class DroidProfileLocalization extends Localization<DroidProfileStrings> 
         en: new DroidProfileENTranslation(),
         kr: new DroidProfileKRTranslation(),
         id: new DroidProfileIDTranslation(),
+        es: new DroidProfileESTranslation(),
     };
 }

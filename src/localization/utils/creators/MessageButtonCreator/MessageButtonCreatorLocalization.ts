@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MessageButtonCreatorENTranslation } from "./translations/MessageButtonCreatorENTranslation";
+import { MessageButtonCreatorESTranslation } from "./translations/MessageButtonCreatorESTranslation";
 import { MessageButtonCreatorIDTranslation } from "./translations/MessageButtonCreatorIDTranslation";
 import { MessageButtonCreatorKRTranslation } from "./translations/MessageButtonCreatorKRTranslation";
 
@@ -20,5 +21,6 @@ export class MessageButtonCreatorLocalization extends Localization<MessageButton
         en: new MessageButtonCreatorENTranslation(),
         kr: new MessageButtonCreatorKRTranslation(),
         id: new MessageButtonCreatorIDTranslation(),
+        es: new MessageButtonCreatorESTranslation(),
     };
 }

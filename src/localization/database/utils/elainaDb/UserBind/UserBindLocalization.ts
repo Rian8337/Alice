@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { UserBindENTranslation } from "./translations/UserBindENTranslation";
+import { UserBindESTranslation } from "./translations/UserBindESTranslation";
 import { UserBindIDTranslation } from "./translations/UserBindIDTranslation";
 import { UserBindKRTranslation } from "./translations/UserBindKRTranslation";
 
@@ -24,5 +25,6 @@ export class UserBindLocalization extends Localization<UserBindStrings> {
         en: new UserBindENTranslation(),
         kr: new UserBindKRTranslation(),
         id: new UserBindIDTranslation(),
+        es: new UserBindESTranslation(),
     };
 }

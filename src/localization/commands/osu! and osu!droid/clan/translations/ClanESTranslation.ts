@@ -213,7 +213,7 @@ export class ClanESTranslation extends Translation<ClanStrings> {
             "Color del rol de clan cambiado correctamente.",
         changeRoleIconSuccessful:
             "Icono del rol de clan cambiado correctamente.",
-        createClan: "",
+        createClan: "crea un clan",
         clanChannel: "canal de clan",
         clanPowerup: "bonus de clan",
         clanRename: "renombrar clan",
@@ -248,6 +248,6 @@ export class ClanESTranslation extends Translation<ClanStrings> {
         clanMemberRoleLeader: "Lider",
         clanMemberRoleCoLeader: "Co-Lider",
         clanMemberRoleMember: "Miembro",
-        clanMemberUpkeepValue: "",
+        clanMemberUpkeepValue: "Monto de mantenimiento",
     };
 }

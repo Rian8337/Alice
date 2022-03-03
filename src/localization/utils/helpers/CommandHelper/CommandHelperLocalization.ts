@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { CommandHelperENTranslation } from "./translations/CommandHelperENTranslation";
+import { CommandHelperESTranslation } from "./translations/CommandHelperESTranslation";
 import { CommandHelperIDTranslation } from "./translations/CommandHelperIDTranslation";
 import { CommandHelperKRTranslation } from "./translations/CommandHelperKRTranslation";
 
@@ -19,5 +20,6 @@ export class CommandHelperLocalization extends Localization<CommandHelperStrings
         en: new CommandHelperENTranslation(),
         kr: new CommandHelperKRTranslation(),
         id: new CommandHelperIDTranslation(),
+        es: new CommandHelperESTranslation(),
     };
 }

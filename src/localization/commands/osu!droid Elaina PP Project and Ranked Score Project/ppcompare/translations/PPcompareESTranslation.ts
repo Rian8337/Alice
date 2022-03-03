@@ -11,8 +11,8 @@ export class PPcompareESTranslation extends Translation<PPcompareStrings> {
         user: "usuario",
         noSimilarPlayFound:
             "Lo siento, los jugadores no tienen puntuaciones en comun para poder comparar!",
-        topPlaysComparison: "",
-        player: "",
-        totalPP: "",
+        topPlaysComparison: "Comparación de Top Plays (Rendimiento/PP)",
+        player: "Jugador",
+        totalPP: "PP total",
     };
 }

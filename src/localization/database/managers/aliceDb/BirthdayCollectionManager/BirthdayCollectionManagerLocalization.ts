@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { BirthdayCollectionManagerENTranslation } from "./translations/BirthdayCollectionManagerENTranslation";
+import { BirthdayCollectionManagerESTranslation } from "./translations/BirthdayCollectionManagerESTranslation";
 import { BirthdayCollectionManagerIDTranslation } from "./translations/BirthdayCollectionManagerIDTranslation";
 import { BirthdayCollectionManagerKRTranslation } from "./translations/BirthdayCollectionManagerKRTranslation";
 
@@ -21,5 +22,6 @@ export class BirthdayCollectionManagerLocalization extends Localization<Birthday
         en: new BirthdayCollectionManagerENTranslation(),
         kr: new BirthdayCollectionManagerKRTranslation(),
         id: new BirthdayCollectionManagerIDTranslation(),
+        es: new BirthdayCollectionManagerESTranslation(),
     };
 }

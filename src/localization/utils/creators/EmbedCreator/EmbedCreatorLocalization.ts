@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { EmbedCreatorENTranslation } from "./translations/EmbedCreatorENTranslation";
+import { EmbedCreatorESTranslation } from "./translations/EmbedCreatorESTranslation";
 import { EmbedCreatorIDTranslation } from "./translations/EmbedCreatorIDTranslation";
 import { EmbedCreatorKRTranslation } from "./translations/EmbedCreatorKRTranslation";
 
@@ -80,5 +81,6 @@ export class EmbedCreatorLocalization extends Localization<EmbedCreatorStrings> 
         en: new EmbedCreatorENTranslation(),
         kr: new EmbedCreatorKRTranslation(),
         id: new EmbedCreatorIDTranslation(),
+        es: new EmbedCreatorESTranslation(),
     };
 }

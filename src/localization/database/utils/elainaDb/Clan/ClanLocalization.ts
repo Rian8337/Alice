@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ClanENTranslation } from "./translations/ClanENTranslation";
+import { ClanESTranslation } from "./translations/ClanESTranslation";
 import { ClanIDTranslation } from "./translations/ClanIDTranslation";
 import { ClanKRTranslation } from "./translations/ClanKRTranslation";
 
@@ -35,5 +36,6 @@ export class ClanLocalization extends Localization<ClanStrings> {
         en: new ClanENTranslation(),
         kr: new ClanKRTranslation(),
         id: new ClanIDTranslation(),
+        es: new ClanESTranslation(),
     };
 }

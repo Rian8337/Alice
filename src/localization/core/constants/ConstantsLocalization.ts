@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ConstantsENTranslation } from "./translations/ConstantsENTranslation";
+import { ConstantsESTranslation } from "./translations/ConstantsESTranslation";
 import { ConstantsIDTranslation } from "./translations/ConstantsIDTranslation";
 import { ConstantsKRTranslation } from "./translations/ConstantsKRTranslation";
 
@@ -22,5 +23,6 @@ export class ConstantsLocalization extends Localization<ConstantsStrings> {
         en: new ConstantsENTranslation(),
         kr: new ConstantsKRTranslation(),
         id: new ConstantsIDTranslation(),
+        es: new ConstantsESTranslation(),
     };
 }

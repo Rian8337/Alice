@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { UserBeatmapCalculationENTranslation } from "./translations/UserBeatmapCalculationENTranslation";
+import { UserBeatmapCalculationESTranslation } from "./translations/UserBeatmapCalculationESTranslation";
 import { UserBeatmapCalculationIDTranslation } from "./translations/UserBeatmapCalculationIDTranslation";
 import { UserBeatmapCalculationKRTranslation } from "./translations/UserBeatmapCalculationKRTranslation";
 
@@ -22,5 +23,6 @@ export class UserBeatmapCalculationLocalization extends Localization<UserBeatmap
         en: new UserBeatmapCalculationENTranslation(),
         kr: new UserBeatmapCalculationKRTranslation(),
         id: new UserBeatmapCalculationIDTranslation(),
+        es: new UserBeatmapCalculationESTranslation(),
     };
 }

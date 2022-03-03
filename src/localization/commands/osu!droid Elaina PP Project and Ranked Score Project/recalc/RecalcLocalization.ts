@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { RecalcENTranslation } from "./translations/RecalcENTranslation";
+import { RecalcESTranslation } from "./translations/RecalcESTranslation";
 import { RecalcIDTranslation } from "./translations/RecalcIDTranslation";
 import { RecalcKRTranslation } from "./translations/RecalcKRTranslation";
 
@@ -24,5 +25,6 @@ export class RecalcLocalization extends Localization<RecalcStrings> {
         en: new RecalcENTranslation(),
         kr: new RecalcKRTranslation(),
         id: new RecalcIDTranslation(),
+        es: new RecalcESTranslation(),
     };
 }

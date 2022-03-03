@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { NameChangeENTranslation } from "./translations/NameChangeENTranslation";
+import { NameChangeESTranslation } from "./translations/NameChangeESTranslation";
 import { NameChangeIDTranslation } from "./translations/NameChangeIDTranslation";
 import { NameChangeKRTranslation } from "./translations/NameChangeKRTranslation";
 
@@ -31,5 +32,6 @@ export class NameChangeLocalization extends Localization<NameChangeStrings> {
         en: new NameChangeENTranslation(),
         kr: new NameChangeKRTranslation(),
         id: new NameChangeIDTranslation(),
+        es: new NameChangeESTranslation(),
     };
 }

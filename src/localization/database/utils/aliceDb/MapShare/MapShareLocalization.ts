@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MapShareENTranslation } from "./translations/MapShareENTranslation";
+import { MapShareESTranslation } from "./translations/MapShareESTranslation";
 import { MapShareIDTranslation } from "./translations/MapShareIDTranslation";
 import { MapShareKRTranslation } from "./translations/MapShareKRTranslation";
 
@@ -20,5 +21,6 @@ export class MapShareLocalization extends Localization<MapShareStrings> {
         en: new MapShareENTranslation(),
         kr: new MapShareKRTranslation(),
         id: new MapShareIDTranslation(),
+        es: new MapShareESTranslation(),
     };
 }

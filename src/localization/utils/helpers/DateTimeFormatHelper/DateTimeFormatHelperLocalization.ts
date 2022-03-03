@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { DateTimeFormatHelperENTranslation } from "./translations/DateTimeFormatHelperENTranslation";
+import { DateTimeFormatHelperESTranslation } from "./translations/DateTimeFormatHelperESTranslation";
 import { DateTimeFormatHelperIDTranslation } from "./translations/DateTimeFormatHelperIDTranslation";
 import { DateTimeFormatHelperKRTranslation } from "./translations/DateTimeFormatHelperKRTranslation";
 
@@ -25,5 +26,6 @@ export class DateTimeFormatHelperLocalization extends Localization<DateTimeForma
         en: new DateTimeFormatHelperENTranslation(),
         kr: new DateTimeFormatHelperKRTranslation(),
         id: new DateTimeFormatHelperIDTranslation(),
+        es: new DateTimeFormatHelperESTranslation(),
     };
 }

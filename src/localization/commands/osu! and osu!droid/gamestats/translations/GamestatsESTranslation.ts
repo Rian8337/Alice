@@ -6,7 +6,8 @@ import { GamestatsStrings } from "../GamestatsLocalization";
  */
 export class GamestatsESTranslation extends Translation<GamestatsStrings> {
     override readonly translations: GamestatsStrings = {
-        cannotRetrieveGameStatistics: "",
+        cannotRetrieveGameStatistics:
+            "Lo siento, no puedo obtener las estadísticas del juego!",
         overallGameStats: "Estadísticas Generales",
         registeredAccounts: "Cuestas registradas",
         totalRegisteredAccounts: "Total",

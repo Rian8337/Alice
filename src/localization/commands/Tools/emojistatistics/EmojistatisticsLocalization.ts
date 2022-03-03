@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { EmojistatisticsENTranslation } from "./translations/EmojistatisticsENTranslation";
+import { EmojistatisticsESTranslation } from "./translations/EmojistatisticsESTranslation";
 import { EmojistatisticsIDTranslation } from "./translations/EmojistatisticsIDTranslation";
 import { EmojistatisticsKRTranslation } from "./translations/EmojistatisticsKRTranslation";
 
@@ -27,5 +28,6 @@ export class EmojistatisticsLocalization extends Localization<EmojistatisticsStr
         en: new EmojistatisticsENTranslation(),
         kr: new EmojistatisticsKRTranslation(),
         id: new EmojistatisticsIDTranslation(),
+        es: new EmojistatisticsESTranslation(),
     };
 }

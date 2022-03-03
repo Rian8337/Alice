@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { YoutubeBeatmapFinderENTranslation } from "./translations/YoutubeBeatmapFinderENTranslation";
+import { YoutubeBeatmapFinderESTranslation } from "./translations/YoutubeBeatmapFinderESTranslation";
 import { YoutubeBeatmapFinderIDTranslation } from "./translations/YoutubeBeatmapFinderIDTranslation";
 import { YoutubeBeatmapFinderKRTranslation } from "./translations/YoutubeBeatmapFinderKRTranslation";
 
@@ -18,5 +19,6 @@ export class YoutubeBeatmapFinderLocalization extends Localization<YoutubeBeatma
         en: new YoutubeBeatmapFinderENTranslation(),
         kr: new YoutubeBeatmapFinderKRTranslation(),
         id: new YoutubeBeatmapFinderIDTranslation(),
+        es: new YoutubeBeatmapFinderESTranslation(),
     };
 }

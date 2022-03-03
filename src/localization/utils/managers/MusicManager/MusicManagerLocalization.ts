@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MusicManagerENTranslation } from "./translations/MusicManagerENTranslation";
+import { MusicManagerESTranslation } from "./translations/MusicManagerESTranslation";
 import { MusicManagerIDTranslation } from "./translations/MusicManagerIDTranslation";
 import { MusicManagerKRTranslation } from "./translations/MusicManagerKRTranslation";
 
@@ -24,5 +25,6 @@ export class MusicManagerLocalization extends Localization<MusicManagerStrings> 
         en: new MusicManagerENTranslation(),
         kr: new MusicManagerKRTranslation(),
         id: new MusicManagerIDTranslation(),
+        es: new MusicManagerESTranslation(),
     };
 }

@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { UntimeoutENTranslation } from "./translations/UntimeoutENTranslation";
+import { UntimeoutESTranslation } from "./translations/UntimeoutESTranslation";
 import { UntimeoutIDTranslation } from "./translations/UntimeoutIDTranslation";
 import { UntimeoutKRTranslation } from "./translations/UntimeoutKRTranslation";
 
@@ -20,5 +21,6 @@ export class UntimeoutLocalization extends Localization<UntimeoutStrings> {
         en: new UntimeoutENTranslation(),
         kr: new UntimeoutKRTranslation(),
         id: new UntimeoutIDTranslation(),
+        es: new UntimeoutESTranslation(),
     };
 }

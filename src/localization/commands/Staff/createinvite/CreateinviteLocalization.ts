@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { CreateinviteENTranslation } from "./translations/CreateinviteENTranslation";
+import { CreateinviteESTranslation } from "./translations/CreateinviteESTranslation";
 import { CreateinviteIDTranslation } from "./translations/CreateinviteIDTranslation";
 import { CreateinviteKRTranslation } from "./translations/CreateinviteKRTranslation";
 
@@ -28,5 +29,6 @@ export class CreateinviteLocalization extends Localization<CreateinviteStrings> 
         en: new CreateinviteENTranslation(),
         kr: new CreateinviteKRTranslation(),
         id: new CreateinviteIDTranslation(),
+        es: new CreateinviteESTranslation(),
     };
 }

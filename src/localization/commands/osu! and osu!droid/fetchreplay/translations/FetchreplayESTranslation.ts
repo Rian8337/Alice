@@ -16,8 +16,8 @@ export class FetchreplayESTranslation extends Translation<FetchreplayStrings> {
             "Lo siento, no puedo encontrar el replay de esa puntuación!",
         fetchReplayNoBeatmapSuccessful:
             "Replay encontrado satisfactoriamente.\n\nRank: %s\nPuntuación: %s\nCombo Máximo: %sx\nPrecisión: %s% [%s/%s/%s/%s]",
-        playInfo: "",
-        hitErrorInfo: "",
-        hitErrorAvg: "",
+        playInfo: "Información del puntaje de %s",
+        hitErrorInfo: "Información de la marca de error",
+        hitErrorAvg: "Promedio de error",
     };
 }

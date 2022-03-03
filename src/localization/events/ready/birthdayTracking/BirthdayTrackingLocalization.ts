@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { BirthdayTrackingENTranslation } from "./translations/BirthdayTrackingENTranslation";
+import { BirthdayTrackingESTranslation } from "./translations/BirthdayTrackingESTranslation";
 import { BirthdayTrackingIDTranslation } from "./translations/BirthdayTrackingIDTranslation";
 import { BirthdayTrackingKRTranslation } from "./translations/BirthdayTrackingKRTranslation";
 
@@ -18,5 +19,6 @@ export class BirthdayTrackingLocalization extends Localization<BirthdayTrackingS
         en: new BirthdayTrackingENTranslation(),
         kr: new BirthdayTrackingKRTranslation(),
         id: new BirthdayTrackingIDTranslation(),
+        es: new BirthdayTrackingESTranslation(),
     };
 }

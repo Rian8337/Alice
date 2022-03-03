@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ProfileCardCreatorENTranslation } from "./translations/ProfileCardCreatorENTranslation";
+import { ProfileCardCreatorESTranslation } from "./translations/ProfileCardCreatorESTranslation";
 import { ProfileCardCreatorIDTranslation } from "./translations/ProfileCardCreatorIDTranslation";
 import { ProfileCardCreatorKRTranslation } from "./translations/ProfileCardCreatorKRTranslation";
 
@@ -24,5 +25,6 @@ export class ProfileCardCreatorLocalization extends Localization<ProfileCardCrea
         en: new ProfileCardCreatorENTranslation(),
         kr: new ProfileCardCreatorKRTranslation(),
         id: new ProfileCardCreatorIDTranslation(),
+        es: new ProfileCardCreatorESTranslation(),
     };
 }

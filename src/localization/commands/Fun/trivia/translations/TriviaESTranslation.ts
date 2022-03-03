@@ -15,10 +15,10 @@ export class TriviaESTranslation extends Translation<TriviaStrings> {
             "Lo siento, no pude recuperar el mapa, por ende el juego ha sido terminado!",
         categoryHasNoQuestionType:
             "Lo siento, la categoria de preguntas seleccionada (%s) no tiene ninguna pregunta del tipo que esta solicitando!",
-        beatmapHint: "",
-        beatmapArtist: "",
-        beatmapTitle: "",
-        beatmapSource: "",
+        beatmapHint: "Pista del mapa",
+        beatmapArtist: "Artista",
+        beatmapTitle: "Título",
+        beatmapSource: "Fuente",
         guessBeatmap: "",
         outOfLives:
             "Lo siento, se te acabaron las vidas para poder continuar adivinando!",
@@ -38,9 +38,9 @@ export class TriviaESTranslation extends Translation<TriviaStrings> {
         gameEnded: "Juego terminado!!",
         chooseCategory: "Elige la categoría que quieres usar.",
         choiceRecorded: "Tu ultima opción (%s) ha sido guardada.",
-        correctAnswerGotten: "",
-        correctAnswerNotGotten: "",
-        oneCorrectAnswer: "",
-        multipleCorrectAnswers: "",
+        correctAnswerGotten: "Hey, alguien dió la respuesta correcta.",
+        correctAnswerNotGotten: "Parece que nadie adivinó la respuesta.",
+        oneCorrectAnswer: "La respuesta correcta es",
+        multipleCorrectAnswers: "Las respuestas correctas son",
     };
 }

@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { PlayerInfoENTranslation } from "./translations/PlayerInfoENTranslation";
+import { PlayerInfoESTranslation } from "./translations/PlayerInfoESTranslation";
 import { PlayerInfoIDTranslation } from "./translations/PlayerInfoIDTranslation";
 import { PlayerInfoKRTranslation } from "./translations/PlayerInfoKRTranslation";
 
@@ -20,5 +21,6 @@ export class PlayerInfoLocalization extends Localization<PlayerInfoStrings> {
         en: new PlayerInfoENTranslation(),
         kr: new PlayerInfoKRTranslation(),
         id: new PlayerInfoIDTranslation(),
+        es: new PlayerInfoESTranslation(),
     };
 }

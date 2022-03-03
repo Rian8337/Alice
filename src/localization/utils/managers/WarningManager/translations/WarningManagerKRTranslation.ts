@@ -19,7 +19,7 @@ export class WarningManagerKRTranslation extends Translation<WarningManagerStrin
         fromUser: "",
         toUser: "",
         userId: "유저 ID",
-        channelId: "",
+        channelId: "채널 ID",
         warningIssueInChannel: "",
         warnedUser: "",
         inChannel: "%s에서",

@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { CuteNoLewdENTranslation } from "./translations/CuteNoLewdENTranslation";
+import { CuteNoLewdESTranslation } from "./translations/CuteNoLewdESTranslation";
 import { CuteNoLewdIDTranslation } from "./translations/CuteNoLewdIDTranslation";
 import { CuteNoLewdKRTranslation } from "./translations/CuteNoLewdKRTranslation";
 
@@ -18,5 +19,6 @@ export class CuteNoLewdLocalization extends Localization<CuteNoLewdStrings> {
         en: new CuteNoLewdENTranslation(),
         kr: new CuteNoLewdKRTranslation(),
         id: new CuteNoLewdIDTranslation(),
+        es: new CuteNoLewdESTranslation(),
     };
 }

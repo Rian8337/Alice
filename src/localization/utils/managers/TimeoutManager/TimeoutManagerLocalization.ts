@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { TimeoutManagerENTranslation } from "./translations/TimeoutManagerENTranslation";
+import { TimeoutManagerESTranslation } from "./translations/TimeoutManagerESTranslation";
 import { TimeoutManagerIDTranslation } from "./translations/TimeoutManagerIDTranslation";
 import { TimeoutManagerKRTranslation } from "./translations/TimeoutManagerKRTranslation";
 
@@ -33,5 +34,6 @@ export class TimeoutManagerLocalization extends Localization<TimeoutManagerStrin
         en: new TimeoutManagerENTranslation(),
         kr: new TimeoutManagerKRTranslation(),
         id: new TimeoutManagerIDTranslation(),
+        es: new TimeoutManagerESTranslation(),
     };
 }

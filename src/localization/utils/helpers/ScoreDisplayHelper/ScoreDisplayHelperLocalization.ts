@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ScoreDisplayHelperENTranslation } from "./translations/ScoreDisplayHelperENTranslation";
+import { ScoreDisplayHelperESTranslation } from "./translations/ScoreDisplayHelperESTranslation";
 import { ScoreDisplayHelperIDTranslation } from "./translations/ScoreDisplayHelperIDTranslation";
 import { ScoreDisplayHelperKRTranslation } from "./translations/ScoreDisplayHelperKRTranslation";
 
@@ -18,5 +19,6 @@ export class ScoreDisplayHelperLocalization extends Localization<ScoreDisplayHel
         en: new ScoreDisplayHelperENTranslation(),
         kr: new ScoreDisplayHelperKRTranslation(),
         id: new ScoreDisplayHelperIDTranslation(),
+        es: new ScoreDisplayHelperESTranslation(),
     };
 }

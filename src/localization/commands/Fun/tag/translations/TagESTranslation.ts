@@ -33,12 +33,12 @@ export class TagESTranslation extends Translation<TagStrings> {
             "Lo siento, no tienes ningun tag guardado en este servidor!",
         userDoesntHaveTags:
             "Lo siento, este usuario no tiene ningun tag guardado en este servidor!",
-        tagInfo: "",
-        tagName: "",
-        tagAuthor: "",
-        tagCreationDate: "",
-        tagAttachmentAmount: "",
-        tagsForUser: "",
-        totalTags: "",
+        tagInfo: "Información de etiqueta",
+        tagName: "Autor",
+        tagAuthor: "Nombre",
+        tagCreationDate: "Fecha de Creación",
+        tagAttachmentAmount: "Archivos",
+        tagsForUser: "Etiquetas de %s",
+        totalTags: "Total de etiquetas",
     };
 }

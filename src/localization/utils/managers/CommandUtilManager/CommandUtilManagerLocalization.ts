@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { CommandUtilManagerENTranslation } from "./translations/CommandUtilManagerENTranslation";
+import { CommandUtilManagerESTranslation } from "./translations/CommandUtilManagerESTranslation";
 import { CommandUtilManagerIDTranslation } from "./translations/CommandUtilManagerIDTranslation";
 import { CommandUtilManagerKRTranslation } from "./translations/CommandUtilManagerKRTranslation";
 
@@ -19,5 +20,6 @@ export class CommandUtilManagerLocalization extends Localization<CommandUtilMana
         en: new CommandUtilManagerENTranslation(),
         kr: new CommandUtilManagerKRTranslation(),
         id: new CommandUtilManagerIDTranslation(),
+        es: new CommandUtilManagerESTranslation(),
     };
 }

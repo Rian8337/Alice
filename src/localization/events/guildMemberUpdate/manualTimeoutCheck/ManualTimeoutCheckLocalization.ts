@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ManualTimeoutCheckENTranslation } from "./translations/ManualTimeoutCheckENTranslation";
+import { ManualTimeoutCheckESTranslation } from "./translations/ManualTimeoutCheckESTranslation";
 import { ManualTimeoutCheckIDTranslation } from "./translations/ManualTimeoutCheckIDTranslation";
 import { ManualTimeoutCheckKRTranslation } from "./translations/ManualTimeoutCheckKRTranslation";
 
@@ -18,5 +19,6 @@ export class ManualTimeoutCheckLocalization extends Localization<ManualTimeoutCh
         en: new ManualTimeoutCheckENTranslation(),
         kr: new ManualTimeoutCheckKRTranslation(),
         id: new ManualTimeoutCheckIDTranslation(),
+        es: new ManualTimeoutCheckESTranslation(),
     };
 }

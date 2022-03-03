@@ -20,7 +20,7 @@ export class MathgameESTranslation extends Translation<MathgameStrings> {
             "Solve this equation within 30 seconds (level %s, %s operator(s))!\n```fix\n%s = ...```",
         correctAnswer:
             "%s respondió correctamente! Eso tomó %s segundos.\n```fix\n%s = %s```",
-        gameStatistics: "",
+        gameStatistics: "Estadísticas del Juego Matemático",
         gameStarter: "Primer jugador",
         timeStarted: "El tiempo comenzó",
         duration: "Duración",
@@ -28,6 +28,6 @@ export class MathgameESTranslation extends Translation<MathgameStrings> {
         operatorCount: "Contador de operadores",
         level: "Nivel",
         totalCorrectAnswers: "Total de respuesta correctas",
-        answers: "",
+        answers: "Respuesta(s)",
     };
 }

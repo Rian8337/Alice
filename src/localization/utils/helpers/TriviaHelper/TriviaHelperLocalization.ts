@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { TriviaHelperENTranslation } from "./translations/TriviaHelperENTranslation";
+import { TriviaHelperESTranslation } from "./translations/TriviaHelperESTranslation";
 import { TriviaHelperIDTranslation } from "./translations/TriviaHelperIDTranslation";
 import { TriviaHelperKRTranslation } from "./translations/TriviaHelperKRTranslation";
 
@@ -18,5 +19,6 @@ export class TriviaHelperLocalization extends Localization<TriviaHelperStrings> 
         en: new TriviaHelperENTranslation(),
         kr: new TriviaHelperKRTranslation(),
         id: new TriviaHelperIDTranslation(),
+        es: new TriviaHelperESTranslation(),
     };
 }

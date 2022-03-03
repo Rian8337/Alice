@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { SelectMenuCreatorENTranslation } from "./translations/SelectMenuCreatorENTranslation";
+import { SelectMenuCreatorESTranslation } from "./translations/SelectMenuCreatorESTranslation";
 import { SelectMenuCreatorIDTranslation } from "./translations/SelectMenuCreatorIDTranslation";
 import { SelectMenuCreatorKRTranslation } from "./translations/SelectMenuCreatorKRTranslation";
 
@@ -19,5 +20,6 @@ export class SelectMenuCreatorLocalization extends Localization<SelectMenuCreato
         en: new SelectMenuCreatorENTranslation(),
         kr: new SelectMenuCreatorKRTranslation(),
         id: new SelectMenuCreatorIDTranslation(),
+        es: new SelectMenuCreatorESTranslation(),
     };
 }

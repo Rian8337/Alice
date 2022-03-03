@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { SubmitENTranslation } from "./translations/SubmitENTranslation";
+import { SubmitESTranslation } from "./translations/SubmitESTranslation";
 import { SubmitIDTranslation } from "./translations/SubmitIDTranslation";
 import { SubmitKRTranslation } from "./translations/SubmitKRTranslation";
 
@@ -42,5 +43,6 @@ export class SubmitLocalization extends Localization<SubmitStrings> {
         en: new SubmitENTranslation(),
         kr: new SubmitKRTranslation(),
         id: new SubmitIDTranslation(),
+        es: new SubmitESTranslation(),
     };
 }

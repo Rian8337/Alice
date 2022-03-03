@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ColorENTranslation } from "./translations/ColorENTranslation";
+import { ColorESTranslation } from "./translations/ColorESTranslation";
 import { ColorIDTranslation } from "./translations/ColorIDTranslation";
 import { ColorKRTranslation } from "./translations/ColorKRTranslation";
 
@@ -19,5 +20,6 @@ export class ColorLocalization extends Localization<ColorStrings> {
         en: new ColorENTranslation(),
         kr: new ColorKRTranslation(),
         id: new ColorIDTranslation(),
+        es: new ColorESTranslation(),
     };
 }

@@ -19,7 +19,7 @@ export class TimeoutManagerKRTranslation extends Translation<TimeoutManagerStrin
         inChannel: "%s에서",
         reason: "이유",
         userId: "유저 ID",
-        channelId: "",
+        channelId: "채널 ID",
         timeoutUserNotification:
             "저기, 당신은 %s 동안 다음 이유로 타임아웃 당했어요: %s. 죄송해요!",
         userNotTimeouted: "해당 유저는 타임아웃되지 않음",

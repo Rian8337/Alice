@@ -1,6 +1,7 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { WhitelistManagerENTranslation } from "./translations/WhitelistManagerENTranslation";
+import { WhitelistManagerESTranslation } from "./translations/WhitelistManagerESTranslation";
 import { WhitelistManagerIDTranslation } from "./translations/WhitelistManagerIDTranslation";
 import { WhitelistManagerKRTranslation } from "./translations/WhitelistManagerKRTranslation";
 
@@ -20,5 +21,6 @@ export class WhitelistManagerLocalization extends Localization<WhitelistManagerS
         en: new WhitelistManagerENTranslation(),
         kr: new WhitelistManagerKRTranslation(),
         id: new WhitelistManagerIDTranslation(),
+        es: new WhitelistManagerESTranslation(),
     };
 }
