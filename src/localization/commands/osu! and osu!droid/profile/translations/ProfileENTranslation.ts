@@ -51,7 +51,7 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
             "Change Information Box Background Color",
         enterColor: "Enter the color that you want to use.",
         supportedColorFormat:
-            "This can be in RGBA format (e.g. 255,0,0,1) or hex code (e.g. #008BFF)",
+            "This can be in RGBA format (e.g. 255,0,0,1) or hex code (e.g. #008BFF).",
         changeInfoBoxTextColorTitle: "Change Information Box Text Color",
         chooseClaimBadge: "Choose the badge that you want to claim.",
         claimBadge: "Claim a Profile Badge",

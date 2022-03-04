@@ -23,7 +23,7 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         sliderEnds: "slider ends",
         hitErrorAvg: "hit error avg",
         challengeId: "Challenge ID",
-        timeLeft: "Challenge ID",
+        timeLeft: "Time left",
         weeklyChallengeTitle: "osu!droid Weekly Bounty Challenge",
         dailyChallengeTitle: "osu!droid Daily Challenge",
         featuredPerson: "Featured by %s",

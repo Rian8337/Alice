@@ -6,10 +6,14 @@ import { RecentStrings } from "../RecentLocalization";
  */
 export class RecentIDTranslation extends Translation<RecentStrings> {
     override readonly translations: RecentStrings = {
-        tooManyOptions: "",
-        playerNotFound: "",
-        playerHasNoRecentPlays: "",
-        playIndexOutOfBounds: "",
-        recentPlayDisplay: "",
+        tooManyOptions:
+            "Maaf, kamu hanya dapat memasukkan uid, pengguna, atau username! Kamu tidak dapat menggabung mereka!",
+        playerNotFound:
+            "Maaf, aku tidak dapat menemukan pemain yang kamu berikan!",
+        playerHasNoRecentPlays:
+            "Maaf, pemain ini belum pernah mengirimkan skor!",
+        playIndexOutOfBounds:
+            "Maaf, pemain ini tidak memiliki skor terbaru ke-%s!",
+        recentPlayDisplay: "Skor terbaru untuk %s:",
     };
 }

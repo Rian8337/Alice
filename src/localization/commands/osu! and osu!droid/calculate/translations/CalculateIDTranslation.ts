@@ -6,12 +6,14 @@ import { CalculateStrings } from "../CalculateLocalization";
  */
 export class CalculateIDTranslation extends Translation<CalculateStrings> {
     override readonly translations: CalculateStrings = {
-        noBeatmapProvided: "",
-        beatmapProvidedIsInvalid: "",
-        beatmapNotFound: "",
-        rawDroidSr: "",
-        rawDroidPp: "",
-        rawPcSr: "",
-        rawPcPp: "",
+        noBeatmapProvided:
+            "Hei, tidak ada beatmap yang sedang diobrolkan dalam channel ini!",
+        beatmapProvidedIsInvalid: "Hei, mohon berikan beatmap yang benar!",
+        beatmapNotFound:
+            "Maaf, aku tidak dapat menemukan beatmap yang kamu berikan!",
+        rawDroidSr: "Raw droid star",
+        rawDroidPp: "Raw droid pp",
+        rawPcSr: "Raw PC star",
+        rawPcPp: "Raw PC pp",
     };
 }

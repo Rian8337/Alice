@@ -6,6 +6,6 @@ import { ScoreDisplayHelperStrings } from "../ScoreDisplayHelperLocalization";
  */
 export class ScoreDisplayHelperIDTranslation extends Translation<ScoreDisplayHelperStrings> {
     override readonly translations: ScoreDisplayHelperStrings = {
-        recentPlays: "",
+        recentPlays: "Skor-skor terbaru untuk %s",
     };
 }

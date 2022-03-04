@@ -6,10 +6,10 @@ import { PingStrings } from "../PingLocalization";
  */
 export class PingIDTranslation extends Translation<PingStrings> {
     override readonly translations: PingStrings = {
-        pong: "",
-        discordWs: "",
-        droidServer: "",
-        elainaDb: "",
-        aliceDb: "",
+        pong: "Pong!",
+        discordWs: "Soket Web Discord",
+        droidServer: "Server osu!droid",
+        elainaDb: "Basis Data Elaina",
+        aliceDb: "Basis Data Alice",
     };
 }
