@@ -606,7 +606,7 @@ export abstract class EmbedCreator {
                 2
             )}PP ${StringHelper.formatString(
                 localization.getTranslation("forFC"),
-                (calcParams.accuracy.value() * 100).toFixed(2)
+                (calcParams.accuracy.value() * 100).toFixed(2) + "%"
             )}) `;
         }
 
