@@ -156,7 +156,7 @@ export abstract class CommandHelper extends Manager {
 
             // No point in caching guild locale since database always
             // gets called if channel locale isn't available
-            if (language) {
+            if (language && channelSetting) {
                 CacheManager.channelLocale.set(channelId, language);
             }
         }
