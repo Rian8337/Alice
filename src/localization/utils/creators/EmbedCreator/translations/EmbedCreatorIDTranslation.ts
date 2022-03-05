@@ -15,9 +15,9 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         pcStars: "PC star",
         starRating: "Star Rating",
         rebalanceCalculationNote:
-            "Hasil kalkulasi dapat berubah seiring waktu.",
+            "Hasil perhitungan dapat berubah seiring waktu.",
         beatmapInfo: "Informasi Beatmap",
-        dateAchieved: "Didapat pada %s",
+        dateAchieved: "Dicapai pada %s",
         penalized: "terpenalti",
         forFC: "untuk %s FC",
         sliderTicks: "slider tick",
