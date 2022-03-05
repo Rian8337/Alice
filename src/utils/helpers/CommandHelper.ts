@@ -120,12 +120,28 @@ export abstract class CommandHelper extends Manager {
     static async getLocale(
         input: Interaction | GuildChannel | Snowflake | User
     ): Promise<Language> {
+        let language: Language | undefined;
+
         if (
             (input instanceof Interaction && input.channel?.type === "DM") ||
             input instanceof User
         ) {
-            return this.getUserPreferredLocale(
-                input instanceof Interaction ? input.user.id : input.id
+            if (input instanceof Interaction) {
+                switch (input.locale) {
+                    case "ko":
+                        language = "kr";
+                        break;
+                    case "es-ES":
+                        language = "es";
+                        break;
+                }
+            }
+
+            return (
+                language ??
+                this.getUserPreferredLocale(
+                    input instanceof Interaction ? input.user.id : input.id
+                )
             );
         }
 
@@ -138,8 +154,7 @@ export abstract class CommandHelper extends Manager {
                 ? input.id
                 : input;
 
-        let language: Language | undefined =
-            CacheManager.channelLocale.get(channelId);
+        language = CacheManager.channelLocale.get(channelId);
 
         if (!language) {
             const guildSetting: GuildSettings | null =
@@ -158,22 +173,6 @@ export abstract class CommandHelper extends Manager {
             // gets called if channel locale isn't available
             if (language && channelSetting) {
                 CacheManager.channelLocale.set(channelId, language);
-            }
-        }
-
-        if (!language && input instanceof Interaction) {
-            switch (input.locale) {
-                case "en-US":
-                    language = "en";
-                    break;
-                case "ko":
-                    language = "kr";
-                    break;
-                case "es-ES":
-                    language = "es";
-                    break;
-                default:
-                    language = "en";
             }
         }
 
