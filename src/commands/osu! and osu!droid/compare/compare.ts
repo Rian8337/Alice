@@ -114,7 +114,8 @@ export const run: Command["run"] = async (_, interaction) => {
     const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
-        (<GuildMember | null>interaction.member)?.displayColor
+        (<GuildMember | null>interaction.member)?.displayColor,
+        localization.language
     );
 
     interaction.editReply({
