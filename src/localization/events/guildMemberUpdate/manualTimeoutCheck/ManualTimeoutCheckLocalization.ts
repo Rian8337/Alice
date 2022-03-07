@@ -7,6 +7,14 @@ import { ManualTimeoutCheckKRTranslation } from "./translations/ManualTimeoutChe
 
 export interface ManualTimeoutCheckStrings {
     readonly notSpecified: string;
+    readonly timeoutExecuted: string;
+    readonly untimeoutExecuted: string;
+    readonly inChannel: string;
+    readonly reason: string;
+    readonly userId: string; // see 30.34
+    readonly channelId: string;
+    readonly timeoutUserNotification: string;
+    readonly untimeoutUserNotification: string;
 }
 
 /**

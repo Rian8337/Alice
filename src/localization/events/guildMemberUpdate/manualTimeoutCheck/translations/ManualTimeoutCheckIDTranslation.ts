@@ -7,5 +7,13 @@ import { ManualTimeoutCheckStrings } from "../ManualTimeoutCheckLocalization";
 export class ManualTimeoutCheckIDTranslation extends Translation<ManualTimeoutCheckStrings> {
     override readonly translations: ManualTimeoutCheckStrings = {
         notSpecified: "",
+        timeoutExecuted: "",
+        untimeoutExecuted: "",
+        inChannel: "",
+        reason: "",
+        userId: "",
+        channelId: "",
+        timeoutUserNotification: "",
+        untimeoutUserNotification: "",
     };
 }

@@ -1,8 +1,12 @@
+import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { ManualTimeoutCheckLocalization } from "@alice-localization/events/guildMemberUpdate/manualTimeoutCheck/ManualTimeoutCheckLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 import {
     GuildAuditLogs,
     GuildAuditLogsEntry,
@@ -17,6 +21,14 @@ export const run: EventUtil["run"] = async (
     oldMember: GuildMember,
     newMember: GuildMember
 ) => {
+    const localization: ManualTimeoutCheckLocalization =
+        new ManualTimeoutCheckLocalization("en");
+
+    const userLocalization: ManualTimeoutCheckLocalization =
+        new ManualTimeoutCheckLocalization(
+            await CommandHelper.getLocale(newMember.user)
+        );
+
     if (
         !oldMember.communicationDisabledUntil &&
         newMember.communicationDisabledUntil
@@ -79,33 +91,75 @@ export const run: EventUtil["run"] = async (
                 name: auditLog.executor.tag,
                 iconURL: auditLog.executor.avatarURL({ dynamic: true })!,
             })
-            .setTitle("Timeout executed")
+            .setTitle(localization.getTranslation("timeoutExecuted"))
             .setFooter({
-                text: `User ID: ${newMember.id}`,
+                text: `${localization.getTranslation("userId")}: ${
+                    newMember.id
+                }`,
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${newMember} for ${DateTimeFormatHelper.secondsToDHMS(
-                    timeDifference
+                `**${newMember}: ${DateTimeFormatHelper.secondsToDHMS(
+                    timeDifference,
+                    localization.language
                 )}**\n\n` +
                     `=========================\n\n` +
-                    `**Reason**:\n` +
-                    auditLog.reason ?? "Not specified."
+                    `**${localization.getTranslation("reason")}**:\n` +
+                    (auditLog.reason ??
+                        localization.getTranslation("notSpecified"))
             );
 
-        await logChannel.send({ embeds: [timeoutEmbed] });
+        const userTimeoutEmbed: MessageEmbed = new MessageEmbed()
+            .setAuthor({
+                name: newMember.user.tag,
+                iconURL: newMember.user.avatarURL({ dynamic: true })!,
+            })
+            .setTitle(userLocalization.getTranslation("timeoutExecuted"))
+            .setFooter({
+                text: `${userLocalization.getTranslation("userId")}: ${
+                    newMember.id
+                }`,
+            })
+            .setTimestamp(new Date())
+            .setDescription(
+                `**${newMember}: ${DateTimeFormatHelper.secondsToDHMS(
+                    timeDifference,
+                    userLocalization.language
+                )}**\n\n` +
+                    `=========================\n\n` +
+                    `**${userLocalization.getTranslation("reason")}**:\n` +
+                    (auditLog.reason ??
+                        userLocalization.getTranslation("notSpecified"))
+            );
 
         try {
             newMember.send({
                 content: MessageCreator.createWarn(
-                    `Hey, you were timeouted for \`${DateTimeFormatHelper.secondsToDHMS(
-                        timeDifference
-                    )}\` for \`${auditLog.reason ?? "Not specified"}\`. Sorry!`
+                    userLocalization.getTranslation("timeoutUserNotification"),
+                    DateTimeFormatHelper.secondsToDHMS(
+                        timeDifference,
+                        userLocalization.language
+                    ),
+                    auditLog.reason ??
+                        userLocalization.getTranslation("notSpecified")
                 ),
-                embeds: [timeoutEmbed],
+                embeds: [userTimeoutEmbed],
             });
             // eslint-disable-next-line no-empty
         } catch {}
+
+        if (
+            timeDifference >= 6 * 3600 &&
+            newMember.guild.id === Constants.mainServer
+        ) {
+            await LoungeLockManager.lock(
+                newMember.id,
+                "Timeouted for 6 hours or longer",
+                30 * 24 * 3600
+            );
+        }
+
+        await logChannel.send({ embeds: [timeoutEmbed] });
     } else if (
         oldMember.communicationDisabledUntil &&
         !newMember.communicationDisabledUntil
@@ -162,28 +216,52 @@ export const run: EventUtil["run"] = async (
                 name: auditLog.executor.tag,
                 iconURL: auditLog.executor.avatarURL({ dynamic: true })!,
             })
-            .setTitle("Untimeout executed")
+            .setTitle(localization.getTranslation("untimeoutExecuted"))
             .setFooter({
-                text: `User ID: ${newMember.id}`,
+                text: `${localization.getTranslation("userId")}: ${
+                    newMember.id
+                }`,
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**Reason**:\n` + auditLog.reason ?? "Not specified."
+                `**${localization.getTranslation("userId")}**:\n` +
+                    (auditLog.reason ??
+                        localization.getTranslation("notSpecified"))
             );
 
-        await logChannel.send({ embeds: [untimeoutEmbed] });
+        const userUntimeoutEmbed: MessageEmbed = new MessageEmbed()
+            .setAuthor({
+                name: auditLog.executor.tag,
+                iconURL: auditLog.executor.avatarURL({ dynamic: true })!,
+            })
+            .setTitle(userLocalization.getTranslation("untimeoutExecuted"))
+            .setFooter({
+                text: `${userLocalization.getTranslation("userId")}: ${
+                    newMember.id
+                }`,
+            })
+            .setTimestamp(new Date())
+            .setDescription(
+                `**${userLocalization.getTranslation("userId")}**:\n` +
+                    (auditLog.reason ??
+                        userLocalization.getTranslation("notSpecified"))
+            );
 
         try {
             newMember.send({
                 content: MessageCreator.createWarn(
-                    `Hey, you were untimeouted for \`${
-                        auditLog.reason ?? "Not specified"
-                    }\`.`
+                    userLocalization.getTranslation(
+                        "untimeoutUserNotification"
+                    ),
+                    auditLog.reason ??
+                        localization.getTranslation("notSpecified")
                 ),
-                embeds: [untimeoutEmbed],
+                embeds: [userUntimeoutEmbed],
             });
             // eslint-disable-next-line no-empty
         } catch {}
+
+        await logChannel.send({ embeds: [untimeoutEmbed] });
     }
 };
 
