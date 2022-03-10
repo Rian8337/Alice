@@ -114,7 +114,6 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
         country: "Negara",
         bindInformation: "Informasi Hubungan",
         binded: "Terhubung ke <@%s> (ID pengguna: %s)",
-        playedVerificationMap: "Telah memainkan map verifikasi",
         notBinded: "Tidak terhubung",
     };
 }

@@ -7,9 +7,8 @@ import { UserbindKRTranslation } from "./translations/UserbindKRTranslation";
 
 export interface UserbindStrings {
     readonly profileNotFound: string;
-    readonly verificationMapNotFound: string;
-    readonly newAccountBindNotInMainServer: string;
-    readonly newAccountBindNotVerified: string;
+    readonly emailNotSpecified: string;
+    readonly incorrectEmail: string;
     readonly newAccountUidBindConfirmation: string;
     readonly newAccountUsernameBindConfirmation: string;
     readonly newAccountUidBindSuccessful: string;
@@ -19,7 +18,6 @@ export interface UserbindStrings {
     readonly accountHasBeenBindedError: string;
     readonly oldAccountUidBindSuccessful: string;
     readonly oldAccountUsernameBindSuccessful: string;
-    readonly verificationMapInformation: string;
 }
 
 /**

@@ -106,7 +106,6 @@ export class ProfileKRTranslation extends Translation<ProfileStrings> {
         country: "국적",
         bindInformation: "바인딩 정보",
         binded: "%s에게 바인딩됨 (user ID: %s)",
-        playedVerificationMap: "인증 비트맵 플레이함",
         notBinded: "바인딩 되어있지 않음",
     };
 }

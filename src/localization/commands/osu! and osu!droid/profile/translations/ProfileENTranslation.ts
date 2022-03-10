@@ -113,7 +113,6 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         country: "Country",
         bindInformation: "Bind Information",
         binded: "Binded to <@%s> (user ID: %s)",
-        playedVerificationMap: "Has played verification map",
         notBinded: "Not binded",
     };
 }

@@ -8,12 +8,10 @@ export class UserbindIDTranslation extends Translation<UserbindStrings> {
     override readonly translations: UserbindStrings = {
         profileNotFound:
             "Maaf, aku tidak dapat menemukan profil akun tersebut!",
-        verificationMapNotFound:
-            "Maaf, akun ini belum pernah memainkan beatmap verifikasi! Mohon gunakan perintah `/userbind verifymap` untuk mendapatkan beatmap verifikasi.",
-        newAccountBindNotInMainServer:
-            "Maaf, menghubungkan akun baru harus dilakukan di server Discord osu!droid International! Ini dibutuhkan untuk mempermudah pengawasan.",
-        newAccountBindNotVerified:
-            "Maaf, kamu harus memverifikasi diri sendiri terlebih dahulu untuk menggunakan perintah ini!",
+        emailNotSpecified:
+            "Maaf, kamu harus memberikan email yang terhubung ke akun tersebut saat ingin menghubungkannya ke akun Discordmu untuk pertama kalinya!",
+        incorrectEmail:
+            "Maaf, email yang kamu masukkan tidak terhubung ke akun tersebut!",
         newAccountUidBindConfirmation:
             "Apakah kamu ingin menghubungkan akun dengan uid %s?",
         newAccountUsernameBindConfirmation:
@@ -32,7 +30,5 @@ export class UserbindIDTranslation extends Translation<UserbindStrings> {
             "Berhasil menghubungkan akunmu ke akun osu!droid dengan uid %s.",
         oldAccountUsernameBindSuccessful:
             "Berhasil menghubungkan akunmu ke akun osu!droid dengan username %s.",
-        verificationMapInformation:
-            "Gunakan beatmap ini untuk memverifikasi bahwa kamu adalah pemilik suatu akun osu!droid. Ini dibutuhkan apabila kamu ingin menghubungkan akun tersebut untuk pertama kalinya.",
     };
 }

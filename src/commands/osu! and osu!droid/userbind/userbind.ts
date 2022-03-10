@@ -26,6 +26,12 @@ export const config: Command["config"] = {
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The uid of the osu!droid account.",
                 },
+                {
+                    name: "email",
+                    type: ApplicationCommandOptionTypes.STRING,
+                    description:
+                        "The email associated with the osu!droid account. Required for first-time bind of the account.",
+                },
             ],
         },
         {
@@ -40,12 +46,13 @@ export const config: Command["config"] = {
                     type: ApplicationCommandOptionTypes.STRING,
                     description: "The username of the osu!droid account.",
                 },
+                {
+                    name: "email",
+                    type: ApplicationCommandOptionTypes.STRING,
+                    description:
+                        "The email associated with the osu!droid account. Required for first-time bind of the account.",
+                },
             ],
-        },
-        {
-            name: "verifymap",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Gets the beatmap needed for account verification.",
         },
     ],
     example: [
@@ -75,4 +82,5 @@ export const config: Command["config"] = {
     cooldown: 5,
     permissions: [],
     scope: "ALL",
+    replyEphemeral: true,
 };

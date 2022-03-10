@@ -117,7 +117,6 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
         country: "Pais",
         bindInformation: "Información Enlazada",
         binded: "Enlazado a %s (ID del usuario: %s)",
-        playedVerificationMap: "Ha jugado el mapa de verificación",
         notBinded: "No enlazado",
     };
 }

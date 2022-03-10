@@ -83,7 +83,6 @@ export interface ProfileStrings {
     readonly country: string;
     readonly bindInformation: string;
     readonly binded: string;
-    readonly playedVerificationMap: string;
     readonly notBinded: string;
 }
 

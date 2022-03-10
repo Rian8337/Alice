@@ -6,7 +6,6 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
@@ -111,13 +110,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                               bindInfo.discordid,
                               bindInfo.discordid
                           )
-                        : localization.getTranslation(
-                              (await ScoreHelper.hasPlayedVerificationMap(
-                                  player.uid
-                              ))
-                                  ? "playedVerificationMap"
-                                  : "notBinded"
-                          )
+                        : "notBinded"
                 }`
         );
 

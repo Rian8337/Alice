@@ -1,26 +1,22 @@
 import { Player } from "@rian8337/osu-droid-utilities";
-import { Guild, GuildMember, Role } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Constants } from "@alice-core/Constants";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: UserbindLocalization = new UserbindLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const uid: number = interaction.options.getInteger("uid", true);
+
+    const email: string | null = interaction.options.getString("email");
 
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
@@ -53,38 +49,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (userBindInfo) {
         if (!userBindInfo.isUidBinded(uid)) {
-            // Binding a new account must be done inside main server
-            const mainServer: Guild = await client.guilds.fetch(
-                Constants.mainServer
-            );
-
-            if (interaction.guild?.id !== mainServer.id) {
+            if (!email) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        localization.getTranslation(
-                            "newAccountBindNotInMainServer"
-                        )
+                        localization.getTranslation("emailNotSpecified")
                     ),
                 });
             }
 
-            const role: Role = mainServer.roles.cache.find(
-                (r) => r.name === "Member"
-            )!;
-
-            if (!(<GuildMember>interaction.member).roles.cache.has(role.id)) {
+            if (email !== player.email) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        localization.getTranslation("newAccountBindNotVerified")
-                    ),
-                });
-            }
-
-            // Check if account has played verification map
-            if (!(await ScoreHelper.hasPlayedVerificationMap(player.uid))) {
-                return interaction.editReply({
-                    content: MessageCreator.createReject(
-                        localization.getTranslation("verificationMapNotFound")
+                        localization.getTranslation("incorrectEmail")
                     ),
                 });
             }
@@ -102,7 +78,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     },
                     [interaction.user.id],
                     10,
-                    language
+                    localization.language
                 );
 
             if (!confirmation) {
@@ -112,7 +88,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         const result: OperationResult = await userBindInfo.bind(
             player,
-            language
+            localization.language
         );
 
         if (!result.success) {
@@ -143,11 +119,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             });
         }
     } else {
-        // Check if account has played verification map
-        if (!(await ScoreHelper.hasPlayedVerificationMap(player.uid))) {
+        if (!email) {
             return interaction.editReply({
                 content: MessageCreator.createReject(
-                    localization.getTranslation("verificationMapNotFound")
+                    localization.getTranslation("emailNotSpecified")
+                ),
+            });
+        }
+
+        if (email !== player.email) {
+            return interaction.editReply({
+                content: MessageCreator.createReject(
+                    localization.getTranslation("incorrectEmail")
                 ),
             });
         }
