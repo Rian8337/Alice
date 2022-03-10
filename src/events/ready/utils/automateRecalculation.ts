@@ -8,6 +8,10 @@ import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Message, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
+    if (!Config.isDebug) {
+        return;
+    }
+
     const channel: TextChannel = <TextChannel>(
         await client.channels.fetch("546135349533868072")
     );
@@ -43,7 +47,7 @@ export const run: EventUtil["run"] = async (client) => {
         await message.edit({
             content: MessageCreator.createWarn(
                 "Recalculating players... (%s/%s (%s%))",
-                calculatedCount.toLocaleString(),
+                Math.min(calculatedCount, total).toLocaleString(),
                 total.toLocaleString(),
                 ((calculatedCount * 100) / total).toFixed(2)
             ),
