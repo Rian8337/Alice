@@ -5,12 +5,11 @@ import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 import { User } from "discord.js";
 import { FancyLocalization } from "@alice-localization/commands/Bot Creators/fancy/FancyLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: FancyLocalization = new FancyLocalization(language);
+    const localization: FancyLocalization = new FancyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const user: User = interaction.options.getUser("user", true);
 
@@ -19,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await LoungeLockManager.unlock(
         user.id,
         reason,
-        language
+        localization.language
     );
 
     if (!result.success) {

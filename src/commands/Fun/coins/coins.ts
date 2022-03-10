@@ -25,7 +25,10 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSubcommandFromInteraction(
+        interaction,
+        localization.language
+    );
 };
 
 export const category: Command["category"] = CommandCategory.FUN;

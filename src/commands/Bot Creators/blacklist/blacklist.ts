@@ -10,13 +10,10 @@ import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { BlacklistLocalization } from "@alice-localization/commands/Bot Creators/blacklist/BlacklistLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: BlacklistLocalization = new BlacklistLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const beatmapID: number = BeatmapManager.getBeatmapID(
@@ -88,7 +85,11 @@ export const run: Command["run"] = async (_, interaction) => {
             }
 
             const blacklistResult: OperationResult =
-                await WhitelistManager.blacklist(beatmapInfo, reason, language);
+                await WhitelistManager.blacklist(
+                    beatmapInfo,
+                    reason,
+                    localization.language
+                );
 
             if (!blacklistResult.success) {
                 return interaction.editReply({
@@ -110,7 +111,10 @@ export const run: Command["run"] = async (_, interaction) => {
         }
         case "unblacklist": {
             const unblacklistResult: OperationResult =
-                await WhitelistManager.unblacklist(beatmapInfo, language);
+                await WhitelistManager.unblacklist(
+                    beatmapInfo,
+                    localization.language
+                );
 
             if (!unblacklistResult.success) {
                 return interaction.editReply({

@@ -11,13 +11,10 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { SwitchbindLocalization } from "@alice-localization/commands/Bot Creators/switchbind/SwitchbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (client, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: SwitchbindLocalization = new SwitchbindLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const uid: number = interaction.options.getInteger("uid", true);
@@ -55,7 +52,7 @@ export const run: Command["run"] = async (client, interaction) => {
     const result: OperationResult = await bindInfo.moveBind(
         uid,
         user.id,
-        language
+        localization.language
     );
 
     if (!result.success) {

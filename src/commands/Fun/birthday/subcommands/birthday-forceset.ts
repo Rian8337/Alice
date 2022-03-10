@@ -5,13 +5,10 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
 import { BirthdayLocalization } from "@alice-localization/commands/Fun/birthday/BirthdayLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: BirthdayLocalization = new BirthdayLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const user: User = interaction.options.getUser("user", true);
@@ -28,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             date,
             month,
             timezone,
-            language,
+            localization.language,
             true
         );
 

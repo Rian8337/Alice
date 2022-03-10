@@ -10,12 +10,11 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UnbindLocalization } from "@alice-localization/commands/Bot Creators/unbind/UnbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: UnbindLocalization = new UnbindLocalization(language);
+    const localization: UnbindLocalization = new UnbindLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const uid: number = interaction.options.getInteger("uid", true);
 
@@ -45,7 +44,10 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const result: OperationResult = await bindInfo.unbind(uid, language);
+    const result: OperationResult = await bindInfo.unbind(
+        uid,
+        localization.language
+    );
 
     if (!result.success) {
         return interaction.editReply({
