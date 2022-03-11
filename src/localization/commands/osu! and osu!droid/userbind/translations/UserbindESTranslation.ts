@@ -8,6 +8,8 @@ export class UserbindESTranslation extends Translation<UserbindStrings> {
     override readonly translations: UserbindStrings = {
         profileNotFound:
             "Lo siento, no puedo encontrar el perfil de esa cuenta!",
+        newAccountBindNotInMainServer:
+            "Lo siento, enlazar una cuenta nueva a su perfil debe ser realizado en el Discord Internacional de osu!Droid! Esto es fundamental para poder llevar la moderación a mejor manera.",
         emailNotSpecified: "",
         incorrectEmail: "",
         newAccountUidBindConfirmation:

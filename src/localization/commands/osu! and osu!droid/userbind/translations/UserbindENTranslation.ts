@@ -7,6 +7,8 @@ import { UserbindStrings } from "../UserbindLocalization";
 export class UserbindENTranslation extends Translation<UserbindStrings> {
     override readonly translations: UserbindStrings = {
         profileNotFound: "I'm sorry, I couldn't find that account's profile!",
+        newAccountBindNotInMainServer:
+            "I'm sorry, new account binding must be done in the osu!droid International Discord server! This is required to keep bind moderation at ease.",
         emailNotSpecified:
             "I'm sorry, you must enter the account's email if you want to bind it for the first time!",
         incorrectEmail:

@@ -8,6 +8,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Constants } from "@alice-core/Constants";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: UserbindLocalization = new UserbindLocalization(
@@ -49,6 +50,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (userBindInfo) {
         if (!userBindInfo.isUidBinded(uid)) {
+            if (interaction.guild?.id !== Constants.mainServer) {
+                return interaction.editReply({
+                    content: MessageCreator.createReject(
+                        localization.getTranslation(
+                            "newAccountBindNotInMainServer"
+                        )
+                    ),
+                });
+            }
+
             if (!email) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
@@ -119,6 +130,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             });
         }
     } else {
+        if (interaction.guild?.id !== Constants.mainServer) {
+            return interaction.editReply({
+                content: MessageCreator.createReject(
+                    localization.getTranslation("newAccountBindNotInMainServer")
+                ),
+            });
+        }
+
         if (!email) {
             return interaction.editReply({
                 content: MessageCreator.createReject(

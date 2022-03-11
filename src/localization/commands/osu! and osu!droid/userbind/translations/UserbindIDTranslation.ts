@@ -8,6 +8,8 @@ export class UserbindIDTranslation extends Translation<UserbindStrings> {
     override readonly translations: UserbindStrings = {
         profileNotFound:
             "Maaf, aku tidak dapat menemukan profil akun tersebut!",
+        newAccountBindNotInMainServer:
+            "Maaf, menghubungkan akun baru harus dilakukan di server Discord osu!droid International! Ini dibutuhkan untuk mempermudah pengawasan.",
         emailNotSpecified:
             "Maaf, kamu harus memberikan email yang terhubung ke akun tersebut saat ingin menghubungkannya ke akun Discordmu untuk pertama kalinya!",
         incorrectEmail:

@@ -7,6 +7,7 @@ import { UserbindKRTranslation } from "./translations/UserbindKRTranslation";
 
 export interface UserbindStrings {
     readonly profileNotFound: string;
+    readonly newAccountBindNotInMainServer: string;
     readonly emailNotSpecified: string;
     readonly incorrectEmail: string;
     readonly newAccountUidBindConfirmation: string;

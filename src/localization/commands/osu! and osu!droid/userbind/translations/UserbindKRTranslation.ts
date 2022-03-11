@@ -7,6 +7,8 @@ import { UserbindStrings } from "../UserbindLocalization";
 export class UserbindKRTranslation extends Translation<UserbindStrings> {
     override readonly translations: UserbindStrings = {
         profileNotFound: "죄송해요, 그 계정의 프로필을 찾을 수 없었어요!",
+        newAccountBindNotInMainServer:
+            "죄송해요, 새 계정 바인딩은 osu!droid International 디스코드 서버에서만 할 수 있어요! 이는 바인딩 관리를 편하게 하기위해 필요해요.",
         emailNotSpecified: "",
         incorrectEmail: "",
         newAccountUidBindConfirmation:
