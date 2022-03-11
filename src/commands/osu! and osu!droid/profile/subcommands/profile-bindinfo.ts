@@ -110,7 +110,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                               bindInfo.discordid,
                               bindInfo.discordid
                           )
-                        : "notBinded"
+                        : localization.getTranslation("notBinded")
                 }`
         );
 
