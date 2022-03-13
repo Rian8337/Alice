@@ -13,7 +13,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     }
 
     for (const arg of message.content.split(/\s+/g)) {
-        if (!arg.startsWith("http://ops.dgsrz.com/profile")) {
+        if (!arg.startsWith("http://ops.dgsrz.com/profile") && !arg.startsWith("https://osudroid.moe/profile")) {
             continue;
         }
 
