@@ -218,7 +218,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
                             localization.language
                         )}\n\n` +
                         `**${localization.getTranslation(
-                            "accepted"
+                            "status"
                         )}**: ${localization.getTranslation("accepted")}`
                 );
 
