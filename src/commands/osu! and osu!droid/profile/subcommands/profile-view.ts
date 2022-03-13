@@ -7,15 +7,14 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ProfileLocalization = new ProfileLocalization(language);
+    const localization: ProfileLocalization = new ProfileLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -66,9 +65,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!uid) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(
-                            Constants.userNotBindedReject
-                        )
+                        new ConstantsLocalization(
+                            localization.language
+                        ).getTranslation(Constants.userNotBindedReject)
                     ),
                 });
             }
@@ -80,9 +79,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             if (!uid) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(
-                            Constants.selfNotBindedReject
-                        )
+                        new ConstantsLocalization(
+                            localization.language
+                        ).getTranslation(Constants.selfNotBindedReject)
                     ),
                 });
             }
@@ -109,7 +108,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         undefined,
         undefined,
         (interaction.options.getString("type") ?? "simplified") === "detailed",
-        language
+        localization.language
     ))!;
 
     interaction.editReply({
