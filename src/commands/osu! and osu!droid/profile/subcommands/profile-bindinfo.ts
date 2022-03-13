@@ -10,6 +10,7 @@ import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!d
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -82,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 player.username
             ),
             iconURL: interaction.user.avatarURL({ dynamic: true })!,
-            url: `http://ops.dgsrz.com/profile.php?uid=${player.uid}`,
+            url: ProfileManager.getProfileLink(player.uid).toString(),
         })
         .setThumbnail(player.avatarURL)
         .setDescription(
