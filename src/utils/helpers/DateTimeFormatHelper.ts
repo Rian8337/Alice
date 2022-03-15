@@ -158,7 +158,7 @@ export abstract class DateTimeFormatHelper {
 
         return localeToConvert === "en-US"
             ? date.toUTCString()
-            : date.toLocaleString(localeToConvert, { timeZone: "UTC" });
+            : date.toLocaleString(localeToConvert, { timeZone: "UTC", dateStyle: "full", timeStyle: "long" });
     }
 
     /**
