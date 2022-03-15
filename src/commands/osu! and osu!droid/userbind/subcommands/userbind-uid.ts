@@ -124,8 +124,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("newAccountUidBindSuccessful"),
                     player.uid.toString(),
-                    (1 - userBindInfo.previous_bind.length).toString(),
-                    1 - userBindInfo.previous_bind.length !== 1 ? "s" : ""
+                    (1 - userBindInfo.previous_bind.length).toString()
                 ),
             });
         }
@@ -174,8 +173,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             content: MessageCreator.createAccept(
                 localization.getTranslation("newAccountUidBindSuccessful"),
                 player.uid.toString(),
-                "1",
-                ""
+                "1"
             ),
         });
     }

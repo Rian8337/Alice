@@ -131,8 +131,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                         "newAccountUsernameBindSuccessful"
                     ),
                     player.username,
-                    (1 - userBindInfo.previous_bind.length).toString(),
-                    1 - userBindInfo.previous_bind.length !== 1 ? "s" : ""
+                    (1 - userBindInfo.previous_bind.length).toString()
                 ),
             });
         }
@@ -181,8 +180,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             content: MessageCreator.createAccept(
                 localization.getTranslation("newAccountUsernameBindSuccessful"),
                 player.username,
-                "1",
-                ""
+                "1"
             ),
         });
     }
