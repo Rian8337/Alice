@@ -22,14 +22,19 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
-    const usernameBindInfo: UserBind | null = await dbManager.getFromUsername(
-        username
-    );
+    const player: Player = await Player.getInformation({ username: username });
 
-    if (
-        usernameBindInfo &&
-        usernameBindInfo.discordid !== interaction.user.id
-    ) {
+    if (!player.username) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(
+                localization.getTranslation("profileNotFound")
+            ),
+        });
+    }
+
+    const uidBindInfo: UserBind | null = await dbManager.getFromUid(player.uid);
+
+    if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("accountHasBeenBindedError")
@@ -40,16 +45,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const userBindInfo: UserBind | null = await dbManager.getFromUser(
         interaction.user
     );
-
-    const player: Player = await Player.getInformation({ username: username });
-
-    if (!player.username) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(
-                localization.getTranslation("profileNotFound")
-            ),
-        });
-    }
 
     if (userBindInfo) {
         if (!userBindInfo.isUidBinded(player.uid)) {
