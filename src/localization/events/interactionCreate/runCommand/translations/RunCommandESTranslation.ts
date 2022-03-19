@@ -14,7 +14,7 @@ export class RunCommandESTranslation extends Translation<RunCommandStrings> {
             "Lo siento, me encuentro en mantenimiento con motivo de `%s`. Por favor, intenta de nuevo más tarde!",
         commandNotExecutableInChannel:
             "Lo siento, este comando no puede ser usado en este canal.",
-        requiredPermissions: "Tu necesitas estos permisos:",
+        requiredPermissions: "Tu necesitas estos permisos: %s",
         commandInCooldown:
             "Hey, tranquilo con los comandos! Necesito descansar no?",
         commandExecutionFailed: "No puedo ejecutar el comando: %s.",
