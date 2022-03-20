@@ -6,7 +6,6 @@ import { TournamentScore } from "@alice-interfaces/tournament/TournamentScore";
 import { PoolLocalization } from "@alice-localization/commands/Tournament/pool/PoolLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ModHidden, ModDoubleTime, ModNoFail } from "@rian8337/osu-base";
 import { MessageAttachment } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -61,10 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             pick,
             score.score.score,
             score.score.accuracy.nmiss,
-            score.score.mods.filter(
-                (m) => m instanceof ModHidden || m instanceof ModDoubleTime
-            ).length >= 2,
-            score.score.mods.some((m) => m instanceof ModNoFail)
+            score.score.mods
         )},${pool.calculateAccuracyPortionScoreV2(
             pick,
             score.score.accuracy.value(),

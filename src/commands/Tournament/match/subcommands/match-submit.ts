@@ -7,7 +7,6 @@ import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatma
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
-import { ModDoubleTime, ModHidden, ModNoFail } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
@@ -166,15 +165,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 score.score,
                 score.accuracy.value(),
                 score.accuracy.nmiss,
-                {
-                    applyHiddenPenalty:
-                        score.mods.filter(
-                            (m) =>
-                                m instanceof ModHidden ||
-                                m instanceof ModDoubleTime
-                        ).length >= 2,
-                    isNoFail: score.mods.some((m) => m instanceof ModNoFail),
-                }
+                score.mods
             );
 
             scoreV2List.push(scorev2);

@@ -12,6 +12,7 @@ import { MatchLocalization } from "@alice-localization/commands/Tournament/match
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { Mod, ModDoubleTime, ModHidden, ModNoFail } from "@rian8337/osu-base";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -127,16 +128,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
         }
 
+        const mods: Mod[] = [];
+
+        if (map.mode === "dt" && scoreData[0].includes("h")) {
+            mods.push(new ModHidden(), new ModDoubleTime());
+        }
+
+        if (scoreData[0].includes("n")) {
+            mods.push(new ModNoFail());
+        }
+
         const scoreV2: number = pool.calculateScoreV2(
             pick,
             parseInt(scoreData[0]),
             parseFloat(scoreData[1]) / 100,
             parseInt(scoreData[2]),
-            {
-                applyHiddenPenalty:
-                    map.mode === "dt" && scoreData[0].includes("h"),
-                isNoFail: scoreData[0].includes("n"),
-            }
+            mods
         );
 
         scoreList.push(scoreV2);

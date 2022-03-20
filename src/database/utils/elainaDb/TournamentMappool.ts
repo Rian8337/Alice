@@ -5,7 +5,7 @@ import { TournamentScore } from "@alice-interfaces/tournament/TournamentScore";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
-import { ModHidden, ModDoubleTime, ModNoFail } from "@rian8337/osu-base";
+import { ModHidden, ModDoubleTime, ModNoFail, Mod } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { ObjectId } from "bson";
 import { Collection } from "discord.js";
@@ -53,7 +53,7 @@ export class TournamentMappool extends Manager {
      * @param score The score achieved.
      * @param accuracy The accuracy achieved, from 0 to 1.
      * @param misses The amount of misses achieved.
-     * @param applyHiddenPenalty Whether to calculate for HD penalty in DT in mind.
+     * @param mods The mods that were used.
      * @returns The final ScoreV2.
      */
     calculateScoreV2(
@@ -61,19 +61,11 @@ export class TournamentMappool extends Manager {
         score: number,
         accuracy: number,
         misses: number,
-        options?: Partial<{
-            applyHiddenPenalty: boolean;
-            isNoFail: boolean;
-        }>
+        mods: Mod[]
     ): number {
         return (
-            this.calculateScorePortionScoreV2(
-                pick,
-                score,
-                misses,
-                options?.applyHiddenPenalty ?? false,
-                options?.isNoFail ?? false
-            ) + this.calculateAccuracyPortionScoreV2(pick, accuracy, misses)
+            this.calculateScorePortionScoreV2(pick, score, misses, mods) +
+            this.calculateAccuracyPortionScoreV2(pick, accuracy, misses)
         );
     }
 
@@ -83,16 +75,14 @@ export class TournamentMappool extends Manager {
      * @param pick The pick to calculate for.
      * @param score The score achieved.
      * @param misses The amount of misses achieved.
-     * @param applyHiddenPenalty Whether to calculate for HD penalty with DT in mind.
-     * @param isNoFail Whether the NF mod was used.
+     * @param mods The mods that were used.
      * @returns The score portion of ScoreV2 for the pick, 0 if the pick is not found.
      */
     calculateScorePortionScoreV2(
         pick: string,
         score: number,
         misses: number,
-        applyHiddenPenalty: boolean,
-        isNoFail: boolean
+        mods: Mod[]
     ): number {
         const pickData: TournamentBeatmap | undefined = this.map.get(
             pick.toUpperCase()
@@ -102,21 +92,26 @@ export class TournamentMappool extends Manager {
             return 0;
         }
 
+        const applyHiddenPenalty: boolean =
+            mods.filter(
+                (m) => m instanceof ModHidden || m instanceof ModDoubleTime
+            ).length === 2;
+
         const tempScoreV2: number =
-            Math.sqrt((score * (isNoFail ? 2 : 1)) / pickData.maxScore) *
+            Math.sqrt(
+                (score * (mods.some((m) => m instanceof ModNoFail) ? 2 : 1)) /
+                    (pickData.maxScore *
+                        (applyHiddenPenalty
+                            ? new ModHidden().scoreMultiplier
+                            : 1))
+            ) *
             1e6 *
             pickData.scorePortion;
 
-        let scoreV2: number = Math.max(
+        return Math.max(
             0,
-            tempScoreV2 - this.getMissPenalty(tempScoreV2, misses)
+            Math.round(tempScoreV2 - this.getMissPenalty(tempScoreV2, misses))
         );
-
-        if (applyHiddenPenalty) {
-            scoreV2 /= 0.59 / 0.56;
-        }
-
-        return Math.round(scoreV2);
     }
 
     /**
@@ -202,17 +197,7 @@ export class TournamentMappool extends Manager {
                             v.score,
                             v.accuracy.value(),
                             v.accuracy.nmiss,
-                            {
-                                applyHiddenPenalty:
-                                    v.mods.filter(
-                                        (m) =>
-                                            m instanceof ModHidden ||
-                                            m instanceof ModDoubleTime
-                                    ).length >= 2,
-                                isNoFail: v.mods.some(
-                                    (m) => m instanceof ModNoFail
-                                ),
-                            }
+                            v.mods
                         ),
                         score: v,
                     };

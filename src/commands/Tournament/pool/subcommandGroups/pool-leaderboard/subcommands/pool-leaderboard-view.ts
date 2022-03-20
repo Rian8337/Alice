@@ -14,7 +14,6 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { ModHidden, ModDoubleTime, ModNoFail } from "@rian8337/osu-base";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -82,11 +81,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     pick,
                     score.score.score,
                     score.score.accuracy.nmiss,
-                    score.score.mods.filter(
-                        (m) =>
-                            m instanceof ModHidden || m instanceof ModDoubleTime
-                    ).length >= 2,
-                    score.score.mods.some((m) => m instanceof ModNoFail)
+                    score.score.mods
                 )
                 .toLocaleString(
                     LocaleHelper.convertToBCP47(localization.language)
