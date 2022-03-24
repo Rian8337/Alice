@@ -44,7 +44,7 @@
     "@rian8337/osu-difficulty-calculator": "^1.0.2",
     "@rian8337/osu-droid-replay-analyzer": "^1.0.2",
     "@rian8337/osu-droid-utilities": "^1.0.2",
-    "@rian8337/osu-rebalance-difficulty-calculator": "^1.4.8-alpha.0",
+    "@rian8337/osu-rebalance-difficulty-calculator": "^1.4.8-alpha.1",
     "@rian8337/osu-strain-graph-generator": "^1.0.2",
     "adm-zip": "^0.5.5",
     "bufferutil": "^4.0.3",
