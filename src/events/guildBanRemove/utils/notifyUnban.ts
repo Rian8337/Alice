@@ -64,10 +64,6 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         .addField(
             `Unbanned user: ${guildBan.user.tag}`,
             `User ID: ${guildBan.user.id}`
-        )
-        .addField(
-            "=========================",
-            `Reason: ${guildBan.reason ?? "Not specified."}`
         );
 
     if (unbanLog.executor) {
