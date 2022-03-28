@@ -331,8 +331,6 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            await HelperFunctions.sleep(0.1);
-
             const calcResult: RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null =
                 await DroidBeatmapDifficultyHelper.calculateScoreRebalancePerformance(
                     score
@@ -341,8 +339,6 @@ export class UserBind extends Manager {
             if (!calcResult) {
                 continue;
             }
-
-            await HelperFunctions.sleep(0.2);
 
             const entry: PrototypePPEntry = {
                 hash: calcResult.map.hash,
