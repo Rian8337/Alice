@@ -989,8 +989,7 @@ export class UserBind extends Manager {
     /**
      * Gets the localization of this database utility.
      *
-     * @param language
-     * @returns
+     * @param language The language to localize.
      */
     private getLocalization(language: Language): UserBindLocalization {
         return new UserBindLocalization(language);
