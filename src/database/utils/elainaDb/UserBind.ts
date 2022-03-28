@@ -14,7 +14,6 @@ import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Collection, Snowflake } from "discord.js";
 import { Clan } from "./Clan";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ObjectId, UpdateFilter } from "mongodb";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
@@ -22,7 +21,6 @@ import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapD
 import {
     MapInfo,
     DroidAPIRequestBuilder,
-    Precision,
     RequestResponse,
 } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
@@ -966,19 +964,7 @@ export class UserBind extends Manager {
                 hash: ppEntry.hash,
             });
 
-            // Check for score equality.
-            if (
-                score.scoreID === ppEntry.scoreID &&
-                score.combo === ppEntry.combo &&
-                Precision.almostEqualsNumber(
-                    parseFloat((score.accuracy.value() * 100).toFixed(2)),
-                    ppEntry.accuracy
-                ) &&
-                score.accuracy.nmiss === ppEntry.miss &&
-                StringHelper.sortAlphabet(
-                    score.mods.map((v) => v.acronym).join("")
-                ) === StringHelper.sortAlphabet(ppEntry.mods)
-            ) {
+            if (score.scoreID === ppEntry.scoreID) {
                 return score;
             }
         }
