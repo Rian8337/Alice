@@ -140,30 +140,33 @@ export abstract class TimeoutManager extends PunishmentManager {
             reason
         );
 
+        const logLocalization: TimeoutManagerLocalization =
+            new TimeoutManagerLocalization("en");
+
         const timeoutEmbed: MessageEmbed = new MessageEmbed()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL({ dynamic: true })!,
             })
-            .setTitle(localization.getTranslation("timeoutExecuted"))
+            .setTitle(logLocalization.getTranslation("timeoutExecuted"))
             .setFooter({
-                text: `${localization.getTranslation("userId")}: ${
+                text: `${logLocalization.getTranslation("userId")}: ${
                     member.id
-                } | ${localization.getTranslation("channelId")}: ${
+                } | ${logLocalization.getTranslation("channelId")}: ${
                     interaction.channel?.id
                 }`,
             })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} ${StringHelper.formatString(
-                    localization.getTranslation("inChannel"),
+                    logLocalization.getTranslation("inChannel"),
                     interaction.channel!.toString()
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     duration,
                     language
                 )}**\n\n` +
                     `=========================\n\n` +
-                    `**${localization.getTranslation("reason")}**:\n` +
+                    `**${logLocalization.getTranslation("reason")}**:\n` +
                     reason
             );
 
@@ -297,27 +300,30 @@ export abstract class TimeoutManager extends PunishmentManager {
             );
         }
 
+        const logLocalization: TimeoutManagerLocalization =
+            new TimeoutManagerLocalization("en");
+
         const untimeoutEmbed: MessageEmbed = new MessageEmbed()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL({ dynamic: true })!,
             })
-            .setTitle(localization.getTranslation("untimeoutExecuted"))
+            .setTitle(logLocalization.getTranslation("untimeoutExecuted"))
             .setFooter({
-                text: `${localization.getTranslation("userId")}: ${
+                text: `${logLocalization.getTranslation("userId")}: ${
                     member.id
-                } | ${localization.getTranslation("channelId")}: ${
+                } | ${logLocalization.getTranslation("channelId")}: ${
                     interaction.channel?.id
                 }`,
             })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} ${StringHelper.formatString(
-                    localization.getTranslation("inChannel"),
+                    logLocalization.getTranslation("inChannel"),
                     interaction.channel!.toString()
                 )}**\n\n` +
                     `=========================\n\n` +
-                    `**${localization.getTranslation("reason")}**:\n` +
+                    `**${logLocalization.getTranslation("reason")}**:\n` +
                     reason
             );
 

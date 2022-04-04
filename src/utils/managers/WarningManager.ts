@@ -127,35 +127,38 @@ export abstract class WarningManager extends PunishmentManager {
             member.guild.id
         );
 
+        const logLocalization: WarningManagerLocalization =
+            new WarningManagerLocalization("en");
+
         const warningEmbed: MessageEmbed = new MessageEmbed()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL({ dynamic: true })!,
             })
-            .setTitle(localization.getTranslation("warningIssued"))
+            .setTitle(logLocalization.getTranslation("warningIssued"))
             .setFooter({
-                text: `${localization.getTranslation("warningId")}: ${
+                text: `${logLocalization.getTranslation("warningId")}: ${
                     warningId.split("-")[1]
-                } | ${localization.getTranslation("userId")}: ${
+                } | ${logLocalization.getTranslation("userId")}: ${
                     member.id
-                } | ${localization.getTranslation(
+                } | ${logLocalization.getTranslation(
                     "channelId"
                 )}: ${interaction.channelId!}`,
             })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} ${StringHelper.formatString(
-                    localization.getTranslation("inChannel"),
+                    logLocalization.getTranslation("inChannel"),
                     interaction.channel!.toString()
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     duration,
-                    localization.language
+                    logLocalization.language
                 )}**\n` +
-                    `**${localization.getTranslation(
+                    `**${logLocalization.getTranslation(
                         "points"
                     )}: ${points}**\n\n` +
                     `=========================\n\n` +
-                    `**${localization.getTranslation("reason")}**:\n` +
+                    `**${logLocalization.getTranslation("reason")}**:\n` +
                     reason
             );
 
