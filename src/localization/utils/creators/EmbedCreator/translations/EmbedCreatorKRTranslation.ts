@@ -72,5 +72,6 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         expirationDate: "만료일",
         reason: "이유",
         channel: "채널",
+        recommendedStarRating: "",
     };
 }

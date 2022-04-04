@@ -71,5 +71,6 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         expirationDate: "Fecha de Vencimiento",
         reason: "Razon",
         channel: "Canal",
+        recommendedStarRating: "",
     };
 }

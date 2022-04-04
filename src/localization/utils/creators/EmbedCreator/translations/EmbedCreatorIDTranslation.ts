@@ -72,5 +72,6 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         expirationDate: "Tanggal Kadaluarsa",
         reason: "Alasan",
         channel: "Channel",
+        recommendedStarRating: "Rekomendasi Star Rating",
     };
 }

@@ -69,6 +69,7 @@ export interface EmbedCreatorStrings {
     readonly expirationDate: string; // see 22.140
     readonly reason: string; // see 43.9
     readonly channel: string;
+    readonly recommendedStarRating: string;
 }
 
 /**

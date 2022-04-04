@@ -255,6 +255,9 @@ export abstract class EmbedCreator {
                 )} pp (#${ppRank.toLocaleString(
                     LocaleHelper.convertToBCP47(language)
                 )})**\n` +
+                `${localization.getTranslation("recommendedStarRating")}: **${(
+                    Math.pow(bindInfo.pptotal, 0.4) * 0.225
+                ).toFixed(2)}${Symbols.star}**\n` +
                 `[${localization.getTranslation(
                     "ppProfile"
                 )}](https://droidppboard.herokuapp.com/profile?uid=${
