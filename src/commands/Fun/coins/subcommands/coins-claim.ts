@@ -100,7 +100,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction.editReply({
             content: MessageCreator.createAccept(
                 localization.getTranslation("dailyClaimSuccess"),
-                "",
                 "50",
                 "1",
                 "50"
