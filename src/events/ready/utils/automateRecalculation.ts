@@ -8,12 +8,6 @@ import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Message, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
-    const channel: TextChannel = <TextChannel>(
-        await client.channels.fetch("546135349533868072")
-    );
-
-    const message: Message = await channel.messages.fetch("905354500380954644");
-
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
@@ -23,6 +17,12 @@ export const run: EventUtil["run"] = async (client) => {
     if (uncalculatedCount === 0) {
         return;
     }
+
+    const channel: TextChannel = <TextChannel>(
+        await client.channels.fetch("546135349533868072")
+    );
+
+    const message: Message = await channel.messages.fetch("905354500380954644");
 
     let calculatedCount: number =
         await dbManager.getRecalcCalculatedPlayerCount();
