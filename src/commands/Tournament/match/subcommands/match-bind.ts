@@ -48,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             name: `${match.matchid} ${match.name}`,
         });
     } else if (thread.archived && thread.unarchivable) {
-        await thread.setArchived(false);
+        await thread.setLocked(false);
     }
 
     if (!thread.joined) {

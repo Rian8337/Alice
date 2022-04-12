@@ -54,7 +54,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (thread && thread.manageable) {
         await thread.setLocked(true);
-        await thread.setArchived(true);
     }
 };
 

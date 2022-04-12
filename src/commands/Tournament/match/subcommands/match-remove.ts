@@ -53,7 +53,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
         if (channel instanceof ThreadChannel) {
-            await channel.setArchived(true);
+            await channel.setLocked(true);
         }
     }
 
