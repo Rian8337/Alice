@@ -16,6 +16,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
         if (
+            !Config.isDebug ||
             Config.maintenance ||
             CommandUtilManager.globallyDisabledEventUtils
                 .get("ready")
