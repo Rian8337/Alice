@@ -39,7 +39,8 @@ export const run: EventUtil["run"] = async (
             await thread.members.add(memberLeft);
         }
     } catch {
-        await thread.setLocked(true, "Verifying user left the server");
+        await thread.setLocked(true);
+        await thread.setArchived(true, "Verifying user left the server");
     }
 };
 

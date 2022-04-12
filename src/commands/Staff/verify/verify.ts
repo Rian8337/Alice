@@ -102,6 +102,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
     await interaction.channel.setLocked(true);
 
+    await interaction.channel.setArchived(true, "Verification");
+
     const general: TextChannel = <TextChannel>(
         interaction.guild!.channels.cache.get(Constants.mainServer)
     );

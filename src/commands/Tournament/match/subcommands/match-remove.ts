@@ -54,6 +54,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         if (channel instanceof ThreadChannel) {
             await channel.setLocked(true);
+            await channel.setArchived(true, "Match removed");
         }
     }
 
