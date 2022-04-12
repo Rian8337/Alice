@@ -1,11 +1,17 @@
-import { GuildMember, Role, TextChannel, ThreadChannel } from "discord.js";
+import {
+    Collection,
+    GuildMember,
+    Role,
+    Snowflake,
+    TextChannel,
+    ThreadChannel,
+} from "discord.js";
 import { Config } from "@alice-core/Config";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -80,7 +86,13 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    await toVerify.roles.set([memberRole], "Verification");
+    const roles: Collection<Snowflake, Role> = toVerify.roles.cache;
+
+    roles.delete(onVerificationRole.id);
+
+    roles.set(memberRole.id, memberRole);
+
+    await toVerify.roles.set(roles, "Verification");
 
     await interaction.editReply({
         content: MessageCreator.createAccept(
@@ -88,11 +100,7 @@ export const run: Command["run"] = async (_, interaction) => {
         ),
     });
 
-    await HelperFunctions.sleep(1);
-
     await interaction.channel.setLocked(true);
-
-    await interaction.channel.setArchived(true);
 
     const general: TextChannel = <TextChannel>(
         interaction.guild!.channels.cache.get(Constants.mainServer)
