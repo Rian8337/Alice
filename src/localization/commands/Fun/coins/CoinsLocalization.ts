@@ -30,6 +30,7 @@ export interface CoinsStrings {
     readonly removeAmountInvalid: string;
     readonly removeCoinFailed: string;
     readonly removeCoinSuccess: string;
+    readonly claimNotAvailable: string;
 }
 
 /**

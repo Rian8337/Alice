@@ -6,6 +6,7 @@ import { CoinsStrings } from "../CoinsLocalization";
  */
 export class CoinsESTranslation extends Translation<CoinsStrings> {
     override readonly translations: CoinsStrings = {
+        claimNotAvailable: "",
         userNotInServerForAWeek:
             "Lo siento! No has estado en el server por una semana.",
         dailyClaimFailed:

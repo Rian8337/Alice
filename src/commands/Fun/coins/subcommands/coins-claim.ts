@@ -9,11 +9,20 @@ import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsL
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { Config } from "@alice-core/Config";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
         await CommandHelper.getLocale(interaction)
     );
+
+    if (!Config.isDebug) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(
+                localization.getTranslation("claimNotAvailable")
+            ),
+        });
+    }
 
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
