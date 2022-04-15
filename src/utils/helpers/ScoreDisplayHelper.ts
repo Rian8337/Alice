@@ -55,17 +55,13 @@ export abstract class ScoreDisplayHelper {
             )
         );
 
-        const onPageChange: OnButtonPageChange = async (
-            _,
-            page,
-            contents: Score[]
-        ) => {
+        const onPageChange: OnButtonPageChange = async (_, page) => {
             for (
                 let i = 5 * (page - 1);
-                i < Math.min(contents.length, 5 + 5 * (page - 1));
+                i < Math.min(player.recentPlays.length, 5 + 5 * (page - 1));
                 ++i
             ) {
-                const score: Score = contents[i];
+                const score: Score = player.recentPlays[i];
 
                 embed.addField(
                     `${i + 1}. **${BeatmapManager.getRankEmote(

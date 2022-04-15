@@ -50,14 +50,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setTitle(localization.getTranslation("nameHistoryForUid"));
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: string[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.addField(
             localization.getTranslation("nameHistory"),
-            contents
+            nameChange.previous_usernames
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map((v, i) => `**${10 * (page - 1) + i + 1}.** ${v}`)
                 .join("\n")

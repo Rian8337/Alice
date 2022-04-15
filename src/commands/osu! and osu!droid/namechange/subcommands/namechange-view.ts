@@ -37,13 +37,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setTitle(localization.getTranslation("nameChangeRequestList"));
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: NameChange[]
-    ) => {
-        for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
-            const content: NameChange = contents[i];
+    const onPageChange: OnButtonPageChange = async (_, page) => {
+        for (
+            let i = 10 * (page - 1);
+            i < Math.min(nameChanges.size, 10 + 10 * (page - 1));
+            ++i
+        ) {
+            const content: NameChange = nameChanges.at(i)!;
 
             if (content) {
                 embed.addField(

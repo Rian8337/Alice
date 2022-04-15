@@ -76,13 +76,10 @@ export const run: Command["run"] = async (_, interaction) => {
         language
     );
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: PPEntry[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-            const pp: PPEntry = contents[i];
+            const pp: PPEntry | undefined = bindInfo!.pp.at(i);
+
             if (pp) {
                 let modstring = pp.mods ? `+${pp.mods}` : "";
                 if (

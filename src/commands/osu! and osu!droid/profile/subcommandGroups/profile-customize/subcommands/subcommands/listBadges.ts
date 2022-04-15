@@ -47,17 +47,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: ProfileBadgeOwnerInfo[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 5 * (page - 1);
-            i < Math.min(contents.length, 5 + 5 * (page - 1));
+            i < Math.min(finalBadgeList.length, 5 + 5 * (page - 1));
             ++i
         ) {
-            const c: ProfileBadgeOwnerInfo = contents[i];
+            const c: ProfileBadgeOwnerInfo = finalBadgeList[i];
 
             embed.addField(
                 `${i + 1}. ${c.name} (\`${c.id}\`${

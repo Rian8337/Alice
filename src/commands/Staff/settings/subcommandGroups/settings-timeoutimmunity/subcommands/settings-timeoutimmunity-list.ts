@@ -40,13 +40,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setTitle(localization.getTranslation("rolesWithTimeoutImmunity"));
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: Snowflake[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.setDescription(
-            contents
+            immuneTimeoutRoles
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map((v) => `- <@&${v}>`)
                 .join("\n")

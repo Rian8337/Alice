@@ -101,13 +101,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             )}**`
     );
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: PrototypePPEntry[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-            const pp: PrototypePPEntry = contents[i];
+            const pp: PrototypePPEntry | undefined = ppInfo!.pp.at(i);
+
             if (pp) {
                 let modstring = pp.mods ? `+${pp.mods}` : "";
                 if (

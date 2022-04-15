@@ -41,12 +41,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const bonusDescription: BonusDescription[] =
         challenge.getBonusInformation(language);
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: BonusDescription[]
-    ) => {
-        const content: BonusDescription = contents[page - 1];
+    const onPageChange: OnButtonPageChange = async (_, page) => {
+        const content: BonusDescription = bonusDescription[page - 1];
 
         embed.addField(content.id, content.description);
     };
