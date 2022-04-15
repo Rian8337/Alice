@@ -240,6 +240,7 @@ export abstract class CommandHelper extends Manager {
      * Use this if a command has both subcommands and subcommand groups.
      *
      * @param interaction The interaction that triggered the subcommand or subcommand group.
+     * @param language The locale of the user who attempted to run the subcommand or subcommand group. Defaults to English.
      */
     static runSubcommandOrGroup(
         interaction: CommandInteraction,
@@ -256,6 +257,7 @@ export abstract class CommandHelper extends Manager {
      * Runs a subcommand that is directly picked by the user via an interaction.
      *
      * @param interaction The interaction that triggered the subcommand.
+     * @param language The locale of the user who attempted to run the subcommand. Defaults to English.
      */
     static runSubcommandFromInteraction(
         interaction: CommandInteraction,
