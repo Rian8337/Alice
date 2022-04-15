@@ -4,7 +4,10 @@ import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSubcommandOrGroup(
+        interaction,
+        await CommandHelper.getLocale(interaction)
+    );
 };
 
 export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
@@ -24,6 +27,37 @@ export const config: Command["config"] = {
                     type: ApplicationCommandOptionTypes.STRING,
                     description:
                         "The beatmap ID or link. Defaults the latest beatmap cache from the channel (if any).",
+                },
+            ],
+        },
+        {
+            name: "search",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            description: "Tools for browsing the list of whitelisted beatmaps.",
+            options: [
+                {
+                    name: "search",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Searches for whitelisted beatmaps.",
+                    options: [
+                        {
+                            name: "query",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description: "The query to search for.",
+                        },
+                        {
+                            name: "page",
+                            type: ApplicationCommandOptionTypes.INTEGER,
+                            description: "The page to search for.",
+                            minValue: 1,
+                        },
+                    ],
+                },
+                {
+                    name: "filters",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Lists available filters of the whitelist search query.",
                 },
             ],
         },

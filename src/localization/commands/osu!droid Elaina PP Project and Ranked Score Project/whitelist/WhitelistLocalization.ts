@@ -21,6 +21,23 @@ export interface WhitelistStrings {
     readonly whitelistedNotUpdated: string;
     readonly notWhitelisted: string;
     readonly starRating: string; // see 63.8
+    readonly filteringBeatmaps: string;
+    readonly filterOptionsTitle: string;
+    readonly filterOptionsDescription: string;
+    readonly sortingOptionsTitle: string;
+    readonly sortingOptionsDescription: string;
+    readonly equalitySymbolsTitle: string;
+    readonly equalitySymbolsDescription: string;
+    readonly behaviorTitle: string;
+    readonly behaviorDescription: string;
+    readonly examplesTitle: string;
+    readonly examplesDescription1: string;
+    readonly examplesDescription2: string;
+    readonly examplesDescription3: string;
+    readonly examplesDescription4: string;
+    readonly beatmapsFound: string;
+    readonly download: string;
+    readonly dateWhitelisted: string;
 }
 
 /**

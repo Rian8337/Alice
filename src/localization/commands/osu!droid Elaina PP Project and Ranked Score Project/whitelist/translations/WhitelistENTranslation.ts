@@ -26,5 +26,29 @@ export class WhitelistENTranslation extends Translation<WhitelistStrings> {
         whitelistedNotUpdated: "whitelisted, but not updated",
         notWhitelisted: "not whitelisted",
         starRating: "Star Rating",
+        filteringBeatmaps: "Filtering Whitelisted Beatmaps",
+        filterOptionsTitle: "Filter Options",
+        filterOptionsDescription: "`CS`, `AR`, `OD`, `HP`, `SR`, `BPM`",
+        sortingOptionsTitle: "Sorting Options",
+        sortingOptionsDescription:
+            '`CS`, `AR`, `OD`, `HP`, `SR`, `BPM`, `mapid`, `mapname`, and `date`\n\nBy default, sorting is ascending. You can put "-" in front of a sorting option to use descend sort.',
+        equalitySymbolsTitle: "Equality Symbols",
+        equalitySymbolsDescription:
+            "`<=` (less than or equal to), `<` (less than), `=` (equal to), `>` (more than), and `>=` (more than or equal to).",
+        behaviorTitle: "Behavior",
+        behaviorDescription:
+            "By default, there is no filter, and the sort option is set to beatmap name.\n\nUsing SR and/or BPM sort option will override beatmap name sort option.\n\nAnything that doesn't fall into any of the filter or sort option will be treated as searching beatmap name.",
+        examplesTitle: "Examples",
+        examplesDescription1:
+            "`cs>=4.2 cs<=5 sort=cs`\nwill search for beatmaps with CS between 4.2 (inclusive) and 5 (inclusive) and sort the search results by CS ascendingly",
+        examplesDescription2:
+            "`od>=5 od<9 ar>7 ar<=9.7 sort=-ar`\nwill search for beatmaps with AR between 7 (exclusive) and 9.7 (inclusive) and OD between 5 (inclusive) and 9 (exclusive), and sort the search results by AR descendingly",
+        examplesDescription3:
+            "`od>=7 bpm>=180`\nwill search for beatmaps with OD above 7 (inclusive) and BPM above 180 (inclusive) and sort the search results by BPM ascendingly",
+        examplesDescription4:
+            '`cs>=4.2 ar>9.3 od>=8 hp>=5 sort=-sr logic boi is the best`\nwill search for beatmaps with CS above 4.2 (inclusive), AR above 9.3 (exclusive), OD above 8 (inclusive), HP above 5 (inclusive), and matches the keyword "logic boi is the best" (much like osu! search function), and sort the search results by star rating descendingly',
+        beatmapsFound: "Beatmaps Found",
+        download: "Download",
+        dateWhitelisted: "Date Whitelisted",
     };
 }
