@@ -15,7 +15,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    const allPlayers: Collection<number, PlayerInfo> =
+    const players: Collection<number, PlayerInfo> =
         await DatabaseManager.aliceDb.collections.playerInfo.get(
             "uid",
             {},
@@ -25,26 +25,29 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const page: number = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,
         1,
-        Math.ceil(allPlayers.size / 20)
+        Math.ceil(players.size / 20)
     );
 
-    allPlayers.sort((a, b) => {
+    players.sort((a, b) => {
         return b.points - a.points;
     });
 
-    const onPageChange: OnButtonPageChange = async (
-        options,
-        page,
-        entries: PlayerInfo[]
-    ) => {
-        const longestUsernameLength: number = Math.max(
-            ...entries
-                .slice(20 * (page - 1), 20 + 20 * (page - 1))
-                .map((v) =>
-                    StringHelper.getUnicodeStringLength(v.username.trim())
-                ),
-            16
-        );
+    const onPageChange: OnButtonPageChange = async (options, page) => {
+        const usernameLengths: number[] = [];
+
+        for (
+            let i = 20 * (page - 1);
+            i < Math.min(players.size, 20 + 20 * (page - 1));
+            ++i
+        ) {
+            usernameLengths.push(
+                StringHelper.getUnicodeStringLength(
+                    players.at(i)!.username.trim()
+                )
+            );
+        }
+
+        const longestUsernameLength: number = Math.max(...usernameLengths, 16);
 
         let output: string = `${"#".padEnd(4)} | ${localization
             .getTranslation("username")
@@ -53,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             .padEnd(6)} | ${localization.getTranslation("points")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
-            const player: PlayerInfo = entries[i];
+            const player: PlayerInfo | undefined = players.at(i);
 
             if (player) {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username
@@ -79,9 +82,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {},
         [interaction.user.id],
-        [...allPlayers.values()],
-        20,
         page,
+        Math.ceil(players.size / 20),
         120,
         onPageChange
     );

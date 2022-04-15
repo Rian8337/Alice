@@ -10,7 +10,6 @@ import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MessageEmbed, Snowflake } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { PPcheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcheck/PPcheckLocalization";
@@ -129,13 +128,8 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...bindInfo.pp.values()],
-        5,
-        NumberHelper.clamp(
-            interaction.options.getInteger("page") ?? 1,
-            1,
-            Math.ceil(bindInfo.pp.size / 5)
-        ),
+        Math.max(interaction.options.getInteger("page") ?? 1, 1),
+        Math.ceil(bindInfo.pp.size / 5),
         120,
         onPageChange
     );

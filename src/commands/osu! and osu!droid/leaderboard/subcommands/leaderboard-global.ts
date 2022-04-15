@@ -108,7 +108,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {},
         [interaction.user.id],
-        [],
         page,
         120,
         onPageChange

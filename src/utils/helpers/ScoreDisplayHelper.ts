@@ -90,9 +90,8 @@ export abstract class ScoreDisplayHelper {
             interaction,
             { embeds: [embed] },
             [interaction.user.id],
-            player.recentPlays,
-            5,
             page,
+            Math.ceil(player.recentPlays.length / 5),
             120,
             onPageChange
         );

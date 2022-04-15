@@ -75,9 +75,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {},
         [interaction.user.id],
-        [...res.values()],
-        20,
         page,
+        Math.ceil(res.size / 20),
         120,
         onPageChange
     );

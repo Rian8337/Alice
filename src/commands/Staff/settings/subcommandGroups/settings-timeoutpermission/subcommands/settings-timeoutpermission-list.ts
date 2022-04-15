@@ -43,36 +43,38 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setTitle(localization.getTranslation("rolesWithTimeoutPermission"));
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: RoleTimeoutPermission[]
-    ) => {
-        embed.setDescription(
-            contents
-                .slice(10 * (page - 1), 10 + 10 * (page - 1))
-                .map(
-                    (v) =>
-                        `- <@&${v.id}> (${
-                            v.maxTime === -1
-                                ? localization.getTranslation("indefinite")
-                                : DateTimeFormatHelper.secondsToDHMS(
-                                      v.maxTime,
-                                      localization.language
-                                  )
-                        })`
-                )
-                .join("\n")
-        );
+    const onPageChange: OnButtonPageChange = async (_, page) => {
+        const list: string[] = [];
+
+        for (
+            let i = 10 * (page - 1);
+            i < Math.min(allowedTimeoutRoles.size, 10 + 10 * (page - 1));
+            ++i
+        ) {
+            const timeoutRole: RoleTimeoutPermission =
+                allowedTimeoutRoles.at(i)!;
+
+            list.push(
+                `- <@&${timeoutRole.id}> (${
+                    timeoutRole.maxTime === -1
+                        ? localization.getTranslation("indefinite")
+                        : DateTimeFormatHelper.secondsToDHMS(
+                              timeoutRole.maxTime,
+                              localization.language
+                          )
+                })`
+            );
+        }
+
+        embed.setDescription(list.join("\n"));
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...allowedTimeoutRoles.values()],
-        10,
         1,
+        Math.ceil(allowedTimeoutRoles.size / 10),
         120,
         onPageChange
     );

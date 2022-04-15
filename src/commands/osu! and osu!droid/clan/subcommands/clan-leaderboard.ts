@@ -41,17 +41,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         Math.ceil(clans.size / 20)
     );
 
-    const onPageChange: OnButtonPageChange = async (
-        options,
-        page,
-        entries: Clan[]
-    ) => {
-        const longestNameLength: number = Math.max(
-            ...entries
-                .slice(20 * (page - 1), 20 + 20 * (page - 1))
-                .map((v) => StringHelper.getUnicodeStringLength(v.name.trim())),
-            16
-        );
+    const onPageChange: OnButtonPageChange = async (options, page) => {
+        const clanNameLengths: number[] = [];
+
+        for (
+            let i = 20 * (page - 1);
+            i < Math.min(clans.size, 20 + 20 * (page - 1));
+            ++i
+        ) {
+            clanNameLengths.push(
+                StringHelper.getUnicodeStringLength(clans.at(i)!.name.trim())
+            );
+        }
+
+        const longestNameLength: number = Math.max(...clanNameLengths, 16);
 
         let output: string = `${"#".padEnd(4)} | ${localization
             .getTranslation("clanName")
@@ -59,8 +62,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             .getTranslation("clanMemberCount")
             .padEnd(7)} | ${localization.getTranslation("clanPower")}\n`;
 
-        for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
-            const clan: Clan = entries[i];
+        for (
+            let i = 20 * (page - 1);
+            i < Math.min(clans.size, 20 + 20 * (page - 1));
+            ++i
+        ) {
+            const clan: Clan = clans.at(i)!;
 
             if (clan) {
                 output += `${(i + 1).toString().padEnd(4)} | ${clan.name
@@ -88,9 +95,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {},
         [interaction.user.id],
-        [...clans.values()],
-        20,
         page,
+        Math.ceil(clans.size / 20),
         120,
         onPageChange
     );

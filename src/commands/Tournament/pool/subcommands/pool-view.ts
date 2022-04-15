@@ -57,9 +57,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...pool.map.values()],
-        5,
         1,
+        Math.ceil(pool.map.size / 5),
         60,
         onPageChange
     );

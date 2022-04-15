@@ -217,9 +217,8 @@ export const run: Command["run"] = async (client, interaction) => {
             interaction,
             { embeds: [embed] },
             [interaction.user.id],
-            [...commandList.values()],
             1,
-            1,
+            commandList.size,
             120,
             onPageChange
         );

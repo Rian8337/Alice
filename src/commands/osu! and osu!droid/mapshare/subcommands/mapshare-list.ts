@@ -52,17 +52,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         )
     );
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: MapShare[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 10 * (page - 1);
-            i < Math.min(contents.length, 10 + 10 * (page - 1));
+            i < Math.min(submissions.size, 10 + 10 * (page - 1));
             ++i
         ) {
-            const submission: MapShare = contents[i];
+            const submission: MapShare = submissions.at(i)!;
 
             embed.addField(
                 `${i + 1}. ${StringHelper.formatString(
@@ -91,9 +87,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...submissions.values()],
-        10,
         page,
+        Math.ceil(submissions.size / 10),
         90,
         onPageChange
     );

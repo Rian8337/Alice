@@ -73,9 +73,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        finalBadgeList,
-        5,
         1,
+        Math.ceil(finalBadgeList.length / 5),
         150,
         onPageChange
     );

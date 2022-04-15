@@ -50,51 +50,50 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         embed.setThumbnail(clan.iconURL);
     }
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: ClanMember[]
-    ) => {
-        embed.setDescription(
-            contents
-                .slice(5 * (page - 1), 5 + 5 * (page - 1))
-                .map(
-                    (v, i) =>
-                        `**${5 * (page - 1) + i + 1}. <@${v.id}> (#${
-                            v.rank
-                        })**\n` +
-                        `**${localization.getTranslation("discordId")}**: ${
-                            v.id
-                        }\n` +
-                        `**Uid**: ${v.uid}\n` +
-                        `**${localization.getTranslation(
-                            "clanMemberRole"
-                        )}**: ${
-                            v.hasPermission
-                                ? `${localization.getTranslation(
-                                      v.id === clan.leader
-                                          ? "clanMemberRoleLeader"
-                                          : "clanMemberRoleCoLeader"
-                                  )}`
-                                : localization.getTranslation(
-                                      "clanMemberRoleMember"
-                                  )
-                        }\n` +
-                        `**${localization.getTranslation(
-                            "clanMemberUpkeepValue"
-                        )}**: ${clan.calculateUpkeep(v.id)} Alice coins`
-                )
-                .join("\n\n")
-        );
+    const onPageChange: OnButtonPageChange = async (_, page) => {
+        const clanMemberDescriptions: string[] = [];
+
+        for (
+            let i = 5 * (page - 1);
+            i < Math.min(clan.member_list.size, 5 + 5 * (page - 1));
+            ++i
+        ) {
+            const member: ClanMember = clan.member_list.at(i)!;
+
+            clanMemberDescriptions.push(
+                `**${5 * (page - 1) + i + 1}. <@${member.id}> (#${
+                    member.rank
+                })**\n` +
+                    `**${localization.getTranslation("discordId")}**: ${
+                        member.id
+                    }\n` +
+                    `**Uid**: ${member.uid}\n` +
+                    `**${localization.getTranslation("clanMemberRole")}**: ${
+                        member.hasPermission
+                            ? `${localization.getTranslation(
+                                  member.id === clan.leader
+                                      ? "clanMemberRoleLeader"
+                                      : "clanMemberRoleCoLeader"
+                              )}`
+                            : localization.getTranslation(
+                                  "clanMemberRoleMember"
+                              )
+                    }\n` +
+                    `**${localization.getTranslation(
+                        "clanMemberUpkeepValue"
+                    )}**: ${clan.calculateUpkeep(member.id)} Alice coins`
+            );
+        }
+
+        embed.setDescription(clanMemberDescriptions.join("\n\n"));
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...clan.member_list.values()],
-        5,
         1,
+        Math.ceil(clan.member_list.size / 5),
         90,
         onPageChange
     );

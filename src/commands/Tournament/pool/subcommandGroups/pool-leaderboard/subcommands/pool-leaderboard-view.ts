@@ -141,14 +141,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     };
 
-    MessageButtonCreator.createLimitlessButtonBasedPaging(
+    MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
         {
             embeds: [embed],
         },
         [interaction.user.id],
-        scores,
         1,
+        Math.ceil(scores.length / 5),
         120,
         onPageChange
     );

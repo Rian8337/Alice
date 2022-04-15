@@ -69,9 +69,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...nameChanges.values()],
-        10,
         1,
+        Math.ceil(nameChanges.size / 10),
         60,
         onPageChange
     );

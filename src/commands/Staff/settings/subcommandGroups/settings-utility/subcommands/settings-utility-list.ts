@@ -51,9 +51,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...client.eventUtilities.values()],
         1,
-        1,
+        client.eventUtilities.size,
         180,
         onPageChange
     );

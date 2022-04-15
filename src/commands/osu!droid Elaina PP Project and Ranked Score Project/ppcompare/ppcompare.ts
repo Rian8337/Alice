@@ -273,9 +273,8 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...ppToCompare.values()],
-        5,
         1,
+        Math.ceil(ppToCompare.size / 5),
         120,
         onPageChange
     );

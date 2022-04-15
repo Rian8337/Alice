@@ -64,9 +64,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...backgrounds.values()],
-        10,
         1,
+        Math.ceil(backgrounds.size / 10),
         60,
         onPageChange
     );

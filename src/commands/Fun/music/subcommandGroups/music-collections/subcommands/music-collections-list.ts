@@ -45,18 +45,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }`
     );
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        collections: MusicCollection[]
-    ) => {
-        for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
+        for (
+            let i = 10 * (page - 1);
+            i < Math.min(collections.size, 10 + 10 * (page - 1));
+            ++i
+        ) {
             embed.addField(
-                `${i + 1}. ${collections[i].name}`,
+                `${i + 1}. ${collections.at(i)!.name}`,
                 `${localization.getTranslation(
                     "createdAt"
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
-                    new Date(collections[i].createdAt),
+                    new Date(collections.at(i)!.createdAt),
                     localization.language
                 )}`
             );
@@ -67,9 +67,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...collections.values()],
-        10,
         1,
+        Math.ceil(collections.size / 10),
         90,
         onPageChange
     );

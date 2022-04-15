@@ -160,9 +160,8 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        beatmaps,
-        5,
         1,
+        Math.ceil(beatmaps.length / 5),
         120,
         onPageChange
     );

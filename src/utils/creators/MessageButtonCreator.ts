@@ -30,21 +30,19 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param interaction The interaction that triggered the button-based paging.
      * @param options Options to be used when sending the button-based paging message.
      * @param users The IDs of users who can interact with the buttons.
-     * @param contents The contents to be used in the button-based paging.
-     * @param contentsPerPage The amount of contents to be displayed in one page.
      * @param startPage The page to start the paging from.
      * @param duration The duration the button-based paging will be active, in seconds.
      * @param onPageChange The function to be executed when the page is changed.
      * @param onPageChangeArgs Arguments for `onPageChange` function.
+     * @param maxPage The maximum page of the button-based paging.
      * @returns The collector that collects the button-pressing event.
      */
     static createLimitedButtonBasedPaging(
         interaction: BaseCommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
-        contents: unknown[],
-        contentsPerPage: number,
         startPage: number,
+        maxPage: number,
         duration: number,
         onPageChange: OnButtonPageChange,
         ...onPageChangeArgs: unknown[]
@@ -53,12 +51,11 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             interaction,
             options,
             users,
-            contents,
-            contentsPerPage,
             startPage,
             duration,
             false,
             onPageChange,
+            maxPage,
             ...onPageChangeArgs
         );
     }
@@ -69,7 +66,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param interaction The interaction that triggered the button-based paging.
      * @param options Options to be used when sending the button-based paging message.
      * @param users The IDs of users who can interact with the buttons.
-     * @param contents The contents to be used in the button-based paging.
      * @param startPage The page to start the paging from.
      * @param duration The duration the button-based paging will be active, in seconds.
      * @param onPageChange The function to be executed when the page is changed.
@@ -80,7 +76,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         interaction: BaseCommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
-        contents: unknown[],
         startPage: number,
         duration: number,
         onPageChange: OnButtonPageChange,
@@ -90,12 +85,11 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             interaction,
             options,
             users,
-            contents,
-            Number.POSITIVE_INFINITY,
             startPage,
             duration,
             true,
             onPageChange,
+            undefined,
             ...onPageChangeArgs
         );
     }
@@ -195,8 +189,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param interaction The interaction that triggered the button-based paging.
      * @param options Options to be used when sending the button-based paging message.
      * @param users The IDs of users who can interact with the buttons.
-     * @param contents The contents to be used in the button-based paging.
-     * @param contentsPerPage The amount of contents to be displayed in one page.
      * @param startPage The page to start the paging from.
      * @param duration The duration the button-based paging will be active, in seconds.
      * @param limitless Whether the button-based paging has no end page.
@@ -208,19 +200,16 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         interaction: BaseCommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
-        contents: unknown[],
-        contentsPerPage: number,
         startPage: number,
         duration: number,
         limitless: boolean,
         onPageChange: OnButtonPageChange,
+        maxPage?: number,
         ...onPageChangeArgs: unknown[]
     ): Promise<Message> {
-        const pages: number = limitless
-            ? Number.POSITIVE_INFINITY
-            : Math.ceil(contents.length / contentsPerPage);
+        const pages: number = limitless ? Number.POSITIVE_INFINITY : maxPage!;
 
-        let currentPage: number = startPage;
+        let currentPage: number = Math.min(startPage, pages);
 
         const buttons: MessageButton[] = this.createPagingButtons(
             currentPage,
@@ -250,7 +239,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             }
         }
 
-        await onPageChange(options, startPage, contents, ...onPageChangeArgs);
+        await onPageChange(options, startPage, ...onPageChangeArgs);
 
         const message: Message = <Message>await interaction.editReply(options);
 
@@ -295,12 +284,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
             onPageChangeEmbedEdit();
 
-            await onPageChange(
-                options,
-                currentPage,
-                contents,
-                ...onPageChangeArgs
-            );
+            await onPageChange(options, currentPage, ...onPageChangeArgs);
 
             await i.editReply(options);
         });

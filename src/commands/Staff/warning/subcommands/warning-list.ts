@@ -77,17 +77,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 )}`
         );
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: Warning[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 5 * (page - 1);
-            i < Math.min(contents.length, 5 + 5 * (page - 1));
+            i < Math.min(warnings.size, 5 + 5 * (page - 1));
             ++i
         ) {
-            const warning: Warning = contents[i];
+            const warning: Warning = warnings.at(i)!;
 
             embed.addField(
                 `${i + 1}. ID ${warning.guildSpecificId}`,
@@ -119,9 +115,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             embeds: [embed],
         },
         [interaction.user.id],
-        [...warnings.values()],
-        5,
         1,
+        Math.ceil(warnings.size / 5),
         120,
         onPageChange
     );

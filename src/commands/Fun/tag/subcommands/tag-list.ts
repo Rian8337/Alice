@@ -43,22 +43,25 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: interaction.member.displayColor,
     });
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: GuildTag[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
+        const tagList: string[] = [];
+
+        for (
+            let i = 10 * (page - 1);
+            i < Math.min(tags.size, 10 + 10 * (page - 1));
+            ++i
+        ) {
+            tagList.push(`${10 * (page - 1) + i + 1}. ${tags.at(i)!.name}`);
+        }
+
         embed.setDescription(
             `**${localization.getTranslation("tagsForUser")} ${
                 interaction.user
             }**\n` +
                 `**${localization.getTranslation("totalTags")}**: ${
-                    contents.length
+                    tags.size
                 }\n\n` +
-                contents
-                    .slice(10 * (page - 1), 10 + 10 * (page - 1))
-                    .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
-                    .join("\n")
+                tagList.join("\n")
         );
     };
 
@@ -66,9 +69,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...tags.values()],
-        10,
         1,
+        Math.ceil(tags.size / 10),
         120,
         onPageChange
     );

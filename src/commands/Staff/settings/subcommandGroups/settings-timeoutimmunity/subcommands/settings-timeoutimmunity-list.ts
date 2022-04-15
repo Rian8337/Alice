@@ -57,9 +57,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        immuneTimeoutRoles,
-        10,
         1,
+        Math.ceil(immuneTimeoutRoles.length / 10),
         120,
         onPageChange
     );

@@ -26,7 +26,6 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * Creates a select menu.
      *
      * @param interaction The interaction that triggered the select menu.
-     * @param placeholder The placeholder text of the select menu.
      * @param choices The choices that the user can choose.
      * @param users The users who can interact with the select menu.
      * @param duration The duration the select menu will be active for.
@@ -69,9 +68,8 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 interaction,
                 options,
                 [interaction.user.id],
-                choices,
-                25,
                 1,
+                Math.ceil(choices.length / 25),
                 duration,
                 onPageChange
             );

@@ -32,19 +32,20 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         Math.ceil(res.size / 20)
     );
 
-    const onPageChange: OnButtonPageChange = async (
-        options,
-        page,
-        entries: PrototypePP[]
-    ) => {
-        const longestUsernameLength: number = Math.max(
-            ...entries
-                .slice(20 * (page - 1), 20 + 20 * (page - 1))
-                .map((v) =>
-                    StringHelper.getUnicodeStringLength(v.username.trim())
-                ),
-            16
-        );
+    const onPageChange: OnButtonPageChange = async (options, page) => {
+        const usernameLengths: number[] = [];
+
+        for (
+            let i = 20 * (page - 1);
+            i < Math.min(res.size, 20 + 20 * (page - 1));
+            ++i
+        ) {
+            usernameLengths.push(
+                StringHelper.getUnicodeStringLength(res.at(i)!.username.trim())
+            );
+        }
+
+        const longestUsernameLength: number = Math.max(...usernameLengths, 16);
 
         let output: string = `${"#".padEnd(4)} | ${localization
             .getTranslation("username")
@@ -53,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             .padEnd(6)} | ${localization.getTranslation("pp")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
-            const player: PrototypePP = entries[i];
+            const player: PrototypePP | undefined = res.at(i);
 
             if (player) {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username
@@ -77,9 +78,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         {},
         [interaction.user.id],
-        [...res.values()],
-        20,
         page,
+        Math.ceil(res.size / 20),
         120,
         onPageChange
     );

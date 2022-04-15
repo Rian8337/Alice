@@ -40,17 +40,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: ClanAuction[]
-    ) => {
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 5 * (page - 1);
-            i < Math.min(contents.length, 5 + 5 * (page - 1));
+            i < Math.min(auctions.size, 5 + 5 * (page - 1));
             ++i
         ) {
-            const auction: ClanAuction = contents[i];
+            const auction: ClanAuction = auctions.at(i)!;
 
             embed.addField(
                 `**${i + 1}. ${auction.name}**`,
@@ -95,9 +91,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        [...auctions.values()],
-        5,
         page,
+        Math.ceil(auctions.size / 5),
         120,
         onPageChange
     );

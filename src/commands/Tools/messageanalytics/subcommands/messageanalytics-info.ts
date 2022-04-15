@@ -204,12 +204,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )}`
     );
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        contents: ActivityCategory[]
-    ) => {
-        const content: ActivityCategory = contents[page - 1];
+    const onPageChange: OnButtonPageChange = async (_, page) => {
+        const content: ActivityCategory = activityCategories[page - 1];
 
         embed.setDescription(`**${content.category}**\n` + content.description);
     };
@@ -218,9 +214,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction,
         { embeds: [embed] },
         [interaction.user.id],
-        activityCategories,
         1,
-        1,
+        activityCategories.length,
         10,
         onPageChange
     );
