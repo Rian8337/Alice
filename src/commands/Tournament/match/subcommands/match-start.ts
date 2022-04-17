@@ -70,7 +70,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     embed
         .setTitle(localization.getTranslation("roundInfo"))
         .addField(localization.getTranslation("matchId"), match.matchid, true)
-        .addField(localization.getTranslation("map"), map.pick, true)
+        .addField(localization.getTranslation("map"), map.pickId, true)
         .addField(
             localization.getTranslation("mapLength"),
             DateTimeFormatHelper.secondsToDHMS(timeLimit, language),

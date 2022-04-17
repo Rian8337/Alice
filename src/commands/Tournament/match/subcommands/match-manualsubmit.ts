@@ -130,7 +130,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         const mods: Mod[] = [];
 
-        if (map.mode === "dt" && scoreData[0].includes("h")) {
+        if (map.pickId.startsWith("DT") && scoreData[0].includes("h")) {
             mods.push(new ModHidden(), new ModDoubleTime());
         }
 

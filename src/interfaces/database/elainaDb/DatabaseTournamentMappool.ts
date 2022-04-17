@@ -1,22 +1,17 @@
-import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { BaseDocument } from "../BaseDocument";
+import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 
 /**
  * Represents a mappool for tournament.
  */
 export interface DatabaseTournamentMappool extends BaseDocument {
     /**
-     * The ID of the mappool.
+     * The ID of this tournament pool.
      */
-    poolid: string;
+    poolId: string;
 
     /**
-     * Whether this mappool enforces the PR mod.
+     * The beatmaps this tournament pool has.
      */
-    forcePR: boolean;
-
-    /**
-     * The beatmaps in this tournament.
-     */
-    map: TournamentBeatmap[];
+    maps: TournamentBeatmap[];
 }

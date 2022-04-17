@@ -155,13 +155,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             score,
             map,
             teamScoreStatus.success,
-            pool.forcePR,
             localization.language
         );
 
         if (verificationResult.success && teamScoreStatus.success) {
             const scorev2: number = pool.calculateScoreV2(
-                map.pick,
+                map.pickId,
                 score.score,
                 score.accuracy.value(),
                 score.accuracy.nmiss,

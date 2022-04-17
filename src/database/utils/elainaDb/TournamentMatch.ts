@@ -7,13 +7,10 @@ import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
 import {
     Mod,
-    ModDoubleTime,
     ModEasy,
     ModHardRock,
     ModHidden,
     ModNoFail,
-    ModPrecise,
-    ModUtil,
 } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { TournamentMappool } from "./TournamentMappool";
@@ -141,7 +138,7 @@ export class TournamentMatch
         map: TournamentBeatmap,
         language: Language = "en"
     ): OperationResult {
-        if (map.mode !== "fm") {
+        if (map.minPlayers === "ALL" || !map.pickId.startsWith("FM")) {
             return this.createOperationResult(true);
         }
 
@@ -166,14 +163,12 @@ export class TournamentMatch
      * @param score The score to verify.
      * @param map The beatmap data to verify for.
      * @param teamScoreStatus Whether the team fulfills the criteria of submitting a score.
-     * @param forcePR Whether this match enforces the PR mod.
      * @param language The locale of the user who attempted to verify the score. Defaults to English.
      */
     async verifyScore(
         score: Score,
         map: TournamentBeatmap,
         teamScoreStatus: boolean,
-        forcePR?: boolean,
         language: Language = "en"
     ): Promise<OperationResult> {
         const localization: TournamentMatchLocalization =
@@ -183,18 +178,6 @@ export class TournamentMatch
             return this.createOperationResult(
                 false,
                 localization.getTranslation("scoreNotFound")
-            );
-        }
-
-        let mods: Mod[] = score.mods;
-
-        if (forcePR && !mods.some((m) => m instanceof ModPrecise)) {
-            return this.createOperationResult(
-                false,
-                StringHelper.formatString(
-                    localization.getTranslation("modsIsNotUsed"),
-                    forcePR ? "PR" : ""
-                )
             );
         }
 
@@ -214,67 +197,25 @@ export class TournamentMatch
         //     );
         // }
 
-        mods = mods.filter(
-            (m) => !(m instanceof ModPrecise) && !(m instanceof ModNoFail)
-        );
+        const incorrectMods: Mod[] = [];
 
-        const speedChangingMods: Mod[] = mods.filter((m) =>
-            ModUtil.speedChangingMods.find((mod) => mod.acronym === m.acronym)
-        );
+        for (const mod of score.mods) {
+            if (mod instanceof ModNoFail) {
+                continue;
+            }
 
-        switch (map.mode) {
-            case "nm":
-                return this.createOperationResult(
-                    mods.length === 0,
-                    StringHelper.formatString(
-                        localization.getTranslation("modsExceptNotUsed"),
-                        forcePR ? "PR" : ""
-                    )
-                );
-            case "hd":
-                return this.createOperationResult(
-                    mods[0] instanceof ModHidden,
-                    StringHelper.formatString(
-                        localization.getTranslation("modsExceptNotUsed"),
-                        forcePR ? "HDPR" : "HD"
-                    )
-                );
-            case "hr":
-                return this.createOperationResult(
-                    mods[0] instanceof ModHardRock,
-                    StringHelper.formatString(
-                        localization.getTranslation("modsExceptNotUsed"),
-                        forcePR ? "HRPR" : "HR"
-                    )
-                );
-            case "dt":
-                return this.createOperationResult(
-                    mods.some((m) => m instanceof ModDoubleTime) &&
-                        mods.length ===
-                            (mods.some((m) => m instanceof ModHidden) ? 2 : 1),
-                    StringHelper.formatString(
-                        localization.getTranslation("modsExceptNotUsed"),
-                        forcePR ? "(HD)DTPR" : "(HD)DT"
-                    )
-                );
-            case "fm":
-                return this.createOperationResult(
-                    (mods.length > 0 || teamScoreStatus) &&
-                        speedChangingMods.length === 0,
-                    StringHelper.formatString(
-                        localization.getTranslation("modsWasUsed"),
-                        speedChangingMods.map((m) => m.acronym).join("")
-                    )
-                );
-            case "tb":
-                return this.createOperationResult(
-                    speedChangingMods.length === 0,
-                    StringHelper.formatString(
-                        localization.getTranslation("modsWasUsed"),
-                        speedChangingMods.map((m) => m.acronym).join("")
-                    )
-                );
+            if (!map.requiredMods.includes(mod.acronym)) {
+                incorrectMods.push(mod);
+            }
         }
+
+        return this.createOperationResult(
+            incorrectMods.length === 0 && teamScoreStatus,
+            StringHelper.formatString(
+                localization.getTranslation("modsIsNotUsed"),
+                incorrectMods.map((m) => m.acronym).join("")
+            )
+        );
     }
 
     /**

@@ -1,50 +1,51 @@
-import { PickRequirementType } from "@alice-types/tournament/PickRequirementType";
+import { MinPlayers } from "@alice-types/tournament/MinPlayers";
 
 /**
  * Represents a tournament beatmap in a tournament mappool.
  */
 export interface TournamentBeatmap {
     /**
-     * The pick ID of this tournament beatmap.
+     * The pick ID of this beatmap.
      */
-    pick: string;
+    pickId: string;
 
     /**
-     * The mode of this tournament beatmap.
-     */
-    mode: PickRequirementType;
-
-    /**
-     * The name (title) of this tournament beatmap.
+     * The name of this beatmap.
      */
     name: string;
 
     /**
-     * The MD5 of this tournament beatmap.
-     */
-    hash: string;
-
-    /**
-     * The duration of this tournament beatmap, in seconds.
-     */
-    duration: number;
-
-    /**
-     * The maximum obtainable score from this tournament beatmap with respect to its mode.
+     * The osu!droid maximum score of this beatmap with required mods applied.
      */
     maxScore: number;
 
     /**
-     * The score portion of this tournament beatmap.
-     *
-     * This denotes the percentage of ScoreV1 that will contribute to the final ScoreV2.
+     * The MD5 hash of this beatmap.
+     */
+    hash: string;
+
+    /**
+     * The duration of this beatmap until the end of the last object, in seconds.
+     */
+    duration: number;
+
+    /**
+     * The portion of which the maximum score will contribute to ScoreV2.
      */
     scorePortion: number;
 
     /**
-     * The accuracy portion of this tournament beatmap.
-     *
-     * This denotes the percentage of accuracy that will contribute to the final ScoreV2.
+     * The combination of mods that must be used when playing this beatmap.
      */
-    accuracyPortion: number;
+    requiredMods: string;
+
+    /**
+     * The combination of mods that can be used when playing this beatmap.
+     */
+    allowedMods: string;
+
+    /**
+     * The minimum amount of players playing this pick with required mods.
+     */
+    minPlayers: MinPlayers;
 }

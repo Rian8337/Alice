@@ -18,9 +18,8 @@ export class TournamentMappoolCollectionManager extends DatabaseCollectionManage
 
     override get defaultDocument(): DatabaseTournamentMappool {
         return {
-            forcePR: false,
-            map: [],
-            poolid: "",
+            poolId: "",
+            maps: [],
         };
     }
 

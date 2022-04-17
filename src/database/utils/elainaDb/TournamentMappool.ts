@@ -17,17 +17,12 @@ export class TournamentMappool extends Manager {
     /**
      * The ID of the mappool.
      */
-    poolid: string;
-
-    /**
-     * Whether this mappool enforces the PR mod.
-     */
-    forcePR: boolean;
+    poolId: string;
 
     /**
      * The beatmaps in this tournament, mapped by pick ID.
      */
-    map: Collection<string, TournamentBeatmap>;
+    maps: Collection<string, TournamentBeatmap>;
 
     /**
      * The BSON object ID of this document in the database.
@@ -41,9 +36,8 @@ export class TournamentMappool extends Manager {
         super();
 
         this._id = data._id;
-        this.forcePR = data.forcePR;
-        this.poolid = data.poolid;
-        this.map = ArrayHelper.arrayToCollection(data.map ?? [], "pick");
+        this.poolId = data.poolId;
+        this.maps = ArrayHelper.arrayToCollection(data.maps ?? [], "pickId");
     }
 
     /**
@@ -84,7 +78,7 @@ export class TournamentMappool extends Manager {
         misses: number,
         mods: Mod[]
     ): number {
-        const pickData: TournamentBeatmap | undefined = this.map.get(
+        const pickData: TournamentBeatmap | undefined = this.maps.get(
             pick.toUpperCase()
         );
 
@@ -127,7 +121,7 @@ export class TournamentMappool extends Manager {
         accuracy: number,
         misses: number
     ): number {
-        const pickData: TournamentBeatmap | undefined = this.map.get(
+        const pickData: TournamentBeatmap | undefined = this.maps.get(
             pick.toUpperCase()
         );
 
@@ -151,7 +145,7 @@ export class TournamentMappool extends Manager {
      * @returns The beatmap, `null` if not found.
      */
     getBeatmapFromPick(pick: string): TournamentBeatmap | null {
-        return this.map.get(pick.toUpperCase()) ?? null;
+        return this.maps.get(pick.toUpperCase()) ?? null;
     }
 
     /**
@@ -161,7 +155,7 @@ export class TournamentMappool extends Manager {
      * @returns The beatmap, `null` if not found.
      */
     getBeatmapFromHash(hash: string): TournamentBeatmap | null {
-        return this.map.find((v) => v.hash === hash) ?? null;
+        return this.maps.find((v) => v.hash === hash) ?? null;
     }
 
     /**
@@ -171,7 +165,7 @@ export class TournamentMappool extends Manager {
      * @returns The leaderboard of the beatmap.
      */
     async getBeatmapLeaderboard(pick: string): Promise<TournamentScore[]> {
-        const pickData: TournamentBeatmap | undefined = this.map.get(
+        const pickData: TournamentBeatmap | undefined = this.maps.get(
             pick.toUpperCase()
         );
 

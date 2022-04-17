@@ -1,6 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { PoolLocalization } from "@alice-localization/commands/Tournament/pool/PoolLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -38,15 +39,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 5 * (page - 1);
-            i < Math.min(pool.map.size, 5 + 5 * (page - 1));
+            i < Math.min(pool.maps.size, 5 + 5 * (page - 1));
             ++i
         ) {
+            const map: TournamentBeatmap = pool.maps.at(i)!;
+
             embed.addField(
-                pool.map.at(i)!.name,
+                map.name,
                 `**${localization.getTranslation(
                     "length"
                 )}**: ${DateTimeFormatHelper.secondsToDHMS(
-                    pool.map.at(i)!.duration,
+                    map.duration,
                     localization.language
                 )}`
             );
@@ -58,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { embeds: [embed] },
         [interaction.user.id],
         1,
-        Math.ceil(pool.map.size / 5),
+        Math.ceil(pool.maps.size / 5),
         60,
         onPageChange
     );
