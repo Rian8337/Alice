@@ -20,9 +20,14 @@ export interface TournamentBeatmap {
     maxScore: number;
 
     /**
-     * The MD5 hash of this beatmap.
+     * The MD5 hash of the modified version of this beatmap.
      */
     hash: string;
+
+    /**
+     * The original MD5 hash of this beatmap.
+     */
+    originalHash: string;
 
     /**
      * The duration of this beatmap until the end of the last object, in seconds.
