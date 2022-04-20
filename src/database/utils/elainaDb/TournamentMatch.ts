@@ -11,6 +11,7 @@ import {
     ModHardRock,
     ModHidden,
     ModNoFail,
+    ModUtil,
 } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { TournamentMappool } from "./TournamentMappool";
@@ -197,7 +198,16 @@ export class TournamentMatch
         //     );
         // }
 
+        const correctMods: Mod[] = [];
         const incorrectMods: Mod[] = [];
+        const requiredMods: Mod[] = ModUtil.pcStringToMods(map.requiredMods);
+
+        // Consider required mods first, then we can check for invalid mods.
+        for (const mod of requiredMods) {
+            if (score.mods.find((m) => m.acronym === mod.acronym)) {
+                correctMods.push(mod);
+            }
+        }
 
         for (const mod of score.mods) {
             if (mod instanceof ModNoFail) {
@@ -213,7 +223,9 @@ export class TournamentMatch
         }
 
         return this.createOperationResult(
-            incorrectMods.length === 0 && teamScoreStatus,
+            correctMods.length === requiredMods.length &&
+                incorrectMods.length === 0 &&
+                teamScoreStatus,
             StringHelper.formatString(
                 localization.getTranslation("modsWasUsed"),
                 incorrectMods.map((m) => m.acronym).join("")
