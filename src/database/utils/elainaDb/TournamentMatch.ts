@@ -204,7 +204,10 @@ export class TournamentMatch
                 continue;
             }
 
-            if (!map.requiredMods.includes(mod.acronym)) {
+            if (
+                !map.requiredMods.includes(mod.acronym) &&
+                !map.allowedMods.includes(mod.acronym)
+            ) {
                 incorrectMods.push(mod);
             }
         }
@@ -212,7 +215,7 @@ export class TournamentMatch
         return this.createOperationResult(
             incorrectMods.length === 0 && teamScoreStatus,
             StringHelper.formatString(
-                localization.getTranslation("modsIsNotUsed"),
+                localization.getTranslation("modsWasUsed"),
                 incorrectMods.map((m) => m.acronym).join("")
             )
         );
