@@ -94,7 +94,7 @@ export class TournamentMatch
      * @param pool The tournament mappool of this match.
      * @param players The list of players who played in this match.
      * @param pick The beatmap that was picked, if any.
-     * @returns The index of the last played beatmap.
+     * @returns The last played beatmap, `null` if not found.
      */
     getLastPlayedBeatmap(
         pool: TournamentMappool,
