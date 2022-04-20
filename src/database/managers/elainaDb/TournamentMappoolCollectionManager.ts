@@ -44,6 +44,6 @@ export class TournamentMappoolCollectionManager extends DatabaseCollectionManage
      * @returns The mappool, `null` if not found.
      */
     getFromId(id: string): Promise<TournamentMappool | null> {
-        return this.getOne({ poolid: id });
+        return this.getOne({ poolId: id });
     }
 }
