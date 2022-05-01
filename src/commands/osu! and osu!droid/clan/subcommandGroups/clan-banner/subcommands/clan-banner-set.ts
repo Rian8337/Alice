@@ -6,13 +6,17 @@ import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MessageAttachment } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
     const localization: ClanLocalization = new ClanLocalization(language);
 
-    const url: string = interaction.options.getString("url", true);
+    const attachment: MessageAttachment = interaction.options.getAttachment(
+        "attachment",
+        true
+    );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
@@ -35,7 +39,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const setResult: OperationResult = await clan.setBanner(url, language);
+    const setResult: OperationResult = await clan.setBanner(
+        attachment.url,
+        language
+    );
 
     if (!setResult.success) {
         return interaction.editReply({

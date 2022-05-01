@@ -176,10 +176,10 @@ export const config: Command["config"] = {
                     description: "Sets your clan's banner.",
                     options: [
                         {
-                            name: "url",
+                            name: "attachment",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
-                            description: "The URL of the new clan banner.",
+                            type: ApplicationCommandOptionTypes.ATTACHMENT,
+                            description: "The clan banner.",
                         },
                     ],
                 },
@@ -318,10 +318,10 @@ export const config: Command["config"] = {
                     description: "Sets your clan's icon.",
                     options: [
                         {
-                            name: "url",
+                            name: "attachment",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
-                            description: "The URL of the new clan icon.",
+                            type: ApplicationCommandOptionTypes.ATTACHMENT,
+                            description: "The new clan icon.",
                         },
                     ],
                 },
@@ -547,10 +547,10 @@ export const config: Command["config"] = {
                     description: "Sets or clears your clan role's icon.",
                     options: [
                         {
-                            name: "url",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            name: "attachment",
+                            type: ApplicationCommandOptionTypes.ATTACHMENT,
                             description:
-                                "The URL of your new clan role icon. Omit to clear the icon.",
+                                "The new clan role icon. Omit to clear the icon.",
                         },
                     ],
                 },

@@ -113,10 +113,10 @@ export const config: Command["config"] = {
                 "Manually submits a replay towards the current ongoing challenge.",
             options: [
                 {
-                    name: "replayurl",
+                    name: "replay",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
-                    description: "The download URL to the replay (.odr file).",
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    description: "The replay file (.odr).",
                 },
             ],
         },

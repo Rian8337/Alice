@@ -4,7 +4,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { loadImage, Image } from "canvas";
-import { Role } from "discord.js";
+import { MessageAttachment, Role } from "discord.js";
 import { Precision, RequestResponse } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
@@ -15,7 +15,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const localization: ClanLocalization = new ClanLocalization(language);
 
-    const iconURL: string | null = interaction.options.getString("url");
+    const attachment: MessageAttachment | null =
+        interaction.options.getAttachment("url");
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
@@ -58,8 +59,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     let icon: Buffer | null = null;
 
-    if (iconURL) {
-        const req: RequestResponse = await RESTManager.request(iconURL);
+    if (attachment) {
+        const req: RequestResponse = await RESTManager.request(attachment.url);
 
         if (req.statusCode !== 200) {
             return interaction.editReply({

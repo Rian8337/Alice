@@ -19,9 +19,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const name: string = interaction.options.getString("name", true);
 
-    const url: string = interaction.options.getString("url", true);
+    const attachment: MessageAttachment = interaction.options.getAttachment(
+        "attachment",
+        true
+    );
 
-    if (!StringHelper.isValidImage(url)) {
+    if (!StringHelper.isValidImage(attachment.url)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("tagAttachmentURLInvalid")
@@ -59,9 +62,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const image: MessageAttachment = new MessageAttachment(
-        url,
-        `attachment-${tag.attachments.length + 1}.png`
+    attachment.setName(
+        `${tag.attachments.length + 1}${attachment.url.substring(
+            attachment.url.lastIndexOf(".")
+        )}`
     );
 
     const channel: TextChannel = <TextChannel>(
@@ -77,7 +81,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             (v, i) => new MessageAttachment(v, `attachment-${i + 1}.png`)
         );
 
-        finalAttachments.push(image);
+        finalAttachments.push(attachment);
 
         try {
             const editedMessage: Message = await message.edit({
@@ -109,11 +113,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     `**User ID**: ${interaction.user.id}\n` +
                     `**Name**: \`${name}\`\n` +
                     `**Created at ${interaction.createdAt.toUTCString()}**`,
-                files: [image],
+                files: [attachment],
             });
 
             tag.attachment_message = message.id;
-            tag.attachments.push(url);
+            tag.attachments.push(attachment.url);
 
             await tag.updateTag();
 

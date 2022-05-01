@@ -25,7 +25,13 @@ import {
     ReplayData,
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { Collection, GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import {
+    Collection,
+    GuildMember,
+    MessageAttachment,
+    MessageEmbed,
+    Snowflake,
+} from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
@@ -57,8 +63,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    // TODO: replace with attachments
-    const replayData: RequestResponse = await RESTManager.request(url);
+    const replay: MessageAttachment = interaction.options.getAttachment(
+        "replay",
+        true
+    );
+
+    const replayData: RequestResponse = await RESTManager.request(replay.url);
 
     if (replayData.statusCode !== 200) {
         return interaction.editReply({

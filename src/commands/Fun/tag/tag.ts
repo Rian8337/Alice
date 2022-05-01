@@ -4,8 +4,6 @@ import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    // TODO: attachment option
-
     CommandHelper.runSubcommandFromInteraction(interaction);
 };
 
@@ -47,11 +45,10 @@ export const config: Command["config"] = {
                     description: "The name of the tag.",
                 },
                 {
-                    name: "url",
+                    name: "attachment",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
-                    description:
-                        "The URL to the attachment. Attachment must be less than 8 MB.",
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    description: "The attachment. Must be less than 8 MB.",
                 },
             ],
         },
