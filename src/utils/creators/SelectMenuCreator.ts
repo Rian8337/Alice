@@ -26,6 +26,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * Creates a select menu.
      *
      * @param interaction The interaction that triggered the select menu.
+     * @param options Message options to ask the user to choose.
      * @param choices The choices that the user can choose.
      * @param users The users who can interact with the select menu.
      * @param duration The duration the select menu will be active for.

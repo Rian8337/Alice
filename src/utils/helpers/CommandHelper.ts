@@ -531,6 +531,8 @@ export abstract class CommandHelper extends Manager {
                 return "Subcommand Group";
             case ApplicationCommandOptionTypes.USER:
                 return "User";
+            case ApplicationCommandOptionTypes.ATTACHMENT:
+                return "Attachment";
         }
     }
 
