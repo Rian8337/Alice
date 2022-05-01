@@ -65,6 +65,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const topScore: TournamentScore = scores[0];
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     const getScoreDescription = (score: TournamentScore): string => {
         const arrow: Symbols = Symbols.rightArrowSmall;
 
@@ -75,7 +77,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 2
             )}%\n` +
             `${arrow} **${score.scoreV2.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
+                BCP47
             )}** ScoreV2 (**${pool
                 .calculateScorePortionScoreV2(
                     pick,
@@ -83,19 +85,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     score.score.accuracy.nmiss,
                     score.score.mods
                 )
-                .toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}** score, **${pool
+                .toLocaleString(BCP47)}** score, **${pool
                 .calculateAccuracyPortionScoreV2(
                     pick,
                     score.score.accuracy.value(),
                     score.score.accuracy.nmiss
                 )
-                .toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}** accuracy)\n` +
+                .toLocaleString(BCP47)}** accuracy)\n` +
             `${arrow} ${score.score.score.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
+                BCP47
             )} ScoreV1 ${arrow} ${score.score.combo}x ${arrow} [${
                 score.score.accuracy.n300
             }/${score.score.accuracy.n100}/${score.score.accuracy.n50}/${

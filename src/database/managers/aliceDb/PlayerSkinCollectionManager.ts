@@ -25,9 +25,6 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabasePlayerSkin>) {
         super(collection);
 

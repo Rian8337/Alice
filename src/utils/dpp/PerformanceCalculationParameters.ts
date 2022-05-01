@@ -31,7 +31,6 @@ export class PerformanceCalculationParameters extends StarRatingCalculationParam
     isEstimated: boolean = false;
 
     /**
-     * @param mods The modifications to calculate for.
      * @param accuracy The accuracy achieved.
      * @param inputAccuracy The accuracy that a user inputs, if any.
      * @param combo The combo achieved.

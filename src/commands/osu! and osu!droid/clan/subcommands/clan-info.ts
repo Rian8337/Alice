@@ -61,6 +61,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         Constants.aliceCoinEmote
     )!;
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     embed
         .setTitle(clan.name)
         .addField(
@@ -70,9 +72,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )
         .addField(
             localization.getTranslation("clanPower"),
-            clan.power.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
+            clan.power.toLocaleString(BCP47),
             true
         )
         .addField(
@@ -92,9 +92,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             localization.getTranslation("clanTotalUpkeepEstimation"),
             `${coinEmoji}${clan
                 .calculateOverallUpkeep()
-                .toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )} Alice coins`,
+                .toLocaleString(BCP47)} Alice coins`,
             true
         );
 

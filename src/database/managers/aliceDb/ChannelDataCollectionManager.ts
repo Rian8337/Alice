@@ -28,9 +28,6 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseChannelData>) {
         super(collection);
 

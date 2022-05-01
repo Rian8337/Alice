@@ -281,24 +281,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await clan.updateClan();
     }
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("challengeCompleted"),
             challenge.challengeid,
-            bonusLevel.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
-            pointsGained.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
-            (pointsGained * 2).toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
-            ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
+            bonusLevel.toLocaleString(BCP47),
+            pointsGained.toLocaleString(BCP47),
+            (pointsGained * 2).toLocaleString(BCP47),
+            ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(BCP47),
             ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
+                BCP47
             )
         ),
     });

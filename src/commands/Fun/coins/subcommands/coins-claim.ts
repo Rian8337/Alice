@@ -52,6 +52,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
         }
 
+        const BCP47: string = LocaleHelper.convertToBCP47(
+            localization.language
+        );
+
         interaction.editReply({
             content: MessageCreator.createAccept(
                 localization.getTranslation(
@@ -59,13 +63,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         ? "dailyClaimWithStreakSuccess"
                         : "dailyClaimSuccess"
                 ),
-                dailyCoin.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                ),
+                dailyCoin.toLocaleString(BCP47),
                 streak.toString(),
-                (playerInfo.alicecoins + dailyCoin).toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                (playerInfo.alicecoins + dailyCoin).toLocaleString(BCP47)
             ),
         });
     } else {

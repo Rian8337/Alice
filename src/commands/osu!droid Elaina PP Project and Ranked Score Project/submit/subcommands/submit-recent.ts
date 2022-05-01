@@ -104,6 +104,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     for (const score of scoresToSubmit) {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
             score.hash,
@@ -185,10 +187,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             );
 
             fieldContent += `**${score.score.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )}** | *+${scoreDiff.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )}*`;
+                BCP47
+            )}** | *+${scoreDiff.toLocaleString(BCP47)}*`;
             totalScore += scoreDiff;
         }
 
@@ -216,14 +216,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             )}pp**\n` +
             `${localization.getTranslation(
                 "rankedScore"
-            )}: **${totalScore.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )}**\n` +
+            )}: **${totalScore.toLocaleString(BCP47)}**\n` +
             `${localization.getTranslation(
                 "scoreGained"
-            )}: **${scoreDiff.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )}**\n` +
+            )}: **${scoreDiff.toLocaleString(BCP47)}**\n` +
             `${localization.getTranslation("currentLevel")}: **${Math.floor(
                 level
             )} (${levelRemain}%)**${
@@ -237,9 +233,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 RankedScoreHelper.calculateScoreRequirement(
                     Math.floor(level) + 1
                 ) - totalScore
-            ).toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )}**`
+            ).toLocaleString(BCP47)}**`
     );
 
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);

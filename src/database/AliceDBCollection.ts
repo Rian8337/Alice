@@ -25,6 +25,7 @@ import { MusicCollectionManager } from "./managers/aliceDb/MusicCollectionManage
 import { IllegalMapCollectionManager } from "./managers/aliceDb/IllegalMapCollectionManager";
 import { UserLocaleCollectionManager } from "./managers/aliceDb/UserLocaleCollectionManager";
 import { WarningCollectionManager } from "./managers/aliceDb/WarningCollectionManager";
+import { MultiplayerRoomCollectionManager } from "./managers/aliceDb/MultiplayerRoomCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -164,6 +165,11 @@ export class AliceDBCollection {
     readonly userWarning: WarningCollectionManager;
 
     /**
+     * The database collection for multiplayer rooms.
+     */
+    readonly multiplayerRoom: MultiplayerRoomCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -242,6 +248,9 @@ export class AliceDBCollection {
         );
         this.userWarning = new WarningCollectionManager(
             aliceDb.collection("userwarning")
+        );
+        this.multiplayerRoom = new MultiplayerRoomCollectionManager(
+            aliceDb.collection("multiplayer")
         );
     }
 }

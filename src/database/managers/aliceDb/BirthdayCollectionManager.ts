@@ -33,9 +33,6 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseBirthday>) {
         super(collection);
 

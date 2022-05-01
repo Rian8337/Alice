@@ -26,9 +26,6 @@ export class VotingCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseVoting>) {
         super(collection);
 

@@ -191,11 +191,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             score
         );
 
+        const BCP47: string = LocaleHelper.convertToBCP47(
+            localization.language
+        );
+
         fieldContent += `\n**${score.score.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )}** | *+${scoreDiff.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )}*`;
+            BCP47
+        )}** | *+${scoreDiff.toLocaleString(BCP47)}*`;
 
         const totalScore: number = (rankedScoreInfo?.score ?? 0) + scoreDiff;
 
@@ -208,14 +210,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             embed.description! +
                 `**${localization.getTranslation(
                     "rankedScore"
-                )}**: ${totalScore.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}\n` +
+                )}**: ${totalScore.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "scoreGained"
-                )}**: ${scoreDiff.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}\n` +
+                )}**: ${scoreDiff.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "currentLevel"
                 )}**: ${Math.floor(level)} (${levelRemain}%)${
@@ -229,9 +227,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     RankedScoreHelper.calculateScoreRequirement(
                         Math.floor(level) + 1
                     ) - totalScore
-                ).toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}`
+                ).toLocaleString(BCP47)}`
         );
 
         if (rankedScoreInfo) {

@@ -26,7 +26,7 @@ export class MatchENTranslation extends Translation<MatchStrings> {
         matchDataInProcess: "Processing match data. Please wait...",
         roundInitiated: "Round initiated!",
         roundCountdownFinished:
-            "Beatmap time is over. Beginning 30 seconds cooldown.",
+            "Beatmap time is over. Beginning 30 seconds countdown.",
         roundEnded: "Round ended!",
         teamPlayerCountDoesntMatch:
             "I'm sorry, your input doesn't match. Team %s has %s player(s). You have only inputted data for %s players.",

@@ -103,6 +103,8 @@ export const run: Command["run"] = async (_, interaction) => {
             )}`
         );
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 5 * (page - 1);
@@ -122,13 +124,11 @@ export const run: Command["run"] = async (_, interaction) => {
                     )} \n` +
                     `**${localization.getTranslation(
                         "overallUsage"
-                    )}**: ${validEmojis[i].count.toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
-                    )} \n` +
+                    )}**: ${validEmojis[i].count.toLocaleString(BCP47)} \n` +
                     `**${localization.getTranslation(
                         "averagePerMonthUsage"
                     )}**: ${validEmojis[i].averagePerMonth.toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
+                        BCP47
                     )} `
             );
         }

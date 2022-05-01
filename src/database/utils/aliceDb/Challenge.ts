@@ -952,13 +952,15 @@ export class Challenge extends Manager {
         const localization: ChallengeLocalization =
             this.getLocalization(language);
 
+        const BCP47: string = LocaleHelper.convertToBCP47(
+            localization.language
+        );
+
         switch (id) {
             case "score":
                 return StringHelper.formatString(
                     localization.getTranslation("scoreV1Description"),
-                    `**${value.toLocaleString(
-                        LocaleHelper.convertToBCP47(language)
-                    )}**`
+                    `**${value.toLocaleString(BCP47)}**`
                 );
             case "acc":
                 return StringHelper.formatString(
@@ -968,9 +970,7 @@ export class Challenge extends Manager {
             case "scorev2":
                 return StringHelper.formatString(
                     localization.getTranslation("scoreV2Description"),
-                    `**${value.toLocaleString(
-                        LocaleHelper.convertToBCP47(language)
-                    )}**`
+                    `**${value.toLocaleString(BCP47)}**`
                 );
             case "miss":
                 return value === 0

@@ -76,6 +76,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     embed
         .setAuthor({
             name: StringHelper.formatString(
@@ -93,14 +95,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 `**${localization.getTranslation("uid")}**: ${player.uid}\n` +
                 `**${localization.getTranslation(
                     "rank"
-                )}**: ${player.rank.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}\n` +
+                )}**: ${player.rank.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "playCount"
-                )}**: ${player.playCount.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}\n` +
+                )}**: ${player.playCount.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation("country")}**: ${
                     player.location
                 }\n\n` +

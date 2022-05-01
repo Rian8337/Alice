@@ -43,41 +43,31 @@ export const run: Command["run"] = async (_, interaction) => {
         color: (<GuildMember | null>interaction.member)?.displayHexColor,
     });
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     embed
         .setTitle(localization.getTranslation("overallGameStats"))
         .addField(
             localization.getTranslation("registeredAccounts"),
             `**${localization.getTranslation(
                 "totalRegisteredAccounts"
-            )}**: ${totalUserCount.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )}\n` +
+            )}**: ${totalUserCount.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "moreThan5ScoresAcc"
-                )}**: ${userCountAbove5Scores.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}\n` +
+                )}**: ${userCountAbove5Scores.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "moreThan20ScoresAcc"
-                )}**: ${userCountAbove20Scores.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}\n` +
+                )}**: ${userCountAbove20Scores.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "moreThan100ScoresAcc"
-                )}**: ${userCountAbove100Scores.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}\n` +
+                )}**: ${userCountAbove100Scores.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "moreThan200ScoresAcc"
-                )}**: ${userCountAbove200Scores.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}`
+                )}**: ${userCountAbove200Scores.toLocaleString(BCP47)}`
         )
         .addField(
             localization.getTranslation("totalScores"),
-            totalScoreCount.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )
+            totalScoreCount.toLocaleString(BCP47)
         );
 
     interaction.editReply({

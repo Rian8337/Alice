@@ -24,9 +24,6 @@ export class IllegalMapCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseIllegalMap>) {
         super(collection);
 

@@ -29,9 +29,6 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseNameChange>) {
         super(collection);
 

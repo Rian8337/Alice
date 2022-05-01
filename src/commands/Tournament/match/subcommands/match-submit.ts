@@ -13,6 +13,8 @@ import { MatchLocalization } from "@alice-localization/commands/Tournament/match
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { ScoreRank } from "@alice-types/utils/ScoreRank";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -172,11 +174,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             scoreV2List.push(0);
         }
 
-        const scoreString: string = `${match.player[i][0]} - (${score.mods
-            .map((v) => v.name)
-            .join(", ")}): **${scoreV2List.at(-1)!}** - ${score.rank} - ${(
-            score.accuracy.value() * 100
-        ).toFixed(2)}% - ${score.accuracy.nmiss} ${Symbols.missIcon}\n`;
+        const scoreString: string = `${match.player[i][0]} - (${
+            score.mods.map((v) => v.name).join(", ") || "NoMod"
+        }): **${scoreV2List.at(-1)!}** - ${BeatmapManager.getRankEmote(
+            <ScoreRank>score.rank
+        )} - ${(score.accuracy.value() * 100).toFixed(2)}% - ${
+            score.accuracy.nmiss
+        } ${Symbols.missIcon}\n`;
         const failString: string = `${match.player[i][0]} - (N/A): **0** - **${
             !teamScoreStatus.success
                 ? teamScoreStatus.reason

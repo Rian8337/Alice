@@ -29,9 +29,6 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseRankedScore>) {
         super(collection);
 

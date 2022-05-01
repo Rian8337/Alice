@@ -26,9 +26,6 @@ export class EightBallFilterCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseEightBallFilter>) {
         super(collection);
 

@@ -44,9 +44,6 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabasePlayerInfo>) {
         super(collection);
 

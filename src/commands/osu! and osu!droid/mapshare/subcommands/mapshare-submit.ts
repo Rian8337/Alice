@@ -138,13 +138,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const wordCount: number = summary.split(" ").length;
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     if (wordCount < 50 || wordCount > 120) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("summaryWordCountNotValid"),
-                wordCount.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                wordCount.toLocaleString(BCP47)
             ),
         });
     }
@@ -153,9 +153,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("summaryCharacterCountNotValid"),
-                summary.length.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                summary.length.toLocaleString(BCP47)
             ),
         });
     }

@@ -172,14 +172,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         Math.floor(fromClan.power * finalMultiplier)
     );
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
         {
             content: MessageCreator.createWarn(
                 localization.getTranslation("clanPowerTransferConfirmation"),
-                totalGivenPower.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                ),
+                totalGivenPower.toLocaleString(BCP47),
                 fromClan.name,
                 toClan.name
             ),
@@ -231,9 +231,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("clanPowerTransferSuccessful"),
-            totalGivenPower.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
+            totalGivenPower.toLocaleString(BCP47),
             fromClan.name,
             toClan.name
         ),

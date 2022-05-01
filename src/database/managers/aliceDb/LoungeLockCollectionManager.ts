@@ -26,9 +26,6 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseLoungeLock>) {
         super(collection);
 

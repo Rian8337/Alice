@@ -3,7 +3,7 @@ import {
     GlobalCooldownKey,
 } from "@alice-types/core/CooldownKey";
 import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollection";
-import { Snowflake } from "discord.js";
+import { Collection, Snowflake } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
 
@@ -69,4 +69,10 @@ export abstract class CacheManager {
         Snowflake,
         Language
     > = new LimitedCapacityCollection(100, 300);
+
+    /**
+     * The timers for a multiplayer room, mapped by channel ID.
+     */
+    static readonly multiplayerTimers: Collection<Snowflake, NodeJS.Timeout> =
+        new Collection();
 }

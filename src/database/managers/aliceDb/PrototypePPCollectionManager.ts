@@ -32,9 +32,6 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabasePrototypePP>) {
         super(collection);
 

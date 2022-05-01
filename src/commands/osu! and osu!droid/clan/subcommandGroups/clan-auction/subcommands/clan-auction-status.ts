@@ -42,6 +42,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     embed
         .setTitle(localization.getTranslation("auctionInfo"))
         .setDescription(
@@ -71,14 +73,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                 `**${localization.getTranslation(
                     "auctionAmount"
-                )}**: ${auction.amount.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}\n` +
+                )}**: ${auction.amount.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "auctionMinimumBid"
-                )}**: ${auction.min_price.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )} Alice coins`
+                )}**: ${auction.min_price.toLocaleString(BCP47)} Alice coins`
         );
 
     const bids: AuctionBid[] = [...auction.bids.values()];
@@ -93,9 +91,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (bid) {
             biddersDescription += `#${i + 1}: ${
                 bid.clan
-            } - **${bid.amount.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )}** Alice coins\n`;
+            } - **${bid.amount.toLocaleString(BCP47)}** Alice coins\n`;
         } else {
             biddersDescription += `#${i + 1}: -\n`;
         }
@@ -105,9 +101,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         biddersDescription += ".\n".repeat(Math.min(bidIndex - 4, 3));
         biddersDescription += `#${bidIndex + 1}: ${clanName} - **${bids[
             bidIndex
-        ].amount.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )}** Alice coins`;
+        ].amount.toLocaleString(BCP47)}** Alice coins`;
     }
 
     embed.addField(

@@ -48,13 +48,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const powerReq: number = 300;
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     if (clan.power < powerReq) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("clanPowerNotEnoughToBuyItem"),
-                powerReq.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                powerReq.toLocaleString(BCP47)
             ),
         });
     }
@@ -71,9 +71,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),
                 localization.getTranslation("leadershipTransfer"),
-                cost.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                cost.toLocaleString(BCP47)
             ),
         });
     }
@@ -84,9 +82,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 localization.getTranslation("buyShopItemConfirmation"),
                 localization.getTranslation("leadershipTransfer"),
-                cost.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                cost.toLocaleString(BCP47)
             ),
         },
         [interaction.user.id],
@@ -137,9 +133,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("buyShopItemSuccessful"),
-            cost.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )
+            cost.toLocaleString(BCP47)
         ),
     });
 };

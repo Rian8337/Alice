@@ -35,9 +35,6 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The database collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseWarning>) {
         super(collection);
 

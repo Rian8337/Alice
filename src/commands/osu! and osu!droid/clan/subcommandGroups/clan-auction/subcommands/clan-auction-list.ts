@@ -40,6 +40,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 5 * (page - 1);
@@ -70,19 +72,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                     `**${localization.getTranslation(
                         "auctionAmount"
-                    )}**: ${auction.amount.toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
-                    )}\n` +
+                    )}**: ${auction.amount.toLocaleString(BCP47)}\n` +
                     `**${localization.getTranslation(
                         "auctionMinimumBid"
                     )}**: ${auction.min_price.toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
+                        BCP47
                     )} Alice coins\n` +
                     `**${localization.getTranslation(
                         "auctionBidders"
-                    )}**: ${auction.bids.size.toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
-                    )}`
+                    )}**: ${auction.bids.size.toLocaleString(BCP47)}`
             );
         }
     };

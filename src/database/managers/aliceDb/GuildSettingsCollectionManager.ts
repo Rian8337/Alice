@@ -31,9 +31,6 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseGuildSettings>) {
         super(collection);
 

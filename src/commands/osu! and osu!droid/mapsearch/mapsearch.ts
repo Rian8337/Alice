@@ -86,12 +86,12 @@ export const run: Command["run"] = async (_, interaction) => {
         footerText: localization.getTranslation("serviceProvider"),
     });
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     embed.setDescription(
         `**${localization.getTranslation(
             "beatmapsFound"
-        )}**: ${data.results.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )}`
+        )}**: ${data.results.toLocaleString(BCP47)}`
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -147,11 +147,9 @@ export const run: Command["run"] = async (_, interaction) => {
                     localization.language
                 )} | **${status}**\n${
                     Symbols.heart
-                } **${d.favourite_count.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}** - ${Symbols.playButton} **${d.play_count.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )}**`
+                } **${d.favourite_count.toLocaleString(BCP47)}** - ${
+                    Symbols.playButton
+                } **${d.play_count.toLocaleString(BCP47)}**`
             );
         }
     };

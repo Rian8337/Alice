@@ -68,15 +68,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     interaction.editReply(
         MessageCreator.createAccept(
             localization.getTranslation("addCoinSuccess"),
-            addAmount.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
-            (playerInfo.alicecoins + addAmount).toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )
+            addAmount.toLocaleString(BCP47),
+            (playerInfo.alicecoins + addAmount).toLocaleString(BCP47)
         )
     );
 };

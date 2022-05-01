@@ -26,9 +26,6 @@ export class MusicCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseMusicCollection>) {
         super(collection);
 

@@ -90,7 +90,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             )} pp**\n` +
             `[${localization.getTranslation(
                 "ppProfile"
-            )}](https://droidppboard.herokuapp.com/prototype/profile?uid=${
+            )}](https://droidppboard.herokuapp.com/prototype/profile/${
                 ppInfo.uid
             })\n` +
             `${localization.getTranslation(

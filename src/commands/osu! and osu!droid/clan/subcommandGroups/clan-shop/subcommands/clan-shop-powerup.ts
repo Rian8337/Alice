@@ -36,6 +36,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const cost: number = 100;
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     if (!playerInfo || playerInfo.alicecoins < cost) {
         return interaction.editReply({
             content: MessageCreator.createReject(
@@ -44,9 +46,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     localization.getTranslation("buyShopItem"),
                     localization.getTranslation("clanPowerup")
                 ),
-                cost.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                cost.toLocaleString(BCP47)
             ),
         });
     }
@@ -57,9 +57,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 localization.getTranslation("buyShopItemConfirmation"),
                 localization.getTranslation("clanPowerup"),
-                cost.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                cost.toLocaleString(BCP47)
             ),
         },
         [interaction.user.id],
@@ -146,9 +144,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ),
             MessageCreator.createAccept(
                 localization.getTranslation("buyShopItemSuccessful"),
-                cost.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                cost.toLocaleString(BCP47)
             ),
         ].join("\n"),
     });

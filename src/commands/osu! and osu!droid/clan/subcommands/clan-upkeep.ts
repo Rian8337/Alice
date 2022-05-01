@@ -29,19 +29,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         clan.individualUpkeepBaseValue + clan.calculateUpkeep(interaction.user);
     const totalUpkeep: number = clan.calculateOverallUpkeep();
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     interaction.editReply({
         content: MessageCreator.createAccept(
             localization.getTranslation("clanUpkeepInformation"),
-            upkeep.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
+            upkeep.toLocaleString(BCP47),
             DateTimeFormatHelper.dateToLocaleString(
                 new Date(clan.weeklyfee * 1000),
                 localization.language
             ),
-            totalUpkeep.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )
+            totalUpkeep.toLocaleString(BCP47)
         ),
     });
 };

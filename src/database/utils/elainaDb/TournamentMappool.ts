@@ -5,7 +5,7 @@ import { TournamentScore } from "@alice-interfaces/tournament/TournamentScore";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
-import { ModHidden, ModDoubleTime, ModNoFail, Mod } from "@rian8337/osu-base";
+import { Mod } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { ObjectId } from "bson";
 import { Collection } from "discord.js";
@@ -57,9 +57,21 @@ export class TournamentMappool extends Manager {
         misses: number,
         mods: Mod[]
     ): number {
-        return (
-            this.calculateScorePortionScoreV2(pick, score, misses, mods) +
-            this.calculateAccuracyPortionScoreV2(pick, accuracy, misses)
+        const pickData: TournamentBeatmap | undefined = this.maps.get(
+            pick.toUpperCase()
+        );
+
+        if (!pickData) {
+            return 0;
+        }
+
+        return ScoreHelper.calculateScoreV2(
+            score,
+            accuracy,
+            misses,
+            pickData.maxScore,
+            mods,
+            pickData.scorePortion
         );
     }
 
@@ -86,25 +98,12 @@ export class TournamentMappool extends Manager {
             return 0;
         }
 
-        const applyHiddenPenalty: boolean =
-            mods.filter(
-                (m) => m instanceof ModHidden || m instanceof ModDoubleTime
-            ).length === 2;
-
-        const tempScoreV2: number =
-            Math.sqrt(
-                (score * (mods.some((m) => m instanceof ModNoFail) ? 2 : 1)) /
-                    (pickData.maxScore *
-                        (applyHiddenPenalty
-                            ? new ModHidden().scoreMultiplier
-                            : 1))
-            ) *
-            1e6 *
-            pickData.scorePortion;
-
-        return Math.max(
-            0,
-            Math.round(tempScoreV2 - this.getMissPenalty(tempScoreV2, misses))
+        return ScoreHelper.calculateScorePortionScoreV2(
+            score,
+            misses,
+            pickData.maxScore,
+            mods,
+            pickData.scorePortion
         );
     }
 
@@ -129,12 +128,10 @@ export class TournamentMappool extends Manager {
             return 0;
         }
 
-        const tempScoreV2: number =
-            Math.pow(accuracy, 2) * 1e6 * (1 - pickData.scorePortion);
-
-        return Math.max(
-            0,
-            Math.round(tempScoreV2 - this.getMissPenalty(tempScoreV2, misses))
+        return ScoreHelper.calculateAccuracyPortionScoreV2(
+            accuracy,
+            misses,
+            1 - pickData.scorePortion
         );
     }
 

@@ -81,6 +81,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         (v) => v.id === bgId
     );
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     if (!isBackgroundOwned) {
         if ((playerInfo?.alicecoins ?? 0) < 500) {
             return interaction.editReply({
@@ -91,9 +93,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     coin.toString(),
                     coin.toString(),
                     coin.toString(),
-                    (playerInfo?.alicecoins ?? 0).toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
-                    )
+                    (playerInfo?.alicecoins ?? 0).toLocaleString(BCP47)
                 ),
             });
         }
@@ -169,9 +169,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     : ` ${StringHelper.formatString(
                           localization.getTranslation("aliceCoinAmount"),
                           coin.toString(),
-                          playerInfo!.alicecoins.toLocaleString(
-                              LocaleHelper.convertToBCP47(localization.language)
-                          )
+                          playerInfo!.alicecoins.toLocaleString(BCP47)
                       )}`),
             interaction.user.toString(),
             bgId

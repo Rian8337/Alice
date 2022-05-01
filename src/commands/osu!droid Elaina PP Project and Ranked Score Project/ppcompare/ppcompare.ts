@@ -162,36 +162,32 @@ export const run: Command["run"] = async (_, interaction) => {
 
     let ppDescription: string = "";
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     if (firstBindInfo.pptotal < secondBindInfo.pptotal) {
         ppDescription = `**${firstBindInfo.pptotal.toFixed(
             2
-        )}pp (#${firstPlayerPPRank.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )})** vs **${Symbols.crown} ${secondBindInfo.pptotal.toFixed(
+        )}pp (#${firstPlayerPPRank.toLocaleString(BCP47)})** vs **${
+            Symbols.crown
+        } ${secondBindInfo.pptotal.toFixed(
             2
-        )}pp (#${secondPlayerPPRank.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )})**`;
+        )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})**`;
     } else if (firstBindInfo.pptotal > secondBindInfo.pptotal) {
         ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(
             2
         )}pp (#${firstPlayerPPRank.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
+            BCP47
         )})** vs **${secondBindInfo.pptotal.toFixed(
             2
-        )}pp (#${secondPlayerPPRank.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )})**`;
+        )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})**`;
     } else {
         ppDescription = `**${firstBindInfo.pptotal.toFixed(
             2
         )}pp (#${firstPlayerPPRank.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
+            BCP47
         )})** vs **${secondBindInfo.pptotal.toFixed(
             2
-        )}pp (#${secondPlayerPPRank.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )})**`;
+        )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})**`;
     }
 
     embed

@@ -228,12 +228,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             mapQuery
         );
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     embed.setDescription(
         `**${localization.getTranslation(
             "beatmapsFound"
-        )}**: ${beatmapsFound.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )}`
+        )}**: ${beatmapsFound.toLocaleString(BCP47)}`
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -268,7 +268,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 } - **OD**: ${whitelistedBeatmap.diffstat.od} - **HP**: ${
                     whitelistedBeatmap.diffstat.hp
                 } - **BPM**: ${whitelistedBeatmap.diffstat.bpm.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
+                    BCP47
                 )}\n**${localization.getTranslation(
                     "dateWhitelisted"
                 )}**: ${DateTimeFormatHelper.dateToLocaleString(

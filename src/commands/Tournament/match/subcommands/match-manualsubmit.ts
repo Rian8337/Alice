@@ -44,17 +44,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     if (Math.ceil(match.player.length / 2) !== team1Scores.length) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("teamPlayerCountDoesntMatch"),
                 "1",
-                Math.ceil(match.player.length / 2).toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                ),
-                team1Scores.length.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                Math.ceil(match.player.length / 2).toLocaleString(BCP47),
+                team1Scores.length.toLocaleString(BCP47)
             ),
         });
     }
@@ -64,12 +62,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("teamPlayerCountDoesntMatch"),
                 "2",
-                Math.floor(match.player.length / 2).toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                ),
-                team2Scores.length.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                Math.floor(match.player.length / 2).toLocaleString(BCP47),
+                team2Scores.length.toLocaleString(BCP47)
             ),
         });
     }
@@ -117,12 +111,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             return interaction.editReply({
                 content: MessageCreator.createReject(
                     localization.getTranslation("scoreDataInvalid"),
-                    ((i % 2) + 1).toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
-                    ),
-                    Math.floor(i / 2).toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
-                    ),
+                    ((i % 2) + 1).toLocaleString(BCP47),
+                    Math.floor(i / 2).toLocaleString(BCP47),
                     scoreData.join(" ")
                 ),
             });
@@ -175,9 +165,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         team1OverallScore > team2OverallScore
             ? match.team[0][0]
             : match.team[1][0],
-        Math.abs(team1OverallScore - team2OverallScore).toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )
+        Math.abs(team1OverallScore - team2OverallScore).toLocaleString(BCP47)
     );
 
     if (team1OverallScore > team2OverallScore) {

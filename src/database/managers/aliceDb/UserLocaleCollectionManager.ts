@@ -26,9 +26,6 @@ export class UserLocaleCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseUserLocale>) {
         super(collection);
 

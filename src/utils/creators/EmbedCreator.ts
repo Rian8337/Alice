@@ -1,4 +1,5 @@
 import {
+    Collection,
     ColorResolvable,
     CommandInteraction,
     Guild,
@@ -42,6 +43,8 @@ import {
     SliderTick,
     TailCircle,
     ModUtil,
+    Mod,
+    MathUtils,
 } from "@rian8337/osu-base";
 import {
     DroidStarRating,
@@ -70,6 +73,13 @@ import {
 } from "@alice-localization/utils/creators/EmbedCreator/EmbedCreatorLocalization";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
+import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
+import { MultiplayerScore } from "@alice-interfaces/multiplayer/MultiplayerScore";
+import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
+import { MultiplayerPlayer } from "@alice-interfaces/multiplayer/MultiplayerPlayer";
 
 /**
  * Utility to create message embeds.
@@ -260,9 +270,7 @@ export abstract class EmbedCreator {
                 ).toFixed(2)}${Symbols.star}**\n` +
                 `[${localization.getTranslation(
                     "ppProfile"
-                )}](https://droidppboard.herokuapp.com/profile?uid=${
-                    bindInfo.uid
-                })`
+                )}](https://droidppboard.herokuapp.com/profile/${bindInfo.uid})`
         );
 
         return embed;
@@ -504,6 +512,8 @@ export abstract class EmbedCreator {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
+        const BCP47: string = LocaleHelper.convertToBCP47(language);
+
         const arrow: Symbols = Symbols.rightArrowSmall;
 
         const embed: MessageEmbed = this.createNormalEmbed({
@@ -532,11 +542,11 @@ export abstract class EmbedCreator {
         if (!droidCalcResult || !osuCalcResult) {
             beatmapInformation +=
                 `${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-                `${arrow} ${score.score.toLocaleString(
-                    LocaleHelper.convertToBCP47(language)
-                )} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${
-                    score.accuracy.n100
-                }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
+                `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${
+                    score.combo
+                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
+                    score.accuracy.n50
+                }/${score.accuracy.nmiss}]`;
 
             embed.setDescription(beatmapInformation);
             return embed;
@@ -615,13 +625,13 @@ export abstract class EmbedCreator {
 
         beatmapInformation +=
             `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-            `${arrow} ${score.score.toLocaleString(
-                LocaleHelper.convertToBCP47(language)
-            )} ${arrow} ${score.combo}x/${
-                osuCalcResult.map.maxCombo
-            }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
-                score.accuracy.n50
-            }/${score.accuracy.nmiss}]`;
+            `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${
+                score.combo
+            }x/${osuCalcResult.map.maxCombo}x ${arrow} [${
+                score.accuracy.n300
+            }/${score.accuracy.n100}/${score.accuracy.n50}/${
+                score.accuracy.nmiss
+            }]`;
 
         if (!score.replay) {
             await score.downloadReplay();
@@ -846,6 +856,8 @@ export abstract class EmbedCreator {
             color: "#cb9000",
         });
 
+        const BCP47: string = LocaleHelper.convertToBCP47(language);
+
         embed
             .setTitle(localization.getTranslation("auctionInfo"))
             .setDescription(
@@ -872,17 +884,13 @@ export abstract class EmbedCreator {
                 )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                     `**${localization.getTranslation(
                         "auctionItemAmount"
-                    )}**: ${auction.amount.toLocaleString(
-                        LocaleHelper.convertToBCP47(language)
-                    )}`
+                    )}**: ${auction.amount.toLocaleString(BCP47)}`
             )
             .addField(
                 localization.getTranslation("auctionBidInfo"),
                 `**${localization.getTranslation(
                     "auctionBidders"
-                )}**: ${auction.bids.size.toLocaleString(
-                    LocaleHelper.convertToBCP47(language)
-                )}\n` +
+                )}**: ${auction.bids.size.toLocaleString(BCP47)}\n` +
                     `**${localization.getTranslation(
                         "auctionTopBidders"
                     )}**:\n` +
@@ -1119,6 +1127,425 @@ export abstract class EmbedCreator {
                         warning.reason
                     }`
             );
+
+        return embed;
+    }
+
+    /**
+     * Gets the embed representing a multiplayer room.
+     *
+     * @param room The multiplayer room.
+     * @param language The language to localize. Defaults to English.
+     */
+    static createMultiplayerRoomStatsEmbed(
+        room: MultiplayerRoom,
+        language: Language = "en"
+    ): MessageEmbed {
+        const localization: EmbedCreatorLocalization =
+            this.getLocalization(language);
+
+        const embed: MessageEmbed = this.createNormalEmbed({
+            color: "BLURPLE",
+        });
+
+        const BCP47: string = LocaleHelper.convertToBCP47(language);
+
+        embed
+            .setAuthor({
+                name: room.settings.roomName,
+            })
+            .setDescription(
+                `**${localization.getTranslation("multiplayerRoomId")}**: ${
+                    room.roomId
+                }\n` +
+                    `**${localization.getTranslation(
+                        "multiplayerRoomHost"
+                    )}**: <@${room.settings.roomHost}> (${
+                        room.settings.roomHost
+                    })\n` +
+                    `**${localization.getTranslation(
+                        "multiplayerRoomPassword"
+                    )}**: ${
+                        room.settings.password
+                            ? Symbols.checkmark
+                            : Symbols.cross
+                    }\n` +
+                    `**${localization.getTranslation(
+                        "multiplayerRoomPlayerCount"
+                    )}**: ${room.players.length.toLocaleString(
+                        BCP47
+                    )}/${room.settings.maxPlayers.toLocaleString(BCP47)}`
+            )
+            .addField(
+                localization.getTranslation("multiplayerRoomCurrentBeatmap"),
+                room.settings.beatmap
+                    ? `[${room.settings.beatmap.name}](https://osu.ppy.sh/b/${room.settings.beatmap.id})`
+                    : localization.getTranslation("none")
+            )
+            .addField(
+                localization.getTranslation("multiplayerRoomSettings"),
+                `**${localization.getTranslation(
+                    "multiplayerRoomTeamMode"
+                )}**: ${room.teamModeToString(language)}\n` +
+                    `**${localization.getTranslation(
+                        "multiplayerRoomWinCondition"
+                    )}**: ${room.winConditionToString(language)}\n` +
+                    `**${localization.getTranslation("scorePortion")}**: ${(
+                        room.settings.scorePortion * 100
+                    )
+                        .toFixed(2)
+                        .toLocaleUpperCase(BCP47)}%\n` +
+                    `**${localization.getTranslation("forceAR")}**: ${
+                        room.settings.forcedAR.allowed
+                            ? Symbols.checkmark
+                            : Symbols.cross
+                    } (${room.settings.forcedAR.minValue.toLocaleString(
+                        BCP47
+                    )} min, ${room.settings.forcedAR.maxValue.toLocaleString(
+                        BCP47
+                    )} max)\n` +
+                    `**${localization.getTranslation(
+                        "speedMultiplier"
+                    )}**: ${room.settings.speedMultiplier.toLocaleString(
+                        BCP47
+                    )}\n` +
+                    `**${localization.getTranslation(
+                        "multiplayerRoomRequiredMods"
+                    )}**: ${
+                        room.settings.requiredMods ||
+                        localization.getTranslation("none")
+                    }\n` +
+                    `**${localization.getTranslation(
+                        "multiplayerRoomAllowedMods"
+                    )}**: ${
+                        room.settings.allowedMods ||
+                        localization.getTranslation("none")
+                    }`
+            );
+
+        return embed;
+    }
+
+    /**
+     * Gets the result embed of a multiplayer room.
+     *
+     * @param room The multiplayer room.
+     * @param language The language to localize. Defaults to English.
+     */
+    static async createMultiplayerRoomRoundResultEmbed(
+        room: MultiplayerRoom,
+        language: Language = "en"
+    ): Promise<MessageEmbed> {
+        const localization: EmbedCreatorLocalization =
+            this.getLocalization(language);
+
+        const BCP47: string = LocaleHelper.convertToBCP47(language);
+
+        const embed: MessageEmbed = this.createNormalEmbed({
+            color: "FUCHSIA",
+        });
+
+        const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
+            room.settings.beatmap!.hash
+        ))!;
+
+        let maxScore: number | undefined;
+
+        let requiredMods: Mod[] | undefined;
+
+        const getGrade = (score: MultiplayerScore): number => {
+            switch (room.settings.winCondition) {
+                case MultiplayerWinCondition.scoreV1:
+                    return score.score;
+                case MultiplayerWinCondition.accuracy:
+                    return MathUtils.round(
+                        new Accuracy({
+                            n300: score.perfect,
+                            n100: score.good,
+                            n50: score.bad,
+                            nmiss: score.miss,
+                        }).value() * 100,
+                        2
+                    );
+                case MultiplayerWinCondition.maxCombo:
+                    return score.maxCombo;
+                case MultiplayerWinCondition.scoreV2:
+                    requiredMods ??= ModUtil.pcStringToMods(
+                        room.settings.requiredMods
+                    );
+
+                    maxScore ??= beatmapInfo.map!.maxDroidScore(
+                        new MapStats({
+                            mods: requiredMods,
+                            speedMultiplier: room.settings.speedMultiplier,
+                        })
+                    );
+
+                    return ScoreHelper.calculateScoreV2(
+                        score.score,
+                        new Accuracy({
+                            n300: score.perfect,
+                            n100: score.good,
+                            n50: score.bad,
+                            nmiss: score.miss,
+                        }).value(),
+                        score.miss,
+                        maxScore,
+                        requiredMods,
+                        room.settings.scorePortion
+                    );
+                case MultiplayerWinCondition.most300:
+                    return score.perfect;
+                case MultiplayerWinCondition.least100:
+                    return score.good;
+                case MultiplayerWinCondition.least50:
+                    return score.bad;
+                case MultiplayerWinCondition.leastMisses:
+                    return score.miss;
+                case MultiplayerWinCondition.leastUnstableRate:
+                    return MathUtils.round(score.unstableRate, 2);
+            }
+        };
+
+        const getScoreDescription = (
+            score: MultiplayerScore,
+            grade: number
+        ): string => {
+            const mods: Mod[] = ModUtil.pcStringToMods(score.mods);
+
+            const customMods: string[] = [];
+
+            if (score.speedMultiplier !== 1) {
+                customMods.push(
+                    `${score.speedMultiplier.toLocaleString(BCP47)}x`
+                );
+            }
+
+            if (score.forcedAR !== undefined && score.forcedAR !== null) {
+                customMods.push(`AR${score.forcedAR.toLocaleString(BCP47)}`);
+            }
+
+            let modstring: string =
+                mods.map((v) => v.name).join(", ") || "NoMod";
+
+            if (customMods.length > 0) {
+                modstring += ` (${customMods.join(", ")})`;
+            }
+
+            const accuracy: number =
+                new Accuracy({
+                    n300: score.perfect,
+                    n100: score.good,
+                    n50: score.bad,
+                    nmiss: score.miss,
+                }).value() * 100;
+
+            return `${score.username} - ${modstring}: **${grade.toLocaleString(
+                BCP47
+            )}** - ${score.score.toLocaleString(
+                BCP47
+            )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
+                score.maxCombo
+            }x - ${accuracy.toFixed(2)}% - ${score.miss} ${Symbols.missIcon}`;
+        };
+
+        embed
+            .setAuthor({
+                name: room.settings.roomName,
+            })
+            .setTitle(beatmapInfo.fullTitle)
+            .setThumbnail(
+                `https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`
+            )
+            .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
+            .setDescription(
+                `**${localization.getTranslation(
+                    "multiplayerRoomTeamMode"
+                )}**: ${room.teamModeToString(language)}\n` +
+                    `**${localization.getTranslation(
+                        "multiplayerRoomWinCondition"
+                    )}**: ${room.winConditionToString()}`
+            );
+
+        switch (room.settings.teamMode) {
+            case MultiplayerTeamMode.headToHead: {
+                const scores: Collection<
+                    string,
+                    { grade: number; score: MultiplayerScore }
+                > = new Collection();
+
+                for (const score of room.currentScores) {
+                    const player: MultiplayerPlayer | undefined =
+                        room.players.find((v) => v.username === score.username);
+
+                    if (!player || player.isSpectating) {
+                        continue;
+                    }
+
+                    scores.set(score.username, {
+                        grade: getGrade(score),
+                        score: score,
+                    });
+                }
+
+                switch (room.settings.winCondition) {
+                    case MultiplayerWinCondition.scoreV1:
+                    case MultiplayerWinCondition.accuracy:
+                    case MultiplayerWinCondition.maxCombo:
+                    case MultiplayerWinCondition.scoreV2:
+                    case MultiplayerWinCondition.most300:
+                        scores.sort((a, b) => b.grade - a.grade);
+                        break;
+                    default:
+                        scores.sort((a, b) => a.grade - b.grade);
+                }
+
+                const topScore: { grade: number; score: MultiplayerScore } =
+                    scores.at(0)!;
+
+                const winners: string[] = [];
+
+                for (const [username, score] of scores) {
+                    if (
+                        !Precision.almostEqualsNumber(
+                            score.grade,
+                            topScore.grade
+                        )
+                    ) {
+                        break;
+                    }
+
+                    winners.push(username);
+                }
+
+                embed
+                    .addField(
+                        localization.getTranslation("multiplayerRoomResults"),
+                        scores
+                            .map((v) => getScoreDescription(v.score, v.grade))
+                            .join("\n") || "None"
+                    )
+                    .addField(
+                        "=================================",
+                        winners.length === room.players.length
+                            ? localization.getTranslation("multiplayerDraw")
+                            : StringHelper.formatString(
+                                  localization.getTranslation("multiplayerWon"),
+                                  winners.join(", ")
+                              )
+                    );
+
+                break;
+            }
+            case MultiplayerTeamMode.teamVS: {
+                const redTeamScores: Collection<
+                    string,
+                    { grade: number; score: MultiplayerScore }
+                > = new Collection();
+                const blueTeamScores: Collection<
+                    string,
+                    { grade: number; score: MultiplayerScore }
+                > = new Collection();
+
+                for (const score of room.currentScores) {
+                    const player: MultiplayerPlayer | undefined =
+                        room.players.find((v) => v.username === score.username);
+
+                    if (!player || player.isSpectating) {
+                        continue;
+                    }
+
+                    const scoreCollection: Collection<
+                        string,
+                        { grade: number; score: MultiplayerScore }
+                    > =
+                        player.team === MultiplayerTeam.red
+                            ? redTeamScores
+                            : blueTeamScores;
+
+                    scoreCollection.set(score.username, {
+                        grade: getGrade(score),
+                        score: score,
+                    });
+                }
+
+                switch (room.settings.winCondition) {
+                    case MultiplayerWinCondition.scoreV1:
+                    case MultiplayerWinCondition.accuracy:
+                    case MultiplayerWinCondition.maxCombo:
+                    case MultiplayerWinCondition.scoreV2:
+                    case MultiplayerWinCondition.most300:
+                        redTeamScores.sort((a, b) => b.grade - a.grade);
+                        blueTeamScores.sort((a, b) => b.grade - a.grade);
+                        break;
+                    default:
+                        redTeamScores.sort((a, b) => a.grade - b.grade);
+                        blueTeamScores.sort((a, b) => a.grade - b.grade);
+                }
+
+                const redTotalScore: number = redTeamScores.reduce(
+                    (acc, value) => acc + value.grade,
+                    0
+                );
+                const blueTotalScore: number = blueTeamScores.reduce(
+                    (acc, value) => acc + value.grade,
+                    0
+                );
+
+                embed
+                    .setColor(
+                        Precision.almostEqualsNumber(
+                            redTotalScore,
+                            blueTotalScore
+                        )
+                            ? "DEFAULT"
+                            : redTotalScore > blueTotalScore
+                            ? 16711680
+                            : 262399
+                    )
+                    .addField(
+                        localization.getTranslation("multiplayerRedTeam"),
+                        `**${localization.getTranslation(
+                            "multiplayerTotalScore"
+                        )}: ${redTotalScore.toLocaleString(BCP47)}**\n` +
+                            redTeamScores
+                                .map((v) =>
+                                    getScoreDescription(v.score, v.grade)
+                                )
+                                .join("\n")
+                    )
+                    .addField(
+                        localization.getTranslation("multiplayerBlueTeam"),
+                        `**${localization.getTranslation(
+                            "multiplayerTotalScore"
+                        )}: ${blueTotalScore.toLocaleString(BCP47)}**\n` +
+                            blueTeamScores
+                                .map((v) =>
+                                    getScoreDescription(v.score, v.grade)
+                                )
+                                .join("\n")
+                    )
+                    .addField(
+                        "=================================",
+                        `**${
+                            redTotalScore === blueTotalScore
+                                ? localization.getTranslation("multiplayerDraw")
+                                : StringHelper.formatString(
+                                      localization.getTranslation(
+                                          "multiplayerWon"
+                                      ),
+                                      localization.getTranslation(
+                                          redTotalScore > blueTotalScore
+                                              ? "multiplayerRedTeam"
+                                              : "multiplayerBlueTeam"
+                                      )
+                                  )
+                        }**`
+                    );
+
+                break;
+            }
+        }
 
         return embed;
     }

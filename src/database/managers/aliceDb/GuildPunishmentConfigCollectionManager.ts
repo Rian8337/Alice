@@ -27,9 +27,6 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseGuildPunishmentConfig>) {
         super(collection);
 

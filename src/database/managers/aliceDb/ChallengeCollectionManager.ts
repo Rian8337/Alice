@@ -36,9 +36,6 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseChallenge>) {
         super(collection);
 

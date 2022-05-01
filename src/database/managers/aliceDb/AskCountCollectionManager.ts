@@ -24,9 +24,6 @@ export class AskCountCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseAskCount>) {
         super(collection);
 

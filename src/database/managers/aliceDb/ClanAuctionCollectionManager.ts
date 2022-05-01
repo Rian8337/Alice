@@ -32,9 +32,6 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseClanAuction>) {
         super(collection);
 

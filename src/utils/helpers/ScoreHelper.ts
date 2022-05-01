@@ -1,4 +1,11 @@
-import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
+import {
+    DroidAPIRequestBuilder,
+    Mod,
+    ModDoubleTime,
+    ModHidden,
+    ModNoFail,
+    RequestResponse,
+} from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 
 /**
@@ -33,5 +40,120 @@ export abstract class ScoreHelper {
         data.shift();
 
         return data.map((v) => new Score().fillInformation(v));
+    }
+
+    /**
+     * Calculates an osu!droid ScoreV2 value.
+     *
+     * @param score The ScoreV1 achieved.
+     * @param accuracy The accuracy achieved, from 0 to 1.
+     * @param misses The amount of misses achieved.
+     * @param maxScore The maximum score of the beatmap to calculate.
+     * @param mods The mods that were used.
+     * @param scorePortion The portion of which the maximum score will contribute to ScoreV2.
+     * @param accuracyPortion The portion of which accuracy will contribute to ScoreV2. Defaults to `1 - scorePortion`.
+     * @returns The ScoreV2 value.
+     */
+    static calculateScoreV2(
+        score: number,
+        accuracy: number,
+        misses: number,
+        maxScore: number,
+        mods: Mod[],
+        scorePortion: number,
+        accuracyPortion: number = 1 - scorePortion
+    ): number {
+        return (
+            this.calculateScorePortionScoreV2(
+                score,
+                misses,
+                maxScore,
+                mods,
+                maxScore
+            ) +
+            this.calculateAccuracyPortionScoreV2(
+                accuracy,
+                misses,
+                accuracyPortion
+            )
+        );
+    }
+
+    /**
+     * Calculates the score portion of ScoreV2.
+     *
+     * @param score The score achieved.
+     * @param misses The amount of misses achieved.
+     * @param maxScore The maximum score of the beatmap to calculate.
+     * @param mods The mods that were used.
+     * @param scorePortion The portion of which the maximum score will contribute to ScoreV2.
+     * @returns The score portion of ScoreV2.
+     */
+    static calculateScorePortionScoreV2(
+        score: number,
+        misses: number,
+        maxScore: number,
+        mods: Mod[],
+        scorePortion: number
+    ): number {
+        const applyHiddenPenalty: boolean =
+            mods.filter(
+                (m) => m instanceof ModHidden || m instanceof ModDoubleTime
+            ).length === 2;
+
+        const tempScoreV2: number =
+            Math.sqrt(
+                (score * (mods.some((m) => m instanceof ModNoFail) ? 2 : 1)) /
+                    (maxScore *
+                        (applyHiddenPenalty
+                            ? new ModHidden().scoreMultiplier
+                            : 1))
+            ) *
+            1e6 *
+            scorePortion;
+
+        return Math.max(
+            0,
+            Math.round(
+                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses)
+            )
+        );
+    }
+
+    /**
+     * Calculates the accuracy portion of ScoreV2.
+     *
+     * @param accuracy The accuracy achieved, from 0 to 1.
+     * @param misses The amount of misses achieved.
+     * @param accuracyPortion The portion of which accuracy will contribute to ScoreV2.
+     * @returns The accuracy portion of ScoreV2.
+     */
+    static calculateAccuracyPortionScoreV2(
+        accuracy: number,
+        misses: number,
+        accuracyPortion: number
+    ): number {
+        const tempScoreV2: number =
+            Math.pow(accuracy, 2) * 1e6 * accuracyPortion;
+
+        return Math.max(
+            0,
+            Math.round(
+                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses)
+            )
+        );
+    }
+
+    /**
+     * Gets the ScoreV2 penalty for misses.
+     *
+     * @param tempScoreV2 The temporary ScoreV2 to calculate for.
+     * @param misses The amount of misses achieved.
+     */
+    private static getScoreV2MissPenalty(
+        tempScoreV2: number,
+        misses: number
+    ): number {
+        return misses * 5e-3 * tempScoreV2;
     }
 }

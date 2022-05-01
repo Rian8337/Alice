@@ -23,9 +23,6 @@ export class ProfileBackgroundCollectionManager extends DatabaseCollectionManage
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseProfileBackground>) {
         super(collection);
 

@@ -28,9 +28,6 @@ export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    /**
-     * @param collection The MongoDB collection.
-     */
     constructor(collection: MongoDBCollection<DatabaseProfileBadge>) {
         super(collection);
 

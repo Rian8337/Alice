@@ -30,15 +30,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const total: number = calculatedCount + uncalculatedCount;
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     const message: Message = await interaction.channel!.send({
         content: MessageCreator.createWarn(
             localization.getTranslation("fullRecalcTrackProgress"),
-            calculatedCount.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
-            total.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            ),
+            calculatedCount.toLocaleString(BCP47),
+            total.toLocaleString(BCP47),
             ((calculatedCount * 100) / total).toFixed(2)
         ),
     });
@@ -59,12 +57,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await message.edit({
             content: MessageCreator.createWarn(
                 localization.getTranslation("fullRecalcTrackProgress"),
-                calculatedCount.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                ),
-                total.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                ),
+                calculatedCount.toLocaleString(BCP47),
+                total.toLocaleString(BCP47),
                 ((calculatedCount * 100) / total).toFixed(2)
             ),
         });

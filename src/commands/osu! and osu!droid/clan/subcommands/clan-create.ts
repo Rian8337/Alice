@@ -66,14 +66,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const price: number = 7500;
 
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     if (!playerInfo || playerInfo.alicecoins < price) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),
                 localization.getTranslation("createClan"),
-                price.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                price.toLocaleString(BCP47)
             ),
         });
     }
@@ -105,9 +105,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 localization.getTranslation("createClanConfirmation"),
                 name,
-                price.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                price.toLocaleString(BCP47)
             ),
         },
         [interaction.user.id],
