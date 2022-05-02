@@ -19,7 +19,6 @@ import {
     CacheType,
     CommandInteractionOption,
     DMChannel,
-    GuildMember,
     Interaction,
     NewsChannel,
     TextChannel,
@@ -242,17 +241,6 @@ export const run: EventUtil["run"] = async (
         });
     } catch {
         return;
-    }
-
-    // Partial data handling
-    await client.channels.fetch(interaction.channelId);
-    if (interaction.channel && interaction.channel.type !== "DM") {
-        await interaction.channel.fetch();
-    }
-
-    if (interaction.inGuild()) {
-        await client.guilds.fetch(interaction.guildId);
-        await (<GuildMember>interaction.member).fetch();
     }
 
     // Finally, run the command
