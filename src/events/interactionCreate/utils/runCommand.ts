@@ -12,6 +12,7 @@ import {
 } from "@alice-types/core/CooldownKey";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
@@ -229,28 +230,14 @@ export const run: EventUtil["run"] = async (
 
     client.logger.info(`${logMessage} ${optionsStr}`);
 
-    // Ephemeral handling
-    try {
-        await interaction.deferReply({
-            ephemeral:
-                command?.config.replyEphemeral ||
-                Config.maintenance ||
-                !CommandHelper.isCommandEnabled(interaction) ||
-                subcommand?.config.replyEphemeral ||
-                subcommandGroup?.config.replyEphemeral,
-        });
-    } catch {
-        return;
-    }
-
     // Finally, run the command
     command.run(client, interaction).catch((e: Error) => {
-        interaction.editReply(
-            MessageCreator.createReject(
+        InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
                 localization.getTranslation("commandExecutionFailed"),
                 e.message
-            )
-        );
+            ),
+        });
 
         client.emit("error", e);
     });

@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Message } from "discord.js";
 
@@ -16,7 +17,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
-    await interaction.editReply({
+    await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("fullRecalcInProgress")
         ),

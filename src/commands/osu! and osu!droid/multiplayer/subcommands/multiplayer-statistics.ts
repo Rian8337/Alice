@@ -5,6 +5,7 @@ import { MultiplayerLocalization } from "@alice-localization/commands/osu! and o
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -22,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
           );
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     id ? "roomWithIdDoesntExist" : "roomDoesntExistInChannel"
@@ -31,7 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [
             EmbedCreator.createMultiplayerRoomStatsEmbed(
                 room,

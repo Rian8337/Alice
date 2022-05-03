@@ -10,6 +10,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UnbindLocalization } from "@alice-localization/commands/Bot Creators/unbind/UnbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: UnbindLocalization = new UnbindLocalization(
@@ -26,7 +27,7 @@ export const run: Command["run"] = async (_, interaction) => {
             true
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: localization.getTranslation("invalidUid"),
         });
     }
@@ -37,7 +38,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const bindInfo: UserBind | null = await dbManager.getFromUid(uid);
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("uidNotBinded")
             ),
@@ -50,7 +51,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("unbindFailed"),
                 result.reason!
@@ -58,7 +59,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("unbindSuccessful"),
             uid.toString()

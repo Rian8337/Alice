@@ -5,6 +5,7 @@ import { SettingsLocalization } from "@alice-localization/commands/Staff/setting
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Role } from "discord.js";
 
@@ -34,7 +35,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!guildConfig?.getGuildLogChannel(interaction.guild!)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noLogChannelConfigured")
             ),
@@ -50,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             true
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidTimeoutPermissionDuration")
             ),
@@ -59,7 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await guildConfig.grantTimeoutPermission(role.id, duration);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("grantTimeoutPermissionSuccess"),
             role.name

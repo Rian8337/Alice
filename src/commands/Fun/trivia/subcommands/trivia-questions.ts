@@ -6,6 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { TriviaHelper } from "@alice-utils/helpers/TriviaHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { GuildMember, MessageEmbed } from "discord.js";
@@ -16,7 +17,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (CacheManager.stillHasQuestionTriviaActive.has(interaction.channelId)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("channelHasTriviaQuestionActive")
             ),
@@ -59,7 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     CacheManager.stillHasQuestionTriviaActive.delete(interaction.channelId);
 
     if (result.correctAnswers.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("categoryHasNoQuestionType"),
                 TriviaHelper.getCategoryName(result.category)

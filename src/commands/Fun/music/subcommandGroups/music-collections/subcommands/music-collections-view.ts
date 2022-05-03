@@ -6,6 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!collection) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noCollectionWithName")
             ),
@@ -49,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             collection.videoIds.map((v, i) => `${i + 1}. ${v}`).join("\n")
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

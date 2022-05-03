@@ -11,6 +11,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { SwitchbindLocalization } from "@alice-localization/commands/Bot Creators/switchbind/SwitchbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
     const localization: SwitchbindLocalization = new SwitchbindLocalization(
@@ -27,7 +28,7 @@ export const run: Command["run"] = async (client, interaction) => {
             true
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: localization.getTranslation("invalidUid"),
         });
     }
@@ -42,7 +43,7 @@ export const run: Command["run"] = async (client, interaction) => {
     const bindInfo: UserBind | null = await bindDb.getFromUid(uid);
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("uidNotBinded")
             ),
@@ -56,7 +57,7 @@ export const run: Command["run"] = async (client, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("switchFailed"),
                 result.reason!
@@ -64,7 +65,7 @@ export const run: Command["run"] = async (client, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("switchSuccessful")
         ),

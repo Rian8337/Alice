@@ -9,6 +9,7 @@ import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 /**
  * Retrieves the global leaderboard.
@@ -42,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const page: number = interaction.options.getInteger("page") ?? 1;
 
     if (!NumberHelper.isPositive(page)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidPage")
             ),

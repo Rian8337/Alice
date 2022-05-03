@@ -9,6 +9,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Player } from "@rian8337/osu-droid-utilities";
@@ -21,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
     if (name.length > 25) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanNameIsTooLong")
             ),
@@ -29,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (StringHelper.hasUnicode(name)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanNameHasUnicode")
             ),
@@ -42,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
@@ -52,7 +53,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (bindInfo.clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsAlreadyInClan")
             ),
@@ -69,7 +70,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     if (!playerInfo || playerInfo.alicecoins < price) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),
                 localization.getTranslation("createClan"),
@@ -82,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.elainaDb.collections.clan.getFromName(name);
 
     if (clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanNameIsTaken")
             ),
@@ -92,7 +93,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const player: Player = await Player.getInformation({ uid: bindInfo.uid });
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("profileNotFound")
             ),
@@ -135,7 +136,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ],
     });
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("createClanSuccessful"),
             name

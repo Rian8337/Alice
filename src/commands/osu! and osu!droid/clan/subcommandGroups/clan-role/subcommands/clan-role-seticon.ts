@@ -9,6 +9,7 @@ import { Precision, RequestResponse } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -24,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsNotInClan")
             ),
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!clan.roleIconUnlocked) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roleIconIsNotUnlocked")
             ),
@@ -40,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfHasNoAdministrativePermission")
             ),
@@ -50,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const clanRole: Role | undefined = await clan.getClanRole();
 
     if (!clanRole) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanDoesntHaveClanRole")
             ),
@@ -63,7 +64,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const req: RequestResponse = await RESTManager.request(attachment.url);
 
         if (req.statusCode !== 200) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("cannotDownloadRoleIcon")
                 ),
@@ -77,7 +78,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         try {
             image = await loadImage(icon);
         } catch {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("invalidRoleIconURL")
                 ),
@@ -85,7 +86,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
 
         if (Buffer.byteLength(icon) > 256e3) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("roleIconFileSizeTooBig")
                 ),
@@ -100,7 +101,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 1
             )
         ) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("invalidRoleIconSize")
                 ),
@@ -110,7 +111,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await clanRole.setIcon(icon);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("changeRoleIconSuccessful")
         ),

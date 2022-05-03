@@ -6,6 +6,7 @@ import { MultiplayerLocalization } from "@alice-localization/commands/osu! and o
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfNotInRoom")
             ),
@@ -27,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (room.settings.roomHost !== interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     "noPermissionToExecuteCommand"
@@ -37,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!CacheManager.multiplayerTimers.has(room.channelId)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noTimerSet")
             ),
@@ -49,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await room.updateRoom();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("timerStopFailed"),
                 result.reason!
@@ -61,7 +62,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     CacheManager.multiplayerTimers.delete(room.channelId);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("timerStopSuccess")
         ),

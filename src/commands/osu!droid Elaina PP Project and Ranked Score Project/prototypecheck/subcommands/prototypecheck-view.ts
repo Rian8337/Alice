@@ -13,6 +13,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: PrototypecheckLocalization =
@@ -26,7 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
             ),
@@ -54,7 +55,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!ppInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     !!uid || !!username || !!discordid

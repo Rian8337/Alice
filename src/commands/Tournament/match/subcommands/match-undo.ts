@@ -5,6 +5,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
           );
 
     if (!match) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchDoesntExist")
             ),
@@ -28,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!match.result[0]) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchHasNoResult")
             ),
@@ -54,7 +55,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await match.updateMatch();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("undoMatchFailed"),
                 result.reason!
@@ -62,7 +63,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("undoMatchSuccessful"),
             match.matchid

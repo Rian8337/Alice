@@ -11,6 +11,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { Language } from "@alice-localization/base/Language";
 import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.notAvailableInChannelReject
@@ -34,7 +35,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     )[0];
 
     if (!beatmapId) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapFound")
             ),
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!submission) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noSubmissionWithBeatmap")
             ),
@@ -66,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     ) {
         await submission.delete();
 
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapIsOutdated")
             ),
@@ -76,7 +77,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const embedOptions: MessageOptions =
         (await EmbedCreator.createMapShareEmbed(submission, language))!;
 
-    interaction.editReply(embedOptions);
+    InteractionHelper.reply(interaction, embedOptions);
 };
 
 export const config: Subcommand["config"] = {

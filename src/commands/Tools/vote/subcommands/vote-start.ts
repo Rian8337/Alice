@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { VoteLocalization } from "@alice-localization/commands/Tools/vote/VoteLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -15,7 +16,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const xpReq: number | null = interaction.options.getInteger("xpreq");
 
     if (xpReq && !NumberHelper.isPositive(xpReq)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidXpReq")
             ),
@@ -35,7 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
 
     if (choices.length <= 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooFewChoices")
             ),
@@ -48,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (voteInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("ongoingVoteInChannel")
             ),
@@ -75,7 +76,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }\`\n\n`;
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content:
             MessageCreator.createAccept(
                 localization.getTranslation("voteStartSuccess")

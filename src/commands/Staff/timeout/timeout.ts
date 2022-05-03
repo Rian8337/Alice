@@ -9,6 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { TimeoutLocalization } from "@alice-localization/commands/Staff/timeout/TimeoutLocalization";
 import { Language } from "@alice-localization/base/Language";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -20,7 +21,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!toTimeout) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userToTimeoutNotFound")
             ),
@@ -42,7 +43,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("timeoutFailed"),
                 result.reason!
@@ -50,7 +51,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("timeoutSuccess"),
             DateTimeFormatHelper.secondsToDHMS(duration, language)

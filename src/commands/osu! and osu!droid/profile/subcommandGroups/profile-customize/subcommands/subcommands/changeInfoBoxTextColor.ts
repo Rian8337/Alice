@@ -13,6 +13,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
@@ -28,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.selfNotBindedReject
@@ -76,14 +77,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ) ||
             !NumberHelper.isNumberInRange(RGBA[3], 0, 1, true)
         ) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("invalidRGBAformat")
                 ),
             });
         }
     } else if (!StringHelper.isValidHexCode(color)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("invalidHexCode")
             ),
@@ -113,7 +114,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!image) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfProfileNotFound")
             ),
@@ -154,7 +155,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    return interaction.editReply({
+    return InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("changeInfoTextColorSuccess"),
             interaction.user.toString(),

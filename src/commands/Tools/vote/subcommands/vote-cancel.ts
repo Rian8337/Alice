@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { VoteLocalization } from "@alice-localization/commands/Tools/vote/VoteLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!voteInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noOngoingVoteInChannel")
             ),
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (choiceIndex === -1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notVotedYet")
             ),
@@ -61,7 +62,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }\`\n\n`;
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content:
             MessageCreator.createAccept(
                 localization.getTranslation("voteCancelled"),

@@ -23,6 +23,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/submit/SubmitLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -39,7 +40,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.selfNotBindedReject
@@ -53,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     )[0];
 
     if (!beatmapID) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapNotFound")
             ),
@@ -66,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!beatmapInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapNotFound")
             ),
@@ -79,7 +80,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     if (!score.title) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noScoreSubmitted")
             ),
@@ -91,7 +92,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             score.uid
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("uidIsBanned")
             ),
@@ -103,31 +104,31 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     switch (submissionValidity) {
         case DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED:
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("beatmapIsBlacklisted")
                 ),
             });
         case DPPSubmissionValidity.BEATMAP_NOT_WHITELISTED:
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("beatmapNotWhitelisted")
                 ),
             });
         case DPPSubmissionValidity.BEATMAP_TOO_SHORT:
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("beatmapTooShort")
                 ),
             });
         case DPPSubmissionValidity.SCORE_USES_FORCE_AR:
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("scoreUsesForceAR")
                 ),
             });
         case DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED:
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation(
                         "scoreUsesCustomSpeedMultiplier"
@@ -254,7 +255,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             fieldContent
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("submitSuccessful")
         ),

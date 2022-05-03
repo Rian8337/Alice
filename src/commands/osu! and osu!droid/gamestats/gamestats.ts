@@ -7,6 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { GamestatsLocalization } from "@alice-localization/commands/osu! and osu!droid/gamestats/GamestatsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: GamestatsLocalization = new GamestatsLocalization(
@@ -19,7 +20,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const result: RequestResponse = await apiRequestBuilder.sendRequest();
 
     if (result.statusCode !== 200) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("cannotRetrieveGameStatistics")
             ),
@@ -70,7 +71,7 @@ export const run: Command["run"] = async (_, interaction) => {
             totalScoreCount.toLocaleString(BCP47)
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

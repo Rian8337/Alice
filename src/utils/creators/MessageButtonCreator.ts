@@ -3,6 +3,7 @@ import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Language } from "@alice-localization/base/Language";
 import { MessageButtonCreatorLocalization } from "@alice-localization/utils/creators/MessageButtonCreator/MessageButtonCreatorLocalization";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
     BaseCommandInteraction,
     ButtonInteraction,
@@ -122,7 +123,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         options.components ??= [];
         options.components.push(component);
 
-        const message: Message = <Message>await interaction.editReply(options);
+        const message: Message = await InteractionHelper.reply(
+            interaction,
+            options
+        );
 
         const collector: InteractionCollector<ButtonInteraction> =
             this.createButtonCollector(message, users, duration);
@@ -138,7 +142,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                 if (pressed) {
                     if (pressed.customId === "yes") {
-                        await interaction.editReply({
+                        await InteractionHelper.reply(interaction, {
                             content: MessageCreator.createPrefixedMessage(
                                 localization.getTranslation("pleaseWait"),
                                 Symbols.timer
@@ -146,7 +150,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             components: [],
                         });
                     } else {
-                        await interaction.editReply({
+                        await InteractionHelper.reply(interaction, {
                             content: MessageCreator.createReject(
                                 localization.getTranslation("actionCancelled")
                             ),
@@ -160,7 +164,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         }
                     }
                 } else {
-                    await interaction.editReply({
+                    await InteractionHelper.reply(interaction, {
                         content: MessageCreator.createReject(
                             localization.getTranslation("timedOut")
                         ),
@@ -241,7 +245,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
         await onPageChange(options, startPage, ...onPageChangeArgs);
 
-        const message: Message = <Message>await interaction.editReply(options);
+        const message: Message = await InteractionHelper.reply(
+            interaction,
+            options
+        );
 
         if (pages === 1) {
             return message;
@@ -301,7 +308,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             }
 
             try {
-                await interaction.editReply(options);
+                await InteractionHelper.reply(interaction, options);
                 // eslint-disable-next-line no-empty
             } catch {}
         });

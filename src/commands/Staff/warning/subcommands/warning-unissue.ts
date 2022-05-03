@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { WarningLocalization } from "@alice-localization/commands/Staff/warning/WarningLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!warning) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warningNotFound")
             ),
@@ -35,7 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warnUnissueFailed"),
                 result.reason!
@@ -43,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("warnUnissueSuccess")
         ),

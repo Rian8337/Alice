@@ -1,3 +1,4 @@
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
     CommandInteraction,
     InteractionReplyOptions,
@@ -30,7 +31,10 @@ export abstract class MessageInputCreator {
         duration: number,
         deleteOnInput: boolean = true
     ): Promise<string | undefined> {
-        const message: Message = <Message>await interaction.editReply(options);
+        const message: Message = await InteractionHelper.reply(
+            interaction,
+            options
+        );
 
         const collector: MessageCollector =
             message.channel.createMessageCollector({
@@ -54,7 +58,7 @@ export abstract class MessageInputCreator {
         return new Promise((resolve) => {
             collector.on("end", async (collected) => {
                 if (collected.size === 0) {
-                    await interaction.editReply({
+                    await InteractionHelper.reply(interaction, {
                         content: MessageCreator.createReject("Timed out."),
                     });
 

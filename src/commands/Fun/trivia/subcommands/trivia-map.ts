@@ -23,6 +23,7 @@ import {
 } from "@rian8337/osu-base";
 import { TriviaLocalization } from "@alice-localization/commands/Fun/trivia/TriviaLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     if (fetchAttempt === 5) {
@@ -166,7 +167,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (CacheManager.stillHasMapTriviaActive.has(interaction.channelId)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("channelHasMapTriviaActive")
             ),
@@ -178,7 +179,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     let beatmapCache: MapInfo[] = [];
     let hasEnded: boolean = false;
 
-    await interaction.editReply({
+    await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("mapTriviaStarted")
         ),

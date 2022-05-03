@@ -6,6 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { TextBasedChannel, TextChannel, ThreadChannel } from "discord.js";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const channel: TextBasedChannel = interaction.channel!;
 
     if (!(channel instanceof TextChannel)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidChannelToBind")
             ),
@@ -28,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
 
     if (!match) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchDoesntExist")
             ),
@@ -60,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await match.updateMatch();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("bindMatchFailed"),
                 result.reason!
@@ -68,7 +69,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("bindMatchSuccessful"),
             id

@@ -6,6 +6,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
@@ -18,7 +19,7 @@ export const run: Command["run"] = async (_, interaction) => {
         ) >
         -86400 * 1000 * 7
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userNotInServerForAWeek")
             ),

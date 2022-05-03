@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { VoteLocalization } from "@alice-localization/commands/Tools/vote/VoteLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!voteInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noOngoingVoteInChannel")
             ),
@@ -38,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             true
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidVoteChoice")
             ),
@@ -53,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (pickedChoice === choiceIndex) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("voteChoiceIsSameAsBefore")
             ),
@@ -67,7 +68,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
         if (userXP === null) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("cannotRetrieveTatsuXP")
                 ),
@@ -75,7 +76,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
 
         if (userXP < voteInfo.xpReq) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("tatsuXPTooSmall")
                 ),
@@ -110,7 +111,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (choiceIndex === -1) {
-        interaction.editReply({
+        InteractionHelper.reply(interaction, {
             content:
                 MessageCreator.createAccept(
                     localization.getTranslation("voteRegistered"),
@@ -118,7 +119,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 ) + `\n${string}`,
         });
     } else {
-        interaction.editReply({
+        InteractionHelper.reply(interaction, {
             content:
                 MessageCreator.createAccept(
                     localization.getTranslation("voteMoved"),

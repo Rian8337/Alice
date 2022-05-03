@@ -6,6 +6,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicL
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -21,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (collection) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("collectionWithNameAlreadyExists")
             ),
@@ -35,7 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const videos: VideoSearchResult[] = searchResult.videos;
 
     if (videos.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noTracksFound")
             ),
@@ -78,7 +79,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("createCollectionFailed"),
                 result.reason!
@@ -86,7 +87,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("createCollectionSuccess"),
             name

@@ -10,6 +10,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Config } from "@alice-core/Config";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!Config.isDebug) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("claimNotAvailable")
             ),
@@ -44,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
         if (!result.success) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("dailyClaimFailed"),
                     result.reason!
@@ -56,7 +57,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             localization.language
         );
 
-        interaction.editReply({
+        InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation(
                     streakComplete
@@ -78,7 +79,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             const constantsLocalization: ConstantsLocalization =
                 new ConstantsLocalization(localization.language);
 
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     constantsLocalization.getTranslation(
                         Constants.selfNotBindedReject
@@ -98,7 +99,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
 
         if (!result.success) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("dailyClaimFailed"),
                     result.reason!
@@ -106,7 +107,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
         }
 
-        interaction.editReply({
+        InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("dailyClaimSuccess"),
                 "50",

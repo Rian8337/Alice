@@ -7,6 +7,7 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (description.length >= 2000) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanDescriptionTooLong")
             ),
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsNotInClan")
             ),
@@ -40,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfHasNoAdministrativePermission")
             ),
@@ -69,7 +70,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!editDescResult.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("editDescriptionFailed"),
                 editDescResult.reason!
@@ -80,7 +81,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const finalResult: OperationResult = await clan.updateClan();
 
     if (!finalResult.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("editDescriptionFailed"),
                 finalResult.reason!
@@ -88,7 +89,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("editDescriptionSuccessful")
         ),

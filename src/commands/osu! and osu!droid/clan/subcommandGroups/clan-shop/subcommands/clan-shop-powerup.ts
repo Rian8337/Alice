@@ -10,6 +10,7 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -22,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsNotInClan")
             ),
@@ -39,7 +40,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     if (!playerInfo || playerInfo.alicecoins < cost) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),
                 StringHelper.formatString(
@@ -73,7 +74,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await playerInfo.incrementCoins(-cost, localization.language);
 
     if (!coinDeductionResult.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("buyShopItemFailed"),
                 coinDeductionResult.reason!
@@ -116,7 +117,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!powerup) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("powerupGachaNoResult")
             ),
@@ -128,7 +129,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await clan.updateClan();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("buyShopItemFailed"),
                 result.reason!
@@ -136,7 +137,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: [
             MessageCreator.createAccept(
                 localization.getTranslation("powerupGachaWin"),

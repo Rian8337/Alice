@@ -6,6 +6,7 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsNotInClan")
             ),
@@ -46,7 +47,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setDescription(desc);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

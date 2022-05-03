@@ -8,6 +8,7 @@ import { MultiplayerLocalization } from "@alice-localization/commands/osu! and o
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -21,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomDoesntExistInChannel")
             ),
@@ -29,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (room.settings.teamMode !== MultiplayerTeamMode.teamVS) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomInHeadToHeadMode")
             ),
@@ -69,7 +70,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 .join("\n") || "No players"
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

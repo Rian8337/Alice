@@ -6,6 +6,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Collection, Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -24,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
             ),
@@ -58,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         challenges.get(challengeID);
 
     if (completionData) {
-        interaction.editReply({
+        InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("userHasPlayedChallenge"),
                 challengeID,
@@ -66,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ),
         });
     } else {
-        interaction.editReply({
+        InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("userHasNotPlayedChallenge"),
                 challengeID

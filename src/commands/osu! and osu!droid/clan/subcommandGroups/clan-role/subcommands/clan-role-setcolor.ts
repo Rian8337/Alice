@@ -7,6 +7,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction.options.getString("color") &&
         !StringHelper.isValidHexCode(color)
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidClanRoleHexCode")
             ),
@@ -28,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     // Restrict reserved role color for admin/mod/helper/ref
     if (["#3498DB", "#9543BA", "#FFD78C", "#4C6876"].includes(color)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanRoleHexCodeIsRestricted")
             ),
@@ -41,7 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsNotInClan")
             ),
@@ -49,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!clan.roleColorUnlocked) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roleColorIsNotUnlocked")
             ),
@@ -57,7 +58,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfHasNoAdministrativePermission")
             ),
@@ -67,7 +68,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const clanRole: Role | undefined = await clan.getClanRole();
 
     if (!clanRole) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanDoesntHaveClanRole")
             ),
@@ -76,7 +77,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await clanRole.setColor(<ColorResolvable>color);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("changeRoleColorSuccessful")
         ),

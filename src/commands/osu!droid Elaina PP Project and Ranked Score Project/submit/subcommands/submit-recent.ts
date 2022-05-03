@@ -24,6 +24,7 @@ import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elain
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -40,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.selfNotBindedReject
@@ -52,7 +53,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const player: Player = await Player.getInformation({ uid: bindInfo.uid });
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("profileNotFound")
             ),
@@ -64,7 +65,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             player.uid
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("uidIsBanned")
             ),
@@ -85,7 +86,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (scoresToSubmit.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noScoresInSubmittedList")
             ),
@@ -254,7 +255,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("submitSuccessful")
         ),

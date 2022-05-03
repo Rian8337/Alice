@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Message, MessageAttachment, TextChannel } from "discord.js";
 
@@ -25,7 +26,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     );
 
     if (!StringHelper.isValidImage(attachment.url)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tagAttachmentURLInvalid")
             ),
@@ -39,7 +40,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!tag) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tagDoesntExist")
             ),
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (tag.author !== interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notTagOwner")
             ),
@@ -55,7 +56,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (tag.attachments.length >= 3) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noTagAttachmentSlot")
             ),
@@ -92,14 +93,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             await tag.updateTag();
 
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("attachToTagSuccessful"),
                     name
                 ),
             });
         } catch {
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("tagAttachmentTooBig")
                 ),
@@ -121,14 +122,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             await tag.updateTag();
 
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("attachToTagSuccessful"),
                     name
                 ),
             });
         } catch {
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("tagAttachmentTooBig")
                 ),

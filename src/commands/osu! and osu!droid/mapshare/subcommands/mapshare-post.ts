@@ -9,6 +9,7 @@ import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -18,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.notAvailableInChannelReject
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     )[0];
 
     if (!beatmapId) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapFound")
             ),
@@ -45,7 +46,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!submission) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noSubmissionWithBeatmap")
             ),
@@ -55,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await submission.post(language);
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("postFailed"),
                 result.reason!
@@ -63,7 +64,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("postSuccess")
         ),

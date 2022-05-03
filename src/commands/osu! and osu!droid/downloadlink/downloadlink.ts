@@ -7,6 +7,7 @@ import { MessageEmbed, MessageOptions } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { DownloadlinkLocalization } from "@alice-localization/commands/osu! and osu!droid/downloadlink/DownloadlinkLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: DownloadlinkLocalization = new DownloadlinkLocalization(
@@ -17,7 +18,7 @@ export const run: Command["run"] = async (_, interaction) => {
         BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
 
     if (!beatmapHash) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noCachedBeatmap")
             ),
@@ -30,7 +31,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!beatmapInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapNotAvailable")
             ),
@@ -47,7 +48,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     embed.spliceFields(0, embed.fields.length);
 
-    interaction.editReply(embedOptions);
+    InteractionHelper.reply(interaction, embedOptions);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;

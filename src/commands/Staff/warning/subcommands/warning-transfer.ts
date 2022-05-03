@@ -4,6 +4,7 @@ import { WarningLocalization } from "@alice-localization/commands/Staff/warning/
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { User } from "discord.js";
 
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const toUser: User = interaction.options.getUser("to", true);
 
     if (fromUser.id === toUser.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("cannotTransferToSamePerson")
             ),
@@ -50,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warnTransferFailed"),
                 result.reason!
@@ -58,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("warnTransferSuccess")
         ),

@@ -6,6 +6,7 @@ import { MultiplayerLocalization } from "@alice-localization/commands/osu! and o
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ThreadChannel } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfNotInRoom")
             ),
@@ -27,7 +28,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (room.status.isPlaying) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomIsInPlayingStatus")
             ),
@@ -35,7 +36,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (room.settings.roomHost !== interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     "noPermissionToExecuteCommand"
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
     if (name.length > 50) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("nameTooLong")
             ),
@@ -60,7 +61,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         const result: OperationResult = await room.updateRoom();
 
         if (!result.success) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("setRoomNameFailed"),
                     result.reason!
@@ -78,7 +79,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("setRoomNameSuccess"),
             name

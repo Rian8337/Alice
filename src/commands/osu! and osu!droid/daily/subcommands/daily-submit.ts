@@ -12,6 +12,7 @@ import { DailyLocalization } from "@alice-localization/commands/osu! and osu!dro
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 
@@ -29,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!challenge) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noOngoingChallenge")
             ),
@@ -42,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(Constants.selfNotBindedReject),
         });
     }
@@ -54,7 +55,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!score) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("scoreNotFound")
             ),
@@ -65,7 +66,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await challenge.checkScoreCompletion(score, localization.language);
 
     if (!completionStatus.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("challengeNotCompleted"),
                 completionStatus.reason!
@@ -150,7 +151,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("challengeCompleted"),
             challenge.challengeid,

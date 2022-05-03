@@ -10,6 +10,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const constantsLocalization: ConstantsLocalization =
             new ConstantsLocalization(localization.language);
 
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 constantsLocalization.getTranslation(
                     Constants.noPermissionReject
@@ -34,7 +35,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const addAmount: number = interaction.options.getInteger("amount", true);
 
     if (!NumberHelper.isPositive(addAmount)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addAmountInvalid")
             ),
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!playerInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("otherUserDoesntHaveCoinsInfo")
             ),
@@ -60,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addCoinFailed"),
                 result.reason!
@@ -70,13 +71,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    interaction.editReply(
-        MessageCreator.createAccept(
+    InteractionHelper.reply(interaction, {
+        content: MessageCreator.createAccept(
             localization.getTranslation("addCoinSuccess"),
             addAmount.toLocaleString(BCP47),
             (playerInfo.alicecoins + addAmount).toLocaleString(BCP47)
-        )
-    );
+        ),
+    });
 };
 
 export const config: Subcommand["config"] = {

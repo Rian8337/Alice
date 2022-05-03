@@ -8,6 +8,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { Language } from "@alice-localization/base/Language";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -25,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             Constants.uidMaxLimit
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidUid")
             ),
@@ -36,7 +37,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.aliceDb.collections.nameChange.getFromUid(uid);
 
     if (!nameChange || nameChange.isProcessed) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("uidHasNoActiveRequest")
             ),
@@ -46,7 +47,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await nameChange.accept(language);
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("acceptFailed"),
                 result.reason!
@@ -54,7 +55,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("acceptSuccess")
         ),

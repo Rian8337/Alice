@@ -16,6 +16,7 @@ import { PPcheckLocalization } from "@alice-localization/commands/osu!droid Elai
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { Language } from "@alice-localization/base/Language";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -28,7 +29,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
             ),
@@ -56,7 +57,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     !!uid || !!username || !!discordid

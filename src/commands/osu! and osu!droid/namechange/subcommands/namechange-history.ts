@@ -8,6 +8,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
@@ -25,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             Constants.uidMaxLimit
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidUid")
             ),
@@ -36,7 +37,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.aliceDb.collections.nameChange.getFromUid(uid);
 
     if (!nameChange) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userHasNoHistory")
             ),

@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
@@ -21,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!collection) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noCollectionWithName")
             ),
@@ -29,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (collection.owner !== interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userDoesntOwnCollection")
             ),
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await collection.updateCollection();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("removeVideoFromCollectionFailed"),
                 result.reason!
@@ -55,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("removeVideoFromCollectionSuccess"),
             position.toLocaleString(

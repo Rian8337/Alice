@@ -11,6 +11,7 @@ import { NamechangeLocalization } from "@alice-localization/commands/osu! and os
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
@@ -23,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
@@ -39,7 +40,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (nameChange) {
         if (!nameChange.isProcessed) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("activeRequestExists")
                 ),
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
 
         if (nameChange?.cooldown > Math.floor(Date.now() / 1000)) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("requestCooldownNotExpired"),
                     DateTimeFormatHelper.dateToLocaleString(
@@ -62,7 +63,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const player: Player = await Player.getInformation({ uid: bindInfo.uid });
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("currentBindedAccountDoesntExist")
             ),
@@ -72,7 +73,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const email: string = interaction.options.getString("email", true).trim();
 
     if (email !== player.email) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("emailNotEqualToBindedAccount")
             ),
@@ -88,7 +89,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         StringHelper.hasUnicode(newUsername) ||
         !/^[a-zA-Z0-9_]+$/.test(newUsername)
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("newUsernameContainsUnicode")
             ),
@@ -96,7 +97,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!NumberHelper.isNumberInRange(newUsername.length, 2, 20, true)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("newUsernameTooLong")
             ),
@@ -108,7 +109,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     if (newPlayer.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("newNameAlreadyTaken")
             ),
@@ -123,7 +124,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         newUsername
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("requestSuccess")
         ),

@@ -6,6 +6,7 @@ import { ScanLocalization } from "@alice-localization/commands/Bot Creators/scan
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Collection, Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -18,7 +19,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     let calculatedCount: number = 0;
 
-    await interaction.editReply({
+    await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("scanStarted")
         ),

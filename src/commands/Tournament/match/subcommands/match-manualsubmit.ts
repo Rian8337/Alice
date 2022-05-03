@@ -13,6 +13,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Mod, ModDoubleTime, ModHidden, ModNoFail } from "@rian8337/osu-base";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -37,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
 
     if (!match) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchDoesntExist")
             ),
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     if (Math.ceil(match.player.length / 2) !== team1Scores.length) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("teamPlayerCountDoesntMatch"),
                 "1",
@@ -58,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (Math.floor(match.player.length / 2) !== team2Scores.length) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("teamPlayerCountDoesntMatch"),
                 "2",
@@ -74,7 +75,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!pool) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("mappoolNotFound")
             ),
@@ -84,7 +85,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const map: TournamentBeatmap | null = pool.getBeatmapFromPick(pick);
 
     if (!map) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("mapNotFound")
             ),
@@ -108,7 +109,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             scoreData.length !== 3 ||
             scoreData.map((v) => parseFloat(v)).some(isNaN)
         ) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("scoreDataInvalid"),
                     ((i % 2) + 1).toLocaleString(BCP47),
@@ -205,7 +206,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const finalResult: OperationResult = await match.updateMatch();
 
     if (!finalResult.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("submitMatchFailed"),
                 finalResult.reason!
@@ -213,7 +214,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("submitMatchSuccessful")
         ),

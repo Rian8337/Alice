@@ -7,6 +7,7 @@ import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsL
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Language } from "@alice-localization/base/Language";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -16,8 +17,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(user);
 
-    interaction.editReply(
-        MessageCreator.createAccept(
+    InteractionHelper.reply(interaction, {
+        content: MessageCreator.createAccept(
             new CoinsLocalization(language).getTranslation(
                 user.id === interaction.user.id
                     ? "selfCoinAmountInfo"
@@ -26,8 +27,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             (playerInfo?.alicecoins ?? 0).toLocaleString(
                 LocaleHelper.convertToBCP47(language)
             )
-        )
-    );
+        ),
+    });
 };
 
 export const config: Subcommand["config"] = {

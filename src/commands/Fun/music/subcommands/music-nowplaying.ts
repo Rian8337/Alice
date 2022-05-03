@@ -7,6 +7,7 @@ import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const musicInformation: MusicInfo | undefined =
@@ -16,7 +17,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         musicInformation?.currentlyPlaying;
 
     if (!currentlyPlaying) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new MusicLocalization(
                     await CommandHelper.getLocale(interaction)
@@ -35,7 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         })
         .setColor((<GuildMember>interaction.member).displayColor);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

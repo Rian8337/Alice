@@ -5,6 +5,7 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -18,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanDoesntExist")
             ),
@@ -31,7 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("clanUpkeepInformation"),
             upkeep.toLocaleString(BCP47),

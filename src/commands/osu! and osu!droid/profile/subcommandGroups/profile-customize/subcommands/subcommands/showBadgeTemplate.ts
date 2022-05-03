@@ -7,6 +7,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.selfNotBindedReject
@@ -33,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         language
     );
 
-    interaction.editReply({ files: [template] });
+    InteractionHelper.reply(interaction, { files: [template] });
 };
 
 export const config: Subcommand["config"] = {

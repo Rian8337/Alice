@@ -3,6 +3,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { SkinLocalization } from "@alice-localization/commands/osu! and osu!droid/skin/SkinLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const link: string = interaction.options.getString("url", true);
@@ -12,7 +13,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         link
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new SkinLocalization(
                 await CommandHelper.getLocale(interaction)

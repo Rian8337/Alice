@@ -9,6 +9,7 @@ import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.aliceDb.collections.nameChange.getActiveNameChangeRequests();
 
     if (nameChanges.size === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noActiveRequest")
             ),

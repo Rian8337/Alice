@@ -9,6 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -25,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsNotInClan")
             ),
@@ -33,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfHasNoAdministrativePermission")
             ),
@@ -41,7 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (clan.isMatch) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("powerupActivateInMatchMode")
             ),
@@ -49,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (clan.active_powerups.includes(powerupType)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("powerupIsAlreadyActive")
             ),
@@ -76,7 +77,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const powerup: Powerup | undefined = clan.powerups.get(powerupType);
 
     if (!powerup || powerup.amount === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanDoesntHavePowerup")
             ),
@@ -90,7 +91,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await clan.updateClan();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("activatePowerupFailed"),
                 result.reason!
@@ -98,7 +99,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("activatePowerupSuccessful")
         ),

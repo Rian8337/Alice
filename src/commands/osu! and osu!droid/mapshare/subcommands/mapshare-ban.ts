@@ -11,6 +11,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.notAvailableInServerReject
@@ -37,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null = await dbManager.getFromUser(user);
 
     if (playerInfo?.isBannedFromMapShare) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsAlreadyBanned")
             ),
@@ -64,7 +65,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             );
 
         if (!bindInfo) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     Constants.userNotBindedReject
                 ),
@@ -80,7 +81,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("banFailed"),
                 result.reason!
@@ -88,7 +89,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("banSuccess")
         ),

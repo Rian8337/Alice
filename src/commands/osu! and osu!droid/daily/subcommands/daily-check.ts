@@ -7,6 +7,7 @@ import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!challenge) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new DailyLocalization(language).getTranslation(
                     "noOngoingChallenge"
@@ -29,7 +30,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply(
+    InteractionHelper.reply(
+        interaction,
         await EmbedCreator.createChallengeEmbed(
             challenge,
             challenge.type === "weekly" ? "#af46db" : "#e3b32d",

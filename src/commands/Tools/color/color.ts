@@ -7,6 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ColorLocalization } from "@alice-localization/commands/Tools/color/ColorLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: ColorLocalization = new ColorLocalization(
@@ -16,7 +17,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const color: string = interaction.options.getString("hexcode", true);
 
     if (!StringHelper.isValidHexCode(color)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidHexCode")
             ),
@@ -33,7 +34,7 @@ export const run: Command["run"] = async (_, interaction) => {
         canvas.toBuffer()
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("showingHexColor"),
             color

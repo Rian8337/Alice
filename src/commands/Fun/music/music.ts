@@ -6,12 +6,13 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember } from "discord.js";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { Language } from "@alice-localization/base/Language";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
     if (!(<GuildMember>interaction.member).voice.channelId) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new MusicLocalization(language).getTranslation(
                     "userIsNotInVoiceChannel"

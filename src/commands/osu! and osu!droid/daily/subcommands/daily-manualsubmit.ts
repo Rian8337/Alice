@@ -15,6 +15,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
@@ -41,7 +42,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const url: string = interaction.options.getString("replayurl", true);
 
     if (!StringHelper.isValidURL(url)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidReplayURL")
             ),
@@ -54,7 +55,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
@@ -71,7 +72,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const replayData: RequestResponse = await RESTManager.request(replay.url);
 
     if (replayData.statusCode !== 200) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("replayDownloadFail")
             ),
@@ -85,7 +86,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     try {
         await replayAnalyzer.analyze();
     } catch {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("replayInvalid")
             ),
@@ -95,7 +96,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const data: ReplayData = replayAnalyzer.data!;
 
     if (data.playerName !== bindInfo.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("replayDoesntHaveSameUsername")
             ),
@@ -103,7 +104,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (data.replayVersion < 3) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("replayTooOld")
             ),
@@ -116,7 +117,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!challenge) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("challengeFromReplayNotFound")
             ),
@@ -124,7 +125,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (!challenge.isOngoing) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("challengeNotOngoing")
             ),
@@ -138,7 +139,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!completionStatus.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("challengeNotCompleted"),
                 completionStatus.reason!
@@ -293,7 +294,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("challengeCompleted"),
             challenge.challengeid,

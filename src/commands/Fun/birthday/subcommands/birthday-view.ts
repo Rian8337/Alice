@@ -5,6 +5,7 @@ import { BirthdayLocalization } from "@alice-localization/commands/Fun/birthday/
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed, User } from "discord.js";
 
@@ -21,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!birthday) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     user.id === interaction.user.id
@@ -52,7 +53,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             }`
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

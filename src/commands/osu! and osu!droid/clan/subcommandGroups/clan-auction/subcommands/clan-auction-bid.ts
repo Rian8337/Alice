@@ -11,6 +11,7 @@ import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -25,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.aliceDb.collections.clanAuction.getFromName(name);
 
     if (!auction) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("auctionDoesntExist")
             ),
@@ -33,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!NumberHelper.isPositive(amount)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidClanAuctionBidAmount")
             ),
@@ -46,7 +47,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsNotInClan")
             ),
@@ -59,7 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!playerInfo || playerInfo.alicecoins < amount) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),
                 localization.getTranslation("bidToAuction"),
@@ -92,7 +93,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await playerInfo.incrementCoins(-amount, language);
 
     if (!coinDeductionResult.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionBidFailed"),
                 coinDeductionResult.reason!
@@ -103,7 +104,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const finalResult: OperationResult = await auction.updateAuction();
 
     if (!finalResult.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionBidFailed"),
                 finalResult.reason!
@@ -111,7 +112,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("clanAuctionBidSuccessful")
         ),

@@ -37,6 +37,7 @@ import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelS
 import { UserLocale } from "@alice-database/utils/aliceDb/UserLocale";
 import { CommandHelperLocalization } from "@alice-localization/utils/helpers/CommandHelper/CommandHelperLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "./InteractionHelper";
 
 /**
  * Helpers for commands.
@@ -303,7 +304,7 @@ export abstract class CommandHelper extends Manager {
             this.getLocalization(language);
 
         if (!subcommand) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("commandNotFound")
                 ),
@@ -316,7 +317,7 @@ export abstract class CommandHelper extends Manager {
                 subcommand.config.permissions
             )
         ) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     `${new ConstantsLocalization(language).getTranslation(
                         Constants.noPermissionReject

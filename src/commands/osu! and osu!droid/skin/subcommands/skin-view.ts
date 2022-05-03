@@ -4,6 +4,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { SkinLocalization } from "@alice-localization/commands/osu! and osu!droid/skin/SkinLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.aliceDb.collections.playerSkins.getUserSkin(user);
 
     if (!skinInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content:
                 MessageCreator.createReject(
                     localization.getTranslation("noSkinSetForUser")
@@ -25,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content:
             MessageCreator.createAccept(
                 localization.getTranslation("userSkinInfo"),

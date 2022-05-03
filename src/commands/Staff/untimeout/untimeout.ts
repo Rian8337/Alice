@@ -7,6 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
 import { UntimeoutLocalization } from "@alice-localization/commands/Staff/untimeout/UntimeoutLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: UntimeoutLocalization = new UntimeoutLocalization(
@@ -23,7 +24,7 @@ export const run: Command["run"] = async (_, interaction) => {
             Number.POSITIVE_INFINITY
         ))
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userCannotUntimeoutError")
             ),
@@ -41,7 +42,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("untimeoutFailed"),
                 result.reason!
@@ -49,7 +50,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("untimeoutSuccessful")
         ),

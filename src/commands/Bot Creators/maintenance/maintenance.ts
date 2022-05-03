@@ -5,6 +5,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MaintenanceLocalization } from "@alice-localization/commands/Bot Creators/maintenance/MaintenanceLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
     const reason: string = interaction.options.getString("reason") ?? "Unknown";
@@ -20,7 +21,7 @@ export const run: Command["run"] = async (client, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new MaintenanceLocalization(
                 await CommandHelper.getLocale(interaction)

@@ -7,6 +7,7 @@ import { MultiplayerLocalization } from "@alice-localization/commands/osu! and o
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfNotInRoom")
             ),
@@ -50,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerLeaveFailed"),
                 result.reason!
@@ -58,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             `${localization.getTranslation("playerLeaveSuccess")}${
                 changeHost && room.players.length > 0

@@ -13,6 +13,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { CreateinviteLocalization } from "@alice-localization/commands/Staff/createinvite/CreateinviteLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: CreateinviteLocalization = new CreateinviteLocalization(
@@ -24,7 +25,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!NumberHelper.isNumeric(maxAge) || maxAge < 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("expiryTimeInvalid")
             ),
@@ -34,7 +35,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const maxUsage: number = interaction.options.getInteger("usage") ?? 0;
 
     if (maxUsage < 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("maximumUsageInvalid")
             ),
@@ -81,7 +82,7 @@ export const run: Command["run"] = async (_, interaction) => {
                     invite.url
                 );
 
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 embeds: [embed],
             });
         });

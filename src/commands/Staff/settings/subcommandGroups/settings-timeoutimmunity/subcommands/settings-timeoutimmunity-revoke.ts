@@ -4,6 +4,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Role } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!guildConfig || !guildConfig.getGuildLogChannel(interaction.guild!)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noLogChannelConfigured")
             ),
@@ -28,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await guildConfig.revokeTimeoutImmunity(role.id);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("revokeTimeoutImmunitySuccess"),
             role.name

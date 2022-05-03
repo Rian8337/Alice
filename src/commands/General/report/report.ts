@@ -15,6 +15,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ReportLocalization } from "@alice-localization/commands/General/report/ReportLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -25,7 +26,7 @@ export const run: Command["run"] = async (_, interaction) => {
         !interaction.inCachedGuild() ||
         interaction.guildId !== Constants.mainServer
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.notAvailableInServerReject
@@ -39,7 +40,7 @@ export const run: Command["run"] = async (_, interaction) => {
         .catch(() => null);
 
     if (!toReport) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userToReportNotFound")
             ),
@@ -47,7 +48,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (toReport.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userNotReportable")
             ),
@@ -55,7 +56,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (toReport.id === interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfReportError")
             ),
@@ -111,7 +112,7 @@ export const run: Command["run"] = async (_, interaction) => {
         );
 
     interaction.user.send({ embeds: [replyEmbed] }).catch(() =>
-        interaction.editReply({
+        InteractionHelper.reply(interaction, {
             content: MessageCreator.createWarn(
                 localization.getTranslation("reporterDmLocked"),
                 interaction.user.toString()

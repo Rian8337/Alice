@@ -3,6 +3,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { WarningLocalization } from "@alice-localization/commands/Staff/warning/WarningLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { GuildMember } from "discord.js";
 
@@ -16,7 +17,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .catch(() => null);
 
     if (!member) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userNotFoundInServer")
             ),
@@ -40,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warnIssueFailed"),
                 result.reason!
@@ -48,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("warnIssueSuccess")
         ),

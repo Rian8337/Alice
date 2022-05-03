@@ -10,6 +10,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -27,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(user);
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     interaction.options.getUser("user")
@@ -41,7 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     switch (type) {
         case "battle": {
             if (!bindInfo.clan) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation(
                             interaction.options.getUser("user")
@@ -63,7 +64,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 DateTimeFormatHelper.getTimeDifference(member.battle_cooldown);
 
             if (battleCooldownDifference > 0) {
-                interaction.editReply({
+                InteractionHelper.reply(interaction, {
                     content: MessageCreator.createAccept(
                         localization.getTranslation(
                             interaction.options.getUser("user")
@@ -76,7 +77,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     ),
                 });
             } else {
-                interaction.editReply({
+                InteractionHelper.reply(interaction, {
                     content: MessageCreator.createAccept(
                         localization.getTranslation(
                             interaction.options.getUser("user")
@@ -91,7 +92,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
         case "join": {
             if (bindInfo.clan) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("userIsAlreadyInClan")
                     ),
@@ -160,7 +161,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 );
             }
 
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: responses.join("\n"),
             });
 

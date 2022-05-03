@@ -4,6 +4,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Permissions, Util } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -22,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (name.length > 30) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("nameTooLong")
             ),
@@ -30,7 +31,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (content.length > 1500) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("contentTooLong")
             ),
@@ -44,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!tag) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tagDoesntExist")
             ),
@@ -59,7 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             Permissions.FLAGS.ADMINISTRATOR
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notTagOwner")
             ),
@@ -70,7 +71,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await tag.updateTag();
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("editTagSuccessful"),
             name

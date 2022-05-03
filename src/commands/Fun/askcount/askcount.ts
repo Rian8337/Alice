@@ -5,6 +5,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { AskcountLocalization } from "@alice-localization/commands/Fun/askcount/AskcountLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
@@ -18,16 +19,16 @@ export const run: Command["run"] = async (_, interaction) => {
         );
 
     if (!askCount) {
-        return interaction.editReply(
-            MessageCreator.createReject(
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
                 localization.getTranslation("haveNotAsked")
-            )
-        );
+            ),
+        });
     }
 
     const count: number = askCount.count;
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("askCount"),
             count.toLocaleString(

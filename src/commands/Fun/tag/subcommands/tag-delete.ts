@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Message, Permissions, TextChannel } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
     if (name.length > 30) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("nameTooLong")
             ),
@@ -33,7 +34,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!tag) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tagDoesntExist")
             ),
@@ -48,7 +49,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             Permissions.FLAGS.ADMINISTRATOR
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notTagOwner")
             ),
@@ -73,7 +74,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         name: tag.name,
     });
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("deleteTagSuccessful"),
             name

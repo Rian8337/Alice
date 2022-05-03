@@ -10,6 +10,7 @@ import { RecalculationManager } from "@alice-utils/managers/RecalculationManager
 import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -22,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ...Config.verifyPerm
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.noPermissionReject
@@ -37,13 +38,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(user);
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(Constants.userNotBindedReject),
         });
     }
 
     if (bindInfo.hasAskedForRecalc) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userHasRequestedRecalc")
             ),
@@ -51,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (await bindInfo.isDPPBanned()) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsDPPBanned")
             ),
@@ -60,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     RecalculationManager.queue(interaction, bindInfo.discordid);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("userQueued"),
             user.toString()

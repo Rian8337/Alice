@@ -11,6 +11,7 @@ import { MapInfo } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
 import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -25,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             WhitelistManager.whitelistRole
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.noPermissionReject
@@ -37,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const beatmapLink: string = interaction.options.getString("beatmap", true);
 
     if (!beatmapLink) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapProvided")
             ),
@@ -48,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     let beatmapsetID: number = BeatmapManager.getBeatmapsetID(beatmapLink)[0];
 
     if (!beatmapID && !beatmapsetID) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapIDorSetIDFound")
             ),
@@ -81,7 +82,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (beatmaps.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapsFound")
             ),
@@ -135,7 +136,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: whitelistResponseStrings.join("\n"),
         ...embedOptions,
     });

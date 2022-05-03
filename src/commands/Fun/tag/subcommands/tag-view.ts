@@ -4,6 +4,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageOptions } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -18,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const name: string = interaction.options.getString("name", true);
 
     if (name.length > 30) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("nameTooLong")
             ),
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!tag) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tagDoesntExist")
             ),
@@ -40,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!tag.content && tag.attachments.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     "tagDoesntHaveContentAndAttachments"
@@ -59,7 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         options.files = tag.attachments;
     }
 
-    interaction.editReply(options);
+    InteractionHelper.reply(interaction, options);
 };
 
 export const config: Subcommand["config"] = {

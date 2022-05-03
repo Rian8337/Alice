@@ -8,6 +8,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import {
     Canvas,
@@ -39,7 +40,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         : await dbManager.getFromUser(interaction.user);
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     interaction.options.getString("name")
@@ -137,7 +138,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         options.files = [attachment];
     }
 
-    interaction.editReply(options);
+    InteractionHelper.reply(interaction, options);
 };
 
 export const config: Subcommand["config"] = {

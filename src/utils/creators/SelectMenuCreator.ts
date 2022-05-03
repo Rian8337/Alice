@@ -17,6 +17,7 @@ import { MessageButtonCreator } from "./MessageButtonCreator";
 import { Language } from "@alice-localization/base/Language";
 import { SelectMenuCreatorLocalization } from "@alice-localization/utils/creators/SelectMenuCreator/SelectMenuCreatorLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 /**
  * A utility to create message select menus.
@@ -78,23 +79,21 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         const collector: InteractionCollector<SelectMenuInteraction> =
             this.createSelectMenuCollector(message, users, duration);
 
-        collector.on("collect", async (i) => {
-            await i.deferUpdate();
-
+        collector.on("collect", () => {
             collector.stop();
         });
 
         return new Promise((resolve) => {
             collector.on("end", async (collected) => {
                 if (collected.size > 0) {
-                    await interaction.editReply({
+                    await InteractionHelper.reply(interaction, {
                         content: MessageCreator.createAccept(
                             localization.getTranslation("pleaseWait")
                         ),
                         components: [],
                     });
                 } else {
-                    await interaction.editReply({
+                    await InteractionHelper.reply(interaction, {
                         content: MessageCreator.createReject(
                             localization.getTranslation("timedOut")
                         ),
@@ -108,10 +107,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     }
                 }
 
-                resolve(
-                    (<SelectMenuInteraction | undefined>collected.first())
-                        ?.values ?? []
-                );
+                resolve(collected.first()?.values ?? []);
             });
         });
     }

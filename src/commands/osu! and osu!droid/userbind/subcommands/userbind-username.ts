@@ -9,6 +9,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { Constants } from "@alice-core/Constants";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: UserbindLocalization = new UserbindLocalization(
@@ -25,7 +26,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const player: Player = await Player.getInformation({ username: username });
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("profileNotFound")
             ),
@@ -35,7 +36,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const uidBindInfo: UserBind | null = await dbManager.getFromUid(player.uid);
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("accountHasBeenBindedError")
             ),
@@ -49,7 +50,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     if (userBindInfo) {
         if (!userBindInfo.isUidBinded(player.uid)) {
             if (interaction.guild?.id !== Constants.mainServer) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation(
                             "newAccountBindNotInMainServer"
@@ -59,7 +60,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
 
             if (!email) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("emailNotSpecified")
                     ),
@@ -67,7 +68,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
 
             if (email !== player.email) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("incorrectEmail")
                     ),
@@ -101,7 +102,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
         if (!result.success) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("accountUsernameBindError"),
                     player.username,
@@ -111,7 +112,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
 
         if (userBindInfo.isUidBinded(player.uid)) {
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation(
                         "oldAccountUsernameBindSuccessful"
@@ -120,7 +121,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 ),
             });
         } else {
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation(
                         "newAccountUsernameBindSuccessful"
@@ -132,7 +133,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
     } else {
         if (interaction.guild?.id !== Constants.mainServer) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("newAccountBindNotInMainServer")
                 ),
@@ -140,7 +141,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
 
         if (!email) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("emailNotSpecified")
                 ),
@@ -148,7 +149,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
 
         if (email !== player.email) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("incorrectEmail")
                 ),
@@ -163,7 +164,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
 
         if (!result.success) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("accountUsernameBindError"),
                     result.reason!
@@ -171,7 +172,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             });
         }
 
-        interaction.editReply({
+        InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("newAccountUsernameBindSuccessful"),
                 player.username,

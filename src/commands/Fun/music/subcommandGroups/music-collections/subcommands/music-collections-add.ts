@@ -6,6 +6,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicL
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
@@ -23,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!collection) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("collectionWithNameAlreadyExists")
             ),
@@ -31,7 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (collection.owner !== interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userDoesntOwnCollection")
             ),
@@ -39,7 +40,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (collection.videoIds.length > 10) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("collectionLimitReached")
             ),
@@ -53,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const videos: VideoSearchResult[] = searchResult.videos;
 
     if (videos.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noTracksFound")
             ),
@@ -99,7 +100,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await collection.updateCollection();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addVideoToCollectionFailed"),
                 result.reason!
@@ -107,7 +108,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("addVideoToCollectionSuccess"),
             name,

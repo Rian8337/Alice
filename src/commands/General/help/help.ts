@@ -17,6 +17,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { HelpLocalization } from "@alice-localization/commands/General/help/HelpLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 /**
  * Gets the list of commands that the bot has.
@@ -55,7 +56,7 @@ export const run: Command["run"] = async (client, interaction) => {
         const cmd: Command | undefined = client.commands.get(commandName);
 
         if (!cmd) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("noCommandFound")
                 ),
@@ -187,7 +188,7 @@ export const run: Command["run"] = async (client, interaction) => {
                 true
             );
 
-        interaction.editReply({ embeds: [embed] });
+        InteractionHelper.reply(interaction, { embeds: [embed] });
     } else {
         const commandList: Collection<string, string[]> =
             getCommandList(client);

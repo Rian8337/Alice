@@ -9,6 +9,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -26,7 +27,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!match) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchDoesntExist")
             ),
@@ -41,7 +42,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!pool) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("mappoolNotFound")
             ),
@@ -51,7 +52,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const map: TournamentBeatmap | null = pool.getBeatmapFromPick(pick);
 
     if (!map) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("mapNotFound")
             ),
@@ -77,7 +78,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             true
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("roundInitiated")
         ),

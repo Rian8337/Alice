@@ -3,6 +3,7 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
@@ -44,7 +45,7 @@ export const run: Command["run"] = async (_, interaction) => {
         embeds.push(bannerEmbed);
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: embeds,
     });
 };

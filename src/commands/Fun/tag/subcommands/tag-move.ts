@@ -3,6 +3,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -26,7 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new TagLocalization(
                 await CommandHelper.getLocale(interaction)

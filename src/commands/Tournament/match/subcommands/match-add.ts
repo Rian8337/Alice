@@ -6,6 +6,7 @@ import { DatabaseTournamentMatch } from "@alice-interfaces/database/elainaDb/Dat
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -31,7 +32,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (matchId.split(".").length !== 2) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidMatchID")
             ),
@@ -44,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (existingMatchCheck) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchIDAlreadyTaken")
             ),
@@ -76,7 +77,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             team1PlayersInformation.length - team2PlayersInformation.length
         ) > 1
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("teamPlayerCountDoNotBalance")
             ),
@@ -96,7 +97,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             ) ?? [];
 
         if (teamInfo.length !== 2) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("invalidPlayerInformation"),
                     teamInfo.join(" ")
@@ -114,7 +115,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addMatchFailed"),
                 result.reason!
@@ -122,7 +123,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("addMatchSuccessful"),
             matchId

@@ -11,6 +11,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
@@ -24,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .catch(() => null);
 
     if (!toTransferGuildMember) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userToTransferNotFound")
             ),
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (toTransferGuildMember.user.bot) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userToTransferIsBot")
             ),
@@ -40,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (toTransferGuildMember.id === interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userToTransferIsSelf")
             ),
@@ -53,11 +54,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ) >
         -86400 * 1000 * 7
     ) {
-        return interaction.editReply(
-            MessageCreator.createReject(
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
                 localization.getTranslation("userToTransferNotInServerForAWeek")
-            )
-        );
+            ),
+        });
     }
 
     const transferAmount: number = interaction.options.getInteger(
@@ -66,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!NumberHelper.isPositive(transferAmount)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("transferAmountInvalid")
             ),
@@ -79,7 +80,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!userPlayerInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userDoesntHaveCoinsInfo")
             ),
@@ -93,7 +94,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             userPlayerInfo.alicecoins
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoinsToTransfer")
             ),
@@ -106,7 +107,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!toTransferPlayerInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("otherUserDoesntHaveCoinsInfo")
             ),
@@ -118,7 +119,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("cannotFetchPlayerInformation")
             ),
@@ -174,7 +175,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("coinTransferFailed"),
                 result.reason!
@@ -182,7 +183,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("coinTransferSuccess"),
             transferAmount.toLocaleString(BCP47),

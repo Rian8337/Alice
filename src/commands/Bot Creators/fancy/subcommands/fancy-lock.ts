@@ -5,6 +5,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 import { User } from "discord.js";
 import { FancyLocalization } from "@alice-localization/commands/Bot Creators/fancy/FancyLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: FancyLocalization = new FancyLocalization(
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const reason: string = interaction.options.getString("reason", true);
 
     if (!Number.isFinite(duration)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("durationError")
             ),
@@ -35,7 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("lockProcessFailed"),
                 result.reason!
@@ -43,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("lockProcessSuccessful")
         ),

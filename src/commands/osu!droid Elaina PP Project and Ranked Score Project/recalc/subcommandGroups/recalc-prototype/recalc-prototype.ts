@@ -4,6 +4,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -13,7 +14,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             DPPHelper.ppModeratorRole
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(
                     await CommandHelper.getLocale(interaction)

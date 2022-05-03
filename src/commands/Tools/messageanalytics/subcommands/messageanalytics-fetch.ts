@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageanalyticsLocalization } from "@alice-localization/commands/Tools/messageanalytics/MessageanalyticsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
 import { Collection, Guild, TextChannel } from "discord.js";
 
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         .map((v) => parseInt(v));
 
     if (fromDateEntries.length !== 3 || fromDateEntries.some(Number.isNaN)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("incorrectDateFormat")
             ),
@@ -48,7 +49,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             .map((v) => parseInt(v));
 
         if (toDateEntries.length !== 3 || toDateEntries.some(Number.isNaN)) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("incorrectDateFormat")
                 ),
@@ -68,7 +69,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if ((interaction.options.getString("scope") ?? "channel") === "channel") {
         if (interaction.guildId !== guild.id) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("wrongServer")
                 ),
@@ -76,7 +77,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
 
         if (!(interaction.channel instanceof TextChannel)) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("notATextChannel")
                 ),
@@ -84,7 +85,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
 
         if (MessageAnalyticsHelper.isChannelFiltered(interaction.channel)) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("channelIsFiltered")
                 ),
@@ -100,7 +101,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
     }
 
-    await interaction.editReply({
+    await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("messageFetchStarted")
         ),

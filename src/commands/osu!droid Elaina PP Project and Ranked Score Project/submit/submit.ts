@@ -5,21 +5,20 @@ import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/submit/SubmitLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         !Config.ppChannel.includes(interaction.channel!.id)
     ) {
-        return interaction
-            .editReply({
-                content: MessageCreator.createReject(
-                    new SubmitLocalization(
-                        await CommandHelper.getLocale(interaction)
-                    ).getTranslation("commandNotAllowed")
-                ),
-            })
-            .then(() => setTimeout(() => interaction.deleteReply(), 5 * 1000));
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                new SubmitLocalization(
+                    await CommandHelper.getLocale(interaction)
+                ).getTranslation("commandNotAllowed")
+            ),
+        }).then(() => setTimeout(() => interaction.deleteReply(), 5 * 1000));
     }
 
     CommandHelper.runSubcommandFromInteraction(interaction);

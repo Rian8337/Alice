@@ -6,6 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { AnyChannel, ThreadChannel } from "discord.js";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -18,7 +19,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
 
     if (!match) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchDoesntExist")
             ),
@@ -26,7 +27,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (match.status === "completed") {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchHasEnded")
             ),
@@ -39,7 +40,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("removeMatchFailed"),
                 result.reason!
@@ -58,7 +59,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("removeMatchSuccessful"),
             match.matchid

@@ -26,6 +26,7 @@ import { LeaderboardLocalization } from "@alice-localization/commands/osu! and o
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
@@ -43,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const page: number = interaction.options.getInteger("page") ?? 1;
 
     if (!beatmapID && !hash) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapFound")
             ),
@@ -51,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!NumberHelper.isPositive(page)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidPage")
             ),
@@ -89,7 +90,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!firstPageScores[0]) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapHasNoScores")
             ),

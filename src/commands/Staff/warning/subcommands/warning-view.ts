@@ -5,6 +5,7 @@ import { WarningLocalization } from "@alice-localization/commands/Staff/warning/
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { MessageEmbed } from "discord.js";
 
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!warning) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warningNotFound")
             ),
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction.inCachedGuild() &&
         !(await WarningManager.userCanWarn(interaction.member))
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noPermissionToViewWarning")
             ),
@@ -44,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         localization.language
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

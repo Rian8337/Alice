@@ -14,6 +14,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildEmoji, MessageEmbed, TextChannel } from "discord.js";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -38,7 +39,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     );
 
     if (name.length > 20) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionNameIsTooLong")
             ),
@@ -46,7 +47,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (!NumberHelper.isPositive(amount)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidClanAuctionAmount")
             ),
@@ -54,7 +55,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (!NumberHelper.isPositive(minBidAmount)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidClanAuctionMinimumBid")
             ),
@@ -62,7 +63,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (!NumberHelper.isNumberInRange(duration, 60, 86400, true)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("invalidClanAuctionDuration")
             ),
@@ -75,7 +76,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfIsNotInClan")
             ),
@@ -83,7 +84,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (!clan.hasAdministrativePower(interaction.user)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfHasNoAdministrativePermission")
             ),
@@ -98,7 +99,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             true
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionAmountOutOfBounds"),
                 (clan.powerups.get(powerup)?.amount ?? 0).toLocaleString(
@@ -112,7 +113,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await DatabaseManager.aliceDb.collections.clanAuction.getFromName(name);
 
     if (auctionCheck) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("auctionNameIsTaken")
             ),
@@ -140,7 +141,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const result: OperationResult = await clan.updateClan();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionCreateFailed"),
                 result.reason!
@@ -187,7 +188,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         embeds: [embed],
     });
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createReject(
             localization.getTranslation("clanAuctionCreateSuccessful")
         ),

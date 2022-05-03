@@ -11,6 +11,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ThreadChannel } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -24,7 +25,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (currentPlayerRoom) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfInRoom")
             ),
@@ -37,7 +38,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(id);
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfNotInRoom")
             ),
@@ -45,7 +46,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (room.status.isPlaying) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomIsInPlayingStatus")
             ),
@@ -53,7 +54,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (room.players.length === 20) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomIsFull")
             ),
@@ -64,7 +65,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         room.settings.password &&
         room.settings.password !== interaction.options.getString("password")
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("wrongPassword")
             ),
@@ -77,7 +78,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     "selfAccountNotBinded"
@@ -107,7 +108,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const result: OperationResult = await room.updateRoom();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("joinRoomFailed")
             ),
@@ -125,7 +126,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         ),
     });
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("joinRoomSuccess"),
             room.roomId

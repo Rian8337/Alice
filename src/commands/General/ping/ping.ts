@@ -8,6 +8,7 @@ import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { PingLocalization } from "@alice-localization/commands/General/ping/PingLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
     const localization: PingLocalization = new PingLocalization(
@@ -59,7 +60,7 @@ export const run: Command["run"] = async (client, interaction) => {
             `${Math.round(pings[2])}ms`
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("pong")
         ),

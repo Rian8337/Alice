@@ -6,6 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Snowflake } from "discord.js";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const constantsLocalization: ConstantsLocalization =
@@ -21,7 +22,7 @@ export const run: Command["run"] = async (_, interaction) => {
         !interaction.inCachedGuild() ||
         !whitelistedGuilds.includes(interaction.guildId)
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 constantsLocalization.getTranslation(
                     Constants.notAvailableInServerReject
@@ -31,7 +32,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (!interaction.member.roles.cache.find((r) => r.name === "Referee")) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 constantsLocalization.getTranslation(
                     Constants.noPermissionReject

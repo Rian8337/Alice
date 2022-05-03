@@ -8,6 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
@@ -24,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction.inCachedGuild() &&
         !(await WarningManager.userCanWarn(interaction.member))
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noPermissionToViewWarning")
             ),
@@ -38,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (warnings.size === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     user.id === interaction.user.id

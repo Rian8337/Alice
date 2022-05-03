@@ -6,6 +6,7 @@ import { MessageAttachment, Snowflake } from "discord.js";
 import { PrototypecheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/prototypecheck/PrototypecheckLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: PrototypecheckLocalization =
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
             ),
@@ -47,7 +48,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!ppInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     !!uid || !!username || !!discordid
@@ -104,7 +105,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         `prototype_${ppInfo.uid}_${new Date().toUTCString()}.csv`
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         files: [attachment],
     });
 };

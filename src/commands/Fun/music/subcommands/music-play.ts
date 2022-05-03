@@ -9,6 +9,7 @@ import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -22,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const videos: VideoSearchResult[] = searchResult.videos;
 
     if (videos.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noTracksFound")
             ),
@@ -65,7 +66,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playTrackFailed"),
                 result.reason!
@@ -73,7 +74,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("playTrackSuccess"),
             info.title

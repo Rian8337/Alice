@@ -21,6 +21,7 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MathgameLocalization } from "@alice-localization/commands/Fun/mathgame/MathgameLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 /**
  * Generates an equation and loops the game.
@@ -140,7 +141,7 @@ export const run: Command["run"] = async (_, interaction) => {
     switch (mode) {
         case "single":
             if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("userHasOngoingGame")
                     ),
@@ -153,7 +154,7 @@ export const run: Command["run"] = async (_, interaction) => {
             if (
                 CacheManager.stillHasMathGameActive.has(interaction.channel!.id)
             ) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("channelHasOngoingGame")
                     ),
@@ -223,7 +224,7 @@ export const run: Command["run"] = async (_, interaction) => {
             );
 
             if (!interaction.replied) {
-                await interaction.editReply({
+                await InteractionHelper.reply(interaction, {
                     content: MessageCreator.createAccept(
                         localization.getTranslation("gameStartedNotification")
                     ),

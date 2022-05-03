@@ -17,6 +17,7 @@ import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { VerifyLocalization } from "@alice-localization/commands/Staff/verify/VerifyLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -28,7 +29,7 @@ export const run: Command["run"] = async (_, interaction) => {
             ...Config.verifyPerm
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.noPermissionReject
@@ -41,7 +42,7 @@ export const run: Command["run"] = async (_, interaction) => {
         !(interaction.channel instanceof ThreadChannel) ||
         interaction.channel.parentId !== Constants.verificationChannel
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotAvailableInChannel")
             ),
@@ -55,7 +56,7 @@ export const run: Command["run"] = async (_, interaction) => {
     await interaction.channel!.members.fetch();
 
     if (!interaction.channel!.members.cache.has(toVerify.id)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsNotInThread")
             ),
@@ -71,7 +72,7 @@ export const run: Command["run"] = async (_, interaction) => {
     )!;
 
     if (!toVerify.roles.cache.has(onVerificationRole.id)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsNotInVerification")
             ),
@@ -79,7 +80,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (toVerify.roles.cache.has(memberRole.id)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsAlreadyVerifiedError")
             ),
@@ -94,7 +95,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     await toVerify.roles.set(roles, "Verification");
 
-    await interaction.editReply({
+    await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("verificationSuccess")
         ),

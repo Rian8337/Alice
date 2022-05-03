@@ -6,6 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
 import { VoteLocalization } from "@alice-localization/commands/Tools/vote/VoteLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
@@ -18,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!voteInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noOngoingVoteInChannel")
             ),
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             .permissionsFor(<GuildMember>interaction.member)
             ?.any(Permissions.FLAGS.MANAGE_CHANNELS)
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noEndVotePermission")
             ),
@@ -53,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }\`\n\n`;
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content:
             MessageCreator.createAccept(
                 localization.getTranslation("endVoteSuccess")

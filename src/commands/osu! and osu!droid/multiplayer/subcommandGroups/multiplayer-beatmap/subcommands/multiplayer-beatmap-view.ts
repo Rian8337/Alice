@@ -6,6 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapStats, ModUtil } from "@rian8337/osu-base";
 
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomDoesntExistInChannel")
             ),
@@ -28,14 +29,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!room.settings.beatmap) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapPickedInRoom")
             ),
         });
     }
 
-    interaction.editReply(
+    InteractionHelper.reply(
+        interaction,
         EmbedCreator.createBeatmapEmbed(
             (await BeatmapManager.getBeatmap(room.settings.beatmap.id, false))!,
             new StarRatingCalculationParameters(

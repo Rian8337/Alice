@@ -7,6 +7,7 @@ import { DailyLocalization } from "@alice-localization/commands/osu! and osu!dro
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
@@ -44,7 +45,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (!playerInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userHasNotPlayedAnyChallenge")
             ),
@@ -75,7 +76,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }`
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

@@ -5,6 +5,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         MusicManager.musicInformations.get(interaction.guildId!);
 
     if (!musicInformation) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("botIsNotInVoiceChannel")
             ),
@@ -84,7 +85,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 .join("\n") || localization.getTranslation("none")
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

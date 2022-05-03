@@ -13,6 +13,7 @@ import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Recent5Localization } from "@alice-localization/commands/osu! and osu!droid/recent5/Recent5Localization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -20,7 +21,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const localization: Recent5Localization = new Recent5Localization(language);
 
     if (interaction.options.data.length > 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
             ),
@@ -52,7 +53,7 @@ export const run: Command["run"] = async (_, interaction) => {
             bindInfo = await dbManager.getFromUser(discordid!);
 
             if (!bindInfo) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(language).getTranslation(
                             Constants.userNotBindedReject
@@ -68,7 +69,7 @@ export const run: Command["run"] = async (_, interaction) => {
             bindInfo = await dbManager.getFromUser(interaction.user);
 
             if (!bindInfo) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(language).getTranslation(
                             Constants.selfNotBindedReject
@@ -81,7 +82,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerNotFound")
             ),
@@ -89,7 +90,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (player.recentPlays.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerHasNoRecentPlays")
             ),

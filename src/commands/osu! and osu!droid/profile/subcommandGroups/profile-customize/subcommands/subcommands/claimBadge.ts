@@ -25,6 +25,7 @@ import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!d
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -40,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.selfNotBindedReject
@@ -86,7 +87,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         playerInfoDbManager.defaultDocument.picture_config;
 
     if (pictureConfig.badges.find((b) => b.id === badge.id)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("badgeIsAlreadyClaimed")
             ),
@@ -96,7 +97,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const player: Player = await Player.getInformation({ uid: bindInfo.uid });
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfProfileNotFound")
             ),
@@ -167,7 +168,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             const beatmapID = BeatmapManager.getBeatmapID(beatmapIDInput)[0];
 
             if (isNaN(beatmapID)) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation(
                             "beatmapToClaimBadgeNotValid"
@@ -182,7 +183,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             );
 
             if (!beatmapInfo) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation(
                             "beatmapToClaimBadgeNotFound"
@@ -195,7 +196,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 beatmapInfo.approved !== rankedStatus.RANKED &&
                 beatmapInfo.approved !== rankedStatus.APPROVED
             ) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation(
                             "beatmapToClaimBadgeNotRankedOrApproved"
@@ -227,7 +228,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             }
 
             if (!canUserClaimBadge) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation(
                             "userDoesntHaveScoreinBeatmap"
@@ -243,7 +244,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             break;
         }
         case "unclaimable":
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("badgeUnclaimable")
                 ),
@@ -251,7 +252,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!canUserClaimBadge) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userCannotClaimBadge")
             ),
@@ -277,7 +278,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("claimBadgeSuccess"),
             interaction.user.toString(),

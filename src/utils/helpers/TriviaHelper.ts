@@ -23,6 +23,7 @@ import { TriviaQuestionResult } from "@alice-interfaces/trivia/TriviaQuestionRes
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Language } from "@alice-localization/base/Language";
 import { TriviaHelperLocalization } from "@alice-localization/utils/helpers/TriviaHelper/TriviaHelperLocalization";
+import { InteractionHelper } from "./InteractionHelper";
 
 /**
  * Helper methods for trivia-related features.
@@ -189,8 +190,9 @@ export abstract class TriviaHelper {
             options.components!.push(component);
         }
 
-        const questionMessage: Message = <Message>(
-            await interaction.editReply(options)
+        const questionMessage: Message = await InteractionHelper.reply(
+            interaction,
+            options
         );
 
         const time: number =
@@ -225,7 +227,7 @@ export abstract class TriviaHelper {
                     options.components = [];
 
                     try {
-                        await interaction.editReply(options);
+                        await InteractionHelper.reply(interaction, options);
                         // eslint-disable-next-line no-empty
                     } catch {}
 

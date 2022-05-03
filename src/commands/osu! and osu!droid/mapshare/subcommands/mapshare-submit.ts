@@ -12,6 +12,7 @@ import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
@@ -23,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     )[0];
 
     if (!beatmapId) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapFound")
             ),
@@ -38,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(Constants.selfNotBindedReject),
         });
     }
@@ -49,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!beatmapInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapFound")
             ),
@@ -57,7 +58,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (beatmapInfo.totalDifficulty < 3) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapIsTooEasy")
             ),
@@ -65,7 +66,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (beatmapInfo.objects < 50) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapHasLessThan50Objects")
             ),
@@ -73,7 +74,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (beatmapInfo.circles + beatmapInfo.sliders === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapHasNoCirclesOrSliders")
             ),
@@ -81,7 +82,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (beatmapInfo.hitLength < 30) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapDurationIsLessThan30Secs")
             ),
@@ -92,7 +93,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         beatmapInfo.approved === rankedStatus.WIP ||
         beatmapInfo.approved === rankedStatus.QUALIFIED
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapIsWIPOrQualified")
             ),
@@ -104,7 +105,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             DateTimeFormatHelper.getTimeDifference(beatmapInfo.submitDate) >
             -86400 * 1000 * 7
         ) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("beatmapWasJustSubmitted")
                 ),
@@ -115,7 +116,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             DateTimeFormatHelper.getTimeDifference(beatmapInfo.lastUpdate) >
             -86400 * 1000 * 3
         ) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("beatmapWasJustUpdated")
                 ),
@@ -129,7 +130,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (submission) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapHasBeenUsed")
             ),
@@ -141,7 +142,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     if (wordCount < 50 || wordCount > 120) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("summaryWordCountNotValid"),
                 wordCount.toLocaleString(BCP47)
@@ -150,7 +151,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (summary.length < 100 || summary.length > 900) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("summaryCharacterCountNotValid"),
                 summary.length.toLocaleString(BCP47)
@@ -191,7 +192,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("submitFailed"),
                 result.reason!
@@ -199,7 +200,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("submitSuccess")
         ),

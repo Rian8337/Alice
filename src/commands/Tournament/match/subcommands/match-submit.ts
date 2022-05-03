@@ -15,6 +15,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -37,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                       localization.getTranslation("matchDoesntExist")
                   ),
               })
-            : interaction.editReply({
+            : InteractionHelper.reply(interaction, {
                   content: MessageCreator.createReject(
                       localization.getTranslation("matchDoesntExist")
                   ),
@@ -60,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                       localization.getTranslation("mappoolNotFound")
                   ),
               })
-            : interaction.editReply({
+            : InteractionHelper.reply(interaction, {
                   content: MessageCreator.createReject(
                       localization.getTranslation("mappoolNotFound")
                   ),
@@ -84,7 +85,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                           p[1]
                       ),
                   })
-                : interaction.editReply({
+                : InteractionHelper.reply(interaction, {
                       content: MessageCreator.createReject(
                           localization.getTranslation("playerNotFound"),
                           p[1]
@@ -111,7 +112,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                       localization.getTranslation("mapNotFound")
                   ),
               })
-            : interaction.editReply({
+            : InteractionHelper.reply(interaction, {
                   content: MessageCreator.createReject(
                       localization.getTranslation("mapNotFound")
                   ),
@@ -245,7 +246,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .addField("=================================", `**${description}**`);
 
     if (!interaction.replied) {
-        await interaction.editReply({
+        await InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("matchDataInProcess")
             ),

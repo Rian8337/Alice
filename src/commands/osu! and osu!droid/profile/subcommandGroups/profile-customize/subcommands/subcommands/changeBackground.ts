@@ -16,6 +16,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -28,7 +29,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.selfNotBindedReject
@@ -85,7 +86,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!isBackgroundOwned) {
         if ((playerInfo?.alicecoins ?? 0) < 500) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation(
                         "coinsToBuyBackgroundNotEnough"
@@ -113,7 +114,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     );
 
     if (!image) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfProfileNotFound")
             ),
@@ -161,7 +162,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("switchBackgroundSuccess") +
                 (isBackgroundOwned

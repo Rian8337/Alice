@@ -7,6 +7,7 @@ import { LocaleLocalization } from "@alice-localization/commands/Tools/locale/Lo
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -28,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     "MANAGE_GUILD",
                 ])
             ) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
                             Constants.noPermissionReject
@@ -51,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     "MANAGE_CHANNELS",
                 ])
             ) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
                             Constants.noPermissionReject
@@ -77,7 +78,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clearLocaleFailed"),
                 result.reason!
@@ -85,7 +86,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("clearLocaleSuccess")
         ),

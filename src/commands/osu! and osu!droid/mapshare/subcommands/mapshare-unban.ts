@@ -8,6 +8,7 @@ import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -18,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.notAvailableInServerReject
@@ -35,7 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null = await dbManager.getFromUser(user);
 
     if (!playerInfo || playerInfo.isBannedFromMapShare) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsNotBanned")
             ),
@@ -54,7 +55,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("unbanFailed"),
                 result.reason!
@@ -62,7 +63,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("unbanSuccess")
         ),

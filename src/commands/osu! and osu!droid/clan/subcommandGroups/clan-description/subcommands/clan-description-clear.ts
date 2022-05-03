@@ -10,6 +10,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { Collection, GuildMember, Snowflake } from "discord.js";
 
@@ -27,7 +28,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             await PermissionHelper.getMainGuildStaffMembers(client);
 
         if (!staffMembers.has(interaction.user.id)) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation(
                         "selfHasNoAdministrativePermission"
@@ -46,7 +47,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             );
 
         if (!bindInfo) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     new ConstantsLocalization(language).getTranslation(
                         Constants.selfNotBindedReject
@@ -56,7 +57,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         }
 
         if (!bindInfo.clan) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("selfIsNotInClan")
                 ),
@@ -70,7 +71,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await DatabaseManager.elainaDb.collections.clan.getFromName(clanName);
 
     if (!clan) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanDoesntExist")
             ),
@@ -81,7 +82,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         !clan.hasAdministrativePower(interaction.user) &&
         allowedConfirmations.length === 1
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfHasNoAdministrativePermission")
             ),
@@ -110,7 +111,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     );
 
     if (!editDescResult.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clearDescriptionFailed"),
                 editDescResult.reason!
@@ -121,7 +122,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const finalResult: OperationResult = await clan.updateClan();
 
     if (!finalResult.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clearDescriptionFailed"),
                 finalResult.reason!
@@ -129,7 +130,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("clearDescriptionSuccessful")
         ),

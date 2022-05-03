@@ -8,6 +8,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
@@ -19,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const removeAmount: number = interaction.options.getInteger("amount", true);
 
     if (!NumberHelper.isPositive(removeAmount)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("removeAmountInvalid")
             ),
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!playerInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("otherUserDoesntHaveCoinsInfo")
             ),
@@ -45,7 +46,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("removeCoinFailed"),
                 result.reason!
@@ -55,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("removeCoinSuccess"),
             removeAmount.toLocaleString(BCP47),

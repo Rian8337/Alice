@@ -16,6 +16,7 @@ import { rankedStatus, RequestResponse } from "@rian8337/osu-base";
 import { MapsearchLocalization } from "@alice-localization/commands/osu! and osu!droid/mapsearch/MapsearchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: MapsearchLocalization = new MapsearchLocalization(
@@ -61,7 +62,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const result: RequestResponse = await RESTManager.request(url);
 
     if (result.statusCode !== 200) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("requestFailed")
             ),
@@ -73,7 +74,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const beatmaps: SayobotBeatmap[] = data.data ?? [];
 
     if (beatmaps.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapsFound")
             ),

@@ -8,6 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -23,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (collections.size === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     user.id === interaction.user.id

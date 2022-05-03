@@ -10,6 +10,7 @@ import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { BlacklistLocalization } from "@alice-localization/commands/Bot Creators/blacklist/BlacklistLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: BlacklistLocalization = new BlacklistLocalization(
@@ -21,7 +22,7 @@ export const run: Command["run"] = async (_, interaction) => {
     )[0];
 
     if (!beatmapID) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapProvided")
             ),
@@ -67,7 +68,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!beatmapInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapNotFound")
             ),
@@ -77,7 +78,7 @@ export const run: Command["run"] = async (_, interaction) => {
     switch (pickedChoice) {
         case "blacklist": {
             if (!reason) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("noBlacklistReasonProvided")
                     ),
@@ -92,7 +93,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 );
 
             if (!blacklistResult.success) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("blacklistFailed"),
                         blacklistResult.reason!
@@ -100,7 +101,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 });
             }
 
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("blacklistSuccess"),
                     beatmapInfo.fullTitle
@@ -117,7 +118,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 );
 
             if (!unblacklistResult.success) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("unblacklistFailed"),
                         unblacklistResult.reason!
@@ -125,7 +126,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 });
             }
 
-            interaction.editReply({
+            InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("unblacklistSuccess"),
                     beatmapInfo.fullTitle

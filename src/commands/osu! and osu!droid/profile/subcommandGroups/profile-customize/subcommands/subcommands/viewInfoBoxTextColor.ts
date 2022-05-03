@@ -4,6 +4,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null =
@@ -12,7 +13,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
     const color: string = playerInfo?.picture_config.bgColor ?? "#008BFF";
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new ProfileLocalization(
                 await CommandHelper.getLocale(interaction)

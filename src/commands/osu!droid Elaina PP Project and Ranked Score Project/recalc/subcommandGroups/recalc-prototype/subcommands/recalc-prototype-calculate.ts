@@ -8,6 +8,7 @@ import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elain
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { RecalculationManager } from "@alice-utils/managers/RecalculationManager";
 import { Snowflake } from "discord.js";
 
@@ -22,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
             ),
@@ -50,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     !!uid || !!username || !!discordid
@@ -62,7 +63,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (await bindInfo.isDPPBanned()) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsDPPBanned")
             ),
@@ -71,7 +72,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     RecalculationManager.queuePrototype(interaction, bindInfo.discordid);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("userQueued"),
             `uid ${bindInfo.uid}`

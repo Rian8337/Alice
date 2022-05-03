@@ -4,6 +4,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BirthdayLocalization } from "@alice-localization/commands/Fun/birthday/BirthdayLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: BirthdayLocalization = new BirthdayLocalization(
@@ -26,7 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setBirthdayFailed"),
                 result.reason!
@@ -34,7 +35,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("setBirthdaySuccess"),
             date.toString(),

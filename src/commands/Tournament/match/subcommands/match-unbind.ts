@@ -6,6 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ThreadChannel } from "discord.js";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
@@ -21,7 +22,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
           );
 
     if (!match) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchDoesntExist")
             ),
@@ -37,7 +38,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const result: OperationResult = await match.updateMatch();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("unbindMatchFailed"),
                 result.reason!
@@ -45,7 +46,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    await interaction.editReply({
+    await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("unbindMatchSuccessful"),
             match.matchid

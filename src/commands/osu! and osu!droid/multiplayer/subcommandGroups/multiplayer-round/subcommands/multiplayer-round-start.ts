@@ -9,6 +9,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
@@ -26,7 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfNotInRoom")
             ),
@@ -34,7 +35,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (room.settings.roomHost !== interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     "noPermissionToExecuteCommand"
@@ -44,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (room.status.isPlaying) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomIsInPlayingStatus")
             ),
@@ -56,7 +57,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     )!;
 
     if (roomHost.isSpectating && room.players.length <= 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooFewPlayers")
             ),
@@ -64,7 +65,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!room.settings.beatmap) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapPicked")
             ),
@@ -72,7 +73,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (CacheManager.multiplayerTimers.has(room.channelId)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("timerIsSet")
             ),
@@ -85,7 +86,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
         if (unreadyPlayers.length > 0) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("playerNotReady"),
                     unreadyPlayers.map((p) => p.username).join(", ")
@@ -99,7 +100,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await room.updateRoom();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roundStartFailed")
             ),
@@ -129,7 +130,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const result: OperationResult = await room.updateRoom();
 
         if (!result.success) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("roundStartFailed"),
                     result.reason!
@@ -241,7 +242,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     CacheManager.multiplayerTimers.set(room.channelId, timeout);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("roundStartSuccess"),
             duration.toLocaleString(BCP47)

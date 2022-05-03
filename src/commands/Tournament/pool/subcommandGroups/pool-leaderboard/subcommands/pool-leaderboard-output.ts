@@ -6,6 +6,7 @@ import { TournamentScore } from "@alice-interfaces/tournament/TournamentScore";
 import { PoolLocalization } from "@alice-localization/commands/Tournament/pool/PoolLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAttachment } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -23,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!pool) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("poolNotFound")
             ),
@@ -33,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const map: TournamentBeatmap | null = pool.getBeatmapFromPick(pick);
 
     if (!map) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("mapNotFound")
             ),
@@ -43,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const scores: TournamentScore[] = await pool.getBeatmapLeaderboard(pick);
 
     if (scores.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapHasNoScores")
             ),
@@ -81,7 +82,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         `leaderboard_${map.name}.csv`
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         files: [attachment],
     });
 };

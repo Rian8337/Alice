@@ -7,6 +7,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MapStats, ModUtil } from "@rian8337/osu-base";
 import { MessageEmbed } from "discord.js";
 
@@ -21,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfNotInRoom")
             ),
@@ -29,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (!room.status.isPlaying) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomIsNotInPlayingStatus")
             ),
@@ -37,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (room.settings.roomHost !== interaction.user.id) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     "noPermissionToExecuteCommand"
@@ -55,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         Date.now() - room.status.playingSince <
         (room.settings.beatmap!.duration / stats.speedMultiplier + 30) * 1000
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapNotFinished")
             ),

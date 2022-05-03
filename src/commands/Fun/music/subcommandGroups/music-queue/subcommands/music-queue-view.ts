@@ -8,6 +8,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const queue: MusicQueue[] = musicInformation?.queue ?? [];
 
     if (queue.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("queueIsEmpty")
             ),
@@ -44,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

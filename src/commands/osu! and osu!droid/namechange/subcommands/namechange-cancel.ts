@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!nameChange || nameChange.isProcessed) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userHasNoActiveRequest")
             ),
@@ -27,14 +28,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await nameChange.cancel();
 
     if (!result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("cancelFailed")
             ),
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createReject(
             localization.getTranslation("cancelSuccess")
         ),

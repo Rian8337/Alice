@@ -10,6 +10,7 @@ import { NewsChannel, TextChannel, ThreadChannel } from "discord.js";
 import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -31,7 +32,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const command: Command | undefined = client.commands.get(commandName);
 
     if (!command) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotFound")
             ),
@@ -42,7 +43,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         command.config.permissions.some((v) => v === "BOT_OWNER")
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("cannotDisableCommand")
             ),
@@ -58,7 +59,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     "MANAGE_CHANNELS",
                 ])
             ) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
                             Constants.noPermissionReject
@@ -81,7 +82,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     "MANAGE_GUILD",
                 ])
             ) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
                             Constants.noPermissionReject
@@ -99,7 +100,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         case "global":
             // Only allow bot owners to globally set a command's cooldown
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
                             Constants.noPermissionReject
@@ -116,7 +117,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (result && !result.success) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setCommandCooldownFailed"),
                 result.reason!
@@ -124,7 +125,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("setCommandCooldownSuccess"),
             commandName,

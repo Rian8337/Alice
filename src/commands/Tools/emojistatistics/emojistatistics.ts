@@ -13,6 +13,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: EmojistatisticsLocalization =
@@ -26,7 +27,7 @@ export const run: Command["run"] = async (_, interaction) => {
         );
 
     if (!stats) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("serverHasNoData")
             ),
@@ -67,7 +68,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (validEmojis.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noValidEmojis")
             ),

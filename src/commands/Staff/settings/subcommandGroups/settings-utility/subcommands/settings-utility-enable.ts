@@ -7,6 +7,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import {
     Collection,
@@ -33,7 +34,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         client.eventUtilities.get(event);
 
     if (!eventUtilities) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("eventNotFound")
             ),
@@ -43,7 +44,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const util: EventUtil | undefined = eventUtilities.get(utility);
 
     if (!util) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("eventUtilityNotFound")
             ),
@@ -56,7 +57,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             util.config.togglePermissions
         )
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.noPermissionReject
@@ -85,7 +86,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         case "global":
             // Only allow bot owners to globally enable an event utility
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(language).getTranslation(
                             Constants.noPermissionReject
@@ -97,7 +98,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             break;
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("eventUtilityEnableSuccess"),
             utility,

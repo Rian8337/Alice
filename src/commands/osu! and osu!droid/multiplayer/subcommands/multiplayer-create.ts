@@ -9,6 +9,7 @@ import { MultiplayerLocalization } from "@alice-localization/commands/osu! and o
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { TextChannel, ThreadChannel } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     if (!interaction.channel?.isText() || interaction.channel.isThread()) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     "commandNotAvailableInChannel"
@@ -32,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (room) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfInRoom")
             ),
@@ -46,7 +47,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const password: string | null = interaction.options.getString("password");
 
     if (id.length > 20) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("idTooLong")
             ),
@@ -54,7 +55,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     if (name.length > 50) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("nameTooLong")
             ),
@@ -67,7 +68,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     "selfAccountNotBinded"
@@ -120,7 +121,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         await thread.delete("Multiplayer room creation failed");
 
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("createRoomFailed")
             ),
@@ -129,7 +130,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await thread.members.add(interaction.user, "User created multiplayer room");
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("createRoomSuccess")
         ),

@@ -22,6 +22,7 @@ import {
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { CalculateLocalization } from "@alice-localization/commands/osu! and osu!droid/calculate/CalculateLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: CalculateLocalization = new CalculateLocalization(
@@ -37,7 +38,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!beatmapID && !hash) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noBeatmapProvided")
             ),
@@ -48,7 +49,7 @@ export const run: Command["run"] = async (_, interaction) => {
         beatmapID &&
         (isNaN(beatmapID) || !NumberHelper.isPositive(beatmapID))
     ) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapProvidedIsInvalid")
             ),
@@ -128,7 +129,7 @@ export const run: Command["run"] = async (_, interaction) => {
           ));
 
     if (!droidCalcResult || !osuCalcResult) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapNotFound")
             ),
@@ -171,7 +172,7 @@ export const run: Command["run"] = async (_, interaction) => {
         osuCalcResult.map.hash
     );
 
-    interaction.editReply(calcEmbedOptions);
+    InteractionHelper.reply(interaction, calcEmbedOptions);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;

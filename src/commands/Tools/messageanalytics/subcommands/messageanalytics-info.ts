@@ -23,6 +23,7 @@ import {
 } from "@alice-localization/commands/Tools/messageanalytics/MessageanalyticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 /**
  * Converts days to milliseconds.
@@ -53,7 +54,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             .map((v) => parseInt(v));
 
         if (dateEntries.length !== 3 || dateEntries.some(Number.isNaN)) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("incorrectDateFormat")
                 ),
@@ -66,7 +67,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     date.setUTCHours(0, 0, 0, 0);
 
     if (date.getTime() < guild.createdTimestamp) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("dateBeforeGuildCreationError")
             ),
@@ -74,7 +75,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (date.getTime() > Date.now()) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("dateHasntPassed")
             ),
@@ -124,7 +125,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (activityData.size === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noActivityDataOnDate")
             ),

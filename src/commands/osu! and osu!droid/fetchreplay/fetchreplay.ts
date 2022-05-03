@@ -34,6 +34,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -53,7 +54,7 @@ export const run: Command["run"] = async (_, interaction) => {
         : "";
 
     if (!beatmapID && !hash) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapNotProvided")
             ),
@@ -67,7 +68,7 @@ export const run: Command["run"] = async (_, interaction) => {
             );
 
         if (!bindInfo) {
-            return interaction.editReply({
+            return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     Constants.selfNotBindedReject
                 ),
@@ -88,7 +89,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const score: Score = await Score.getFromHash({ uid: uid, hash: hash });
 
     if (!score.title) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     interaction.options.getInteger("uid")
@@ -104,7 +105,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const data: ReplayData | null | undefined = score.replay?.data;
 
     if (!data) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noReplayFound")
             ),
@@ -157,7 +158,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (!beatmapInfo?.map) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("fetchReplayNoBeatmapSuccessful"),
                 score.rank,
@@ -215,7 +216,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     calcEmbedOptions.files?.push(replayAttachment);
 
-    interaction.editReply(calcEmbedOptions);
+    InteractionHelper.reply(interaction, calcEmbedOptions);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;

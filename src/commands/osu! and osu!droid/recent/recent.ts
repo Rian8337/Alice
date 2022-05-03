@@ -13,6 +13,7 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { RecentLocalization } from "@alice-localization/commands/osu! and osu!droid/recent/RecentLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: RecentLocalization = new RecentLocalization(
@@ -25,7 +26,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
             ),
@@ -52,7 +53,7 @@ export const run: Command["run"] = async (_, interaction) => {
             bindInfo = await dbManager.getFromUser(discordid!);
 
             if (!bindInfo) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
                             localization.language
@@ -68,7 +69,7 @@ export const run: Command["run"] = async (_, interaction) => {
             bindInfo = await dbManager.getFromUser(interaction.user);
 
             if (!bindInfo) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
                             localization.language
@@ -81,7 +82,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerNotFound")
             ),
@@ -89,7 +90,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (player.recentPlays.length === 0) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerHasNoRecentPlays")
             ),
@@ -99,7 +100,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const index: number = interaction.options.getInteger("index") ?? 1;
 
     if (!player.recentPlays[index - 1]) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playIndexOutOfBounds"),
                 index.toString()
@@ -119,7 +120,7 @@ export const run: Command["run"] = async (_, interaction) => {
         localization.language
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("recentPlayDisplay"),
             player.username

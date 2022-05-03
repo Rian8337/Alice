@@ -10,6 +10,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -22,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
             ),
@@ -41,7 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             player = await Player.getInformation({ uid: uid! });
             uid = player.uid;
             if (!uid) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("userProfileNotFound")
                     ),
@@ -52,7 +53,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             player = await Player.getInformation({ username: username! });
             uid = player.uid;
             if (!uid) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("userProfileNotFound")
                     ),
@@ -63,7 +64,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             bindInfo = await dbManager.getFromUser(discordid!);
             uid = bindInfo?.uid;
             if (!uid) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
                             localization.language
@@ -77,7 +78,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             bindInfo = await dbManager.getFromUser(interaction.user);
             uid = bindInfo?.uid;
             if (!uid) {
-                return interaction.editReply({
+                return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
                             localization.language
@@ -90,7 +91,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     player ??= await Player.getInformation({ uid: uid });
 
     if (!player.username) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
                     uid || username || discordid
@@ -111,7 +112,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         localization.language
     ))!;
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("viewingProfile"),
             player.username,

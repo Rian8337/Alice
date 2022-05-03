@@ -11,6 +11,7 @@ import { MapInfo } from "@rian8337/osu-base";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { ScanLocalization } from "@alice-localization/commands/Bot Creators/scan/ScanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: ScanLocalization = new ScanLocalization(
@@ -20,7 +21,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const whitelistDb: MapWhitelistCollectionManager =
         DatabaseManager.elainaDb.collections.mapWhitelist;
 
-    await interaction.editReply({
+    await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("scanStarted")
         ),

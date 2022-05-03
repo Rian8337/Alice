@@ -5,6 +5,7 @@ import { MatchLocalization } from "@alice-localization/commands/Tournament/match
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -17,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
           );
 
     if (!match) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new MatchLocalization(
                     await CommandHelper.getLocale(interaction)
@@ -28,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const embed: MessageEmbed = EmbedCreator.createMatchSummaryEmbed(match);
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

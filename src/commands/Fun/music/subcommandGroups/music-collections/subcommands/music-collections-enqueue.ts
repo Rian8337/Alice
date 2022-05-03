@@ -5,6 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
@@ -24,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     if (!collection) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noCollectionWithName")
             ),
@@ -49,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ++enqueuedCount;
     }
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("enqueueFromCollectionSuccess"),
             enqueuedCount.toLocaleString(

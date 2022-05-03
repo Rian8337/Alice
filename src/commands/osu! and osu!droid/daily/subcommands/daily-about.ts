@@ -3,6 +3,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildEmoji, GuildMember, MessageEmbed } from "discord.js";
 
@@ -60,7 +61,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             localization.getTranslation("aboutQuestion5")
         );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         embeds: [embed],
     });
 };

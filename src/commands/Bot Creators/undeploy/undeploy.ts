@@ -5,6 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommand } from "discord.js";
 import { UndeployLocalization } from "@alice-localization/commands/Bot Creators/undeploy/UndeployLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (client, interaction) => {
     const localization: UndeployLocalization = new UndeployLocalization(
@@ -26,7 +27,7 @@ export const run: Command["run"] = async (client, interaction) => {
     ).commands.cache.find((v) => v.name === commandName);
 
     if (!command) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotFound")
             ),
@@ -37,7 +38,7 @@ export const run: Command["run"] = async (client, interaction) => {
         command
     );
 
-    interaction.editReply({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("commandUndeploySuccessful"),
             commandName

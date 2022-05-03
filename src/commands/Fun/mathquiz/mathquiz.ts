@@ -8,6 +8,7 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MathquizLocalization } from "@alice-localization/commands/Fun/mathquiz/MathquizLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
     const localization: MathquizLocalization = new MathquizLocalization(
@@ -15,7 +16,7 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 
     if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userStillHasActiveGame")
             ),
@@ -35,14 +36,14 @@ export const run: Command["run"] = async (_, interaction) => {
     const answer: number = mathEquation.answer;
 
     if (isNaN(answer)) {
-        return interaction.editReply({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("equationGeneratorError")
             ),
         });
     }
 
-    const msg: Message = <Message>await interaction.editReply({
+    const msg: Message = <Message>await InteractionHelper.reply(interaction, {
         content: MessageCreator.createWarn(
             localization.getTranslation("equationQuestion"),
             interaction.user.toString(),
@@ -83,14 +84,14 @@ export const run: Command["run"] = async (_, interaction) => {
 
     collector.on("end", () => {
         if (!correct) {
-            interaction.editReply(
-                MessageCreator.createReject(
+            InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
                     localization.getTranslation("wrongAnswer"),
                     interaction.user.toString(),
                     realEquation,
                     answer.toString()
-                )
-            );
+                ),
+            });
         }
 
         CacheManager.stillHasMathGameActive.delete(interaction.user.id);
