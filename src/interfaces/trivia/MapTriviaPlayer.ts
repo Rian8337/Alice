@@ -1,4 +1,4 @@
-import { Snowflake } from "discord-api-types";
+import { Snowflake } from "discord.js";
 
 /**
  * Represents a player in map trivia.
