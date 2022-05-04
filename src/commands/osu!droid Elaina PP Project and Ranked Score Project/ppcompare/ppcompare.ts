@@ -7,7 +7,6 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { Command } from "@alice-interfaces/core/Command";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { Language } from "@alice-localization/base/Language";
 import {
     PPcompareLocalization,
     PPcompareStrings,
@@ -23,10 +22,8 @@ import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: PPcompareLocalization = new PPcompareLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const dbManager: UserBindCollectionManager =
@@ -100,9 +97,9 @@ export const run: Command["run"] = async (_, interaction) => {
         if (!secondBindInfo && !otherUid && !otherUser && !otherUsername) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    new ConstantsLocalization(language).getTranslation(
-                        Constants.selfNotBindedReject
-                    )
+                    new ConstantsLocalization(
+                        localization.language
+                    ).getTranslation(Constants.selfNotBindedReject)
                 ),
             });
         }

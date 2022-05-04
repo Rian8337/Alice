@@ -3,7 +3,6 @@ import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMapp
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
-import { Language } from "@alice-localization/base/Language";
 import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -13,9 +12,9 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: MatchLocalization = new MatchLocalization(language);
+    const localization: MatchLocalization = new MatchLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const pick: string = interaction.options
         .getString("pick", true)
@@ -74,7 +73,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         .addField(localization.getTranslation("map"), map.pickId, true)
         .addField(
             localization.getTranslation("mapLength"),
-            DateTimeFormatHelper.secondsToDHMS(timeLimit, language),
+            DateTimeFormatHelper.secondsToDHMS(
+                timeLimit,
+                localization.language
+            ),
             true
         );
 

@@ -3,7 +3,6 @@ import { Constants } from "@alice-core/Constants";
 import { Command } from "@alice-interfaces/core/Command";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { RunCommandLocalization } from "@alice-localization/events/interactionCreate/runCommand/RunCommandLocalization";
 import {
@@ -35,10 +34,8 @@ export const run: EventUtil["run"] = async (
     }
 
     // 3 seconds should be enough to get the user's locale
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: RunCommandLocalization = new RunCommandLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const botOwnerExecution: boolean =
@@ -102,7 +99,9 @@ export const run: EventUtil["run"] = async (
     ) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                `${new ConstantsLocalization(language).getTranslation(
+                `${new ConstantsLocalization(
+                    localization.language
+                ).getTranslation(
                     Constants.noPermissionReject
                 )} ${localization.getTranslation("requiredPermissions")}`,
                 PermissionHelper.getPermissionString(command.config.permissions)

@@ -12,15 +12,14 @@ import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ReportLocalization } from "@alice-localization/commands/General/report/ReportLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ReportLocalization = new ReportLocalization(language);
+    const localization: ReportLocalization = new ReportLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (
         !interaction.inCachedGuild() ||
@@ -28,7 +27,7 @@ export const run: Command["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.notAvailableInServerReject
                 )
             ),

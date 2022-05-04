@@ -8,19 +8,16 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { NewsChannel, TextChannel, ThreadChannel } from "discord.js";
 import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
-import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: SettingsLocalization = new SettingsLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const constantsLocalization: ConstantsLocalization =
-        new ConstantsLocalization(language);
+        new ConstantsLocalization(localization.language);
 
     const commandName: string = interaction.options.getString("command", true);
 

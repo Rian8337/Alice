@@ -13,16 +13,15 @@ import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { VerifyLocalization } from "@alice-localization/commands/Staff/verify/VerifyLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: VerifyLocalization = new VerifyLocalization(language);
+    const localization: VerifyLocalization = new VerifyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (
         !(<GuildMember>interaction.member).roles.cache.hasAny(
@@ -31,7 +30,7 @@ export const run: Command["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.noPermissionReject
                 )
             ),

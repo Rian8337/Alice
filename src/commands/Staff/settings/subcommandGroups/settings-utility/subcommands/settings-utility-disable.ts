@@ -1,7 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
@@ -17,10 +16,8 @@ import {
 } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: SettingsLocalization = new SettingsLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const event: string = interaction.options.getString("event", true);
@@ -59,7 +56,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.noPermissionReject
                 )
             ),
@@ -88,9 +85,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(
-                            Constants.noPermissionReject
-                        )
+                        new ConstantsLocalization(
+                            localization.language
+                        ).getTranslation(Constants.noPermissionReject)
                     ),
                 });
             }

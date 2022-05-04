@@ -7,14 +7,13 @@ import yts, { SearchResult, VideoSearchResult } from "yt-search";
 import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
-import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: MusicLocalization = new MusicLocalization(language);
+    const localization: MusicLocalization = new MusicLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const searchResult: SearchResult = await yts(
         interaction.options.getString("query", true)
@@ -62,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         (<GuildMember>interaction.member).voice.channel!,
         <TextChannel | ThreadChannel>interaction.channel!,
         new MusicQueue(info, interaction.user.id),
-        language
+        localization.language
     );
 
     if (!result.success) {
