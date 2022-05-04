@@ -23,8 +23,6 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const embeds: MessageEmbed[] = [avatarEmbed];
 
-    await user.fetch(true);
-
     if (user.banner) {
         const bannerEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
             color: (<GuildMember | null>interaction.member)?.displayColor,

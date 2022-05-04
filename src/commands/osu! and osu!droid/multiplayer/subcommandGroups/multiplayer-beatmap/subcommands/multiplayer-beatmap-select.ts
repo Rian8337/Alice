@@ -53,13 +53,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction.options.getString("beatmap", true)
     )[0];
 
-    if (isNaN(beatmapId) || !NumberHelper.isPositive(beatmapId)) {
+    if (
+        !NumberHelper.isNumeric(beatmapId) ||
+        !NumberHelper.isPositive(beatmapId)
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("beatmapProvidedIsInvalid")
             ),
         });
     }
+
+    await InteractionHelper.defer(interaction);
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapId,

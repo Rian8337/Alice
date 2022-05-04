@@ -9,16 +9,15 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Recent5Localization } from "@alice-localization/commands/osu! and osu!droid/recent5/Recent5Localization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: Recent5Localization = new Recent5Localization(language);
+    const localization: Recent5Localization = new Recent5Localization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (interaction.options.data.length > 1) {
         return InteractionHelper.reply(interaction, {
@@ -27,6 +26,8 @@ export const run: Command["run"] = async (_, interaction) => {
             ),
         });
     }
+
+    await InteractionHelper.defer(interaction);
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -55,9 +56,9 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(
-                            Constants.userNotBindedReject
-                        )
+                        new ConstantsLocalization(
+                            localization.language
+                        ).getTranslation(Constants.userNotBindedReject)
                     ),
                 });
             }
@@ -71,9 +72,9 @@ export const run: Command["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        new ConstantsLocalization(language).getTranslation(
-                            Constants.selfNotBindedReject
-                        )
+                        new ConstantsLocalization(
+                            localization.language
+                        ).getTranslation(Constants.selfNotBindedReject)
                     ),
                 });
             }
@@ -97,7 +98,11 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    ScoreDisplayHelper.showRecentPlays(interaction, player, language);
+    ScoreDisplayHelper.showRecentPlays(
+        interaction,
+        player,
+        localization.language
+    );
 };
 
 export const category: Command["category"] = CommandCategory.OSU;

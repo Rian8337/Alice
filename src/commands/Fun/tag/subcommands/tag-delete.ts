@@ -58,6 +58,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     // Also delete attachment
     if (tag.attachment_message) {
+        await InteractionHelper.defer(interaction);
+
         const channel: TextChannel = <TextChannel>(
             await client.channels.fetch(Constants.tagAttachmentChannel)
         );

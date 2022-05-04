@@ -34,6 +34,8 @@ export const run: Command["run"] = async (_, interaction) => {
     const reason: string =
         interaction.options.getString("reason") ?? "Not specified.";
 
+    await InteractionHelper.defer(interaction);
+
     const result: OperationResult = await TimeoutManager.removeTimeout(
         toUntimeout,
         interaction,

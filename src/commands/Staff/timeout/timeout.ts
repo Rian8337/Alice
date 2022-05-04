@@ -8,13 +8,12 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { TimeoutLocalization } from "@alice-localization/commands/Staff/timeout/TimeoutLocalization";
-import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: TimeoutLocalization = new TimeoutLocalization(language);
+    const localization: TimeoutLocalization = new TimeoutLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const toTimeout: GuildMember = await interaction.guild!.members.fetch(
         interaction.options.getUser("user", true)
@@ -34,12 +33,14 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason", true);
 
+    await InteractionHelper.defer(interaction);
+
     const result: OperationResult = await TimeoutManager.addTimeout(
         interaction,
         toTimeout,
         reason,
         duration,
-        language
+        localization.language
     );
 
     if (!result.success) {
@@ -54,7 +55,7 @@ export const run: Command["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("timeoutSuccess"),
-            DateTimeFormatHelper.secondsToDHMS(duration, language)
+            DateTimeFormatHelper.secondsToDHMS(duration, localization.language)
         ),
     });
 };

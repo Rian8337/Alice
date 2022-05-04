@@ -7,15 +7,14 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember, User } from "discord.js";
 import { RecalculationManager } from "@alice-utils/managers/RecalculationManager";
-import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: RecalcLocalization = new RecalcLocalization(language);
+    const localization: RecalcLocalization = new RecalcLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
@@ -25,7 +24,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.noPermissionReject
                 )
             ),

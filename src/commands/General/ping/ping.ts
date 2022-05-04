@@ -19,6 +19,8 @@ export const run: Command["run"] = async (client, interaction) => {
         .setRequireAPIkey(false)
         .setEndpoint("time.php");
 
+    await InteractionHelper.defer(interaction);
+
     const pings: [number, number, number] = await Promise.all([
         HelperFunctions.getFunctionExecutionTime(
             apiReq.sendRequest.bind(apiReq)

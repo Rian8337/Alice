@@ -37,6 +37,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user

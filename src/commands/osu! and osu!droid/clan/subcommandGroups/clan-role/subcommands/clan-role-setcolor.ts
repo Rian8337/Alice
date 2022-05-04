@@ -4,15 +4,14 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ColorResolvable, Role } from "discord.js";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const color: string = interaction.options.getString("color") ?? "DEFAULT";
 

@@ -6,7 +6,6 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
-import { Language } from "@alice-localization/base/Language";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -17,9 +16,9 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ProfileLocalization = new ProfileLocalization(language);
+    const localization: ProfileLocalization = new ProfileLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
@@ -29,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
                 )
             ),

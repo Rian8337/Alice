@@ -3,7 +3,6 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -13,9 +12,9 @@ import { RecalculationManager } from "@alice-utils/managers/RecalculationManager
 import { Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: RecalcLocalization = new RecalcLocalization(language);
+    const localization: RecalcLocalization = new RecalcLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -53,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     !!uid || !!username || !!discordid
                         ? Constants.userNotBindedReject
                         : Constants.selfNotBindedReject

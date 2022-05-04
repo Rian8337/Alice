@@ -59,6 +59,8 @@ export const run: Command["run"] = async (_, interaction) => {
             'end"';
     }
 
+    await InteractionHelper.defer(interaction);
+
     const result: RequestResponse = await RESTManager.request(url);
 
     if (result.statusCode !== 200) {

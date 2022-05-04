@@ -32,6 +32,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason", true);
 
+    await InteractionHelper.defer(interaction);
+
     const result: OperationResult = await WarningManager.issue(
         interaction,
         member,

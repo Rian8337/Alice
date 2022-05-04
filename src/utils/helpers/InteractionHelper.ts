@@ -10,6 +10,23 @@ import {
  */
 export abstract class InteractionHelper {
     /**
+     * Defers an interaction.
+     *
+     * @param interaction The interaction to defer.
+     * @param ephemeral Whether the reply should be ephemeral. Defaults to the interaction's `ephemeral` property.
+     */
+    static async defer(
+        interaction: Interaction & InteractionResponseFields,
+        ephemeral?: boolean
+    ): Promise<void> {
+        if (!interaction.deferred && !interaction.replied) {
+            return interaction.deferReply({
+                ephemeral: ephemeral ?? interaction.ephemeral ?? false,
+            });
+        }
+    }
+
+    /**
      * Replies to an interaction.
      *
      * @param interaction The interaction to reply to.

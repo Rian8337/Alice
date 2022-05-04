@@ -4,7 +4,6 @@ import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -15,9 +14,9 @@ import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { Collection, GuildMember, Snowflake } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     let clanName: string;
 
@@ -49,9 +48,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (!bindInfo) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    new ConstantsLocalization(language).getTranslation(
-                        Constants.selfNotBindedReject
-                    )
+                    new ConstantsLocalization(
+                        localization.language
+                    ).getTranslation(Constants.selfNotBindedReject)
                 ),
             });
         }
@@ -98,7 +97,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         },
         [interaction.user.id],
         20,
-        language
+        localization.language
     );
 
     if (!confirmation) {
@@ -107,7 +106,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const editDescResult: OperationResult = clan.setDescription(
         undefined,
-        language
+        localization.language
     );
 
     if (!editDescResult.success) {

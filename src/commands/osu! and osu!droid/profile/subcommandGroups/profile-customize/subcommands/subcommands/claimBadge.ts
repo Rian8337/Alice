@@ -20,7 +20,6 @@ import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalc
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { OsuStarRating } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { Language } from "@alice-localization/base/Language";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -28,9 +27,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ProfileLocalization = new ProfileLocalization(language);
+    const localization: ProfileLocalization = new ProfileLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const playerInfoDbManager: PlayerInfoCollectionManager =
         DatabaseManager.aliceDb.collections.playerInfo;
@@ -43,7 +42,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
                 )
             ),
@@ -152,7 +151,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                                 )}\n\n${localization.getTranslation(
                                     "enterBeatmapRestriction"
                                 )}`,
-                                language
+                                localization.language
                             ),
                         ],
                     },

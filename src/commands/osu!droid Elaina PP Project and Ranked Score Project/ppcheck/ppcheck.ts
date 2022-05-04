@@ -15,13 +15,12 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { PPcheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcheck/PPcheckLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: PPcheckLocalization = new PPcheckLocalization(language);
+    const localization: PPcheckLocalization = new PPcheckLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -59,7 +58,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     !!uid || !!username || !!discordid
                         ? Constants.userNotBindedReject
                         : Constants.selfNotBindedReject
@@ -74,7 +73,7 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction,
         bindInfo,
         ppRank,
-        language
+        localization.language
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {

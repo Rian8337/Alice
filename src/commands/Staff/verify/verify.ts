@@ -4,7 +4,7 @@ import {
     Role,
     Snowflake,
     TextChannel,
-    ThreadChannel,
+    ThreadMember,
 } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
@@ -39,7 +39,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (
-        !(interaction.channel instanceof ThreadChannel) ||
+        !interaction.channel?.isThread() ||
         interaction.channel.parentId !== Constants.verificationChannel
     ) {
         return InteractionHelper.reply(interaction, {
@@ -49,13 +49,11 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const toVerify: GuildMember = await interaction.guild!.members.fetch(
-        interaction.options.getUser("user", true)
-    );
+    const member: ThreadMember | null = await interaction.channel.members
+        .fetch(interaction.options.getUser("user", true))
+        .catch(() => null);
 
-    await interaction.channel!.members.fetch();
-
-    if (!interaction.channel!.members.cache.has(toVerify.id)) {
+    if (!member) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsNotInThread")
@@ -71,7 +69,7 @@ export const run: Command["run"] = async (_, interaction) => {
         (r) => r.name === "Member"
     )!;
 
-    if (!toVerify.roles.cache.has(onVerificationRole.id)) {
+    if (!member.guildMember!.roles.cache.has(onVerificationRole.id)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsNotInVerification")
@@ -79,7 +77,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    if (toVerify.roles.cache.has(memberRole.id)) {
+    if (!member.guildMember!.roles.cache.has(memberRole.id)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsAlreadyVerifiedError")
@@ -87,13 +85,13 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const roles: Collection<Snowflake, Role> = toVerify.roles.cache;
+    const roles: Collection<Snowflake, Role> = member.guildMember!.roles.cache;
 
     roles.delete(onVerificationRole.id);
 
     roles.set(memberRole.id, memberRole);
 
-    await toVerify.roles.set(roles, "Verification");
+    await member.guildMember!.roles.set(roles, "Verification");
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
@@ -112,11 +110,11 @@ export const run: Command["run"] = async (_, interaction) => {
     general.send({
         content: `Welcome ${
             (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
-                toVerify.id
+                member.id
             ))
                 ? "back "
                 : ""
-        }to ${interaction.guild!.name}, ${toVerify}!`,
+        }to ${interaction.guild!.name}, ${member}!`,
         files: [Constants.welcomeImageLink],
     });
 };

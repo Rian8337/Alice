@@ -6,15 +6,14 @@ import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { loadImage, Image } from "canvas";
 import { MessageAttachment, Role } from "discord.js";
 import { Precision, RequestResponse } from "@rian8337/osu-base";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const attachment: MessageAttachment | null =
         interaction.options.getAttachment("url");

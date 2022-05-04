@@ -7,21 +7,18 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: MapshareLocalization = new MapshareLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.notAvailableInChannelReject
                 )
             ),
@@ -53,7 +50,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: OperationResult = await submission.post(language);
+    await InteractionHelper.defer(interaction);
+
+    const result: OperationResult = await submission.post(
+        localization.language
+    );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

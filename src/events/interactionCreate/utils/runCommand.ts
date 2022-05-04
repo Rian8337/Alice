@@ -230,6 +230,14 @@ export const run: EventUtil["run"] = async (
 
     client.logger.info(`${logMessage} ${optionsStr}`);
 
+    interaction.ephemeral =
+        (command?.config.replyEphemeral ||
+            Config.maintenance ||
+            !CommandHelper.isCommandEnabled(interaction) ||
+            subcommand?.config.replyEphemeral ||
+            subcommandGroup?.config.replyEphemeral) ??
+        false;
+
     // Finally, run the command
     command.run(client, interaction).catch((e: Error) => {
         InteractionHelper.reply(interaction, {

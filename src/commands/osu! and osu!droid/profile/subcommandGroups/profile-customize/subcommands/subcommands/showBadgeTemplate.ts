@@ -27,6 +27,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     const template: Buffer = await ProfileManager.getProfileTemplate(
         bindInfo.uid,
         bindInfo,

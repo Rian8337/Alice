@@ -1,7 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -11,9 +10,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(

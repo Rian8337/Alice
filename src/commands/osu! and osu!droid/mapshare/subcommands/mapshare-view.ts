@@ -8,22 +8,19 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { Language } from "@alice-localization/base/Language";
 import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: MapshareLocalization = new MapshareLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.notAvailableInChannelReject
                 )
             ),
@@ -55,6 +52,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapId,
         false
@@ -75,7 +74,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const embedOptions: MessageOptions =
-        (await EmbedCreator.createMapShareEmbed(submission, language))!;
+        (await EmbedCreator.createMapShareEmbed(
+            submission,
+            localization.language
+        ))!;
 
     InteractionHelper.reply(interaction, embedOptions);
 };

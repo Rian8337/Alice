@@ -16,11 +16,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    const clan: string = interaction.options.getString("clan")!;
+    const clan: string | null = interaction.options.getString("clan");
 
     const res: Collection<string, UserBind> =
         await DatabaseManager.elainaDb.collections.userBind.getDPPLeaderboard(
-            clan
+            clan ?? undefined
         );
 
     if (res.size === 0 && clan) {

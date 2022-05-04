@@ -154,7 +154,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const teamScoreStatus: OperationResult =
             i % 2 ? team2ScoreStatus : team1ScoreStatus;
 
-        const verificationResult: OperationResult = await match.verifyScore(
+        const verificationResult: OperationResult = match.verifyScore(
             score,
             map,
             teamScoreStatus.success,

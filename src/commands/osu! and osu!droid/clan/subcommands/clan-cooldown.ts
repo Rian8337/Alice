@@ -4,7 +4,6 @@ import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ClanMember } from "@alice-interfaces/clan/ClanMember";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -14,9 +13,9 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { User } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const type: "battle" | "join" = <"battle" | "join">(
         interaction.options.getString("type", true)
@@ -30,7 +29,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     interaction.options.getUser("user")
                         ? Constants.userNotBindedReject
                         : Constants.selfNotBindedReject

@@ -2,7 +2,6 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -10,9 +9,9 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAttachment } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ClanLocalization = new ClanLocalization(language);
+    const localization: ClanLocalization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const attachment: MessageAttachment = interaction.options.getAttachment(
         "attachment",
@@ -42,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const setResult: OperationResult = await clan.setBanner(
         attachment.url,
-        language
+        localization.language
     );
 
     if (!setResult.success) {

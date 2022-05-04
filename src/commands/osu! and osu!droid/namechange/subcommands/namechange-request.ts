@@ -60,6 +60,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     }
 
+    await InteractionHelper.defer(interaction);
+
     const player: Player = await Player.getInformation({ uid: bindInfo.uid });
 
     if (!player.username) {

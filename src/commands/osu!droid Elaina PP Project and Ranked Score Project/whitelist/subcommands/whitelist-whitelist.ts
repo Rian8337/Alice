@@ -8,16 +8,13 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { GuildMember, MessageEmbed, MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { Language } from "@alice-localization/base/Language";
 import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: WhitelistLocalization = new WhitelistLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     if (
@@ -28,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.noPermissionReject
                 )
             ),
@@ -64,6 +61,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     // Collect beatmaps first
+    await InteractionHelper.defer(interaction);
+
     const beatmaps: MapInfo[] = [];
 
     if (beatmapsetID) {
@@ -92,7 +91,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
         beatmaps[0],
         undefined,
-        language
+        localization.language
     );
 
     const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
@@ -115,7 +114,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     for (const beatmap of beatmaps) {
         const whitelistResult: OperationResult =
-            await WhitelistManager.whitelist(beatmap, language);
+            await WhitelistManager.whitelist(beatmap, localization.language);
 
         if (!whitelistResult.success) {
             whitelistResponseStrings.push(

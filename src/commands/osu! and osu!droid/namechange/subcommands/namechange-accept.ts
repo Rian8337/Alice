@@ -7,14 +7,11 @@ import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
-import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: NamechangeLocalization = new NamechangeLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const uid: number = interaction.options.getInteger("uid", true);
@@ -44,7 +41,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: OperationResult = await nameChange.accept(language);
+    const result: OperationResult = await nameChange.accept(
+        localization.language
+    );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

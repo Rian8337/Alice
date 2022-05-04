@@ -63,6 +63,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     attachment.setName(
         `${tag.attachments.length + 1}${attachment.url.substring(
             attachment.url.lastIndexOf(".")

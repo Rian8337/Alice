@@ -63,6 +63,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     const embed: MessageEmbed =
         await EmbedCreator.createMultiplayerRoomRoundResultEmbed(
             room,

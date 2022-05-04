@@ -41,6 +41,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     const scores: TournamentScore[] = await pool.getBeatmapLeaderboard(pick);
 
     if (scores.length === 0) {

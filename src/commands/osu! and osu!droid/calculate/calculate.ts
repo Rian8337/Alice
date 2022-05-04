@@ -56,6 +56,8 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     // Get calculation parameters
     const forceAR: number | undefined = interaction.options.getNumber(
         "approachrate"

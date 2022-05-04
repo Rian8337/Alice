@@ -31,16 +31,13 @@ import {
 import { Score } from "@rian8337/osu-droid-utilities";
 import { FetchreplayLocalization } from "@alice-localization/commands/osu! and osu!droid/fetchreplay/FetchreplayLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
     const localization: FetchreplayLocalization = new FetchreplayLocalization(
-        language
+        await CommandHelper.getLocale(interaction)
     );
 
     const beatmapLink: string = interaction.options.getString("beatmap", true);
@@ -77,6 +74,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
         uid = bindInfo.uid;
     }
+
+    await InteractionHelper.defer(interaction);
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         hash ? hash : beatmapID
@@ -188,7 +187,7 @@ export const run: Command["run"] = async (_, interaction) => {
             droidCalcResult,
             osuCalcResult,
             (<GuildMember | null>interaction.member)?.displayHexColor,
-            language
+            localization.language
         );
 
     const hitErrorInformation: HitErrorInformation =

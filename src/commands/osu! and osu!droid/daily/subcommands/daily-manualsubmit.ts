@@ -64,6 +64,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     const replay: MessageAttachment = interaction.options.getAttachment(
         "replay",
         true

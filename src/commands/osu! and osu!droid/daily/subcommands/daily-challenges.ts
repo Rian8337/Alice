@@ -3,7 +3,6 @@ import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { BonusDescription } from "@alice-interfaces/challenge/BonusDescription";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { Language } from "@alice-localization/base/Language";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -14,9 +13,9 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: DailyLocalization = new DailyLocalization(language);
+    const localization: DailyLocalization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const type: ChallengeType =
         <ChallengeType>interaction.options.getString("type") ?? "daily";
@@ -39,8 +38,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    const bonusDescription: BonusDescription[] =
-        challenge.getBonusInformation(language);
+    const bonusDescription: BonusDescription[] = challenge.getBonusInformation(
+        localization.language
+    );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         const content: BonusDescription = bonusDescription[page - 1];

@@ -5,7 +5,6 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
-import { Language } from "@alice-localization/base/Language";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -19,9 +18,9 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
-
-    const localization: ProfileLocalization = new ProfileLocalization(language);
+    const localization: ProfileLocalization = new ProfileLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
@@ -31,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ConstantsLocalization(language).getTranslation(
+                new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
                 )
             ),
@@ -53,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         )}\n\n${localization.getTranslation(
                             "supportedColorFormat"
                         )}`,
-                        language
+                        localization.language
                     ),
                 ],
             },
@@ -134,7 +133,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         },
         [interaction.user.id],
         15,
-        language
+        localization.language
     );
 
     if (!confirmation) {

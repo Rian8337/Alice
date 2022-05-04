@@ -29,6 +29,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID || hash,
         false

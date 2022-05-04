@@ -37,6 +37,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction.user
     );
 
+    await InteractionHelper.defer(interaction);
+
     // TODO: this is a lot of duplicate codes. should consider moving to a function
 
     const player: Player = await Player.getInformation({ uid: uid });

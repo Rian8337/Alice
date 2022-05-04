@@ -16,6 +16,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
+    await InteractionHelper.defer(interaction);
+
     const username: string = interaction.options.getString("username", true);
 
     const email: string | null = interaction.options.getString("email");

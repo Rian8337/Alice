@@ -166,12 +166,12 @@ export class TournamentMatch
      * @param teamScoreStatus Whether the team fulfills the criteria of submitting a score.
      * @param language The locale of the user who attempted to verify the score. Defaults to English.
      */
-    async verifyScore(
+    verifyScore(
         score: Score,
         map: TournamentBeatmap,
         teamScoreStatus: boolean,
         language: Language = "en"
-    ): Promise<OperationResult> {
+    ): OperationResult {
         const localization: TournamentMatchLocalization =
             this.getLocalization(language);
 
@@ -182,14 +182,14 @@ export class TournamentMatch
             );
         }
 
-        await score.downloadReplay();
+        // await score.downloadReplay();
 
-        if (!score.replay || !score.replay.data) {
-            return this.createOperationResult(
-                false,
-                localization.getTranslation("replayNotFound")
-            );
-        }
+        // if (!score.replay || !score.replay.data) {
+        //     return this.createOperationResult(
+        //         false,
+        //         localization.getTranslation("replayNotFound")
+        //     );
+        // }
 
         // if (score.replay.data.replayVersion > 4) {
         //     return this.createOperationResult(
