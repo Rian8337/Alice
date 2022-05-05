@@ -117,7 +117,7 @@ export const run: Command["run"] = async (_, interaction) => {
             ))
                 ? "back "
                 : ""
-        }to ${interaction.guild!.name}, ${threadMember}!`,
+        }to ${interaction.guild!.name}, ${guildMember}!`,
         files: [Constants.welcomeImageLink],
     });
 };
