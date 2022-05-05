@@ -72,7 +72,7 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction.options.getUser("user", true)
     );
 
-    if (guildMember.roles.cache.has(onVerificationRole.id)) {
+    if (!guildMember.roles.cache.has(onVerificationRole.id)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsNotInVerification")
