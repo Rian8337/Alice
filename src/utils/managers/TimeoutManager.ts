@@ -135,10 +135,7 @@ export abstract class TimeoutManager extends PunishmentManager {
             );
         }
 
-        await member.disableCommunicationUntil(
-            Date.now() + duration * 1000,
-            reason
-        );
+        await member.timeout(duration * 1000, reason);
 
         const logLocalization: TimeoutManagerLocalization =
             new TimeoutManagerLocalization("en");
@@ -367,7 +364,7 @@ export abstract class TimeoutManager extends PunishmentManager {
             userUntimeoutEmbed
         );
 
-        await member.disableCommunicationUntil(null, reason);
+        await member.timeout(null, reason);
 
         return this.createOperationResult(true);
     }
