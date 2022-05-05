@@ -48,11 +48,11 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const member: ThreadMember | null = await interaction.channel.members
+    const threadMember: ThreadMember | null = await interaction.channel.members
         .fetch(interaction.options.getUser("user", true))
         .catch(() => null);
 
-    if (!member) {
+    if (!threadMember) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsNotInThread")
@@ -68,7 +68,11 @@ export const run: Command["run"] = async (_, interaction) => {
         (r) => r.name === "Member"
     )!;
 
-    if (!member.guildMember!.roles.cache.has(onVerificationRole.id)) {
+    const guildMember: GuildMember = await interaction.guild!.members.fetch(
+        interaction.options.getUser("user", true)
+    );
+
+    if (guildMember.roles.cache.has(onVerificationRole.id)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsNotInVerification")
@@ -76,7 +80,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    if (!member.guildMember!.roles.cache.has(memberRole.id)) {
+    if (guildMember.roles.cache.has(memberRole.id)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userIsAlreadyVerifiedError")
@@ -84,13 +88,13 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const roles: Collection<Snowflake, Role> = member.guildMember!.roles.cache;
+    const roles: Collection<Snowflake, Role> = guildMember.roles.cache;
 
     roles.delete(onVerificationRole.id);
 
     roles.set(memberRole.id, memberRole);
 
-    await member.guildMember!.roles.set(roles, "Verification");
+    await guildMember.roles.set(roles, "Verification");
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
@@ -109,11 +113,11 @@ export const run: Command["run"] = async (_, interaction) => {
     general.send({
         content: `Welcome ${
             (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
-                member.id
+                threadMember.id
             ))
                 ? "back "
                 : ""
-        }to ${interaction.guild!.name}, ${member}!`,
+        }to ${interaction.guild!.name}, ${threadMember}!`,
         files: [Constants.welcomeImageLink],
     });
 };
