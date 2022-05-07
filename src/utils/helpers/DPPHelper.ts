@@ -88,6 +88,10 @@ export abstract class DPPHelper {
         score: Score,
         calculationResult: PerformanceCalculationResult<DroidPerformanceCalculator>
     ): void {
+        if (isNaN(calculationResult.result.total)) {
+            return;
+        }
+
         const ppEntry: PPEntry = {
             hash: calculationResult.map.hash,
             title: calculationResult.map.fullTitle,
