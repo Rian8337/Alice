@@ -1,0 +1,300 @@
+NOTE:
+1. Only translate numbered words/sentences.
+2. Do not replace %s's. This is used for substitution within bot.
+3. Examples and per-number descriptions do not need to be translated.
+4. Some messages/text portions are repeated. This is done due to context.
+5. Do not translate commands (e.g. /daily submit).
+6. For Discord permissions, use Discord's own translation if available, otherwise leave as is.
+
+============================================
+
+birthday-view.ts (3)
+
+1.1. Birthday Info for %s
+1.2. Date
+1.3. Timezone
+
+============================================
+
+mathgame.ts (2)
+
+2.1. Math Game Statistics
+2.2. answer(s)
+
+============================================
+
+music-collections-list.ts (2)
+
+3.1. Total collections
+3.2. Created at %s
+    (e.g. Created at Jan 16 2019)
+
+============================================
+
+music-collections-view.ts (3)
+
+4.1. Owner
+4.2. Creation Date
+4.3. Links
+
+============================================
+
+BirthdayCollectionManager.ts (4)
+
+5.1. birthday is already set
+5.2. invalid birthday date
+5.3. invalid birthday month
+5.4. invalid timezone
+
+============================================
+
+music-queue-view.ts (2)
+
+6.1. Current Queue
+
+============================================
+
+music-info.ts (11)
+
+7.1. Music Information
+7.2. Playing Since
+7.3. Currently Playing
+7.4. Channel
+7.5. Duration
+7.6. None
+7.7. Playback Settings
+7.8. Repeat mode
+7.9. Enabled
+7.10. Disabled
+7.11. Queue
+
+============================================
+
+tag-info.ts (5)
+
+8.1. Tag Information
+8.2. Author
+8.3. Name
+8.4. Creation Date
+8.5. Attachments
+    (amount of attachments in the tag)
+
+============================================
+
+tag-list.ts (2)
+
+9.1. Tags for %s
+    (e.g. Tags for Sexia)
+9.2. Total tags
+
+============================================
+
+trivia-questions.ts (4)
+
+10.1. Hey, someone got that correctly.
+10.2. Looks like no one got that right.
+10.3. The correct answer is
+10.4. Correct answers are
+
+============================================
+
+trivia-map.ts (4)
+
+11.1. Beatmap Hint
+11.2. Artist
+11.3. Title
+11.4. Source
+
+============================================
+
+clan-create.ts (1)
+
+12.1. create a clan
+
+============================================
+
+clan-members.ts (1)
+
+13.1. Upkeep Value
+
+============================================
+
+daily-about.ts (1)
+
+14.1. There is no leaderboard for %sAlice coins, however there is a leaderboard for points. You can use \`/daily leaderboard\` to view the leaderboard.
+
+============================================
+
+daily-leaderboard.ts (1)
+
+15.2. Points
+
+============================================
+
+daily-manualsubmit.ts (10)
+
+16.1. Score Statistics
+16.2. Total Score
+16.3. Max Combo
+16.4. Accuracy
+16.5. Rank
+16.6. Time
+16.7. Hit Great (300)
+16.8. Hit Good (100)
+16.9. Hit Meh (50)
+16.10. Misses
+16.11. Bonus Level Reached
+16.12. geki
+16.13. katu
+
+============================================
+
+daily-profile.ts (3)
+
+17.1. Daily/Weekly Challenge Profile for %s
+    (e.g. Daily/Weekly Challenge Profile for Sexia)
+17.2. Statistics
+17.3. Challenges completed
+    (amount of challenges completed)
+
+============================================
+
+fetchreplay.ts (3)
+
+18.1. Play Information for %s
+    (e.g. Play Information for Sexia)
+18.2. Hit Error Information
+18.3. hit error avg
+    (hit error average)
+
+============================================
+
+gamestats.ts (1)
+
+19.1. I'm sorry, I cannot retrieve game statistics!
+
+============================================
+
+profile-customize-background.ts (5)
+
+20.1. Change Background
+20.2. Change your profile card's background.
+20.3. List Backgrounds
+20.4. List all profile card backgrounds, including those that you own.
+20.5. Choose what you want to customize.
+
+============================================
+
+profle-customize-badge.ts (10)
+
+21.1. Show Badge Template
+21.2. Show the template of badges in a profile card.
+21.3. Claim Badge
+21.4. Claim a badge.
+21.5. Equip Badge
+21.6. Equip a badge.
+21.7. Unequip Badge
+21.8. Unequip a badge.
+21.9. List Badges
+21.10. List all profile card badges, including those that you own.
+
+============================================
+
+profile-customize-infobox.ts (8)
+
+22.1. View Background Color
+22.2. View the background color of your profile card's information box.
+22.3. Change Background Color
+22.4. Change the background color of your profile card's information box.
+22.5. View Text Color
+22.6. View the text color of your profile card's information box.
+22.7. Change Text Color
+22.8. Change the text color of your profile card's information box.
+
+============================================
+
+profile-bindinfo.ts (9)
+
+23.1. Player Information for %s (click to view profile)
+    (e.g. Player Information for Sexia (click to view profile))
+23.2. Avatar Link
+23.3. Rank
+23.4. Play Count
+23.5. Country
+23.6. Bind Information
+23.7. Binded to %s (user ID: %s)
+23.8. Has played verification beatmap
+23.9. Not binded
+
+============================================
+
+ppcompare.ts (2)
+
+24.1. Top PP Plays Comparison
+24.2. Player
+
+============================================
+
+DateTimeFormatHelper.ts (3)
+
+25.1. days
+25.2. hours
+25.3. minutes
+
+============================================
+
+TimeoutManager.ts (2)
+
+26.1. Channel ID
+26.2. Untimeout executed
+
+============================================
+
+messageanalytics.ts (3)
+
+27.1. Overall
+27.2. Monthly
+27.3. Daily
+
+============================================
+
+TournamentMatch.ts (1)
+
+28.1. No team members enabled HD/HR/EZ
+
+============================================
+
+ready -> birthdayTracking.ts (1)
+
+29.1. Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.
+
+============================================
+
+settings-timeoutpermission-grant.ts (1)
+
+30.1. Hey, please enter a proper maximum timeout duration!
+
+============================================
+
+blacklist.ts (7)
+
+31.1. Hey, please enter a beatmap to blacklist or unblacklist!
+31.2. Hey, I cannot find the beatmap with the provided link or ID!
+31.3. Hey, please enter a reason for blacklisting the beatmap!
+31.4. I'm sorry, I cannot blacklist the beatmap: `%s`.
+31.5. Successfully blacklisted `%s`.
+31.6. I'm sorry, I cannot unblacklist the beatmap: `%s`.
+31.7. Successfully unblacklisted `%s`.
+
+============================================
+
+whitelist-unwhitelist.ts (2)
+
+32.1. Successfully unwhitelisted `%s`.
+32.2. I'm sorry, I'm unable to unwhitelist `%s`: `%s`.
+
+============================================
+
+settings.ts (1)
+
+33.1. Indefinite
