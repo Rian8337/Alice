@@ -69,7 +69,7 @@ export abstract class ScoreHelper {
                 misses,
                 maxScore,
                 mods,
-                maxScore
+                scorePortion
             ) +
             this.calculateAccuracyPortionScoreV2(
                 accuracy,
