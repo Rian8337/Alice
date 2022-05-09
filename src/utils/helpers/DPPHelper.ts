@@ -96,7 +96,7 @@ export abstract class DPPHelper {
             hash: calculationResult.map.hash,
             title: calculationResult.map.fullTitle,
             pp: parseFloat(calculationResult.result.total.toFixed(2)),
-            mods: score.mods.map((v) => v.acronym).join(""),
+            mods: score.mods.reduce((a, v) => a + v.acronym, ""),
             accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
             combo: score.combo,
             miss: score.accuracy.nmiss,

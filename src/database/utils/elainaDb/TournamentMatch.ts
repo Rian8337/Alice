@@ -228,7 +228,7 @@ export class TournamentMatch
                 teamScoreStatus,
             StringHelper.formatString(
                 localization.getTranslation("modsWasUsed"),
-                incorrectMods.map((m) => m.acronym).join("")
+                incorrectMods.reduce((a, m) => a + m.acronym, "")
             )
         );
     }

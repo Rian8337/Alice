@@ -93,9 +93,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     }
 
-    room.settings.allowedMods = mods.map((m) => m.acronym).join("");
+    room.settings.allowedMods = mods.reduce((a, m) => a + m.acronym, "");
 
-    room.settings.requiredMods = requiredMods.map((m) => m.acronym).join("");
+    room.settings.requiredMods = requiredMods.reduce(
+        (a, m) => a + m.acronym,
+        ""
+    );
 
     const result: OperationResult = await room.updateRoom();
 

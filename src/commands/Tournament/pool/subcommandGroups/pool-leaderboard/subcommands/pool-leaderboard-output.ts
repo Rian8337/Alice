@@ -68,15 +68,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             pick,
             score.score.accuracy.value(),
             score.score.accuracy.nmiss
-        )},${score.score.score},${score.score.mods
-            .map((v) => v.acronym)
-            .join("")},${score.score.combo},${(
-            score.score.accuracy.value() * 100
-        ).toFixed(2)},${score.score.accuracy.n300},${
-            score.score.accuracy.n100
-        },${score.score.accuracy.n50},${
-            score.score.accuracy.nmiss
-        },"${score.score.date.toUTCString()}"\n`;
+        )},${score.score.score},${score.score.mods.reduce(
+            (a, v) => a + v.acronym,
+            ""
+        )},${score.score.combo},${(score.score.accuracy.value() * 100).toFixed(
+            2
+        )},${score.score.accuracy.n300},${score.score.accuracy.n100},${
+            score.score.accuracy.n50
+        },${score.score.accuracy.nmiss},"${score.score.date.toUTCString()}"\n`;
     }
 
     const attachment: MessageAttachment = new MessageAttachment(

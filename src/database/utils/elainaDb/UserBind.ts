@@ -343,7 +343,7 @@ export class UserBind extends Manager {
                 title: calcResult.map.fullTitle,
                 pp: parseFloat(calcResult.result.total.toFixed(2)),
                 prevPP: ppEntry.pp,
-                mods: score.mods.map((v) => v.acronym).join(""),
+                mods: score.mods.reduce((a, v) => a + v.acronym, ""),
                 accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
                 combo: score.combo,
                 miss: score.accuracy.nmiss,

@@ -39,6 +39,7 @@ import {
     ModHalfTime,
     MapStats,
     ModUtil,
+    RequestResponse,
 } from "@rian8337/osu-base";
 import {
     DroidPerformanceCalculator,
@@ -57,6 +58,8 @@ import {
     ChallengeStrings,
 } from "@alice-localization/database/utils/aliceDb/Challenge/ChallengeLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { MD5 } from "crypto-js";
 
 /**
  * Represents a daily or weekly challenge.
@@ -639,7 +642,7 @@ export class Challenge extends Manager {
                                 : scoreOrReplay.data!.convertedMods;
                         bonusComplete =
                             StringHelper.sortAlphabet(
-                                mods.map((v) => v.acronym).join("")
+                                mods.reduce((a, v) => a + v.acronym, "")
                             ) ===
                             StringHelper.sortAlphabet(
                                 (<string>tier.value).toUpperCase()
@@ -760,6 +763,92 @@ export class Challenge extends Manager {
     }
 
     /**
+     * Gets the modified beatmap file of the challenge.
+     *
+     * If the challenge hasn't started, the challenge will be updated
+     * with the new file hash if the current hash doesn't match.
+     *
+     * @returns The beatmap file, `null` if the file could not be found.
+     */
+    async getBeatmapFile(): Promise<string | null> {
+        const beatmapFileReq: RequestResponse = await RESTManager.request(
+            `https://osu.ppy.sh/osu/${this.beatmapid}`
+        );
+
+        if (beatmapFileReq.statusCode !== 200) {
+            return null;
+        }
+
+        const lines: string[] = beatmapFileReq.data.toString().split("\n");
+
+        for (let i = 0; i < lines.length; ++i) {
+            let line: string = lines[i];
+
+            if (line.startsWith(" ") || line.startsWith("_")) {
+                continue;
+            }
+
+            line = line.trim();
+
+            if (line.length === 0 || line.startsWith("//")) {
+                continue;
+            }
+
+            const p: string[] = line.split(":").map((s) => s.trim());
+
+            if (p.length < 2) {
+                continue;
+            }
+
+            if (p[0] === "Version") {
+                const matched: RegExpMatchArray | null =
+                    this.challengeid.match(/(\d+)$/);
+
+                if (!matched) {
+                    return null;
+                }
+
+                const id: number = parseInt(matched[0]);
+
+                const actualVersion: string = p.slice(1).join(":");
+
+                if (this.isWeekly) {
+                    lines[
+                        i
+                    ] = `${p[0]}:(Weekly Challenge ${id}) ${actualVersion}`;
+                } else {
+                    lines[i] = `${p[0]}:(Challenge ${id}) ${actualVersion}`;
+                }
+
+                break;
+            }
+
+            if (line.startsWith("[TimingPoints]")) {
+                break;
+            }
+        }
+
+        const finalFile: string = lines.join("\n");
+
+        if (this.status === "scheduled") {
+            const hash: string = MD5(finalFile).toString();
+
+            if (this.hash !== hash) {
+                await DatabaseManager.aliceDb.collections.challenge.update(
+                    { challengeid: this.challengeid },
+                    {
+                        $set: {
+                            hash: hash,
+                        },
+                    }
+                );
+            }
+        }
+
+        return finalFile;
+    }
+
+    /**
      * Checks if a sequence of mods fulfills the challenge's constrain.
      *
      * @param mods The mods.
@@ -767,8 +856,9 @@ export class Challenge extends Manager {
     private isConstrainFulfilled(mods: Mod[]): boolean {
         return (
             !this.constrain ||
-            StringHelper.sortAlphabet(mods.map((v) => v.acronym).join("")) ===
-                StringHelper.sortAlphabet(this.constrain.toUpperCase())
+            StringHelper.sortAlphabet(
+                mods.reduce((a, v) => a + v.acronym, "")
+            ) === StringHelper.sortAlphabet(this.constrain.toUpperCase())
         );
     }
 
