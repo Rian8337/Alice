@@ -18,7 +18,6 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { RequestResponse } from "@rian8337/osu-base";
 import {
@@ -38,16 +37,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
         await CommandHelper.getLocale(interaction)
     );
-
-    const url: string = interaction.options.getString("replayurl", true);
-
-    if (!StringHelper.isValidURL(url)) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("invalidReplayURL")
-            ),
-        });
-    }
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
