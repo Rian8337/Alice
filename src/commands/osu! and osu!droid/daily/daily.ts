@@ -230,6 +230,20 @@ export const config: Command["config"] = {
                     ],
                 },
                 {
+                    name: "check",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Similar to /daily check, but will respond privately.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                    ],
+                },
+                {
                     name: "constrain",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Modifies the constrain of a challenge.",
@@ -354,6 +368,20 @@ export const config: Command["config"] = {
                             description:
                                 "The points awarded for completing the challenge.",
                             minValue: 1,
+                        },
+                    ],
+                },
+                {
+                    name: "viewbonus",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Similar to /daily bonuses, but will respond privately.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
                         },
                     ],
                 },
