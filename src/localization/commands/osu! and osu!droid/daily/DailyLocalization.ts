@@ -32,6 +32,7 @@ export interface DailyStrings {
     readonly passValueOutOfRange: string;
     readonly bonusValueOutOfRange: string;
     readonly unrankedModsIncluded: string;
+    readonly noBonuses: string;
     readonly beatmapDownloadFailed: string;
     readonly addNewChallengeFailed: string;
     readonly addNewChallengeSuccess: string;

@@ -38,6 +38,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         localization.language
     );
 
+    if (bonusDescription.length === 0) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("noBonuses")
+            ),
+        });
+    }
+
     const onPageChange: OnButtonPageChange = async (_, page) => {
         const content: BonusDescription = bonusDescription[page - 1];
 

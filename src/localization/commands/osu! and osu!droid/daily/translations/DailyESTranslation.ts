@@ -100,5 +100,6 @@ export class DailyESTranslation extends Translation<DailyStrings> {
         setFeaturedFailed: "",
         setFeaturedSuccess: "",
         none: "",
+        noBonuses: "",
     };
 }
