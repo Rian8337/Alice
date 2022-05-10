@@ -44,6 +44,8 @@ export const run: Subcommand["run"] = async (
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     const result: OperationResult = await challenge.start(
         localization.language
     );

@@ -30,6 +30,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.defer(interaction);
+
     InteractionHelper.reply(
         interaction,
         await EmbedCreator.createChallengeEmbed(
