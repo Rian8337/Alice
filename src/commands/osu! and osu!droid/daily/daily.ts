@@ -181,12 +181,6 @@ export const config: Command["config"] = {
                             required: true,
                             description: "The ID of the challenge.",
                         },
-                        {
-                            name: "beatmap",
-                            type: ApplicationCommandOptionTypes.STRING,
-                            required: true,
-                            description: "The beatmap ID or link.",
-                        },
                     ],
                 },
                 {
@@ -480,14 +474,8 @@ export const config: Command["config"] = {
         },
         {
             command: "daily manualsubmit",
-            arguments: [
-                {
-                    name: "replayurl",
-                    value: "https://cdn.discordapp.com/attachments/631130003441975297/888432557941739581/e2dc39ca969a739eaa711ebf431ebdda163.odr",
-                },
-            ],
             description:
-                "will submit the linked replay to be verified against the current daily or weekly challenge.",
+                "will submit the provided replay to be verified against the current daily or weekly challenge.",
         },
         {
             command: "daily submit",
