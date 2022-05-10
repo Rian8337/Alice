@@ -94,5 +94,12 @@ export interface Command {
          * Whether to reply to this command execution in private (only the executor can see it).
          */
         readonly replyEphemeral?: boolean;
+
+        /**
+         * Whether to instantly defer the interaction when running in debug mode. Defaults to `true`.
+         *
+         * Use this when interaction replies aren't getting through due to short response time.
+         */
+        readonly instantDeferInDebug?: boolean;
     };
 }

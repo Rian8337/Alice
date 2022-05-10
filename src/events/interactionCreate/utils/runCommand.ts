@@ -230,12 +230,24 @@ export const run: EventUtil["run"] = async (
     client.logger.info(`${logMessage} ${optionsStr}`);
 
     interaction.ephemeral =
-        (command?.config.replyEphemeral ||
+        (command.config.replyEphemeral ||
             Config.maintenance ||
             !CommandHelper.isCommandEnabled(interaction) ||
             subcommand?.config.replyEphemeral ||
             subcommandGroup?.config.replyEphemeral) ??
         false;
+
+    if (Config.isDebug) {
+        // Attempt to instantly defer in debug mode (slower internet).
+        const instantDefer: boolean =
+            command.config.instantDeferInDebug !== false &&
+            subcommandGroup?.config.instantDeferInDebug !== false &&
+            subcommand?.config.instantDeferInDebug !== false;
+
+        if (instantDefer) {
+            await InteractionHelper.defer(interaction);
+        }
+    }
 
     // Finally, run the command
     command.run(client, interaction).catch((e: Error) => {
