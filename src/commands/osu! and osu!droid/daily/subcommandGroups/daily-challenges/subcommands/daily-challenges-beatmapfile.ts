@@ -53,7 +53,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const attachment: MessageAttachment = new MessageAttachment(
-        beatmapFile,
+        Buffer.from(beatmapFile),
         `${beatmap.fullTitle}.osu`
     );
 
