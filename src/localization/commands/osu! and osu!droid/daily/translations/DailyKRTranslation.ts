@@ -99,5 +99,6 @@ export class DailyKRTranslation extends Translation<DailyStrings> {
         setFeaturedSuccess: "",
         none: "",
         noBonuses: "",
+        noDownloadLink: "",
     };
 }

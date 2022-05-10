@@ -48,6 +48,7 @@ export class DailyENTranslation extends Translation<DailyStrings> {
             "Hey, that bonus value is out of range! It must be between %s and %s.",
         unrankedModsIncluded: "Hey, you cannot include unranked mods!",
         noBonuses: "I'm sorry, this challenge doesn't have any bonus!",
+        noDownloadLink: "Hey, please set a beatmapset download link first!",
         beatmapDownloadFailed:
             "I'm sorry, I couldn't download the beatmap of the challenge!",
         addNewChallengeFailed: "I'm sorry, I couldn't add a new challenge: %s.",

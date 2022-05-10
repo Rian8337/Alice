@@ -84,5 +84,6 @@ export class DailyIDTranslation extends Translation<DailyStrings> {
         setFeaturedSuccess: "",
         none: "",
         noBonuses: "",
+        noDownloadLink: "",
     };
 }

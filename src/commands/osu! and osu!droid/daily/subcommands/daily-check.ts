@@ -1,7 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Language } from "@alice-localization/base/Language";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -10,7 +9,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
+    const localization: DailyLocalization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction)
+    );
 
     const type: ChallengeType =
         <ChallengeType>interaction.options.getString("type") ?? "daily";
@@ -23,9 +24,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new DailyLocalization(language).getTranslation(
-                    "noOngoingChallenge"
-                )
+                localization.getTranslation("noOngoingChallenge")
+            ),
+        });
+    }
+
+    if (!challenge.link[0]) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("noDownloadLink")
             ),
         });
     }
@@ -36,8 +43,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         interaction,
         await EmbedCreator.createChallengeEmbed(
             challenge,
-            challenge.type === "weekly" ? "#af46db" : "#e3b32d",
-            language
+            challenge.isWeekly ? "#af46db" : "#e3b32d",
+            localization.language
         )
     );
 };

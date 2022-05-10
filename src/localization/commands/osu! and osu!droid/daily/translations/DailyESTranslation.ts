@@ -101,5 +101,6 @@ export class DailyESTranslation extends Translation<DailyStrings> {
         setFeaturedSuccess: "",
         none: "",
         noBonuses: "",
+        noDownloadLink: "",
     };
 }
