@@ -615,12 +615,18 @@ export class Challenge extends Manager {
 
         if (scoreOrReplay instanceof Score) {
             droidCalcResult =
-                await DroidBeatmapDifficultyHelper.calculateScorePerformance(
-                    scoreOrReplay
+                await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                    this.beatmapid,
+                    await DroidBeatmapDifficultyHelper.getCalculationParamsFromScore(
+                        scoreOrReplay
+                    )
                 );
             osuCalcResult =
-                await OsuBeatmapDifficultyHelper.calculateScorePerformance(
-                    scoreOrReplay
+                await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                    this.beatmapid,
+                    await OsuBeatmapDifficultyHelper.getCalculationParamsFromScore(
+                        scoreOrReplay
+                    )
                 );
         } else {
             const calcResult:
