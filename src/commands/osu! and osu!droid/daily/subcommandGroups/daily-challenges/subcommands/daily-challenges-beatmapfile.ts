@@ -54,9 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const attachment: MessageAttachment = new MessageAttachment(
         beatmapFile,
-        `${beatmap.artist} - ${beatmap.title} (${beatmap.creator}) [(${
-            challenge.isWeekly ? "Weekly " : ""
-        } Challenge ${challenge.challengeid}) ${beatmap.version}].osu`
+        `${beatmap.fullTitle}.osu`
     );
 
     InteractionHelper.reply(interaction, {
