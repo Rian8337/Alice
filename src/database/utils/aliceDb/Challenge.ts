@@ -14,6 +14,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import {
+    ApplicationCommandOptionChoiceData,
     Collection,
     GuildEmoji,
     MessageOptions,
@@ -162,6 +163,68 @@ export class Challenge extends Manager {
     get hasFinished(): boolean {
         return this.status === "finished";
     }
+
+    static readonly challengeManagerRole: Snowflake = "973476729039499284";
+
+    static readonly passCommandChoices: ApplicationCommandOptionChoiceData[] = [
+        {
+            name: "Score V1",
+            value: "score",
+        },
+        {
+            name: "Accuracy",
+            value: "acc",
+        },
+        {
+            name: "Score V2",
+            value: "scorev2",
+        },
+        {
+            name: "Misses",
+            value: "miss",
+        },
+        {
+            name: "Maximum Combo",
+            value: "combo",
+        },
+        {
+            name: "Rank",
+            value: "rank",
+        },
+        {
+            name: "Droid PP",
+            value: "dpp",
+        },
+        {
+            name: "PC pp",
+            value: "pp",
+        },
+        {
+            name: "Minimum 300",
+            value: "m300",
+        },
+        {
+            name: "Maximum 100",
+            value: "m100",
+        },
+        {
+            name: "Maximum 50",
+            value: "m50",
+        },
+        {
+            name: "Unstable Rate",
+            value: "ur",
+        },
+    ];
+
+    static readonly bonusCommandChoices: ApplicationCommandOptionChoiceData[] =
+        [
+            ...this.passCommandChoices,
+            {
+                name: "Mods",
+                value: "mod",
+            },
+        ];
 
     private readonly challengeChannelID: Snowflake = "669221772083724318";
 
@@ -768,7 +831,7 @@ export class Challenge extends Manager {
      * If the challenge hasn't started, the challenge will be updated
      * with the new file hash if the current hash doesn't match.
      *
-     * @returns The beatmap file, `null` if the file could not be found.
+     * @returns The beatmap file, `null` if the beatmap could not be downloaded.
      */
     async getBeatmapFile(): Promise<string | null> {
         const beatmapFileReq: RequestResponse = await RESTManager.request(
@@ -801,12 +864,8 @@ export class Challenge extends Manager {
             }
 
             if (p[0] === "Version") {
-                const matched: RegExpMatchArray | null =
-                    this.challengeid.match(/(\d+)$/);
-
-                if (!matched) {
-                    return null;
-                }
+                const matched: RegExpMatchArray =
+                    this.challengeid.match(/(\d+)$/)!;
 
                 const id: number = parseInt(matched[0]);
 
@@ -830,7 +889,7 @@ export class Challenge extends Manager {
 
         const finalFile: string = lines.join("\n");
 
-        if (this.status === "scheduled") {
+        if (this.isScheduled) {
             const hash: string = MD5(finalFile).toString();
 
             if (this.hash !== hash) {

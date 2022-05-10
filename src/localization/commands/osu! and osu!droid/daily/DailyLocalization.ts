@@ -16,15 +16,41 @@ export interface DailyStrings {
     readonly userHasNotPlayedChallenge: string;
     readonly userHasNotPlayedAnyChallenge: string;
     readonly scoreNotFound: string;
+    readonly challengeIsOngoing: string;
     readonly challengeNotOngoing: string;
     readonly challengeNotCompleted: string;
     readonly challengeCompleted: string;
-    readonly invalidReplayURL: string;
     readonly replayDownloadFail: string;
     readonly replayInvalid: string;
     readonly replayDoesntHaveSameUsername: string;
     readonly replayTooOld: string;
     readonly manualSubmissionConfirmation: string;
+    readonly invalidChallengeId: string;
+    readonly challengeWithIdExists: string;
+    readonly noBeatmapProvided: string;
+    readonly beatmapNotFound: string;
+    readonly passValueOutOfRange: string;
+    readonly bonusValueOutOfRange: string;
+    readonly unrankedModsIncluded: string;
+    readonly beatmapDownloadFailed: string;
+    readonly addNewChallengeFailed: string;
+    readonly addNewChallengeSuccess: string;
+    readonly modifyBonusFailed: string;
+    readonly modifyBonusSuccess: string;
+    readonly modifyBeatmapFailed: string;
+    readonly modifyBeatmapSuccess: string;
+    readonly deleteChallengeFailed: string;
+    readonly deleteChallengeSuccess: string;
+    readonly setConstrainFailed: string;
+    readonly setConstrainSuccess: string;
+    readonly setDownloadLinkFailed: string;
+    readonly setDownloadLinkSuccess: string;
+    readonly setPassReqFailed: string;
+    readonly setPassReqSuccess: string;
+    readonly setPointsFailed: string;
+    readonly setPointsSuccess: string;
+    readonly setFeaturedFailed: string;
+    readonly setFeaturedSuccess: string;
     readonly aboutTitle: string;
     readonly aboutDescription: string;
     readonly aboutQuestion1: string;
@@ -56,6 +82,7 @@ export interface DailyStrings {
     readonly profile: string;
     readonly challengesCompleted: string;
     readonly statistics: string;
+    readonly none: string;
 }
 
 /**

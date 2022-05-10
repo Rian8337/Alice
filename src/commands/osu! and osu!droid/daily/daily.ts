@@ -2,9 +2,13 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 
 export const run: Command["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSubcommandOrGroup(
+        interaction,
+        await CommandHelper.getLocale(interaction)
+    );
 };
 
 export const category: Command["category"] = CommandCategory.OSU;
@@ -18,6 +22,29 @@ export const config: Command["config"] = {
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description:
                 "All you need to know about daily and weekly challenges!",
+        },
+        {
+            name: "bonuses",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description: "Views bonuses for the current ongoing challenge.",
+            options: [
+                {
+                    name: "type",
+                    type: ApplicationCommandOptionTypes.STRING,
+                    description:
+                        "The type of the challenge. Defaults to daily.",
+                    choices: [
+                        {
+                            name: "Daily",
+                            value: "daily",
+                        },
+                        {
+                            name: "Weekly",
+                            value: "weekly",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "check",
@@ -73,22 +100,260 @@ export const config: Command["config"] = {
         },
         {
             name: "challenges",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "View challenges for the current ongoing challenge.",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            description: "Manages challenges.",
             options: [
                 {
-                    name: "type",
-                    type: ApplicationCommandOptionTypes.STRING,
-                    description:
-                        "The type of the challenge. Defaults to daily.",
-                    choices: [
+                    name: "add",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Adds a challenge.",
+                    options: [
                         {
-                            name: "Daily",
-                            value: "daily",
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
                         },
                         {
-                            name: "Weekly",
-                            value: "weekly",
+                            name: "beatmap",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description:
+                                "The beatmap ID or link that will be used in the challenge.",
+                        },
+                        {
+                            name: "points",
+                            type: ApplicationCommandOptionTypes.INTEGER,
+                            required: true,
+                            description:
+                                "The amount of points awarded for completing the challenge.",
+                            minValue: 1,
+                        },
+                        {
+                            name: "passrequirement",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The type of the pass requirement.",
+                            choices: Challenge.passCommandChoices,
+                        },
+                        {
+                            name: "passvalue",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description:
+                                "The value that must be fulfilled to pass the challenge.",
+                        },
+                        {
+                            name: "osufile",
+                            type: ApplicationCommandOptionTypes.ATTACHMENT,
+                            required: true,
+                            description:
+                                "The modified .osu file of the challenge beatmap.",
+                        },
+                        {
+                            name: "featured",
+                            type: ApplicationCommandOptionTypes.USER,
+                            description:
+                                "The user who featured the challenge. Defaults to yourself.",
+                        },
+                        {
+                            name: "constrain",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description:
+                                "The mods required to complete the challenge. Defaults to none.",
+                        },
+                    ],
+                },
+                {
+                    name: "beatmap",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Changes the beatmap used in a challenge.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                    ],
+                },
+                {
+                    name: "beatmapfile",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Gets the beatmap file of a challenge.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                        {
+                            name: "beatmap",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The beatmap ID or link.",
+                        },
+                    ],
+                },
+                {
+                    name: "bonus",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Adds or modifies a bonus.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                        {
+                            name: "type",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The type of the bonus.",
+                            choices: Challenge.bonusCommandChoices,
+                        },
+                        {
+                            name: "level",
+                            type: ApplicationCommandOptionTypes.INTEGER,
+                            required: true,
+                            description: "The level of the bonus.",
+                            minValue: 1,
+                        },
+                        {
+                            name: "value",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description:
+                                "The value to set the bonus to. Omit to delete the bonus level.",
+                        },
+                    ],
+                },
+                {
+                    name: "constrain",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Modifies the constrain of a challenge.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                        {
+                            name: "constrain",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description:
+                                "The mods required to complete the challenge. Omit to clear the challenge's constrain.",
+                        },
+                    ],
+                },
+                {
+                    name: "delete",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Deletes a challenge given that it's still scheduled.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                    ],
+                },
+                {
+                    name: "downloadlink",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Sets the download link to the beatmapset of the challenge.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                        {
+                            name: "link1",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The download link.",
+                        },
+                        {
+                            name: "link2",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description:
+                                "The alternative download link, if any.",
+                        },
+                    ],
+                },
+                {
+                    name: "featured",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Modifies the featured user of a challenge.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                        {
+                            name: "user",
+                            type: ApplicationCommandOptionTypes.USER,
+                            description:
+                                "The user to feature. Defaults to yourself.",
+                        },
+                    ],
+                },
+                {
+                    name: "passrequirement",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Modifies the pass requirement of a challenge.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                        {
+                            name: "type",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description:
+                                "The type of the new pass requirement.",
+                            choices: Challenge.passCommandChoices,
+                        },
+                        {
+                            name: "value",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description:
+                                "The value that must be fulfilled to pass the challenge.",
+                        },
+                    ],
+                },
+                {
+                    name: "points",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Modifies the points awarded in a challenge.",
+                    options: [
+                        {
+                            name: "id",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description: "The ID of the challenge.",
+                        },
+                        {
+                            name: "points",
+                            type: ApplicationCommandOptionTypes.INTEGER,
+                            required: true,
+                            description:
+                                "The points awarded for completing the challenge.",
+                            minValue: 1,
                         },
                     ],
                 },

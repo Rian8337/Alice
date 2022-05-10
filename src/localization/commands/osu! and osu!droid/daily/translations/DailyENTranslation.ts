@@ -20,13 +20,14 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         userHasNotPlayedAnyChallenge:
             "I'm sorry, this user has not played any challenges at all!",
         scoreNotFound: "I'm sorry, you haven't played the challenge beatmap!",
+        challengeIsOngoing:
+            "I'm sorry, this challenge has either started or ended!",
         challengeNotOngoing:
             "I'm sorry, this challenge has not been started or has ended!",
         challengeNotCompleted:
             "I'm sorry, you did not complete the ongoing challenge: %s.",
         challengeCompleted:
             "Congratulations! You have completed challenge `%s` with challenge bonus level `%s`, earning `%s` point(s) and `%s` Alice coins! You now have `%s` point(s) and `%s` Alice coins.",
-        invalidReplayURL: "Hey, please enter a valid URL!",
         replayDownloadFail: "I'm sorry, I couldn't download your replay!",
         replayInvalid:
             "Hey, please provide the proper download link to your replay!",
@@ -35,6 +36,46 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         replayTooOld: "I'm sorry, that replay's format version is too old!",
         manualSubmissionConfirmation:
             "Please ask a staff member to confirm your manual submission!",
+        invalidChallengeId:
+            'I\'m sorry, challenge IDs need to start with "d" (for daily) or "w" (for weekly)!',
+        challengeWithIdExists: "I'm sorry, a challenge with that ID exists!",
+        noBeatmapProvided: "Hey, please enter a valid beatmap!",
+        beatmapNotFound:
+            "Hey, I cannot find the beatmap with the provided link or ID!",
+        passValueOutOfRange:
+            "Hey, that pass value is out of range! It must be between %s and %s.",
+        bonusValueOutOfRange:
+            "Hey, that bonus value is out of range! It must be between %s and %s.",
+        unrankedModsIncluded: "Hey, you cannot include unranked mods!",
+        beatmapDownloadFailed:
+            "I'm sorry, I couldn't download the beatmap of the challenge!",
+        addNewChallengeFailed: "I'm sorry, I couldn't add a new challenge: %s.",
+        addNewChallengeSuccess: "Successfully added challenge `%s`.",
+        modifyBonusFailed: "I'm sorry, I couldn't modify the bonus: %s",
+        modifyBonusSuccess:
+            "Successfully modified challenge `%s` bonus type `%s` level `%s` to `%s`.",
+        modifyBeatmapFailed: "I'm sorry, I couldn't change the beatmap: %s.",
+        modifyBeatmapSuccess:
+            "Successfully changed challenge `%s`'s beatmap to `%s`.",
+        deleteChallengeFailed:
+            "I'm sorry, I couldn't delete the challenge: %s.",
+        deleteChallengeSuccess: "Successfully deleted challenge `%s`.",
+        setConstrainFailed: "I'm sorry, I couldn't set the constrain: %s.",
+        setConstrainSuccess:
+            "Successfully set the constrain of challenge `%s` to `%s`.",
+        setDownloadLinkFailed:
+            "I'm sorry, I couldn't set the download link: %s.",
+        setDownloadLinkSuccess:
+            "Successfully set download link of challenge `%s` to `%s`.",
+        setPassReqFailed: "I'm sorry, I couldn't set the pass requirement: %s.",
+        setPassReqSuccess:
+            "Successfully set challenge `%s` pass requirement to type `%s` with value `%s`.",
+        setPointsFailed: "I'm sorry, I couldn't set the points: %s.",
+        setPointsSuccess:
+            "Successfully set points awarded for completing challenge `%s` to `%s`.",
+        setFeaturedFailed: "I'm sorry, I couldn't set the featured user: %s.",
+        setFeaturedSuccess:
+            "Successfully set the featured user of challenge `%s` to `%s`.",
         aboutTitle: "osu!droid Daily/Weekly Challenges",
         aboutDescription:
             "This is a system that provides daily and weekly challenges for you to complete. Gain points and %sAlice coins as you complete challenges!",
@@ -72,5 +113,6 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         profile: "Daily/Weekly Challenge Profile for %s",
         challengesCompleted: "Challenges completed",
         statistics: "Statistics",
+        none: "None",
     };
 }

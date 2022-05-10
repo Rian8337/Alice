@@ -6,16 +6,35 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { CommandInteraction } from "discord.js";
+import { Language } from "@alice-localization/base/Language";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
-    );
+export const run: Subcommand["run"] = async (
+    _,
+    interaction: CommandInteraction<"cached">
+) => {
+    const language: Language = await CommandHelper.getLocale(interaction);
 
-    const id: string = interaction.options.getString("challengeid", true);
+    if (
+        !CommandHelper.isExecutedByBotOwner(interaction) &&
+        !interaction.member.roles.cache.has(Challenge.challengeManagerRole)
+    ) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    "noPermissionToExecuteCommand"
+                )
+            ),
+        });
+    }
+
+    const localization: DailyLocalization = new DailyLocalization(language);
 
     const challenge: Challenge | null =
-        await DatabaseManager.aliceDb.collections.challenge.getById(id);
+        await DatabaseManager.aliceDb.collections.challenge.getById(
+            interaction.options.getString("challengeid", true)
+        );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
@@ -41,11 +60,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("startChallengeSuccess"),
-            id
+            challenge.challengeid
         ),
     });
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"],
+    permissions: ["SPECIAL"],
 };
