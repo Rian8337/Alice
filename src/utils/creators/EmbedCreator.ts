@@ -5,7 +5,9 @@ import {
     Guild,
     GuildEmoji,
     GuildMember,
+    MessageActionRow,
     MessageAttachment,
+    MessageButton,
     MessageEmbed,
     MessageOptions,
     User,
@@ -80,6 +82,7 @@ import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWin
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
 import { MultiplayerPlayer } from "@alice-interfaces/multiplayer/MultiplayerPlayer";
+import { MessageButtonStyles } from "discord.js/typings/enums";
 
 /**
  * Utility to create message embeds.
@@ -778,14 +781,7 @@ export abstract class EmbedCreator {
             .setDescription(
                 `${localization.getTranslation("featuredPerson")} <@${
                     challenge.featured
-                }>\n` +
-                    `${localization.getTranslation(
-                        "download"
-                    )}: [Google Drive](${challenge.link[0]})${
-                        challenge.link[1]
-                            ? ` - [OneDrive](${challenge.link[1]})`
-                            : ""
-                    }`
+                }>`
             )
             .addField(
                 `**${localization.getTranslation("starRating")}**\n` +
@@ -830,9 +826,27 @@ export abstract class EmbedCreator {
             files.push(new MessageAttachment(chart, "chart.png"));
         }
 
+        const actionRow: MessageActionRow =
+            new MessageActionRow().addComponents(
+                new MessageButton()
+                    .setURL(challenge.link[0])
+                    .setStyle(MessageButtonStyles.LINK)
+                    .setLabel("Download")
+            );
+
+        if (challenge.link[1]) {
+            actionRow.addComponents(
+                new MessageButton()
+                    .setURL(challenge.link[1])
+                    .setStyle(MessageButtonStyles.LINK)
+                    .setLabel("Download (alternative)")
+            );
+        }
+
         return {
             embeds: [embed],
             files: files,
+            components: [actionRow],
         };
     }
 
