@@ -33,7 +33,7 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         constrain: "Requisitos",
         modOnly: "Solo %s mod",
         rankableMods: "Cualquier mod rankeable menos EZ, NF ni HT",
-        challengeBonuses: "Usa `/daily challenges` para revisar los bonus.",
+        challengeBonuses: "Usa `/daily bonuses` para revisar los bonus.",
         auctionInfo: "Información de la subasta",
         auctionName: "Nombre",
         auctionAuctioneer: "Subastador",
