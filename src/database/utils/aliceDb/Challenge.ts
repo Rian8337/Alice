@@ -882,7 +882,7 @@ export class Challenge extends Manager {
                 break;
             }
 
-            if (line.startsWith("[TimingPoints]")) {
+            if (line.startsWith("[Difficulty]")) {
                 break;
             }
         }
