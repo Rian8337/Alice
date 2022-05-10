@@ -50,7 +50,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("setDownloadLinkFailed"),
+                    localization.getTranslation("setPointsFailed"),
                     result.reason!
                 ),
             });
@@ -59,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("setDownloadLinkSuccess"),
+            localization.getTranslation("setPointsSuccess"),
             challenge.challengeid,
             points.toLocaleString(
                 LocaleHelper.convertToBCP47(localization.language)
