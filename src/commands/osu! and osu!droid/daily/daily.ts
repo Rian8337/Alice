@@ -144,13 +144,6 @@ export const config: Command["config"] = {
                                 "The value that must be fulfilled to pass the challenge.",
                         },
                         {
-                            name: "osufile",
-                            type: ApplicationCommandOptionTypes.ATTACHMENT,
-                            required: true,
-                            description:
-                                "The modified .osu file of the challenge beatmap.",
-                        },
-                        {
                             name: "featured",
                             type: ApplicationCommandOptionTypes.USER,
                             description:
