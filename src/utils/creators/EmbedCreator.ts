@@ -261,19 +261,19 @@ export abstract class EmbedCreator {
                 localization.getTranslation("ppProfileTitle"),
                 `<@${bindInfo.discordid}> (${bindInfo.username})`
             )}**\n` +
-                `${localization.getTranslation(
-                    "totalPP"
-                )}: **${bindInfo.pptotal.toFixed(
-                    2
-                )} pp (#${ppRank.toLocaleString(
-                    LocaleHelper.convertToBCP47(language)
-                )})**\n` +
-                `${localization.getTranslation("recommendedStarRating")}: **${(
-                    Math.pow(bindInfo.pptotal, 0.4) * 0.225
-                ).toFixed(2)}${Symbols.star}**\n` +
-                `[${localization.getTranslation(
-                    "ppProfile"
-                )}](https://droidppboard.herokuapp.com/profile/${bindInfo.uid})`
+            `${localization.getTranslation(
+                "totalPP"
+            )}: **${bindInfo.pptotal.toFixed(
+                2
+            )} pp (#${ppRank.toLocaleString(
+                LocaleHelper.convertToBCP47(language)
+            )})**\n` +
+            `${localization.getTranslation("recommendedStarRating")}: **${(
+                Math.pow(bindInfo.pptotal, 0.4) * 0.225
+            ).toFixed(2)}${Symbols.star}**\n` +
+            `[${localization.getTranslation(
+                "ppProfile"
+            )}](https://droidppboard.herokuapp.com/profile/${bindInfo.uid})`
         );
 
         return embed;
@@ -347,10 +347,10 @@ export abstract class EmbedCreator {
             calculationParams instanceof PerformanceCalculationParameters &&
             (droidCalculationResult instanceof PerformanceCalculationResult ||
                 droidCalculationResult instanceof
-                    RebalancePerformanceCalculationResult) &&
+                RebalancePerformanceCalculationResult) &&
             (osuCalculationResult instanceof PerformanceCalculationResult ||
                 osuCalculationResult instanceof
-                    RebalancePerformanceCalculationResult)
+                RebalancePerformanceCalculationResult)
         ) {
             const droidPP:
                 | DroidPerformanceCalculator
@@ -384,30 +384,27 @@ export abstract class EmbedCreator {
                         "result"
                     )}**: ${combo}/${map.maxCombo}x | ${(
                         accuracy.value() * 100
-                    ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${
-                        accuracy.n50
+                    ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${accuracy.n50
                     }/${accuracy.nmiss}]`
                 )
                 .addField(
                     `**${localization.getTranslation(
                         "droidPP"
-                    )}**: __${droidPP.total.toFixed(2)} pp__${
-                        calculationParams.isEstimated
-                            ? ` (${localization.getTranslation("estimated")})`
-                            : ""
+                    )}**: __${droidPP.total.toFixed(2)} pp__${calculationParams.isEstimated
+                        ? ` (${localization.getTranslation("estimated")})`
+                        : ""
                     } - ${droidPP.stars.total.toFixed(2)}${Symbols.star}`,
                     `**${localization.getTranslation(
                         "pcPP"
-                    )}**: ${pcPP.total.toFixed(2)} pp${
-                        calculationParams.isEstimated
-                            ? ` (${localization.getTranslation("estimated")})`
-                            : ""
+                    )}**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated
+                        ? ` (${localization.getTranslation("estimated")})`
+                        : ""
                     } - ${pcPP.stars.total.toFixed(2)}${Symbols.star}`
                 );
         } else {
             const droidCalcResult: RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> =
                 <
-                    RebalanceStarRatingCalculationResult<RebalanceDroidStarRating>
+                RebalanceStarRatingCalculationResult<RebalanceDroidStarRating>
                 >droidCalculationResult;
 
             const osuCalcResult: RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> =
@@ -430,19 +427,19 @@ export abstract class EmbedCreator {
                     )} ${droidCalcResult.result.total.toFixed(
                         2
                     )} ${localization.getTranslation("droidStars")}\n` +
-                        `${Symbols.star.repeat(
-                            Math.min(10, Math.floor(osuCalcResult.result.total))
-                        )} ${osuCalcResult.result.total.toFixed(
-                            2
-                        )} ${localization.getTranslation("pcStars")}`
+                    `${Symbols.star.repeat(
+                        Math.min(10, Math.floor(osuCalcResult.result.total))
+                    )} ${osuCalcResult.result.total.toFixed(
+                        2
+                    )} ${localization.getTranslation("pcStars")}`
                 );
         }
 
         if (
             droidCalculationResult instanceof
-                RebalancePerformanceCalculationResult &&
+            RebalancePerformanceCalculationResult &&
             osuCalculationResult instanceof
-                RebalancePerformanceCalculationResult
+            RebalancePerformanceCalculationResult
         ) {
             embed.setDescription(
                 `**${localization.getTranslation(
@@ -453,7 +450,7 @@ export abstract class EmbedCreator {
 
         const newRating: OsuStarRating | RebalanceOsuStarRating =
             osuCalculationResult instanceof PerformanceCalculationResult ||
-            osuCalculationResult instanceof
+                osuCalculationResult instanceof
                 RebalancePerformanceCalculationResult
                 ? osuCalculationResult.result.stars
                 : osuCalculationResult.result;
@@ -545,10 +542,8 @@ export abstract class EmbedCreator {
         if (!droidCalcResult || !osuCalcResult) {
             beatmapInformation +=
                 `${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-                `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${
-                    score.combo
-                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
-                    score.accuracy.n50
+                `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${score.combo
+                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50
                 }/${score.accuracy.nmiss}]`;
 
             embed.setDescription(beatmapInformation);
@@ -557,13 +552,12 @@ export abstract class EmbedCreator {
 
         embed
             .setAuthor({
-                name: `${
-                    osuCalcResult.map.fullTitle
-                } ${score.getCompleteModString()} [${droidCalcResult.result.stars.total.toFixed(
-                    2
-                )}${Symbols.star} | ${osuCalcResult.result.stars.total.toFixed(
-                    2
-                )}${Symbols.star}]`,
+                name: `${osuCalcResult.map.fullTitle
+                    } ${score.getCompleteModString()} [${droidCalcResult.result.stars.total.toFixed(
+                        2
+                    )}${Symbols.star} | ${osuCalcResult.result.stars.total.toFixed(
+                        2
+                    )}${Symbols.star}]`,
                 iconURL: playerAvatarURL,
                 url: `https://osu.ppy.sh/b/${osuCalcResult.map.beatmapID}`,
             })
@@ -573,11 +567,10 @@ export abstract class EmbedCreator {
 
         beatmapInformation += `**${droidCalcResult.result.total.toFixed(
             2
-        )}DPP**${
-            (droidCalcResult.replay?.tapPenalty ?? 1) !== 1
+        )}DPP**${(droidCalcResult.replay?.tapPenalty ?? 1) !== 1
                 ? ` (*${localization.getTranslation("penalized")}*)`
                 : ""
-        } | **${osuCalcResult.result.total.toFixed(2)}PP** `;
+            } | **${osuCalcResult.result.total.toFixed(2)}PP** `;
 
         if (
             score.accuracy.nmiss > 0 ||
@@ -628,12 +621,9 @@ export abstract class EmbedCreator {
 
         beatmapInformation +=
             `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-            `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${
-                score.combo
-            }x/${osuCalcResult.map.maxCombo}x ${arrow} [${
-                score.accuracy.n300
-            }/${score.accuracy.n100}/${score.accuracy.n50}/${
-                score.accuracy.nmiss
+            `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${score.combo
+            }x/${osuCalcResult.map.maxCombo}x ${arrow} [${score.accuracy.n300
+            }/${score.accuracy.n100}/${score.accuracy.n50}/${score.accuracy.nmiss
             }]`;
 
         if (!score.replay) {
@@ -679,13 +669,11 @@ export abstract class EmbedCreator {
                 }
             }
 
-            beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${
-                droidCalcResult.result.stars.map.sliderTicks
-            } ${localization.getTranslation(
-                "sliderTicks"
-            )} ${arrow} ${collectedSliderEnds}/${
-                droidCalcResult.result.stars.map.sliderEnds
-            } ${localization.getTranslation("sliderEnds")}`;
+            beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${droidCalcResult.result.stars.map.sliderTicks
+                } ${localization.getTranslation(
+                    "sliderTicks"
+                )} ${arrow} ${collectedSliderEnds}/${droidCalcResult.result.stars.map.sliderEnds
+                } ${localization.getTranslation("sliderEnds")}`;
 
             // Get hit error average and UR
             const hitErrorInformation: HitErrorInformation =
@@ -754,8 +742,7 @@ export abstract class EmbedCreator {
             .setFooter({
                 text:
                     embed.footer!.text! +
-                    ` | ${localization.getTranslation("challengeId")}: ${
-                        challenge.challengeid
+                    ` | ${localization.getTranslation("challengeId")}: ${challenge.challengeid
                     } | ${localization.getTranslation(
                         "timeLeft"
                     )}: ${DateTimeFormatHelper.secondsToDHMS(
@@ -779,37 +766,36 @@ export abstract class EmbedCreator {
                 )}.png`,
             })
             .setDescription(
-                `${localization.getTranslation("featuredPerson")} <@${
-                    challenge.featured
-                }>`
+                StringHelper.formatString(
+                    localization.getTranslation("featuredPerson"),
+                    `<@${challenge.featured}>`
+                )
             )
             .addField(
                 `**${localization.getTranslation("starRating")}**\n` +
-                    `${Symbols.star.repeat(
-                        Math.min(10, Math.floor(droidCalcResult.result.total))
-                    )} ${droidCalcResult.result.total.toFixed(
-                        2
-                    )} ${localization.getTranslation("droidStars")}\n` +
-                    `${Symbols.star.repeat(
-                        Math.min(10, Math.floor(osuCalcResult.result.total))
-                    )} ${osuCalcResult.result.total.toFixed(
-                        2
-                    )} ${localization.getTranslation("pcStars")}`,
-                `**${localization.getTranslation("points")}**: ${
-                    challenge.points
+                `${Symbols.star.repeat(
+                    Math.min(10, Math.floor(droidCalcResult.result.total))
+                )} ${droidCalcResult.result.total.toFixed(
+                    2
+                )} ${localization.getTranslation("droidStars")}\n` +
+                `${Symbols.star.repeat(
+                    Math.min(10, Math.floor(osuCalcResult.result.total))
+                )} ${osuCalcResult.result.total.toFixed(
+                    2
+                )} ${localization.getTranslation("pcStars")}`,
+                `**${localization.getTranslation("points")}**: ${challenge.points
                 } ${localization.getTranslation("points")}\n` +
-                    `**${localization.getTranslation(
-                        "passCondition"
-                    )}**: ${challenge.getPassInformation()}\n` +
-                    `**${localization.getTranslation("constrain")}**: ${
-                        challenge.constrain
-                            ? StringHelper.formatString(
-                                  localization.getTranslation("modOnly"),
-                                  challenge.constrain.toUpperCase()
-                              )
-                            : localization.getTranslation("rankableMods")
-                    }\n\n` +
-                    localization.getTranslation("challengeBonuses")
+                `**${localization.getTranslation(
+                    "passCondition"
+                )}**: ${challenge.getPassInformation()}\n` +
+                `**${localization.getTranslation("constrain")}**: ${challenge.constrain
+                    ? StringHelper.formatString(
+                        localization.getTranslation("modOnly"),
+                        challenge.constrain.toUpperCase()
+                    )
+                    : localization.getTranslation("rankableMods")
+                }\n\n` +
+                localization.getTranslation("challengeBonuses")
             );
 
         const chart: Buffer | null = await getStrainChart(
@@ -830,6 +816,7 @@ export abstract class EmbedCreator {
             new MessageActionRow().addComponents(
                 new MessageButton()
                     .setURL(challenge.link[0])
+                    .setEmoji(Symbols.inboxTray)
                     .setStyle(MessageButtonStyles.LINK)
                     .setLabel("Download")
             );
@@ -838,6 +825,7 @@ export abstract class EmbedCreator {
             actionRow.addComponents(
                 new MessageButton()
                     .setURL(challenge.link[1])
+                    .setEmoji(Symbols.inboxTray)
                     .setStyle(MessageButtonStyles.LINK)
                     .setLabel("Download (alternative)")
             );
@@ -875,47 +863,44 @@ export abstract class EmbedCreator {
         embed
             .setTitle(localization.getTranslation("auctionInfo"))
             .setDescription(
-                `**${localization.getTranslation("auctionName")}**: ${
-                    auction.name
+                `**${localization.getTranslation("auctionName")}**: ${auction.name
                 }\n` +
-                    `**${localization.getTranslation("auctionAuctioneer")}**: ${
-                        auction.auctioneer
-                    }\n` +
-                    `**${localization.getTranslation(
-                        "creationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
-                        new Date(auction.creationdate * 1000),
-                        language
-                    )}\n` +
-                    `**${localization.getTranslation(
-                        "auctionMinimumBid"
-                    )}**: ${coinEmoji}${auction.min_price} Alice coins`
+                `**${localization.getTranslation("auctionAuctioneer")}**: ${auction.auctioneer
+                }\n` +
+                `**${localization.getTranslation(
+                    "creationDate"
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(auction.creationdate * 1000),
+                    language
+                )}\n` +
+                `**${localization.getTranslation(
+                    "auctionMinimumBid"
+                )}**: ${coinEmoji}${auction.min_price} Alice coins`
             )
             .addField(
                 localization.getTranslation("auctionItemInfo"),
                 `**${localization.getTranslation(
                     "auctionPowerup"
                 )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
-                    `**${localization.getTranslation(
-                        "auctionItemAmount"
-                    )}**: ${auction.amount.toLocaleString(BCP47)}`
+                `**${localization.getTranslation(
+                    "auctionItemAmount"
+                )}**: ${auction.amount.toLocaleString(BCP47)}`
             )
             .addField(
                 localization.getTranslation("auctionBidInfo"),
                 `**${localization.getTranslation(
                     "auctionBidders"
                 )}**: ${auction.bids.size.toLocaleString(BCP47)}\n` +
-                    `**${localization.getTranslation(
-                        "auctionTopBidders"
-                    )}**:\n` +
-                    auction.bids
-                        .first(5)
-                        .map(
-                            (v, i) =>
-                                `#${i + 1}: ${v.clan} - ${coinEmoji}\`${
-                                    v.amount
-                                }\` Alice coins`
-                        )
+                `**${localization.getTranslation(
+                    "auctionTopBidders"
+                )}**:\n` +
+                auction.bids
+                    .first(5)
+                    .map(
+                        (v, i) =>
+                            `#${i + 1}: ${v.clan} - ${coinEmoji}\`${v.amount
+                            }\` Alice coins`
+                    )
             );
 
         return embed;
@@ -1028,11 +1013,11 @@ export abstract class EmbedCreator {
                 )} ${droidCalcResult.result.total.toFixed(
                     2
                 )} ${localization.getTranslation("droidStars")}\n` +
-                    `${Symbols.star.repeat(
-                        Math.min(10, Math.floor(osuCalcResult.result.total))
-                    )} ${osuCalcResult.result.total.toFixed(
-                        2
-                    )} ${localization.getTranslation("pcStars")}`
+                `${Symbols.star.repeat(
+                    Math.min(10, Math.floor(osuCalcResult.result.total))
+                )} ${osuCalcResult.result.total.toFixed(
+                    2
+                )} ${localization.getTranslation("pcStars")}`
             )
             .addField(
                 `**${localization.getTranslation(
@@ -1049,9 +1034,8 @@ export abstract class EmbedCreator {
                         )
                     )
                 )}\n\n` +
-                    `**${localization.getTranslation("mapShareSummary")}**:\n${
-                        submission.summary
-                    }`
+                `**${localization.getTranslation("mapShareSummary")}**:\n${submission.summary
+                }`
             );
 
         return embedOptions;
@@ -1077,8 +1061,7 @@ export abstract class EmbedCreator {
             .setTitle(queue.information.title)
             .setThumbnail(queue.information.thumbnail)
             .setDescription(
-                `${localization.getTranslation("musicYoutubeChannel")}: ${
-                    queue.information.author.name
+                `${localization.getTranslation("musicYoutubeChannel")}: ${queue.information.author.name
                 }\n\n${localization.getTranslation(
                     "musicDuration"
                 )}: ${queue.information.duration.toString()}\n\n${StringHelper.formatString(
@@ -1106,9 +1089,8 @@ export abstract class EmbedCreator {
 
         const embed: MessageEmbed = this.createNormalEmbed({
             color: "BLURPLE",
-            footerText: `${localization.getTranslation("warningId")}: ${
-                warning.guildSpecificId
-            }`,
+            footerText: `${localization.getTranslation("warningId")}: ${warning.guildSpecificId
+                }`,
         });
 
         embed
@@ -1119,27 +1101,24 @@ export abstract class EmbedCreator {
                     warning.issuerId,
                     warning.issuerId
                 )}**\n\n` +
-                    `**${localization.getTranslation("warnedUser")}**: <@${
-                        warning.discordId
-                    }> (${warning.discordId})\n` +
-                    `**${localization.getTranslation("channel")}**: <#${
-                        warning.channelId
-                    }> (${warning.channelId})\n` +
-                    `**${localization.getTranslation(
-                        "creationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
-                        new Date(warning.creationDate * 1000),
-                        language
-                    )}\n` +
-                    `**${localization.getTranslation(
-                        "expirationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
-                        new Date(warning.expirationDate * 1000),
-                        language
-                    )}\n\n` +
-                    `**${localization.getTranslation("reason")}**:\n${
-                        warning.reason
-                    }`
+                `**${localization.getTranslation("warnedUser")}**: <@${warning.discordId
+                }> (${warning.discordId})\n` +
+                `**${localization.getTranslation("channel")}**: <#${warning.channelId
+                }> (${warning.channelId})\n` +
+                `**${localization.getTranslation(
+                    "creationDate"
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(warning.creationDate * 1000),
+                    language
+                )}\n` +
+                `**${localization.getTranslation(
+                    "expirationDate"
+                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(warning.expirationDate * 1000),
+                    language
+                )}\n\n` +
+                `**${localization.getTranslation("reason")}**:\n${warning.reason
+                }`
             );
 
         return embed;
@@ -1169,26 +1148,23 @@ export abstract class EmbedCreator {
                 name: room.settings.roomName,
             })
             .setDescription(
-                `**${localization.getTranslation("multiplayerRoomId")}**: ${
-                    room.roomId
+                `**${localization.getTranslation("multiplayerRoomId")}**: ${room.roomId
                 }\n` +
-                    `**${localization.getTranslation(
-                        "multiplayerRoomHost"
-                    )}**: <@${room.settings.roomHost}> (${
-                        room.settings.roomHost
-                    })\n` +
-                    `**${localization.getTranslation(
-                        "multiplayerRoomPassword"
-                    )}**: ${
-                        room.settings.password
-                            ? Symbols.checkmark
-                            : Symbols.cross
-                    }\n` +
-                    `**${localization.getTranslation(
-                        "multiplayerRoomPlayerCount"
-                    )}**: ${room.players.length.toLocaleString(
-                        BCP47
-                    )}/${room.settings.maxPlayers.toLocaleString(BCP47)}`
+                `**${localization.getTranslation(
+                    "multiplayerRoomHost"
+                )}**: <@${room.settings.roomHost}> (${room.settings.roomHost
+                })\n` +
+                `**${localization.getTranslation(
+                    "multiplayerRoomPassword"
+                )}**: ${room.settings.password
+                    ? Symbols.checkmark
+                    : Symbols.cross
+                }\n` +
+                `**${localization.getTranslation(
+                    "multiplayerRoomPlayerCount"
+                )}**: ${room.players.length.toLocaleString(
+                    BCP47
+                )}/${room.settings.maxPlayers.toLocaleString(BCP47)}`
             )
             .addField(
                 localization.getTranslation("multiplayerRoomCurrentBeatmap"),
@@ -1201,40 +1177,37 @@ export abstract class EmbedCreator {
                 `**${localization.getTranslation(
                     "multiplayerRoomTeamMode"
                 )}**: ${room.teamModeToString(language)}\n` +
-                    `**${localization.getTranslation(
-                        "multiplayerRoomWinCondition"
-                    )}**: ${room.winConditionToString(language)}\n` +
-                    `**${localization.getTranslation("scorePortion")}**: ${(
-                        room.settings.scorePortion * 100
-                    )
-                        .toFixed(2)
-                        .toLocaleUpperCase(BCP47)}%\n` +
-                    `**${localization.getTranslation("forceAR")}**: ${
-                        room.settings.forcedAR.allowed
-                            ? Symbols.checkmark
-                            : Symbols.cross
-                    } (${room.settings.forcedAR.minValue.toLocaleString(
-                        BCP47
-                    )} min, ${room.settings.forcedAR.maxValue.toLocaleString(
-                        BCP47
-                    )} max)\n` +
-                    `**${localization.getTranslation(
-                        "speedMultiplier"
-                    )}**: ${room.settings.speedMultiplier.toLocaleString(
-                        BCP47
-                    )}\n` +
-                    `**${localization.getTranslation(
-                        "multiplayerRoomRequiredMods"
-                    )}**: ${
-                        room.settings.requiredMods ||
-                        localization.getTranslation("none")
-                    }\n` +
-                    `**${localization.getTranslation(
-                        "multiplayerRoomAllowedMods"
-                    )}**: ${
-                        room.settings.allowedMods ||
-                        localization.getTranslation("none")
-                    }`
+                `**${localization.getTranslation(
+                    "multiplayerRoomWinCondition"
+                )}**: ${room.winConditionToString(language)}\n` +
+                `**${localization.getTranslation("scorePortion")}**: ${(
+                    room.settings.scorePortion * 100
+                )
+                    .toFixed(2)
+                    .toLocaleUpperCase(BCP47)}%\n` +
+                `**${localization.getTranslation("forceAR")}**: ${room.settings.forcedAR.allowed
+                    ? Symbols.checkmark
+                    : Symbols.cross
+                } (${room.settings.forcedAR.minValue.toLocaleString(
+                    BCP47
+                )} min, ${room.settings.forcedAR.maxValue.toLocaleString(
+                    BCP47
+                )} max)\n` +
+                `**${localization.getTranslation(
+                    "speedMultiplier"
+                )}**: ${room.settings.speedMultiplier.toLocaleString(
+                    BCP47
+                )}\n` +
+                `**${localization.getTranslation(
+                    "multiplayerRoomRequiredMods"
+                )}**: ${room.settings.requiredMods ||
+                localization.getTranslation("none")
+                }\n` +
+                `**${localization.getTranslation(
+                    "multiplayerRoomAllowedMods"
+                )}**: ${room.settings.allowedMods ||
+                localization.getTranslation("none")
+                }`
             );
 
         return embed;
@@ -1358,9 +1331,8 @@ export abstract class EmbedCreator {
                 BCP47
             )}** - ${score.score.toLocaleString(
                 BCP47
-            )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
-                score.maxCombo
-            }x - ${accuracy.toFixed(2)}% - ${score.miss} ${Symbols.missIcon}`;
+            )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${score.maxCombo
+                }x - ${accuracy.toFixed(2)}% - ${score.miss} ${Symbols.missIcon}`;
         };
 
         embed
@@ -1376,9 +1348,9 @@ export abstract class EmbedCreator {
                 `**${localization.getTranslation(
                     "multiplayerRoomTeamMode"
                 )}**: ${room.teamModeToString(language)}\n` +
-                    `**${localization.getTranslation(
-                        "multiplayerRoomWinCondition"
-                    )}**: ${room.winConditionToString()}`
+                `**${localization.getTranslation(
+                    "multiplayerRoomWinCondition"
+                )}**: ${room.winConditionToString()}`
             );
 
         switch (room.settings.teamMode) {
@@ -1444,9 +1416,9 @@ export abstract class EmbedCreator {
                         winners.length === room.players.length
                             ? localization.getTranslation("multiplayerDraw")
                             : StringHelper.formatString(
-                                  localization.getTranslation("multiplayerWon"),
-                                  winners.join(", ")
-                              )
+                                localization.getTranslation("multiplayerWon"),
+                                winners.join(", ")
+                            )
                     );
 
                 break;
@@ -1514,46 +1486,45 @@ export abstract class EmbedCreator {
                         )
                             ? "DEFAULT"
                             : redTotalScore > blueTotalScore
-                            ? 16711680
-                            : 262399
+                                ? 16711680
+                                : 262399
                     )
                     .addField(
                         localization.getTranslation("multiplayerRedTeam"),
                         `**${localization.getTranslation(
                             "multiplayerTotalScore"
                         )}: ${redTotalScore.toLocaleString(BCP47)}**\n` +
-                            redTeamScores
-                                .map((v) =>
-                                    getScoreDescription(v.score, v.grade)
-                                )
-                                .join("\n")
+                        redTeamScores
+                            .map((v) =>
+                                getScoreDescription(v.score, v.grade)
+                            )
+                            .join("\n")
                     )
                     .addField(
                         localization.getTranslation("multiplayerBlueTeam"),
                         `**${localization.getTranslation(
                             "multiplayerTotalScore"
                         )}: ${blueTotalScore.toLocaleString(BCP47)}**\n` +
-                            blueTeamScores
-                                .map((v) =>
-                                    getScoreDescription(v.score, v.grade)
-                                )
-                                .join("\n")
+                        blueTeamScores
+                            .map((v) =>
+                                getScoreDescription(v.score, v.grade)
+                            )
+                            .join("\n")
                     )
                     .addField(
                         "=================================",
-                        `**${
-                            redTotalScore === blueTotalScore
-                                ? localization.getTranslation("multiplayerDraw")
-                                : StringHelper.formatString(
-                                      localization.getTranslation(
-                                          "multiplayerWon"
-                                      ),
-                                      localization.getTranslation(
-                                          redTotalScore > blueTotalScore
-                                              ? "multiplayerRedTeam"
-                                              : "multiplayerBlueTeam"
-                                      )
-                                  )
+                        `**${redTotalScore === blueTotalScore
+                            ? localization.getTranslation("multiplayerDraw")
+                            : StringHelper.formatString(
+                                localization.getTranslation(
+                                    "multiplayerWon"
+                                ),
+                                localization.getTranslation(
+                                    redTotalScore > blueTotalScore
+                                        ? "multiplayerRedTeam"
+                                        : "multiplayerBlueTeam"
+                                )
+                            )
                         }**`
                     );
 

@@ -25,4 +25,5 @@ export enum Symbols {
     memo = "📝",
     crown = "👑",
     personRunning = "🏃",
+    inboxTray = "📥",
 }
