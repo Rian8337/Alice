@@ -17,6 +17,7 @@ import {
     MessageEmbed,
     Snowflake,
 } from "discord.js";
+import { MessageButtonStyles } from "discord.js/typings/enums";
 import { MessageCreator } from "./MessageCreator";
 
 /**
@@ -332,12 +333,12 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             new MessageButton()
                 .setCustomId("backward")
                 .setEmoji(Symbols.skipBackward)
-                .setStyle("PRIMARY")
+                .setStyle(MessageButtonStyles.PRIMARY)
                 .setDisabled(currentPage === 1 || maxPage <= 5),
             new MessageButton()
                 .setCustomId("back")
                 .setEmoji(Symbols.leftArrow)
-                .setStyle("SUCCESS")
+                .setStyle(MessageButtonStyles.SUCCESS)
                 .setDisabled(maxPage === 1),
             new MessageButton()
                 .setCustomId("none")
@@ -346,17 +347,17 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         ? `${currentPage}/${maxPage}`
                         : currentPage.toString()
                 )
-                .setStyle("SECONDARY")
+                .setStyle(MessageButtonStyles.SECONDARY)
                 .setDisabled(true),
             new MessageButton()
                 .setCustomId("next")
                 .setEmoji(Symbols.rightArrow)
-                .setStyle("SUCCESS")
+                .setStyle(MessageButtonStyles.SUCCESS)
                 .setDisabled(maxPage === 1),
             new MessageButton()
                 .setCustomId("forward")
                 .setEmoji(Symbols.skipForward)
-                .setStyle("PRIMARY")
+                .setStyle(MessageButtonStyles.PRIMARY)
                 .setDisabled(currentPage === maxPage || maxPage <= 5),
         ];
     }
@@ -372,12 +373,12 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 .setCustomId("yes")
                 .setEmoji(Symbols.checkmark)
                 .setLabel("Yes")
-                .setStyle("SUCCESS"),
+                .setStyle(MessageButtonStyles.SUCCESS),
             new MessageButton()
                 .setCustomId("no")
                 .setEmoji(Symbols.cross)
                 .setLabel("No")
-                .setStyle("DANGER"),
+                .setStyle(MessageButtonStyles.DANGER),
         ];
     }
 
