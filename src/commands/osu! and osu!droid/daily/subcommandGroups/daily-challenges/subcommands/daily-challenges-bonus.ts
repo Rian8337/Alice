@@ -100,7 +100,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     await InteractionHelper.defer(interaction);
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
-        challenge.challengeid,
+        challenge.beatmapid,
         false
     );
 
