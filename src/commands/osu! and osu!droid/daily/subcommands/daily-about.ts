@@ -57,8 +57,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             )
         )
         .addField(
-            localization.getTranslation("aboutAnswer5"),
-            localization.getTranslation("aboutQuestion5")
+            localization.getTranslation("aboutQuestion5"),
+            localization.getTranslation("aboutAnswer5")
         );
 
     InteractionHelper.reply(interaction, {
