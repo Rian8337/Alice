@@ -294,7 +294,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             challenge.challengeid,
             type,
             level.toLocaleString(BCP47),
-            localization.getTranslation("none")
+            value.toLocaleString(BCP47)
         ),
     });
 };
