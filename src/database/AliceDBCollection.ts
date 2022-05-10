@@ -250,7 +250,7 @@ export class AliceDBCollection {
             aliceDb.collection("userwarning")
         );
         this.multiplayerRoom = new MultiplayerRoomCollectionManager(
-            aliceDb.collection("multiplayer")
+            aliceDb.collection("multiplayerroom")
         );
     }
 }
