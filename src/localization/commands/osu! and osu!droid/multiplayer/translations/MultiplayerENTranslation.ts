@@ -130,7 +130,8 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         setBeatmapFailed: "I'm sorry, I couldn't set the beatmap: %s.",
         setBeatmapSuccess: "Successfully set current beatmap to `%s`.",
         roundStartFailed: "I'm sorry, I couldn't start the round: %s.",
-        roundStartSuccess: "The round will start in %s seconds! Have fun!",
+        roundStartSuccess:
+            "The round will start in %s seconds! Good luck and have fun!",
         matchStatusUpdateFailed:
             "I'm sorry, I couldn't update the match status: %s.\n\nPlease use `/multiplayer round forcesubmit` to update the match status.",
         matchStatusUpdateSuccess: "Successfully updated match status.",
