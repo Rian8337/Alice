@@ -8,6 +8,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { MathUtils, Precision } from "@rian8337/osu-base";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -45,9 +46,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const value: number = interaction.options.getNumber("value") ?? 1;
+    const value: number = MathUtils.round(
+        interaction.options.getNumber("value") ?? 1,
+        2
+    );
 
-    if ((value * 100) % 5 !== 0) {
+    if (!Precision.almostEqualsNumber((value * 100) % 5, 0)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("speedMultiplierNotDivisible")
