@@ -49,6 +49,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     player.isReady = !player.isReady;
 
+    if (player.isReady) {
+        player.isSpectating = false;
+    }
+
     const result: OperationResult = await room.updateRoom();
 
     if (!result.success) {
