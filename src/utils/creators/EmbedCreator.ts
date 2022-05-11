@@ -1440,7 +1440,7 @@ export abstract class EmbedCreator {
                         localization.getTranslation("multiplayerRoomResults"),
                         scores
                             .map((v) => getScoreDescription(v.score, v.grade))
-                            .join("\n") || "None"
+                            .join("\n") || localization.getTranslation("none")
                     )
                     .addField(
                         "=================================",
@@ -1448,7 +1448,8 @@ export abstract class EmbedCreator {
                             ? localization.getTranslation("multiplayerDraw")
                             : StringHelper.formatString(
                                   localization.getTranslation("multiplayerWon"),
-                                  winners.join(", ")
+                                  winners.join(", ") ||
+                                      localization.getTranslation("none")
                               )
                     );
 
