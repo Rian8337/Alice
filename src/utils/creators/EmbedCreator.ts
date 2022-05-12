@@ -1263,14 +1263,25 @@ export abstract class EmbedCreator {
         });
 
         const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-            room.settings.beatmap!.hash
+            room.settings.beatmap!.hash,
+            false
         ))!;
 
         let maxScore: number | undefined;
 
         let requiredMods: Mod[] | undefined;
 
-        const getGrade = (score: MultiplayerScore): number => {
+        const droidStarRatingCalculationCache: Collection<
+            string,
+            StarRatingCalculationResult<DroidStarRating>
+        > = new Collection();
+
+        const pcStarRatingCalculationCache: Collection<
+            string,
+            StarRatingCalculationResult<OsuStarRating>
+        > = new Collection();
+
+        const getGrade = async (score: MultiplayerScore): Promise<number> => {
             switch (room.settings.winCondition) {
                 case MultiplayerWinCondition.scoreV1:
                     return score.score;
@@ -1290,6 +1301,8 @@ export abstract class EmbedCreator {
                     requiredMods ??= ModUtil.pcStringToMods(
                         room.settings.requiredMods
                     );
+
+                    await beatmapInfo.retrieveBeatmapFile();
 
                     maxScore ??= beatmapInfo.map!.maxDroidScore(
                         new MapStats({
@@ -1321,6 +1334,90 @@ export abstract class EmbedCreator {
                     return score.miss;
                 case MultiplayerWinCondition.leastUnstableRate:
                     return MathUtils.round(score.unstableRate, 2);
+                case MultiplayerWinCondition.mostDroidPp: {
+                    const usedMods: Mod[] = ModUtil.pcStringToMods(score.mods);
+
+                    const sortedMod: string = StringHelper.sortAlphabet(
+                        usedMods.reduce((a, m) => a + m.acronym, "")
+                    );
+
+                    const customStats: MapStats = new MapStats({
+                        ar: score.forcedAR,
+                        mods: usedMods,
+                        speedMultiplier: score.speedMultiplier,
+                        isForceAR: score.forcedAR !== undefined,
+                    });
+
+                    const starRating: StarRatingCalculationResult<DroidStarRating> =
+                        droidStarRatingCalculationCache.get(sortedMod) ??
+                        (await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                            beatmapInfo,
+                            new StarRatingCalculationParameters(customStats)
+                        ))!;
+
+                    droidStarRatingCalculationCache.set(sortedMod, starRating);
+
+                    const performance: PerformanceCalculationResult<DroidPerformanceCalculator> =
+                        (await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                            starRating,
+                            new PerformanceCalculationParameters(
+                                new Accuracy({
+                                    n300: score.perfect,
+                                    n100: score.good,
+                                    n50: score.bad,
+                                    nmiss: score.miss,
+                                }),
+                                undefined,
+                                score.maxCombo,
+                                1,
+                                customStats
+                            )
+                        ))!;
+
+                    return MathUtils.round(performance.result.total, 2);
+                }
+                case MultiplayerWinCondition.mostPcPp: {
+                    const usedMods: Mod[] = ModUtil.pcStringToMods(score.mods);
+
+                    const sortedMod: string = StringHelper.sortAlphabet(
+                        usedMods.reduce((a, m) => a + m.acronym, "")
+                    );
+
+                    const customStats: MapStats = new MapStats({
+                        ar: score.forcedAR,
+                        mods: usedMods,
+                        speedMultiplier: score.speedMultiplier,
+                        isForceAR: score.forcedAR !== undefined,
+                    });
+
+                    const starRating: StarRatingCalculationResult<OsuStarRating> =
+                        pcStarRatingCalculationCache.get(sortedMod) ??
+                        (await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                            beatmapInfo,
+                            new StarRatingCalculationParameters(customStats)
+                        ))!;
+
+                    pcStarRatingCalculationCache.set(sortedMod, starRating);
+
+                    const performance: PerformanceCalculationResult<OsuPerformanceCalculator> =
+                        (await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                            starRating,
+                            new PerformanceCalculationParameters(
+                                new Accuracy({
+                                    n300: score.perfect,
+                                    n100: score.good,
+                                    n50: score.bad,
+                                    nmiss: score.miss,
+                                }),
+                                undefined,
+                                score.maxCombo,
+                                1,
+                                customStats
+                            )
+                        ))!;
+
+                    return MathUtils.round(performance.result.total, 2);
+                }
             }
         };
 
@@ -1400,7 +1497,7 @@ export abstract class EmbedCreator {
                     }
 
                     scores.set(score.username, {
-                        grade: getGrade(score),
+                        grade: await getGrade(score),
                         score: score,
                     });
                 }
@@ -1482,7 +1579,7 @@ export abstract class EmbedCreator {
                             : blueTeamScores;
 
                     scoreCollection.set(score.username, {
-                        grade: getGrade(score),
+                        grade: await getGrade(score),
                         score: score,
                     });
                 }

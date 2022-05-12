@@ -390,6 +390,14 @@ export const config: Command["config"] = {
                                     name: "Least Unstable Rate",
                                     value: MultiplayerWinCondition.leastUnstableRate,
                                 },
+                                {
+                                    name: "Most Droid PP",
+                                    value: MultiplayerWinCondition.mostDroidPp,
+                                },
+                                {
+                                    name: "Most PC PP",
+                                    value: MultiplayerWinCondition.mostPcPp,
+                                },
                             ],
                         },
                     ],

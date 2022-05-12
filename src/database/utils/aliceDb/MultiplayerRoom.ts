@@ -8,7 +8,10 @@ import { MultiplayerRoomSettings } from "@alice-interfaces/multiplayer/Multiplay
 import { MultiplayerRoomStatus } from "@alice-interfaces/multiplayer/MultiplayerRoomStatus";
 import { MultiplayerScore } from "@alice-interfaces/multiplayer/MultiplayerScore";
 import { Language } from "@alice-localization/base/Language";
-import { MultiplayerRoomLocalization } from "@alice-localization/database/utils/aliceDb/MultiplayerRoom/MultiplayerRoomLocalization";
+import {
+    MultiplayerRoomLocalization,
+    MultiplayerRoomStrings,
+} from "@alice-localization/database/utils/aliceDb/MultiplayerRoom/MultiplayerRoomLocalization";
 import { Manager } from "@alice-utils/base/Manager";
 import { Snowflake, ThreadChannel } from "discord.js";
 import { ObjectId } from "mongodb";
@@ -91,26 +94,45 @@ export class MultiplayerRoom
         const localization: MultiplayerRoomLocalization =
             this.getLocalization(language);
 
+        let key: keyof MultiplayerRoomStrings;
+
         switch (this.settings.winCondition) {
             case MultiplayerWinCondition.scoreV1:
-                return localization.getTranslation("scoreV1");
+                key = "scoreV1";
+                break;
             case MultiplayerWinCondition.accuracy:
-                return localization.getTranslation("accuracy");
+                key = "accuracy";
+                break;
             case MultiplayerWinCondition.maxCombo:
-                return localization.getTranslation("maxCombo");
+                key = "maxCombo";
+                break;
             case MultiplayerWinCondition.scoreV2:
-                return localization.getTranslation("scoreV2");
+                key = "scoreV2";
+                break;
             case MultiplayerWinCondition.most300:
-                return localization.getTranslation("most300s");
+                key = "most300s";
+                break;
             case MultiplayerWinCondition.least100:
-                return localization.getTranslation("least100s");
+                key = "least100s";
+                break;
             case MultiplayerWinCondition.least50:
-                return localization.getTranslation("least50s");
+                key = "least50s";
+                break;
             case MultiplayerWinCondition.leastMisses:
-                return localization.getTranslation("leastMisses");
+                key = "leastMisses";
+                break;
             case MultiplayerWinCondition.leastUnstableRate:
-                return localization.getTranslation("leastUnstableRate");
+                key = "leastUnstableRate";
+                break;
+            case MultiplayerWinCondition.mostDroidPp:
+                key = "mostDroidPp";
+                break;
+            case MultiplayerWinCondition.mostPcPp:
+                key = "mostPcPp";
+                break;
         }
+
+        return localization.getTranslation(key);
     }
 
     /**

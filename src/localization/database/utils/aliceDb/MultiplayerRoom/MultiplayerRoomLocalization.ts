@@ -15,6 +15,8 @@ export interface MultiplayerRoomStrings {
     readonly least50s: string;
     readonly leastMisses: string;
     readonly leastUnstableRate: string;
+    readonly mostDroidPp: string;
+    readonly mostPcPp: string;
     readonly headToHead: string;
     readonly teamVS: string;
 }

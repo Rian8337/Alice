@@ -11,4 +11,6 @@ export enum MultiplayerWinCondition {
     least50,
     leastMisses,
     leastUnstableRate,
+    mostDroidPp,
+    mostPcPp,
 }
