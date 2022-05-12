@@ -1590,6 +1590,8 @@ export abstract class EmbedCreator {
                     case MultiplayerWinCondition.maxCombo:
                     case MultiplayerWinCondition.scoreV2:
                     case MultiplayerWinCondition.most300:
+                    case MultiplayerWinCondition.mostDroidPp:
+                    case MultiplayerWinCondition.mostPcPp:
                         redTeamScores.sort((a, b) => b.grade - a.grade);
                         blueTeamScores.sort((a, b) => b.grade - a.grade);
                         break;
