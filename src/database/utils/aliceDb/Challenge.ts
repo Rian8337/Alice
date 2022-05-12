@@ -1243,7 +1243,7 @@ export class Challenge extends Manager {
                     new MapStats({
                         mods: data.convertedMods,
                         ar: data.forcedAR,
-                        isForceAR: !!data.forcedAR,
+                        isForceAR: data.forcedAR !== undefined,
                         speedMultiplier: data.speedModification,
                         oldStatistics: data.replayVersion <= 3,
                     })
@@ -1262,7 +1262,7 @@ export class Challenge extends Manager {
                     new MapStats({
                         mods: data.convertedMods,
                         ar: data.forcedAR,
-                        isForceAR: !!data.forcedAR,
+                        isForceAR: data.forcedAR !== undefined,
                         speedMultiplier: data.speedModification,
                         oldStatistics: data.replayVersion <= 3,
                     })
