@@ -15,6 +15,8 @@ export class MultiplayerRoomKRTranslation extends Translation<MultiplayerRoomStr
         least50s: "",
         leastMisses: "",
         leastUnstableRate: "",
+        mostDroidPp: "",
+        mostPcPp: "",
         headToHead: "",
         teamVS: "",
     };
