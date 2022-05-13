@@ -84,7 +84,10 @@ export class NameChange extends Manager implements DatabaseNameChange {
         const requestResult: string = content.split(" ").shift()!;
 
         if (requestResult === "FAILED") {
-            return this.deny("New username taken");
+            return this.deny(
+                localization.getTranslation("newUsernameTaken"),
+                language
+            );
         }
 
         await DatabaseManager.elainaDb.collections.userBind.update(
