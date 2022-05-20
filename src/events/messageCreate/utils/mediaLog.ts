@@ -42,7 +42,7 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
         }
 
         logChannel.send({
-            content: attachment.url,
+            content: attachment.proxyURL,
             embeds: [embed],
         });
     }
