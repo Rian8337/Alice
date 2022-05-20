@@ -156,13 +156,24 @@ export abstract class StringHelper {
             return false;
         }
 
-        const length: number = link.length;
+        return ["png", "jpg", "jpeg", "gif"].every(
+            (v) => link.indexOf(v, link.length - v.length) !== -1
+        );
+    }
 
-        return (
-            link.indexOf("png", length - 3) !== -1 ||
-            link.indexOf("jpg", length - 3) !== -1 ||
-            link.indexOf("jpeg", length - 4) !== -1 ||
-            link.indexOf("gif", length - 3) !== -1
+    /**
+     * Checks if a link returns a valid video.
+     *
+     * @param link The link to check.
+     * @returns Whether the link returns a valid video.
+     */
+    static isValidVideo(link: string): boolean {
+        if (!this.isValidURL(link)) {
+            return false;
+        }
+
+        return ["webm", "mp4", "mov"].every(
+            (v) => link.indexOf(v, link.length - v.length) !== -1
         );
     }
 

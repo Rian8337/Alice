@@ -18,7 +18,10 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
     );
 
     for (const attachment of message.attachments.values()) {
-        if (!StringHelper.isValidImage(attachment.url)) {
+        if (
+            !StringHelper.isValidImage(attachment.url) &&
+            !StringHelper.isValidVideo(attachment.url)
+        ) {
             continue;
         }
 
@@ -39,8 +42,8 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
         }
 
         logChannel.send({
+            content: attachment.url,
             embeds: [embed],
-            files: [attachment],
         });
     }
 };
