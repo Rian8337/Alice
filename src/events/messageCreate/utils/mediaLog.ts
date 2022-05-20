@@ -1,4 +1,9 @@
-import { Message, MessageEmbed, TextChannel } from "discord.js";
+import {
+    Message,
+    MessageAttachment,
+    MessageEmbed,
+    TextChannel,
+} from "discord.js";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -41,10 +46,18 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
             embed.addField("Content", message.content.substring(0, 1025));
         }
 
-        logChannel.send({
-            content: attachment.proxyURL,
-            embeds: [embed],
-        });
+        try {
+            logChannel.send({
+                files: [
+                    new MessageAttachment(
+                        attachment.url,
+                        attachment.name ?? undefined
+                    ),
+                ],
+                embeds: [embed],
+            });
+            // eslint-disable-next-line no-empty
+        } catch {}
     }
 };
 
