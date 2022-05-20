@@ -156,7 +156,7 @@ export abstract class StringHelper {
             return false;
         }
 
-        return ["png", "jpg", "jpeg", "gif"].every(
+        return ["png", "jpg", "jpeg", "gif"].some(
             (v) => link.indexOf(v, link.length - v.length) !== -1
         );
     }
@@ -172,7 +172,7 @@ export abstract class StringHelper {
             return false;
         }
 
-        return ["webm", "mp4", "mov"].every(
+        return ["webm", "mp4", "mov"].some(
             (v) => link.indexOf(v, link.length - v.length) !== -1
         );
     }
