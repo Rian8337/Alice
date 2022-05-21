@@ -106,6 +106,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
+    const droidDiffHelper: DroidBeatmapDifficultyHelper = new DroidBeatmapDifficultyHelper();
+
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     for (const score of scoresToSubmit) {
@@ -113,9 +115,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             score.hash,
             false
         );
-        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${
-            score.mods.map((v) => v.acronym).join(",") || "No Mod"
-        }`;
+        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${score.mods.map((v) => v.acronym).join(",") || "No Mod"
+            }`;
         let fieldContent: string = `${score.combo}x | ${(
             score.accuracy.value() * 100
         ).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | **`;
@@ -124,8 +125,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             embed.addField(
                 fieldTitle,
                 fieldContent +
-                    localization.getTranslation("beatmapNotFound") +
-                    "**"
+                localization.getTranslation("beatmapNotFound") +
+                "**"
             );
             continue;
         }
@@ -158,7 +159,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 break;
             default: {
                 const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                    await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+                    await droidDiffHelper.calculateScorePerformance(
                         score
                     );
 
@@ -213,29 +214,28 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         `${localization.getTranslation("totalPP")}: **${totalPP.toFixed(
             2
         )}pp**\n` +
-            `${localization.getTranslation("ppGained")}: **${ppDiff.toFixed(
-                2
-            )}pp**\n` +
-            `${localization.getTranslation(
-                "rankedScore"
-            )}: **${totalScore.toLocaleString(BCP47)}**\n` +
-            `${localization.getTranslation(
-                "scoreGained"
-            )}: **${scoreDiff.toLocaleString(BCP47)}**\n` +
-            `${localization.getTranslation("currentLevel")}: **${Math.floor(
-                level
-            )} (${levelRemain}%)**${
-                (rankedScoreInfo?.level ?? 1) < Math.floor(level)
-                    ? `\n${Symbols.upIcon} ${localization.getTranslation(
-                          "levelUp"
-                      )}!`
-                    : ""
-            }\n` +
-            `${localization.getTranslation("scoreNeeded")}: **${(
-                RankedScoreHelper.calculateScoreRequirement(
-                    Math.floor(level) + 1
-                ) - totalScore
-            ).toLocaleString(BCP47)}**`
+        `${localization.getTranslation("ppGained")}: **${ppDiff.toFixed(
+            2
+        )}pp**\n` +
+        `${localization.getTranslation(
+            "rankedScore"
+        )}: **${totalScore.toLocaleString(BCP47)}**\n` +
+        `${localization.getTranslation(
+            "scoreGained"
+        )}: **${scoreDiff.toLocaleString(BCP47)}**\n` +
+        `${localization.getTranslation("currentLevel")}: **${Math.floor(
+            level
+        )} (${levelRemain}%)**${(rankedScoreInfo?.level ?? 1) < Math.floor(level)
+            ? `\n${Symbols.upIcon} ${localization.getTranslation(
+                "levelUp"
+            )}!`
+            : ""
+        }\n` +
+        `${localization.getTranslation("scoreNeeded")}: **${(
+            RankedScoreHelper.calculateScoreRequirement(
+                Math.floor(level) + 1
+            ) - totalScore
+        ).toLocaleString(BCP47)}**`
     );
 
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);
