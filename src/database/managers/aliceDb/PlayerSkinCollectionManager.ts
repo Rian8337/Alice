@@ -1,8 +1,6 @@
 import { PlayerSkin } from "@alice-database/utils/aliceDb/PlayerSkin";
 import { DatabasePlayerSkin } from "@alice-interfaces/database/aliceDb/DatabasePlayerSkin";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake, User } from "discord.js";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
@@ -13,24 +11,15 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<
     DatabasePlayerSkin,
     PlayerSkin
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabasePlayerSkin,
-        PlayerSkin
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabasePlayerSkin
+    ) => PlayerSkin = PlayerSkin;
 
     override get defaultDocument(): DatabasePlayerSkin {
         return {
             discordid: "",
             skin: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabasePlayerSkin>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabasePlayerSkin, PlayerSkin>
-        >new PlayerSkin().constructor;
     }
 
     /**

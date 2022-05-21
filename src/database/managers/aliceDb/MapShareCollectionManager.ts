@@ -1,9 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
-import { Collection as MongoDBCollection } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";
 
 /**
@@ -13,10 +11,9 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<
     DatabaseMapShare,
     MapShare
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseMapShare,
-        MapShare
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseMapShare
+    ) => MapShare = MapShare;
 
     override get defaultDocument(): DatabaseMapShare {
         return {
@@ -28,14 +25,6 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<
             submitter: "",
             summary: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseMapShare>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseMapShare, MapShare>
-        >new MapShare().constructor;
     }
 
     /**

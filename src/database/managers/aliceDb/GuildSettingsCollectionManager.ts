@@ -4,10 +4,8 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseGuildSettings } from "@alice-interfaces/database/aliceDb/DatabaseGuildSettings";
 import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
 import { Language } from "@alice-localization/base/Language";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Snowflake } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
 
 /**
  * A manager for the `guildsettings` collection.
@@ -16,10 +14,9 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
     DatabaseGuildSettings,
     GuildSettings
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseGuildSettings,
-        GuildSettings
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseGuildSettings
+    ) => GuildSettings = GuildSettings;
 
     override get defaultDocument(): DatabaseGuildSettings {
         return {
@@ -29,14 +26,6 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
             id: "",
             preferredLocale: "en",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseGuildSettings>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>
-        >new GuildSettings().constructor;
     }
 
     /**

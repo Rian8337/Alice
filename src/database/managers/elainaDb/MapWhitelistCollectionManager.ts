@@ -1,9 +1,8 @@
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
 import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection, Filter, Sort } from "mongodb";
+import { Filter, Sort } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
 /**
@@ -13,10 +12,9 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<
     DatabaseMapWhitelist,
     MapWhitelist
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseMapWhitelist,
-        MapWhitelist
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseMapWhitelist
+    ) => MapWhitelist = MapWhitelist;
 
     override get defaultDocument(): DatabaseMapWhitelist {
         return {
@@ -32,17 +30,6 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<
             mapid: 0,
             mapname: "",
         };
-    }
-
-    /**
-     * @param collection The MongoDB collection.
-     */
-    constructor(collection: MongoDBCollection<DatabaseMapWhitelist>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseMapWhitelist, MapWhitelist>
-        >new MapWhitelist().constructor;
     }
 
     /**

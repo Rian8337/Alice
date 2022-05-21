@@ -2,9 +2,7 @@ import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseColl
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Guild, Snowflake } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
 
 /**
  * A manager for the `punishmentconfig` collection.
@@ -13,10 +11,9 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
     DatabaseGuildPunishmentConfig,
     GuildPunishmentConfig
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseGuildPunishmentConfig,
-        GuildPunishmentConfig
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseGuildPunishmentConfig
+    ) => GuildPunishmentConfig = GuildPunishmentConfig;
 
     override get defaultDocument(): DatabaseGuildPunishmentConfig {
         return {
@@ -25,17 +22,6 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
             immuneTimeoutRoles: [],
             logChannel: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseGuildPunishmentConfig>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<
-                DatabaseGuildPunishmentConfig,
-                GuildPunishmentConfig
-            >
-        >new GuildPunishmentConfig().constructor;
     }
 
     /**

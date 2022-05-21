@@ -2,8 +2,6 @@ import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { DatabaseNameChange } from "@alice-interfaces/database/aliceDb/DatabaseNameChange";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 /**
@@ -13,10 +11,9 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
     DatabaseNameChange,
     NameChange
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseNameChange,
-        NameChange
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseNameChange
+    ) => NameChange = NameChange;
 
     override get defaultDocument(): DatabaseNameChange {
         return {
@@ -27,14 +24,6 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
             previous_usernames: [],
             uid: 0,
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseNameChange>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseNameChange, NameChange>
-        >new NameChange().constructor;
     }
 
     /**

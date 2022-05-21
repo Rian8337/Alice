@@ -1,10 +1,8 @@
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseWarning } from "@alice-interfaces/database/aliceDb/DatabaseWarning";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Collection as DiscordCollection, Snowflake } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**
@@ -14,10 +12,9 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
     DatabaseWarning,
     Warning
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseWarning,
-        Warning
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseWarning
+    ) => Warning = Warning;
 
     override get defaultDocument(): DatabaseWarning {
         const currentDate: number = Math.floor(Date.now() / 1000);
@@ -33,14 +30,6 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
             points: 0,
             reason: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseWarning>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseWarning, Warning>
-        >new Warning().constructor;
     }
 
     /**

@@ -2,10 +2,8 @@ import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseColl
 import { Birthday } from "@alice-database/utils/aliceDb/Birthday";
 import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Snowflake } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
 import { BirthdayCollectionManagerLocalization } from "@alice-localization/database/managers/aliceDb/BirthdayCollectionManager/BirthdayCollectionManagerLocalization";
 import { Language } from "@alice-localization/base/Language";
 
@@ -16,10 +14,9 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
     DatabaseBirthday,
     Birthday
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseBirthday,
-        Birthday
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseBirthday
+    ) => Birthday = Birthday;
 
     override get defaultDocument(): DatabaseBirthday {
         const date: Date = new Date();
@@ -31,14 +28,6 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
             timezone: 0,
             isLeapYear: false,
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseBirthday>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseBirthday, Birthday>
-        >new Birthday().constructor;
     }
 
     /**

@@ -1,6 +1,5 @@
 import { BaseDocument } from "@alice-interfaces/database/BaseDocument";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Manager } from "@alice-utils/base/Manager";
 import { Collection as DiscordCollection } from "discord.js";
 import {
@@ -27,10 +26,7 @@ export abstract class DatabaseCollectionManager<
     /**
      * The constructor function of the utility of this collection.
      */
-    protected abstract readonly utilityInstance: DatabaseUtilityConstructor<
-        T,
-        C
-    >;
+    protected abstract readonly utilityInstance: new (data: T) => C;
 
     /**
      * The default document of this collection.

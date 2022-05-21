@@ -1,8 +1,6 @@
 import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { DatabaseProfileBadge } from "@alice-interfaces/database/aliceDb/DatabaseProfileBadge";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Collection as DiscordCollection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
@@ -13,10 +11,9 @@ export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<
     DatabaseProfileBadge,
     ProfileBadge
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseProfileBadge,
-        ProfileBadge
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseProfileBadge
+    ) => ProfileBadge = ProfileBadge;
 
     override get defaultDocument(): DatabaseProfileBadge {
         return {
@@ -26,14 +23,6 @@ export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<
             requirement: 0,
             type: "unclaimable",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseProfileBadge>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseProfileBadge, ProfileBadge>
-        >new ProfileBadge().constructor;
     }
 
     /**

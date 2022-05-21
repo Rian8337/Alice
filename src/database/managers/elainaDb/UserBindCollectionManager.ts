@@ -1,9 +1,8 @@
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection, Filter, WithId } from "mongodb";
+import { Filter, WithId } from "mongodb";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
 /**
@@ -13,10 +12,9 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
     DatabaseUserBind,
     UserBind
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseUserBind,
-        UserBind
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseUserBind
+    ) => UserBind = UserBind;
 
     override get defaultDocument(): DatabaseUserBind {
         return {
@@ -29,17 +27,6 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
             uid: 0,
             username: "",
         };
-    }
-
-    /**
-     * @param collection The MongoDB collection.
-     */
-    constructor(collection: MongoDBCollection<DatabaseUserBind>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseUserBind, UserBind>
-        >new UserBind().constructor;
     }
 
     /**

@@ -1,8 +1,6 @@
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { DatabaseTournamentMappool } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMappool";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 
 /**
  * A manager for the `mapinfo` collection.
@@ -11,30 +9,15 @@ export class TournamentMappoolCollectionManager extends DatabaseCollectionManage
     DatabaseTournamentMappool,
     TournamentMappool
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseTournamentMappool,
-        TournamentMappool
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseTournamentMappool
+    ) => TournamentMappool = TournamentMappool;
 
     override get defaultDocument(): DatabaseTournamentMappool {
         return {
             poolId: "",
             maps: [],
         };
-    }
-
-    /**
-     * @param collection The MongoDB collection.
-     */
-    constructor(collection: MongoDBCollection<DatabaseTournamentMappool>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<
-                DatabaseTournamentMappool,
-                TournamentMappool
-            >
-        >new TournamentMappool().constructor;
     }
 
     /**

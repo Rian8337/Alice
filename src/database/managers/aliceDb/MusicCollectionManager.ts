@@ -1,8 +1,6 @@
 import { MusicCollection } from "@alice-database/utils/aliceDb/MusicCollection";
 import { DatabaseMusicCollection } from "@alice-interfaces/database/aliceDb/DatabaseMusicCollection";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
 import { Snowflake, User, Collection as DiscordCollection } from "discord.js";
 
 /**
@@ -12,10 +10,9 @@ export class MusicCollectionManager extends DatabaseCollectionManager<
     DatabaseMusicCollection,
     MusicCollection
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseMusicCollection,
-        MusicCollection
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseMusicCollection
+    ) => MusicCollection = MusicCollection;
 
     override get defaultDocument(): DatabaseMusicCollection {
         return {
@@ -24,14 +21,6 @@ export class MusicCollectionManager extends DatabaseCollectionManager<
             owner: "",
             videoIds: [],
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseMusicCollection>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseMusicCollection, MusicCollection>
-        >new MusicCollection().constructor;
     }
 
     /**

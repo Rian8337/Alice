@@ -2,10 +2,8 @@ import { UserLocale } from "@alice-database/utils/aliceDb/UserLocale";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUserLocale } from "@alice-interfaces/database/aliceDb/DatabaseUserLocale";
 import { Language } from "@alice-localization/base/Language";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Snowflake } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**
@@ -15,23 +13,15 @@ export class UserLocaleCollectionManager extends DatabaseCollectionManager<
     DatabaseUserLocale,
     UserLocale
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseUserLocale,
-        UserLocale
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseUserLocale
+    ) => UserLocale = UserLocale;
+
     override get defaultDocument(): DatabaseUserLocale {
         return {
             discordId: "",
             locale: "en",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseUserLocale>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseUserLocale, UserLocale>
-        >new UserLocale().constructor;
     }
 
     /**

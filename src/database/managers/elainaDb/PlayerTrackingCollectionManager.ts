@@ -1,8 +1,6 @@
 import { PlayerTracking } from "@alice-database/utils/elainaDb/PlayerTracking";
 import { DatabasePlayerTracking } from "@alice-interfaces/database/elainaDb/DatabasePlayerTracking";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 /**
@@ -12,26 +10,14 @@ export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<
     DatabasePlayerTracking,
     PlayerTracking
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabasePlayerTracking,
-        PlayerTracking
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabasePlayerTracking
+    ) => PlayerTracking = PlayerTracking;
 
     override get defaultDocument(): DatabasePlayerTracking {
         return {
             uid: 0,
         };
-    }
-
-    /**
-     * @param collection The MongoDB collection.
-     */
-    constructor(collection: MongoDBCollection<DatabasePlayerTracking>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabasePlayerTracking, PlayerTracking>
-        >new PlayerTracking().constructor;
     }
 
     /**

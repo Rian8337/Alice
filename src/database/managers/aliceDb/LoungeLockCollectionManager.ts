@@ -2,9 +2,7 @@ import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseColl
 import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";
 import { DatabaseLoungeLock } from "@alice-interfaces/database/aliceDb/DatabaseLoungeLock";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
 
 /**
  * A manager for the `loungelock` collection.
@@ -13,10 +11,9 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<
     DatabaseLoungeLock,
     LoungeLock
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseLoungeLock,
-        LoungeLock
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseLoungeLock
+    ) => LoungeLock = LoungeLock;
 
     override get defaultDocument(): DatabaseLoungeLock {
         return {
@@ -24,14 +21,6 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<
             expiration: Number.POSITIVE_INFINITY,
             reason: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseLoungeLock>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseLoungeLock, LoungeLock>
-        >new LoungeLock().constructor;
     }
 
     /**

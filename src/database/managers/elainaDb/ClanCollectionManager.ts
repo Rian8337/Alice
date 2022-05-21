@@ -1,9 +1,7 @@
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { DatabaseClan } from "@alice-interfaces/database/elainaDb/DatabaseClan";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake, User } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
@@ -14,10 +12,9 @@ export class ClanCollectionManager extends DatabaseCollectionManager<
     DatabaseClan,
     Clan
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseClan,
-        Clan
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseClan
+    ) => Clan = Clan;
 
     override get defaultDocument(): DatabaseClan {
         const currentTime: number = Math.floor(Date.now() / 1000);
@@ -92,17 +89,6 @@ export class ClanCollectionManager extends DatabaseCollectionManager<
             roleIconUnlocked: false,
             weeklyfee: currentTime + 86400 * 7, // Weekly upkeep every week
         };
-    }
-
-    /**
-     * @param collection The MongoDB collection.
-     */
-    constructor(collection: MongoDBCollection<DatabaseClan>) {
-        super(collection);
-
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseClan, Clan>>(
-            new Clan().constructor
-        );
     }
 
     /**

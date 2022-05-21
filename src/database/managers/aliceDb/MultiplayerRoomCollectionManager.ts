@@ -1,6 +1,4 @@
-import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseMultiplayerRoom } from "@alice-interfaces/database/aliceDb/DatabaseMultiplayerRoom";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { MultiplayerRoom } from "../../utils/aliceDb/MultiplayerRoom";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
@@ -14,10 +12,9 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
     DatabaseMultiplayerRoom,
     MultiplayerRoom
 > {
-    protected utilityInstance: DatabaseUtilityConstructor<
-        DatabaseMultiplayerRoom,
-        MultiplayerRoom
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseMultiplayerRoom
+    ) => MultiplayerRoom = MultiplayerRoom;
 
     get defaultDocument(): DatabaseMultiplayerRoom {
         return {
@@ -47,14 +44,6 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
                 },
             },
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseMultiplayerRoom>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseMultiplayerRoom, MultiplayerRoom>
-        >new MultiplayerRoom().constructor;
     }
 
     /**

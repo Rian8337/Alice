@@ -1,9 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { DatabaseGuildTag } from "@alice-interfaces/database/aliceDb/DatabaseGuildTag";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Collection as DiscordCollection, Snowflake } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
 
 /**
  * A manager for the `tags` collection.
@@ -12,10 +10,9 @@ export class GuildTagCollectionManager extends DatabaseCollectionManager<
     DatabaseGuildTag,
     GuildTag
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseGuildTag,
-        GuildTag
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseGuildTag
+    ) => GuildTag = GuildTag;
 
     override get defaultDocument(): DatabaseGuildTag {
         return {
@@ -27,14 +24,6 @@ export class GuildTagCollectionManager extends DatabaseCollectionManager<
             guildid: "",
             name: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseGuildTag>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseGuildTag, GuildTag>
-        >new GuildTag().constructor;
     }
 
     /**

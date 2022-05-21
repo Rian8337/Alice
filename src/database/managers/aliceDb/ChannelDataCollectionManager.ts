@@ -1,9 +1,8 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { DatabaseChannelData } from "@alice-interfaces/database/aliceDb/DatabaseChannelData";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Collection as DiscordCollection } from "discord.js";
-import { Collection as MongoDBCollection, Filter, WithId } from "mongodb";
+import { Filter, WithId } from "mongodb";
 
 /**
  * A manager for the `channeldata` collection.
@@ -12,10 +11,9 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<
     DatabaseChannelData,
     ChannelData
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseChannelData,
-        ChannelData
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseChannelData
+    ) => ChannelData = ChannelData;
 
     override get defaultDocument(): DatabaseChannelData {
         const date: Date = new Date();
@@ -26,14 +24,6 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<
             timestamp: date.getTime(),
             channels: [],
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseChannelData>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseChannelData, ChannelData>
-        >new ChannelData().constructor;
     }
 
     /**

@@ -1,9 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { AskCount } from "@alice-database/utils/aliceDb/AskCount";
 import { DatabaseAskCount } from "@alice-interfaces/database/aliceDb/DatabaseAskCount";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake } from "discord.js";
-import { Collection as MongoDBCollection } from "mongodb";
 
 /**
  * A manager for the `askcount` collection.
@@ -12,24 +10,15 @@ export class AskCountCollectionManager extends DatabaseCollectionManager<
     DatabaseAskCount,
     AskCount
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseAskCount,
-        AskCount
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseAskCount
+    ) => AskCount = AskCount;
 
     override get defaultDocument(): DatabaseAskCount {
         return {
             discordid: "",
             count: 0,
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseAskCount>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseAskCount, AskCount>
-        >new AskCount(this.defaultDocument).constructor;
     }
 
     /**

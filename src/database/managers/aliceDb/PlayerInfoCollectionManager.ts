@@ -1,8 +1,6 @@
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake, User } from "discord.js";
 
 /**
@@ -12,10 +10,9 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
     DatabasePlayerInfo,
     PlayerInfo
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabasePlayerInfo,
-        PlayerInfo
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabasePlayerInfo
+    ) => PlayerInfo = PlayerInfo;
 
     override get defaultDocument(): DatabasePlayerInfo {
         return {
@@ -42,14 +39,6 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
             uid: 0,
             username: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabasePlayerInfo>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabasePlayerInfo, PlayerInfo>
-        >new PlayerInfo().constructor;
     }
 
     /**

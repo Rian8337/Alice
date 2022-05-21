@@ -1,8 +1,6 @@
 import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/DatabaseRankedScore";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Collection as DiscordCollection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
@@ -13,10 +11,9 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<
     DatabaseRankedScore,
     RankedScore
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseRankedScore,
-        RankedScore
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseRankedScore
+    ) => RankedScore = RankedScore;
 
     override get defaultDocument(): DatabaseRankedScore {
         return {
@@ -27,14 +24,6 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<
             uid: 0,
             username: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseRankedScore>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseRankedScore, RankedScore>
-        >new RankedScore().constructor;
     }
 
     /**

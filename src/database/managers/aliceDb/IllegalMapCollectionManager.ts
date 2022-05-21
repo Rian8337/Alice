@@ -1,8 +1,6 @@
-import { Collection as MongoDBCollection } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";
 import { IllegalMap } from "@alice-database/utils/aliceDb/IllegalMap";
 import { DatabaseIllegalMap } from "@alice-interfaces/database/aliceDb/DatabaseIllegalMap";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
@@ -13,23 +11,14 @@ export class IllegalMapCollectionManager extends DatabaseCollectionManager<
     DatabaseIllegalMap,
     IllegalMap
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseIllegalMap,
-        IllegalMap
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseIllegalMap
+    ) => IllegalMap = IllegalMap;
 
     override get defaultDocument(): DatabaseIllegalMap {
         return {
             hash: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseIllegalMap>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseIllegalMap, IllegalMap>
-        >new IllegalMap().constructor;
     }
 
     /**

@@ -2,8 +2,6 @@ import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseColl
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { DatabaseChallenge } from "@alice-interfaces/database/aliceDb/DatabaseChallenge";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Collection as MongoDBCollection } from "mongodb";
 
 /**
  * A manager for the `challenge` collection.
@@ -12,10 +10,9 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<
     DatabaseChallenge,
     Challenge
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseChallenge,
-        Challenge
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseChallenge
+    ) => Challenge = Challenge;
 
     override get defaultDocument(): DatabaseChallenge {
         return {
@@ -34,14 +31,6 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<
             status: "scheduled",
             timelimit: Math.floor(Date.now() / 1000),
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseChallenge>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseChallenge, Challenge>
-        >new Challenge().constructor;
     }
 
     /**

@@ -1,8 +1,6 @@
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
 import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection } from "mongodb";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake } from "discord.js";
 
 /**
@@ -12,10 +10,9 @@ export class VotingCollectionManager extends DatabaseCollectionManager<
     DatabaseVoting,
     Voting
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseVoting,
-        Voting
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseVoting
+    ) => Voting = Voting;
 
     override get defaultDocument(): DatabaseVoting {
         return {
@@ -24,14 +21,6 @@ export class VotingCollectionManager extends DatabaseCollectionManager<
             initiator: "",
             topic: "",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseVoting>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseVoting, Voting>
-        >new Voting().constructor;
     }
 
     /**

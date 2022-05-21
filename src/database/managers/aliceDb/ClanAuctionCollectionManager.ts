@@ -1,8 +1,6 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { DatabaseClanAuction } from "@alice-interfaces/database/aliceDb/DatabaseClanAuction";
-import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Collection as MongoDBCollection } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";
 
 /**
@@ -12,10 +10,9 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<
     DatabaseClanAuction,
     ClanAuction
 > {
-    protected override readonly utilityInstance: DatabaseUtilityConstructor<
-        DatabaseClanAuction,
-        ClanAuction
-    >;
+    protected override readonly utilityInstance: new (
+        data: DatabaseClanAuction
+    ) => ClanAuction = ClanAuction;
 
     override get defaultDocument(): DatabaseClanAuction {
         const currentTime: number = Math.floor(Date.now() / 1000);
@@ -30,14 +27,6 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<
             name: "",
             powerup: "challenge",
         };
-    }
-
-    constructor(collection: MongoDBCollection<DatabaseClanAuction>) {
-        super(collection);
-
-        this.utilityInstance = <
-            DatabaseUtilityConstructor<DatabaseClanAuction, ClanAuction>
-        >new ClanAuction().constructor;
     }
 
     /**
