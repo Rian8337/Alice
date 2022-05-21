@@ -108,11 +108,11 @@ export const run: Command["run"] = async (_, interaction) => {
         | PerformanceCalculationResult<DroidPerformanceCalculator>
         | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>
         | null = await (interaction.options.getBoolean("lazercalculation")
-        ? DroidBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+        ? new DroidBeatmapDifficultyHelper().calculateBeatmapRebalancePerformance(
               beatmapID ?? hash,
               calcParams
           )
-        : DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+        : new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
               beatmapID ?? hash,
               calcParams
           ));
@@ -121,11 +121,11 @@ export const run: Command["run"] = async (_, interaction) => {
         | PerformanceCalculationResult<OsuPerformanceCalculator>
         | RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator>
         | null = await (interaction.options.getBoolean("lazercalculation")
-        ? OsuBeatmapDifficultyHelper.calculateBeatmapRebalancePerformance(
+        ? new OsuBeatmapDifficultyHelper().calculateBeatmapRebalancePerformance(
               beatmapID ?? hash,
               calcParams
           )
-        : OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+        : new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
               beatmapID ?? hash,
               calcParams
           ));

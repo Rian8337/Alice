@@ -118,6 +118,8 @@ export class UserBind extends Manager {
      */
     readonly _id?: ObjectId;
 
+    private diffCalcHelper?: DroidBeatmapDifficultyHelper;
+
     constructor(
         data: DatabaseUserBind = DatabaseManager.elainaDb?.collections.userBind
             .defaultDocument ?? {}
@@ -260,6 +262,8 @@ export class UserBind extends Manager {
     async recalculateDPP(): Promise<OperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
 
+        this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
+
         for (const ppEntry of this.pp.values()) {
             const score: Score | null = await this.getScoreRelativeToPP(
                 ppEntry
@@ -279,9 +283,7 @@ export class UserBind extends Manager {
             await HelperFunctions.sleep(0.1);
 
             const calcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                await DroidBeatmapDifficultyHelper.calculateScorePerformance(
-                    score
-                );
+                await this.diffCalcHelper.calculateScorePerformance(score);
 
             if (!calcResult) {
                 continue;
@@ -313,6 +315,8 @@ export class UserBind extends Manager {
     async calculatePrototypeDPP(): Promise<OperationResult> {
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
+        this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
+
         for (const ppEntry of this.pp.values()) {
             const score: Score | null = await this.getScoreRelativeToPP(
                 ppEntry
@@ -330,7 +334,7 @@ export class UserBind extends Manager {
             }
 
             const calcResult: RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null =
-                await DroidBeatmapDifficultyHelper.calculateScoreRebalancePerformance(
+                await this.diffCalcHelper.calculateScoreRebalancePerformance(
                     score
                 );
 
@@ -396,6 +400,8 @@ export class UserBind extends Manager {
         let newList: Collection<string, PPEntry> = new Collection();
 
         this.playc = 0;
+
+        this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
 
         const getScores = async (
             uid: number,
@@ -512,7 +518,7 @@ export class UserBind extends Manager {
                         DPPSubmissionValidity.VALID
                     ) {
                         const calcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                            await DroidBeatmapDifficultyHelper.calculateScorePerformance(
+                            await this.diffCalcHelper.calculateScorePerformance(
                                 score
                             );
 

@@ -67,13 +67,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             );
 
             const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
                     beatmapID,
                     calcParams
                 );
 
             const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-                await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
                     beatmapID,
                     calcParams
                 );
@@ -178,13 +178,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 }
 
                 const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                    await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                    await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
                         beatmapInfo,
                         calcParams
                     );
 
                 const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-                    await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                    await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
                         beatmapInfo,
                         calcParams
                     );
@@ -203,7 +203,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     })`,
                     `${beatmapInfo.showStatistics(2, stats)}\n` +
                         `**Max score**: ${beatmapInfo
-                            .maxScore(stats)
+                            .map!.maxDroidScore(stats)
                             .toLocaleString(
                                 LocaleHelper.convertToBCP47(
                                     localization.language

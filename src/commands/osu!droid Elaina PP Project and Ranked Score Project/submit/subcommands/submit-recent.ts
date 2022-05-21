@@ -158,7 +158,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 break;
             default: {
                 const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                    await DroidBeatmapDifficultyHelper.calculateScorePerformance(
+                    await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
                         score
                     );
 

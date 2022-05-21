@@ -173,13 +173,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     }
 
                     const droidCalcResult: StarRatingCalculationResult<DroidStarRating> | null =
-                        await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                        await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
                             calcParams
                         );
 
                     const osuCalcResult: StarRatingCalculationResult<OsuStarRating> | null =
-                        await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                        await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
                             calcParams
                         );
@@ -198,7 +198,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         })`,
                         `${beatmapInfo.showStatistics(2, stats)}\n` +
                             `**Max score**: ${beatmapInfo
-                                .maxScore(stats)
+                                .map!.maxDroidScore(stats)
                                 .toLocaleString(
                                     LocaleHelper.convertToBCP47(
                                         localization.language

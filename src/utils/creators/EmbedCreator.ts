@@ -43,7 +43,7 @@ import {
     HitObject,
     Slider,
     SliderTick,
-    TailCircle,
+    SliderTail,
     ModUtil,
     Mod,
     MathUtils,
@@ -89,6 +89,10 @@ import { MessageButtonStyles } from "discord.js/typings/enums";
  */
 export abstract class EmbedCreator {
     private static readonly botSign: string = "Alice Synthesis Thirty";
+    private static readonly droidDiffCalcHelper: DroidBeatmapDifficultyHelper =
+        new DroidBeatmapDifficultyHelper();
+    private static readonly osuDiffCalcHelper: OsuBeatmapDifficultyHelper =
+        new OsuBeatmapDifficultyHelper();
 
     /**
      * Creates a normal embed.
@@ -533,10 +537,10 @@ export abstract class EmbedCreator {
         });
 
         const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-            await DroidBeatmapDifficultyHelper.calculateScorePerformance(score);
+            await this.droidDiffCalcHelper.calculateScorePerformance(score);
 
         const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-            await OsuBeatmapDifficultyHelper.calculateScorePerformance(score);
+            await this.osuDiffCalcHelper.calculateScorePerformance(score);
 
         let beatmapInformation: string = `${arrow} **${BeatmapManager.getRankEmote(
             <ScoreRank>score.rank
@@ -598,7 +602,7 @@ export abstract class EmbedCreator {
 
             // Safe to non-null since previous calculation works.
             const droidFcCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> =
-                (await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
                     new StarRatingCalculationResult(
                         droidCalcResult.map,
                         droidCalcResult.result.stars
@@ -608,7 +612,7 @@ export abstract class EmbedCreator {
 
             // Safe to non-null since previous calculation works.
             const osuFcCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> =
-                (await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
                     new StarRatingCalculationResult(
                         osuCalcResult.map,
                         osuCalcResult.result.stars
@@ -652,7 +656,7 @@ export abstract class EmbedCreator {
             for (let i = 0; i < replayData.hitObjectData.length; ++i) {
                 // Using droid star rating as legacy slider tail doesn't exist.
                 const object: HitObject =
-                    droidCalcResult.result.stars.map.objects[i];
+                    droidCalcResult.result.stars.map.hitObjects.objects[i];
                 const objectData: ReplayObjectData =
                     replayData.hitObjectData[i];
 
@@ -673,18 +677,18 @@ export abstract class EmbedCreator {
 
                     if (nested instanceof SliderTick) {
                         ++collectedSliderTicks;
-                    } else if (nested instanceof TailCircle) {
+                    } else if (nested instanceof SliderTail) {
                         ++collectedSliderEnds;
                     }
                 }
             }
 
             beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${
-                droidCalcResult.result.stars.map.sliderTicks
+                droidCalcResult.result.stars.map.hitObjects.sliderTicks
             } ${localization.getTranslation(
                 "sliderTicks"
             )} ${arrow} ${collectedSliderEnds}/${
-                droidCalcResult.result.stars.map.sliderEnds
+                droidCalcResult.result.stars.map.hitObjects.sliderEnds
             } ${localization.getTranslation("sliderEnds")}`;
 
             // Get hit error average and UR
@@ -729,13 +733,13 @@ export abstract class EmbedCreator {
             );
 
         const droidCalcResult: StarRatingCalculationResult<DroidStarRating> =
-            (await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+            (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
                 challenge.beatmapid,
                 calcParams
             ))!;
 
         const osuCalcResult: StarRatingCalculationResult<OsuStarRating> =
-            (await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+            (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
                 challenge.beatmapid,
                 calcParams
             ))!;
@@ -992,13 +996,13 @@ export abstract class EmbedCreator {
             new StarRatingCalculationParameters();
 
         const droidCalcResult: StarRatingCalculationResult<DroidStarRating> =
-            (await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+            (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
                 submission.beatmap_id,
                 calcParams
             ))!;
 
         const osuCalcResult: StarRatingCalculationResult<OsuStarRating> =
-            (await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+            (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
                 submission.beatmap_id,
                 calcParams
             ))!;
@@ -1350,7 +1354,7 @@ export abstract class EmbedCreator {
 
                     const starRating: StarRatingCalculationResult<DroidStarRating> =
                         droidStarRatingCalculationCache.get(sortedMod) ??
-                        (await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                        (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
                             beatmapInfo,
                             new StarRatingCalculationParameters(customStats)
                         ))!;
@@ -1358,7 +1362,7 @@ export abstract class EmbedCreator {
                     droidStarRatingCalculationCache.set(sortedMod, starRating);
 
                     const performance: PerformanceCalculationResult<DroidPerformanceCalculator> =
-                        (await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                        (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
                             starRating,
                             new PerformanceCalculationParameters(
                                 new Accuracy({
@@ -1392,7 +1396,7 @@ export abstract class EmbedCreator {
 
                     const starRating: StarRatingCalculationResult<OsuStarRating> =
                         pcStarRatingCalculationCache.get(sortedMod) ??
-                        (await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                        (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
                             beatmapInfo,
                             new StarRatingCalculationParameters(customStats)
                         ))!;
@@ -1400,7 +1404,7 @@ export abstract class EmbedCreator {
                     pcStarRatingCalculationCache.set(sortedMod, starRating);
 
                     const performance: PerformanceCalculationResult<OsuPerformanceCalculator> =
-                        (await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                        (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
                             starRating,
                             new PerformanceCalculationParameters(
                                 new Accuracy({

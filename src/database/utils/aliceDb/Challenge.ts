@@ -227,6 +227,8 @@ export class Challenge extends Manager {
         ];
 
     private readonly challengeChannelID: Snowflake = "669221772083724318";
+    private droidDiffCalcHelper?: DroidBeatmapDifficultyHelper;
+    private osuDiffCalcHelper?: OsuBeatmapDifficultyHelper;
 
     constructor(
         data: DatabaseChallenge = DatabaseManager.aliceDb?.collections.challenge
@@ -468,8 +470,10 @@ export class Challenge extends Manager {
             );
         }
 
+        this.droidDiffCalcHelper ??= new DroidBeatmapDifficultyHelper();
+
         const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-            await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+            await this.droidDiffCalcHelper.calculateBeatmapPerformance(
                 this.beatmapid,
                 await BeatmapDifficultyHelper.getCalculationParamsFromScore(
                     score
@@ -477,8 +481,10 @@ export class Challenge extends Manager {
                 score.replay
             );
 
+        this.osuDiffCalcHelper ??= new OsuBeatmapDifficultyHelper();
+
         const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-            await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+            await this.osuDiffCalcHelper.calculateBeatmapPerformance(
                 this.beatmapid,
                 await BeatmapDifficultyHelper.getCalculationParamsFromScore(
                     score
@@ -614,15 +620,18 @@ export class Challenge extends Manager {
             null;
 
         if (scoreOrReplay instanceof Score) {
+            this.droidDiffCalcHelper ??= new DroidBeatmapDifficultyHelper();
+            this.osuDiffCalcHelper ??= new OsuBeatmapDifficultyHelper();
+
             droidCalcResult =
-                await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                await this.droidDiffCalcHelper.calculateBeatmapPerformance(
                     this.beatmapid,
                     await DroidBeatmapDifficultyHelper.getCalculationParamsFromScore(
                         scoreOrReplay
                     )
                 );
             osuCalcResult =
-                await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+                await this.osuDiffCalcHelper.calculateBeatmapPerformance(
                     this.beatmapid,
                     await OsuBeatmapDifficultyHelper.getCalculationParamsFromScore(
                         scoreOrReplay
@@ -1232,8 +1241,10 @@ export class Challenge extends Manager {
             return null;
         }
 
+        this.droidDiffCalcHelper ??= new DroidBeatmapDifficultyHelper();
+
         const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> =
-            (await DroidBeatmapDifficultyHelper.calculateBeatmapPerformance(
+            (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
                 this.beatmapid,
                 new PerformanceCalculationParameters(
                     data.accuracy,
@@ -1251,8 +1262,10 @@ export class Challenge extends Manager {
                 replay
             ))!;
 
+        this.osuDiffCalcHelper ??= new OsuBeatmapDifficultyHelper();
+
         const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> =
-            (await OsuBeatmapDifficultyHelper.calculateBeatmapPerformance(
+            (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
                 this.beatmapid,
                 new PerformanceCalculationParameters(
                     data.accuracy,
@@ -1292,11 +1305,10 @@ export class Challenge extends Manager {
         scoreOrReplay: Score | ReplayData
     ): Promise<number> {
         const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-            this.beatmapid,
-            false
+            this.beatmapid
         ))!;
 
-        const maximumScore: number = beatmapInfo.maxScore(
+        const maximumScore: number = beatmapInfo.map!.maxDroidScore(
             new MapStats({
                 cs: beatmapInfo.cs,
                 ar: beatmapInfo.ar,

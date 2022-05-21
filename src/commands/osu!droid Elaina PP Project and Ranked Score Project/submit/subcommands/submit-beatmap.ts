@@ -140,7 +140,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     // PP
     const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-        await DroidBeatmapDifficultyHelper.calculateScorePerformance(score);
+        await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+            score
+        );
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,

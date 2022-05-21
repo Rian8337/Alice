@@ -215,7 +215,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 }
 
                 const star: StarRatingCalculationResult<OsuStarRating> =
-                    (await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                    (await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                         beatmapInfo,
                         new StarRatingCalculationParameters()
                     ))!;

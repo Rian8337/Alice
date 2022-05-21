@@ -176,10 +176,14 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> =
-        (await DroidBeatmapDifficultyHelper.calculateScorePerformance(score))!;
+        (await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+            score
+        ))!;
 
     const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> =
-        (await OsuBeatmapDifficultyHelper.calculateScorePerformance(score))!;
+        (await new OsuBeatmapDifficultyHelper().calculateScorePerformance(
+            score
+        ))!;
 
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(

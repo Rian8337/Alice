@@ -103,6 +103,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const arrow: Symbols = Symbols.rightArrowSmall;
 
+    const droidDiffCalcHelper: DroidBeatmapDifficultyHelper =
+        new DroidBeatmapDifficultyHelper();
+    const osuDiffCalcHelper: OsuBeatmapDifficultyHelper =
+        new OsuBeatmapDifficultyHelper();
+
     const getCalculationResult = async (
         score: Score
     ): Promise<
@@ -114,7 +119,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
             beatmapInfo
                 ? droidCalculationCache.get(score.scoreID) ??
-                  (await DroidBeatmapDifficultyHelper.calculateScorePerformance(
+                  (await droidDiffCalcHelper.calculateScorePerformance(
                       score,
                       false
                   ))
@@ -123,9 +128,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
             beatmapInfo
                 ? osuCalculationCache.get(score.scoreID) ??
-                  (await OsuBeatmapDifficultyHelper.calculateScorePerformance(
-                      score
-                  ))
+                  (await osuDiffCalcHelper.calculateScorePerformance(score))
                 : null;
 
         if (!droidCalculationCache.has(score.scoreID)) {
@@ -188,7 +191,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         const noModDroidCalcResult: StarRatingCalculationResult<DroidStarRating> | null =
             beatmapInfo
-                ? await DroidBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                ? await droidDiffCalcHelper.calculateBeatmapDifficulty(
                       beatmapInfo.hash,
                       noModCalcParams
                   )
@@ -196,7 +199,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         const noModOsuCalcResult: StarRatingCalculationResult<OsuStarRating> | null =
             beatmapInfo
-                ? await OsuBeatmapDifficultyHelper.calculateBeatmapDifficulty(
+                ? await osuDiffCalcHelper.calculateBeatmapDifficulty(
                       beatmapInfo.hash,
                       noModCalcParams
                   )
