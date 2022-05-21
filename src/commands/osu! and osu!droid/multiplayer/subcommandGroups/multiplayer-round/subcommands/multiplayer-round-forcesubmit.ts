@@ -82,7 +82,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await room.updateRoom();
 
     if (!result.success) {
-        return interaction.channel!.send({
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("matchStatusUpdateFailed"),
                 result.reason!
@@ -90,7 +90,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.channel!.send({
+    InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("matchStatusUpdateSuccess")
         ),
