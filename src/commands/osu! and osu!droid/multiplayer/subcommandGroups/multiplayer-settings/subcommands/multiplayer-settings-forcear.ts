@@ -47,9 +47,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const allowed: boolean | null = interaction.options.getBoolean("allowed");
 
-    const minValue: number | null = interaction.options.getInteger("minvalue");
+    const minValue: number | null = interaction.options.getNumber("minvalue");
 
-    const maxValue: number | null = interaction.options.getInteger("maxvalue");
+    const maxValue: number | null = interaction.options.getNumber("maxvalue");
 
     let needsUpdating: boolean = false;
 
