@@ -355,19 +355,19 @@ export const config: Command["config"] = {
                             description: "The win condition.",
                             choices: [
                                 {
-                                    name: "Score V1",
+                                    name: "Highest Score V1",
                                     value: MultiplayerWinCondition.scoreV1,
                                 },
                                 {
-                                    name: "Accuracy",
+                                    name: "Highest Accuracy",
                                     value: MultiplayerWinCondition.accuracy,
                                 },
                                 {
-                                    name: "Maximum Combo",
+                                    name: "Highest Maximum Combo",
                                     value: MultiplayerWinCondition.maxCombo,
                                 },
                                 {
-                                    name: "Score V2",
+                                    name: "Highest Score V2",
                                     value: MultiplayerWinCondition.scoreV2,
                                 },
                                 {
@@ -387,15 +387,15 @@ export const config: Command["config"] = {
                                     value: MultiplayerWinCondition.leastMisses,
                                 },
                                 {
-                                    name: "Least Unstable Rate",
+                                    name: "Lowest Unstable Rate",
                                     value: MultiplayerWinCondition.leastUnstableRate,
                                 },
                                 {
-                                    name: "Most Droid PP",
+                                    name: "Highest Droid PP",
                                     value: MultiplayerWinCondition.mostDroidPp,
                                 },
                                 {
-                                    name: "Most PC PP",
+                                    name: "Highest PC PP",
                                     value: MultiplayerWinCondition.mostPcPp,
                                 },
                             ],

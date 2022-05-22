@@ -6,17 +6,17 @@ import { MultiplayerRoomStrings } from "../MultiplayerRoomLocalization";
  */
 export class MultiplayerRoomENTranslation extends Translation<MultiplayerRoomStrings> {
     override readonly translations: MultiplayerRoomStrings = {
-        scoreV1: "Score V1",
-        accuracy: "Accuracy",
-        maxCombo: "Maximum Combo",
-        scoreV2: "Score V2",
+        scoreV1: "Highest Score V1",
+        accuracy: "Highest Accuracy",
+        maxCombo: "Highest Maximum Combo",
+        scoreV2: "Highest Score V2",
         most300s: "Most 300s",
         least100s: "Least 100s",
         least50s: "Least 50s",
         leastMisses: "Least Misses",
-        leastUnstableRate: "Least Unstable Rate",
-        mostDroidPp: "Most Droid PP",
-        mostPcPp: "Most PC PP",
+        leastUnstableRate: "Lowest Unstable Rate",
+        mostDroidPp: "Highest Droid PP",
+        mostPcPp: "Highest PC PP",
         headToHead: "Head-to-head",
         teamVS: "Team VS",
     };
