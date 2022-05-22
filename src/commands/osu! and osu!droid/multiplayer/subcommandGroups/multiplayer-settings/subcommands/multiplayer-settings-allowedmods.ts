@@ -118,8 +118,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("setModsSuccess"),
-            room.settings.requiredMods,
-            room.settings.allowedMods
+            room.settings.requiredMods || localization.getTranslation("none"),
+            room.settings.allowedMods || localization.getTranslation("none")
         ),
     });
 };
