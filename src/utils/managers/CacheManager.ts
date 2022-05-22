@@ -73,6 +73,6 @@ export abstract class CacheManager {
     /**
      * The timers for a multiplayer room, mapped by channel ID.
      */
-    static readonly multiplayerTimers: Collection<Snowflake, NodeJS.Timeout> =
+    static readonly multiplayerTimers: Collection<Snowflake, NodeJS.Timeout[]> =
         new Collection();
 }

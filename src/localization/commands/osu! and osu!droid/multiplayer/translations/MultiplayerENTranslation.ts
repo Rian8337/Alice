@@ -52,6 +52,7 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
             "I'm sorry, there is currently no picked beatmap in the multiplayer room!",
         roundInfo: "Round Info",
         roundStarted: "Round started!",
+        roundCountdownStatus: "The round will start in %s seconds!",
         roundCountdownFinished:
             "Beatmap time is over. Beginning 30 seconds countdown.",
         roomIsInPlayingStatus:

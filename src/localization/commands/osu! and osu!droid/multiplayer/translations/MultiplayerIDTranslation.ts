@@ -35,6 +35,7 @@ export class MultiplayerIDTranslation extends Translation<MultiplayerStrings> {
         noBeatmapPickedInRoom: "",
         roundInfo: "",
         roundStarted: "",
+        roundCountdownStatus: "",
         roundCountdownFinished: "",
         roomIsInPlayingStatus: "",
         roomIsNotInPlayingStatus: "",

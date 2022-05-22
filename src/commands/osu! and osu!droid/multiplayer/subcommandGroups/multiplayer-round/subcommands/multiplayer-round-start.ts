@@ -146,7 +146,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
 
         CacheManager.multiplayerTimers.delete(room.channelId);
-
+        // TODO: send countdown status every 5 seconds
         setTimeout(() => {
             setTimeout(async () => {
                 // Room may have been deleted or thread may have been archived.
@@ -240,7 +240,30 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }, (room.settings.beatmap!.duration / stats.speedMultiplier) * 1000);
     }, duration * 1000);
 
-    CacheManager.multiplayerTimers.set(room.channelId, timeout);
+    const timeouts: NodeJS.Timeout[] = [timeout];
+
+    // Resend countdown every 5 seconds
+    for (let i = 0; i < Math.floor(duration / 5); ++i) {
+        // For 5, 10, 15, 20... countdowns, the first reminder is already sent below.
+        if (duration % 5 === 0 && i === 0) {
+            continue;
+        }
+
+        timeouts.push(
+            setTimeout(() => {
+                interaction.channel!.send({
+                    content: MessageCreator.createAccept(
+                        localization.getTranslation("roundCountdownStatus"),
+                        (duration - (duration % 5) - i * 5).toLocaleString(
+                            BCP47
+                        )
+                    ),
+                });
+            }, (i * 5 + (duration % 5)) * 1000)
+        );
+    }
+
+    CacheManager.multiplayerTimers.set(room.channelId, timeouts);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

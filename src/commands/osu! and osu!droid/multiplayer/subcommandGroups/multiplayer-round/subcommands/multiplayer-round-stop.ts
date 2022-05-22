@@ -58,7 +58,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    clearTimeout(CacheManager.multiplayerTimers.get(room.channelId)!);
+    const timeouts: NodeJS.Timeout[] = CacheManager.multiplayerTimers.get(
+        room.channelId
+    )!;
+
+    for (const timeout of timeouts) {
+        clearTimeout(timeout);
+    }
 
     CacheManager.multiplayerTimers.delete(room.channelId);
 

@@ -35,6 +35,7 @@ export interface MultiplayerStrings {
     readonly noBeatmapPickedInRoom: string;
     readonly roundInfo: string;
     readonly roundStarted: string;
+    readonly roundCountdownStatus: string;
     readonly roundCountdownFinished: string;
     readonly roomIsInPlayingStatus: string;
     readonly roomIsNotInPlayingStatus: string;
