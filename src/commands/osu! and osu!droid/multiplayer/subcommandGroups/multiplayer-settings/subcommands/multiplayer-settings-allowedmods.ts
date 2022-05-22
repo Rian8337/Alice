@@ -76,7 +76,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (mods.some((m) => ModUtil.speedChangingMods.includes(m))) {
+    if (
+        mods.some((m) =>
+            ModUtil.speedChangingMods.find((s) => s.acronym === m.acronym)
+        )
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("speedChangingModsIncluded")
