@@ -15,7 +15,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         embeds: [
             EmbedCreator.createNormalEmbed({
                 author: interaction.user,
-                color: (<GuildMember | null>interaction.member)?.displayColor
+                color: (<GuildMember | null>interaction.member)?.displayColor,
             }).setDescription(
                 StringHelper.formatString(
                     localization.getTranslation("about"),
