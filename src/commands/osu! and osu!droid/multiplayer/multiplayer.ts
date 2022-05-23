@@ -405,6 +405,43 @@ export const config: Command["config"] = {
             ],
         },
         {
+            name: "scorev2",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description:
+                "Calculates a ScoreV2 value with respect to the currently picked beatmap.",
+            options: [
+                {
+                    name: "score",
+                    type: ApplicationCommandOptionTypes.INTEGER,
+                    required: true,
+                    description: "The score value to calculate for.",
+                    minValue: 0,
+                },
+                {
+                    name: "accuracy",
+                    type: ApplicationCommandOptionTypes.NUMBER,
+                    required: true,
+                    description:
+                        "The accuracy to calculate for, from 0 to 100.",
+                    minValue: 0,
+                    maxValue: 100,
+                },
+                {
+                    name: "misses",
+                    type: ApplicationCommandOptionTypes.INTEGER,
+                    required: true,
+                    description: "The amount of misses to calculate for.",
+                    minValue: 0,
+                },
+                {
+                    name: "hiddenpenalty",
+                    type: ApplicationCommandOptionTypes.BOOLEAN,
+                    description:
+                        "Whether to apply the HD mod penalty. Enable only if the player uses the HDDT mod combination.",
+                },
+            ],
+        },
+        {
             name: "spectate",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description:

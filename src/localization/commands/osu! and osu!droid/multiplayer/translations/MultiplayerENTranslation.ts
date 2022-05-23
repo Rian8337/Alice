@@ -54,7 +54,7 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         roundStarted: "Round started!",
         roundCountdownStatus: "The round will start in %s seconds!",
         roundCountdownFinished:
-            "Beatmap time is over. Beginning 30 seconds countdown.",
+            "Beatmap time is over. Beginning 35 seconds countdown.",
         roomIsInPlayingStatus:
             "I'm sorry, this multiplayer room is in playing state!",
         roomIsNotInPlayingStatus:
@@ -63,6 +63,8 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         beatmapNotFinished:
             "Hey, 30 seconds haven't passed since the beatmap has finished!",
         scorePortionOutOfRange: "Hey, score portion cannot be 0 or 1!",
+        scorev2Value:
+            "The ScoreV2 value with respect to the currently picked beatmap is `%s` (`%s` score, `%s` accuracy).",
         roomIsFull: "I'm sorry, that multiplayer room is full!",
         roomTeamMemberList: "Team Member List",
         redTeam: "Red Team",

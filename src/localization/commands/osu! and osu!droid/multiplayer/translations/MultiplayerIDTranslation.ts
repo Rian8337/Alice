@@ -42,6 +42,7 @@ export class MultiplayerIDTranslation extends Translation<MultiplayerStrings> {
         playerIsInReadyState: "",
         beatmapNotFinished: "",
         scorePortionOutOfRange: "",
+        scorev2Value: "",
         roomIsFull: "",
         roomTeamMemberList: "",
         redTeam: "",

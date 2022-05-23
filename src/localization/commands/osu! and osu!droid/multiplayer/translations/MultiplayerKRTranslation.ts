@@ -42,6 +42,7 @@ export class MultiplayerKRTranslation extends Translation<MultiplayerStrings> {
         playerIsInReadyState: "",
         beatmapNotFinished: "",
         scorePortionOutOfRange: "",
+        scorev2Value: "",
         roomIsFull: "",
         roomTeamMemberList: "",
         redTeam: "",
