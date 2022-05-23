@@ -6,6 +6,7 @@ import { MultiplayerStrings } from "../MultiplayerLocalization";
  */
 export class MultiplayerKRTranslation extends Translation<MultiplayerStrings> {
     override readonly translations: MultiplayerStrings = {
+        about: "",
         roomWithIdDoesntExist: "",
         roomDoesntExistInChannel: "",
         selfNotInRoom: "",

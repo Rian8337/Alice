@@ -6,6 +6,7 @@ import { MultiplayerIDTranslation } from "./translations/MultiplayerIDTranslatio
 import { MultiplayerKRTranslation } from "./translations/MultiplayerKRTranslation";
 
 export interface MultiplayerStrings {
+    readonly about: string;
     readonly roomWithIdDoesntExist: string;
     readonly roomDoesntExistInChannel: string;
     readonly selfNotInRoom: string;
@@ -42,6 +43,7 @@ export interface MultiplayerStrings {
     readonly playerIsInReadyState: string;
     readonly beatmapNotFinished: string;
     readonly scorePortionOutOfRange: string;
+    readonly scorev2Value: string;
     readonly roomIsFull: string;
     readonly roomTeamMemberList: string;
     readonly redTeam: string;
@@ -99,9 +101,9 @@ export class MultiplayerLocalization extends Localization<MultiplayerStrings> {
     protected override readonly localizations: Readonly<
         Translations<MultiplayerStrings>
     > = {
-        en: new MultiplayerENTranslation(),
-        es: new MultiplayerESTranslation(),
-        kr: new MultiplayerKRTranslation(),
-        id: new MultiplayerIDTranslation(),
-    };
+            en: new MultiplayerENTranslation(),
+            es: new MultiplayerESTranslation(),
+            kr: new MultiplayerKRTranslation(),
+            id: new MultiplayerIDTranslation(),
+        };
 }

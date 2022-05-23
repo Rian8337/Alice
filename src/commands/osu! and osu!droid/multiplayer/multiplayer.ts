@@ -21,6 +21,11 @@ export const config: Command["config"] = {
         "Main command for the Discord bot-facilitated multiplayer system.",
     options: [
         {
+            name: "about",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description: "About this multiplayer system.",
+        },
+        {
             name: "beatmap",
             type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
             description: "Manages picked beatmaps for a multiplayer room.",
