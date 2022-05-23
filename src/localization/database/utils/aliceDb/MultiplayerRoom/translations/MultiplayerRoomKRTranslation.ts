@@ -19,5 +19,7 @@ export class MultiplayerRoomKRTranslation extends Translation<MultiplayerRoomStr
         mostPcPp: "",
         headToHead: "",
         teamVS: "",
+        redTeam: "",
+        blueTeam: "",
     };
 }

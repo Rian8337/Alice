@@ -92,6 +92,8 @@ export interface MultiplayerStrings {
     readonly matchStatusUpdateSuccess: string;
     readonly setMaxPlayerSlotFailed: string;
     readonly setMaxPlayerSlotSuccess: string;
+    readonly teamSelectFailed: string;
+    readonly teamSelectSuccess: string;
 }
 
 /**

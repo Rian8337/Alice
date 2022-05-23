@@ -19,6 +19,8 @@ export interface MultiplayerRoomStrings {
     readonly mostPcPp: string;
     readonly headToHead: string;
     readonly teamVS: string;
+    readonly redTeam: string;
+    readonly blueTeam: string;
 }
 
 /**

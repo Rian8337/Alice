@@ -1,4 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
 import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
 import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
@@ -149,6 +150,23 @@ export class MultiplayerRoom
                 return localization.getTranslation("headToHead");
             case MultiplayerTeamMode.teamVS:
                 return localization.getTranslation("teamVS");
+        }
+    }
+
+    /**
+     * Gets the string representation of a team.
+     *
+     * @param language The language to localize. Defaults to English.
+     */
+    teamToString(team: MultiplayerTeam, language: Language = "en"): string {
+        const localization: MultiplayerRoomLocalization =
+            this.getLocalization(language);
+
+        switch (team) {
+            case MultiplayerTeam.red:
+                return localization.getTranslation("redTeam");
+            case MultiplayerTeam.blue:
+                return localization.getTranslation("blueTeam");
         }
     }
 

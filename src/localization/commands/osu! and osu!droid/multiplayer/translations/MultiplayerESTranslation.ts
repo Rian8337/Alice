@@ -92,5 +92,7 @@ export class MultiplayerESTranslation extends Translation<MultiplayerStrings> {
         matchStatusUpdateSuccess: "",
         setMaxPlayerSlotFailed: "",
         setMaxPlayerSlotSuccess: "",
+        teamSelectFailed: "",
+        teamSelectSuccess: "",
     };
 }

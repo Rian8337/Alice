@@ -343,12 +343,6 @@ export const config: Command["config"] = {
                     ],
                 },
                 {
-                    name: "view",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description:
-                        "Views the currently configured multiplayer room settings.",
-                },
-                {
                     name: "wincondition",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Sets the win condition.",
