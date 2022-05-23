@@ -1545,13 +1545,17 @@ export abstract class EmbedCreator {
                     )
                     .addField(
                         "=================================",
-                        winners.length === room.players.length
-                            ? localization.getTranslation("multiplayerDraw")
-                            : StringHelper.formatString(
-                                  localization.getTranslation("multiplayerWon"),
-                                  winners.join(", ") ||
-                                      localization.getTranslation("none")
-                              )
+                        `**${
+                            winners.length === room.players.length
+                                ? localization.getTranslation("multiplayerDraw")
+                                : StringHelper.formatString(
+                                      localization.getTranslation(
+                                          "multiplayerWon"
+                                      ),
+                                      winners.join(", ") ||
+                                          localization.getTranslation("none")
+                                  )
+                        }**`
                     );
 
                 break;
