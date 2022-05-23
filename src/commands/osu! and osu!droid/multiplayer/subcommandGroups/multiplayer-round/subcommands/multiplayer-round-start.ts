@@ -146,7 +146,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
 
         CacheManager.multiplayerTimers.delete(room.channelId);
-        // TODO: send countdown status every 5 seconds
+
         setTimeout(() => {
             setTimeout(async () => {
                 // Room may have been deleted or thread may have been archived.
@@ -230,7 +230,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         localization.getTranslation("matchStatusUpdateSuccess")
                     ),
                 });
-            }, 30 * 1000);
+            }, 35 * 1000);
 
             interaction.channel!.send({
                 content: MessageCreator.createAccept(
