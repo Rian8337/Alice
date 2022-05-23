@@ -12,8 +12,7 @@ export interface Command {
      * Executes the command.
      *
      * @param client The instance of the bot.
-     * @param message The interaction that executes the command.
-     * @param args The arguments of the command specified by the user.
+     * @param interaction The interaction that executes the command.
      */
     run(client: Bot, interaction: CommandInteraction): Promise<unknown>;
 

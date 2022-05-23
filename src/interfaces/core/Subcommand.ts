@@ -10,7 +10,7 @@ export interface Subcommand {
      * Executes the subcommand.
      *
      * @param client The instance of the bot.
-     * @param message The interaction that executes the subcommand.
+     * @param interaction The interaction that executes the subcommand.
      */
     run(client: Bot, interaction: CommandInteraction): Promise<unknown>;
 
