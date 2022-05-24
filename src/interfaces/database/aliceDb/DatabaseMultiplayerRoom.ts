@@ -15,9 +15,14 @@ export interface DatabaseMultiplayerRoom extends BaseDocument {
     readonly roomId: string;
 
     /**
-     * The ID of the Discord channel at which this room resides.
+     * The ID of the Discord text channel at which this room resides.
      */
-    channelId: Snowflake;
+    textChannelId: Snowflake;
+
+    /**
+     * The ID of the Discord thread channel at which this room resides.
+     */
+    threadChannelId: Snowflake;
 
     /**
      * The players in this room.

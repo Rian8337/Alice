@@ -19,7 +19,8 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
     get defaultDocument(): DatabaseMultiplayerRoom {
         return {
             roomId: "",
-            channelId: "",
+            textChannelId: "",
+            threadChannelId: "",
             players: [],
             status: {
                 isPlaying: false,
@@ -102,12 +103,12 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
     }
 
     /**
-     * Gets a multiplayer room from its channel ID.
+     * Gets a multiplayer room from its thread channel ID.
      *
-     * @param channelId The ID of the channel where the multiplayer room resides on.
+     * @param channelId The ID of the thread channel where the multiplayer room resides on.
      * @returns The multiplayer room, `null` if there is no multiplayer room with that ID.
      */
     getFromChannel(channelId: Snowflake): Promise<MultiplayerRoom | null> {
-        return this.getOne({ channelId: channelId });
+        return this.getOne({ threadChannelId: channelId });
     }
 }

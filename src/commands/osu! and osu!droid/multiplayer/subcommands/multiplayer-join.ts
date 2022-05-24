@@ -116,7 +116,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     const thread: ThreadChannel = <ThreadChannel>(
-        await client.channels.fetch(room.channelId)
+        await client.channels.fetch(room.textChannelId)
     );
 
     thread.send({

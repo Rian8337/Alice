@@ -37,7 +37,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (!CacheManager.multiplayerTimers.has(room.channelId)) {
+    if (!CacheManager.multiplayerTimers.has(room.textChannelId)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noTimerSet")
@@ -59,14 +59,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const timeouts: NodeJS.Timeout[] = CacheManager.multiplayerTimers.get(
-        room.channelId
+        room.textChannelId
     )!;
 
     for (const timeout of timeouts) {
         clearTimeout(timeout);
     }
 
-    CacheManager.multiplayerTimers.delete(room.channelId);
+    CacheManager.multiplayerTimers.delete(room.textChannelId);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

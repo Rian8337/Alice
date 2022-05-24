@@ -88,7 +88,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.insert({
             roomId: id,
-            channelId: thread.id,
+            textChannelId: interaction.channelId,
+            threadChannelId: thread.id,
             players: [
                 {
                     uid: bindInfo.uid,
@@ -106,6 +107,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 maxPlayers: interaction.options.getInteger("maxplayers") ?? 8,
                 beatmap: null,
                 scorePortion: 0.4,
+                allowSliderLock: false,
                 forcedAR: {
                     allowed: false,
                     minValue: 0,

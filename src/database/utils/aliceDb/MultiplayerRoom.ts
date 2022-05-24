@@ -14,7 +14,7 @@ import {
     MultiplayerRoomStrings,
 } from "@alice-localization/database/utils/aliceDb/MultiplayerRoom/MultiplayerRoomLocalization";
 import { Manager } from "@alice-utils/base/Manager";
-import { Snowflake, ThreadChannel } from "discord.js";
+import { Snowflake, TextChannel, ThreadChannel } from "discord.js";
 import { ObjectId } from "mongodb";
 
 /**
@@ -25,7 +25,8 @@ export class MultiplayerRoom
     implements DatabaseMultiplayerRoom
 {
     readonly roomId: string;
-    channelId: Snowflake;
+    textChannelId: Snowflake;
+    threadChannelId: Snowflake;
     players: MultiplayerPlayer[];
     status: MultiplayerRoomStatus;
     currentScores: MultiplayerScore[];
@@ -39,7 +40,8 @@ export class MultiplayerRoom
         super();
 
         this.roomId = data.roomId;
-        this.channelId = data.channelId;
+        this.textChannelId = data.textChannelId;
+        this.threadChannelId = data.threadChannelId;
         this.players = data.players;
         this.status = data.status;
         this.currentScores = data.currentScores;
@@ -55,7 +57,7 @@ export class MultiplayerRoom
             { roomId: this.roomId },
             {
                 $set: {
-                    channelId: this.channelId,
+                    textChannelId: this.textChannelId,
                     players: this.players,
                     status: this.status,
                     currentScores: this.currentScores,
@@ -69,16 +71,22 @@ export class MultiplayerRoom
      * Deletes this room from the database.
      */
     async deleteRoom(): Promise<OperationResult> {
-        const thread: ThreadChannel = <ThreadChannel>(
-            await this.client.channels.fetch(this.channelId)
+        const text: TextChannel = <TextChannel>(
+            await this.client.channels.fetch(this.textChannelId)
         );
 
-        if (!thread.locked) {
-            await thread.setLocked(true, "Multiplayer room closed");
-        }
+        const thread: ThreadChannel | null = await text.threads.fetch(
+            this.textChannelId
+        );
 
-        if (!thread.archived) {
-            await thread.setArchived(true, "Multiplayer room closed");
+        if (thread) {
+            if (!thread.locked) {
+                await thread.setLocked(true, "Multiplayer room closed");
+            }
+
+            if (!thread.archived) {
+                await thread.setArchived(true, "Multiplayer room closed");
+            }
         }
 
         return DatabaseManager.aliceDb.collections.multiplayerRoom.delete({
