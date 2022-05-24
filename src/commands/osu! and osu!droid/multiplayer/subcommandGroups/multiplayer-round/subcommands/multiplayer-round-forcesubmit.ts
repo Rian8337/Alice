@@ -4,7 +4,6 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MultiplayerLocalization } from "@alice-localization/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -65,11 +64,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.defer(interaction);
 
-    const embed: MessageEmbed =
-        await EmbedCreator.createMultiplayerRoomRoundResultEmbed(
-            room,
-            localization.language
-        );
+    const embed: MessageEmbed = await room.getResultEmbed(
+        localization.language
+    );
 
     for (const player of room.players) {
         player.isReady = false;

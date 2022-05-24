@@ -13,19 +13,14 @@ export interface MultiplayerScore {
     readonly username: string;
 
     /**
-     * The modifications enabled by the player.
+     * The MD5 hash of the beatmap that was played by the player.
      */
-    readonly mods: string;
+    readonly hash: string;
 
     /**
-     * The custom speed multiplier applied by the player.
+     * The string of mod combinations received from the client.
      */
-    readonly speedMultiplier: number;
-
-    /**
-     * The forced approach rate that the player applies.
-     */
-    readonly forcedAR?: number;
+    readonly modstring: string;
 
     /**
      * The score achieved by the player.
@@ -81,4 +76,9 @@ export interface MultiplayerScore {
      * The unstable rate achieved by the player.
      */
     readonly unstableRate: number;
+
+    /**
+     * Whether this player enables the slider lock option.
+     */
+    readonly isSliderLock: boolean;
 }

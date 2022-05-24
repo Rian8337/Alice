@@ -21,6 +21,35 @@ export interface MultiplayerRoomStrings {
     readonly teamVS: string;
     readonly redTeam: string;
     readonly blueTeam: string;
+    readonly roomId: string;
+    readonly host: string;
+    readonly creationDate: string;
+    readonly password: string;
+    readonly playerCount: string;
+    readonly currentBeatmap: string;
+    readonly settings: string;
+    readonly teamMode: string;
+    readonly winCondition: string;
+    readonly allowSliderLock: string;
+    readonly allowedMods: string;
+    readonly requiredMods: string;
+    readonly roomResults: string;
+    readonly draw: string;
+    readonly won: string;
+    readonly none: string;
+    readonly totalScore: string;
+    readonly scorePortion: string;
+    readonly forceAR: string;
+    readonly speedMultiplier: string;
+    readonly incorrectBeatmapPlayed: string;
+    readonly sliderLockEnabled: string;
+    readonly submissionTooEarly: string;
+    readonly submissionTooLate: string;
+    readonly requiredModsMissing: string;
+    readonly restrictedModsUsed: string;
+    readonly incorrectSpeedMultiplier: string;
+    readonly forceARUsed: string;
+    readonly forceAROutOfRange: string;
 }
 
 /**

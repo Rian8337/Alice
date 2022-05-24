@@ -71,26 +71,6 @@ export interface EmbedCreatorStrings {
     readonly channel: string;
     readonly recommendedStarRating: string;
     readonly none: string;
-    readonly scorePortion: string;
-    readonly forceAR: string;
-    readonly speedMultiplier: string;
-    readonly multiplayerRoomId: string;
-    readonly multiplayerRoomHost: string;
-    readonly multiplayerRoomPassword: string;
-    readonly multiplayerRoomPlayerCount: string;
-    readonly multiplayerRoomCurrentBeatmap: string;
-    readonly multiplayerRoomSettings: string;
-    readonly multiplayerRoomTeamMode: string;
-    readonly multiplayerRoomWinCondition: string;
-    readonly multiplayerRoomAllowSliderLock: string;
-    readonly multiplayerRoomAllowedMods: string;
-    readonly multiplayerRoomRequiredMods: string;
-    readonly multiplayerRoomResults: string;
-    readonly multiplayerWon: string;
-    readonly multiplayerDraw: string;
-    readonly multiplayerTotalScore: string;
-    readonly multiplayerRedTeam: string;
-    readonly multiplayerBlueTeam: string;
 }
 
 /**

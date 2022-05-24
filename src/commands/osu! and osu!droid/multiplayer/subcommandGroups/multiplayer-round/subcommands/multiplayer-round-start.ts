@@ -95,7 +95,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         }
     }
 
+    const duration: number = interaction.options.getInteger("duration") ?? 15;
+
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+
     room.status.isPlaying = true;
+    room.status.playingSince = Date.now() + duration * 1000;
 
     const result: OperationResult = await room.updateRoom();
 
@@ -107,16 +112,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const duration: number = interaction.options.getInteger("duration") ?? 15;
-
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
-
     const timeout: NodeJS.Timeout = setTimeout(async () => {
-        const embed: MessageEmbed =
-            EmbedCreator.createMultiplayerRoomStatsEmbed(
-                room,
-                localization.language
-            );
+        const embed: MessageEmbed = room.getStatsEmbed(localization.language);
 
         embed.setTitle(localization.getTranslation("roundInfo"));
 
@@ -124,19 +121,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             mods: ModUtil.pcStringToMods(room.settings.requiredMods),
             speedMultiplier: room.settings.speedMultiplier,
         });
-
-        room.status.playingSince = Date.now();
-
-        const result: OperationResult = await room.updateRoom();
-
-        if (!result.success) {
-            return InteractionHelper.reply(interaction, {
-                content: MessageCreator.createReject(
-                    localization.getTranslation("roundStartFailed"),
-                    result.reason!
-                ),
-            });
-        }
 
         await interaction.channel!.send({
             content: MessageCreator.createAccept(
@@ -180,11 +164,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     return;
                 }
 
-                const embed: MessageEmbed =
-                    await EmbedCreator.createMultiplayerRoomRoundResultEmbed(
-                        room,
-                        localization.language
-                    );
+                const embed: MessageEmbed = await room.getResultEmbed(
+                    localization.language
+                );
 
                 for (const player of room.players) {
                     player.isReady = false;
