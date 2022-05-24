@@ -217,9 +217,9 @@ export abstract class EmbedCreator {
                         localization.getTranslation("starRating"),
                         `${Symbols.star.repeat(
                             Math.floor(beatmapInfo.totalDifficulty)
-                        )} ${beatmapInfo.totalDifficulty.toFixed(
+                        )} **${beatmapInfo.totalDifficulty.toFixed(
                             2
-                        )} ${localization.getTranslation("pcStars")}`
+                        )} ${localization.getTranslation("pcStars")}**`
                     ),
             ],
             files: [
