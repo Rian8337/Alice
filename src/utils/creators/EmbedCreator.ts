@@ -753,6 +753,7 @@ export abstract class EmbedCreator {
         const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
         embed
+            .spliceFields(embed.fields.length - 2, 2)
             .setFooter({
                 text:
                     embed.footer!.text! +
