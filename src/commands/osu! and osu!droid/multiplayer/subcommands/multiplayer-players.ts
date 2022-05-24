@@ -76,7 +76,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         : player.isReady
                         ? "ready"
                         : "notReady"
-                )}**`
+                )}`
             );
         }
     };
