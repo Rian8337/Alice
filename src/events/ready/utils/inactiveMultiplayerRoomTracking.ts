@@ -42,10 +42,13 @@ export const run: EventUtil["run"] = async (client) => {
                 await thread.messages.fetch({ limit: 1 })
             ).first();
 
+            if (!lastMessage) {
+                continue;
+            }
+
             if (
-                !lastMessage ||
                 DateTimeFormatHelper.getTimeDifference(lastMessage.createdAt) <=
-                    -3600 * 1000
+                -3600 * 1000
             ) {
                 await inactiveRoom.deleteRoom();
             }
