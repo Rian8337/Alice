@@ -1180,6 +1180,12 @@ export abstract class EmbedCreator {
                     room.roomId
                 }\n` +
                     `**${localization.getTranslation(
+                        "creationDate"
+                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        room._id!.getTimestamp(),
+                        localization.language
+                    )}\n` +
+                    `**${localization.getTranslation(
                         "multiplayerRoomHost"
                     )}**: <@${room.settings.roomHost}> (${
                         room.settings.roomHost
