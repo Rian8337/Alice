@@ -110,6 +110,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 beatmap: null,
                 scorePortion: 0.4,
                 allowSliderLock: false,
+                modMultipliers: {},
                 forcedAR: {
                     allowed: false,
                     minValue: 0,
