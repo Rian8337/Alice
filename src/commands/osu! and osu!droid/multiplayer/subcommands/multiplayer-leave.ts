@@ -16,8 +16,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     const room: MultiplayerRoom | null =
-        await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromUser(
-            interaction.user
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromChannel(
+            interaction.channelId
         );
 
     if (!room) {
