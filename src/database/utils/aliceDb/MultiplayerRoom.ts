@@ -76,7 +76,7 @@ export class MultiplayerRoom
         );
 
         const thread: ThreadChannel | null = await text.threads.fetch(
-            this.textChannelId
+            this.threadChannelId
         );
 
         if (thread) {
