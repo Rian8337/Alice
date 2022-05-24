@@ -74,7 +74,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         );
 
         await thread.setName(
-            `${room.roomId} - ${room.settings.roomName}`,
+            `${localization.getTranslation("multiplayerRoomPrefix")} — ${room.roomId} - ${room.settings.roomName}`,
             "Host renamed multiplayer room"
         );
     }
