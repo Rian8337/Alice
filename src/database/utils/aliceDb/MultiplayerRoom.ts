@@ -9,6 +9,7 @@ import { MultiplayerPlayer } from "@alice-interfaces/multiplayer/MultiplayerPlay
 import { MultiplayerRoomSettings } from "@alice-interfaces/multiplayer/MultiplayerRoomSettings";
 import { MultiplayerRoomStatus } from "@alice-interfaces/multiplayer/MultiplayerRoomStatus";
 import { MultiplayerScore } from "@alice-interfaces/multiplayer/MultiplayerScore";
+import { MultiplayerScoreFinalResult } from "@alice-interfaces/multiplayer/MultiplayerScoreFinalResult";
 import { Language } from "@alice-localization/base/Language";
 import {
     MultiplayerRoomLocalization,
@@ -44,7 +45,6 @@ import {
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
-    Collection,
     MessageEmbed,
     Snowflake,
     TextChannel,
@@ -68,14 +68,14 @@ export class MultiplayerRoom
     settings: MultiplayerRoomSettings;
     _id?: ObjectId;
 
-    private readonly droidStarRatingCalculationCache: Collection<
+    private readonly droidStarRatingCalculationCache: Record<
         string,
         StarRatingCalculationResult<DroidStarRating>
-    > = new Collection();
-    private readonly pcStarRatingCalculationCache: Collection<
+    > = {};
+    private readonly pcStarRatingCalculationCache: Record<
         string,
         StarRatingCalculationResult<OsuStarRating>
-    > = new Collection();
+    > = {};
 
     private convertedRequiredMods?: Mod[];
     private currentBeatmapMaxScore?: number;
@@ -347,15 +347,8 @@ export class MultiplayerRoom
 
         const embed: MessageEmbed = await this.getInitialResultEmbed(language);
 
-        const validScores: Collection<
-            string,
-            { grade: number; score: MultiplayerScore }
-        > = new Collection();
-
-        const invalidScores: Collection<
-            string,
-            { score: MultiplayerScore; reason: string }
-        > = new Collection();
+        const validScores: MultiplayerScoreFinalResult[] = [];
+        const invalidScores: MultiplayerScoreFinalResult[] = [];
 
         for (const score of this.currentScores) {
             const player: MultiplayerPlayer | undefined = this.players.find(
@@ -372,41 +365,31 @@ export class MultiplayerRoom
             );
 
             if (scoreValidation.success) {
-                validScores.set(score.username, {
+                validScores.push({
+                    ...score,
                     grade: await this.getScoreGrade(score),
-                    score: score,
                 });
             } else {
-                invalidScores.set(score.username, {
-                    score: score,
+                invalidScores.push({
+                    ...score,
+                    grade: 0,
                     reason: scoreValidation.reason!,
                 });
             }
         }
 
-        switch (this.settings.winCondition) {
-            case MultiplayerWinCondition.scoreV1:
-            case MultiplayerWinCondition.accuracy:
-            case MultiplayerWinCondition.maxCombo:
-            case MultiplayerWinCondition.scoreV2:
-            case MultiplayerWinCondition.most300:
-                validScores.sort((a, b) => b.grade - a.grade);
-                break;
-            default:
-                validScores.sort((a, b) => a.grade - b.grade);
-        }
+        this.sortFinalScores(validScores);
 
-        const topScore: { grade: number; score: MultiplayerScore } =
-            validScores.at(0)!;
+        const topScore: MultiplayerScoreFinalResult = validScores.at(0)!;
 
         const winners: string[] = [];
 
-        for (const [username, score] of validScores) {
+        for (const score of validScores) {
             if (!Precision.almostEqualsNumber(score.grade, topScore.grade)) {
                 break;
             }
 
-            winners.push(username);
+            winners.push(score.username);
         }
 
         embed
@@ -414,20 +397,16 @@ export class MultiplayerRoom
                 localization.getTranslation("roomResults"),
                 [
                     validScores
-                        .map((v) =>
-                            this.getScoreEmbedDescription(
-                                v.score,
-                                v.grade,
-                                language
-                            )
+                        .map((v, i) =>
+                            this.getScoreEmbedDescription(v, i + 1, language)
                         )
                         .join("\n\n"),
                     invalidScores
                         .map(
-                            (v) =>
+                            (v, i) =>
                                 this.getScoreEmbedDescription(
-                                    v.score,
-                                    0,
+                                    v,
+                                    validScores.length + i + 1,
                                     language
                                 ) + ` - **${v.reason}**`
                         )
@@ -463,22 +442,10 @@ export class MultiplayerRoom
 
         const embed: MessageEmbed = await this.getInitialResultEmbed(language);
 
-        const validRedTeamScores: Collection<
-            string,
-            { grade: number; score: MultiplayerScore }
-        > = new Collection();
-        const validBlueTeamScores: Collection<
-            string,
-            { grade: number; score: MultiplayerScore }
-        > = new Collection();
-        const invalidRedTeamScores: Collection<
-            string,
-            { score: MultiplayerScore; reason: string }
-        > = new Collection();
-        const invalidBlueTeamScores: Collection<
-            string,
-            { score: MultiplayerScore; reason: string }
-        > = new Collection();
+        const validRedTeamScores: MultiplayerScoreFinalResult[] = [];
+        const validBlueTeamScores: MultiplayerScoreFinalResult[] = [];
+        const invalidRedTeamScores: MultiplayerScoreFinalResult[] = [];
+        const invalidBlueTeamScores: MultiplayerScoreFinalResult[] = [];
 
         for (const score of this.currentScores) {
             const player: MultiplayerPlayer | undefined = this.players.find(
@@ -489,18 +456,12 @@ export class MultiplayerRoom
                 continue;
             }
 
-            const validScoreCollection: Collection<
-                string,
-                { grade: number; score: MultiplayerScore }
-            > =
+            const validScores: MultiplayerScoreFinalResult[] =
                 player.team === MultiplayerTeam.red
                     ? validRedTeamScores
                     : validBlueTeamScores;
 
-            const invalidScoreCollection: Collection<
-                string,
-                { score: MultiplayerScore; reason: string }
-            > =
+            const invalidScores: MultiplayerScoreFinalResult[] =
                 player.team === MultiplayerTeam.red
                     ? invalidRedTeamScores
                     : invalidBlueTeamScores;
@@ -511,33 +472,21 @@ export class MultiplayerRoom
             );
 
             if (scoreValidation.success) {
-                validScoreCollection.set(score.username, {
+                validScores.push({
+                    ...score,
                     grade: await this.getScoreGrade(score),
-                    score: score,
                 });
             } else {
-                invalidScoreCollection.set(score.username, {
-                    score: score,
+                invalidScores.push({
+                    ...score,
+                    grade: 0,
                     reason: scoreValidation.reason!,
                 });
             }
         }
 
-        switch (this.settings.winCondition) {
-            case MultiplayerWinCondition.scoreV1:
-            case MultiplayerWinCondition.accuracy:
-            case MultiplayerWinCondition.maxCombo:
-            case MultiplayerWinCondition.scoreV2:
-            case MultiplayerWinCondition.most300:
-            case MultiplayerWinCondition.mostDroidPp:
-            case MultiplayerWinCondition.mostPcPp:
-                validRedTeamScores.sort((a, b) => b.grade - a.grade);
-                validBlueTeamScores.sort((a, b) => b.grade - a.grade);
-                break;
-            default:
-                validRedTeamScores.sort((a, b) => a.grade - b.grade);
-                validBlueTeamScores.sort((a, b) => a.grade - b.grade);
-        }
+        this.sortFinalScores(validRedTeamScores);
+        this.sortFinalScores(validBlueTeamScores);
 
         const redTotalScore: number = validRedTeamScores.reduce(
             (acc, value) => acc + value.grade,
@@ -565,20 +514,20 @@ export class MultiplayerRoom
                 )}: ${redTotalScore.toLocaleString(BCP47)}**\n` +
                     [
                         validRedTeamScores
-                            .map((v) =>
+                            .map((v, i) =>
                                 this.getScoreEmbedDescription(
-                                    v.score,
-                                    v.grade,
+                                    v,
+                                    i + 1,
                                     language
                                 )
                             )
                             .join("\n\n"),
                         invalidRedTeamScores
                             .map(
-                                (v) =>
+                                (v, i) =>
                                     this.getScoreEmbedDescription(
-                                        v.score,
-                                        0,
+                                        v,
+                                        validRedTeamScores.length + i + 1,
                                         language
                                     ) + ` - **${v.reason}**`
                             )
@@ -592,20 +541,20 @@ export class MultiplayerRoom
                 )}: ${blueTotalScore.toLocaleString(BCP47)}**\n` +
                     [
                         validBlueTeamScores
-                            .map((v) =>
+                            .map((v, i) =>
                                 this.getScoreEmbedDescription(
-                                    v.score,
-                                    v.grade,
+                                    v,
+                                    i + 1,
                                     language
                                 )
                             )
                             .join("\n\n"),
                         invalidBlueTeamScores
                             .map(
-                                (v) =>
+                                (v, i) =>
                                     this.getScoreEmbedDescription(
-                                        v.score,
-                                        0,
+                                        v,
+                                        validBlueTeamScores.length + i + 1,
                                         language
                                     ) + ` - **${v.reason}**`
                             )
@@ -713,13 +662,13 @@ export class MultiplayerRoom
                 ))!;
 
                 const starRating: StarRatingCalculationResult<DroidStarRating> =
-                    this.droidStarRatingCalculationCache.get(sortedMod) ??
+                    this.droidStarRatingCalculationCache[sortedMod] ??
                     (await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                         beatmapInfo,
                         new StarRatingCalculationParameters(customStats)
                     ))!;
 
-                this.droidStarRatingCalculationCache.set(sortedMod, starRating);
+                this.droidStarRatingCalculationCache[sortedMod] ??= starRating;
 
                 const performance: PerformanceCalculationResult<DroidPerformanceCalculator> =
                     (await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
@@ -760,13 +709,13 @@ export class MultiplayerRoom
                 ))!;
 
                 const starRating: StarRatingCalculationResult<OsuStarRating> =
-                    this.pcStarRatingCalculationCache.get(sortedMod) ??
+                    this.pcStarRatingCalculationCache[sortedMod] ??
                     (await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                         beatmapInfo,
                         new StarRatingCalculationParameters(customStats)
                     ))!;
 
-                this.pcStarRatingCalculationCache.set(sortedMod, starRating);
+                this.pcStarRatingCalculationCache[sortedMod] ??= starRating;
 
                 const performance: PerformanceCalculationResult<OsuPerformanceCalculator> =
                     (await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
@@ -937,8 +886,8 @@ export class MultiplayerRoom
      * @returns The score's description.
      */
     private getScoreEmbedDescription(
-        score: MultiplayerScore,
-        grade: number,
+        score: MultiplayerScoreFinalResult,
+        index: number,
         language: Language
     ): string {
         const { mods, forcedAR, speedMultiplier } = this.convertModString(
@@ -971,13 +920,36 @@ export class MultiplayerRoom
                 nmiss: score.miss,
             }).value() * 100;
 
-        return `**${score.username} - ${modstring}: __${grade.toLocaleString(
+        return `**#${index} ${
+            score.username
+        } - ${modstring}: __${score.grade.toLocaleString(
             BCP47
         )}__**\n${score.score.toLocaleString(
             BCP47
         )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
             score.maxCombo
         }x - ${accuracy.toFixed(2)}% - ${score.miss} ${Symbols.missIcon}`;
+    }
+
+    /**
+     * Sorts final scores with respect to the win condition.
+     *
+     * @param scores The scores to sort.
+     */
+    private sortFinalScores(scores: MultiplayerScoreFinalResult[]): void {
+        switch (this.settings.winCondition) {
+            case MultiplayerWinCondition.scoreV1:
+            case MultiplayerWinCondition.accuracy:
+            case MultiplayerWinCondition.maxCombo:
+            case MultiplayerWinCondition.scoreV2:
+            case MultiplayerWinCondition.most300:
+            case MultiplayerWinCondition.mostDroidPp:
+            case MultiplayerWinCondition.mostPcPp:
+                scores.sort((a, b) => b.grade - a.grade);
+                break;
+            default:
+                scores.sort((a, b) => a.grade - b.grade);
+        }
     }
 
     /**
