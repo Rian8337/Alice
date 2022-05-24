@@ -971,9 +971,9 @@ export class MultiplayerRoom
                 nmiss: score.miss,
             }).value() * 100;
 
-        return `**${score.username} - ${modstring}: ${grade.toLocaleString(
+        return `**${score.username} - ${modstring}: __${grade.toLocaleString(
             BCP47
-        )}**\n${score.score.toLocaleString(
+        )}__**\n${score.score.toLocaleString(
             BCP47
         )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
             score.maxCombo
