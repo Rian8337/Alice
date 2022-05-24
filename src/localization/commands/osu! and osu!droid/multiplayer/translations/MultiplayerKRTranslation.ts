@@ -97,5 +97,11 @@ export class MultiplayerKRTranslation extends Translation<MultiplayerStrings> {
         teamSelectFailed: "",
         teamSelectSuccess: "",
         multiplayerRoomPrefix: "",
+        roomHost: "",
+        playerDiscordAccount: "",
+        playerState: "",
+        ready: "",
+        notReady: "",
+        spectating: "",
     };
 }

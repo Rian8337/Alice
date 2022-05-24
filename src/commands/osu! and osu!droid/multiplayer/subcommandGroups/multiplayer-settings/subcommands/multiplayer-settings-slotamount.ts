@@ -46,7 +46,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const maxPlayers: number = interaction.options.getInteger(
-        "maxplayers",
+        "slotamount",
         true
     );
 

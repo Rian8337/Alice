@@ -150,5 +150,11 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         teamSelectFailed: "I'm sorry, I couldn't set your team: %s.",
         teamSelectSuccess: "Successfully set your team to `%s` team.",
         multiplayerRoomPrefix: "Multiplayer Room",
+        roomHost: "Host",
+        playerDiscordAccount: "Discord Account",
+        playerState: "Player State",
+        ready: "Ready",
+        notReady: "Not ready",
+        spectating: "Spectating",
     };
 }

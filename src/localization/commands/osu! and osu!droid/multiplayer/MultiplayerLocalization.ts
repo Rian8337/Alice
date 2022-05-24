@@ -97,6 +97,12 @@ export interface MultiplayerStrings {
     readonly teamSelectFailed: string;
     readonly teamSelectSuccess: string;
     readonly multiplayerRoomPrefix: string;
+    readonly roomHost: string;
+    readonly playerDiscordAccount: string;
+    readonly playerState: string;
+    readonly ready: string;
+    readonly notReady: string;
+    readonly spectating: string;
 }
 
 /**

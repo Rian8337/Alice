@@ -106,7 +106,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 roomHost: interaction.user.id,
                 password: password ?? undefined,
                 allowedMods: "",
-                maxPlayers: interaction.options.getInteger("maxplayers") ?? 8,
+                maxPlayers: interaction.options.getInteger("slotamount") ?? 8,
                 beatmap: null,
                 scorePortion: 0.4,
                 allowSliderLock: false,

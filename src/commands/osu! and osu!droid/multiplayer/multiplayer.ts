@@ -76,7 +76,7 @@ export const config: Command["config"] = {
                         "The password required to join the multiplayer room. Defaults to none.",
                 },
                 {
-                    name: "maxplayers",
+                    name: "slotamount",
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description:
                         "The amount of player slots available in the multiplayer room. Defaults to 8.",
@@ -124,6 +124,19 @@ export const config: Command["config"] = {
                     name: "lockslot",
                     type: ApplicationCommandOptionTypes.BOOLEAN,
                     description: "Whether to also lock the player's slot.",
+                },
+            ],
+        },
+        {
+            name: "players",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description: "Lists all players in a multiplayer room.",
+            options: [
+                {
+                    name: "id",
+                    type: ApplicationCommandOptionTypes.STRING,
+                    description:
+                        "The ID of the room. Defaults to the room in the current channel.",
                 },
             ],
         },
@@ -232,7 +245,7 @@ export const config: Command["config"] = {
                     ],
                 },
                 {
-                    name: "maxplayers",
+                    name: "slotamount",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description:
                         "Sets the amount of player slots in the multiplayer room.",

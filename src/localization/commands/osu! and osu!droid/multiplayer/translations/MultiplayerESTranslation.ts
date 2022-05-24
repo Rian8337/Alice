@@ -97,5 +97,11 @@ export class MultiplayerESTranslation extends Translation<MultiplayerStrings> {
         teamSelectFailed: "",
         teamSelectSuccess: "",
         multiplayerRoomPrefix: "",
+        roomHost: "",
+        playerDiscordAccount: "",
+        playerState: "",
+        ready: "",
+        notReady: "",
+        spectating: "",
     };
 }
