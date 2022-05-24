@@ -41,6 +41,7 @@ export interface MultiplayerRoomStrings {
     readonly scorePortion: string;
     readonly forceAR: string;
     readonly speedMultiplier: string;
+    readonly customModMultipliers: string;
     readonly incorrectBeatmapPlayed: string;
     readonly sliderLockEnabled: string;
     readonly submissionTooEarly: string;

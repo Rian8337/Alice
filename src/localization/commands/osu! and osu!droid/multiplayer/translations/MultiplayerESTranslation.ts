@@ -50,6 +50,7 @@ export class MultiplayerESTranslation extends Translation<MultiplayerStrings> {
         blueTeam: "",
         joinRoomNotification: "",
         slotHasBeenFilled: "",
+        noModsDetected: "",
         updateReadyStateFailed: "",
         updateReadyStateSuccess: "",
         updateSpectatingStateFailed: "",
@@ -103,5 +104,8 @@ export class MultiplayerESTranslation extends Translation<MultiplayerStrings> {
         ready: "",
         notReady: "",
         spectating: "",
+        setModMultiplierFailed: "",
+        setModMultiplierSuccess: "",
+        default: "",
     };
 }

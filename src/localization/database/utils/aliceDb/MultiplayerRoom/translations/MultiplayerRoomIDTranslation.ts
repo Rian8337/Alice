@@ -41,6 +41,7 @@ export class MultiplayerRoomIDTranslation extends Translation<MultiplayerRoomStr
         scorePortion: "",
         forceAR: "",
         speedMultiplier: "",
+        customModMultipliers: "",
         incorrectBeatmapPlayed: "",
         sliderLockEnabled: "",
         submissionTooEarly: "",

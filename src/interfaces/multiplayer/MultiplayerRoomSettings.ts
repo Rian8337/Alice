@@ -68,6 +68,13 @@ export interface MultiplayerRoomSettings {
     allowSliderLock: boolean;
 
     /**
+     * Custom mod multipliers that overrides the client's default mod multiplier.
+     *
+     * Each mod is mapped to their own mod multiplier.
+     */
+    modMultipliers: Record<string, number>;
+
+    /**
      * Settings for forced AR.
      */
     forcedAR: {

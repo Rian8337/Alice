@@ -41,6 +41,7 @@ export class MultiplayerRoomKRTranslation extends Translation<MultiplayerRoomStr
         scorePortion: "",
         forceAR: "",
         speedMultiplier: "",
+        customModMultipliers: "",
         incorrectBeatmapPlayed: "",
         sliderLockEnabled: "",
         submissionTooEarly: "",

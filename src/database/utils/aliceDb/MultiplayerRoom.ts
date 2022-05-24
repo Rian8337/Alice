@@ -228,7 +228,10 @@ export class MultiplayerRoom
                     `**${localization.getTranslation("allowedMods")}**: ${
                         this.settings.allowedMods ||
                         localization.getTranslation("none")
-                    }`
+                    }\n` +
+                    `**${localization.getTranslation(
+                        "customModMultipliers"
+                    )}**: ${this.getCustomModMultipliersDescription(language)}`
             );
 
         return embed;
@@ -588,8 +591,11 @@ export class MultiplayerRoom
      */
     private async getScoreGrade(score: MultiplayerScore): Promise<number> {
         switch (this.settings.winCondition) {
-            case MultiplayerWinCondition.scoreV1:
-                return score.score;
+            case MultiplayerWinCondition.scoreV1: {
+                const { mods } = this.convertModString(score.modstring);
+
+                return this.applyCustomModMultiplier(score.score, mods);
+            }
             case MultiplayerWinCondition.accuracy:
                 return MathUtils.round(
                     new Accuracy({
@@ -611,15 +617,20 @@ export class MultiplayerRoom
                     this.settings.beatmap!.hash
                 ))!;
 
-                this.currentBeatmapMaxScore ??= beatmapInfo.map!.maxDroidScore(
-                    new MapStats({
-                        mods: this.convertedRequiredMods,
-                        speedMultiplier: this.settings.speedMultiplier,
-                    })
+                this.currentBeatmapMaxScore ??= this.applyCustomModMultiplier(
+                    beatmapInfo.map!.maxDroidScore(
+                        new MapStats({
+                            mods: this.convertedRequiredMods,
+                            speedMultiplier: this.settings.speedMultiplier,
+                        })
+                    ),
+                    this.convertedRequiredMods
                 );
 
+                const { mods } = this.convertModString(score.modstring);
+
                 return ScoreHelper.calculateScoreV2(
-                    score.score,
+                    this.applyCustomModMultiplier(score.score, mods),
                     new Accuracy({
                         n300: score.perfect,
                         n100: score.good,
@@ -737,6 +748,29 @@ export class MultiplayerRoom
                 return MathUtils.round(performance.result.total, 2);
             }
         }
+    }
+
+    /**
+     * Applies custom mod multipliers to a score.
+     *
+     * @param score The score.
+     * @param mods The mods that were used to obtain the score value.
+     * @returns The score with custom mod multipliers applied.
+     */
+    private applyCustomModMultiplier(score: number, mods: Mod[]): number {
+        if (Object.keys(this.settings.modMultipliers).length === 0) {
+            return score;
+        }
+
+        for (const mod of mods) {
+            if (this.settings.modMultipliers[mod.acronym]) {
+                score *=
+                    this.settings.modMultipliers[mod.acronym] /
+                    mod.scoreMultiplier;
+            }
+        }
+
+        return Math.round(score);
     }
 
     /**
@@ -1027,6 +1061,18 @@ export class MultiplayerRoom
             this.settings.beatmap!.hash
         ))!;
 
+        const customModMultipliersDescription: string[] = [];
+
+        const BCP47: string = LocaleHelper.convertToBCP47(language);
+
+        for (const mod in this.settings.modMultipliers) {
+            customModMultipliersDescription.push(
+                `${mod} (${this.settings.modMultipliers[mod].toLocaleString(
+                    BCP47
+                )}x)`
+            );
+        }
+
         embed
             .setAuthor({
                 name: this.settings.roomName,
@@ -1042,10 +1088,37 @@ export class MultiplayerRoom
                 )}**: ${this.teamModeToString(language)}\n` +
                     `**${localization.getTranslation(
                         "winCondition"
-                    )}**: ${this.winConditionToString(language)}`
+                    )}**: ${this.winConditionToString(language)}\n` +
+                    `**${localization.getTranslation(
+                        "customModMultipliers"
+                    )}**: ${this.getCustomModMultipliersDescription(language)}`
             );
 
         return embed;
+    }
+
+    /**
+     * Gets the description of custom mod multipliers.
+     *
+     * @param language The language to localize.
+     */
+    private getCustomModMultipliersDescription(language: Language): string {
+        const customModMultipliersDescription: string[] = [];
+
+        const BCP47: string = LocaleHelper.convertToBCP47(language);
+
+        for (const mod in this.settings.modMultipliers) {
+            customModMultipliersDescription.push(
+                `${mod} (${this.settings.modMultipliers[mod].toLocaleString(
+                    BCP47
+                )}x)`
+            );
+        }
+
+        return (
+            customModMultipliersDescription.join(", ") ||
+            this.getLocalization(language).getTranslation("none")
+        );
     }
 
     /**

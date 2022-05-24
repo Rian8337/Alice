@@ -73,6 +73,7 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         joinRoomNotification: "%s has joined the room.",
         slotHasBeenFilled:
             "I'm sorry, you have more players than what you would be able to fit with that maximum player slot!",
+        noModsDetected: "Hey, I cannot tell what mods you are entering!",
         updateReadyStateFailed:
             "I'm sorry, I couldn't update your ready state: %s.",
         updateReadyStateSuccess:
@@ -147,6 +148,10 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
             "I'm sorry, I couldn't set the allow slider lock rule: %s.",
         setAllowSliderLockSuccess:
             "Successfully set the allow slider lock rule to `%s`.",
+        setModMultiplierFailed:
+            "I'm sorry, I couldn't set the mods' score multiplier: %s.",
+        setModMultiplierSuccess:
+            "Successfully set the score multiplier of `%s` to `%s`.",
         teamSelectFailed: "I'm sorry, I couldn't set your team: %s.",
         teamSelectSuccess: "Successfully set your team to `%s` team.",
         multiplayerRoomPrefix: "Multiplayer Room",
@@ -156,5 +161,6 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         ready: "Ready",
         notReady: "Not ready",
         spectating: "Spectating",
+        default: "Default",
     };
 }

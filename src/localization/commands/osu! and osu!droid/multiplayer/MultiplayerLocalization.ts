@@ -50,6 +50,7 @@ export interface MultiplayerStrings {
     readonly blueTeam: string;
     readonly joinRoomNotification: string;
     readonly slotHasBeenFilled: string;
+    readonly noModsDetected: string;
     readonly updateReadyStateFailed: string;
     readonly updateReadyStateSuccess: string;
     readonly updateSpectatingStateFailed: string;
@@ -94,6 +95,8 @@ export interface MultiplayerStrings {
     readonly setMaxPlayerSlotSuccess: string;
     readonly setAllowSliderLockFailed: string;
     readonly setAllowSliderLockSuccess: string;
+    readonly setModMultiplierFailed: string;
+    readonly setModMultiplierSuccess: string;
     readonly teamSelectFailed: string;
     readonly teamSelectSuccess: string;
     readonly multiplayerRoomPrefix: string;
@@ -103,6 +106,7 @@ export interface MultiplayerStrings {
     readonly ready: string;
     readonly notReady: string;
     readonly spectating: string;
+    readonly default: string;
 }
 
 /**

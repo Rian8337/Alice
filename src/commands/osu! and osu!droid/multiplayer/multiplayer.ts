@@ -231,6 +231,28 @@ export const config: Command["config"] = {
                     ],
                 },
                 {
+                    name: "modmultiplier",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Sets a score multiplier for mods that will override the client's built-in score multiplier.",
+                    options: [
+                        {
+                            name: "mods",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description:
+                                "The mods to set the score multiplier to.",
+                        },
+                        {
+                            name: "multiplier",
+                            type: ApplicationCommandOptionTypes.NUMBER,
+                            description:
+                                "The multiplier. Omit this option to reset all specified mods' multiplier to their default value.",
+                            minValue: 0,
+                        },
+                    ],
+                },
+                {
                     name: "name",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Sets the name of the multiplayer room.",
