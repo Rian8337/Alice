@@ -53,7 +53,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    if (room.players.length === 20) {
+    if (room.players.length === room.settings.maxPlayers) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomIsFull")
