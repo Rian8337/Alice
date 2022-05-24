@@ -777,19 +777,36 @@ export class MultiplayerRoom
         const properSubmissionTime: number =
             this.status.playingSince + beatmapDuration;
 
+        const submissionTimeDifference: number =
+            score.date - properSubmissionTime;
+
+        const BCP47: string = LocaleHelper.convertToBCP47(language);
+
         // Give 30 seconds leniency for score submission.
-        if (score.date - properSubmissionTime > 30 * 1000) {
+        if (submissionTimeDifference > 30 * 1000) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("submissionTooLate")
+                StringHelper.formatString(
+                    localization.getTranslation("submissionTooLate"),
+                    MathUtils.round(
+                        submissionTimeDifference - 30 * 1000,
+                        1
+                    ).toLocaleString(BCP47)
+                )
             );
         }
 
         // Give 10 seconds constraint for early submission.
-        if (score.date - properSubmissionTime < -10 * 1000) {
+        if (submissionTimeDifference < -10 * 1000) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("submissionTooEarly")
+                StringHelper.formatString(
+                    localization.getTranslation("submissionTooEarly"),
+                    MathUtils.round(
+                        Math.abs(submissionTimeDifference + 10 * 1000),
+                        1
+                    ).toLocaleString(BCP47)
+                )
             );
         }
 
