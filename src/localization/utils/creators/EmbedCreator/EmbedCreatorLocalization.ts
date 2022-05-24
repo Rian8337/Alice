@@ -82,6 +82,7 @@ export interface EmbedCreatorStrings {
     readonly multiplayerRoomSettings: string;
     readonly multiplayerRoomTeamMode: string;
     readonly multiplayerRoomWinCondition: string;
+    readonly multiplayerRoomAllowSliderLock: string;
     readonly multiplayerRoomAllowedMods: string;
     readonly multiplayerRoomRequiredMods: string;
     readonly multiplayerRoomResults: string;

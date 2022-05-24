@@ -143,6 +143,10 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
             "I'm sorry, I couldn't set the multiplayer room's maximum player slots: %s.",
         setMaxPlayerSlotSuccess:
             "Successfully set the multiplayer room's maximum player slots to `%s`.",
+        setAllowSliderLockFailed:
+            "I'm sorry, I couldn't set the allow slider lock rule: %s.",
+        setAllowSliderLockSuccess:
+            "Successfully set the allow slider lock rule to `%s`.",
         teamSelectFailed: "I'm sorry, I couldn't set your team: %s.",
         teamSelectSuccess: "Successfully set your team to `%s` team.",
     };

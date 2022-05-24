@@ -1231,6 +1231,13 @@ export abstract class EmbedCreator {
                         BCP47
                     )}\n` +
                     `**${localization.getTranslation(
+                        "multiplayerRoomAllowSliderLock"
+                    )}**: ${
+                        room.settings.allowSliderLock
+                            ? Symbols.checkmark
+                            : Symbols.cross
+                    }` +
+                    `**${localization.getTranslation(
                         "multiplayerRoomRequiredMods"
                     )}**: ${
                         room.settings.requiredMods ||

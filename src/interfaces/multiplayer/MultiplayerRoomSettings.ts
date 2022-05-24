@@ -63,6 +63,11 @@ export interface MultiplayerRoomSettings {
     speedMultiplier: number;
 
     /**
+     * Whether the in-game slider lock option is allowed.
+     */
+    allowSliderLock: boolean;
+
+    /**
      * Settings for forced AR.
      */
     forcedAR: {

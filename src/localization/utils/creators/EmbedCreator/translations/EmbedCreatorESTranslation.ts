@@ -84,6 +84,7 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         multiplayerRoomSettings: "",
         multiplayerRoomTeamMode: "",
         multiplayerRoomWinCondition: "",
+        multiplayerRoomAllowSliderLock: "",
         multiplayerRoomAllowedMods: "",
         multiplayerRoomRequiredMods: "",
         multiplayerRoomResults: "",

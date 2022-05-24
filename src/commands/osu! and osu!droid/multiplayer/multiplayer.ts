@@ -291,6 +291,21 @@ export const config: Command["config"] = {
                     ],
                 },
                 {
+                    name: "sliderlock",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Sets the usage rule of in-game 2B slider lock option.",
+                    options: [
+                        {
+                            name: "allow",
+                            type: ApplicationCommandOptionTypes.BOOLEAN,
+                            required: true,
+                            description:
+                                "Whether the option is allowed to be used.",
+                        },
+                    ],
+                },
+                {
                     name: "speedmultiplier",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Sets the custom speed multiplier to use.",

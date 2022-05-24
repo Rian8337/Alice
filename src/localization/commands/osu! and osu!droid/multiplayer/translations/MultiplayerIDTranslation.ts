@@ -92,6 +92,8 @@ export class MultiplayerIDTranslation extends Translation<MultiplayerStrings> {
         matchStatusUpdateSuccess: "",
         setMaxPlayerSlotFailed: "",
         setMaxPlayerSlotSuccess: "",
+        setAllowSliderLockFailed: "",
+        setAllowSliderLockSuccess: "",
         teamSelectFailed: "",
         teamSelectSuccess: "",
     };
