@@ -212,6 +212,14 @@ export abstract class EmbedCreator {
                             5,
                             calculationParams?.customStatistics
                         )
+                    )
+                    .addField(
+                        localization.getTranslation("starRating"),
+                        `${Symbols.star.repeat(
+                            Math.floor(beatmapInfo.totalDifficulty)
+                        )} ${beatmapInfo.totalDifficulty.toFixed(
+                            2
+                        )} ${localization.getTranslation("pcStars")}`
                     ),
             ],
             files: [
@@ -327,7 +335,7 @@ export abstract class EmbedCreator {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
-        const embedOptions: MessageOptions = await this.createBeatmapEmbed(
+        const embedOptions: MessageOptions = this.createBeatmapEmbed(
             osuCalculationResult.map,
             calculationParams,
             language
@@ -368,7 +376,7 @@ export abstract class EmbedCreator {
                         )
                     )
                 )
-                .spliceFields(embed.fields.length - 1, 1)
+                .spliceFields(embed.fields.length - 2, 2)
                 .addField(
                     map.showStatistics(4, customStatistics),
                     `${map.showStatistics(
