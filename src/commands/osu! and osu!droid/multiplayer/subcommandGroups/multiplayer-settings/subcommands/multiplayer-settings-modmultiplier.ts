@@ -8,7 +8,16 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { Mod, ModUtil } from "@rian8337/osu-base";
+import {
+    Mod,
+    ModAuto,
+    ModAutopilot,
+    ModPerfect,
+    ModRelax,
+    ModScoreV2,
+    ModSuddenDeath,
+    ModUtil,
+} from "@rian8337/osu-base";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -58,26 +67,58 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    if (
+        mods.some(
+            (m) =>
+                m instanceof ModSuddenDeath ||
+                m instanceof ModPerfect ||
+                m instanceof ModScoreV2 ||
+                m instanceof ModRelax ||
+                m instanceof ModAuto ||
+                m instanceof ModAutopilot
+        )
+    ) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("unrankedModsIncluded")
+            ),
+        });
+    }
+
     const multiplier: number | null =
         interaction.options.getNumber("multiplier");
 
+    let needsUpdating: boolean = false;
+
     for (const mod of mods) {
         if (multiplier !== null) {
-            room.settings.modMultipliers[mod.acronym] = multiplier;
-        } else {
+            if (mod.scoreMultiplier !== multiplier) {
+                needsUpdating = true;
+
+                room.settings.modMultipliers[mod.acronym] = multiplier;
+            } else if (room.settings.modMultipliers[mod.acronym]) {
+                needsUpdating = true;
+
+                delete room.settings.modMultipliers[mod.acronym];
+            }
+        } else if (room.settings.modMultipliers[mod.acronym]) {
+            needsUpdating = true;
+
             delete room.settings.modMultipliers[mod.acronym];
         }
     }
 
-    const result: OperationResult = await room.updateRoom();
+    if (needsUpdating) {
+        const result: OperationResult = await room.updateRoom();
 
-    if (!result.success) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("setModMultiplierFailed"),
-                result.reason!
-            ),
-        });
+        if (!result.success) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("setModMultiplierFailed"),
+                    result.reason!
+                ),
+            });
+        }
     }
 
     InteractionHelper.reply(interaction, {
