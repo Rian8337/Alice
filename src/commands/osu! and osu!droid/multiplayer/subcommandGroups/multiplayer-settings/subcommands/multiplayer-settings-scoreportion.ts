@@ -57,17 +57,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    room.settings.scorePortion = scorePortion;
+    if (room.settings.scorePortion !== scorePortion) {
+        room.settings.scorePortion = scorePortion;
 
-    const result: OperationResult = await room.updateRoom();
+        const result: OperationResult = await room.updateRoom();
 
-    if (!result.success) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("setScorePortionFailed"),
-                result.reason!
-            ),
-        });
+        if (!result.success) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("setScorePortionFailed"),
+                    result.reason!
+                ),
+            });
+        }
     }
 
     InteractionHelper.reply(interaction, {
