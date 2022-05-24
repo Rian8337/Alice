@@ -12,7 +12,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ThreadChannel } from "discord.js";
+import { TextChannel, ThreadChannel } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -115,8 +115,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const thread: ThreadChannel = <ThreadChannel>(
+    const text: TextChannel = <TextChannel>(
         await client.channels.fetch(room.textChannelId)
+    );
+
+    const thread: ThreadChannel = <ThreadChannel>(
+        await text.threads.fetch(room.threadChannelId)
     );
 
     thread.send({
