@@ -80,7 +80,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const thread: ThreadChannel = await (<TextChannel>(
         interaction.channel
     )).threads.create({
-        name: `${localization.getTranslation("multiplayerRoomPrefix")} — ${id} - ${name}`,
+        name: `${localization.getTranslation(
+            "multiplayerRoomPrefix"
+        )} — ${id} - ${name}`,
         autoArchiveDuration: 60,
         reason: "User created multiplayer room",
     });

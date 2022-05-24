@@ -106,9 +106,9 @@ export class MultiplayerLocalization extends Localization<MultiplayerStrings> {
     protected override readonly localizations: Readonly<
         Translations<MultiplayerStrings>
     > = {
-            en: new MultiplayerENTranslation(),
-            es: new MultiplayerESTranslation(),
-            kr: new MultiplayerKRTranslation(),
-            id: new MultiplayerIDTranslation(),
-        };
+        en: new MultiplayerENTranslation(),
+        es: new MultiplayerESTranslation(),
+        kr: new MultiplayerKRTranslation(),
+        id: new MultiplayerIDTranslation(),
+    };
 }

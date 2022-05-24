@@ -96,6 +96,6 @@ export class MultiplayerKRTranslation extends Translation<MultiplayerStrings> {
         setAllowSliderLockSuccess: "",
         teamSelectFailed: "",
         teamSelectSuccess: "",
-        multiplayerRoomPrefix: ""
+        multiplayerRoomPrefix: "",
     };
 }

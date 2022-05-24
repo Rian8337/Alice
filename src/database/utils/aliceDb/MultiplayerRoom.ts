@@ -421,7 +421,7 @@ export class MultiplayerRoom
                                 language
                             )
                         )
-                        .join("\n"),
+                        .join("\n\n"),
                     invalidScores
                         .map(
                             (v) =>
@@ -431,8 +431,8 @@ export class MultiplayerRoom
                                     language
                                 ) + ` - **${v.reason}**`
                         )
-                        .join("\n"),
-                ].join("")
+                        .join("\n\n"),
+                ].join("\n\n")
             )
             .addField(
                 "=================================",
@@ -572,7 +572,7 @@ export class MultiplayerRoom
                                     language
                                 )
                             )
-                            .join("\n"),
+                            .join("\n\n"),
                         invalidRedTeamScores
                             .map(
                                 (v) =>
@@ -582,8 +582,8 @@ export class MultiplayerRoom
                                         language
                                     ) + ` - **${v.reason}**`
                             )
-                            .join("\n"),
-                    ].join("\n")
+                            .join("\n\n"),
+                    ].join("\n\n")
             )
             .addField(
                 localization.getTranslation("blueTeam"),
@@ -599,7 +599,7 @@ export class MultiplayerRoom
                                     language
                                 )
                             )
-                            .join("\n"),
+                            .join("\n\n"),
                         invalidBlueTeamScores
                             .map(
                                 (v) =>
@@ -609,8 +609,8 @@ export class MultiplayerRoom
                                         language
                                     ) + ` - **${v.reason}**`
                             )
-                            .join("\n"),
-                    ].join("\n")
+                            .join("\n\n"),
+                    ].join("\n\n")
             )
             .addField(
                 "=================================",
@@ -977,7 +977,7 @@ export class MultiplayerRoom
             BCP47
         )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
             score.maxCombo
-        }x - ${accuracy.toFixed(2)}% - ${score.miss} ${Symbols.missIcon}\n`;
+        }x - ${accuracy.toFixed(2)}% - ${score.miss} ${Symbols.missIcon}`;
     }
 
     /**
