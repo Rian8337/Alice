@@ -43,6 +43,7 @@ export interface MultiplayerStrings {
     readonly playerIsInReadyState: string;
     readonly beatmapNotFinished: string;
     readonly scorePortionOutOfRange: string;
+    readonly scorev1Value: string;
     readonly scorev2Value: string;
     readonly roomIsFull: string;
     readonly roomTeamMemberList: string;

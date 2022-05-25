@@ -64,8 +64,10 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         beatmapNotFinished:
             "Hey, 30 seconds haven't passed since the beatmap has finished!",
         scorePortionOutOfRange: "Hey, score portion cannot be 0 or 1!",
+        scorev1Value:
+            "The ScoreV1 value with respect to current custom mod multipliers is `%s`.",
         scorev2Value:
-            "The ScoreV2 value with respect to the currently picked beatmap is `%s` (`%s` score, `%s` accuracy).",
+            "The ScoreV2 value with respect to the currently picked beatmap and custom mod multipliers is `%s` (`%s` score, `%s` accuracy).",
         roomIsFull: "I'm sorry, that multiplayer room is full!",
         roomTeamMemberList: "Team Member List",
         redTeam: "Red Team",

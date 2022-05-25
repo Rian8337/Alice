@@ -338,6 +338,29 @@ export class MultiplayerRoom
     }
 
     /**
+     * Applies custom mod multipliers to a score.
+     *
+     * @param score The score.
+     * @param mods The mods that were used to obtain the score value.
+     * @returns The score with custom mod multipliers applied.
+     */
+    applyCustomModMultiplier(score: number, mods: Mod[]): number {
+        if (Object.keys(this.settings.modMultipliers).length === 0) {
+            return score;
+        }
+
+        for (const mod of mods) {
+            if (this.settings.modMultipliers[mod.acronym]) {
+                score *=
+                    this.settings.modMultipliers[mod.acronym] /
+                    mod.scoreMultiplier;
+            }
+        }
+
+        return Math.round(score);
+    }
+
+    /**
      * Gets an embed representing this multiplayer room's head-to-head result.
      *
      * @param language The language to localize.
@@ -748,29 +771,6 @@ export class MultiplayerRoom
                 return MathUtils.round(performance.result.total, 2);
             }
         }
-    }
-
-    /**
-     * Applies custom mod multipliers to a score.
-     *
-     * @param score The score.
-     * @param mods The mods that were used to obtain the score value.
-     * @returns The score with custom mod multipliers applied.
-     */
-    private applyCustomModMultiplier(score: number, mods: Mod[]): number {
-        if (Object.keys(this.settings.modMultipliers).length === 0) {
-            return score;
-        }
-
-        for (const mod of mods) {
-            if (this.settings.modMultipliers[mod.acronym]) {
-                score *=
-                    this.settings.modMultipliers[mod.acronym] /
-                    mod.scoreMultiplier;
-            }
-        }
-
-        return Math.round(score);
     }
 
     /**

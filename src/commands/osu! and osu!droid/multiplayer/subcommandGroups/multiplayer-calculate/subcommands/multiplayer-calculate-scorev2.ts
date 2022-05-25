@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MapInfo, MapStats, ModUtil } from "@rian8337/osu-base";
+import { MapInfo, MapStats, Mod, ModUtil } from "@rian8337/osu-base";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -52,18 +52,29 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const misses: number = interaction.options.getInteger("misses", true);
 
+    const mods: Mod[] = ModUtil.pcStringToMods(
+        interaction.options.getString("mods") ?? ""
+    );
+    const requiredMods: Mod[] = ModUtil.pcStringToMods(
+        room.settings.requiredMods
+    );
+
     const scorePortionScoreV2: number =
         ScoreHelper.calculateScorePortionScoreV2(
-            interaction.options.getInteger("score", true),
-            misses,
-            beatmap.map!.maxDroidScore(
-                new MapStats({
-                    mods: ModUtil.pcStringToMods(room.settings.requiredMods),
-                })
+            room.applyCustomModMultiplier(
+                interaction.options.getInteger("score", true),
+                mods
             ),
-            interaction.options.getBoolean("hiddenpenalty")
-                ? ModUtil.pcStringToMods("HDDT")
-                : [],
+            misses,
+            room.applyCustomModMultiplier(
+                beatmap.map!.maxDroidScore(
+                    new MapStats({
+                        mods: requiredMods,
+                    })
+                ),
+                requiredMods
+            ),
+            mods,
             room.settings.scorePortion
         );
 

@@ -51,6 +51,74 @@ export const config: Command["config"] = {
             ],
         },
         {
+            name: "calculate",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            description:
+                "Calculation commands to calculate scores that are not submitted.",
+            options: [
+                {
+                    name: "scorev1",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Modifies a ScoreV1 value to account for custom mod multipliers.",
+                    options: [
+                        {
+                            name: "score",
+                            type: ApplicationCommandOptionTypes.INTEGER,
+                            required: true,
+                            description: "The score value to calculate for.",
+                            minValue: 0,
+                        },
+                        {
+                            name: "mods",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            required: true,
+                            description:
+                                "The combination of modos to calculate for.",
+                        },
+                    ],
+                },
+                {
+                    name: "scorev2",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Calculates a ScoreV2 value with respect to the currently picked beatmap.",
+                    options: [
+                        {
+                            name: "score",
+                            type: ApplicationCommandOptionTypes.INTEGER,
+                            required: true,
+                            description: "The score value to calculate for.",
+                            minValue: 0,
+                        },
+                        {
+                            name: "accuracy",
+                            type: ApplicationCommandOptionTypes.NUMBER,
+                            required: true,
+                            description:
+                                "The accuracy to calculate for, from 0 to 100.",
+                            minValue: 0,
+                            maxValue: 100,
+                        },
+                        {
+                            name: "misses",
+                            type: ApplicationCommandOptionTypes.INTEGER,
+                            required: true,
+                            description:
+                                "The amount of misses to calculate for.",
+                            minValue: 0,
+                        },
+                        {
+                            name: "mods",
+                            type: ApplicationCommandOptionTypes.STRING,
+                            description:
+                                "The combination of mods to calculate for. Used to apply HDDT penalty and custom mod multipliers.",
+                        },
+                    ],
+                },
+            ],
+        },
+        {
             name: "create",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Creates a multiplayer room.",
@@ -450,43 +518,6 @@ export const config: Command["config"] = {
                             ],
                         },
                     ],
-                },
-            ],
-        },
-        {
-            name: "scorev2",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description:
-                "Calculates a ScoreV2 value with respect to the currently picked beatmap.",
-            options: [
-                {
-                    name: "score",
-                    type: ApplicationCommandOptionTypes.INTEGER,
-                    required: true,
-                    description: "The score value to calculate for.",
-                    minValue: 0,
-                },
-                {
-                    name: "accuracy",
-                    type: ApplicationCommandOptionTypes.NUMBER,
-                    required: true,
-                    description:
-                        "The accuracy to calculate for, from 0 to 100.",
-                    minValue: 0,
-                    maxValue: 100,
-                },
-                {
-                    name: "misses",
-                    type: ApplicationCommandOptionTypes.INTEGER,
-                    required: true,
-                    description: "The amount of misses to calculate for.",
-                    minValue: 0,
-                },
-                {
-                    name: "hiddenpenalty",
-                    type: ApplicationCommandOptionTypes.BOOLEAN,
-                    description:
-                        "Whether to apply the HD mod penalty. Enable only if the player uses the HDDT mod combination.",
                 },
             ],
         },
