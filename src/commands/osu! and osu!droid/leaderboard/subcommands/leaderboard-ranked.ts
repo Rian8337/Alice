@@ -24,13 +24,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         Math.ceil(res.size / 20)
     );
 
-    const onPageChange: OnButtonPageChange = async (
-        options,
-        page,
-        entries: RankedScore[]
-    ) => {
+    const resArray: RankedScore[] = [...res.values()];
+
+    const onPageChange: OnButtonPageChange = async (options, page) => {
         const longestUsernameLength: number = Math.max(
-            ...entries
+            ...resArray
                 .slice(20 * (page - 1), 20 + 20 * (page - 1))
                 .map((v) =>
                     StringHelper.getUnicodeStringLength(v.username.trim())
@@ -47,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             .padEnd(5)} | ${localization.getTranslation("score")} (Lv)\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
-            const player: RankedScore = entries[i];
+            const player: RankedScore = resArray[i];
 
             if (player) {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username
