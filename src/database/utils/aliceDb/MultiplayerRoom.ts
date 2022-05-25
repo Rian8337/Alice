@@ -823,7 +823,7 @@ export class MultiplayerRoom
                 StringHelper.formatString(
                     localization.getTranslation("submissionTooLate"),
                     MathUtils.round(
-                        submissionTimeDifference - 30 * 1000,
+                        submissionTimeDifference / 1000 - 30,
                         1
                     ).toLocaleString(BCP47)
                 )
@@ -837,7 +837,7 @@ export class MultiplayerRoom
                 StringHelper.formatString(
                     localization.getTranslation("submissionTooEarly"),
                     MathUtils.round(
-                        Math.abs(submissionTimeDifference + 10 * 1000),
+                        Math.abs(submissionTimeDifference / 1000 + 10),
                         1
                     ).toLocaleString(BCP47)
                 )
