@@ -81,4 +81,11 @@ export interface MultiplayerScore {
      * Whether this player enables the slider lock option.
      */
     readonly isSliderLock: boolean;
+
+    /**
+     * The skipped time when using the skip button, in milliseconds. This is 0 if the player didn't use the skip button.
+     *
+     * Keep in mind that this value is not affected by speed multiplier.
+     */
+    readonly skippedTime: number;
 }

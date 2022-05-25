@@ -808,11 +808,13 @@ export class MultiplayerRoom
         const beatmapDuration: number =
             (this.settings.beatmap!.duration * 1000) / stats.speedMultiplier;
 
-        const properSubmissionTime: number =
+        const beatmapFinishTime: number =
             this.status.playingSince + beatmapDuration;
 
         const submissionTimeDifference: number =
-            score.date - properSubmissionTime;
+            score.date +
+            score.skippedTime / stats.speedMultiplier -
+            beatmapFinishTime;
 
         const BCP47: string = LocaleHelper.convertToBCP47(language);
 
