@@ -1,8 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { Collection, Message, TextChannel, ThreadChannel } from "discord.js";
+import { Collection, TextChannel, ThreadChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
     setInterval(async () => {
@@ -26,30 +25,7 @@ export const run: EventUtil["run"] = async (client) => {
                 inactiveRoom.threadChannelId
             );
 
-            if (!thread) {
-                await inactiveRoom.deleteRoom();
-
-                continue;
-            }
-
-            if (thread.archived) {
-                await inactiveRoom.deleteRoom();
-
-                continue;
-            }
-
-            const lastMessage: Message | undefined = (
-                await thread.messages.fetch({ limit: 1 })
-            ).first();
-
-            if (!lastMessage) {
-                continue;
-            }
-
-            if (
-                DateTimeFormatHelper.getTimeDifference(lastMessage.createdAt) <=
-                -3600 * 1000
-            ) {
+            if (!thread || thread.archived) {
                 await inactiveRoom.deleteRoom();
             }
         }
