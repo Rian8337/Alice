@@ -52,11 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const roomHost: MultiplayerPlayer = room.players.find(
-        (p) => p.discordId === interaction.user.id
-    )!;
-
-    if (roomHost.isSpectating && room.players.length <= 1) {
+    if (room.players.length <= 1) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooFewPlayers")
