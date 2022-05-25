@@ -8,6 +8,7 @@ import { MultiplayerKRTranslation } from "./translations/MultiplayerKRTranslatio
 export interface MultiplayerStrings {
     readonly about: string;
     readonly roomWithIdDoesntExist: string;
+    readonly roomWithIdAlreadyExists: string;
     readonly roomDoesntExistInChannel: string;
     readonly selfNotInRoom: string;
     readonly selfInRoom: string;

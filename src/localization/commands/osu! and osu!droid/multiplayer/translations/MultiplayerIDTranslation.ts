@@ -8,6 +8,7 @@ export class MultiplayerIDTranslation extends Translation<MultiplayerStrings> {
     override readonly translations: MultiplayerStrings = {
         about: "",
         roomWithIdDoesntExist: "",
+        roomWithIdAlreadyExists: "",
         roomDoesntExistInChannel: "",
         selfNotInRoom: "",
         selfInRoom: "",

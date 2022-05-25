@@ -112,4 +112,22 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
     getFromChannel(channelId: Snowflake): Promise<MultiplayerRoom | null> {
         return this.getOne({ threadChannelId: channelId });
     }
+
+    /**
+     * Checks whether a room ID has been taken.
+     *
+     * @param roomId The room ID.
+     */
+    async idIsTaken(roomId: string): Promise<boolean> {
+        const room: MultiplayerRoom | null = await this.getOne(
+            { roomId: roomId },
+            {
+                projection: {
+                    _id: 1,
+                },
+            }
+        );
+
+        return room !== null;
+    }
 }

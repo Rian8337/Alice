@@ -42,6 +42,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const id: string = interaction.options.getString("id", true);
 
+    if (
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.idIsTaken(id)
+    ) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("roomWithIdAlreadyExists")
+            ),
+        });
+    }
+
     const name: string = interaction.options.getString("name", true);
 
     const password: string | null = interaction.options.getString("password");

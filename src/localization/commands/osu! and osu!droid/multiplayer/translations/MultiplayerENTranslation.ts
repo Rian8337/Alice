@@ -9,6 +9,8 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         about: "Please read [this](%s) document for an explanation about the system.",
         roomWithIdDoesntExist:
             "I'm sorry, there is no multiplayer room with that ID!",
+        roomWithIdAlreadyExists:
+            "I'm sorry, there is already a multiplayer room with that ID!",
         roomDoesntExistInChannel:
             "I'm sorry, there is no multiplayer room in this channel!",
         selfNotInRoom:
