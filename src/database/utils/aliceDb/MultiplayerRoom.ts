@@ -437,7 +437,7 @@ export class MultiplayerRoom
                                 ) + ` - **${v.reason}**`
                         )
                         .join("\n\n"),
-                ].join("\n\n")
+                ].join("\n\n") || localization.getTranslation("none")
             )
             .addField(
                 "=================================",
@@ -558,7 +558,7 @@ export class MultiplayerRoom
                                     ) + ` - **${v.reason}**`
                             )
                             .join("\n\n"),
-                    ].join("\n\n")
+                    ].join("\n\n") || localization.getTranslation("none")
             )
             .addField(
                 localization.getTranslation("blueTeam"),
@@ -585,7 +585,7 @@ export class MultiplayerRoom
                                     ) + ` - **${v.reason}**`
                             )
                             .join("\n\n"),
-                    ].join("\n\n")
+                    ].join("\n\n") || localization.getTranslation("none")
             )
             .addField(
                 "=================================",
