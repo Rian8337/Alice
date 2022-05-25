@@ -6,6 +6,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MultiplayerLocalization } from "@alice-localization/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
@@ -45,11 +46,46 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const winCondition: MultiplayerWinCondition =
-        interaction.options.getInteger("condition", true);
+    const originalWinCondition: MultiplayerWinCondition =
+        room.settings.winCondition;
 
-    if (room.settings.winCondition !== winCondition) {
-        room.settings.winCondition = winCondition;
+    const pickedWinCondition: MultiplayerWinCondition = parseInt(
+        (
+            await SelectMenuCreator.createSelectMenu(
+                interaction,
+                {
+                    content: MessageCreator.createWarn(
+                        localization.getTranslation("pickWinCondition")
+                    ),
+                },
+                (<(keyof typeof MultiplayerWinCondition)[]>(
+                    Object.keys(MultiplayerWinCondition)
+                ))
+                    .map((v) => {
+                        // Set the win condition to room first so we can use winConditionToString()
+                        room.settings.winCondition = MultiplayerWinCondition[v];
+
+                        return {
+                            label: room.winConditionToString(),
+                            value: MultiplayerWinCondition[v].toString(),
+                        };
+                    })
+                    .filter((v) => v.label !== undefined)
+                    .sort((a, b) => a.label.localeCompare(b.label)),
+                [interaction.user.id],
+                20
+            )
+        )[0]
+    );
+
+    if (isNaN(pickedWinCondition)) {
+        return;
+    }
+
+    room.settings.winCondition = originalWinCondition;
+
+    if (originalWinCondition !== pickedWinCondition) {
+        room.settings.winCondition = pickedWinCondition;
 
         const result: OperationResult = await room.updateRoom();
 

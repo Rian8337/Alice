@@ -1,7 +1,5 @@
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
-import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
-import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
@@ -128,26 +126,26 @@ export const config: Command["config"] = {
                     type: ApplicationCommandOptionTypes.STRING,
                     required: true,
                     description:
-                        "The ID of the multiplayer room. Maximum is 20 characters.",
+                        "The ID of the room. Maximum is 20 characters.",
                 },
                 {
                     name: "name",
                     type: ApplicationCommandOptionTypes.STRING,
                     required: true,
                     description:
-                        "The name of the multiplayer room. Maximum is 50 characters.",
+                        "The name of the room. Maximum is 50 characters.",
                 },
                 {
                     name: "password",
                     type: ApplicationCommandOptionTypes.STRING,
                     description:
-                        "The password required to join the multiplayer room. Defaults to none.",
+                        "The password required to join the room. Defaults to none.",
                 },
                 {
                     name: "slotamount",
                     type: ApplicationCommandOptionTypes.INTEGER,
                     description:
-                        "The amount of player slots available in the multiplayer room. Defaults to 8.",
+                        "The amount of player slots in the room. Defaults to 8.",
                     minValue: 2,
                     maxValue: 20,
                 },
@@ -167,13 +165,12 @@ export const config: Command["config"] = {
                     name: "id",
                     type: ApplicationCommandOptionTypes.STRING,
                     required: true,
-                    description: "The ID of the multiplayer room.",
+                    description: "The ID of the room.",
                 },
                 {
                     name: "password",
                     type: ApplicationCommandOptionTypes.STRING,
-                    description:
-                        "The password of the multiplayer room, if any.",
+                    description: "The password of the room, if any.",
                 },
             ],
         },
@@ -330,7 +327,7 @@ export const config: Command["config"] = {
                             type: ApplicationCommandOptionTypes.STRING,
                             required: true,
                             description:
-                                "The name of the multiplayer room. Maximum is 50 characters.",
+                                "The name of the room. Maximum is 50 characters.",
                         },
                     ],
                 },
@@ -426,98 +423,25 @@ export const config: Command["config"] = {
                 {
                     name: "teammode",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Sets the team mode of the multiplayer room.",
-                    options: [
-                        {
-                            name: "teammode",
-                            type: ApplicationCommandOptionTypes.INTEGER,
-                            description: "The team mode to set to.",
-                            choices: [
-                                {
-                                    name: "Head-to-head",
-                                    value: MultiplayerTeamMode.headToHead,
-                                },
-                                {
-                                    name: "Team VS",
-                                    value: MultiplayerTeamMode.teamVS,
-                                },
-                            ],
-                        },
-                    ],
+                    description: "Sets the room's team mode.",
                 },
                 {
                     name: "transferhost",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description:
-                        "Transfers host status to another player in the multiplayer room.",
+                    description: "Transfers host status to a user.",
                     options: [
                         {
                             name: "user",
                             type: ApplicationCommandOptionTypes.USER,
                             required: true,
-                            description:
-                                "The player to transfer host status to.",
+                            description: "The user to transfer host status to.",
                         },
                     ],
                 },
                 {
                     name: "wincondition",
                     type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Sets the win condition.",
-                    options: [
-                        {
-                            name: "condition",
-                            type: ApplicationCommandOptionTypes.INTEGER,
-                            required: true,
-                            description: "The win condition.",
-                            choices: [
-                                {
-                                    name: "Highest Score V1",
-                                    value: MultiplayerWinCondition.scoreV1,
-                                },
-                                {
-                                    name: "Highest Accuracy",
-                                    value: MultiplayerWinCondition.accuracy,
-                                },
-                                {
-                                    name: "Highest Maximum Combo",
-                                    value: MultiplayerWinCondition.maxCombo,
-                                },
-                                {
-                                    name: "Highest Score V2",
-                                    value: MultiplayerWinCondition.scoreV2,
-                                },
-                                {
-                                    name: "Most 300s",
-                                    value: MultiplayerWinCondition.most300,
-                                },
-                                {
-                                    name: "Least 100s",
-                                    value: MultiplayerWinCondition.least100,
-                                },
-                                {
-                                    name: "Least 50s",
-                                    value: MultiplayerWinCondition.least50,
-                                },
-                                {
-                                    name: "Least Misses",
-                                    value: MultiplayerWinCondition.leastMisses,
-                                },
-                                {
-                                    name: "Lowest Unstable Rate",
-                                    value: MultiplayerWinCondition.leastUnstableRate,
-                                },
-                                {
-                                    name: "Highest Droid PP",
-                                    value: MultiplayerWinCondition.mostDroidPp,
-                                },
-                                {
-                                    name: "Highest PC PP",
-                                    value: MultiplayerWinCondition.mostPcPp,
-                                },
-                            ],
-                        },
-                    ],
+                    description: "Sets the room's win condition.",
                 },
             ],
         },
@@ -536,7 +460,7 @@ export const config: Command["config"] = {
                     name: "id",
                     type: ApplicationCommandOptionTypes.STRING,
                     description:
-                        "The ID of the multiplayer room. If omitted, defaults to the current channel's multiplayer room.",
+                        "The ID of the room. If omitted, defaults to the current channel's multiplayer room.",
                 },
             ],
         },

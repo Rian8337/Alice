@@ -76,6 +76,8 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         slotHasBeenFilled:
             "I'm sorry, you have more players than what you would be able to fit with that maximum player slot!",
         noModsDetected: "Hey, I cannot tell what mods you are entering!",
+        pickWinCondition: "Please pick the win condition that you want to use.",
+        pickTeamMode: "Please pick the team mode that you want to use.",
         updateReadyStateFailed:
             "I'm sorry, I couldn't update your ready state: %s.",
         updateReadyStateSuccess:
@@ -164,5 +166,18 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         notReady: "Not ready",
         spectating: "Spectating",
         default: "Default",
+        winConditionScoreV1: "Highest Score V1",
+        winConditionAccuracy: "Highest Accuracy",
+        winConditionMaxCombo: "Highest Maximum Combo",
+        winConditionScoreV2: "Highest Score V2",
+        winConditionMost300s: "Most 300s",
+        winConditionLeast100s: "Least 100s",
+        winConditionLeast50s: "Least 50s",
+        winConditionLeastMisses: "Least Misses",
+        winConditionLeastUnstableRate: "Lowest Unstable Rate",
+        winConditionMostDroidPp: "Highest Droid PP",
+        winConditionMostPcPp: "Highest PC PP",
+        teamModeHeadToHead: "Head-to-head",
+        teamModeTeamVS: "Team VS",
     };
 }

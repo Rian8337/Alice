@@ -52,6 +52,8 @@ export interface MultiplayerStrings {
     readonly joinRoomNotification: string;
     readonly slotHasBeenFilled: string;
     readonly noModsDetected: string;
+    readonly pickWinCondition: string;
+    readonly pickTeamMode: string;
     readonly updateReadyStateFailed: string;
     readonly updateReadyStateSuccess: string;
     readonly updateSpectatingStateFailed: string;
@@ -108,6 +110,19 @@ export interface MultiplayerStrings {
     readonly notReady: string;
     readonly spectating: string;
     readonly default: string;
+    readonly winConditionScoreV1: string;
+    readonly winConditionAccuracy: string;
+    readonly winConditionMaxCombo: string;
+    readonly winConditionScoreV2: string;
+    readonly winConditionMost300s: string;
+    readonly winConditionLeast100s: string;
+    readonly winConditionLeast50s: string;
+    readonly winConditionLeastMisses: string;
+    readonly winConditionLeastUnstableRate: string;
+    readonly winConditionMostDroidPp: string;
+    readonly winConditionMostPcPp: string;
+    readonly teamModeHeadToHead: string;
+    readonly teamModeTeamVS: string;
 }
 
 /**
@@ -117,9 +132,9 @@ export class MultiplayerLocalization extends Localization<MultiplayerStrings> {
     protected override readonly localizations: Readonly<
         Translations<MultiplayerStrings>
     > = {
-        en: new MultiplayerENTranslation(),
-        es: new MultiplayerESTranslation(),
-        kr: new MultiplayerKRTranslation(),
-        id: new MultiplayerIDTranslation(),
-    };
+            en: new MultiplayerENTranslation(),
+            es: new MultiplayerESTranslation(),
+            kr: new MultiplayerKRTranslation(),
+            id: new MultiplayerIDTranslation(),
+        };
 }

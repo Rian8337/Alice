@@ -7,6 +7,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MultiplayerLocalization } from "@alice-localization/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -47,16 +48,48 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const teamMode: MultiplayerTeamMode = interaction.options.getInteger(
-        "teammode",
-        true
+    const originalTeamMode: MultiplayerTeamMode = room.settings.teamMode;
+
+    const pickedTeamMode: MultiplayerTeamMode = parseInt(
+        (
+            await SelectMenuCreator.createSelectMenu(
+                interaction,
+                {
+                    content: MessageCreator.createWarn(
+                        localization.getTranslation("pickTeamMode")
+                    ),
+                },
+                (<(keyof typeof MultiplayerTeamMode)[]>(
+                    Object.keys(MultiplayerTeamMode)
+                ))
+                    .map((v) => {
+                        // Set the team mode to room first so we can use winConditionToString()
+                        room.settings.teamMode = MultiplayerTeamMode[v];
+
+                        return {
+                            label: room.teamModeToString(),
+                            value: MultiplayerTeamMode[v].toString(),
+                        };
+                    })
+                    .filter((v) => v.label !== undefined)
+                    .sort((a, b) => a.label.localeCompare(b.label)),
+                [interaction.user.id],
+                20
+            )
+        )[0]
     );
 
-    if (room.settings.teamMode !== teamMode) {
-        room.settings.teamMode = teamMode;
+    if (isNaN(pickedTeamMode)) {
+        return;
+    }
+
+    room.settings.teamMode = originalTeamMode;
+
+    if (originalTeamMode !== pickedTeamMode) {
+        room.settings.teamMode = pickedTeamMode;
 
         for (const player of room.players) {
-            switch (teamMode) {
+            switch (pickedTeamMode) {
                 case MultiplayerTeamMode.headToHead:
                     delete player.team;
                     break;
