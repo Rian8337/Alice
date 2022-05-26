@@ -673,23 +673,12 @@ export abstract class BeatmapDifficultyHelper<
 
         calculationParams.applyFromBeatmap(star.map);
 
-        if (
-            replay &&
-            (star.result instanceof DroidStarRating ||
-                star.result instanceof RebalanceDroidStarRating)
-        ) {
+        if (replay && star.result instanceof DroidStarRating) {
             replay.map = star.result;
 
             if (!replay.hasBeenCheckedFor3Finger) {
                 replay.checkFor3Finger();
                 calculationParams.tapPenalty = replay.tapPenalty;
-            }
-
-            if (
-                !replay.hasBeenCheckedFor2Hand &&
-                star.result instanceof RebalanceDroidStarRating
-            ) {
-                replay.checkFor2Hand();
             }
         }
 
@@ -729,6 +718,10 @@ export abstract class BeatmapDifficultyHelper<
             if (!replay.hasBeenCheckedFor3Finger) {
                 replay.checkFor3Finger();
                 calculationParams.tapPenalty = replay.tapPenalty;
+            }
+
+            if (!replay.hasBeenCheckedFor2Hand) {
+                replay.checkFor2Hand();
             }
         }
 
