@@ -125,14 +125,8 @@ export class MultiplayerRoom
             this.threadChannelId
         );
 
-        if (thread) {
-            if (!thread.locked) {
-                await thread.setLocked(true, "Multiplayer room closed");
-            }
-
-            if (!thread.archived) {
-                await thread.setArchived(true, "Multiplayer room closed");
-            }
+        if (thread && !thread.archived) {
+            await thread.setLocked(true, "Multiplayer room closed");
         }
 
         return DatabaseManager.aliceDb.collections.multiplayerRoom.delete({
