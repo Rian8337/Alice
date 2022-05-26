@@ -267,12 +267,11 @@ export abstract class BeatmapDifficultyHelper<
             return null;
         }
 
-        // Determine whether to use replay for 3f nerf or not.
+        // Determine whether to use replay for 3f nerf and 2h detection or not.
         if (
             result.result instanceof RebalanceDroidStarRating &&
             !score.replay &&
-            useReplay &&
-            ThreeFingerChecker.isEligibleToDetect(result.result)
+            useReplay
         ) {
             await score.downloadReplay();
         }
@@ -674,12 +673,23 @@ export abstract class BeatmapDifficultyHelper<
 
         calculationParams.applyFromBeatmap(star.map);
 
-        if (replay && star.result instanceof DroidStarRating) {
+        if (
+            replay &&
+            (star.result instanceof DroidStarRating ||
+                star.result instanceof RebalanceDroidStarRating)
+        ) {
             replay.map = star.result;
 
             if (!replay.hasBeenCheckedFor3Finger) {
                 replay.checkFor3Finger();
                 calculationParams.tapPenalty = replay.tapPenalty;
+            }
+
+            if (
+                !replay.hasBeenCheckedFor2Hand &&
+                star.result instanceof RebalanceDroidStarRating
+            ) {
+                replay.checkFor2Hand();
             }
         }
 
