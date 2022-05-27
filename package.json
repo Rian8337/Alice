@@ -42,7 +42,7 @@
   "dependencies": {
     "@discordjs/voice": "^0.9.0",
     "@rian8337/osu-base": "^2.0.0-alpha.8",
-    "@rian8337/osu-difficulty-calculator": "2.0.0-alpha.14",
+    "@rian8337/osu-difficulty-calculator": "^2.0.0-alpha.9",
     "@rian8337/osu-droid-replay-analyzer": "^2.0.0-alpha.14",
     "@rian8337/osu-droid-utilities": "^2.0.0-alpha.14",
     "@rian8337/osu-rebalance-difficulty-calculator": "^2.0.0-alpha.14",
