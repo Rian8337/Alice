@@ -38,17 +38,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    const onPageChange: OnButtonPageChange = async (
-        _,
-        page,
-        backgrounds: ProfileBackground[]
-    ) => {
+    const backgroundsArray: ProfileBackground[] = [...backgrounds.values()];
+
+    const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 10 * (page - 1);
-            i < Math.min(backgrounds.length, 10 + 10 * (page - 1));
+            i < Math.min(backgroundsArray.length, 10 + 10 * (page - 1));
             ++i
         ) {
-            const bg: ProfileBackground = backgrounds[i];
+            const bg: ProfileBackground = backgroundsArray[i];
             embed.addField(
                 `${i + 1}. ${bg.name}`,
                 `${localization.getTranslation("owned")}: **${
