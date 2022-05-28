@@ -352,6 +352,7 @@ export class UserBind extends Manager {
                 combo: score.combo,
                 miss: score.accuracy.nmiss,
                 scoreID: score.scoreID,
+                cursorIndexes: score.replay!.twoHandCursorIndexes,
             };
 
             this.client.logger.info(
