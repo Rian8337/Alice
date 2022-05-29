@@ -240,8 +240,8 @@ export const run: EventUtil["run"] = async (
     if (Config.isDebug) {
         // Attempt to instantly defer in debug mode (slower internet).
         const instantDefer: boolean =
-            command.config.instantDeferInDebug !== false &&
-            subcommandGroup?.config.instantDeferInDebug !== false &&
+            command.config.instantDeferInDebug !== false ||
+            subcommandGroup?.config.instantDeferInDebug !== false ||
             subcommand?.config.instantDeferInDebug !== false;
 
         if (instantDefer) {
