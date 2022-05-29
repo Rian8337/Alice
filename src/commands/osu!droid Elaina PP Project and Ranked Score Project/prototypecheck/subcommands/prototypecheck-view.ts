@@ -39,6 +39,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     let ppInfo: PrototypePP | null;
 
+    await InteractionHelper.defer(interaction);
+
     switch (true) {
         case !!uid:
             ppInfo = await dbManager.getFromUid(uid!);
