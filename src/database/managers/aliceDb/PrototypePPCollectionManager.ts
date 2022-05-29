@@ -43,9 +43,16 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
     getFromUser(userId: Snowflake): Promise<PrototypePP | null>;
 
     getFromUser(userOrId: User | Snowflake): Promise<PrototypePP | null> {
-        return this.getOne({
-            discordid: userOrId instanceof User ? userOrId.id : userOrId,
-        });
+        return this.getOne(
+            {
+                discordid: userOrId instanceof User ? userOrId.id : userOrId,
+            },
+            {
+                projection: {
+                    "pp.cursorIndexes": 0,
+                },
+            }
+        );
     }
 
     /**
@@ -54,7 +61,14 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      * @param uid The uid of the osu!droid account.
      */
     getFromUid(uid: number): Promise<PrototypePP | null> {
-        return this.getOne({ previous_bind: { $all: [uid] } });
+        return this.getOne(
+            { previous_bind: { $all: [uid] } },
+            {
+                projection: {
+                    "pp.cursorIndexes": 0,
+                },
+            }
+        );
     }
 
     /**
@@ -63,7 +77,14 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      * @param username The username of the osu!droid account.
      */
     getFromUsername(username: string): Promise<PrototypePP | null> {
-        return this.getOne({ username: username });
+        return this.getOne(
+            { username: username },
+            {
+                projection: {
+                    "pp.cursorIndexes": 0,
+                },
+            }
+        );
     }
 
     /**
