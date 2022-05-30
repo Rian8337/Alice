@@ -1,14 +1,14 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Message, Permissions, TextChannel } from "discord.js";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     if (!interaction.inGuild()) {
         return;
     }
@@ -84,6 +84,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

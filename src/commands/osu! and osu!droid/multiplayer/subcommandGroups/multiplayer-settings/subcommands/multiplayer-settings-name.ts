@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MultiplayerLocalization } from "@alice-localization/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -9,7 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { TextChannel, ThreadChannel } from "discord.js";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -93,6 +93,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

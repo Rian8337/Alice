@@ -1,8 +1,8 @@
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -30,6 +30,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

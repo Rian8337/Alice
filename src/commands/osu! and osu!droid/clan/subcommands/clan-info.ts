@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanCollectionManager } from "@alice-database/managers/elainaDb/ClanCollectionManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -25,7 +25,7 @@ import {
     MessageOptions,
 } from "discord.js";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -141,6 +141,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     InteractionHelper.reply(interaction, options);
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

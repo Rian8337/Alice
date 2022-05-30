@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { SayobotAPIResponse } from "@alice-interfaces/sayobot/SayobotAPIResponse";
 import { SayobotBeatmap } from "@alice-interfaces/sayobot/SayobotBeatmap";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
@@ -18,7 +18,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: MapsearchLocalization = new MapsearchLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -168,9 +168,9 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 };
 
-export const category: Command["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.OSU;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "mapsearch",
     description: "Searches for beatmaps. Service provided by Sayobot.",
     options: [

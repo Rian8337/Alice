@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { ScanLocalization } from "@alice-localization/commands/Bot Creators/scan/ScanLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -9,7 +9,7 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Collection, Snowflake } from "discord.js";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: ScanLocalization = new ScanLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -52,6 +52,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: ["BOT_OWNER"],
 };

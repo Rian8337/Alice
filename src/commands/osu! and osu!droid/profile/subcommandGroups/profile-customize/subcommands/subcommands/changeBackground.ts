@@ -1,7 +1,7 @@
 import { Collection, GuildEmoji } from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -17,7 +17,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -181,6 +181,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

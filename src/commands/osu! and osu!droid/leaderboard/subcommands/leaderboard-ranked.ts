@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -10,7 +10,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -80,6 +80,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

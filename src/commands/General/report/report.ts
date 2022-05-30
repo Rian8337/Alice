@@ -7,7 +7,7 @@ import {
 import { Config } from "@alice-core/Config";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -16,7 +16,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ReportLocalization } from "@alice-localization/commands/General/report/ReportLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: ReportLocalization = new ReportLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -120,9 +120,9 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 };
 
-export const category: Command["category"] = CommandCategory.GENERAL;
+export const category: SlashCommand["category"] = CommandCategory.GENERAL;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "report",
     description: "Reports a user for breaking rules.",
     options: [

@@ -1,4 +1,4 @@
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -8,7 +8,7 @@ import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { MessageEmbed } from "discord.js";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     if (!interaction.inCachedGuild()) {
         return;
     }
@@ -58,6 +58,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

@@ -1,6 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
@@ -15,7 +15,7 @@ import {
     ThreadChannel,
 } from "discord.js";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: SettingsLocalization = new SettingsLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -104,6 +104,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

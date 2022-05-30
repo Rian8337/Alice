@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { WarningLocalization } from "@alice-localization/commands/Staff/warning/WarningLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -13,7 +13,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -123,6 +123,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

@@ -4,7 +4,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { Snowflake } from "discord.js";
@@ -14,7 +14,7 @@ import { Recent5Localization } from "@alice-localization/commands/osu! and osu!d
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: Recent5Localization = new Recent5Localization(
         await CommandHelper.getLocale(interaction)
     );
@@ -105,9 +105,9 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 };
 
-export const category: Command["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.OSU;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "recent5",
     description: "Displays the 50 most recent plays of yourself or a player.",
     options: [

@@ -1,8 +1,8 @@
 import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { RunCommandLocalization } from "@alice-localization/events/interactionCreate/runCommand/RunCommandLocalization";
 import {
@@ -50,7 +50,7 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    const command: Command | undefined = client.commands.get(
+    const command: SlashCommand | undefined = client.commands.get(
         interaction.commandName
     );
 
@@ -109,9 +109,9 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    const subcommand: Subcommand | undefined =
+    const subcommand: SlashSubcommand | undefined =
         CommandHelper.getSubcommand(interaction);
-    const subcommandGroup: Subcommand | undefined =
+    const subcommandGroup: SlashSubcommand | undefined =
         CommandHelper.getSubcommandGroup(interaction);
 
     // Command cooldown

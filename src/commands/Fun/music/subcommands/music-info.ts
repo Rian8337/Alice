@@ -1,5 +1,5 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -12,7 +12,7 @@ import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { VideoSearchResult } from "yt-search";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -90,6 +90,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

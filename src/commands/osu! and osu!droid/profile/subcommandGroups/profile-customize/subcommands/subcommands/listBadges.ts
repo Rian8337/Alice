@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -9,7 +9,7 @@ import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const badgeList: Collection<string, ProfileBadge> =
         await DatabaseManager.aliceDb.collections.profileBadges.getAllBadgesSorted();
 
@@ -76,6 +76,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

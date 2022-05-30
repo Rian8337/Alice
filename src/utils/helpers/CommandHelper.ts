@@ -12,7 +12,7 @@ import {
     ThreadChannel,
     User,
 } from "discord.js";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { CacheManager } from "../managers/CacheManager";
 import { CommandScope } from "@alice-types/core/CommandScope";
 import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
@@ -297,7 +297,7 @@ export abstract class CommandHelper extends Manager {
      */
     private static runSubOrGroup(
         interaction: CommandInteraction,
-        subcommand?: Subcommand,
+        subcommand?: SlashSubcommand,
         language: Language = "en"
     ): Promise<unknown> {
         const localization: CommandHelperLocalization =
@@ -341,7 +341,7 @@ export abstract class CommandHelper extends Manager {
      */
     static getSubcommand(
         interaction: CommandInteraction
-    ): Subcommand | undefined {
+    ): SlashSubcommand | undefined {
         if (!interaction.options.getSubcommand(false)) {
             return undefined;
         }
@@ -376,7 +376,7 @@ export abstract class CommandHelper extends Manager {
      */
     static getSubcommandGroup(
         interaction: CommandInteraction
-    ): Subcommand | undefined {
+    ): SlashSubcommand | undefined {
         if (!interaction.options.getSubcommandGroup(false)) {
             return undefined;
         }

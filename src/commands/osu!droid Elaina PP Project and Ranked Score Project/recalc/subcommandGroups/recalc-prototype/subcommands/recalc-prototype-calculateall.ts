@@ -2,13 +2,13 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/PrototypePPCollectionManager";
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: RecalcLocalization = new RecalcLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -56,6 +56,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: ["BOT_OWNER"],
 };

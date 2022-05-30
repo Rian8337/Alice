@@ -1,4 +1,4 @@
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -9,7 +9,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicL
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const musicInformation: MusicInfo | undefined =
         MusicManager.musicInformations.get(interaction.guildId!);
 
@@ -41,6 +41,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

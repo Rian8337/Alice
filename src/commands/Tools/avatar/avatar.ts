@@ -1,11 +1,11 @@
 import { GuildMember, MessageEmbed, User } from "discord.js";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const avatarEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
@@ -48,9 +48,9 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.TOOLS;
+export const category: SlashCommand["category"] = CommandCategory.TOOLS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "avatar",
     description:
         "Shows a user's global avatar and if available, a user's profile banner.",

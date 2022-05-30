@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { Collection } from "discord.js";
@@ -13,7 +13,7 @@ import { ScanLocalization } from "@alice-localization/commands/Bot Creators/scan
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: ScanLocalization = new ScanLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -80,6 +80,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: ["BOT_OWNER"],
 };

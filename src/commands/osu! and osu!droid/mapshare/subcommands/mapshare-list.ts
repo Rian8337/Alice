@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
@@ -14,7 +14,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -95,6 +95,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

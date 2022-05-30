@@ -1,14 +1,14 @@
 import { Constants } from "@alice-core/Constants";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
     if (interaction.guildId! !== Constants.mainServer) {
@@ -22,9 +22,9 @@ export const run: Command["run"] = async (_, interaction) => {
     CommandHelper.runSubcommandOrGroup(interaction, language);
 };
 
-export const category: Command["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.OSU;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "clan",
     description: "Main command for clans.",
     options: [

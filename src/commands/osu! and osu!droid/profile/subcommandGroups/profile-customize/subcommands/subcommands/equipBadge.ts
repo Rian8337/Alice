@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
 import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
@@ -15,7 +15,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -128,6 +128,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

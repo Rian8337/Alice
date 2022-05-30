@@ -1,15 +1,15 @@
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSubcommandFromInteraction(interaction);
 };
 
 export const category: CommandCategory = CommandCategory.TOOLS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "locale",
     description:
         "Main command for organizing locales per-user, channel, or server.",

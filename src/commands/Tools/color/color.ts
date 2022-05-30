@@ -2,14 +2,14 @@ import { MessageAttachment } from "discord.js";
 import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ColorLocalization } from "@alice-localization/commands/Tools/color/ColorLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: ColorLocalization = new ColorLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -43,9 +43,9 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.TOOLS;
+export const category: SlashCommand["category"] = CommandCategory.TOOLS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "color",
     description: "Sends a color based on given hex code.",
     options: [

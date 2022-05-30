@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -17,7 +17,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -284,6 +284,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

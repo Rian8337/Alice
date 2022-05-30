@@ -2,14 +2,14 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Collection, Snowflake } from "discord.js";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -76,6 +76,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ColorResolvable, Role } from "discord.js";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
@@ -8,7 +8,7 @@ import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droi
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -83,6 +83,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

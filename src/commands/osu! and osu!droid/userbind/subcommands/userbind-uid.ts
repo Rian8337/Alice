@@ -4,14 +4,14 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Constants } from "@alice-core/Constants";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: UserbindLocalization = new UserbindLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -182,6 +182,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

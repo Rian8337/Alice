@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { PoolLocalization } from "@alice-localization/commands/Tournament/pool/PoolLocalization";
@@ -12,7 +12,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageEmbed, GuildMember } from "discord.js";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -68,6 +68,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

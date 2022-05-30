@@ -1,15 +1,15 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSubcommandFromInteraction(interaction);
 };
 
-export const category: Command["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.OSU;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "skin",
     description:
         "View a Discord account's osu! or osu!droid skin or set your own.",

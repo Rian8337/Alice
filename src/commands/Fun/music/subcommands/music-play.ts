@@ -1,5 +1,5 @@
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
@@ -10,7 +10,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicL
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -81,6 +81,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

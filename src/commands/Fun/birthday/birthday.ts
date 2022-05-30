@@ -1,18 +1,18 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSubcommandFromInteraction(
         interaction,
         await CommandHelper.getLocale(interaction)
     );
 };
 
-export const category: Command["category"] = CommandCategory.BOT_CREATORS;
+export const category: SlashCommand["category"] = CommandCategory.BOT_CREATORS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "birthday",
     description: "Allows managing birthday dates.",
     options: [

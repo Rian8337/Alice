@@ -1,20 +1,20 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandData } from "discord.js";
 import { DeployLocalization } from "@alice-localization/commands/Bot Creators/deploy/DeployLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (client, interaction) => {
+export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: DeployLocalization = new DeployLocalization(
         await CommandHelper.getLocale(interaction)
     );
 
     const commandName: string = interaction.options.getString("command", true);
 
-    const command: Command | undefined = client.commands.get(commandName);
+    const command: SlashCommand | undefined = client.commands.get(commandName);
 
     if (!command) {
         return InteractionHelper.reply(interaction, {
@@ -44,9 +44,9 @@ export const run: Command["run"] = async (client, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.BOT_CREATORS;
+export const category: SlashCommand["category"] = CommandCategory.BOT_CREATORS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "deploy",
     description: "Deploys a command to Discord.",
     options: [

@@ -9,7 +9,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
@@ -35,7 +35,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: FetchreplayLocalization = new FetchreplayLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -222,9 +222,9 @@ export const run: Command["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, calcEmbedOptions);
 };
 
-export const category: Command["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.OSU;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "fetchreplay",
     description: "Fetches replay from a player in a beatmap.",
     options: [

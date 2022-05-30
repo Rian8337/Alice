@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ThreadChannel } from "discord.js";
@@ -8,7 +8,7 @@ import { MatchLocalization } from "@alice-localization/commands/Tournament/match
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -59,6 +59,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

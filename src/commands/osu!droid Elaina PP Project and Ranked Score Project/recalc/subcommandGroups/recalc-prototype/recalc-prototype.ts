@@ -1,5 +1,5 @@
 import { Constants } from "@alice-core/Constants";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -7,7 +7,7 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember } from "discord.js";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         !(<GuildMember>interaction.member).roles.cache.has(
@@ -26,6 +26,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     CommandHelper.runSubcommandFromInteraction(interaction);
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: ["SPECIAL"],
 };

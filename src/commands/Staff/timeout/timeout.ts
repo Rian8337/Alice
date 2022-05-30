@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { GuildMember } from "discord.js";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
@@ -10,7 +10,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { TimeoutLocalization } from "@alice-localization/commands/Staff/timeout/TimeoutLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: TimeoutLocalization = new TimeoutLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -60,9 +60,9 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.STAFF;
+export const category: SlashCommand["category"] = CommandCategory.STAFF;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "timeout",
     description:
         "Timeouts a user. This command's permission can be configured using the /settings command.",

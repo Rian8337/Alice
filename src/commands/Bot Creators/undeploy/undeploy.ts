@@ -1,13 +1,13 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommand } from "discord.js";
 import { UndeployLocalization } from "@alice-localization/commands/Bot Creators/undeploy/UndeployLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (client, interaction) => {
+export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: UndeployLocalization = new UndeployLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -46,9 +46,9 @@ export const run: Command["run"] = async (client, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.BOT_CREATORS;
+export const category: SlashCommand["category"] = CommandCategory.BOT_CREATORS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "undeploy",
     description: "Undeploys a command from Discord.",
     options: [

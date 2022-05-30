@@ -9,7 +9,7 @@ import {
 import { Config } from "@alice-core/Config";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -18,7 +18,7 @@ import { VerifyLocalization } from "@alice-localization/commands/Staff/verify/Ve
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: VerifyLocalization = new VerifyLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -122,9 +122,9 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.STAFF;
+export const category: SlashCommand["category"] = CommandCategory.STAFF;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "verify",
     description:
         "Verifies a user. This command uses a special permission that cannot be modified.",

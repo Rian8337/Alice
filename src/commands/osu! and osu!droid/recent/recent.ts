@@ -4,7 +4,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -15,7 +15,7 @@ import { RecentLocalization } from "@alice-localization/commands/osu! and osu!dr
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: RecentLocalization = new RecentLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -131,9 +131,9 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.OSU;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "recent",
     description: "Shows the recent play of yourself or a player.",
     options: [

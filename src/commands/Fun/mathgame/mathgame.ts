@@ -7,7 +7,7 @@ import {
     Snowflake,
 } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MathEquation } from "@alice-interfaces/utils/MathEquation";
 import { MathGameType } from "@alice-types/commands/Fun/MathGameType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -127,7 +127,7 @@ function endGame(
     });
 }
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: MathgameLocalization = new MathgameLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -315,9 +315,9 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 };
 
-export const category: Command["category"] = CommandCategory.FUN;
+export const category: SlashCommand["category"] = CommandCategory.FUN;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "mathgame",
     description:
         "A math game! Creates a simple math equation that you have to solve within 30 seconds.",

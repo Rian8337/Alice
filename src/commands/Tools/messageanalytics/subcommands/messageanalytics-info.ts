@@ -16,7 +16,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { ChannelDataCollectionManager } from "@alice-database/managers/aliceDb/ChannelDataCollectionManager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import {
     MessageanalyticsLocalization,
     MessageanalyticsStrings,
@@ -35,7 +35,7 @@ function daysToMilliseconds(days: number): number {
     return 24 * 3.6e6 * days;
 }
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: MessageanalyticsLocalization =
         new MessageanalyticsLocalization(
             await CommandHelper.getLocale(interaction)
@@ -222,6 +222,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

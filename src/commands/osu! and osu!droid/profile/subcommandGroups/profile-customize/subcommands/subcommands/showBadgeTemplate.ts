@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
@@ -9,7 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
     const bindInfo: UserBind | null =
@@ -39,6 +39,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, { files: [template] });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

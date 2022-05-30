@@ -5,9 +5,9 @@ import { CommandScope } from "@alice-types/core/CommandScope";
 import { Permission } from "@alice-types/core/Permission";
 
 /**
- * Defines a command.
+ * Represents a slash command.
  */
-export interface Command {
+export interface SlashCommand {
     /**
      * Executes the command.
      *

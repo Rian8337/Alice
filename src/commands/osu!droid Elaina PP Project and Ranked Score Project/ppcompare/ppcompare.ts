@@ -4,7 +4,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import {
@@ -21,7 +21,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: PPcompareLocalization = new PPcompareLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -274,9 +274,9 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 };
 
-export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
+export const category: SlashCommand["category"] = CommandCategory.PP_AND_RANKED;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "ppcompare",
     description:
         "Compares yours or a player's droid pp (dpp) profile with another player's droid pp (dpp) profile.",

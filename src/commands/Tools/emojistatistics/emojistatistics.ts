@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -15,7 +15,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: EmojistatisticsLocalization =
         new EmojistatisticsLocalization(
             await CommandHelper.getLocale(interaction)
@@ -146,9 +146,9 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 };
 
-export const category: Command["category"] = CommandCategory.TOOLS;
+export const category: SlashCommand["category"] = CommandCategory.TOOLS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "emojistatistics",
     description: "Views statistics for emoji usage of the server.",
     options: [

@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -11,7 +11,7 @@ import { LeaderboardLocalization } from "@alice-localization/commands/osu! and o
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -94,6 +94,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

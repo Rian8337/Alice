@@ -1,6 +1,6 @@
 import { GuildMember, MessageEmbed } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -10,7 +10,7 @@ import { PingLocalization } from "@alice-localization/commands/General/ping/Ping
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (client, interaction) => {
+export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: PingLocalization = new PingLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -70,9 +70,9 @@ export const run: Command["run"] = async (client, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.GENERAL;
+export const category: SlashCommand["category"] = CommandCategory.GENERAL;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "ping",
     description: "Pong!",
     options: [],

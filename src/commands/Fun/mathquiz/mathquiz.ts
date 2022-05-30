@@ -1,6 +1,6 @@
 import { Message, MessageCollector } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MathEquation } from "@alice-interfaces/utils/MathEquation";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -10,7 +10,7 @@ import { MathquizLocalization } from "@alice-localization/commands/Fun/mathquiz/
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: MathquizLocalization = new MathquizLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -98,9 +98,9 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.FUN;
+export const category: SlashCommand["category"] = CommandCategory.FUN;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "mathquiz",
     description:
         "Creates a simple math equation that you have to solve within 30 seconds.",

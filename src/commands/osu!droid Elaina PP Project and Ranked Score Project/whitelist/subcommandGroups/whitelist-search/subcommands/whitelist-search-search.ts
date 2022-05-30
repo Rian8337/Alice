@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
@@ -13,7 +13,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { Filter, Sort } from "mongodb";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -292,6 +292,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

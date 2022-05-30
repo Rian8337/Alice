@@ -1,7 +1,7 @@
 import { MapInfo } from "@rian8337/osu-base";
 import { Config } from "@alice-core/Config";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -12,7 +12,7 @@ import { BlacklistLocalization } from "@alice-localization/commands/Bot Creators
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: BlacklistLocalization = new BlacklistLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -138,9 +138,9 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 };
 
-export const category: Command["category"] = CommandCategory.BOT_CREATORS;
+export const category: SlashCommand["category"] = CommandCategory.BOT_CREATORS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "blacklist",
     description:
         "The main command for droid performance points (dpp) blacklisting system.",

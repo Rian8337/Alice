@@ -3,9 +3,9 @@ import { Bot } from "@alice-core/Bot";
 import { Permission } from "@alice-types/core/Permission";
 
 /**
- * Represents a subcommand.
+ * Represents a slash command's subcommand.
  */
-export interface Subcommand {
+export interface SlashSubcommand {
     /**
      * Executes the subcommand.
      *

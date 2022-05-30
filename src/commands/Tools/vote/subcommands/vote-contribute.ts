@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
 import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { VoteLocalization } from "@alice-localization/commands/Tools/vote/VoteLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -131,6 +131,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
@@ -11,7 +11,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -109,6 +109,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

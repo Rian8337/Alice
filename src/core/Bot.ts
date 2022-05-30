@@ -9,7 +9,7 @@ import {
 } from "discord.js";
 import { MongoClient } from "mongodb";
 import consola, { Consola } from "consola";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { Event } from "@alice-interfaces/core/Event";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
@@ -21,7 +21,7 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Config } from "./Config";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Manager } from "@alice-utils/base/Manager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 
 /**
@@ -38,7 +38,7 @@ export class Bot extends Client {
     /**
      * The commands that this bot has, mapped by the name of the command.
      */
-    readonly commands: Collection<string, Command> = new Collection();
+    readonly commands: Collection<string, SlashCommand> = new Collection();
 
     /**
      * The subcommand groups that this bot has, mapped by the name of the command,
@@ -46,7 +46,7 @@ export class Bot extends Client {
      */
     readonly subcommandGroups: Collection<
         string,
-        Collection<string, Subcommand>
+        Collection<string, SlashSubcommand>
     > = new Collection();
 
     /**
@@ -54,8 +54,10 @@ export class Bot extends Client {
      * name of the command or the name of the subcommand group,
      * and each subcommand mapped by its name.
      */
-    readonly subcommands: Collection<string, Collection<string, Subcommand>> =
-        new Collection();
+    readonly subcommands: Collection<
+        string,
+        Collection<string, SlashSubcommand>
+    > = new Collection();
 
     /**
      * The event utilities that this bot has, mapped by the event's name, and each utility mapped by its name.
@@ -172,7 +174,9 @@ export class Bot extends Client {
 
                 const filePath: string = `${commandPath}/${folder}/${command}`;
 
-                const file: Command = await import(`${filePath}/${command}`);
+                const file: SlashCommand = await import(
+                    `${filePath}/${command}`
+                );
 
                 this.commands.set(command, file);
 
@@ -203,12 +207,13 @@ export class Bot extends Client {
             return;
         }
 
-        const collection: Collection<string, Subcommand> = new Collection();
+        const collection: Collection<string, SlashSubcommand> =
+            new Collection();
 
         for (const subcommandGroup of subcommandGroups) {
             const filePath: string = `${subcommandGroupPath}/${subcommandGroup}`;
 
-            const file: Subcommand = await import(
+            const file: SlashSubcommand = await import(
                 `${filePath}/${subcommandGroup}`
             );
 
@@ -240,7 +245,8 @@ export class Bot extends Client {
             return;
         }
 
-        const collection: Collection<string, Subcommand> = new Collection();
+        const collection: Collection<string, SlashSubcommand> =
+            new Collection();
 
         for (const subcommand of subcommands.filter((v) => v.endsWith(".js"))) {
             const filePath: string = `${subcommandPath}/${subcommand}`;
@@ -251,7 +257,7 @@ export class Bot extends Client {
                 continue;
             }
 
-            const file: Subcommand = await import(filePath);
+            const file: SlashSubcommand = await import(filePath);
 
             collection.set(
                 subcommand.substring(0, subcommand.length - 3),
@@ -347,7 +353,7 @@ export class Bot extends Client {
         const registerCommand = async (name: string): Promise<void> => {
             this.logger.info(`Registering ${name} command`);
 
-            const command: Command = <Command>this.commands.get(name);
+            const command: SlashCommand = <SlashCommand>this.commands.get(name);
 
             const data: ApplicationCommandData = {
                 name: command.config.name,

@@ -1,6 +1,6 @@
 import { GuildMember } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
@@ -8,7 +8,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -32,9 +32,9 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 };
 
-export const category: Command["category"] = CommandCategory.FUN;
+export const category: SlashCommand["category"] = CommandCategory.FUN;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "coins",
     description: "Main command for Alice coins.",
     options: [

@@ -1,7 +1,7 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
@@ -26,7 +26,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -286,6 +286,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

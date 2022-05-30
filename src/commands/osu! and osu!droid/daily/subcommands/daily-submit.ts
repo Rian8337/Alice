@@ -7,7 +7,7 @@ import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -16,7 +16,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -168,6 +168,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

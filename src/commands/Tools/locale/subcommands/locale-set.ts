@@ -1,7 +1,7 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { Language } from "@alice-localization/base/Language";
 import { LocaleLocalization } from "@alice-localization/commands/Tools/locale/LocaleLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -10,7 +10,7 @@ import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: LocaleLocalization = new LocaleLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -129,6 +129,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

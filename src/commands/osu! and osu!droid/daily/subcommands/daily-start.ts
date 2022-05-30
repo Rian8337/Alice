@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
@@ -10,7 +10,7 @@ import { CommandInteraction } from "discord.js";
 import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
-export const run: Subcommand["run"] = async (
+export const run: SlashSubcommand["run"] = async (
     _,
     interaction: CommandInteraction<"cached">
 ) => {
@@ -67,6 +67,6 @@ export const run: Subcommand["run"] = async (
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: ["SPECIAL"],
 };

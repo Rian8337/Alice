@@ -1,7 +1,7 @@
 import { GuildMember, MessageOptions } from "discord.js";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -24,7 +24,7 @@ import { CalculateLocalization } from "@alice-localization/commands/osu! and osu
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CalculateLocalization = new CalculateLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -177,9 +177,9 @@ export const run: Command["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, calcEmbedOptions);
 };
 
-export const category: Command["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.OSU;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "calculate",
     description:
         "Calculates the difficulty and performance value of an osu!standard beatmap.",

@@ -4,7 +4,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -17,7 +17,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: PPcheckLocalization = new PPcheckLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -132,9 +132,9 @@ export const run: Command["run"] = async (_, interaction) => {
     );
 };
 
-export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
+export const category: SlashCommand["category"] = CommandCategory.PP_AND_RANKED;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "ppcheck",
     description: "Checks yours or a player's droid pp (dpp) profile.",
     options: [

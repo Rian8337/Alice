@@ -1,7 +1,7 @@
 import { GuildMember } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
@@ -13,7 +13,7 @@ import { SwitchbindLocalization } from "@alice-localization/commands/Bot Creator
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (client, interaction) => {
+export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: SwitchbindLocalization = new SwitchbindLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -72,9 +72,9 @@ export const run: Command["run"] = async (client, interaction) => {
     });
 };
 
-export const category: Command["category"] = CommandCategory.BOT_CREATORS;
+export const category: SlashCommand["category"] = CommandCategory.BOT_CREATORS;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "switchbind",
     description:
         "Switches an osu!droid account bind from one Discord account to another.",

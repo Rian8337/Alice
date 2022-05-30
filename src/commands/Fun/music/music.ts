@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember } from "discord.js";
@@ -8,7 +8,7 @@ import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicL
 import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Command["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
     if (!(<GuildMember>interaction.member).voice.channelId) {
@@ -24,9 +24,9 @@ export const run: Command["run"] = async (_, interaction) => {
     CommandHelper.runSubcommandOrGroup(interaction, language);
 };
 
-export const category: Command["category"] = CommandCategory.FUN;
+export const category: SlashCommand["category"] = CommandCategory.FUN;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "music",
     description: "Main command for music.",
     options: [

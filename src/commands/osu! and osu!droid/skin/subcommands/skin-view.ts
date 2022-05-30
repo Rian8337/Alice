@@ -1,13 +1,13 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerSkin } from "@alice-database/utils/aliceDb/PlayerSkin";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { SkinLocalization } from "@alice-localization/commands/osu! and osu!droid/skin/SkinLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { User } from "discord.js";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: SkinLocalization = new SkinLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -36,6 +36,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

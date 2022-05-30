@@ -1,6 +1,6 @@
 import { Constants } from "@alice-core/Constants";
-import { Command } from "@alice-interfaces/core/Command";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -11,7 +11,7 @@ import { SettingsLocalization } from "@alice-localization/commands/Staff/setting
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const localization: SettingsLocalization = new SettingsLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -24,7 +24,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const scope: CommandUtilScope =
         <CommandUtilScope>interaction.options.getString("scope") ?? "channel";
 
-    const command: Command | undefined = client.commands.get(commandName);
+    const command: SlashCommand | undefined = client.commands.get(commandName);
 
     if (!command) {
         return InteractionHelper.reply(interaction, {
@@ -125,6 +125,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

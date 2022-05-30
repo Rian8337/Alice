@@ -1,4 +1,4 @@
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MapTriviaPlayer } from "@alice-interfaces/trivia/MapTriviaPlayer";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -161,7 +161,7 @@ function createEmbed(
     return embed;
 }
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: TriviaLocalization = new TriviaLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -600,6 +600,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };

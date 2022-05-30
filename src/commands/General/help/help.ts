@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Command } from "@alice-interfaces/core/Command";
+import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -39,7 +39,7 @@ function getCommandList(client: Bot): Collection<string, string[]> {
     return output;
 }
 
-export const run: Command["run"] = async (client, interaction) => {
+export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: HelpLocalization = new HelpLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -53,7 +53,7 @@ export const run: Command["run"] = async (client, interaction) => {
     });
 
     if (commandName) {
-        const cmd: Command | undefined = client.commands.get(commandName);
+        const cmd: SlashCommand | undefined = client.commands.get(commandName);
 
         if (!cmd) {
             return InteractionHelper.reply(interaction, {
@@ -226,9 +226,9 @@ export const run: Command["run"] = async (client, interaction) => {
     }
 };
 
-export const category: Command["category"] = CommandCategory.GENERAL;
+export const category: SlashCommand["category"] = CommandCategory.GENERAL;
 
-export const config: Command["config"] = {
+export const config: SlashCommand["config"] = {
     name: "help",
     description: "General help command.",
     options: [

@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
@@ -10,7 +10,7 @@ import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!d
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -69,6 +69,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 };
 
-export const config: Subcommand["config"] = {
+export const config: SlashSubcommand["config"] = {
     permissions: [],
 };
