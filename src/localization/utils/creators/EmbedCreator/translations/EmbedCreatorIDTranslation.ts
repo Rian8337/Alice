@@ -6,6 +6,10 @@ import { EmbedCreatorStrings } from "../EmbedCreatorLocalization";
  */
 export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> {
     override readonly translations: EmbedCreatorStrings = {
+        beatmapObjects: "Jumlah Objek",
+        beatmapDroidStatistics: "Statistik osu!droid",
+        beatmapOsuStatistics: "Statistik osu!",
+        beatmapGeneralStatistics: "Statistik Umum",
         exitMenu: 'Ketik "exit" untuk keluar dari menu',
         result: "Hasil",
         droidPP: "Droid PP",

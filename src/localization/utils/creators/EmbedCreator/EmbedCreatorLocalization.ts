@@ -6,6 +6,10 @@ import { EmbedCreatorIDTranslation } from "./translations/EmbedCreatorIDTranslat
 import { EmbedCreatorKRTranslation } from "./translations/EmbedCreatorKRTranslation";
 
 export interface EmbedCreatorStrings {
+    readonly beatmapObjects: string;
+    readonly beatmapDroidStatistics: string;
+    readonly beatmapOsuStatistics: string;
+    readonly beatmapGeneralStatistics: string;
     readonly exitMenu: string;
     readonly result: string;
     readonly droidPP: string;

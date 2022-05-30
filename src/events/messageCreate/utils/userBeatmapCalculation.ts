@@ -18,7 +18,6 @@ import {
 } from "@rian8337/osu-difficulty-calculator";
 import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (Config.maintenance || message.author.bot) {
@@ -202,13 +201,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         Symbols.star
                     })`,
                     `${beatmapInfo.showStatistics(2, stats)}\n` +
-                        `**Max score**: ${beatmapInfo
-                            .map!.maxDroidScore(stats)
-                            .toLocaleString(
-                                LocaleHelper.convertToBCP47(
-                                    localization.language
-                                )
-                            )} - **Max combo**: ${beatmapInfo.maxCombo}x\n` +
+                        `${beatmapInfo.showStatistics(3, stats)}\n` +
+                        `${beatmapInfo.showStatistics(4, stats)}\n` +
                         `**${droidCalcResult.result.total.toFixed(
                             2
                         )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`

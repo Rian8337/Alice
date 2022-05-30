@@ -6,6 +6,10 @@ import { EmbedCreatorStrings } from "../EmbedCreatorLocalization";
  */
 export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> {
     override readonly translations: EmbedCreatorStrings = {
+        beatmapObjects: "Object Counts",
+        beatmapDroidStatistics: "osu!droid Statistics",
+        beatmapOsuStatistics: "osu! Statistics",
+        beatmapGeneralStatistics: "General Statistics",
         exitMenu: 'Type "exit" to exit this menu',
         result: "Result",
         droidPP: "Droid pp",

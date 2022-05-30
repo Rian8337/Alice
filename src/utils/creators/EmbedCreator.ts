@@ -190,26 +190,48 @@ export abstract class EmbedCreator {
                         beatmapInfo.showStatistics(
                             1,
                             calculationParams?.customStatistics
-                        )
+                        ) +
+                            "\n" +
+                            beatmapInfo.showStatistics(
+                                2,
+                                calculationParams?.customStatistics
+                            )
                     )
                     .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
                     .addField(
-                        beatmapInfo.showStatistics(
-                            2,
-                            calculationParams?.customStatistics
-                        ),
+                        `**${localization.getTranslation(
+                            "beatmapDroidStatistics"
+                        )}**`,
                         beatmapInfo.showStatistics(
                             3,
                             calculationParams?.customStatistics
                         )
                     )
                     .addField(
+                        `**${localization.getTranslation(
+                            "beatmapOsuStatistics"
+                        )}**`,
                         beatmapInfo.showStatistics(
                             4,
                             calculationParams?.customStatistics
-                        ),
+                        )
+                    )
+                    .addField(
+                        `**${localization.getTranslation(
+                            "beatmapGeneralStatistics"
+                        )}**`,
                         beatmapInfo.showStatistics(
                             5,
+                            calculationParams?.customStatistics
+                        )
+                    )
+                    .addField(
+                        beatmapInfo.showStatistics(
+                            6,
+                            calculationParams?.customStatistics
+                        ),
+                        beatmapInfo.showStatistics(
+                            7,
                             calculationParams?.customStatistics
                         )
                     )
@@ -378,9 +400,9 @@ export abstract class EmbedCreator {
                 )
                 .spliceFields(embed.fields.length - 2, 2)
                 .addField(
-                    map.showStatistics(4, customStatistics),
+                    map.showStatistics(6, customStatistics),
                     `${map.showStatistics(
-                        5,
+                        7,
                         customStatistics
                     )}\n**${localization.getTranslation(
                         "result"

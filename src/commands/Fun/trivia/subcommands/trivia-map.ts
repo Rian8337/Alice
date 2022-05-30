@@ -513,8 +513,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         `${beatmapInfo.showStatistics(
                             1
                         )}\n${beatmapInfo.showStatistics(
-                            4
-                        )}\n${beatmapInfo.showStatistics(5)}`
+                            6
+                        )}\n${beatmapInfo.showStatistics(7)}`
                     )
                     .setColor(beatmapInfo.statusColor);
 

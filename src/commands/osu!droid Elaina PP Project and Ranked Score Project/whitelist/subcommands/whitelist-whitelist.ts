@@ -99,7 +99,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     embed
         .spliceFields(0, embed.fields.length)
         .addField(
-            beatmaps[0].showStatistics(4),
+            beatmaps[0].showStatistics(6),
             `${localization.getTranslation("starRating")}:\n${beatmaps
                 .map(
                     (v) =>

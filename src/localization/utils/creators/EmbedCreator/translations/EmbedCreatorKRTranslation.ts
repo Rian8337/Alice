@@ -6,6 +6,10 @@ import { EmbedCreatorStrings } from "../EmbedCreatorLocalization";
  */
 export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> {
     override readonly translations: EmbedCreatorStrings = {
+        beatmapObjects: "",
+        beatmapDroidStatistics: "",
+        beatmapOsuStatistics: "",
+        beatmapGeneralStatistics: "",
         exitMenu: '이 메뉴를 종료하려면 "exit"을 입력하세요',
         result: "결과",
         droidPP: "Droid pp",
