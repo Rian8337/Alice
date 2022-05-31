@@ -29,6 +29,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
+    await InteractionHelper.defer(interaction);
+
     const bindDbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
     const rankedScoreDbManager: RankedScoreCollectionManager =
@@ -59,8 +61,6 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             ),
         });
     }
-
-    await InteractionHelper.defer(interaction);
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID,
