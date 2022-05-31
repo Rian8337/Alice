@@ -7,7 +7,6 @@ import { ClanStrings } from "../ClanLocalization";
 export class ClanKRTranslation extends Translation<ClanStrings> {
     override readonly translations: ClanStrings = {
         notInMainGuild: "죄송해요, 이 명령어는 이 서버에서 사용할 수 없어요.",
-        announcementMessageTooLong: "죄송한데, 안내 메시지가 너무 길어요!",
         selfIsNotInClan: "죄송해요, 클랜에 속해있지 않으시네요!",
         selfIsAlreadyInClan: "죄송해요, 이미 클랜에 속해 있으시네요!",
         userIsNotInClan: "죄송해요, 이 유저는 클랜에 속해 있지 않아요!",
@@ -88,8 +87,6 @@ export class ClanKRTranslation extends Translation<ClanStrings> {
             "저기, 입찰에 지불할 유효한 앨리스 코인을 입력해 주세요!",
         buyShopItemConfirmation:
             "%s을 %s개의 앨리스 코인으로 구매하시려는게 확실한가요?",
-        announcementMessageConfirmation:
-            "클랜에 안내 메시지를 보내려는게 확실한가요?",
         createClanConfirmation:
             "%s라는 이름의 클랜을 %s 앨리스 코인으로 만드려는게 확실한가요?",
         leaveClanConfirmation: "현재 클랜을 떠나려는게 확실한가요?",
@@ -221,5 +218,8 @@ export class ClanKRTranslation extends Translation<ClanStrings> {
         clanMemberRoleCoLeader: "공동리더",
         clanMemberRoleMember: "멤버",
         clanMemberUpkeepValue: "유지비",
+        announceModalTitle: "",
+        announceModalMessageLabel: "",
+        announceModalMessagePlaceholder: "",
     };
 }

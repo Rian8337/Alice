@@ -7,7 +7,6 @@ import { ClanStrings } from "../ClanLocalization";
 export class ClanIDTranslation extends Translation<ClanStrings> {
     override readonly translations: ClanStrings = {
         notInMainGuild: "",
-        announcementMessageTooLong: "",
         selfIsNotInClan: "",
         selfIsAlreadyInClan: "",
         userIsNotInClan: "",
@@ -56,7 +55,6 @@ export class ClanIDTranslation extends Translation<ClanStrings> {
         invalidClanAuctionDuration: "",
         invalidClanAuctionBidAmount: "",
         buyShopItemConfirmation: "",
-        announcementMessageConfirmation: "",
         createClanConfirmation: "",
         leaveClanConfirmation: "",
         disbandClanConfirmation: "",
@@ -167,5 +165,8 @@ export class ClanIDTranslation extends Translation<ClanStrings> {
         clanMemberRoleCoLeader: "",
         clanMemberRoleMember: "",
         clanMemberUpkeepValue: "",
+        announceModalTitle: "",
+        announceModalMessageLabel: "",
+        announceModalMessagePlaceholder: "",
     };
 }

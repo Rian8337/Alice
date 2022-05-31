@@ -50,15 +50,6 @@ export const config: SlashCommand["config"] = {
             name: "announce",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Announces a message for your clan members.",
-            options: [
-                {
-                    name: "message",
-                    required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
-                    description:
-                        "The message to announce. Must be less than 1750 characters.",
-                },
-            ],
         },
         {
             name: "auction",

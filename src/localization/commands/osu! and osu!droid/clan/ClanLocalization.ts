@@ -7,7 +7,6 @@ import { ClanKRTranslation } from "./translations/ClanKRTranslation";
 
 export interface ClanStrings {
     readonly notInMainGuild: string;
-    readonly announcementMessageTooLong: string;
     readonly selfIsNotInClan: string;
     readonly selfIsAlreadyInClan: string;
     readonly userIsNotInClan: string;
@@ -56,7 +55,6 @@ export interface ClanStrings {
     readonly invalidClanAuctionDuration: string;
     readonly invalidClanAuctionBidAmount: string;
     readonly buyShopItemConfirmation: string;
-    readonly announcementMessageConfirmation: string;
     readonly createClanConfirmation: string;
     readonly leaveClanConfirmation: string;
     readonly disbandClanConfirmation: string;
@@ -167,6 +165,9 @@ export interface ClanStrings {
     readonly clanMemberRoleCoLeader: string;
     readonly clanMemberRoleMember: string;
     readonly clanMemberUpkeepValue: string;
+    readonly announceModalTitle: string;
+    readonly announceModalMessageLabel: string;
+    readonly announceModalMessagePlaceholder: string;
 }
 
 /**

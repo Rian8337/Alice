@@ -15,6 +15,7 @@ import {
     MessageButton,
     MessageComponentInteraction,
     MessageEmbed,
+    ModalSubmitInteraction,
     Snowflake,
 } from "discord.js";
 import { MessageButtonStyles } from "discord.js/typings/enums";
@@ -107,7 +108,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @returns A boolean determining whether the user confirmed.
      */
     static async createConfirmation(
-        interaction: CommandInteraction | MessageComponentInteraction,
+        interaction:
+            | CommandInteraction
+            | MessageComponentInteraction
+            | ModalSubmitInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
         duration: number,

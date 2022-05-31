@@ -8,7 +8,6 @@ export class ClanESTranslation extends Translation<ClanStrings> {
     override readonly translations: ClanStrings = {
         notInMainGuild:
             "Lo siento, este comando no puede ser utilizado en este servidor.",
-        announcementMessageTooLong: "Lo siento, tu anuncio es demasiado largo!",
         selfIsNotInClan: "Lo siento, no estas en un clan!",
         selfIsAlreadyInClan: "Lo siento, ya estas en un clan!",
         userIsNotInClan: "Lo siento, el usuario no esta en un clan!",
@@ -93,8 +92,6 @@ export class ClanESTranslation extends Translation<ClanStrings> {
             "Hey, por favor ingresar un monto válido de monedas Alice a pujar!",
         buyShopItemConfirmation:
             "Estas seguro de querer comprar un(a) %s por %s monedas Alice?",
-        announcementMessageConfirmation:
-            "Estas seguro que quieres enviar un anuncio a tu clan?",
         createClanConfirmation:
             "Estas seguro que quieres crear un clan llamado %s con %s monedas Alice?",
         leaveClanConfirmation: "Estas seguro que quieres dejar tu clan actual?",
@@ -249,5 +246,8 @@ export class ClanESTranslation extends Translation<ClanStrings> {
         clanMemberRoleCoLeader: "Co-Lider",
         clanMemberRoleMember: "Miembro",
         clanMemberUpkeepValue: "Monto de mantenimiento",
+        announceModalTitle: "",
+        announceModalMessageLabel: "",
+        announceModalMessagePlaceholder: "",
     };
 }
