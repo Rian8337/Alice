@@ -52,10 +52,6 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         await thread.setArchived(false);
     }
 
-    if (!thread.joined) {
-        await thread.join();
-    }
-
     match.channelId = thread.id;
 
     const result: OperationResult = await match.updateMatch();
