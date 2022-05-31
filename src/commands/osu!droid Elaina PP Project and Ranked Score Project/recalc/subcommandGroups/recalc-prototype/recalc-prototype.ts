@@ -23,7 +23,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSlashSubcommandFromInteraction(interaction);
 };
 
 export const config: SlashSubcommand["config"] = {

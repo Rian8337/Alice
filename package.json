@@ -71,6 +71,7 @@
     "@alice-database": "dist/database",
     "@alice-enums": "dist/enums",
     "@alice-events": "dist/events",
+    "@alice-modals": "dist/modals",
     "@alice-interfaces": "dist/interfaces",
     "@alice-localization": "dist/localization",
     "@alice-types": "dist/types",

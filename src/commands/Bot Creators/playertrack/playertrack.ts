@@ -27,7 +27,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    CommandHelper.runSubcommandFromInteraction(
+    CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
         localization.language
     );

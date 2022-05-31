@@ -7,7 +7,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    CommandHelper.runSubcommandNotFromInteraction(
+    CommandHelper.runSlashSubcommandNotFromInteraction(
         interaction,
         __dirname,
         [

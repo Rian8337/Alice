@@ -4,7 +4,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(
+    CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
         await CommandHelper.getLocale(interaction)
     );

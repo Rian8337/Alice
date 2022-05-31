@@ -4,7 +4,7 @@ import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSlashSubcommandFromInteraction(interaction);
 };
 
 export const category: SlashCommand["category"] = CommandCategory.OSU;

@@ -21,7 +21,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    CommandHelper.runSubcommandOrGroup(interaction, language);
+    CommandHelper.runSlashSubcommandOrGroup(interaction, language);
 };
 
 export const category: SlashCommand["category"] = CommandCategory.FUN;

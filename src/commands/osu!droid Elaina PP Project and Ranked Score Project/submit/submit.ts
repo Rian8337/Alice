@@ -21,7 +21,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         }).then(() => setTimeout(() => interaction.deleteReply(), 5 * 1000));
     }
 
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSlashSubcommandFromInteraction(interaction);
 };
 
 export const category: SlashCommand["category"] = CommandCategory.PP_AND_RANKED;

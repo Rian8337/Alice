@@ -1,4 +1,5 @@
-import * as fs from "fs/promises";
+import { lstat, readdir } from "fs/promises";
+import { join } from "path";
 import { url } from "inspector";
 import {
     ApplicationCommandData,
@@ -23,6 +24,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Manager } from "@alice-utils/base/Manager";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
+import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
 
 /**
  * The starting point of the bot.
@@ -36,28 +38,33 @@ export class Bot extends Client {
     readonly logger: Consola = consola;
 
     /**
-     * The commands that this bot has, mapped by the name of the command.
+     * The slash commands that this bot has, mapped by the name of the command.
      */
-    readonly commands: Collection<string, SlashCommand> = new Collection();
+    readonly slashCommands: Collection<string, SlashCommand> = new Collection();
 
     /**
-     * The subcommand groups that this bot has, mapped by the name of the command,
+     * The slash subcommand groups that this bot has, mapped by the name of the command,
      * and each subcommand group mapped by its name.
      */
-    readonly subcommandGroups: Collection<
+    readonly slashSubcommandGroups: Collection<
         string,
         Collection<string, SlashSubcommand>
     > = new Collection();
 
     /**
-     * The subcommands that this bot has, either mapped by the
+     * The slash subcommands that this bot has, either mapped by the
      * name of the command or the name of the subcommand group,
      * and each subcommand mapped by its name.
      */
-    readonly subcommands: Collection<
+    readonly slashSubcommands: Collection<
         string,
         Collection<string, SlashSubcommand>
     > = new Collection();
+
+    /**
+     * The modal submit commands that this bot has, mapped by the name of the command.
+     */
+    readonly modalCommands: Collection<string, ModalCommand> = new Collection();
 
     /**
      * The event utilities that this bot has, mapped by the event's name, and each utility mapped by its name.
@@ -108,9 +115,10 @@ export class Bot extends Client {
 
         Config.isDebug = !!url();
 
-        await this.connectToDatabase();
-        await this.loadCommands();
+        await this.loadSlashCommands();
+        await this.loadModalCommands();
         await this.loadEvents();
+        await this.connectToDatabase();
 
         await super.login(
             Config.isDebug ? process.env.DEBUG_BOT_TOKEN : process.env.BOT_TOKEN
@@ -149,60 +157,60 @@ export class Bot extends Client {
     }
 
     /**
-     * Loads commands from `commands` directory.
+     * Loads slash commands from `commands` directory.
      */
-    private async loadCommands(): Promise<void> {
-        this.logger.info("Loading commands");
+    private async loadSlashCommands(): Promise<void> {
+        this.logger.info("Loading slash commands");
 
-        const commandPath: string = `${__dirname}/../commands`;
+        const commandPath: string = join(__dirname, "..", "commands");
 
-        const folders: string[] = await fs.readdir(commandPath);
+        const folders: string[] = await readdir(commandPath);
 
         let i = 0;
 
         for (const folder of folders) {
             this.logger.info("%d. Loading folder %s", ++i, folder);
 
-            const commands: string[] = await fs.readdir(
-                `${commandPath}/${folder}`
-            );
+            const commands: string[] = await readdir(join(commandPath, folder));
 
             let j = 0;
 
             for (const command of commands) {
                 this.logger.success("%d.%d. %s loaded", i, ++j, command);
 
-                const filePath: string = `${commandPath}/${folder}/${command}`;
+                const filePath: string = join(commandPath, folder, command);
 
                 const file: SlashCommand = await import(
                     `${filePath}/${command}`
                 );
 
-                this.commands.set(command, file);
+                this.slashCommands.set(command, file);
 
-                await this.loadSubcommandGroups(command, filePath);
+                await this.loadSlashSubcommandGroups(command, filePath);
 
-                await this.loadSubcommands(command, filePath);
+                await this.loadSlashSubcommands(command, filePath);
             }
         }
     }
 
     /**
-     * Loads subcommand groups from the specified directory and caches them.
+     * Loads slash subcommand groups from the specified directory and caches them.
      *
      * @param commandName The name of the command.
      * @param commandDirectory The directory of the command.
      */
-    private async loadSubcommandGroups(
+    private async loadSlashSubcommandGroups(
         commandName: string,
         commandDirectory: string
     ): Promise<void> {
-        const subcommandGroupPath: string = `${commandDirectory}/subcommandGroups`;
-
+        const subcommandGroupPath: string = join(
+            commandDirectory,
+            "subcommandGroups"
+        );
         let subcommandGroups: string[];
 
         try {
-            subcommandGroups = await fs.readdir(subcommandGroupPath);
+            subcommandGroups = await readdir(subcommandGroupPath);
         } catch {
             return;
         }
@@ -214,33 +222,33 @@ export class Bot extends Client {
             const filePath: string = `${subcommandGroupPath}/${subcommandGroup}`;
 
             const file: SlashSubcommand = await import(
-                `${filePath}/${subcommandGroup}`
+                join(filePath, subcommandGroup)
             );
 
             collection.set(subcommandGroup, file);
 
-            await this.loadSubcommands(subcommandGroup, filePath);
+            await this.loadSlashSubcommands(subcommandGroup, filePath);
         }
 
-        this.subcommandGroups.set(commandName, collection);
+        this.slashSubcommandGroups.set(commandName, collection);
     }
 
     /**
-     * Loads subcommands from the specified directory and caches them.
+     * Loads slash subcommands from the specified directory and caches them.
      *
      * @param commandName The name of the command.
      * @param commandDirectory The directory of the command.
      */
-    private async loadSubcommands(
+    private async loadSlashSubcommands(
         commandName: string,
         commandDirectory: string
     ): Promise<void> {
-        const subcommandPath: string = `${commandDirectory}/subcommands`;
+        const subcommandPath: string = join(commandDirectory, "subcommands");
 
         let subcommands: string[];
 
         try {
-            subcommands = await fs.readdir(subcommandPath);
+            subcommands = await readdir(subcommandPath);
         } catch {
             return;
         }
@@ -249,9 +257,9 @@ export class Bot extends Client {
             new Collection();
 
         for (const subcommand of subcommands.filter((v) => v.endsWith(".js"))) {
-            const filePath: string = `${subcommandPath}/${subcommand}`;
+            const filePath: string = join(subcommandPath, subcommand);
 
-            const fileStat = await fs.lstat(filePath);
+            const fileStat = await lstat(filePath);
 
             if (fileStat.isDirectory()) {
                 continue;
@@ -265,7 +273,46 @@ export class Bot extends Client {
             );
         }
 
-        this.subcommands.set(commandName, collection);
+        this.slashSubcommands.set(commandName, collection);
+    }
+
+    /**
+     * Loads modal submit commands from `modals` directory.
+     */
+    private async loadModalCommands(): Promise<void> {
+        this.logger.info("Loading modal submit commands");
+
+        const commandPath: string = join(__dirname, "..", "modals");
+
+        const folders: string[] = await readdir(commandPath);
+
+        let i = 0;
+
+        for (const folder of folders) {
+            this.logger.info("%d. Loading folder %s", ++i, folder);
+
+            const commands: string[] = await readdir(join(commandPath, folder));
+
+            let j = 0;
+
+            for (const command of commands.filter((v) => v.endsWith(".js"))) {
+                this.logger.success(
+                    "%d.%d. %s loaded",
+                    i,
+                    ++j,
+                    command.substring(0, command.length - 3)
+                );
+
+                const file: ModalCommand = await import(
+                    join(commandPath, folder, command)
+                );
+
+                this.modalCommands.set(
+                    command.substring(0, command.length - 3),
+                    file
+                );
+            }
+        }
     }
 
     /**
@@ -274,19 +321,19 @@ export class Bot extends Client {
     private async loadEvents(): Promise<void> {
         this.logger.info("Loading events and event utilities");
 
-        const eventsPath: string = `${__dirname}/../events`;
+        const eventsPath: string = join(__dirname, "..", "events");
 
-        const events: string[] = await fs.readdir(eventsPath);
+        const events: string[] = await readdir(eventsPath);
 
         let i = 0;
 
         for (const event of events) {
-            const file: Event = await import(`${eventsPath}/${event}/${event}`);
+            const file: Event = await import(join(eventsPath, event, event));
 
             super.on(event, file.run.bind(null, this));
 
-            const eventUtils: string[] = await fs.readdir(
-                `${eventsPath}/${event}/utils`
+            const eventUtils: string[] = await readdir(
+                join(eventsPath, event, "utils")
             );
 
             this.eventUtilities.set(event, new Collection());
@@ -307,7 +354,7 @@ export class Bot extends Client {
                 );
 
                 const eventUtility: EventUtil = await import(
-                    `${eventsPath}/${event}/utils/${eventUtil}`
+                    join(eventsPath, event, "utils", eventUtil)
                 );
 
                 this.eventUtilities.get(event)!.set(eventUtil, eventUtility);
@@ -353,7 +400,7 @@ export class Bot extends Client {
         const registerCommand = async (name: string): Promise<void> => {
             this.logger.info(`Registering ${name} command`);
 
-            const command: SlashCommand = <SlashCommand>this.commands.get(name);
+            const command: SlashCommand = this.slashCommands.get(name)!;
 
             const data: ApplicationCommandData = {
                 name: command.config.name,

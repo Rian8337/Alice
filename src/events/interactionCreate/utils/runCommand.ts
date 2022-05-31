@@ -50,7 +50,7 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    const command: SlashCommand | undefined = client.commands.get(
+    const command: SlashCommand | undefined = client.slashCommands.get(
         interaction.commandName
     );
 
@@ -110,9 +110,9 @@ export const run: EventUtil["run"] = async (
     }
 
     const subcommand: SlashSubcommand | undefined =
-        CommandHelper.getSubcommand(interaction);
+        CommandHelper.getSlashSubcommand(interaction);
     const subcommandGroup: SlashSubcommand | undefined =
-        CommandHelper.getSubcommandGroup(interaction);
+        CommandHelper.getSlashSubcommandGroup(interaction);
 
     // Command cooldown
     if (!botOwnerExecution) {
@@ -176,7 +176,7 @@ export const run: EventUtil["run"] = async (
     }
 
     // Log used command along with its subcommand group, subcommand, and options
-    let logMessage: string = `${interaction.user.tag} (${
+    let logMessage: string = `Slash: ${interaction.user.tag} (${
         interaction.channel instanceof DMChannel
             ? "DM"
             : `#${
@@ -240,8 +240,8 @@ export const run: EventUtil["run"] = async (
     if (Config.isDebug) {
         // Attempt to instantly defer in debug mode (slower internet).
         const instantDefer: boolean =
-            command.config.instantDeferInDebug !== false ||
-            subcommandGroup?.config.instantDeferInDebug !== false ||
+            command.config.instantDeferInDebug !== false &&
+            subcommandGroup?.config.instantDeferInDebug !== false &&
             subcommand?.config.instantDeferInDebug !== false;
 
         if (instantDefer) {

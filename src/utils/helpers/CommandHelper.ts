@@ -44,7 +44,7 @@ import { InteractionHelper } from "./InteractionHelper";
  */
 export abstract class CommandHelper extends Manager {
     /**
-     * Runs a subcommand that isn't directly picked by the user via an interaction.
+     * Runs a slash subcommand that isn't directly picked by the user via an interaction.
      *
      * The user will be prompted to choose which subcommand to run using a select menu.
      *
@@ -53,7 +53,7 @@ export abstract class CommandHelper extends Manager {
      * @param subcommandChoices The subcommands of the command. The user will be prompted to choose one of these subcommands in order.
      * @param placeholder The placeholder text for the subcommand's select menu.
      */
-    static async runSubcommandNotFromInteraction(
+    static async runSlashSubcommandNotFromInteraction(
         interaction: CommandInteraction,
         mainCommandDirectory: string,
         subcommandChoices: MessageSelectOptionData[],
@@ -75,7 +75,7 @@ export abstract class CommandHelper extends Manager {
             return;
         }
 
-        return this.runSubOrGroup(
+        return this.runSlashSubOrGroup(
             interaction,
             await import(
                 `${mainCommandDirectory}/subcommands/${pickedSubcommand}`
@@ -235,7 +235,7 @@ export abstract class CommandHelper extends Manager {
     }
 
     /**
-     * Runs a subcommand or subcommand group that is directly picked
+     * Runs a slash subcommand or subcommand group that is directly picked
      * by the user via an interaction.
      *
      * Use this if a command has both subcommands and subcommand groups.
@@ -243,59 +243,62 @@ export abstract class CommandHelper extends Manager {
      * @param interaction The interaction that triggered the subcommand or subcommand group.
      * @param language The locale of the user who attempted to run the subcommand or subcommand group. Defaults to English.
      */
-    static runSubcommandOrGroup(
+    static runSlashSubcommandOrGroup(
         interaction: CommandInteraction,
         language: Language = "en"
     ): Promise<unknown> {
         if (interaction.options.getSubcommandGroup(false)) {
-            return this.runSubcommandGroup(interaction, language);
+            return this.runSlashSubcommandGroup(interaction, language);
         } else {
-            return this.runSubcommandFromInteraction(interaction, language);
+            return this.runSlashSubcommandFromInteraction(
+                interaction,
+                language
+            );
         }
     }
 
     /**
-     * Runs a subcommand that is directly picked by the user via an interaction.
+     * Runs a slash subcommand that is directly picked by the user via an interaction.
      *
      * @param interaction The interaction that triggered the subcommand.
      * @param language The locale of the user who attempted to run the subcommand. Defaults to English.
      */
-    static runSubcommandFromInteraction(
+    static runSlashSubcommandFromInteraction(
         interaction: CommandInteraction,
         language: Language = "en"
     ): Promise<unknown> {
-        return this.runSubOrGroup(
+        return this.runSlashSubOrGroup(
             interaction,
-            this.getSubcommand(interaction),
+            this.getSlashSubcommand(interaction),
             language
         );
     }
 
     /**
-     * Runs a subcommand group picked by the user via an interaction.
+     * Runs a slash subcommand group picked by the user via an interaction.
      *
      * This should only be used inside a command.
      *
      * @param interaction The interaction that triggered the command.
      */
-    static runSubcommandGroup(
+    static runSlashSubcommandGroup(
         interaction: CommandInteraction,
         language: Language = "en"
     ): Promise<unknown> {
-        return this.runSubOrGroup(
+        return this.runSlashSubOrGroup(
             interaction,
-            this.getSubcommandGroup(interaction),
+            this.getSlashSubcommandGroup(interaction),
             language
         );
     }
 
     /**
-     * Runs a subcommand group or subcommand.
+     * Runs a slash subcommand group or subcommand.
      *
      * @param interaction The interaction that triggered the subcommand group or subcommand.
      * @param subcommand The subcommand to run.
      */
-    private static runSubOrGroup(
+    private static runSlashSubOrGroup(
         interaction: CommandInteraction,
         subcommand?: SlashSubcommand,
         language: Language = "en"
@@ -334,16 +337,16 @@ export abstract class CommandHelper extends Manager {
     }
 
     /**
-     * Gets the subcommand that is run by the user via an interaction.
+     * Gets the slash subcommand that is run by the user via an interaction.
      *
      * @param interaction The interaction that triggered the subcommand.
      * @returns The subcommand, if found.
      */
-    static getSubcommand(
+    static getSlashSubcommand(
         interaction: CommandInteraction
     ): SlashSubcommand | undefined {
         if (!interaction.options.getSubcommand(false)) {
-            return undefined;
+            return;
         }
 
         const subcommandGroupName: string = [
@@ -359,26 +362,26 @@ export abstract class CommandHelper extends Manager {
         ].join("-");
 
         return (
-            this.client.subcommands
+            this.client.slashSubcommands
                 .get(subcommandGroupName)
                 ?.get(subcommandFileName) ||
-            this.client.subcommands
+            this.client.slashSubcommands
                 .get(interaction.commandName)
                 ?.get(subcommandFileName)
         );
     }
 
     /**
-     * Gets the subcommand group that is run by the user via an interaction.
+     * Gets the slash subcommand group that is run by the user via an interaction.
      *
      * @param interaction The interaction that triggered the subcommand group.
      * @returns The subcommand group, if found.
      */
-    static getSubcommandGroup(
+    static getSlashSubcommandGroup(
         interaction: CommandInteraction
     ): SlashSubcommand | undefined {
         if (!interaction.options.getSubcommandGroup(false)) {
-            return undefined;
+            return;
         }
 
         const subcommandGroupName: string = [
@@ -386,7 +389,7 @@ export abstract class CommandHelper extends Manager {
             interaction.options.getSubcommandGroup(),
         ].join("-");
 
-        return this.client.subcommandGroups
+        return this.client.slashSubcommandGroups
             .get(interaction.commandName)
             ?.get(subcommandGroupName);
     }
@@ -572,7 +575,7 @@ export abstract class CommandHelper extends Manager {
      * @param interaction The interaction.
      * @returns Whether the command is executed by a bot owner.
      */
-    static isExecutedByBotOwner(interaction: CommandInteraction): boolean {
+    static isExecutedByBotOwner(interaction: Interaction): boolean {
         return Config.botOwners.includes(interaction.user.id);
     }
 

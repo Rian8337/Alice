@@ -95,7 +95,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
                 ),
             });
 
-            client.subcommands
+            client.slashSubcommands
                 .get("match")!
                 .get("match-submit")!
                 .run(client, interaction);

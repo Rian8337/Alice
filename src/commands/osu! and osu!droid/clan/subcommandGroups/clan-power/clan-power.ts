@@ -26,7 +26,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         });
     }
 
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSlashSubcommandFromInteraction(interaction);
 };
 
 export const config: SlashSubcommand["config"] = {

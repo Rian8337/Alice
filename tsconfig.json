@@ -50,6 +50,7 @@
       "@alice-database/*": ["database/*"],
       "@alice-enums/*": ["enums/*"],
       "@alice-events/*": ["events/*"],
+      "@alice-modals/*": ["modals/*"],
       "@alice-interfaces/*": ["interfaces/*"],
       "@alice-localization/*": ["localization/*"],
       "@alice-types/*": ["types/*"],

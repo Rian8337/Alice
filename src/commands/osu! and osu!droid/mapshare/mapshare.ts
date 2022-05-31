@@ -4,7 +4,7 @@ import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSlashSubcommandFromInteraction(interaction);
 };
 
 export const category: SlashCommand["category"] = CommandCategory.OSU;
@@ -110,21 +110,6 @@ export const config: SlashCommand["config"] = {
             name: "submit",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Submits a new map sharing submission.",
-            options: [
-                {
-                    name: "beatmap",
-                    required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
-                    description: "The beatmap ID or link to share.",
-                },
-                {
-                    name: "summary",
-                    required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
-                    description:
-                        "The summary of the beatmap to share. Must be between 50-120 words and 100-900 characters.",
-                },
-            ],
         },
         {
             name: "unban",
