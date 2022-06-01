@@ -486,7 +486,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                 }
             });
 
-            collector.on("end", async () => {
+            collector.once("end", async () => {
                 const embed: MessageEmbed = createEmbed(
                     level,
                     beatmapInfo,

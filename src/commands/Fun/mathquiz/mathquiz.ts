@@ -64,7 +64,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     let correct: boolean = false;
 
-    collector.on("collect", () => {
+    collector.once("collect", () => {
         msg.delete();
 
         correct = true;
@@ -82,7 +82,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         collector.stop();
     });
 
-    collector.on("end", () => {
+    collector.once("end", () => {
         if (!correct) {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(

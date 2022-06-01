@@ -6,6 +6,11 @@ import { TriviaHelperIDTranslation } from "./translations/TriviaHelperIDTranslat
 import { TriviaHelperKRTranslation } from "./translations/TriviaHelperKRTranslation";
 
 export interface TriviaHelperStrings {
+    readonly triviaQuestion: string;
+    readonly fillInTheBlankAnswerPrompt: string;
+    readonly fillInTheBlankModalTitle: string;
+    readonly fillInTheBlankModalLabel: string;
+    readonly fillInTheBlankModalPlaceholder: string;
     readonly latestChoiceRecorded: string;
 }
 

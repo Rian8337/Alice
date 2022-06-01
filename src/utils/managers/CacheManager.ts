@@ -6,6 +6,7 @@ import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollectio
 import { Collection, Snowflake } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
+import { TriviaCachedAnswer } from "@alice-interfaces/trivia/TriviaCachedAnswer";
 
 /**
  * A manager that holds anything that is cached.
@@ -48,6 +49,15 @@ export abstract class CacheManager {
      * The channels that still have a map trivia active.
      */
     static readonly stillHasMapTriviaActive: Set<Snowflake> = new Set();
+
+    /**
+     * Answers for a trivia question in a channel, mapped by channel ID,
+     * and each answer mapped by the answerer's ID.
+     */
+    static readonly mapTriviaFillInTheBlankAnswers: Collection<
+        Snowflake,
+        Collection<Snowflake, TriviaCachedAnswer>
+    > = new Collection();
 
     /**
      * The users that still has a verification menu open.

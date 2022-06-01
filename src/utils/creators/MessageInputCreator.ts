@@ -47,7 +47,7 @@ export abstract class MessageInputCreator {
                 time: duration * 1000,
             });
 
-        collector.on("collect", async (m: Message) => {
+        collector.once("collect", async (m: Message) => {
             if (deleteOnInput && m.deletable) {
                 await m.delete();
             }
@@ -56,7 +56,7 @@ export abstract class MessageInputCreator {
         });
 
         return new Promise((resolve) => {
-            collector.on("end", async (collected) => {
+            collector.once("end", async (collected) => {
                 if (collected.size === 0) {
                     await InteractionHelper.reply(interaction, {
                         content: MessageCreator.createReject("Timed out."),

@@ -1,13 +1,11 @@
 import {
     BaseCommandInteraction,
-    InteractionCollector,
     InteractionReplyOptions,
     Message,
     MessageActionRow,
     MessageComponentInteraction,
     MessageSelectMenu,
     MessageSelectOptionData,
-    SelectMenuInteraction,
     Snowflake,
 } from "discord.js";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
@@ -44,7 +42,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
             this.getLocalization(await CommandHelper.getLocale(interaction));
 
         const selectMenu: MessageSelectMenu = new MessageSelectMenu()
-            .setCustomId("whatever")
+            .setCustomId(interaction.user.id + "selectMenu")
             .addOptions(choices.slice(0, 25));
 
         const component: MessageActionRow =
@@ -76,22 +74,49 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 onPageChange
             );
 
-        const collector: InteractionCollector<SelectMenuInteraction> =
-            this.createSelectMenuCollector(message, users, duration);
+        const collectorOptions = this.createSelectMenuCollector(
+            message,
+            duration,
+            (i) =>
+                selectMenu.customId === i.customId && users.includes(i.user.id),
+            (m) => {
+                const row: MessageActionRow | undefined = m.components.find(
+                    (c) => c.components.length === 1
+                );
 
-        collector.on("collect", () => {
+                if (!row) {
+                    return false;
+                }
+
+                return (
+                    row.components[0] instanceof MessageSelectMenu &&
+                    row.components[0].customId === selectMenu.customId
+                );
+            }
+        );
+
+        const { collector } = collectorOptions;
+
+        collector.once("collect", async (i) => {
+            await i.deferUpdate();
+
             collector.stop();
         });
 
         return new Promise((resolve) => {
-            collector.on("end", async (collected) => {
+            collector.once("end", async (collected) => {
                 if (collected.size > 0) {
-                    await InteractionHelper.reply(interaction, {
-                        content: MessageCreator.createAccept(
-                            localization.getTranslation("pleaseWait")
-                        ),
-                        components: [],
+                    const index: number = options.components!.findIndex((v) => {
+                        return (
+                            v.components.length === 1 &&
+                            v.components[0] instanceof MessageSelectMenu &&
+                            v.components[0].customId === selectMenu.customId
+                        );
                     });
+
+                    if (index !== -1) {
+                        options.components!.splice(index, 1);
+                    }
                 } else {
                     await InteractionHelper.reply(interaction, {
                         content: MessageCreator.createReject(

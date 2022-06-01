@@ -31,7 +31,7 @@ export abstract class InteractionHelper {
      *
      * @param interaction The interaction to reply to.
      * @param reply The reply to send.
-     * @returns The response of the command.
+     * @returns The response of the interaction.
      */
     static async reply(
         interaction: Interaction & InteractionResponseFields,

@@ -7,15 +7,14 @@ import {
     Collection,
     CommandInteraction,
     GuildMember,
-    InteractionCollector,
     Message,
     MessageActionRow,
     MessageButton,
-    MessageCollector,
     MessageEmbed,
     MessageOptions,
     MessageSelectOptionData,
     Snowflake,
+    TextInputComponent,
 } from "discord.js";
 import { ArrayHelper } from "./ArrayHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -24,6 +23,11 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Language } from "@alice-localization/base/Language";
 import { TriviaHelperLocalization } from "@alice-localization/utils/helpers/TriviaHelper/TriviaHelperLocalization";
 import { InteractionHelper } from "./InteractionHelper";
+import { ModalCreator } from "@alice-utils/creators/ModalCreator";
+import { TextInputStyles } from "discord.js/typings/enums";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { TriviaCachedAnswer } from "@alice-interfaces/trivia/TriviaCachedAnswer";
+import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 
 /**
  * Helper methods for trivia-related features.
@@ -139,17 +143,16 @@ export abstract class TriviaHelper {
         ArrayHelper.shuffle(allAnswers);
 
         const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
-            author: interaction.user,
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
 
         embed
-            .setTitle("Trivia Question")
-            .setDescription(
-                `${difficulty} ${Symbols.star} - ${this.getCategoryName(
+            .setTitle(
+                `${difficulty} ${Symbols.star} | ${this.getCategoryName(
                     category
-                )} Question\n\n${question}`
-            );
+                )} Question`
+            )
+            .setDescription(question);
 
         if (isMultipleChoice) {
             // Convert to letter choices (A, B, etc.) first.
@@ -170,14 +173,17 @@ export abstract class TriviaHelper {
             embed.setImage(imageLink);
         }
 
+        const component: MessageActionRow = new MessageActionRow();
+
         const options: MessageOptions = {
-            components: [],
+            content: MessageCreator.createWarn(
+                localization.getTranslation("triviaQuestion")
+            ),
+            components: [component],
             embeds: [embed],
         };
 
         if (isMultipleChoice) {
-            const component: MessageActionRow = new MessageActionRow();
-
             for (let i = 0; i < allAnswers.length; ++i) {
                 const button: MessageButton = new MessageButton()
                     .setCustomId(String.fromCharCode(65 + i))
@@ -186,8 +192,18 @@ export abstract class TriviaHelper {
 
                 component.addComponents(button);
             }
-
-            options.components!.push(component);
+        } else {
+            component.addComponents(
+                new MessageButton()
+                    .setCustomId("answer")
+                    .setStyle("PRIMARY")
+                    .setLabel(
+                        localization.getTranslation(
+                            "fillInTheBlankAnswerPrompt"
+                        )
+                    )
+                    .setEmoji(Symbols.memo)
+            );
         }
 
         const questionMessage: Message = await InteractionHelper.reply(
@@ -195,17 +211,21 @@ export abstract class TriviaHelper {
             options
         );
 
-        const time: number =
-            (isMultipleChoice ? 5 + difficulty * 2 : 7 + difficulty * 3) * 1000;
+        const time: number = isMultipleChoice
+            ? 5 + difficulty * 2
+            : 7 + difficulty * 3;
+
         return new Promise((resolve) => {
             if (isMultipleChoice) {
-                const collector: InteractionCollector<ButtonInteraction> =
-                    questionMessage.createMessageComponentCollector({
-                        filter: (i) => i.isButton(),
-                        componentType: "BUTTON",
-                        dispose: true,
-                        time: time,
-                    });
+                const { collector } =
+                    InteractionCollectorCreator.createButtonCollector(
+                        questionMessage,
+                        time,
+                        (i) =>
+                            component.components.some(
+                                (c) => c.customId === i.customId
+                            )
+                    );
 
                 // Use a separate collection to prevent multiple answers from users
                 const answers: Collection<Snowflake, ButtonInteraction> =
@@ -223,7 +243,7 @@ export abstract class TriviaHelper {
                     });
                 });
 
-                collector.on("end", async () => {
+                collector.once("end", async () => {
                     options.components = [];
 
                     try {
@@ -252,33 +272,77 @@ export abstract class TriviaHelper {
                     });
                 });
             } else {
-                const lowercasedCorrectAnswers: string[] = correctAnswers.map(
-                    (v) => v.toLowerCase()
+                CacheManager.mapTriviaFillInTheBlankAnswers.set(
+                    interaction.channelId,
+                    new Collection()
                 );
 
-                const collector: MessageCollector =
-                    interaction.channel!.createMessageCollector({
-                        filter: (message) =>
-                            lowercasedCorrectAnswers.includes(
-                                message.content.toLowerCase()
-                            ),
-                        time: time,
-                    });
+                const { collector } =
+                    InteractionCollectorCreator.createButtonCollector(
+                        questionMessage,
+                        time,
+                        (i) => component.components[0].customId === i.customId
+                    );
 
-                collector.on("end", (collected) => {
+                collector.on("collect", (i) => {
+                    ModalCreator.createModal(
+                        i,
+                        "trivia-questions-fillintheblank",
+                        localization.getTranslation("fillInTheBlankModalTitle"),
+                        new TextInputComponent()
+                            .setCustomId("answer")
+                            .setRequired(true)
+                            .setStyle(TextInputStyles.SHORT)
+                            .setLabel(
+                                localization.getTranslation(
+                                    "fillInTheBlankModalLabel"
+                                )
+                            )
+                            .setPlaceholder(
+                                localization.getTranslation(
+                                    "fillInTheBlankModalPlaceholder"
+                                )
+                            )
+                    );
+                });
+
+                collector.once("end", async () => {
+                    options.components = [];
+
+                    try {
+                        await InteractionHelper.reply(interaction, options);
+                        // eslint-disable-next-line no-empty
+                    } catch {}
+
+                    const lowercasedCorrectAnswers: string[] =
+                        correctAnswers.map((v) => v.toLowerCase());
+
+                    const collected: Collection<Snowflake, TriviaCachedAnswer> =
+                        CacheManager.mapTriviaFillInTheBlankAnswers
+                            .get(interaction.channelId)!
+                            .filter((v) =>
+                                lowercasedCorrectAnswers.includes(
+                                    v.answer.toLowerCase()
+                                )
+                            );
+
                     resolve({
                         category: category!,
                         type: type!,
                         correctAnswers: correctAnswers,
                         results: collected.map((v) => {
                             return {
-                                user: v.author,
+                                user: v.user,
                                 timeTaken:
-                                    v.createdTimestamp -
+                                    v.submissionTime -
                                     questionMessage.createdTimestamp,
                             };
                         }),
                     });
+
+                    CacheManager.mapTriviaFillInTheBlankAnswers.delete(
+                        interaction.channelId
+                    );
                 });
             }
         });

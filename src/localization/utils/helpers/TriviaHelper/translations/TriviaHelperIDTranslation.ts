@@ -6,6 +6,11 @@ import { TriviaHelperStrings } from "../TriviaHelperLocalization";
  */
 export class TriviaHelperIDTranslation extends Translation<TriviaHelperStrings> {
     override readonly translations: TriviaHelperStrings = {
+        triviaQuestion: "",
+        fillInTheBlankAnswerPrompt: "",
+        fillInTheBlankModalTitle: "",
+        fillInTheBlankModalLabel: "",
+        fillInTheBlankModalPlaceholder: "",
         latestChoiceRecorded: "",
     };
 }

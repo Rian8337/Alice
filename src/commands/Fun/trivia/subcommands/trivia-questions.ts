@@ -24,6 +24,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
+    CacheManager.stillHasQuestionTriviaActive.add(interaction.channelId);
+
     let category: TriviaQuestionCategory | undefined;
 
     if (interaction.options.getBoolean("forcecategory")) {
@@ -42,13 +44,15 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         )[0];
 
         if (!pickedChoice) {
+            CacheManager.stillHasQuestionTriviaActive.delete(
+                interaction.channelId
+            );
+
             return;
         }
 
         category = parseInt(pickedChoice);
     }
-
-    CacheManager.stillHasQuestionTriviaActive.add(interaction.channelId);
 
     const result: TriviaQuestionResult = await TriviaHelper.askQuestion(
         interaction,
@@ -75,7 +79,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     if (result.results.length > 0) {
         embed.setDescription(
-            `${localization.getTranslation("correctAnswerGotten")}.\n\n` +
+            `${localization.getTranslation("correctAnswerGotten")}\n\n` +
                 result.results
                     .sort((a, b) => {
                         return a.timeTaken - b.timeTaken;
@@ -91,7 +95,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         );
     } else {
         embed.setDescription(
-            `${localization.getTranslation("correctAnswerNotGotten")}.\n\n` +
+            `${localization.getTranslation("correctAnswerNotGotten")}\n\n` +
                 `${localization.getTranslation(
                     result.correctAnswers.length === 1
                         ? "oneCorrectAnswer"

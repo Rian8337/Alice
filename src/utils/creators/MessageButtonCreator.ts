@@ -8,7 +8,6 @@ import {
     BaseCommandInteraction,
     ButtonInteraction,
     CommandInteraction,
-    InteractionCollector,
     InteractionReplyOptions,
     Message,
     MessageActionRow,
@@ -34,10 +33,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param options Options to be used when sending the button-based paging message.
      * @param users The IDs of users who can interact with the buttons.
      * @param startPage The page to start the paging from.
+     * @param maxPage The maximum page of the button-based paging.
      * @param duration The duration the button-based paging will be active, in seconds.
      * @param onPageChange The function to be executed when the page is changed.
      * @param onPageChangeArgs Arguments for `onPageChange` function.
-     * @param maxPage The maximum page of the button-based paging.
      * @returns The collector that collects the button-pressing event.
      */
     static createLimitedButtonBasedPaging(
@@ -56,7 +55,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             users,
             startPage,
             duration,
-            false,
             onPageChange,
             maxPage,
             ...onPageChangeArgs
@@ -90,9 +88,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             users,
             startPage,
             duration,
-            true,
             onPageChange,
-            undefined,
+            Number.POSITIVE_INFINITY,
             ...onPageChangeArgs
         );
     }
@@ -133,15 +130,39 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             options
         );
 
-        const collector: InteractionCollector<ButtonInteraction> =
-            this.createButtonCollector(message, users, duration);
+        const collectorOptions = this.createButtonCollector(
+            message,
+            duration,
+            (i) =>
+                buttons.some((b) => b.customId === i.customId) &&
+                users.includes(i.user.id),
+            (m) => {
+                const row: MessageActionRow | undefined = m.components.find(
+                    (c) => c.components.length === buttons.length
+                );
 
-        collector.on("collect", () => {
+                if (!row) {
+                    return false;
+                }
+
+                return row.components.every(
+                    (c, i) =>
+                        c instanceof MessageButton &&
+                        c.customId === buttons[i].customId
+                );
+            }
+        );
+
+        const { collector } = collectorOptions;
+
+        collector.once("collect", async (i) => {
+            await i.deferUpdate();
+
             collector.stop();
         });
 
         return new Promise((resolve) => {
-            collector.on("end", async (collected) => {
+            collector.once("end", async (collected) => {
                 const pressed: ButtonInteraction | undefined =
                     collected.first();
 
@@ -168,6 +189,21 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             }, 5 * 1000);
                         }
                     }
+
+                    const index: number = options.components!.findIndex((v) => {
+                        return (
+                            v.components.length === buttons.length &&
+                            v.components.every(
+                                (c, i) =>
+                                    c instanceof MessageButton &&
+                                    c.customId === buttons[i].customId
+                            )
+                        );
+                    });
+
+                    if (index !== -1) {
+                        options.components!.splice(index, 1);
+                    }
                 } else {
                     await InteractionHelper.reply(interaction, {
                         content: MessageCreator.createReject(
@@ -182,8 +218,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         }, 5 * 1000);
                     }
                 }
-
-                options.components!.pop();
 
                 resolve(collected.first()?.customId === "yes");
             });
@@ -200,8 +234,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param users The IDs of users who can interact with the buttons.
      * @param startPage The page to start the paging from.
      * @param duration The duration the button-based paging will be active, in seconds.
-     * @param limitless Whether the button-based paging has no end page.
      * @param onPageChange The function to be executed when the page is changed.
+     * @param maxPage The maximum page.
      * @param onPageChangeArgs Arguments for `onPageChange` function.
      * @returns The collector that collects the button-pressing event.
      */
@@ -211,24 +245,21 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         users: Snowflake[],
         startPage: number,
         duration: number,
-        limitless: boolean,
         onPageChange: OnButtonPageChange,
-        maxPage?: number,
+        maxPage: number,
         ...onPageChangeArgs: unknown[]
     ): Promise<Message> {
-        const pages: number = limitless ? Number.POSITIVE_INFINITY : maxPage!;
-
-        let currentPage: number = Math.min(startPage, pages);
+        let currentPage: number = Math.min(startPage, maxPage);
 
         const buttons: MessageButton[] = this.createPagingButtons(
             currentPage,
-            pages
+            maxPage
         );
 
         const component: MessageActionRow =
             new MessageActionRow().addComponents(buttons);
 
-        if (pages !== 1) {
+        if (maxPage !== 1) {
             options.components ??= [];
             options.components.push(component);
         }
@@ -255,14 +286,32 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             options
         );
 
-        if (pages === 1) {
+        if (maxPage === 1) {
             return message;
         }
 
-        const collector: InteractionCollector<ButtonInteraction> =
-            this.createButtonCollector(message, users, duration);
+        const collectorOptions = this.createButtonCollector(
+            message,
+            duration,
+            (i) =>
+                buttons.some((b) => b.customId === i.customId) &&
+                users.includes(i.user.id),
+            (m) => {
+                const row: MessageActionRow | undefined = m.components.find(
+                    (c) => c.components.length === buttons.length
+                );
 
-        collector.on("collect", async (i) => {
+                if (!row) {
+                    return false;
+                }
+
+                return row.components.every(
+                    (c, i) => c.customId === buttons[i].customId
+                );
+            }
+        );
+
+        collectorOptions.collector.on("collect", async (i) => {
             await i.deferUpdate();
 
             switch (i.customId) {
@@ -271,20 +320,20 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     break;
                 case "back":
                     if (currentPage === 1) {
-                        currentPage = pages;
+                        currentPage = maxPage;
                     } else {
                         --currentPage;
                     }
                     break;
                 case "next":
-                    if (currentPage === pages) {
+                    if (currentPage === maxPage) {
                         currentPage = 1;
                     } else {
                         ++currentPage;
                     }
                     break;
                 case "forward":
-                    currentPage = Math.min(currentPage + 10, pages);
+                    currentPage = Math.min(currentPage + 10, maxPage);
                     break;
                 default:
                     return;
@@ -292,7 +341,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
             component
                 .spliceComponents(0, component.components.length)
-                .addComponents(this.createPagingButtons(currentPage, pages));
+                .addComponents(this.createPagingButtons(currentPage, maxPage));
 
             onPageChangeEmbedEdit();
 
@@ -301,21 +350,28 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             await i.editReply(options);
         });
 
-        collector.on("end", async () => {
-            // Disable all buttons
-
-            component.components.forEach((component) => {
-                component.setDisabled(true);
+        collectorOptions.collector.once("end", async () => {
+            const index: number = options.components!.findIndex((v) => {
+                return (
+                    v.components.length === buttons.length &&
+                    v.components.every(
+                        (c, i) =>
+                            c instanceof MessageButton &&
+                            c.customId === buttons[i].customId
+                    )
+                );
             });
 
-            if (pages !== 1) {
-                options.components!.pop();
+            if (index !== -1) {
+                options.components!.splice(index, 1);
             }
 
-            try {
-                await InteractionHelper.reply(interaction, options);
-                // eslint-disable-next-line no-empty
-            } catch {}
+            if (!collectorOptions.componentIsDeleted) {
+                try {
+                    await InteractionHelper.reply(interaction, options);
+                    // eslint-disable-next-line no-empty
+                } catch {}
+            }
         });
 
         return message;

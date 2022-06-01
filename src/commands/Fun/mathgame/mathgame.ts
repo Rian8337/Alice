@@ -239,10 +239,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                                   parseInt(m.content) === answer &&
                                   m.author.id === interaction.user.id,
                               time: 30000,
+                              dispose: true,
                           })
                         : msg.channel.createMessageCollector({
                               filter: (m) => parseInt(m.content) === answer,
                               time: 30000,
+                              dispose: true,
                           });
 
                 let correct: boolean = false;
@@ -273,7 +275,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     collector.stop();
                 });
 
-                collector.on("end", async () => {
+                collector.once("end", async () => {
                     if (!correct) {
                         msg.delete();
 

@@ -1,6 +1,7 @@
 import {
     BaseCommandInteraction,
     MessageActionRow,
+    MessageComponentInteraction,
     Modal,
     ModalActionRowComponent,
     TextInputComponent,
@@ -19,7 +20,7 @@ export abstract class ModalCreator {
      * @param fields The fields in the modal.
      */
     static async createModal(
-        interaction: BaseCommandInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         customId: string,
         title: string,
         ...fields: TextInputComponent[]
