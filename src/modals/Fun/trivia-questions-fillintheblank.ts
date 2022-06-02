@@ -1,5 +1,5 @@
 import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
-import { TriviaCachedAnswer } from "@alice-interfaces/trivia/TriviaCachedAnswer";
+import { TriviaQuestionCachedAnswer } from "@alice-interfaces/trivia/TriviaQuestionCachedAnswer";
 import { TriviaQuestionsFillInTheBlankLocalization } from "@alice-localization/modals/Fun/trivia-questions-fillintheblank/TriviaQuestionsFillInTheBlankLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -13,8 +13,11 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
             await CommandHelper.getLocale(interaction)
         );
 
-    const collection: Collection<Snowflake, TriviaCachedAnswer> | undefined =
-        CacheManager.mapTriviaFillInTheBlankAnswers.get(interaction.channelId!);
+    const collection:
+        | Collection<Snowflake, TriviaQuestionCachedAnswer>
+        | undefined = CacheManager.questionTriviaFillInTheBlankAnswers.get(
+        interaction.channelId!
+    );
 
     if (!collection) {
         return InteractionHelper.reply(interaction, {

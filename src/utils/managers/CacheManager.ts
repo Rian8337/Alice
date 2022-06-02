@@ -6,7 +6,8 @@ import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollectio
 import { Collection, Snowflake } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
-import { TriviaCachedAnswer } from "@alice-interfaces/trivia/TriviaCachedAnswer";
+import { TriviaQuestionCachedAnswer } from "@alice-interfaces/trivia/TriviaQuestionCachedAnswer";
+import { TriviaMapCachedAnswer } from "@alice-interfaces/trivia/TriviaMapCachedAnswer";
 
 /**
  * A manager that holds anything that is cached.
@@ -54,9 +55,18 @@ export abstract class CacheManager {
      * Answers for a trivia question in a channel, mapped by channel ID,
      * and each answer mapped by the answerer's ID.
      */
-    static readonly mapTriviaFillInTheBlankAnswers: Collection<
+    static readonly questionTriviaFillInTheBlankAnswers: Collection<
         Snowflake,
-        Collection<Snowflake, TriviaCachedAnswer>
+        Collection<Snowflake, TriviaQuestionCachedAnswer>
+    > = new Collection();
+
+    /**
+     * Answers for a trivia question in a channel, mapped by channel ID,
+     * and each answer mapped by the answerer's ID.
+     */
+    static readonly mapTriviaAnswers: Collection<
+        Snowflake,
+        Collection<Snowflake, TriviaMapCachedAnswer>
     > = new Collection();
 
     /**

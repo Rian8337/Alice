@@ -15,19 +15,24 @@ export class TriviaENTranslation extends Translation<TriviaStrings> {
             "I'm sorry, I'm unable to retrieve a beatmap, therefore the game has been ended!",
         categoryHasNoQuestionType:
             "I'm sorry, the selected question category (%s) does not have any question of the type that you have requested!",
+        answerIsAlreadyCorrect:
+            "I'm sorry, you have already guessed the correct artist and title!",
         beatmapHint: "Beatmap Hint",
         beatmapArtist: "Artist",
         beatmapTitle: "Title",
         beatmapSource: "Source",
         guessBeatmap: "Guess the beatmap!",
-        outOfLives: "I'm sorry, you have run out of lives to guess!",
-        incorrectCharacterGuess:
-            "%s has guessed an incorrect character (%s)! They have %s live(s) left.",
-        correctCharacterGuess: "%s has guessed a correct character (%s)!",
+        answerQuestion: "Guess Beatmap",
+        answerModalTitle: "Beatmap Trivia Answer Submission",
+        answerModalArtistLabel: "Beatmap Artist",
+        answerModalArtistPlaceholder:
+            "Enter your guess for the beatmap's artist.",
+        answerModalTitleLabel: "Beatmap Title",
+        answerModalTitlePlaceholder:
+            "Enter your guess for the beatmap's title.",
+        answerEmbedArtistGuessTitle: "Artist",
+        answerEmbedTitleGuessTitle: "Title",
         beatmapInfo: "Beatmap Information",
-        beatmapCorrect:
-            "Everyone got the beatmap correct (it took %s seconds)!",
-        beatmapIncorrect: "No one guessed the beatmap!",
         gameInfo: "Game Information",
         starter: "Starter",
         timeStarted: "Time started",

@@ -2,21 +2,21 @@ import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MapTriviaPlayer } from "@alice-interfaces/trivia/MapTriviaPlayer";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import {
     Collection,
-    InteractionCollector,
+    GuildMember,
     Message,
     MessageActionRow,
     MessageButton,
-    MessageComponentInteraction,
     MessageEmbed,
     Snowflake,
+    TextInputComponent,
 } from "discord.js";
 import {
     MapInfo,
+    MathUtils,
     OsuAPIRequestBuilder,
     OsuAPIResponse,
     RequestResponse,
@@ -24,6 +24,11 @@ import {
 import { TriviaLocalization } from "@alice-localization/commands/Fun/trivia/TriviaLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
+import { Symbols } from "@alice-enums/utils/Symbols";
+import { ModalCreator } from "@alice-utils/creators/ModalCreator";
+import { TextInputStyles } from "discord.js/typings/enums";
+import { TriviaMapCachedAnswer } from "@alice-interfaces/trivia/TriviaMapCachedAnswer";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     if (fetchAttempt === 5) {
@@ -187,6 +192,16 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     CacheManager.stillHasMapTriviaActive.add(interaction.channelId);
 
+    const answerCollection: Collection<Snowflake, TriviaMapCachedAnswer> =
+        new Collection();
+
+    CacheManager.mapTriviaAnswers.set(interaction.channelId, answerCollection);
+
+    const answersEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember | null>interaction.member)?.displayColor,
+    });
+
     // Run game in constant loop
     while (!hasEnded) {
         let beatmapInfoIndex: number = beatmapCache.findIndex(
@@ -224,8 +239,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             1
         )[0];
 
-        const tempArtist = beatmapInfo.artist.replace(/\W|_/g, "");
-        const tempTitle = beatmapInfo.title.replace(/\W|_/g, "");
+        const tempArtist: string = beatmapInfo.artist.replace(/\W|_/g, "");
+        const tempTitle: string = beatmapInfo.title.replace(/\W|_/g, "");
 
         // Shuffling empty words
         // Shuffle between 25-75% of title and artist
@@ -257,72 +272,11 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             titleBlankAmount
         );
 
-        // Create guess buttons
-        const buttons: MessageButton[] = [];
-
-        for (let i = 0; i < artistGuessData.replacedStrings.length; ++i) {
-            const data = artistGuessData.replacedStrings[i];
-
-            if (buttons.find((v) => v.customId === data.char)) {
-                continue;
-            }
-
-            buttons.push(
-                new MessageButton()
-                    .setCustomId(data.char)
-                    .setLabel(data.char.toUpperCase())
-                    .setStyle("PRIMARY")
-            );
-        }
-
-        for (let i = 0; i < titleGuessData.replacedStrings.length; ++i) {
-            const data = titleGuessData.replacedStrings[i];
-
-            if (!buttons.find((v) => v.customId === data.char)) {
-                buttons.push(
-                    new MessageButton()
-                        .setCustomId(data.char)
-                        .setLabel(data.char.toUpperCase())
-                        .setStyle("PRIMARY")
-                );
-            }
-        }
-
-        while (buttons.length < 25) {
-            const char: string = String.fromCharCode(
-                65 + Math.floor(Math.random() * 26)
-            );
-
-            if (!buttons.find((v) => v.customId === char)) {
-                buttons.push(
-                    new MessageButton()
-                        .setCustomId(char)
-                        .setLabel(char)
-                        .setStyle("PRIMARY")
-                );
-            }
-        }
-
-        ArrayHelper.shuffle(buttons);
-
-        // Put the first button in a random index
-        const firstButton: MessageButton = buttons.shift()!;
-
-        buttons.splice(
-            Math.floor(Math.random() * buttons.length),
-            0,
-            firstButton
-        );
-
-        const components: MessageActionRow[] = [];
-
-        for (let i = 0; i < Math.floor(buttons.length / 5); ++i) {
-            components.push(
-                new MessageActionRow().addComponents(
-                    buttons.slice(5 * i, 5 + 5 * i)
-                )
-            );
-        }
+        const button: MessageButton = new MessageButton()
+            .setCustomId("answerMapTrivia")
+            .setStyle("PRIMARY")
+            .setLabel(localization.getTranslation("answerQuestion"))
+            .setEmoji(Symbols.memo);
 
         const message: Message = await interaction.channel!.send({
             content: MessageCreator.createWarn(
@@ -337,157 +291,104 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                     localization
                 ),
             ],
-            components: components,
+            components: [new MessageActionRow().addComponents(button)],
         });
 
-        const collector: InteractionCollector<MessageComponentInteraction> =
-            message.createMessageComponentCollector({
-                time: 45000,
-            });
+        const { collector } = InteractionCollectorCreator.createButtonCollector(
+            message,
+            45,
+            (i) => button.customId === i.customId,
+            (m) => {
+                const row: MessageActionRow | undefined = m.components.find(
+                    (c) => c.components.length === 1
+                );
+
+                if (!row) {
+                    return false;
+                }
+
+                return row.components[0].customId === button.customId;
+            }
+        );
 
         await new Promise<void>((resolve) => {
             collector.on("collect", async (i) => {
-                const playerStats: MapTriviaPlayer = statistics.get(
-                    i.user.id
-                ) ?? {
-                    id: i.user.id,
-                    lives: 10,
-                    score: 0,
-                };
-
                 const playerLocalization: TriviaLocalization =
                     new TriviaLocalization(await CommandHelper.getLocale(i));
 
-                if (playerStats.lives === 0) {
-                    i.reply({
-                        content: MessageCreator.createReject(
-                            playerLocalization.getTranslation("outOfLives")
-                        ),
-                        ephemeral: true,
-                    });
+                const answer: TriviaMapCachedAnswer | undefined =
+                    answerCollection.get(i.user.id);
 
-                    return;
-                }
-
-                await i.deferUpdate();
-
-                const char: string = i.customId;
-
-                statistics.set(i.user.id, playerStats);
-
-                // Disable button
-                const button: MessageButton = buttons.find(
-                    (b) => b.customId === char
-                )!;
-
-                button.setDisabled(true);
-
-                const components: MessageActionRow[] = [];
-
-                for (let i = 0; i < Math.floor(buttons.length / 5); ++i) {
-                    components.push(
-                        new MessageActionRow().addComponents(
-                            buttons.slice(5 * i, 5 + 5 * i)
-                        )
-                    );
-                }
-
-                // Check if the guessed letter is in replaced strings
-                const artistStringDataIndex: number =
-                    artistGuessData.replacedStrings.findIndex(
-                        (t) => t.char === char
-                    );
-                const titleStringDataIndex: number =
-                    titleGuessData.replacedStrings.findIndex(
-                        (t) => t.char === char
-                    );
+                const textInputComponents: TextInputComponent[] = [];
 
                 if (
-                    artistStringDataIndex === -1 &&
-                    titleStringDataIndex === -1
+                    answer?.answer.artist.toLowerCase() !==
+                    beatmapInfo.artist.toLowerCase()
                 ) {
-                    --playerStats.lives;
+                    textInputComponents.push(
+                        new TextInputComponent()
+                            .setCustomId("artist")
+                            .setRequired(true)
+                            .setStyle(TextInputStyles.SHORT)
+                            .setLabel(
+                                playerLocalization.getTranslation(
+                                    "answerModalArtistLabel"
+                                )
+                            )
+                            .setPlaceholder(
+                                playerLocalization.getTranslation(
+                                    "answerModalArtistPlaceholder"
+                                )
+                            )
+                    );
+                }
 
-                    await message.edit({
-                        components: components,
-                    });
+                if (
+                    answer?.answer.title.toLowerCase() !==
+                    beatmapInfo.title.toLowerCase()
+                ) {
+                    textInputComponents.push(
+                        new TextInputComponent()
+                            .setCustomId("title")
+                            .setRequired(true)
+                            .setStyle(TextInputStyles.SHORT)
+                            .setLabel(
+                                playerLocalization.getTranslation(
+                                    "answerModalTitleLabel"
+                                )
+                            )
+                            .setPlaceholder(
+                                playerLocalization.getTranslation(
+                                    "answerModalTitlePlaceholder"
+                                )
+                            )
+                    );
+                }
 
-                    await interaction.channel!.send({
+                if (textInputComponents.length === 0) {
+                    i.ephemeral = true;
+
+                    await InteractionHelper.reply(i, {
                         content: MessageCreator.createReject(
-                            localization.getTranslation(
-                                "incorrectCharacterGuess"
-                            ),
-                            i.user.username,
-                            char,
-                            playerStats.lives.toString()
+                            playerLocalization.getTranslation(
+                                "answerIsAlreadyCorrect"
+                            )
                         ),
                     });
 
                     return;
                 }
 
-                // Replace guessing string with the guessed letter
-                if (artistGuessData.replacedStrings.length > 0) {
-                    const artistStringData =
-                        artistGuessData.replacedStrings.splice(
-                            artistStringDataIndex,
-                            1
-                        )[0];
-
-                    for (const index of artistStringData.indexes) {
-                        artistGuessData.splittedString[index] =
-                            beatmapInfo.artist.charAt(index);
-                    }
-                }
-
-                if (titleGuessData.replacedStrings.length > 0) {
-                    const titleStringData =
-                        titleGuessData.replacedStrings.splice(
-                            titleStringDataIndex,
-                            1
-                        )[0];
-
-                    for (const index of titleStringData.indexes) {
-                        titleGuessData.splittedString[index] =
-                            beatmapInfo.title.charAt(index);
-                    }
-                }
-
-                playerStats.score += level / 10;
-
-                await interaction.channel!.send({
-                    content: MessageCreator.createAccept(
-                        localization.getTranslation("correctCharacterGuess"),
-                        i.user.username,
-                        char
-                    ),
-                });
-
-                if (
-                    artistGuessData.replacedStrings.length === 0 &&
-                    titleGuessData.replacedStrings.length === 0
-                ) {
-                    // All characters have been guessed
-                    collector.stop();
-                } else {
-                    // There are still more characters to guess left
-                    await message.edit({
-                        embeds: [
-                            createEmbed(
-                                level,
-                                beatmapInfo,
-                                artistGuessData.splittedString.join("").trim(),
-                                titleGuessData.splittedString.join("").trim(),
-                                localization
-                            ),
-                        ],
-                        components: components,
-                    });
-                }
+                ModalCreator.createModal(
+                    i,
+                    "trivia-map-answer",
+                    playerLocalization.getTranslation("answerModalTitle"),
+                    ...textInputComponents
+                );
             });
 
             collector.once("end", async () => {
-                const embed: MessageEmbed = createEmbed(
+                const beatmapEmbed: MessageEmbed = createEmbed(
                     level,
                     beatmapInfo,
                     beatmapInfo.artist,
@@ -497,11 +398,11 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
                 // Remove buttons from original message
                 await message.edit({
-                    embeds: [embed],
+                    embeds: [beatmapEmbed],
                     components: [],
                 });
 
-                embed
+                beatmapEmbed
                     .setAuthor({
                         name: localization.getTranslation("beatmapInfo"),
                     })
@@ -518,28 +419,139 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                     )
                     .setColor(beatmapInfo.statusColor);
 
-                if (
-                    artistGuessData.replacedStrings.length === 0 &&
-                    titleGuessData.replacedStrings.length === 0
-                ) {
-                    await interaction.channel!.send({
-                        content: MessageCreator.createAccept(
-                            localization.getTranslation("beatmapCorrect"),
-                            (
-                                (Date.now() - message.createdTimestamp) /
-                                1000
-                            ).toFixed(2)
-                        ),
-                        embeds: [embed],
+                const correctAnswers: TriviaMapCachedAnswer[] = [];
+
+                for (const [, answer] of answerCollection) {
+                    if (
+                        answer.answer.artist.toLowerCase() ===
+                            beatmapInfo.artist.toLowerCase() ||
+                        answer.answer.title.toLowerCase() ===
+                            beatmapInfo.title.toLowerCase()
+                    ) {
+                        const playerStats: MapTriviaPlayer = statistics.get(
+                            answer.user.id
+                        ) ?? {
+                            id: answer.user.id,
+                            score: 0,
+                        };
+
+                        if (
+                            answer.answer.artist.toLowerCase() ===
+                            beatmapInfo.artist.toLowerCase()
+                        ) {
+                            playerStats.score +=
+                                level / 10 +
+                                MathUtils.round(
+                                    Math.max(
+                                        0,
+                                        1 -
+                                            (answer.artistAnswerSubmissionTime -
+                                                message.createdTimestamp) /
+                                                1000 /
+                                                45
+                                    ),
+                                    2
+                                );
+                        }
+
+                        if (
+                            answer.answer.title.toLowerCase() ===
+                            beatmapInfo.title.toLowerCase()
+                        ) {
+                            playerStats.score +=
+                                level / 10 +
+                                MathUtils.round(
+                                    Math.max(
+                                        0,
+                                        1 -
+                                            (answer.artistAnswerSubmissionTime -
+                                                message.createdTimestamp) /
+                                                1000 /
+                                                45
+                                    ),
+                                    2
+                                );
+                        }
+
+                        statistics.set(answer.user.id, playerStats);
+
+                        correctAnswers.push(answer);
+                    }
+                }
+
+                if (correctAnswers.length > 0) {
+                    answersEmbed
+                        .spliceFields(0, answersEmbed.fields.length)
+                        .setDescription(
+                            localization.getTranslation("correctAnswerGotten")
+                        )
+                        .addField(
+                            localization.getTranslation(
+                                "answerEmbedArtistGuessTitle"
+                            ),
+                            correctAnswers
+                                .filter(
+                                    (v) =>
+                                        v.answer.artist === beatmapInfo.artist
+                                )
+                                .sort(
+                                    (a, b) =>
+                                        a.artistAnswerSubmissionTime -
+                                        b.artistAnswerSubmissionTime
+                                )
+                                .map(
+                                    (v) =>
+                                        `${v.user.username} - ${MathUtils.round(
+                                            (v.artistAnswerSubmissionTime -
+                                                message.createdTimestamp) /
+                                                1000,
+                                            3
+                                        )} s`
+                                )
+                                .join("\n") ||
+                                localization.getTranslation("none")
+                        )
+                        .addField(
+                            localization.getTranslation(
+                                "answerEmbedTitleGuessTitle"
+                            ),
+                            correctAnswers
+                                .filter(
+                                    (v) => v.answer.title === beatmapInfo.title
+                                )
+                                .sort(
+                                    (a, b) =>
+                                        a.titleAnswerSubmissionTime -
+                                        b.titleAnswerSubmissionTime
+                                )
+                                .map(
+                                    (v) =>
+                                        `${v.user.username} - ${MathUtils.round(
+                                            (v.titleAnswerSubmissionTime -
+                                                message.createdTimestamp) /
+                                                1000,
+                                            3
+                                        )} s`
+                                )
+                                .join("\n") ||
+                                localization.getTranslation("none")
+                        );
+
+                    await message.reply({
+                        embeds: [answersEmbed, beatmapEmbed],
                     });
 
                     ++level;
+
+                    answerCollection.clear();
                 } else {
-                    await interaction.channel!.send({
+                    await message.reply({
                         content: MessageCreator.createReject(
-                            localization.getTranslation("beatmapIncorrect")
+                            localization.getTranslation(
+                                "correctAnswerNotGotten"
+                            )
                         ),
-                        embeds: [embed],
+                        embeds: [beatmapEmbed],
                     });
 
                     hasEnded = true;
@@ -549,6 +561,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             });
         });
     }
+
+    CacheManager.mapTriviaAnswers.delete(interaction.channelId);
 
     statistics.sort((a, b) => {
         return b.score - a.score;

@@ -13,9 +13,4 @@ export interface MapTriviaPlayer {
      * The amount of score that this player has.
      */
     score: number;
-
-    /**
-     * This player's lives.
-     */
-    lives: number;
 }

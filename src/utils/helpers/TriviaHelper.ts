@@ -26,7 +26,7 @@ import { InteractionHelper } from "./InteractionHelper";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { TextInputStyles } from "discord.js/typings/enums";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { TriviaCachedAnswer } from "@alice-interfaces/trivia/TriviaCachedAnswer";
+import { TriviaQuestionCachedAnswer } from "@alice-interfaces/trivia/TriviaQuestionCachedAnswer";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 
 /**
@@ -195,7 +195,7 @@ export abstract class TriviaHelper {
         } else {
             component.addComponents(
                 new MessageButton()
-                    .setCustomId("answer")
+                    .setCustomId("answerQuestionTrivia")
                     .setStyle("PRIMARY")
                     .setLabel(
                         localization.getTranslation(
@@ -272,7 +272,7 @@ export abstract class TriviaHelper {
                     });
                 });
             } else {
-                CacheManager.mapTriviaFillInTheBlankAnswers.set(
+                CacheManager.questionTriviaFillInTheBlankAnswers.set(
                     interaction.channelId,
                     new Collection()
                 );
@@ -317,14 +317,16 @@ export abstract class TriviaHelper {
                     const lowercasedCorrectAnswers: string[] =
                         correctAnswers.map((v) => v.toLowerCase());
 
-                    const collected: Collection<Snowflake, TriviaCachedAnswer> =
-                        CacheManager.mapTriviaFillInTheBlankAnswers
-                            .get(interaction.channelId)!
-                            .filter((v) =>
-                                lowercasedCorrectAnswers.includes(
-                                    v.answer.toLowerCase()
-                                )
-                            );
+                    const collected: Collection<
+                        Snowflake,
+                        TriviaQuestionCachedAnswer
+                    > = CacheManager.questionTriviaFillInTheBlankAnswers
+                        .get(interaction.channelId)!
+                        .filter((v) =>
+                            lowercasedCorrectAnswers.includes(
+                                v.answer.toLowerCase()
+                            )
+                        );
 
                     resolve({
                         category: category!,
@@ -340,7 +342,7 @@ export abstract class TriviaHelper {
                         }),
                     });
 
-                    CacheManager.mapTriviaFillInTheBlankAnswers.delete(
+                    CacheManager.questionTriviaFillInTheBlankAnswers.delete(
                         interaction.channelId
                     );
                 });
