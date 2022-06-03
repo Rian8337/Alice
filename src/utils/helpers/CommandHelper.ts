@@ -1,8 +1,8 @@
 import {
+    BaseGuildTextChannel,
     Collection,
     CommandInteraction,
     DMChannel,
-    GuildChannel,
     GuildMember,
     Interaction,
     MessageSelectOptionData,
@@ -33,7 +33,6 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { Language } from "@alice-localization/base/Language";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
-import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
 import { UserLocale } from "@alice-database/utils/aliceDb/UserLocale";
 import { CommandHelperLocalization } from "@alice-localization/utils/helpers/CommandHelper/CommandHelperLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -98,7 +97,7 @@ export abstract class CommandHelper extends Manager {
      * @param channel The channel.
      * @returns The preferred locale of the channel or server, English if the channel doesn't have a preferred locale.
      */
-    static async getLocale(channel: GuildChannel): Promise<Language>;
+    static async getLocale(channel: BaseGuildTextChannel): Promise<Language>;
 
     /**
      * Gets the preferred locale of a user.
@@ -119,7 +118,7 @@ export abstract class CommandHelper extends Manager {
     static async getLocale(channelId: Snowflake): Promise<Language>;
 
     static async getLocale(
-        input: Interaction | GuildChannel | Snowflake | User
+        input: Interaction | BaseGuildTextChannel | Snowflake | User
     ): Promise<Language> {
         let language: Language | undefined;
 
@@ -146,14 +145,20 @@ export abstract class CommandHelper extends Manager {
             );
         }
 
-        const channelId: Snowflake =
-            input instanceof Interaction
-                ? input.channelId!
-                : input instanceof ThreadChannel
-                ? input.parentId!
-                : input instanceof GuildChannel
-                ? input.id
-                : input;
+        let channelId: Snowflake;
+
+        if (input instanceof Interaction) {
+            channelId =
+                input.channel instanceof ThreadChannel
+                    ? input.channel.parentId!
+                    : input.channel!.id;
+        } else if (input instanceof ThreadChannel) {
+            channelId = input.parentId!;
+        } else if (input instanceof BaseGuildTextChannel) {
+            channelId = input.id;
+        } else {
+            channelId = input;
+        }
 
         language = CacheManager.channelLocale.get(channelId);
 
@@ -163,21 +168,15 @@ export abstract class CommandHelper extends Manager {
                     channelId
                 );
 
-            const channelSetting: GuildChannelSettings | undefined =
-                guildSetting?.channelSettings.get(channelId);
-
             language =
-                channelSetting?.preferredLocale ??
-                guildSetting?.preferredLocale;
+                guildSetting?.channelSettings.get(channelId)?.preferredLocale ??
+                guildSetting?.preferredLocale ??
+                "en";
 
-            // No point in caching guild locale since database always
-            // gets called if channel locale isn't available
-            if (language && channelSetting) {
-                CacheManager.channelLocale.set(channelId, language);
-            }
+            CacheManager.channelLocale.set(channelId, language);
         }
 
-        return language ?? "en";
+        return language;
     }
 
     /**
@@ -224,14 +223,12 @@ export abstract class CommandHelper extends Manager {
                     id
                 );
 
-            language = userLocale?.locale;
+            language = userLocale?.locale ?? "en";
 
-            if (language) {
-                CacheManager.userLocale.set(id, language);
-            }
+            CacheManager.userLocale.set(id, language);
         }
 
-        return language ?? "en";
+        return language;
     }
 
     /**
