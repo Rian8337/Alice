@@ -22,6 +22,7 @@ import {
     MapInfo,
     DroidAPIRequestBuilder,
     RequestResponse,
+    Utils,
 } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
@@ -342,6 +343,12 @@ export class UserBind extends Manager {
                 continue;
             }
 
+            const indexes: number[] = Utils.initializeArray(10, 0);
+
+            for (const index of score.replay!.twoHandCursorIndexes) {
+                ++indexes[index];
+            }
+
             const entry: PrototypePPEntry = {
                 hash: calcResult.map.hash,
                 title: calcResult.map.fullTitle,
@@ -352,7 +359,7 @@ export class UserBind extends Manager {
                 combo: score.combo,
                 miss: score.accuracy.nmiss,
                 scoreID: score.scoreID,
-                cursorIndexes: score.replay!.twoHandCursorIndexes,
+                cursorIndexes: indexes,
             };
 
             this.client.logger.info(
