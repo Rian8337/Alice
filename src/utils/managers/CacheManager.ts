@@ -47,11 +47,6 @@ export abstract class CacheManager {
     static readonly stillHasQuestionTriviaActive: Set<Snowflake> = new Set();
 
     /**
-     * The channels that still have a map trivia active.
-     */
-    static readonly stillHasMapTriviaActive: Set<Snowflake> = new Set();
-
-    /**
      * Answers for a trivia question in a channel, mapped by channel ID,
      * and each answer mapped by the answerer's ID.
      */
@@ -83,7 +78,7 @@ export abstract class CacheManager {
         new LimitedCapacityCollection(150, 300);
 
     /**
-     * The locales that a guild channel has, mapped by channel ID.
+     * The locales that a guild text channel has, mapped by channel ID.
      */
     static readonly channelLocale: LimitedCapacityCollection<
         Snowflake,

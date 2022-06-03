@@ -171,7 +171,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    if (CacheManager.stillHasMapTriviaActive.has(interaction.channelId)) {
+    if (CacheManager.mapTriviaAnswers.has(interaction.channelId)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("channelHasMapTriviaActive")
@@ -189,8 +189,6 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             localization.getTranslation("mapTriviaStarted")
         ),
     });
-
-    CacheManager.stillHasMapTriviaActive.add(interaction.channelId);
 
     const answerCollection: Collection<Snowflake, TriviaMapCachedAnswer> =
         new Collection();
@@ -219,8 +217,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
             beatmapInfoIndex = beatmapCache.findIndex(
                 (v) =>
-                    v.plays <= 10000000 - 200 * level ||
-                    v.favorites <= 1000000 - 20 * level
+                    v.plays <= 10000000 - 100 * level ||
+                    v.favorites <= 1000000 - 10 * level
             );
         }
 
@@ -278,6 +276,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             .setLabel(localization.getTranslation("answerQuestion"))
             .setEmoji(Symbols.memo);
 
+        const component: MessageActionRow =
+            new MessageActionRow().addComponents(button);
+
         const message: Message = await interaction.channel!.send({
             content: MessageCreator.createWarn(
                 localization.getTranslation("guessBeatmap")
@@ -291,8 +292,99 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                     localization
                 ),
             ],
-            components: [new MessageActionRow().addComponents(button)],
+            components: [component],
         });
+
+        const totalCharCountToReplace: number =
+            artistGuessData.replacedStrings.reduce(
+                (a, v) => a + v.indexes.length,
+                0
+            ) +
+            titleGuessData.replacedStrings.reduce(
+                (a, v) => a + v.indexes.length,
+                0
+            );
+        let replacedCharCount: number = 0;
+
+        let editCount: number = 0;
+        const maxEditCount: number = 5;
+
+        const revealCharInterval: NodeJS.Timer = setInterval(async () => {
+            if (editCount === maxEditCount - 1) {
+                clearInterval(revealCharInterval);
+            }
+
+            ++editCount;
+
+            // Obtain portion of character amount to replace.
+            const charCountToReplace: number = Math.floor(
+                Math.pow(
+                    (totalCharCountToReplace * editCount) /
+                        (maxEditCount * 1.5),
+                    0.8
+                )
+            );
+
+            while (replacedCharCount < charCountToReplace) {
+                let data: {
+                    readonly splittedString: string[];
+                    readonly replacedStrings: {
+                        readonly char: string;
+                        readonly indexes: number[];
+                    }[];
+                };
+
+                // Determine what to randomize.
+                if (
+                    artistGuessData.replacedStrings.length > 1 &&
+                    titleGuessData.replacedStrings.length > 1
+                ) {
+                    data =
+                        Math.random() > 0.5 ? artistGuessData : titleGuessData;
+                } else if (artistGuessData.replacedStrings.length > 1) {
+                    data = artistGuessData;
+                } else if (titleGuessData.replacedStrings.length > 1) {
+                    data = titleGuessData;
+                } else {
+                    clearInterval(revealCharInterval);
+
+                    return;
+                }
+
+                const replacedStringIndex: number = Math.floor(
+                    Math.random() * data.replacedStrings.length
+                );
+
+                const selectedData = data.replacedStrings[replacedStringIndex];
+
+                const charIndex: number = Math.floor(
+                    Math.random() * selectedData.indexes.length
+                );
+
+                data.splittedString[selectedData.indexes[charIndex]] =
+                    selectedData.char;
+
+                selectedData.indexes.splice(charIndex, 1);
+
+                if (selectedData.indexes.length === 0) {
+                    data.replacedStrings.splice(replacedStringIndex, 1);
+                }
+
+                ++replacedCharCount;
+            }
+
+            await message.edit({
+                embeds: [
+                    createEmbed(
+                        level,
+                        beatmapInfo,
+                        artistGuessData.splittedString.join("").trim(),
+                        titleGuessData.splittedString.join("").trim(),
+                        localization
+                    ),
+                ],
+            });
+        }, 45000 / maxEditCount);
 
         const { collector } = InteractionCollectorCreator.createButtonCollector(
             message,
@@ -603,8 +695,6 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                 )
                 .join("\n") || localization.getTranslation("none")
         );
-
-    CacheManager.stillHasMapTriviaActive.delete(interaction.channelId);
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
