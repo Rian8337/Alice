@@ -7,6 +7,7 @@ import {
     Interaction,
     MessageSelectOptionData,
     PermissionResolvable,
+    SelectMenuInteraction,
     Snowflake,
     TextChannel,
     ThreadChannel,
@@ -58,7 +59,7 @@ export abstract class CommandHelper extends Manager {
         subcommandChoices: MessageSelectOptionData[],
         placeholder: string
     ): Promise<unknown> {
-        const pickedSubcommand: string = (
+        const selectMenuInteraction: SelectMenuInteraction | null =
             await SelectMenuCreator.createSelectMenu(
                 interaction,
                 {
@@ -67,12 +68,13 @@ export abstract class CommandHelper extends Manager {
                 subcommandChoices,
                 [interaction.user.id],
                 20
-            )
-        )[0];
+            );
 
-        if (!pickedSubcommand) {
+        if (!selectMenuInteraction) {
             return;
         }
+
+        const pickedSubcommand: string = selectMenuInteraction.values[0];
 
         return this.runSlashSubOrGroup(
             interaction,

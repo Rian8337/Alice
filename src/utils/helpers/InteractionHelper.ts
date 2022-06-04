@@ -2,6 +2,7 @@ import {
     Interaction,
     InteractionResponseFields,
     Message,
+    MessageComponentInteraction,
     WebhookEditMessageOptions,
 } from "discord.js";
 
@@ -50,5 +51,22 @@ export abstract class InteractionHelper {
         }
 
         return message;
+    }
+
+    /**
+     * Sends an update response to an interaction.
+     *
+     * @param interaction The interaction to update.
+     * @param response The response to send.
+     * @returns The response of the interaction.
+     */
+    static async update(
+        interaction: MessageComponentInteraction,
+        response: WebhookEditMessageOptions
+    ): Promise<Message> {
+        return <Promise<Message>>interaction.update({
+            ...response,
+            fetchReply: true,
+        });
     }
 }

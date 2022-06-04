@@ -1,4 +1,4 @@
-import { Collection, GuildEmoji } from "discord.js";
+import { Collection, GuildEmoji, SelectMenuInteraction } from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
@@ -42,7 +42,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
     const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
 
-    const bgId: string | undefined = (
+    const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {
@@ -58,12 +58,13 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
             }),
             [interaction.user.id],
             30
-        )
-    )[0];
+        );
 
-    if (!bgId) {
+    if (!selectMenuInteraction) {
         return;
     }
+
+    const bgId: string = selectMenuInteraction.values[0];
 
     const background: ProfileBackground = backgroundList.get(bgId)!;
 

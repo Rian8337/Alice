@@ -9,6 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { SelectMenuInteraction } from "discord.js";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -46,41 +47,42 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
+    const selectMenuInteraction: SelectMenuInteraction | null =
+        await SelectMenuCreator.createSelectMenu(
+            interaction,
+            {
+                content: MessageCreator.createWarn(
+                    localization.getTranslation("pickWinCondition")
+                ),
+            },
+            (<(keyof typeof MultiplayerWinCondition)[]>(
+                Object.keys(MultiplayerWinCondition)
+            ))
+                .map((v) => {
+                    // Set the win condition to room first so we can use winConditionToString()
+                    room.settings.winCondition = MultiplayerWinCondition[v];
+
+                    return {
+                        label: room.winConditionToString(),
+                        value: MultiplayerWinCondition[v].toString(),
+                    };
+                })
+                .filter((v) => v.label !== undefined)
+                .sort((a, b) => a.label.localeCompare(b.label)),
+            [interaction.user.id],
+            20
+        );
+
+    if (!selectMenuInteraction) {
+        return;
+    }
+
     const originalWinCondition: MultiplayerWinCondition =
         room.settings.winCondition;
 
     const pickedWinCondition: MultiplayerWinCondition = parseInt(
-        (
-            await SelectMenuCreator.createSelectMenu(
-                interaction,
-                {
-                    content: MessageCreator.createWarn(
-                        localization.getTranslation("pickWinCondition")
-                    ),
-                },
-                (<(keyof typeof MultiplayerWinCondition)[]>(
-                    Object.keys(MultiplayerWinCondition)
-                ))
-                    .map((v) => {
-                        // Set the win condition to room first so we can use winConditionToString()
-                        room.settings.winCondition = MultiplayerWinCondition[v];
-
-                        return {
-                            label: room.winConditionToString(),
-                            value: MultiplayerWinCondition[v].toString(),
-                        };
-                    })
-                    .filter((v) => v.label !== undefined)
-                    .sort((a, b) => a.label.localeCompare(b.label)),
-                [interaction.user.id],
-                20
-            )
-        )[0]
+        selectMenuInteraction.values[0]
     );
-
-    if (isNaN(pickedWinCondition)) {
-        return;
-    }
 
     room.settings.winCondition = originalWinCondition;
 
@@ -90,7 +92,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         const result: OperationResult = await room.updateRoom();
 
         if (!result.success) {
-            return InteractionHelper.reply(interaction, {
+            return InteractionHelper.update(selectMenuInteraction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("setRoomWinConditionFailed"),
                     result.reason!
@@ -99,7 +101,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         }
     }
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("setRoomWinConditionSuccess"),
             room.winConditionToString(localization.language)

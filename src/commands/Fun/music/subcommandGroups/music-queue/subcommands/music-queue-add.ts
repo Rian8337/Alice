@@ -8,7 +8,12 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
+import {
+    GuildMember,
+    SelectMenuInteraction,
+    TextChannel,
+    ThreadChannel,
+} from "discord.js";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {
@@ -30,7 +35,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const pickedChoice: string = (
+    const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {
@@ -47,15 +52,14 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             }),
             [interaction.user.id],
             30
-        )
-    )[0];
+        );
 
-    if (!pickedChoice) {
+    if (!selectMenuInteraction) {
         return;
     }
 
     const info: VideoSearchResult = videos.find(
-        (v) => v.videoId === pickedChoice
+        (v) => v.videoId === selectMenuInteraction.values[0]
     )!;
 
     const result: OperationResult = await MusicManager.enqueue(
@@ -71,7 +75,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(selectMenuInteraction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addQueueFailed"),
                 result.reason!
@@ -79,7 +83,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("addQueueSuccess"),
             info.title

@@ -11,6 +11,7 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { BlacklistLocalization } from "@alice-localization/commands/Bot Creators/blacklist/BlacklistLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { SelectMenuInteraction } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: BlacklistLocalization = new BlacklistLocalization(
@@ -31,7 +32,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason", true);
 
-    const pickedChoice: string = (
+    const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {
@@ -55,12 +56,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             ],
             Config.botOwners,
             20
-        )
-    )[0];
+        );
 
-    if (!pickedChoice) {
+    if (!selectMenuInteraction) {
         return;
     }
+
+    await selectMenuInteraction.deferUpdate();
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID,
@@ -75,7 +77,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    switch (pickedChoice) {
+    switch (selectMenuInteraction.values[0]) {
         case "blacklist": {
             if (!reason) {
                 return InteractionHelper.reply(interaction, {

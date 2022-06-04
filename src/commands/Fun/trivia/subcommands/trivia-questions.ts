@@ -9,7 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { TriviaHelper } from "@alice-utils/helpers/TriviaHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, MessageEmbed, SelectMenuInteraction } from "discord.js";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: TriviaLocalization = new TriviaLocalization(
@@ -29,7 +29,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     let category: TriviaQuestionCategory | undefined;
 
     if (interaction.options.getBoolean("forcecategory")) {
-        const pickedChoice: string = (
+        const selectMenuInteraction: SelectMenuInteraction | null =
             await SelectMenuCreator.createSelectMenu(
                 interaction,
                 {
@@ -40,10 +40,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                 TriviaHelper.getCategoryChoices(),
                 [interaction.user.id],
                 30
-            )
-        )[0];
+            );
 
-        if (!pickedChoice) {
+        if (!selectMenuInteraction) {
             CacheManager.stillHasQuestionTriviaActive.delete(
                 interaction.channelId
             );
@@ -51,7 +50,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             return;
         }
 
-        category = parseInt(pickedChoice);
+        await selectMenuInteraction.deferUpdate();
+
+        category = parseInt(selectMenuInteraction.values[0]);
     }
 
     const result: TriviaQuestionResult = await TriviaHelper.askQuestion(

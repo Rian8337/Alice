@@ -14,6 +14,7 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { SelectMenuInteraction } from "discord.js";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -56,7 +57,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const badgeID: string | undefined = (
+    let selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {
@@ -72,43 +73,42 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             }),
             [interaction.user.id],
             30
-        )
-    )[0];
+        );
 
-    if (!badgeID) {
+    if (!selectMenuInteraction) {
         return;
     }
+
+    const badgeID: string = selectMenuInteraction.values[0];
 
     const badge: PartialProfileBackground = ownedBadges.find(
         (v) => v.id === badgeID
     )!;
 
-    const badgeIndexInput: string | undefined = (
-        await SelectMenuCreator.createSelectMenu(
-            interaction,
-            {
-                content: MessageCreator.createWarn(
-                    "Choose the slot number where you want to put the badge on."
+    selectMenuInteraction = await SelectMenuCreator.createSelectMenu(
+        interaction,
+        {
+            content: MessageCreator.createWarn(
+                "Choose the slot number where you want to put the badge on."
+            ),
+        },
+        ArrayHelper.initializeArray(10, 1).map((v, i) => {
+            return {
+                label: (v + i).toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
                 ),
-            },
-            ArrayHelper.initializeArray(10, 1).map((v, i) => {
-                return {
-                    label: (v + i).toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
-                    ),
-                    value: (v + i).toString(),
-                };
-            }),
-            [interaction.user.id],
-            20
-        )
-    )[0];
+                value: (v + i).toString(),
+            };
+        }),
+        [interaction.user.id],
+        20
+    );
 
-    if (!badgeIndexInput) {
+    if (!selectMenuInteraction) {
         return;
     }
 
-    const badgeIndex: number = parseInt(badgeIndexInput) - 1;
+    const badgeIndex: number = parseInt(selectMenuInteraction.values[0]) - 1;
 
     pictureConfig.activeBadges[badgeIndex] = badge;
 

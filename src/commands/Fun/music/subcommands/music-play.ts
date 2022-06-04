@@ -4,7 +4,12 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
-import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
+import {
+    GuildMember,
+    SelectMenuInteraction,
+    TextChannel,
+    ThreadChannel,
+} from "discord.js";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -29,7 +34,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const pickedChoice: string = (
+    const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {
@@ -46,15 +51,14 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             }),
             [interaction.user.id],
             30
-        )
-    )[0];
+        );
 
-    if (!pickedChoice) {
+    if (!selectMenuInteraction) {
         return;
     }
 
     const info: VideoSearchResult = videos.find(
-        (v) => v.videoId === pickedChoice
+        (v) => v.videoId === selectMenuInteraction.values[0]
     )!;
 
     const result: OperationResult = await MusicManager.enqueue(
@@ -65,7 +69,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     );
 
     if (!result.success) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(selectMenuInteraction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playTrackFailed"),
                 result.reason!
@@ -73,7 +77,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("playTrackSuccess"),
             info.title

@@ -9,6 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { SelectMenuInteraction } from "discord.js";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: LocaleLocalization = new LocaleLocalization(
@@ -20,7 +21,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     const scope: string = interaction.options.getString("scope", true);
 
-    const pickedLanguage: Language = <Language>(
+    const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {
@@ -48,12 +49,13 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             ].sort((a, b) => a.label.localeCompare(b.label)),
             [interaction.user.id],
             20
-        )
-    )[0];
+        );
 
-    if (!pickedLanguage) {
+    if (!selectMenuInteraction) {
         return;
     }
+
+    const pickedLanguage: Language = <Language>selectMenuInteraction.values[0];
 
     let result: OperationResult;
 
@@ -65,7 +67,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                     "MANAGE_GUILD",
                 ])
             ) {
-                return InteractionHelper.reply(interaction, {
+                return InteractionHelper.update(selectMenuInteraction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
                             Constants.noPermissionReject
@@ -88,7 +90,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                     "MANAGE_CHANNELS",
                 ])
             ) {
-                return InteractionHelper.reply(interaction, {
+                return InteractionHelper.update(selectMenuInteraction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
                             Constants.noPermissionReject
@@ -114,7 +116,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     if (!result.success) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(selectMenuInteraction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setLocaleFailed"),
                 result.reason!
@@ -122,7 +124,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("setLocaleSuccess")
         ),

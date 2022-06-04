@@ -14,6 +14,7 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { SelectMenuInteraction } from "discord.js";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -56,7 +57,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const badgeIndexInput: string | undefined = (
+    const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {
@@ -74,14 +75,13 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             }),
             [interaction.user.id],
             20
-        )
-    )[0];
+        );
 
-    if (!badgeIndexInput) {
+    if (!selectMenuInteraction) {
         return;
     }
 
-    const badgeIndex: number = parseInt(badgeIndexInput) - 1;
+    const badgeIndex: number = parseInt(selectMenuInteraction.values[0]) - 1;
 
     pictureConfig.activeBadges[badgeIndex] = null;
 

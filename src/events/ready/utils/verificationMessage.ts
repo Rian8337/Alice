@@ -15,6 +15,7 @@ import {
     MessageComponentInteraction,
     MessageEmbed,
     Role,
+    SelectMenuInteraction,
     Snowflake,
     TextChannel,
     ThreadChannel,
@@ -100,9 +101,7 @@ export const run: EventUtil["run"] = async (client) => {
                 break;
         }
 
-        const selectedLanguage: keyof typeof VerifyLanguage | undefined = <
-            keyof typeof VerifyLanguage | undefined
-        >(
+        const selectMenuInteraction: SelectMenuInteraction | null =
             await SelectMenuCreator.createSelectMenu(
                 i,
                 {
@@ -126,12 +125,11 @@ export const run: EventUtil["run"] = async (client) => {
                     .sort((a, b) => a.label.localeCompare(b.label)),
                 [i.user.id],
                 60
-            )
-        )[0];
+            );
 
         CacheManager.userHasActiveVerificationMenu.delete(i.user.id);
 
-        return selectedLanguage;
+        return <keyof typeof VerifyLanguage>selectMenuInteraction?.values[0];
     };
 
     arrivalMessage

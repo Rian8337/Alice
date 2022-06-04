@@ -6,6 +6,7 @@ import {
     MessageComponentInteraction,
     MessageSelectMenu,
     MessageSelectOptionData,
+    SelectMenuInteraction,
     Snowflake,
 } from "discord.js";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
@@ -29,7 +30,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * @param choices The choices that the user can choose.
      * @param users The users who can interact with the select menu.
      * @param duration The duration the select menu will be active for.
-     * @returns The choices that the user picked.
+     * @returns The interaction with the user.
      */
     static async createSelectMenu(
         interaction: BaseCommandInteraction | MessageComponentInteraction,
@@ -37,7 +38,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         choices: MessageSelectOptionData[],
         users: Snowflake[],
         duration: number
-    ): Promise<string[]> {
+    ): Promise<SelectMenuInteraction | null> {
         const localization: SelectMenuCreatorLocalization =
             this.getLocalization(await CommandHelper.getLocale(interaction));
 
@@ -97,15 +98,15 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
 
         const { collector } = collectorOptions;
 
-        collector.once("collect", async (i) => {
-            await i.deferUpdate();
-
+        collector.once("collect", () => {
             collector.stop();
         });
 
         return new Promise((resolve) => {
             collector.once("end", async (collected) => {
-                if (collected.size > 0) {
+                const i: SelectMenuInteraction | undefined = collected.first();
+
+                if (i) {
                     const index: number = options.components!.findIndex((v) => {
                         return (
                             v.components.length === 1 &&
@@ -132,7 +133,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     }
                 }
 
-                resolve(collected.first()?.values ?? []);
+                resolve(i ?? null);
             });
         });
     }

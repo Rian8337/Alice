@@ -11,8 +11,13 @@ export interface SlashSubcommand {
      *
      * @param client The instance of the bot.
      * @param interaction The interaction that executes the subcommand.
+     * @param args Extra arguments for the subcommand.
      */
-    run(client: Bot, interaction: CommandInteraction): Promise<unknown>;
+    run(
+        client: Bot,
+        interaction: CommandInteraction,
+        ...args: unknown[]
+    ): Promise<unknown>;
 
     /**
      * Configuration for the subcommand.

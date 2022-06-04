@@ -11,6 +11,7 @@ import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { SelectMenuInteraction } from "discord.js";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -48,40 +49,41 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
+    const selectMenuInteraction: SelectMenuInteraction | null =
+        await SelectMenuCreator.createSelectMenu(
+            interaction,
+            {
+                content: MessageCreator.createWarn(
+                    localization.getTranslation("pickTeamMode")
+                ),
+            },
+            (<(keyof typeof MultiplayerTeamMode)[]>(
+                Object.keys(MultiplayerTeamMode)
+            ))
+                .map((v) => {
+                    // Set the team mode to room first so we can use winConditionToString()
+                    room.settings.teamMode = MultiplayerTeamMode[v];
+
+                    return {
+                        label: room.teamModeToString(),
+                        value: MultiplayerTeamMode[v].toString(),
+                    };
+                })
+                .filter((v) => v.label !== undefined)
+                .sort((a, b) => a.label.localeCompare(b.label)),
+            [interaction.user.id],
+            20
+        );
+
+    if (!selectMenuInteraction) {
+        return;
+    }
+
     const originalTeamMode: MultiplayerTeamMode = room.settings.teamMode;
 
     const pickedTeamMode: MultiplayerTeamMode = parseInt(
-        (
-            await SelectMenuCreator.createSelectMenu(
-                interaction,
-                {
-                    content: MessageCreator.createWarn(
-                        localization.getTranslation("pickTeamMode")
-                    ),
-                },
-                (<(keyof typeof MultiplayerTeamMode)[]>(
-                    Object.keys(MultiplayerTeamMode)
-                ))
-                    .map((v) => {
-                        // Set the team mode to room first so we can use winConditionToString()
-                        room.settings.teamMode = MultiplayerTeamMode[v];
-
-                        return {
-                            label: room.teamModeToString(),
-                            value: MultiplayerTeamMode[v].toString(),
-                        };
-                    })
-                    .filter((v) => v.label !== undefined)
-                    .sort((a, b) => a.label.localeCompare(b.label)),
-                [interaction.user.id],
-                20
-            )
-        )[0]
+        selectMenuInteraction.values[0]
     );
-
-    if (isNaN(pickedTeamMode)) {
-        return;
-    }
 
     room.settings.teamMode = originalTeamMode;
 
@@ -105,7 +107,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         const result: OperationResult = await room.updateRoom();
 
         if (!result.success) {
-            return InteractionHelper.reply(interaction, {
+            return InteractionHelper.update(selectMenuInteraction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("setRoomTeamModeFailed"),
                     result.reason!
@@ -114,7 +116,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         }
     }
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("setRoomTeamModeSuccess"),
             room.teamModeToString(localization.language)

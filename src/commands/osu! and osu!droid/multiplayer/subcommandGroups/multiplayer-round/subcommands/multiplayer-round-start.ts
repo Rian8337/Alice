@@ -76,7 +76,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (!(interaction.options.getBoolean("force") ?? false)) {
+    if (!interaction.options.getBoolean("force")) {
         const unreadyPlayers: MultiplayerPlayer[] = room.players.filter(
             (p) => !p.isReady && !p.isSpectating
         );
