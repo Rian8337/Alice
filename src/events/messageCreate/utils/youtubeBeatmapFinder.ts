@@ -196,7 +196,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                             Symbols.star
                         })`,
                         `${beatmapInfo.showStatistics(2, stats)}\n` +
-                            `${beatmapInfo.showStatistics(2, stats)}\n` +
                             `${beatmapInfo.showStatistics(3, stats)}\n` +
                             `${beatmapInfo.showStatistics(4, stats)}\n` +
                             `**${droidCalcResult.result.total.toFixed(
