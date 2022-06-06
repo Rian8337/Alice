@@ -59,7 +59,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     if (room.settings.maxPlayers !== maxPlayers) {
-        room.settings.teamMode = maxPlayers;
+        room.settings.maxPlayers = maxPlayers;
 
         const result: OperationResult = await room.updateRoom();
 
