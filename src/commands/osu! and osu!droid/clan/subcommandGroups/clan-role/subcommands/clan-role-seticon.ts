@@ -2,10 +2,8 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { loadImage, Image } from "canvas";
 import { MessageAttachment, Role } from "discord.js";
-import { Precision, RequestResponse } from "@rian8337/osu-base";
+import { Precision } from "@rian8337/osu-base";
 import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -57,12 +55,10 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    let icon: Buffer | null = null;
+    let icon: string | null = null;
 
     if (attachment) {
-        const req: RequestResponse = await RESTManager.request(attachment.url);
-
-        if (req.statusCode !== 200) {
+        if (!attachment.width || !attachment.height) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("cannotDownloadRoleIcon")
@@ -70,21 +66,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             });
         }
 
-        icon = req.data;
-
-        let image: Image | undefined;
-
-        try {
-            image = await loadImage(icon);
-        } catch {
-            return InteractionHelper.reply(interaction, {
-                content: MessageCreator.createReject(
-                    localization.getTranslation("invalidRoleIconURL")
-                ),
-            });
-        }
-
-        if (Buffer.byteLength(icon) > 256e3) {
+        if (attachment.size > 256e3) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("roleIconFileSizeTooBig")
@@ -93,10 +75,10 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         }
 
         if (
-            image.naturalHeight < 64 ||
-            image.naturalHeight < 64 ||
+            attachment.width < 64 ||
+            attachment.height < 64 ||
             !Precision.almostEqualsNumber(
-                image.naturalHeight / image.naturalWidth,
+                attachment.height / attachment.width,
                 1
             )
         ) {
@@ -106,6 +88,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                 ),
             });
         }
+
+        icon = attachment.url;
     }
 
     await clanRole.setIcon(icon);
