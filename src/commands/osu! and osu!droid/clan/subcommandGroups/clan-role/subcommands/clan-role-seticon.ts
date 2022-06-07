@@ -14,7 +14,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     );
 
     const attachment: MessageAttachment | null =
-        interaction.options.getAttachment("url");
+        interaction.options.getAttachment("attachment", true);
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
