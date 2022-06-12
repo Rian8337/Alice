@@ -300,7 +300,7 @@ export class Bot extends Client {
                     join(commandPath, folder, command)
                 );
 
-                collection.set(command.substring(0, command.length - 3), file);
+                collection.set(file.config.name, file);
             }
         };
 
