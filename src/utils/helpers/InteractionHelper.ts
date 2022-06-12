@@ -41,6 +41,9 @@ export abstract class InteractionHelper {
         let message: Message;
 
         if (interaction.deferred || interaction.replied) {
+            // Reset message components
+            reply.components ??= [];
+
             message = <Message>await interaction.editReply(reply);
         } else {
             message = <Message>await interaction.reply({
