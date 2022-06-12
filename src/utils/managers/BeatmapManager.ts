@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { GuildEmoji, MessageAttachment, Snowflake } from "discord.js";
+import { GuildEmoji, Message, MessageAttachment, Snowflake } from "discord.js";
 import {
     MapInfo,
     OsuAPIRequestBuilder,
@@ -254,6 +254,45 @@ export abstract class BeatmapManager extends Manager {
         }
 
         return IDs;
+    }
+
+    /**
+     * Attempts to retrieve a beatmap ID from a message.
+     *
+     * The function will attempt to retrieve a beatmap ID from the message embeds' author URL and URL.
+     * If none are found, it will attempt to retrieve from the message's content.
+     *
+     * @param message The message.
+     * @returns The beatmap ID, `null` if not found.
+     */
+    static getBeatmapIDFromMessage(message: Message): number | null {
+        let beatmapId: number | null = null;
+
+        for (const embed of message.embeds) {
+            const id: number =
+                this.getBeatmapID(embed.author?.url ?? "")[0] ??
+                this.getBeatmapID(embed.url ?? "")[0];
+
+            if (id) {
+                beatmapId = id;
+
+                break;
+            }
+        }
+
+        if (!beatmapId) {
+            for (const arg of message.content.split(/\s+/g)) {
+                const id: number = this.getBeatmapID(arg)[0];
+
+                if (id) {
+                    beatmapId = id;
+
+                    break;
+                }
+            }
+        }
+
+        return beatmapId;
     }
 
     /**
