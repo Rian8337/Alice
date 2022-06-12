@@ -26,6 +26,7 @@ import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
 import { BotInteractions } from "@alice-interfaces/core/BotInteractions";
+import { ContextMenuCommand } from "@alice-interfaces/core/ContextMenuCommand";
 
 /**
  * The starting point of the bot.
@@ -101,6 +102,7 @@ export class Bot extends Client {
         Config.isDebug = !!url();
 
         await this.loadSlashCommands();
+        await this.loadContextMenuCommands();
         await this.loadModalCommands();
         await this.loadEvents();
         await this.connectToDatabase();
@@ -142,7 +144,7 @@ export class Bot extends Client {
     }
 
     /**
-     * Loads slash commands from `commands` directory.
+     * Loads slash commands from `interactions/commands` directory.
      */
     private async loadSlashCommands(): Promise<void> {
         this.logger.info("Loading slash commands");
@@ -267,7 +269,48 @@ export class Bot extends Client {
     }
 
     /**
-     * Loads modal submit commands from `modals` directory.
+     * Loads context menu commands from `interactions/contextmenus` directory.
+     */
+    private async loadContextMenuCommands(): Promise<void> {
+        const commandPath: string = join(
+            __dirname,
+            "..",
+            "interactions",
+            "contextmenus"
+        );
+
+        const loadCommands = async (
+            collection: Collection<string, ContextMenuCommand>,
+            folder: string
+        ): Promise<void> => {
+            const commands: string[] = await readdir(join(commandPath, folder));
+
+            this.logger.info("Loading %s context menu commands", folder);
+
+            let i = 0;
+
+            for (const command of commands.filter((v) => v.endsWith(".js"))) {
+                this.logger.success(
+                    "%d. %s loaded",
+                    ++i,
+                    command.substring(0, command.length - 3)
+                );
+
+                const file: ContextMenuCommand = await import(
+                    join(commandPath, folder, command)
+                );
+
+                collection.set(command.substring(0, command.length - 3), file);
+            }
+        };
+
+        await loadCommands(this.interactions.contextMenu.message, "message");
+
+        await loadCommands(this.interactions.contextMenu.user, "user");
+    }
+
+    /**
+     * Loads modal submit commands from `interactions/modals` directory.
      */
     private async loadModalCommands(): Promise<void> {
         this.logger.info("Loading modal submit commands");
