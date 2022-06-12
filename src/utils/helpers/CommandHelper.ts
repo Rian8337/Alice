@@ -74,6 +74,8 @@ export abstract class CommandHelper extends Manager {
             return;
         }
 
+        await selectMenuInteraction.deferUpdate();
+
         const pickedSubcommand: string = selectMenuInteraction.values[0];
 
         return this.runSlashSubOrGroup(
