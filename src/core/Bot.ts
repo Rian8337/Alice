@@ -221,7 +221,7 @@ export class Bot extends Client {
 
             collection.set(subcommandGroup, file);
 
-            await this.loadSlashSubcommands(subcommandGroup, filePath);
+            await this.loadSlashSubcommands(commandName, filePath);
         }
     }
 
