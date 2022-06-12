@@ -25,6 +25,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooManyOptions")
