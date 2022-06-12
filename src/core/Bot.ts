@@ -92,6 +92,7 @@ export class Bot extends Client {
             partials: [
                 "CHANNEL",
                 "GUILD_MEMBER",
+                "GUILD_SCHEDULED_EVENT",
                 "USER",
                 "MESSAGE",
                 "REACTION",
@@ -162,7 +163,12 @@ export class Bot extends Client {
     private async loadSlashCommands(): Promise<void> {
         this.logger.info("Loading slash commands");
 
-        const commandPath: string = join(__dirname, "..", "commands");
+        const commandPath: string = join(
+            __dirname,
+            "..",
+            "interactions",
+            "commands"
+        );
 
         const folders: string[] = await readdir(commandPath);
 
@@ -282,7 +288,12 @@ export class Bot extends Client {
     private async loadModalCommands(): Promise<void> {
         this.logger.info("Loading modal submit commands");
 
-        const commandPath: string = join(__dirname, "..", "modals");
+        const commandPath: string = join(
+            __dirname,
+            "..",
+            "interactions",
+            "modals"
+        );
 
         const folders: string[] = await readdir(commandPath);
 

@@ -45,12 +45,11 @@
     // "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
     "baseUrl": "src",                       /* Base directory to resolve non-absolute module names. */
     "paths": {
-      "@alice-commands/*": ["commands/*"],
       "@alice-core/*": ["core/*"],
       "@alice-database/*": ["database/*"],
       "@alice-enums/*": ["enums/*"],
       "@alice-events/*": ["events/*"],
-      "@alice-modals/*": ["modals/*"],
+      "@alice-interactions/*": ["interactions/*"],
       "@alice-interfaces/*": ["interfaces/*"],
       "@alice-localization/*": ["localization/*"],
       "@alice-types/*": ["types/*"],

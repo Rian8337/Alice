@@ -66,12 +66,11 @@
     "zlib-sync": "^0.1.7"
   },
   "_moduleAliases": {
-    "@alice-commands": "dist/commands",
     "@alice-core": "dist/core",
     "@alice-database": "dist/database",
     "@alice-enums": "dist/enums",
     "@alice-events": "dist/events",
-    "@alice-modals": "dist/modals",
+    "@alice-interactions": "dist/interactions",
     "@alice-interfaces": "dist/interfaces",
     "@alice-localization": "dist/localization",
     "@alice-types": "dist/types",
