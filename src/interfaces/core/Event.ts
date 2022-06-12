@@ -1,6 +1,14 @@
-import { BaseRunnable } from "./BaseRunnable";
+import { Bot } from "@alice-core/Bot";
 
 /**
  * Defines an event.
  */
-export type Event = BaseRunnable;
+export interface Event {
+    /**
+     * Executes the event.
+     *
+     * @param client The instance of the bot.
+     * @param args Additional arguments for the event.
+     */
+    run(client: Bot, ...args: unknown[]): Promise<void>;
+}

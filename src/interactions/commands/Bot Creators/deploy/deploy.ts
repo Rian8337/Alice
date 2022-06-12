@@ -15,7 +15,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     const commandName: string = interaction.options.getString("command", true);
 
     const command: SlashCommand | undefined =
-        client.slashCommands.get(commandName);
+        client.interactions.chatInput.get(commandName);
 
     if (!command) {
         return InteractionHelper.reply(interaction, {

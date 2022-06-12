@@ -5,7 +5,7 @@ export const run: EventUtil["run"] = async (
     client,
     interaction: Interaction
 ) => {
-    if (!interaction.isContextMenu()) {
+    if (!interaction.isMessageContextMenu()) {
         return;
     }
 
@@ -14,7 +14,7 @@ export const run: EventUtil["run"] = async (
 
 export const config: EventUtil["config"] = {
     description:
-        "Responsible for handling commands from context menus. This event utility cannot be disabled.",
+        "Responsible for handling message context menus. This event utility cannot be disabled.",
     togglePermissions: [],
     toggleScope: [],
     debugEnabled: true,

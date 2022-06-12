@@ -25,6 +25,7 @@ import { Manager } from "@alice-utils/base/Manager";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
+import { BotInteractions } from "@alice-interfaces/core/BotInteractions";
 
 /**
  * The starting point of the bot.
@@ -38,33 +39,16 @@ export class Bot extends Client {
     readonly logger: Consola = consola;
 
     /**
-     * The slash commands that this bot has, mapped by the name of the command.
+     * The interactions that this bot has.
      */
-    readonly slashCommands: Collection<string, SlashCommand> = new Collection();
-
-    /**
-     * The slash subcommand groups that this bot has, mapped by the name of the command,
-     * and each subcommand group mapped by its name.
-     */
-    readonly slashSubcommandGroups: Collection<
-        string,
-        Collection<string, SlashSubcommand>
-    > = new Collection();
-
-    /**
-     * The slash subcommands that this bot has, either mapped by the
-     * name of the command or the name of the subcommand group,
-     * and each subcommand mapped by its name.
-     */
-    readonly slashSubcommands: Collection<
-        string,
-        Collection<string, SlashSubcommand>
-    > = new Collection();
-
-    /**
-     * The modal submit commands that this bot has, mapped by the name of the command.
-     */
-    readonly modalCommands: Collection<string, ModalCommand> = new Collection();
+    readonly interactions: BotInteractions = {
+        chatInput: new Collection(),
+        contextMenu: {
+            message: new Collection(),
+            user: new Collection(),
+        },
+        modalSubmit: new Collection(),
+    };
 
     /**
      * The event utilities that this bot has, mapped by the event's name, and each utility mapped by its name.
@@ -190,7 +174,11 @@ export class Bot extends Client {
                     `${filePath}/${command}`
                 );
 
-                this.slashCommands.set(command, file);
+                this.interactions.chatInput.set(command, {
+                    ...file,
+                    subcommandGroups: new Collection(),
+                    subcommands: new Collection(),
+                });
 
                 await this.loadSlashSubcommandGroups(command, filePath);
 
@@ -222,7 +210,7 @@ export class Bot extends Client {
         }
 
         const collection: Collection<string, SlashSubcommand> =
-            new Collection();
+            this.interactions.chatInput.get(commandName)!.subcommandGroups;
 
         for (const subcommandGroup of subcommandGroups) {
             const filePath: string = `${subcommandGroupPath}/${subcommandGroup}`;
@@ -235,8 +223,6 @@ export class Bot extends Client {
 
             await this.loadSlashSubcommands(subcommandGroup, filePath);
         }
-
-        this.slashSubcommandGroups.set(commandName, collection);
     }
 
     /**
@@ -260,7 +246,7 @@ export class Bot extends Client {
         }
 
         const collection: Collection<string, SlashSubcommand> =
-            new Collection();
+            this.interactions.chatInput.get(commandName)!.subcommands;
 
         for (const subcommand of subcommands.filter((v) => v.endsWith(".js"))) {
             const filePath: string = join(subcommandPath, subcommand);
@@ -278,8 +264,6 @@ export class Bot extends Client {
                 file
             );
         }
-
-        this.slashSubcommands.set(commandName, collection);
     }
 
     /**
@@ -318,7 +302,7 @@ export class Bot extends Client {
                     join(commandPath, folder, command)
                 );
 
-                this.modalCommands.set(
+                this.interactions.modalSubmit.set(
                     command.substring(0, command.length - 3),
                     file
                 );
@@ -411,7 +395,8 @@ export class Bot extends Client {
         const registerCommand = async (name: string): Promise<void> => {
             this.logger.info(`Registering ${name} command`);
 
-            const command: SlashCommand = this.slashCommands.get(name)!;
+            const command: SlashCommand =
+                this.interactions.chatInput.get(name)!;
 
             const data: ApplicationCommandData = {
                 name: command.config.name,

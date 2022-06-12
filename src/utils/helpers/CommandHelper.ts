@@ -348,26 +348,17 @@ export abstract class CommandHelper extends Manager {
             return;
         }
 
-        const subcommandGroupName: string = [
+        const subcommandFileName: string = [
             interaction.commandName,
             interaction.options.getSubcommandGroup(false) ?? "",
+            interaction.options.getSubcommand(),
         ]
             .filter(Boolean)
             .join("-");
 
-        const subcommandFileName: string = [
-            subcommandGroupName,
-            interaction.options.getSubcommand(),
-        ].join("-");
-
-        return (
-            this.client.slashSubcommands
-                .get(subcommandGroupName)
-                ?.get(subcommandFileName) ||
-            this.client.slashSubcommands
-                .get(interaction.commandName)
-                ?.get(subcommandFileName)
-        );
+        return this.client.interactions.chatInput
+            .get(interaction.commandName)
+            ?.subcommands.get(subcommandFileName);
     }
 
     /**
@@ -388,9 +379,9 @@ export abstract class CommandHelper extends Manager {
             interaction.options.getSubcommandGroup(),
         ].join("-");
 
-        return this.client.slashSubcommandGroups
+        return this.client.interactions.chatInput
             .get(interaction.commandName)
-            ?.get(subcommandGroupName);
+            ?.subcommandGroups.get(subcommandGroupName);
     }
 
     /**

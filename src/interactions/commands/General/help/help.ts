@@ -28,7 +28,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 function getCommandList(client: Bot): Collection<string, string[]> {
     const output: Collection<string, string[]> = new Collection();
 
-    for (const cmd of client.slashCommands.values()) {
+    for (const cmd of client.interactions.chatInput.values()) {
         const category: string[] = output.get(cmd.category) ?? [];
 
         category.push(cmd.config.name);
@@ -54,7 +54,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
 
     if (commandName) {
         const cmd: SlashCommand | undefined =
-            client.slashCommands.get(commandName);
+            client.interactions.chatInput.get(commandName);
 
         if (!cmd) {
             return InteractionHelper.reply(interaction, {

@@ -27,7 +27,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         <CommandUtilScope>interaction.options.getString("scope") ?? "channel";
 
     const command: SlashCommand | undefined =
-        client.slashCommands.get(commandName);
+        client.interactions.chatInput.get(commandName);
 
     if (!command) {
         return InteractionHelper.reply(interaction, {

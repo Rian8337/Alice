@@ -95,9 +95,9 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
                 ),
             });
 
-            client.slashSubcommands
+            client.interactions.chatInput
                 .get("match")!
-                .get("match-submit")!
+                .subcommands.get("match-submit")!
                 .run(client, interaction);
         }, 30 * 1000);
 

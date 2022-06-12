@@ -23,7 +23,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             await CommandHelper.getLocale(message.author)
         );
 
-        return message.channel
+        message.channel
             .send(
                 MessageCreator.createWarn(
                     localization.getTranslation("imageSentTooFast"),
@@ -31,6 +31,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 )
             )
             .then((m) => setTimeout(() => m.delete(), 5 * 1000));
+
+        return;
     }
 
     const images: string[] = [];

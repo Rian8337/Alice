@@ -50,7 +50,7 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    const command: SlashCommand | undefined = client.slashCommands.get(
+    const command: SlashCommand | undefined = client.interactions.chatInput.get(
         interaction.commandName
     );
 

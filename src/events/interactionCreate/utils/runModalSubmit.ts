@@ -40,9 +40,8 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    const command: ModalCommand | undefined = client.modalCommands.get(
-        interaction.customId
-    );
+    const command: ModalCommand | undefined =
+        client.interactions.modalSubmit.get(interaction.customId);
 
     if (!command) {
         return interaction.reply({
