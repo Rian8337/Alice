@@ -135,10 +135,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const firstPlayerPP: Collection<string, PPEntry> = firstBindInfo.pp;
     const secondPlayerPP: Collection<string, PPEntry> = secondBindInfo.pp;
-    const ppToCompare: Collection<string, PPEntry> =
-        firstPlayerPP.intersect(secondPlayerPP);
+    const ppToCompare: string[] = [];
 
-    if (ppToCompare.size === 0) {
+    for (const key of firstPlayerPP.keys()) {
+        if (secondPlayerPP.has(key)) {
+            ppToCompare.push(key);
+        }
+    }
+
+    if (ppToCompare.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noSimilarPlayFound")
@@ -228,10 +233,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 5 * (page - 1);
-            i < Math.min(ppToCompare.size, 5 + 5 * (page - 1));
+            i < Math.min(ppToCompare.length, 5 + 5 * (page - 1));
             ++i
         ) {
-            const key: string = ppToCompare.keyAt(i)!;
+            const key: string = ppToCompare[i];
 
             const firstPP: PPEntry = firstPlayerPP.get(key)!;
             const secondPP: PPEntry = secondPlayerPP.get(key)!;
@@ -268,7 +273,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         { embeds: [embed] },
         [interaction.user.id],
         1,
-        Math.ceil(ppToCompare.size / 5),
+        Math.ceil(ppToCompare.length / 5),
         120,
         onPageChange
     );
