@@ -20,7 +20,7 @@ import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalc
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { OsuStarRating } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";

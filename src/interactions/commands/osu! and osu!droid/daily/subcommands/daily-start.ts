@@ -3,7 +3,7 @@ import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
+import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CommandInteraction } from "discord.js";

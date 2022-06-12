@@ -5,7 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsLocalization";
+import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

@@ -3,7 +3,7 @@ import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/P
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageAttachment, Snowflake } from "discord.js";
-import { PrototypecheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/prototypecheck/PrototypecheckLocalization";
+import { PrototypecheckLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/prototypecheck/PrototypecheckLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

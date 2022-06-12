@@ -1,5 +1,5 @@
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { MultiplayerLocalization } from "@alice-localization/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
+import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

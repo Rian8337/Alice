@@ -6,7 +6,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
-import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
+import { LeaderboardLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

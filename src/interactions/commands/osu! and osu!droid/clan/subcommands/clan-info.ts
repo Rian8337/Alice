@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanCollectionManager } from "@alice-database/managers/elainaDb/ClanCollectionManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

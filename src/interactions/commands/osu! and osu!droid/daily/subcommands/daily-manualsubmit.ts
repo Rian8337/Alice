@@ -8,7 +8,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { DailyLocalization } from "@alice-localization/commands/osu! and osu!droid/daily/DailyLocalization";
+import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

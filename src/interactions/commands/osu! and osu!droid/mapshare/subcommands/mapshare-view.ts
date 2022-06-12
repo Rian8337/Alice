@@ -8,7 +8,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
+import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

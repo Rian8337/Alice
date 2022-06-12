@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { NewsChannel, TextChannel, ThreadChannel } from "discord.js";
-import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
+import { SettingsLocalization } from "@alice-localization/interactions/commands/Staff/settings/SettingsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

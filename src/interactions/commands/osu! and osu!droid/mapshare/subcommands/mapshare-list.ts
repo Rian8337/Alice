@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
+import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

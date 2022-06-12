@@ -16,7 +16,7 @@ import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { HelpLocalization } from "@alice-localization/commands/General/help/HelpLocalization";
+import { HelpLocalization } from "@alice-localization/interactions/commands/General/help/HelpLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 /**

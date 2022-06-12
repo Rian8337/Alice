@@ -6,7 +6,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
+import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

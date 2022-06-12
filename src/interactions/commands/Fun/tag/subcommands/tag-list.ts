@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { TagLocalization } from "@alice-localization/commands/Fun/tag/TagLocalization";
+import { TagLocalization } from "@alice-localization/interactions/commands/Fun/tag/TagLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

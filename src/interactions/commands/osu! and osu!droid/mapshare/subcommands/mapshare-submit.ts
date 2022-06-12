@@ -1,5 +1,5 @@
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { MapshareLocalization } from "@alice-localization/commands/osu! and osu!droid/mapshare/MapshareLocalization";
+import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { TextInputComponent } from "discord.js";

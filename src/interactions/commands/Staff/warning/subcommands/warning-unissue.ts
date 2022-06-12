@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { WarningLocalization } from "@alice-localization/commands/Staff/warning/WarningLocalization";
+import { WarningLocalization } from "@alice-localization/interactions/commands/Staff/warning/WarningLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

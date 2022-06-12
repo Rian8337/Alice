@@ -8,7 +8,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { GuildEmoji, GuildMember, MessageEmbed } from "discord.js";
-import { EmojistatisticsLocalization } from "@alice-localization/commands/Tools/emojistatistics/EmojistatisticsLocalization";
+import { EmojistatisticsLocalization } from "@alice-localization/interactions/commands/Tools/emojistatistics/EmojistatisticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";

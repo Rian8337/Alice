@@ -11,7 +11,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { RecentLocalization } from "@alice-localization/commands/osu! and osu!droid/recent/RecentLocalization";
+import { RecentLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/recent/RecentLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

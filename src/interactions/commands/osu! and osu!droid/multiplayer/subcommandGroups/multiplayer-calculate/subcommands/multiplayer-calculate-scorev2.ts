@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { MultiplayerLocalization } from "@alice-localization/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
+import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

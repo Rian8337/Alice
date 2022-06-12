@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
-import { ClanAnnounceLocalization } from "@alice-localization/modals/osu! and osu!droid/clan-announce/ClanAnnounceLocalization";
+import { ClanAnnounceLocalization } from "@alice-localization/interactions/modals/osu! and osu!droid/clan-announce/ClanAnnounceLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

@@ -12,7 +12,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed, Snowflake } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { PPcheckLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcheck/PPcheckLocalization";
+import { PPcheckLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcheck/PPcheckLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

@@ -6,7 +6,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { GuildMember } from "discord.js";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {

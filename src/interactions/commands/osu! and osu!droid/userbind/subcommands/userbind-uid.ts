@@ -6,7 +6,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { UserbindLocalization } from "@alice-localization/commands/osu! and osu!droid/userbind/UserbindLocalization";
+import { UserbindLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Constants } from "@alice-core/Constants";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

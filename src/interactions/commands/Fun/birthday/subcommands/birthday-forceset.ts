@@ -3,7 +3,7 @@ import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
-import { BirthdayLocalization } from "@alice-localization/commands/Fun/birthday/BirthdayLocalization";
+import { BirthdayLocalization } from "@alice-localization/interactions/commands/Fun/birthday/BirthdayLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

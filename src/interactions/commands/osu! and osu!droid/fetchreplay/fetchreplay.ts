@@ -29,7 +29,7 @@ import {
     HitErrorInformation,
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { FetchreplayLocalization } from "@alice-localization/commands/osu! and osu!droid/fetchreplay/FetchreplayLocalization";
+import { FetchreplayLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/fetchreplay/FetchreplayLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

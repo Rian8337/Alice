@@ -6,7 +6,7 @@ import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { MathquizLocalization } from "@alice-localization/commands/Fun/mathquiz/MathquizLocalization";
+import { MathquizLocalization } from "@alice-localization/interactions/commands/Fun/mathquiz/MathquizLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

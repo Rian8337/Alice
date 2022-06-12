@@ -4,7 +4,7 @@ import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember } from "discord.js";
-import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

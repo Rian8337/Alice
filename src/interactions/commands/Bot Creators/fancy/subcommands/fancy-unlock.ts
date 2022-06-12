@@ -3,7 +3,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 import { User } from "discord.js";
-import { FancyLocalization } from "@alice-localization/commands/Bot Creators/fancy/FancyLocalization";
+import { FancyLocalization } from "@alice-localization/interactions/commands/Bot Creators/fancy/FancyLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

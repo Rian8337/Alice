@@ -5,7 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { CoinsLocalization } from "@alice-localization/commands/Fun/coins/CoinsLocalization";
+import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

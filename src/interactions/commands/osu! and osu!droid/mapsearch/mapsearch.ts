@@ -13,7 +13,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { rankedStatus, RequestResponse } from "@rian8337/osu-base";
-import { MapsearchLocalization } from "@alice-localization/commands/osu! and osu!droid/mapsearch/MapsearchLocalization";
+import { MapsearchLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapsearch/MapsearchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

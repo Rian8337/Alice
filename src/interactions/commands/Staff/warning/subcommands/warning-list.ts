@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { WarningLocalization } from "@alice-localization/commands/Staff/warning/WarningLocalization";
+import { WarningLocalization } from "@alice-localization/interactions/commands/Staff/warning/WarningLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { Language } from "@alice-localization/base/Language";
-import { LocaleLocalization } from "@alice-localization/commands/Tools/locale/LocaleLocalization";
+import { LocaleLocalization } from "@alice-localization/interactions/commands/Tools/locale/LocaleLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";

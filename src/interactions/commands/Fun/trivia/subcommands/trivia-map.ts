@@ -21,7 +21,7 @@ import {
     OsuAPIResponse,
     RequestResponse,
 } from "@rian8337/osu-base";
-import { TriviaLocalization } from "@alice-localization/commands/Fun/trivia/TriviaLocalization";
+import { TriviaLocalization } from "@alice-localization/interactions/commands/Fun/trivia/TriviaLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";

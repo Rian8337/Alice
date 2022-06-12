@@ -6,7 +6,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MapshareSubmissionLocalization } from "@alice-localization/modals/osu! and osu!droid/mapshare-postsubmission/MapshareSubmissionLocalization";
+import { MapshareSubmissionLocalization } from "@alice-localization/interactions/modals/osu! and osu!droid/mapshare-postsubmission/MapshareSubmissionLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";

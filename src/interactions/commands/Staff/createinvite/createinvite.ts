@@ -11,7 +11,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { CreateinviteLocalization } from "@alice-localization/commands/Staff/createinvite/CreateinviteLocalization";
+import { CreateinviteLocalization } from "@alice-localization/interactions/commands/Staff/createinvite/CreateinviteLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

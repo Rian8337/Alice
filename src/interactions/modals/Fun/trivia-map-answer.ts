@@ -1,6 +1,6 @@
 import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
 import { TriviaMapCachedAnswer } from "@alice-interfaces/trivia/TriviaMapCachedAnswer";
-import { TriviaMapAnswerLocalization } from "@alice-localization/modals/Fun/trivia-map-answerquestion/TriviaMapAnswerLocalization";
+import { TriviaMapAnswerLocalization } from "@alice-localization/interactions/modals/Fun/trivia-map-answerquestion/TriviaMapAnswerLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

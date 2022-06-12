@@ -5,7 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MessageEmbed, MessageOptions } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { DownloadlinkLocalization } from "@alice-localization/commands/osu! and osu!droid/downloadlink/DownloadlinkLocalization";
+import { DownloadlinkLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/downloadlink/DownloadlinkLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

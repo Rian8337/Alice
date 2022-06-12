@@ -10,7 +10,7 @@ import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Recent5Localization } from "@alice-localization/commands/osu! and osu!droid/recent5/Recent5Localization";
+import { Recent5Localization } from "@alice-localization/interactions/commands/osu! and osu!droid/recent5/Recent5Localization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

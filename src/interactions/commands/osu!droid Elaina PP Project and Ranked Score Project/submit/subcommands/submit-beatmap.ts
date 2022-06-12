@@ -19,7 +19,7 @@ import { MapInfo } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { SubmitLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/submit/SubmitLocalization";
+import { SubmitLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/submit/SubmitLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

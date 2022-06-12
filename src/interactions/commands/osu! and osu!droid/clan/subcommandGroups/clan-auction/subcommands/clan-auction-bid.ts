@@ -8,7 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

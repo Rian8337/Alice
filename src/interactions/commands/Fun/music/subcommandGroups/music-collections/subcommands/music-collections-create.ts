@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MusicCollection } from "@alice-database/utils/aliceDb/MusicCollection";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

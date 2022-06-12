@@ -8,7 +8,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
+import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { LocaleLocalization } from "@alice-localization/commands/Tools/locale/LocaleLocalization";
+import { LocaleLocalization } from "@alice-localization/interactions/commands/Tools/locale/LocaleLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

@@ -14,7 +14,7 @@ import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { VerifyLocalization } from "@alice-localization/commands/Staff/verify/VerifyLocalization";
+import { VerifyLocalization } from "@alice-localization/interactions/commands/Staff/verify/VerifyLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

@@ -4,7 +4,7 @@ import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
-import { VoteLocalization } from "@alice-localization/commands/Tools/vote/VoteLocalization";
+import { VoteLocalization } from "@alice-localization/interactions/commands/Tools/vote/VoteLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

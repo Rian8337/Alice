@@ -4,7 +4,7 @@ import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseTournamentMatch } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMatch";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
+import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

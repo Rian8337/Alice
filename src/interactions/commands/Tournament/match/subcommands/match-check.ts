@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { MatchLocalization } from "@alice-localization/commands/Tournament/match/MatchLocalization";
+import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

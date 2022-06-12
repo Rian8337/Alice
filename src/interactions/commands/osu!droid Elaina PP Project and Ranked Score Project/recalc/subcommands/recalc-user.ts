@@ -8,7 +8,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { GuildMember, User } from "discord.js";
 import { RecalculationManager } from "@alice-utils/managers/RecalculationManager";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
+import { RecalcLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {

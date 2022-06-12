@@ -9,7 +9,7 @@ import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
 import { WhitelistValidity } from "@alice-enums/utils/WhitelistValidity";
 import { MapInfo } from "@rian8337/osu-base";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { ScanLocalization } from "@alice-localization/commands/Bot Creators/scan/ScanLocalization";
+import { ScanLocalization } from "@alice-localization/interactions/commands/Bot Creators/scan/ScanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

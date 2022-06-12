@@ -8,7 +8,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { GuildMember, MessageEmbed, MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
+import { WhitelistLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

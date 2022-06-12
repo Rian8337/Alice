@@ -1,7 +1,7 @@
 import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { TriviaQuestionResult } from "@alice-interfaces/trivia/TriviaQuestionResult";
-import { TriviaLocalization } from "@alice-localization/commands/Fun/trivia/TriviaLocalization";
+import { TriviaLocalization } from "@alice-localization/interactions/commands/Fun/trivia/TriviaLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";

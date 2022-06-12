@@ -4,7 +4,7 @@ import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
 import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MultiplayerPlayer } from "@alice-interfaces/multiplayer/MultiplayerPlayer";
-import { MultiplayerLocalization } from "@alice-localization/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
+import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

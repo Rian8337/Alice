@@ -3,7 +3,7 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MaintenanceLocalization } from "@alice-localization/commands/Bot Creators/maintenance/MaintenanceLocalization";
+import { MaintenanceLocalization } from "@alice-localization/interactions/commands/Bot Creators/maintenance/MaintenanceLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

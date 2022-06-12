@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { NamechangeLocalization } from "@alice-localization/commands/osu! and osu!droid/namechange/NamechangeLocalization";
+import { NamechangeLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

@@ -3,7 +3,7 @@ import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/P
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { RecalcLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
+import { RecalcLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

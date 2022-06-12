@@ -3,7 +3,7 @@ import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMapp
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { PoolLocalization } from "@alice-localization/commands/Tournament/pool/PoolLocalization";
+import { PoolLocalization } from "@alice-localization/interactions/commands/Tournament/pool/PoolLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

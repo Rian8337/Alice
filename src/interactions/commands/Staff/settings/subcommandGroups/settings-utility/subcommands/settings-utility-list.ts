@@ -1,6 +1,6 @@
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
+import { SettingsLocalization } from "@alice-localization/interactions/commands/Staff/settings/SettingsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

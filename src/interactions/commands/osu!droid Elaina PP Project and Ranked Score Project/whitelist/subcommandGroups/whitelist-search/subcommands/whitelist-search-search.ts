@@ -3,7 +3,7 @@ import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { WhitelistLocalization } from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
+import { WhitelistLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/whitelist/WhitelistLocalization";
 import { Comparison } from "@alice-types/dpp/Comparison";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

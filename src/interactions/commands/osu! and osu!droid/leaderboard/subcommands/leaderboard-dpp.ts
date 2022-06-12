@@ -7,7 +7,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Collection } from "discord.js";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { LeaderboardLocalization } from "@alice-localization/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
+import { LeaderboardLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

@@ -13,7 +13,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ReportLocalization } from "@alice-localization/commands/General/report/ReportLocalization";
+import { ReportLocalization } from "@alice-localization/interactions/commands/General/report/ReportLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {

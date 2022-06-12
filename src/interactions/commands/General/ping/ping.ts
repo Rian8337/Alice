@@ -6,7 +6,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
-import { PingLocalization } from "@alice-localization/commands/General/ping/PingLocalization";
+import { PingLocalization } from "@alice-localization/interactions/commands/General/ping/PingLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

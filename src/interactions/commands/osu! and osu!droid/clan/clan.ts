@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

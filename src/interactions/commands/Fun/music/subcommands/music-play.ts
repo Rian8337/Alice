@@ -11,7 +11,7 @@ import {
     ThreadChannel,
 } from "discord.js";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { MusicLocalization } from "@alice-localization/commands/Fun/music/MusicLocalization";
+import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

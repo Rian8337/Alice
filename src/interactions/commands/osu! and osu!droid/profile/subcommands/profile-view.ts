@@ -8,7 +8,7 @@ import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

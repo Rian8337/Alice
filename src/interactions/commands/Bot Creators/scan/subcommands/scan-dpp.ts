@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { ScanLocalization } from "@alice-localization/commands/Bot Creators/scan/ScanLocalization";
+import { ScanLocalization } from "@alice-localization/interactions/commands/Bot Creators/scan/ScanLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";

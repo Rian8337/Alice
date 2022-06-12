@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GamestatsLocalization } from "@alice-localization/commands/osu! and osu!droid/gamestats/GamestatsLocalization";
+import { GamestatsLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/gamestats/GamestatsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

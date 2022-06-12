@@ -12,7 +12,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

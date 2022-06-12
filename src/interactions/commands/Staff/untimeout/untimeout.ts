@@ -5,7 +5,7 @@ import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
-import { UntimeoutLocalization } from "@alice-localization/commands/Staff/untimeout/UntimeoutLocalization";
+import { UntimeoutLocalization } from "@alice-localization/interactions/commands/Staff/untimeout/UntimeoutLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 

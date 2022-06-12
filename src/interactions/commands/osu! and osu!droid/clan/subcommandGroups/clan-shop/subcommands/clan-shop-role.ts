@@ -7,7 +7,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Guild, GuildMember, Role } from "discord.js";
-import { ClanLocalization } from "@alice-localization/commands/osu! and osu!droid/clan/ClanLocalization";
+import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

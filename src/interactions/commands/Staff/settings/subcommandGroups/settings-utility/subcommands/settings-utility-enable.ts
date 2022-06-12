@@ -1,7 +1,7 @@
 import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { SettingsLocalization } from "@alice-localization/commands/Staff/settings/SettingsLocalization";
+import { SettingsLocalization } from "@alice-localization/interactions/commands/Staff/settings/SettingsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

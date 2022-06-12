@@ -10,7 +10,7 @@ import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import {
     PPcompareLocalization,
     PPcompareStrings,
-} from "@alice-localization/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcompare/PPcompareLocalization";
+} from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcompare/PPcompareLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

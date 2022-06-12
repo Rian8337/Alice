@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { PlayertrackLocalization } from "@alice-localization/commands/Bot Creators/playertrack/PlayertrackLocalization";
+import { PlayertrackLocalization } from "@alice-localization/interactions/commands/Bot Creators/playertrack/PlayertrackLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {

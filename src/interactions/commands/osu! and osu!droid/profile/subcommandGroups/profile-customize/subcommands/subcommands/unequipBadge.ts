@@ -6,7 +6,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
-import { ProfileLocalization } from "@alice-localization/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
