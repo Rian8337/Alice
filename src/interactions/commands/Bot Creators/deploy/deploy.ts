@@ -1,4 +1,7 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationCommandTypes,
+} from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -6,6 +9,7 @@ import { ApplicationCommandData } from "discord.js";
 import { DeployLocalization } from "@alice-localization/commands/Bot Creators/deploy/DeployLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ContextMenuCommand } from "@alice-interfaces/core/ContextMenuCommand";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: DeployLocalization = new DeployLocalization(
@@ -14,28 +18,57 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
 
     const commandName: string = interaction.options.getString("command", true);
 
-    const command: SlashCommand | undefined =
-        client.interactions.chatInput.get(commandName);
+    let data: ApplicationCommandData;
 
-    if (!command) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("commandNotFound")
-            ),
-        });
-    }
+    const type: ApplicationCommandTypes =
+        interaction.options.getInteger("type") ??
+        ApplicationCommandTypes.CHAT_INPUT;
 
-    const data: ApplicationCommandData = {
-        name: command.config.name,
-        description: command.config.description,
-        options: command.config.options,
-    };
+    if (type === ApplicationCommandTypes.CHAT_INPUT) {
+        const command: SlashCommand | undefined =
+            client.interactions.chatInput.get(commandName);
 
-    if (interaction.options.getBoolean("debug")) {
-        await interaction.guild!.commands.create(data);
+        if (!command) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("commandNotFound")
+                ),
+            });
+        }
+
+        data = {
+            name: command.config.name,
+            description: command.config.description,
+            options: command.config.options,
+        };
     } else {
-        await client.application!.commands.create(data);
+        const command: ContextMenuCommand | undefined = (
+            type === ApplicationCommandTypes.MESSAGE
+                ? client.interactions.contextMenu.message
+                : client.interactions.contextMenu.user
+        ).get(commandName);
+
+        if (!command) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("commandNotFound")
+                ),
+            });
+        }
+
+        data = {
+            name: command.config.name,
+            description: "",
+            type: type,
+        };
     }
+
+    data.type ??= type;
+
+    await (interaction.options.getBoolean("serveronly")
+        ? interaction.guild!
+        : client.application!
+    ).commands.create(data);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
@@ -58,9 +91,29 @@ export const config: SlashCommand["config"] = {
             description: "The command name.",
         },
         {
-            name: "debug",
+            name: "serveronly",
             type: ApplicationCommandOptionTypes.BOOLEAN,
-            description: "Whether to deploy the command in debug server.",
+            description:
+                "Whether to only deploy the command in the server this command is executed in.",
+        },
+        {
+            name: "type",
+            type: ApplicationCommandOptionTypes.INTEGER,
+            description: "The type of the command. Defaults to chat input.",
+            choices: [
+                {
+                    name: "Chat Input",
+                    value: ApplicationCommandTypes.CHAT_INPUT,
+                },
+                {
+                    name: "User Context Menu",
+                    value: ApplicationCommandTypes.USER,
+                },
+                {
+                    name: "Message Context Menu",
+                    value: ApplicationCommandTypes.MESSAGE,
+                },
+            ],
         },
     ],
     example: [

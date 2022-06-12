@@ -14,7 +14,8 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
 
     const commandName: string = interaction.options.getString("command", true);
 
-    const isDebug: boolean = interaction.options.getBoolean("debug") ?? false;
+    const isDebug: boolean =
+        interaction.options.getBoolean("serveronly") ?? false;
 
     if (isDebug) {
         await interaction.guild!.commands.fetch();
@@ -59,9 +60,10 @@ export const config: SlashCommand["config"] = {
             description: "The command name.",
         },
         {
-            name: "debug",
+            name: "serveronly",
             type: ApplicationCommandOptionTypes.BOOLEAN,
-            description: "Whether to undeploy the command in debug server.",
+            description:
+                "Whether to only undeploy the command in the server this command is executed in.",
         },
     ],
     example: [
