@@ -115,6 +115,10 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
     getFromUser(userId: Snowflake): Promise<UserBind | null>;
 
     getFromUser(userOrId: User | Snowflake): Promise<UserBind | null> {
+        if (userOrId instanceof User && userOrId.bot) {
+            return Promise.resolve(null);
+        }
+
         return this.getOne({
             discordid: userOrId instanceof User ? userOrId.id : userOrId,
         });
