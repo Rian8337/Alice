@@ -1,10 +1,11 @@
 import { Bot } from "@alice-core/Bot";
 import { UserContextMenuInteraction } from "discord.js";
+import { ContextMenuCommand } from "./ContextMenuCommand";
 
 /**
  * Represents a command that is executed through user context menus.
  */
-export interface UserContextMenuCommand {
+export interface UserContextMenuCommand extends ContextMenuCommand {
     /**
      * Executes the command.
      *
@@ -12,21 +13,4 @@ export interface UserContextMenuCommand {
      * @param interaction The interaction that executes the command.
      */
     run(client: Bot, interaction: UserContextMenuInteraction): Promise<unknown>;
-
-    /**
-     * Configurations for the command.
-     */
-    readonly config?: {
-        /**
-         * Whether to reply to this command execution in private (only the executor can see it).
-         */
-        readonly replyEphemeral?: boolean;
-
-        /**
-         * Whether to instantly defer the interaction when running in debug mode. Defaults to `true`.
-         *
-         * Use this when interaction replies aren't getting through due to short response time.
-         */
-        readonly instantDeferInDebug?: boolean;
-    };
 }
