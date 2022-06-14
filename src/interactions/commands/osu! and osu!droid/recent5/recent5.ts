@@ -101,7 +101,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     ScoreDisplayHelper.showRecentPlays(
         interaction,
         player,
-        localization.language
+        interaction.options.getInteger("page") ?? undefined
     );
 };
 

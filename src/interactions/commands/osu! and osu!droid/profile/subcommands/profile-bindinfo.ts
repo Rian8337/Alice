@@ -18,12 +18,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
-    const uid: number | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
-
-    if ([discordid, uid, username].filter(Boolean).length > 1) {
+    if (interaction.options.data.length > 1) {
         interaction.ephemeral = true;
 
         return InteractionHelper.reply(interaction, {
@@ -34,6 +29,11 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     await InteractionHelper.defer(interaction);
+
+    const discordid: Snowflake | undefined =
+        interaction.options.getUser("user")?.id;
+    const uid: number | null = interaction.options.getInteger("uid");
+    const username: string | null = interaction.options.getString("username");
 
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
