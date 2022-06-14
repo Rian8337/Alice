@@ -7,5 +7,8 @@ import { ScoreDisplayHelperStrings } from "../ScoreDisplayHelperLocalization";
 export class ScoreDisplayHelperENTranslation extends Translation<ScoreDisplayHelperStrings> {
     override readonly translations: ScoreDisplayHelperStrings = {
         recentPlays: "Recent plays for %s",
+        beatmapHasNoScores:
+            "I'm sorry, this beatmap doesn't have any scores submitted!",
+        topScore: "Top Score",
     };
 }

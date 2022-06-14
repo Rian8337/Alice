@@ -10,8 +10,6 @@ export interface LeaderboardStrings {
     readonly dppLeaderboardClanNotFound: string;
     readonly noPrototypeEntriesFound: string;
     readonly noBeatmapFound: string;
-    readonly beatmapHasNoScores: string;
-    readonly topScore: string;
     readonly username: string;
     readonly uid: string;
     readonly playCount: string;
@@ -27,9 +25,9 @@ export class LeaderboardLocalization extends Localization<LeaderboardStrings> {
     protected override readonly localizations: Readonly<
         Translations<LeaderboardStrings>
     > = {
-        en: new LeaderboardENTranslation(),
-        kr: new LeaderboardKRTranslation(),
-        id: new LeaderboardIDTranslation(),
-        es: new LeaderboardESTranslation(),
-    };
+            en: new LeaderboardENTranslation(),
+            kr: new LeaderboardKRTranslation(),
+            id: new LeaderboardIDTranslation(),
+            es: new LeaderboardESTranslation(),
+        };
 }

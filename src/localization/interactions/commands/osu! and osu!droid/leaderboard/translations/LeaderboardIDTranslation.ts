@@ -12,9 +12,6 @@ export class LeaderboardIDTranslation extends Translation<LeaderboardStrings> {
         noPrototypeEntriesFound:
             "Maaf, tidak ada skor prototipe yang tersedia untuk sekarang!",
         noBeatmapFound: "Hei, mohon berikan tautan atau ID beatmap yang benar!",
-        beatmapHasNoScores:
-            "Maaf, tidak ada skor yang telah dikirim di beatmap ini!",
-        topScore: "Skor Teratas",
         username: "Username",
         uid: "UID",
         playCount: "Jumlah Main",

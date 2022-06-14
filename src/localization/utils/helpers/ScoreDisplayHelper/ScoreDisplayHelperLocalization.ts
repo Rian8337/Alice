@@ -7,6 +7,8 @@ import { ScoreDisplayHelperKRTranslation } from "./translations/ScoreDisplayHelp
 
 export interface ScoreDisplayHelperStrings {
     readonly recentPlays: string;
+    readonly beatmapHasNoScores: string;
+    readonly topScore: string;
 }
 
 /**

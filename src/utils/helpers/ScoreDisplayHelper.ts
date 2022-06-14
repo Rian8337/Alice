@@ -4,10 +4,12 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import {
-    CommandInteraction,
+    BaseCommandInteraction,
+    Collection,
     GuildMember,
     Message,
     MessageEmbed,
+    MessageOptions,
     Snowflake,
 } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
@@ -17,6 +19,23 @@ import { ScoreDisplayHelperLocalization } from "@alice-localization/utils/helper
 import { StringHelper } from "./StringHelper";
 import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
 import { LocaleHelper } from "./LocaleHelper";
+import { Symbols } from "@alice-enums/utils/Symbols";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
+import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { MapInfo } from "@rian8337/osu-base";
+import {
+    DroidPerformanceCalculator,
+    OsuPerformanceCalculator,
+    DroidStarRating,
+    OsuStarRating,
+} from "@rian8337/osu-difficulty-calculator";
+import { DroidBeatmapDifficultyHelper } from "./DroidBeatmapDifficultyHelper";
+import { InteractionHelper } from "./InteractionHelper";
+import { OsuBeatmapDifficultyHelper } from "./OsuBeatmapDifficultyHelper";
+import { ScoreHelper } from "./ScoreHelper";
+import { CommandHelper } from "./CommandHelper";
 
 /**
  * A helper for displaying scores to a user.
@@ -30,20 +49,20 @@ export abstract class ScoreDisplayHelper {
      * @returns A message showing the player's recent plays.
      */
     static async showRecentPlays(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction,
         player: Player,
-        language: Language = "en"
+        page: number = 1
     ): Promise<Message> {
         const localization: ScoreDisplayHelperLocalization =
-            this.getLocalization(language);
+            this.getLocalization(await CommandHelper.getLocale(interaction));
 
         const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
             author: interaction.user,
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
 
-        const page: number = NumberHelper.clamp(
-            interaction.options.getInteger("page") ?? 1,
+        page = NumberHelper.clamp(
+            page,
             1,
             Math.ceil(player.recentPlays.length / 5)
         );
@@ -68,7 +87,7 @@ export abstract class ScoreDisplayHelper {
                         <ScoreRank>score.rank
                     )}** | ${score.title} ${score.getCompleteModString()}`,
                     `${score.score.toLocaleString(
-                        LocaleHelper.convertToBCP47(language)
+                        LocaleHelper.convertToBCP47(localization.language)
                     )} / ${score.combo}x / ${(
                         score.accuracy.value() * 100
                     ).toFixed(2)}% / [${score.accuracy.n300}/${
@@ -76,7 +95,7 @@ export abstract class ScoreDisplayHelper {
                     }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
                         `\`${DateTimeFormatHelper.dateToLocaleString(
                             score.date,
-                            language
+                            localization.language
                         )}\``
                 );
             }
@@ -118,6 +137,235 @@ export abstract class ScoreDisplayHelper {
             case "XH":
                 return "611559473479155713";
         }
+    }
+
+    /**
+     * Displays a beatmap's leaderboard.
+     *
+     * @param interaction The interaction to display the leaderboard to.
+     * @param hash The MD5 hash of the beatmap.
+     * @param page The page to view. Defaults to 1.
+     * @param cacheBeatmapToChannel Whether to cache the beatmap as the channel's latest beatmap. Defaults to `true`.
+     */
+    static async showBeatmapLeaderboard(
+        interaction: BaseCommandInteraction,
+        hash: string,
+        page: number = 1,
+        cacheBeatmapToChannel: boolean = true
+    ): Promise<void> {
+        await InteractionHelper.defer(interaction);
+
+        const localization: ScoreDisplayHelperLocalization =
+            this.getLocalization(await CommandHelper.getLocale(interaction));
+
+        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+            hash,
+            false
+        );
+
+        if (beatmapInfo && cacheBeatmapToChannel) {
+            BeatmapManager.setChannelLatestBeatmap(
+                interaction.channelId,
+                beatmapInfo.hash
+            );
+        }
+
+        // Leaderboard cache, mapped by page number
+        const leaderboardCache: Collection<number, Score[]> = new Collection();
+
+        // Calculation cache, mapped by score ID
+        const droidCalculationCache: Collection<
+            number,
+            PerformanceCalculationResult<DroidPerformanceCalculator> | null
+        > = new Collection();
+        const osuCalculationCache: Collection<
+            number,
+            PerformanceCalculationResult<OsuPerformanceCalculator> | null
+        > = new Collection();
+
+        // Check first page first for score availability
+        const firstPageScores: Score[] =
+            await ScoreHelper.fetchDroidLeaderboard(beatmapInfo?.hash ?? hash!);
+
+        if (!firstPageScores[0]) {
+            InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("beatmapHasNoScores")
+                ),
+            });
+
+            return;
+        }
+
+        leaderboardCache.set(1, firstPageScores);
+
+        const arrow: Symbols = Symbols.rightArrowSmall;
+
+        const droidDiffCalcHelper: DroidBeatmapDifficultyHelper =
+            new DroidBeatmapDifficultyHelper();
+        const osuDiffCalcHelper: OsuBeatmapDifficultyHelper =
+            new OsuBeatmapDifficultyHelper();
+
+        const getCalculationResult = async (
+            score: Score
+        ): Promise<
+            [
+                PerformanceCalculationResult<DroidPerformanceCalculator> | null,
+                PerformanceCalculationResult<OsuPerformanceCalculator> | null
+            ]
+        > => {
+            const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
+                beatmapInfo
+                    ? droidCalculationCache.get(score.scoreID) ??
+                      (await droidDiffCalcHelper.calculateScorePerformance(
+                          score,
+                          false
+                      ))
+                    : null;
+
+            const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
+                beatmapInfo
+                    ? osuCalculationCache.get(score.scoreID) ??
+                      (await osuDiffCalcHelper.calculateScorePerformance(score))
+                    : null;
+
+            if (!droidCalculationCache.has(score.scoreID)) {
+                droidCalculationCache.set(score.scoreID, droidCalcResult);
+            }
+
+            if (!osuCalculationCache.has(score.scoreID)) {
+                osuCalculationCache.set(score.scoreID, osuCalcResult);
+            }
+
+            return [droidCalcResult, osuCalcResult];
+        };
+
+        const getScoreDescription = async (score: Score): Promise<string> => {
+            const calcResult: [
+                PerformanceCalculationResult<DroidPerformanceCalculator> | null,
+                PerformanceCalculationResult<OsuPerformanceCalculator> | null
+            ] = await getCalculationResult(score);
+
+            return (
+                `${arrow} **${BeatmapManager.getRankEmote(
+                    <ScoreRank>score.rank
+                )}** ${
+                    calcResult[0] && calcResult[1]
+                        ? `${arrow} **${calcResult[0].result.total.toFixed(
+                              2
+                          )}DPP | ${calcResult[1].result.total.toFixed(2)}PP**`
+                        : ""
+                } ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
+                `${arrow} ${score.score.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${
+                    score.accuracy.n100
+                }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
+                `\`${DateTimeFormatHelper.dateToLocaleString(
+                    score.date,
+                    localization.language
+                )}\``
+            );
+        };
+
+        const onPageChange: OnButtonPageChange = async (options, page) => {
+            const actualPage: number = Math.floor((page - 1) / 20);
+
+            const pageRemainder: number = (page - 1) % 20;
+
+            const scores: Score[] =
+                leaderboardCache.get(actualPage) ??
+                (await ScoreHelper.fetchDroidLeaderboard(
+                    beatmapInfo?.hash ?? hash!,
+                    page
+                ));
+
+            if (!leaderboardCache.has(actualPage)) {
+                leaderboardCache.set(actualPage, scores);
+            }
+
+            const noModCalcParams: StarRatingCalculationParameters =
+                new StarRatingCalculationParameters();
+
+            const noModDroidCalcResult: StarRatingCalculationResult<DroidStarRating> | null =
+                beatmapInfo
+                    ? await droidDiffCalcHelper.calculateBeatmapDifficulty(
+                          beatmapInfo.hash,
+                          noModCalcParams
+                      )
+                    : null;
+
+            const noModOsuCalcResult: StarRatingCalculationResult<OsuStarRating> | null =
+                beatmapInfo
+                    ? await osuDiffCalcHelper.calculateBeatmapDifficulty(
+                          beatmapInfo.hash,
+                          noModCalcParams
+                      )
+                    : null;
+
+            const embedOptions: MessageOptions = beatmapInfo
+                ? EmbedCreator.createBeatmapEmbed(
+                      beatmapInfo,
+                      undefined,
+                      localization.language
+                  )
+                : { embeds: [EmbedCreator.createNormalEmbed()] };
+
+            const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
+
+            const topScore: Score = leaderboardCache.get(1)![0];
+
+            if (!embed.title) {
+                embed.setTitle(topScore.title);
+            } else if (noModDroidCalcResult && noModOsuCalcResult) {
+                embed.setTitle(
+                    embed.title +
+                        ` [${noModDroidCalcResult.result.total.toFixed(2)}${
+                            Symbols.star
+                        } | ${noModOsuCalcResult.result.total.toFixed(2)}${
+                            Symbols.star
+                        }]`
+                );
+            }
+
+            embed.addField(
+                `**${localization.getTranslation("topScore")}**`,
+                `**${topScore.username}${
+                    topScore.mods.length > 0
+                        ? ` (${topScore.getCompleteModString()})`
+                        : ""
+                }**\n` + (await getScoreDescription(topScore))
+            );
+
+            const displayedScores: Score[] = scores.slice(
+                5 * pageRemainder,
+                5 + 5 * pageRemainder
+            );
+
+            let i = 20 * actualPage + 5 * pageRemainder;
+
+            for (const score of displayedScores) {
+                embed.addField(
+                    `**#${++i} ${score.username}${
+                        score.mods.length > 0
+                            ? ` (${score.getCompleteModString()})`
+                            : ""
+                    }**`,
+                    await getScoreDescription(score)
+                );
+            }
+
+            Object.assign(options, embedOptions);
+        };
+
+        MessageButtonCreator.createLimitlessButtonBasedPaging(
+            interaction,
+            {},
+            [interaction.user.id],
+            page,
+            120,
+            onPageChange
+        );
     }
 
     /**
