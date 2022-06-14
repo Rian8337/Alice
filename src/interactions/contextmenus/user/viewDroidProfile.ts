@@ -84,4 +84,5 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
 
 export const config: UserContextMenuCommand["config"] = {
     name: "View osu!droid Profile",
+    replyEphemeral: true,
 };
