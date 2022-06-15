@@ -36,11 +36,11 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    await DatabaseManager.elainaDb.collections.userBind.delete({
+    await DatabaseManager.elainaDb.collections.userBind.deleteOne({
         discordid: guildBan.user.id,
     });
 
-    await DatabaseManager.aliceDb.collections.rankedScore.delete({
+    await DatabaseManager.aliceDb.collections.rankedScore.deleteOne({
         uid: { $in: bindInfo.previous_bind },
     });
 

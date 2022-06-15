@@ -129,7 +129,7 @@ export class MultiplayerRoom
             await thread.setLocked(true, "Multiplayer room closed");
         }
 
-        return DatabaseManager.aliceDb.collections.multiplayerRoom.delete({
+        return DatabaseManager.aliceDb.collections.multiplayerRoom.deleteOne({
             roomId: this.roomId,
         });
     }

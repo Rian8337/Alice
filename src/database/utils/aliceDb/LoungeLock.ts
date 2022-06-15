@@ -56,7 +56,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
      * @returns An object containing information about the database operation.
      */
     async unlock(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.loungeLock.delete({
+        return DatabaseManager.aliceDb.collections.loungeLock.deleteOne({
             discordid: this.discordid,
         });
     }

@@ -557,7 +557,7 @@ export class Clan extends Manager {
     async disband(): Promise<OperationResult> {
         this.exists = false;
 
-        await DatabaseManager.elainaDb.collections.clan.delete({
+        await DatabaseManager.elainaDb.collections.clan.deleteOne({
             name: this.name,
         });
 

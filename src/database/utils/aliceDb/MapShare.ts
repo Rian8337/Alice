@@ -85,7 +85,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
      * @returns An object containing the result of the operation.
      */
     delete(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.mapShare.delete({
+        return DatabaseManager.aliceDb.collections.mapShare.deleteOne({
             beatmap_id: this.beatmap_id,
         });
     }

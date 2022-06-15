@@ -39,7 +39,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
             );
 
         if (!bindInfo) {
-            await dbManager.delete({ discordid: player.discordid });
+            await dbManager.deleteOne({ discordid: player.discordid });
             continue;
         }
 

@@ -122,21 +122,6 @@ export abstract class DatabaseCollectionManager<
     async get<K extends keyof T>(
         key: K,
         filter: Filter<T>,
-        options?: FindOptions<T>
-    ): Promise<DiscordCollection<NonNullable<T[K]>, C>>;
-
-    /**
-     * Gets multiple documents from the collection and then
-     * index them based on the given key.
-     *
-     * @param key The key to index.
-     * @param filter The document filter.
-     * @param options The options for retrieving the documents.
-     * @returns The indexed documents in a discord.js collection.
-     */
-    async get<K extends keyof T>(
-        key: K,
-        filter: Filter<T>,
         options: FindOptions<T>
     ): Promise<DiscordCollection<NonNullable<T[K]>, C>>;
 
@@ -190,16 +175,6 @@ export abstract class DatabaseCollectionManager<
      * @param options The options for retrieving the documents.
      * @returns The converted document.
      */
-    async getOne(filter: Filter<T>, options: FindOptions<T>): Promise<C | null>;
-
-    /**
-     * Gets a document from the collection and convert it
-     * to its utility.
-     *
-     * @param filter The document filter.
-     * @param options The options for retrieving the documents.
-     * @returns The converted document.
-     */
     async getOne(
         filter: Filter<T>,
         options?: FindOptions<T>
@@ -228,9 +203,27 @@ export abstract class DatabaseCollectionManager<
      * @param filter The filter used to select the documents to remove.
      * @returns An object containing information about the operation.
      */
-    delete(filter: Filter<T>): Promise<OperationResult> {
+    deleteMany(filter: Filter<T>): Promise<OperationResult> {
         return new Promise((resolve, reject) => {
             this.collection.deleteMany(filter, (err) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve(this.createOperationResult(true));
+            });
+        });
+    }
+
+    /**
+     * Delete a document from the collection.
+     *
+     * @param filter The filter used to select the document to remove.
+     * @returns An object containing information about the operation.
+     */
+    deleteOne(filter: Filter<T>): Promise<OperationResult> {
+        return new Promise((resolve, reject) => {
+            this.collection.deleteOne(filter, (err) => {
                 if (err) {
                     return reject(err);
                 }

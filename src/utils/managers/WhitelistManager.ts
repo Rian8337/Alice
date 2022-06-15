@@ -106,7 +106,7 @@ export abstract class WhitelistManager extends Manager {
             );
         }
 
-        await DatabaseManager.elainaDb.collections.mapBlacklist.delete({
+        await DatabaseManager.elainaDb.collections.mapBlacklist.deleteOne({
             beatmapID: beatmap.beatmapID,
         });
 
@@ -205,7 +205,7 @@ export abstract class WhitelistManager extends Manager {
             );
         }
 
-        await DatabaseManager.elainaDb.collections.mapWhitelist.delete({
+        await DatabaseManager.elainaDb.collections.mapWhitelist.deleteOne({
             mapid: beatmap.beatmapID,
         });
 

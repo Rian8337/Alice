@@ -473,9 +473,11 @@ export class UserBind extends Manager {
             } else {
                 // Do manual operations to reduce memory usage (we don't need to cache
                 // submitted scores)
-                await DatabaseManager.aliceDb.collections.rankedScore.delete({
-                    uid: uid,
-                });
+                await DatabaseManager.aliceDb.collections.rankedScore.deleteOne(
+                    {
+                        uid: uid,
+                    }
+                );
             }
 
             const rankedScoreData: RankedScore | null =
@@ -712,7 +714,7 @@ export class UserBind extends Manager {
             DatabaseManager.elainaDb.collections.userBind;
 
         if (this.previous_bind.length === 0) {
-            await dbManager.delete({
+            await dbManager.deleteOne({
                 discordid: this.discordid,
             });
 
@@ -913,7 +915,7 @@ export class UserBind extends Manager {
                 }
             }
 
-            return DatabaseManager.elainaDb.collections.userBind.delete({
+            return DatabaseManager.elainaDb.collections.userBind.deleteOne({
                 discordid: this.discordid,
             });
         }

@@ -78,7 +78,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     ++clan.powerups.get(powerup)!.amount;
 
     const cancelResult: OperationResult =
-        await DatabaseManager.aliceDb.collections.clanAuction.delete({
+        await DatabaseManager.aliceDb.collections.clanAuction.deleteOne({
             name: name,
         });
 

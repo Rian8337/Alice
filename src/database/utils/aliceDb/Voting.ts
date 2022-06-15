@@ -37,7 +37,7 @@ export class Voting extends Manager implements DatabaseVoting {
      * @returns An object containing information about the operation.
      */
     async end(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.voting.delete({
+        return DatabaseManager.aliceDb.collections.voting.deleteOne({
             channel: this.channel,
         });
     }

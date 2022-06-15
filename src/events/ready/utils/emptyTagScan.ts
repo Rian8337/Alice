@@ -14,7 +14,7 @@ export const run: EventUtil["run"] = async () => {
             return;
         }
 
-        await DatabaseManager.aliceDb.collections.guildTags.delete({
+        await DatabaseManager.aliceDb.collections.guildTags.deleteMany({
             $and: [
                 {
                     date: {

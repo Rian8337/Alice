@@ -41,6 +41,6 @@ export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<
      * @returns An object containing information about the operation.
      */
     removePlayer(uid: number): Promise<OperationResult> {
-        return this.delete({ uid: uid });
+        return this.deleteOne({ uid: uid });
     }
 }

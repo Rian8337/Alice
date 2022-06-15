@@ -383,7 +383,7 @@ export abstract class WarningManager extends PunishmentManager {
                     reason
             );
 
-        const result: OperationResult = await this.warningDb.delete({
+        const result: OperationResult = await this.warningDb.deleteOne({
             globalId: warning.globalId,
         });
 

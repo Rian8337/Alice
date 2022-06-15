@@ -123,7 +123,7 @@ export class ClanAuction extends Manager {
             );
         }
 
-        return DatabaseManager.aliceDb.collections.clanAuction.delete({
+        return DatabaseManager.aliceDb.collections.clanAuction.deleteOne({
             name: this.name,
         });
     }

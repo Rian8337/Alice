@@ -135,7 +135,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                     interaction.channel.archived
                 ) {
                     // Assume that players are AFK or room was force-shutdown by someone with moderating permissions. Close the room.
-                    await DatabaseManager.aliceDb.collections.multiplayerRoom.delete(
+                    await DatabaseManager.aliceDb.collections.multiplayerRoom.deleteOne(
                         {
                             textChannelId: interaction.channelId,
                         }

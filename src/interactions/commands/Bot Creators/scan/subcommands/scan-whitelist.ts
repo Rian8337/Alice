@@ -40,7 +40,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
                 case WhitelistValidity.DOESNT_NEED_WHITELISTING:
                     await DPPHelper.deletePlays(entry.hashid);
 
-                    await whitelistDb.delete({ mapid: entry.mapid });
+                    await whitelistDb.deleteOne({ mapid: entry.mapid });
                     break;
                 case WhitelistValidity.OUTDATED_HASH: {
                     await DPPHelper.deletePlays(entry.hashid);

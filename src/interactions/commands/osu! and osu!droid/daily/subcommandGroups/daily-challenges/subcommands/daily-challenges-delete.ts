@@ -34,7 +34,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     const result: OperationResult =
-        await DatabaseManager.aliceDb.collections.challenge.delete({
+        await DatabaseManager.aliceDb.collections.challenge.deleteOne({
             challengeid: challenge.challengeid,
         });
 

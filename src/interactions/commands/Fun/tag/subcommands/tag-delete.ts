@@ -71,7 +71,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         await message.delete();
     }
 
-    await DatabaseManager.aliceDb.collections.guildTags.delete({
+    await DatabaseManager.aliceDb.collections.guildTags.deleteOne({
         guildid: tag.guildid,
         name: tag.name,
     });

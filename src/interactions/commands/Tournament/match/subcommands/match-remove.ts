@@ -35,7 +35,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
     }
 
     const result: OperationResult =
-        await DatabaseManager.elainaDb.collections.tournamentMatch.delete({
+        await DatabaseManager.elainaDb.collections.tournamentMatch.deleteOne({
             matchid: match.matchid,
         });
 
