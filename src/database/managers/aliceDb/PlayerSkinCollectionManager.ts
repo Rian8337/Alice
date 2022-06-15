@@ -62,9 +62,10 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<
         userOrId: User | Snowflake,
         link: string
     ): Promise<OperationResult> {
-        return this.update(
+        return this.updateOne(
             { discordid: userOrId instanceof User ? userOrId.id : userOrId },
-            { $set: { skin: link } }
+            { $set: { skin: link } },
+            { upsert: true }
         );
     }
 }

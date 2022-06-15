@@ -15,7 +15,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     const newUser: User = interaction.options.getUser("newuser", true);
 
-    await DatabaseManager.aliceDb.collections.guildTags.update(
+    await DatabaseManager.aliceDb.collections.guildTags.updateMany(
         {
             guildid: interaction.guildId,
             author: oldUser.id,

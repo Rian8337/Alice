@@ -240,7 +240,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
             });
         }
 
-        await playerInfoDbManager.update(
+        await playerInfoDbManager.updateOne(
             { discordid: interaction.user.id },
             {
                 $set: {

@@ -44,7 +44,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         });
     }
 
-    await DatabaseManager.aliceDb.collections.emojiStatistics.update(
+    await DatabaseManager.aliceDb.collections.emojiStatistics.updateOne(
         { guildID: message.guild?.id },
         { $set: { emojiStats: [...guildEmojiStats.values()] } },
         { upsert: true }

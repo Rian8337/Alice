@@ -145,7 +145,7 @@ export class PlayerInfo extends Manager {
 
         this.alicecoins = Math.max(0, this.alicecoins + amount);
 
-        return DatabaseManager.aliceDb.collections.playerInfo.update(
+        return DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: this.discordid },
             { $set: { alicecoins: this.alicecoins } }
         );
@@ -181,7 +181,7 @@ export class PlayerInfo extends Manager {
             this.streak = 1;
         }
 
-        return DatabaseManager.aliceDb.collections.playerInfo.update(
+        return DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: this.discordid },
             {
                 $inc: {
@@ -251,7 +251,7 @@ export class PlayerInfo extends Manager {
             );
         }
 
-        await DatabaseManager.aliceDb.collections.playerInfo.update(
+        await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: this.discordid },
             { $inc: { transferred: amount, alicecoins: -amount } }
         );

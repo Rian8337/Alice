@@ -313,7 +313,7 @@ export class Clan extends Manager {
 
         await this.addClanRole(userOrId);
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: id },
             {
                 $set: {
@@ -396,7 +396,7 @@ export class Clan extends Manager {
 
         await this.removeClanRole(userOrId);
 
-        await DatabaseManager.elainaDb.collections.userBind.update(
+        await DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: id },
             {
                 $set: {
@@ -570,7 +570,7 @@ export class Clan extends Manager {
             await clanChannel.delete();
         }
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { clan: this.name },
             {
                 $set: {
@@ -592,7 +592,7 @@ export class Clan extends Manager {
      * @returns An object containing information about the operation.
      */
     async updateClan(): Promise<OperationResult> {
-        return DatabaseManager.elainaDb.collections.clan.update(
+        return DatabaseManager.elainaDb.collections.clan.updateOne(
             { name: this.name },
             {
                 $set: {

@@ -156,7 +156,7 @@ export abstract class DPPHelper {
         for (const toUpdate of toUpdateList.values()) {
             toUpdate.pp.delete(hash);
 
-            await DatabaseManager.elainaDb.collections.userBind.update(
+            await DatabaseManager.elainaDb.collections.userBind.updateOne(
                 { discordid: toUpdate.discordid },
                 {
                     $set: {

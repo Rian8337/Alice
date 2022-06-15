@@ -45,7 +45,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         1
     );
 
-    await DatabaseManager.aliceDb.collections.voting.update(
+    await DatabaseManager.aliceDb.collections.voting.updateOne(
         { channel: interaction.channel!.id },
         { $set: { choices: choices } }
     );

@@ -49,7 +49,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
     accept(): Promise<OperationResult> {
         this.status = "accepted";
 
-        return DatabaseManager.aliceDb.collections.mapShare.update(
+        return DatabaseManager.aliceDb.collections.mapShare.updateOne(
             { beatmap_id: this.beatmap_id },
             {
                 $set: {
@@ -67,7 +67,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
     deny(): Promise<OperationResult> {
         this.status = "denied";
 
-        return DatabaseManager.aliceDb.collections.mapShare.update(
+        return DatabaseManager.aliceDb.collections.mapShare.updateOne(
             { beatmap_id: this.beatmap_id },
             {
                 $set: {
@@ -158,7 +158,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
         this.status = "posted";
 
-        return DatabaseManager.aliceDb.collections.mapShare.update(
+        return DatabaseManager.aliceDb.collections.mapShare.updateOne(
             { beatmap_id: this.beatmap_id },
             {
                 $set: {

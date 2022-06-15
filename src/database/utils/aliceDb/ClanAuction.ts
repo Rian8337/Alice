@@ -222,7 +222,7 @@ export class ClanAuction extends Manager {
      * @returns An object containing information about the operation.
      */
     async updateAuction(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.clanAuction.update(
+        return DatabaseManager.aliceDb.collections.clanAuction.updateOne(
             { name: this.name },
             {
                 $set: {

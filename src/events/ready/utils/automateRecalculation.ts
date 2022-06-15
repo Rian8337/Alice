@@ -50,7 +50,7 @@ export const run: EventUtil["run"] = async (client) => {
         });
     }
 
-    await dbManager.update({}, { $unset: { dppRecalcComplete: "" } });
+    await dbManager.updateMany({}, { $unset: { dppRecalcComplete: "" } });
 
     channel.send({
         content: MessageCreator.createAccept(

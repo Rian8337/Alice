@@ -79,7 +79,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
         currentUsername: string,
         newUsername: string
     ): Promise<OperationResult> {
-        return this.update(
+        return this.updateOne(
             { uid: uid },
             {
                 $set: {

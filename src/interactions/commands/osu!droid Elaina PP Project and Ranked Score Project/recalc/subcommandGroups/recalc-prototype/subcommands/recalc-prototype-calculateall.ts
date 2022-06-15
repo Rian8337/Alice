@@ -25,7 +25,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
     });
 
     if (interaction.options.getBoolean("resetprogress")) {
-        await dbManager.update({}, { $set: { scanDone: false } });
+        await dbManager.updateMany({}, { $set: { scanDone: false } });
     }
 
     let player: PrototypePP | undefined;

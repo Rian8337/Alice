@@ -44,7 +44,7 @@ export class IllegalMap extends Manager implements DatabaseIllegalMap {
             }
         }
 
-        return DatabaseManager.aliceDb.collections.illegalMap.update(
+        return DatabaseManager.aliceDb.collections.illegalMap.updateOne(
             { hash: this.hash },
             {
                 $set: {

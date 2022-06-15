@@ -90,17 +90,17 @@ export class NameChange extends Manager implements DatabaseNameChange {
             );
         }
 
-        await DatabaseManager.elainaDb.collections.userBind.update(
+        await DatabaseManager.elainaDb.collections.userBind.updateOne(
             { uid: this.uid },
             { $set: { username: this.new_username! } }
         );
 
-        await DatabaseManager.aliceDb.collections.playerInfo.update(
+        await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { uid: this.uid },
             { $set: { username: this.new_username! } }
         );
 
-        await DatabaseManager.aliceDb.collections.rankedScore.update(
+        await DatabaseManager.aliceDb.collections.rankedScore.updateOne(
             { uid: this.uid },
             { $set: { username: this.new_username! } }
         );
@@ -108,7 +108,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
         this.isProcessed = true;
 
         const result: OperationResult =
-            await DatabaseManager.aliceDb.collections.nameChange.update(
+            await DatabaseManager.aliceDb.collections.nameChange.updateOne(
                 { uid: this.uid },
                 {
                     $set: {
@@ -163,7 +163,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
         this.isProcessed = true;
 
         const result: OperationResult =
-            await DatabaseManager.aliceDb.collections.nameChange.update(
+            await DatabaseManager.aliceDb.collections.nameChange.updateOne(
                 { uid: this.uid },
                 {
                     $inc: {

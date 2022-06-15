@@ -56,7 +56,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
                     await HelperFunctions.sleep(0.05);
 
-                    await whitelistDb.update(
+                    await whitelistDb.updateOne(
                         { mapid: entry.mapid },
                         {
                             $set: {
@@ -70,7 +70,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         }
     }
 
-    await whitelistDb.update({}, { $unset: { whitelistScanDone: "" } });
+    await whitelistDb.updateMany({}, { $unset: { whitelistScanDone: "" } });
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(

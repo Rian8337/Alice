@@ -82,7 +82,7 @@ export class RankedScore extends Manager {
 
         this.playc += playCountIncrement;
 
-        return DatabaseManager.aliceDb.collections.rankedScore.update(
+        return DatabaseManager.aliceDb.collections.rankedScore.updateOne(
             { uid: this.uid },
             {
                 $set: {

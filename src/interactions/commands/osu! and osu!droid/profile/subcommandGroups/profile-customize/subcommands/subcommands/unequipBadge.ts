@@ -85,7 +85,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     pictureConfig.activeBadges[badgeIndex] = null;
 
-    await DatabaseManager.aliceDb.collections.playerInfo.update(
+    await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: interaction.user.id },
         { $set: { picture_config: pictureConfig } }
     );

@@ -265,7 +265,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     });
 
     if (playerInfo) {
-        await playerInfoDbManager.update(
+        await playerInfoDbManager.updateOne(
             { discordid: interaction.user.id },
             { $set: { picture_config: pictureConfig } }
         );

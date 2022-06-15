@@ -8,12 +8,12 @@ import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHel
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 async function resetDailyCoinsAndMapShare(): Promise<void> {
-    await DatabaseManager.aliceDb.collections.playerInfo.update(
+    await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: "386742340968120321" },
         { $inc: { dailyreset: 86400 } }
     );
 
-    await DatabaseManager.aliceDb.collections.playerInfo.update(
+    await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         {},
         {
             $set: {

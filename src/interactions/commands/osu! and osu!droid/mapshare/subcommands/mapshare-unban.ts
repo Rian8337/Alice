@@ -42,7 +42,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     playerInfo.isBannedFromMapShare = false;
 
-    const result = await dbManager.update(
+    const result = await dbManager.updateOne(
         { discordid: user.id },
         {
             $set: {

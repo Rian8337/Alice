@@ -38,7 +38,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     if (challenge.points !== points) {
         const result: OperationResult =
-            await DatabaseManager.aliceDb.collections.challenge.update(
+            await DatabaseManager.aliceDb.collections.challenge.updateOne(
                 { challengeid: challenge.challengeid },
                 {
                     $set: {

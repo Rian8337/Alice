@@ -87,7 +87,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
             );
         }
 
-        await DatabaseManager.aliceDb.collections.channelData.update(
+        await DatabaseManager.aliceDb.collections.channelData.updateOne(
             { timestamp: newDailyTime - 86400 * 1000 },
             {
                 $set: {

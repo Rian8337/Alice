@@ -57,13 +57,37 @@ export abstract class DatabaseCollectionManager<
      * @param options Options for the update operation.
      * @returns An object containing information about the operation.
      */
-    update(
+    updateMany(
         filter: Filter<T>,
         query: UpdateFilter<T> | Partial<T>,
         options: UpdateOptions = {}
     ): Promise<OperationResult> {
         return new Promise((resolve, reject) => {
             this.collection.updateMany(filter, query, options, (err) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve(this.createOperationResult(true));
+            });
+        });
+    }
+
+    /**
+     * Updates a document in the collection.
+     *
+     * @param filter The filter used to select the document to update.
+     * @param query The update operations to be applied to the document.
+     * @param options Options for the update operation.
+     * @returns An object containing information about the operation.
+     */
+    updateOne(
+        filter: Filter<T>,
+        query: UpdateFilter<T> | Partial<T>,
+        options: UpdateOptions = {}
+    ): Promise<OperationResult> {
+        return new Promise((resolve, reject) => {
+            this.collection.updateOne(filter, query, options, (err) => {
                 if (err) {
                     return reject(err);
                 }

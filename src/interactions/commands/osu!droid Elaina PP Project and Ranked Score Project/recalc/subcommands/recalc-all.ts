@@ -65,7 +65,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         });
     }
 
-    await dbManager.update({}, { $unset: { dppScanComplete: "" } });
+    await dbManager.updateMany({}, { $unset: { dppScanComplete: "" } });
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(

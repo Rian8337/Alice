@@ -27,7 +27,7 @@ export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<
      * @returns An object containing information about the operation.
      */
     addPlayer(uid: number): Promise<OperationResult> {
-        return this.update(
+        return this.updateOne(
             { uid: uid },
             { $set: { uid: uid } },
             { upsert: true }

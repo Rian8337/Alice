@@ -66,7 +66,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
                     challenge.bonus.delete(type);
                 }
 
-                const result: OperationResult = await dbManager.update(
+                const result: OperationResult = await dbManager.updateOne(
                     { challengeid: challenge.challengeid },
                     {
                         $set: {
@@ -270,7 +270,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     challenge.bonus.set(type, bonus);
 
-    const result: OperationResult = await dbManager.update(
+    const result: OperationResult = await dbManager.updateOne(
         { challengeid: challenge.challengeid },
         {
             $set: {

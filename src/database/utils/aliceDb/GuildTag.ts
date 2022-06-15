@@ -43,7 +43,7 @@ export class GuildTag extends Manager implements DatabaseGuildTag {
      * @returns An object containing information about the operation.
      */
     updateTag(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.guildTags.update(
+        return DatabaseManager.aliceDb.collections.guildTags.updateOne(
             {
                 guildid: this.guildid,
                 name: this.name,

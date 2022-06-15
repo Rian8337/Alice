@@ -139,7 +139,7 @@ export abstract class CommandUtilManager extends Manager {
                 event: utility,
             });
 
-            return DatabaseManager.aliceDb.collections.guildSettings.update(
+            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
                 { id: channel.guildId },
                 {
                     $set: {
@@ -175,7 +175,7 @@ export abstract class CommandUtilManager extends Manager {
 
             channelSettings.set(channel.id, channelSetting);
 
-            return DatabaseManager.aliceDb.collections.guildSettings.update(
+            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
                 { id: channel.guildId },
                 {
                     $set: {
@@ -222,7 +222,7 @@ export abstract class CommandUtilManager extends Manager {
 
         this.guildDisabledEventUtils.set(guildId, guildEventUtilSettings);
 
-        return DatabaseManager.aliceDb.collections.guildSettings.update(
+        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
             { id: guildId },
             {
                 $set: {
@@ -295,7 +295,7 @@ export abstract class CommandUtilManager extends Manager {
             name: utility,
         });
 
-        return DatabaseManager.aliceDb.collections.guildSettings.update(
+        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
             { id: channel.guildId },
             {
                 $set: {
@@ -337,7 +337,7 @@ export abstract class CommandUtilManager extends Manager {
 
         this.guildDisabledEventUtils.set(guildId, guildEventUtilSettings);
 
-        return DatabaseManager.aliceDb.collections.guildSettings.update(
+        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
             { id: guildId },
             {
                 $set: {
@@ -434,7 +434,7 @@ export abstract class CommandUtilManager extends Manager {
 
             channelSettings.set(channel.id, channelSetting);
 
-            return DatabaseManager.aliceDb.collections.guildSettings.update(
+            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
                 { id: channel.guildId },
                 {
                     $set: {
@@ -477,7 +477,7 @@ export abstract class CommandUtilManager extends Manager {
 
             channelSettings.set(channel.id, channelSetting);
 
-            return DatabaseManager.aliceDb.collections.guildSettings.update(
+            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
                 { id: channel.guildId },
                 {
                     $set: {
@@ -537,7 +537,7 @@ export abstract class CommandUtilManager extends Manager {
 
         this.guildDisabledCommands.set(guildId, guildCommandSettings);
 
-        return DatabaseManager.aliceDb.collections.guildSettings.update(
+        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
             { id: guildId },
             {
                 $set: {

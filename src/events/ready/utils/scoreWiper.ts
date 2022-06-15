@@ -18,7 +18,7 @@ export const run: EventUtil["run"] = async () => {
             }
         }
 
-        await DatabaseManager.aliceDb.collections.illegalMap.update(
+        await DatabaseManager.aliceDb.collections.illegalMap.updateOne(
             {},
             {
                 $unset: {

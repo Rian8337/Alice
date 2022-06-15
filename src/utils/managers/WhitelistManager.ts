@@ -162,7 +162,7 @@ export abstract class WhitelistManager extends Manager {
             },
         };
 
-        await DatabaseManager.elainaDb.collections.mapWhitelist.update(
+        await DatabaseManager.elainaDb.collections.mapWhitelist.updateOne(
             { mapid: beatmap.beatmapID },
             updateQuery,
             { upsert: true }

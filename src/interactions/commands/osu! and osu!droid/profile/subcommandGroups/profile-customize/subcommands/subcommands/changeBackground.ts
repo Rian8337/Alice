@@ -156,7 +156,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
     // Safe to assume that the user already has an entry
     // in database as we checked if the user has 500 Alice coins earlier.
-    await DatabaseManager.aliceDb.collections.playerInfo.update(
+    await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: interaction.user.id },
         {
             $set: { picture_config: pictureConfig },

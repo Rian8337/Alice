@@ -174,7 +174,7 @@ export class UserBind extends Manager {
             this.pptotal = 0;
             this.playc = 0;
 
-            return DatabaseManager.elainaDb.collections.userBind.update(
+            return DatabaseManager.elainaDb.collections.userBind.updateOne(
                 { discordid: this.discordid },
                 {
                     $set: {
@@ -208,7 +208,7 @@ export class UserBind extends Manager {
         // Even if there are no deletions, still update to keep track of scan progress.
         this.pptotal = DPPHelper.calculateFinalPerformancePoints(this.pp);
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -242,7 +242,7 @@ export class UserBind extends Manager {
 
         const finalPP: number = DPPHelper.calculateFinalPerformancePoints(list);
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -298,7 +298,7 @@ export class UserBind extends Manager {
         this.pp = newList;
         this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -377,7 +377,7 @@ export class UserBind extends Manager {
             ).toFixed(2)}`
         );
 
-        return DatabaseManager.aliceDb.collections.prototypePP.update(
+        return DatabaseManager.aliceDb.collections.prototypePP.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -551,7 +551,7 @@ export class UserBind extends Manager {
                     }
                 }
 
-                await DatabaseManager.aliceDb.collections.rankedScore.update(
+                await DatabaseManager.aliceDb.collections.rankedScore.updateOne(
                     { uid: uid },
                     {
                         $inc: {
@@ -584,7 +584,7 @@ export class UserBind extends Manager {
                         currentPPEntries: [...newList.values()],
                     };
 
-                    await DatabaseManager.elainaDb.collections.userBind.update(
+                    await DatabaseManager.elainaDb.collections.userBind.updateOne(
                         { discordid: this.discordid },
                         {
                             $set: {
@@ -602,7 +602,7 @@ export class UserBind extends Manager {
                     currentPPEntries: [...newList.values()],
                 };
 
-                await DatabaseManager.elainaDb.collections.userBind.update(
+                await DatabaseManager.elainaDb.collections.userBind.updateOne(
                     { discordid: this.discordid },
                     {
                         $set: {
@@ -638,7 +638,7 @@ export class UserBind extends Manager {
             });
         }
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: this.discordid },
             query
         );
@@ -716,7 +716,7 @@ export class UserBind extends Manager {
                 discordid: this.discordid,
             });
 
-            await DatabaseManager.aliceDb.collections.nameChange.update(
+            await DatabaseManager.aliceDb.collections.nameChange.updateOne(
                 { discordid: this.discordid },
                 {
                     $set: {
@@ -727,7 +727,7 @@ export class UserBind extends Manager {
 
             this.discordid = to;
 
-            await dbManager.update(
+            await dbManager.updateOne(
                 { discordid: this.discordid },
                 {
                     $set: {
@@ -751,7 +751,7 @@ export class UserBind extends Manager {
                 { upsert: true }
             );
         } else {
-            await dbManager.update(
+            await dbManager.updateOne(
                 { discordid: this.discordid },
                 {
                     $pull: {
@@ -763,7 +763,7 @@ export class UserBind extends Manager {
                 }
             );
 
-            await dbManager.update(
+            await dbManager.updateOne(
                 { discordid: to },
                 {
                     $set: {
@@ -783,7 +783,7 @@ export class UserBind extends Manager {
             );
         }
 
-        return DatabaseManager.aliceDb.collections.playerInfo.update(
+        return DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { uid: uid },
             {
                 $set: {
@@ -857,7 +857,7 @@ export class UserBind extends Manager {
         this.uid = player.uid;
         this.username = player.username;
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -922,7 +922,7 @@ export class UserBind extends Manager {
             this.uid = ArrayHelper.getRandomArrayElement(this.previous_bind);
         }
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -944,7 +944,7 @@ export class UserBind extends Manager {
     async setClan(name: string): Promise<OperationResult> {
         this.clan = name;
 
-        return DatabaseManager.elainaDb.collections.userBind.update(
+        return DatabaseManager.elainaDb.collections.userBind.updateOne(
             { discordid: this.discordid },
             {
                 $set: {

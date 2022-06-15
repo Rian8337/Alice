@@ -33,7 +33,7 @@ export class MusicCollection
      * @returns An object containing information about the operation.
      */
     updateCollection(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.musicCollection.update(
+        return DatabaseManager.aliceDb.collections.musicCollection.updateOne(
             { owner: this.owner },
             {
                 $set: {

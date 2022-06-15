@@ -103,7 +103,7 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
         fromUserId: Snowflake,
         toUserId: Snowflake
     ): Promise<OperationResult> {
-        return this.update(
+        return this.updateMany(
             {
                 $and: [{ guildId: guildId }, { discordId: fromUserId }],
             },

@@ -70,7 +70,7 @@ export class GuildSettings extends Manager {
      * @returns An object containing information about the operation.
      */
     async updateData(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.guildSettings.update(
+        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
             {
                 id: this.id,
             },

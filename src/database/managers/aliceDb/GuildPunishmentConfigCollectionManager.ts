@@ -68,7 +68,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
         guildId: Snowflake,
         channelId: Snowflake
     ): Promise<OperationResult> {
-        return this.update(
+        return this.updateOne(
             { guildID: guildId },
             {
                 $set: {
@@ -90,7 +90,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
      * @returns An object containing information about the database operation.
      */
     unsetGuildLogChannel(guildId: Snowflake): Promise<OperationResult> {
-        return this.update(
+        return this.updateOne(
             { guildID: guildId },
             {
                 $unset: {

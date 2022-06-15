@@ -33,7 +33,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
     increaseValue(value: number): Promise<OperationResult> {
         this.count += value;
 
-        return DatabaseManager.aliceDb.collections.askCount.update(
+        return DatabaseManager.aliceDb.collections.askCount.updateOne(
             { discordid: this.discordid },
             { $inc: { count: value } }
         );
@@ -48,7 +48,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
     setValue(value: number): Promise<OperationResult> {
         this.count = value;
 
-        return DatabaseManager.aliceDb.collections.askCount.update(
+        return DatabaseManager.aliceDb.collections.askCount.updateOne(
             { discordid: this.discordid },
             { $set: { count: value } }
         );

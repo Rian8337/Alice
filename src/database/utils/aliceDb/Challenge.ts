@@ -284,7 +284,7 @@ export class Challenge extends Manager {
         this.timelimit =
             Math.floor(Date.now() / 1000) + 86400 * (this.isWeekly ? 7 : 1);
 
-        await DatabaseManager.aliceDb.collections.challenge.update(
+        await DatabaseManager.aliceDb.collections.challenge.updateOne(
             { challengeid: this.challengeid },
             {
                 $set: {
@@ -348,7 +348,7 @@ export class Challenge extends Manager {
 
         this.status = "finished";
 
-        await DatabaseManager.aliceDb.collections.challenge.update(
+        await DatabaseManager.aliceDb.collections.challenge.updateOne(
             { challengeid: this.challengeid },
             { $set: { status: this.status } }
         );
@@ -383,7 +383,7 @@ export class Challenge extends Manager {
                 );
 
             if (winnerBindInfo) {
-                await DatabaseManager.aliceDb.collections.playerInfo.update(
+                await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
                     { uid: winnerBindInfo.uid },
                     {
                         $inc: {
@@ -393,7 +393,7 @@ export class Challenge extends Manager {
                     }
                 );
 
-                await DatabaseManager.elainaDb.collections.clan.update(
+                await DatabaseManager.elainaDb.collections.clan.updateOne(
                     { "member_list.id": winnerBindInfo.discordid },
                     { $inc: { power: this.isWeekly ? 50 : 25 } }
                 );
@@ -908,7 +908,7 @@ export class Challenge extends Manager {
             const hash: string = MD5(finalFile).toString();
 
             if (this.hash !== hash) {
-                await DatabaseManager.aliceDb.collections.challenge.update(
+                await DatabaseManager.aliceDb.collections.challenge.updateOne(
                     { challengeid: this.challengeid },
                     {
                         $set: {

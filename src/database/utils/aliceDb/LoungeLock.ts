@@ -44,7 +44,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
         this.expiration += duration;
         this.reason = reason;
 
-        return DatabaseManager.aliceDb.collections.loungeLock.update(
+        return DatabaseManager.aliceDb.collections.loungeLock.updateOne(
             { discordid: this.discordid },
             { $set: { expiration: this.expiration, reason: this.reason } }
         );
@@ -69,7 +69,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
     async makePermanent(): Promise<OperationResult> {
         this.expiration = Number.POSITIVE_INFINITY;
 
-        return DatabaseManager.aliceDb.collections.loungeLock.update(
+        return DatabaseManager.aliceDb.collections.loungeLock.updateOne(
             { discordid: this.discordid },
             { $set: { expiration: this.expiration } }
         );

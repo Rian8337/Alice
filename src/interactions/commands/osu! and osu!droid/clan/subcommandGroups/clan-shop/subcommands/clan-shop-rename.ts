@@ -111,7 +111,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     const auctionRenameResult: OperationResult =
-        await DatabaseManager.aliceDb.collections.clanAuction.update(
+        await DatabaseManager.aliceDb.collections.clanAuction.updateOne(
             { auctioneer: clan.name },
             { $set: { auctioneer: name } }
         );
@@ -126,7 +126,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     const bindRenameResult: OperationResult =
-        await DatabaseManager.elainaDb.collections.userBind.update(
+        await DatabaseManager.elainaDb.collections.userBind.updateOne(
             { clan: clan.name },
             { $set: { clan: name } }
         );

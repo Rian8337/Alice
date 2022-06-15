@@ -75,7 +75,7 @@ export class GuildPunishmentConfig extends Manager {
 
         this.immuneTimeoutRoles.push(roleId);
 
-        return DatabaseManager.aliceDb.collections.guildPunishmentConfig.update(
+        return DatabaseManager.aliceDb.collections.guildPunishmentConfig.updateOne(
             { guildID: this.guildID },
             {
                 $addToSet: {
@@ -102,7 +102,7 @@ export class GuildPunishmentConfig extends Manager {
 
         this.immuneTimeoutRoles.splice(index, 1);
 
-        return DatabaseManager.aliceDb.collections.guildPunishmentConfig.update(
+        return DatabaseManager.aliceDb.collections.guildPunishmentConfig.updateOne(
             { guildID: this.guildID },
             {
                 $pull: {
@@ -131,7 +131,7 @@ export class GuildPunishmentConfig extends Manager {
 
         this.allowedTimeoutRoles.set(roleId, { id: roleId, maxTime: maxTime });
 
-        return DatabaseManager.aliceDb.collections.guildPunishmentConfig.update(
+        return DatabaseManager.aliceDb.collections.guildPunishmentConfig.updateOne(
             { guildID: this.guildID },
             {
                 $set: {
@@ -152,7 +152,7 @@ export class GuildPunishmentConfig extends Manager {
             return this.createOperationResult(true);
         }
 
-        return DatabaseManager.aliceDb.collections.guildPunishmentConfig.update(
+        return DatabaseManager.aliceDb.collections.guildPunishmentConfig.updateOne(
             { guildID: this.guildID },
             {
                 $set: {

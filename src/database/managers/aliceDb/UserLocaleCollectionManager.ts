@@ -49,7 +49,7 @@ export class UserLocaleCollectionManager extends DatabaseCollectionManager<
             CacheManager.userLocale.set(userId, language);
         }
 
-        return this.update(
+        return this.updateOne(
             { discordId: userId },
             {
                 $set: {

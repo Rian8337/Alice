@@ -100,7 +100,7 @@ export class MultiplayerRoom
      * Updates the current state of the room.
      */
     updateRoom(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.multiplayerRoom.update(
+        return DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
             { roomId: this.roomId },
             {
                 $set: {

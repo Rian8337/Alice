@@ -164,7 +164,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         );
 
     if (playerInfo) {
-        await DatabaseManager.aliceDb.collections.playerInfo.update(
+        await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: interaction.user.id },
             {
                 $set: {

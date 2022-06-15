@@ -145,7 +145,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
             guildMessageAnalyticsData.set(date, channelData);
 
-            await DatabaseManager.aliceDb.collections.channelData.update(
+            await DatabaseManager.aliceDb.collections.channelData.updateOne(
                 { timestamp: date },
                 {
                     $set: {

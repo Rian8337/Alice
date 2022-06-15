@@ -96,7 +96,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         embeds: [embed],
     });
 
-    DatabaseManager.aliceDb.collections.askCount.update(
+    DatabaseManager.aliceDb.collections.askCount.updateOne(
         { discordid: message.author.id },
         { $inc: { count: 1 } },
         { upsert: true }

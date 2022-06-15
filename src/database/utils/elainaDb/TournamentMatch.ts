@@ -74,12 +74,10 @@ export class TournamentMatch
      * @returns An object containing information about the operation.
      */
     updateMatch(): Promise<OperationResult> {
-        return DatabaseManager.elainaDb.collections.tournamentMatch.update(
+        return DatabaseManager.elainaDb.collections.tournamentMatch.updateOne(
             { matchid: this.matchid },
             {
                 $set: {
-                    channelId: this.channelId,
-                    name: this.name,
                     player: this.player,
                     result: this.result,
                     status: this.status,
