@@ -47,6 +47,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
+    const originalWinCondition: MultiplayerWinCondition =
+        room.settings.winCondition;
+
     const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
@@ -76,9 +79,6 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     if (!selectMenuInteraction) {
         return;
     }
-
-    const originalWinCondition: MultiplayerWinCondition =
-        room.settings.winCondition;
 
     const pickedWinCondition: MultiplayerWinCondition = parseInt(
         selectMenuInteraction.values[0]

@@ -49,6 +49,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
+    const originalTeamMode: MultiplayerTeamMode = room.settings.teamMode;
+
     const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
@@ -78,8 +80,6 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     if (!selectMenuInteraction) {
         return;
     }
-
-    const originalTeamMode: MultiplayerTeamMode = room.settings.teamMode;
 
     const pickedTeamMode: MultiplayerTeamMode = parseInt(
         selectMenuInteraction.values[0]

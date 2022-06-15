@@ -25,9 +25,9 @@ export class LeaderboardLocalization extends Localization<LeaderboardStrings> {
     protected override readonly localizations: Readonly<
         Translations<LeaderboardStrings>
     > = {
-            en: new LeaderboardENTranslation(),
-            kr: new LeaderboardKRTranslation(),
-            id: new LeaderboardIDTranslation(),
-            es: new LeaderboardESTranslation(),
-        };
+        en: new LeaderboardENTranslation(),
+        kr: new LeaderboardKRTranslation(),
+        id: new LeaderboardIDTranslation(),
+        es: new LeaderboardESTranslation(),
+    };
 }
