@@ -42,6 +42,7 @@ export class MultiplayerRoomENTranslation extends Translation<MultiplayerRoomStr
         forceAR: "Force AR",
         speedMultiplier: "Speed Multiplier",
         customModMultipliers: "Custom Mod Multipliers",
+        scoreNotFound: "Score not found",
         incorrectBeatmapPlayed: "Incorrect beatmap played",
         sliderLockEnabled: "2B slider lock is enabled",
         submissionTooEarly: "Score submitted too early by %s second(s)",

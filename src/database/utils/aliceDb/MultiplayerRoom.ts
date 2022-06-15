@@ -370,12 +370,38 @@ export class MultiplayerRoom
         const validScores: MultiplayerScoreFinalResult[] = [];
         const invalidScores: MultiplayerScoreFinalResult[] = [];
 
-        for (const score of this.currentScores) {
-            const player: MultiplayerPlayer | undefined = this.players.find(
-                (v) => v.username === score.username
+        for (const player of this.players) {
+            if (player.isSpectating) {
+                continue;
+            }
+
+            const score: MultiplayerScore | undefined = this.currentScores.find(
+                (v) => v.uid === player.uid
             );
 
-            if (!player || player.isSpectating) {
+            if (!score) {
+                invalidScores.push({
+                    grade: 0,
+                    reason: localization.getTranslation("scoreNotFound"),
+                    uid: player.uid,
+                    username: player.username,
+                    hash: "",
+                    modstring: "",
+                    score: 0,
+                    maxCombo: 0,
+                    rank: "D",
+                    geki: 0,
+                    perfect: 0,
+                    katu: 0,
+                    good: 0,
+                    bad: 0,
+                    miss: 0,
+                    date: 0,
+                    unstableRate: 0,
+                    isSliderLock: false,
+                    skippedTime: 0,
+                });
+
                 continue;
             }
 
@@ -467,12 +493,43 @@ export class MultiplayerRoom
         const invalidRedTeamScores: MultiplayerScoreFinalResult[] = [];
         const invalidBlueTeamScores: MultiplayerScoreFinalResult[] = [];
 
-        for (const score of this.currentScores) {
-            const player: MultiplayerPlayer | undefined = this.players.find(
-                (v) => v.username === score.username
+        for (const player of this.players) {
+            if (player.isSpectating) {
+                continue;
+            }
+
+            const score: MultiplayerScore | undefined = this.currentScores.find(
+                (v) => v.uid === player.uid
             );
 
-            if (!player || player.isSpectating) {
+            const invalidScores: MultiplayerScoreFinalResult[] =
+                player.team === MultiplayerTeam.red
+                    ? invalidRedTeamScores
+                    : invalidBlueTeamScores;
+
+            if (!score) {
+                invalidScores.push({
+                    grade: 0,
+                    reason: localization.getTranslation("scoreNotFound"),
+                    uid: player.uid,
+                    username: player.username,
+                    hash: "",
+                    modstring: "",
+                    score: 0,
+                    maxCombo: 0,
+                    rank: "D",
+                    geki: 0,
+                    perfect: 0,
+                    katu: 0,
+                    good: 0,
+                    bad: 0,
+                    miss: 0,
+                    date: 0,
+                    unstableRate: 0,
+                    isSliderLock: false,
+                    skippedTime: 0,
+                });
+
                 continue;
             }
 
@@ -480,11 +537,6 @@ export class MultiplayerRoom
                 player.team === MultiplayerTeam.red
                     ? validRedTeamScores
                     : validBlueTeamScores;
-
-            const invalidScores: MultiplayerScoreFinalResult[] =
-                player.team === MultiplayerTeam.red
-                    ? invalidRedTeamScores
-                    : invalidBlueTeamScores;
 
             const scoreValidation: OperationResult = this.verifyScore(
                 score,
