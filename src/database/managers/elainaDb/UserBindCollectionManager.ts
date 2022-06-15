@@ -1,7 +1,7 @@
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Filter, WithId } from "mongodb";
+import { Filter, FindOptions, WithId } from "mongodb";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
@@ -66,16 +66,24 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
     /**
      * Gets unscanned players based on the given amount.
      *
-     * @param amount The amount of unscanned players to retrieve.
+     * @param options Options for the retrieval.
      * @returns The players.
      */
-    async getRecalcUnscannedPlayers(
-        amount: number
-    ): Promise<DiscordCollection<Snowflake, UserBind>> {
+    async getRecalcUnscannedPlayers(options: {
+        amount: number;
+        retrieveAllPlays?: boolean;
+    }): Promise<DiscordCollection<Snowflake, UserBind>> {
+        const dbOptions: FindOptions<DatabaseUserBind> = {};
+
+        if (options.retrieveAllPlays) {
+            dbOptions.projection ??= {};
+            dbOptions.projection.pp = 1;
+        }
+
         const userBind: DatabaseUserBind[] = await this.collection
-            .find({ dppRecalcComplete: { $ne: true } })
+            .find({ dppRecalcComplete: { $ne: true } }, dbOptions)
             .sort({ pptotal: -1 })
-            .limit(amount)
+            .limit(options.amount)
             .toArray();
 
         return ArrayHelper.arrayToCollection(
