@@ -481,9 +481,9 @@ export class UserBind extends Manager {
             }
 
             const rankedScoreData: RankedScore | null =
-                await DatabaseManager.aliceDb.collections.rankedScore.getOne(
-                    { uid: uid },
-                    { projection: { _id: 0, score: 1 } }
+                await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(
+                    uid,
+                    { retrieveAllPlays: false }
                 );
 
             let rankedScore: number = rankedScoreData?.score ?? 0;

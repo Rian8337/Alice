@@ -3,6 +3,7 @@ import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/Database
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { FindOptions } from "mongodb";
 
 /**
  * A manager for the `playerscore` collection.
@@ -54,11 +55,26 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<
     }
 
     /**
-     * Gets the ranked score information of an osu!droida ccount.
+     * Gets the ranked score information of an osu!droid account.
      *
      * @param uid The uid of the osu!droid account.
      */
-    getFromUid(uid: number): Promise<RankedScore | null> {
-        return this.getOne({ uid: uid });
+    getFromUid(
+        uid: number,
+        options?: {
+            /**
+             * Whether to include all plays in the ranked score information.
+             */
+            retrieveAllPlays: boolean;
+        }
+    ): Promise<RankedScore | null> {
+        const dbOptions: FindOptions<DatabaseRankedScore> = {};
+
+        if (options?.retrieveAllPlays === false) {
+            dbOptions.projection ??= {};
+            dbOptions.projection.pp = 0;
+        }
+
+        return this.getOne({ uid: uid }, dbOptions);
     }
 }
