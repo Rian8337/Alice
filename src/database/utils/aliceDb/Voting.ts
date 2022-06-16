@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
+import { VoteChoice } from "@alice-interfaces/interactions/commands/Tools/VoteChoice";
 import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";

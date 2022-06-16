@@ -3,7 +3,7 @@ import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { ProfileBadgeOwnerInfo } from "@alice-interfaces/commands/osu! and osu!droid/ProfileBadgeOwnerInfo";
+import { ProfileBadgeOwnerInfo } from "@alice-interfaces/interactions/commands/osu! and osu!droid/ProfileBadgeOwnerInfo";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";

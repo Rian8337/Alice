@@ -1,5 +1,5 @@
 import { Snowflake } from "discord.js";
-import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
+import { VoteChoice } from "@alice-interfaces/interactions/commands/Tools/VoteChoice";
 import { BaseDocument } from "../BaseDocument";
 
 /**

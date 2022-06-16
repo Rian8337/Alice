@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
-import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
+import { VoteChoice } from "@alice-interfaces/interactions/commands/Tools/VoteChoice";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { VoteLocalization } from "@alice-localization/interactions/commands/Tools/vote/VoteLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

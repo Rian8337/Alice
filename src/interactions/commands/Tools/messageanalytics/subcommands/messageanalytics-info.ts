@@ -6,7 +6,7 @@ import {
     Snowflake,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ActivityCategory } from "@alice-interfaces/commands/Tools/ActivityCategory";
+import { ActivityCategory } from "@alice-interfaces/interactions/commands/Tools/ActivityCategory";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";

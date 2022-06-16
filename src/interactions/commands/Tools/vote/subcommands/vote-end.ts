@@ -1,6 +1,6 @@
 import { GuildMember, Permissions, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
+import { VoteChoice } from "@alice-interfaces/interactions/commands/Tools/VoteChoice";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
