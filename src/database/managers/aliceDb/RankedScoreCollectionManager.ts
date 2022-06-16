@@ -72,7 +72,7 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<
 
         if (!options?.retrieveAllPlays) {
             dbOptions.projection ??= {};
-            dbOptions.projection.pp = 0;
+            dbOptions.projection.scorelist = 0;
         }
 
         return this.getOne({ uid: uid }, dbOptions);
