@@ -133,8 +133,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      * Gets unscanned players based on the given amount.
      *
      * The data returned will only consist of `discordid` and `pptotal`. You should
-     * then retrieve player data using {@link UserBindCollectionManager#getFromUser}
-     * to perform recalculation.
+     * then retrieve player data from bind database to perform recalculation.
      *
      * @param amount The amount of unscanned players to retrieve.
      * @returns The players.
