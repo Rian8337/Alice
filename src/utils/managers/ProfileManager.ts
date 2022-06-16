@@ -68,11 +68,14 @@ export abstract class ProfileManager extends Manager {
             }
         }
 
-        if (playerInfo === undefined) {
+        if (playerInfo === undefined && bindInfo) {
             playerInfo =
-                await DatabaseManager.aliceDb.collections.playerInfo.getOne({
-                    discordid: bindInfo?.discordid,
-                });
+                await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+                    bindInfo.discordid,
+                    {
+                        retrieveActiveBadges: detailed,
+                    }
+                );
         }
 
         return new ProfileCardCreator(
