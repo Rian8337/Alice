@@ -20,7 +20,6 @@ import {
     TextChannel,
 } from "discord.js";
 import { PunishmentManager } from "./PunishmentManager";
-import { TimeoutManager } from "./TimeoutManager";
 
 /**
  * A manager for warnings.
@@ -61,7 +60,7 @@ export abstract class WarningManager extends PunishmentManager {
             await CommandHelper.getLocale(interaction)
         );
 
-        if (await TimeoutManager.userIsImmune(member)) {
+        if (await this.userIsImmune(member)) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("userIsImmune")
@@ -493,7 +492,7 @@ export abstract class WarningManager extends PunishmentManager {
      * @returns A boolean indicating whether the guild member can warn a user.
      */
     static userCanWarn(member: GuildMember): Promise<boolean> {
-        return TimeoutManager.userCanTimeout(member, 1);
+        return this.userCanTimeout(member, 1);
     }
 
     /**

@@ -1,16 +1,12 @@
 import {
-    Collection,
     CommandInteraction,
     GuildChannel,
     GuildMember,
     MessageEmbed,
-    Permissions,
-    Snowflake,
     TextChannel,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PunishmentManager } from "./PunishmentManager";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
@@ -367,84 +363,6 @@ export abstract class TimeoutManager extends PunishmentManager {
         await member.timeout(null, reason);
 
         return this.createOperationResult(true);
-    }
-
-    /**
-     * Checks if a guild member can timeout a user with specified duration.
-     *
-     * @param member The guild member executing the timeout.
-     * @param duration The duration the guild member wants to timeout for, in seconds.
-     * @returns A boolean indicating whether the guild member can timeout the user.
-     */
-    static async userCanTimeout(
-        member: GuildMember,
-        duration: number
-    ): Promise<boolean> {
-        // TODO: move to PunishmentManager for WarningManager and rename
-        if (member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)) {
-            return true;
-        }
-
-        const guildConfig: GuildPunishmentConfig | null =
-            await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-                member.guild
-            );
-
-        if (!guildConfig) {
-            return false;
-        }
-
-        const allowedTimeoutRoles: Collection<
-            Snowflake,
-            RoleTimeoutPermission
-        > = guildConfig.allowedTimeoutRoles;
-
-        let maxDuration: number = Number.NEGATIVE_INFINITY;
-
-        for (const allowedTimeoutRole of allowedTimeoutRoles.values()) {
-            if (!member.roles.cache.has(allowedTimeoutRole.id)) {
-                continue;
-            }
-
-            if (allowedTimeoutRole.maxTime < 0) {
-                return true;
-            }
-
-            maxDuration = Math.max(maxDuration, allowedTimeoutRole.maxTime);
-
-            // End loop here if duration is fulfilled
-            if (duration <= maxDuration) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if a guild member is immune.
-     *
-     * @param member The guild member to check.
-     * @returns A boolean indicating whether the guild member is immune.
-     */
-    static async userIsImmune(member: GuildMember): Promise<boolean> {
-        if (
-            member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ||
-            member.user.bot
-        ) {
-            return true;
-        }
-
-        const guildConfig: GuildPunishmentConfig | null =
-            await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-                member.guild
-            );
-
-        if (!guildConfig) {
-            return false;
-        }
-
-        return member.roles.cache.hasAny(...guildConfig.immuneTimeoutRoles);
     }
 
     /**
