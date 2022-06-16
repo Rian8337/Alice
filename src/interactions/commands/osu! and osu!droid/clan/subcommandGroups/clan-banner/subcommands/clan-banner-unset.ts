@@ -42,8 +42,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
     } else {
         const bindInfo: UserBind | null =
             await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-                interaction.user,
-                { retrieveAllPlays: false }
+                interaction.user
             );
 
         if (!bindInfo) {

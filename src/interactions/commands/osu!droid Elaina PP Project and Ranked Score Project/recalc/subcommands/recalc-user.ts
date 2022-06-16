@@ -34,9 +34,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user", true);
 
     const bindInfo: UserBind | null =
-        await DatabaseManager.elainaDb.collections.userBind.getFromUser(user, {
-            retrieveAllPlays: false,
-        });
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(user);
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {

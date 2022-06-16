@@ -379,8 +379,7 @@ export class Challenge extends Manager {
         if (firstPlaceScore) {
             const winnerBindInfo: UserBind | null =
                 await DatabaseManager.elainaDb.collections.userBind.getFromUid(
-                    firstPlaceScore.uid,
-                    { retrieveAllPlays: false }
+                    firstPlaceScore.uid
                 );
 
             if (winnerBindInfo) {

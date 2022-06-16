@@ -92,8 +92,7 @@ export abstract class RecalculationManager extends Manager {
             try {
                 const bindInfo: UserBind | null =
                     await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-                        calculatedUser,
-                        { retrieveAllPlays: false }
+                        calculatedUser
                     );
 
                 if (!bindInfo) {

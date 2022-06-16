@@ -37,7 +37,6 @@ export const run: EventUtil["run"] = async (client) => {
         (player = (
             await dbManager.getRecalcUnscannedPlayers({
                 amount: 1,
-                retrieveAllPlays: false,
             })
         ).first())
     ) {

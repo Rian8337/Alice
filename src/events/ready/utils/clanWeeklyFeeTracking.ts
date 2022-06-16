@@ -69,8 +69,7 @@ export const run: EventUtil["run"] = async (client) => {
 
                 const bindInfo: UserBind | null =
                     await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-                        member.id,
-                        { retrieveAllPlays: false }
+                        member.id
                     );
 
                 if (!bindInfo) {

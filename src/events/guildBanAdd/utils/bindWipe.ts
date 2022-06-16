@@ -29,8 +29,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-            guildBan.user,
-            { retrieveAllPlays: false }
+            guildBan.user
         );
 
     if (!bindInfo) {

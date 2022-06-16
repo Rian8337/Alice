@@ -55,11 +55,17 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            firstBindInfo = await dbManager.getFromUid(uidToCompare!);
+            firstBindInfo = await dbManager.getFromUid(uidToCompare!, {
+                retrieveAllPlays: true,
+            });
 
             secondBindInfo = otherUid
-                ? await dbManager.getFromUid(otherUid)
-                : await dbManager.getFromUser(interaction.user);
+                ? await dbManager.getFromUid(otherUid, {
+                      retrieveAllPlays: true,
+                  })
+                : await dbManager.getFromUser(interaction.user, {
+                      retrieveAllPlays: true,
+                  });
             break;
         case "user":
             if (userToCompare!.id === (otherUser ?? interaction.user).id) {
@@ -85,11 +91,18 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            firstBindInfo = await dbManager.getFromUsername(usernameToCompare!);
+            firstBindInfo = await dbManager.getFromUsername(
+                usernameToCompare!,
+                { retrieveAllPlays: true }
+            );
 
             secondBindInfo = otherUsername
-                ? await dbManager.getFromUsername(otherUsername)
-                : await dbManager.getFromUser(interaction.user);
+                ? await dbManager.getFromUsername(otherUsername, {
+                      retrieveAllPlays: true,
+                  })
+                : await dbManager.getFromUser(interaction.user, {
+                      retrieveAllPlays: true,
+                  });
             break;
     }
 

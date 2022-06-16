@@ -32,8 +32,7 @@ export const run: EventUtil["run"] = async () => {
             for (const member of clan.member_list.values()) {
                 const bindInfo: UserBind | null =
                     await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-                        member.id,
-                        { retrieveAllPlays: false }
+                        member.id
                     );
 
                 if (!bindInfo) {

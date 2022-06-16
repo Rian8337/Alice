@@ -35,10 +35,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const uidBindInfo: UserBind | null = await dbManager.getFromUid(
-        player.uid,
-        { retrieveAllPlays: false }
-    );
+    const uidBindInfo: UserBind | null = await dbManager.getFromUid(player.uid);
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {

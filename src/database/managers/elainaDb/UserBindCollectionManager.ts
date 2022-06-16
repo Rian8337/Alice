@@ -5,6 +5,13 @@ import { Filter, FindOptions, WithId } from "mongodb";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
+interface UserBindRetrieveOption {
+    /**
+     * Whether to include pp plays in the bind information. Defaults to `false`.
+     */
+    retrieveAllPlays?: boolean;
+}
+
 /**
  * A manager for the `userbind` collection.
  */
@@ -69,26 +76,19 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      * @param options Options for the retrieval.
      * @returns The players.
      */
-    async getRecalcUnscannedPlayers(options: {
-        /**
-         * The amount of players to retrieve.
-         */
-        amount: number;
-
-        /**
-         * Whether to retrieve pp plays from them.
-         */
-        retrieveAllPlays?: boolean;
-    }): Promise<DiscordCollection<Snowflake, UserBind>> {
-        const dbOptions: FindOptions<DatabaseUserBind> = {};
-
-        if (options.retrieveAllPlays === false) {
-            dbOptions.projection ??= {};
-            dbOptions.projection.pp = 0;
+    async getRecalcUnscannedPlayers(
+        options: UserBindRetrieveOption & {
+            /**
+             * The amount of players to retrieve.
+             */
+            amount: number;
         }
-
+    ): Promise<DiscordCollection<Snowflake, UserBind>> {
         const userBind: DatabaseUserBind[] = await this.collection
-            .find({ dppRecalcComplete: { $ne: true } }, dbOptions)
+            .find(
+                { dppRecalcComplete: { $ne: true } },
+                this.getDbOptions(options)
+            )
             .sort({ pptotal: -1 })
             .limit(options.amount)
             .toArray();
@@ -123,12 +123,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         user: User,
-        options?: {
-            /**
-             * Whether to include pp plays in the bind information.
-             */
-            retrieveAllPlays: boolean;
-        }
+        options?: UserBindRetrieveOption
     ): Promise<UserBind | null>;
 
     /**
@@ -139,39 +134,22 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         userId: Snowflake,
-        options?: {
-            /**
-             * Whether to include pp plays in the bind information.
-             */
-            retrieveAllPlays: boolean;
-        }
+        options?: UserBindRetrieveOption
     ): Promise<UserBind | null>;
 
     getFromUser(
         userOrId: User | Snowflake,
-        options?: {
-            /**
-             * Whether to include pp plays in the bind information.
-             */
-            retrieveAllPlays: boolean;
-        }
+        options?: UserBindRetrieveOption
     ): Promise<UserBind | null> {
         if (userOrId instanceof User && userOrId.bot) {
             return Promise.resolve(null);
-        }
-
-        const dbOptions: FindOptions<DatabaseUserBind> = {};
-
-        if (options?.retrieveAllPlays === false) {
-            dbOptions.projection ??= {};
-            dbOptions.projection.pp = 0;
         }
 
         return this.getOne(
             {
                 discordid: userOrId instanceof User ? userOrId.id : userOrId,
             },
-            dbOptions
+            this.getDbOptions(options)
         );
     }
 
@@ -183,21 +161,12 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     getFromUid(
         uid: number,
-        options?: {
-            /**
-             * Whether to include pp plays in the bind information.
-             */
-            retrieveAllPlays: boolean;
-        }
+        options?: UserBindRetrieveOption
     ): Promise<UserBind | null> {
-        const dbOptions: FindOptions<DatabaseUserBind> = {};
-
-        if (options?.retrieveAllPlays === false) {
-            dbOptions.projection ??= {};
-            dbOptions.projection.pp = 0;
-        }
-
-        return this.getOne({ previous_bind: { $all: [uid] } }, dbOptions);
+        return this.getOne(
+            { previous_bind: { $all: [uid] } },
+            this.getDbOptions(options)
+        );
     }
 
     /**
@@ -208,21 +177,9 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     getFromUsername(
         username: string,
-        options?: {
-            /**
-             * Whether to include pp plays in the bind information.
-             */
-            retrieveAllPlays: boolean;
-        }
+        options?: UserBindRetrieveOption
     ): Promise<UserBind | null> {
-        const dbOptions: FindOptions<DatabaseUserBind> = {};
-
-        if (options?.retrieveAllPlays === false) {
-            dbOptions.projection ??= {};
-            dbOptions.projection.pp = 0;
-        }
-
-        return this.getOne({ username: username }, dbOptions);
+        return this.getOne({ username: username }, this.getDbOptions(options));
     }
 
     /**
@@ -279,5 +236,23 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
                 discordid: userOrId instanceof User ? userOrId.id : userOrId,
             })) > 0
         );
+    }
+
+    /**
+     * Gets database options for retrieving bind information.
+     *
+     * @param options The options to parse.
+     */
+    private getDbOptions(
+        options?: UserBindRetrieveOption
+    ): FindOptions<DatabaseUserBind> {
+        const dbOptions: FindOptions<DatabaseUserBind> = {};
+
+        if (!options?.retrieveAllPlays) {
+            dbOptions.projection ??= {};
+            dbOptions.projection.pp = 0;
+        }
+
+        return dbOptions;
     }
 }

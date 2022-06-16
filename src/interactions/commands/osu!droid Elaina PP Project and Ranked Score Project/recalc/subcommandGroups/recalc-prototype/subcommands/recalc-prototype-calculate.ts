@@ -38,17 +38,25 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     switch (true) {
         case !!uid:
-            bindInfo = await dbManager.getFromUid(uid!);
+            bindInfo = await dbManager.getFromUid(uid!, {
+                retrieveAllPlays: true,
+            });
             break;
         case !!username:
-            bindInfo = await dbManager.getFromUsername(username!);
+            bindInfo = await dbManager.getFromUsername(username!, {
+                retrieveAllPlays: true,
+            });
             break;
         case !!discordid:
-            bindInfo = await dbManager.getFromUser(discordid!);
+            bindInfo = await dbManager.getFromUser(discordid!, {
+                retrieveAllPlays: true,
+            });
             break;
         default:
             // If no arguments are specified, default to self
-            bindInfo = await dbManager.getFromUser(interaction.user);
+            bindInfo = await dbManager.getFromUser(interaction.user, {
+                retrieveAllPlays: true,
+            });
     }
 
     if (!bindInfo) {

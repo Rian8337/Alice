@@ -34,8 +34,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-            interaction.user,
-            { retrieveAllPlays: false }
+            interaction.user
         );
 
     if (!bindInfo) {

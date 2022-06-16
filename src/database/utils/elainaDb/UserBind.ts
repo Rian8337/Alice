@@ -678,10 +678,7 @@ export class UserBind extends Manager {
         }
 
         const otherBindInfo: UserBind | null =
-            await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-                to,
-                { retrieveAllPlays: false }
-            );
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(to);
 
         const otherPreviousBind: number[] = otherBindInfo?.previous_bind ?? [];
 
