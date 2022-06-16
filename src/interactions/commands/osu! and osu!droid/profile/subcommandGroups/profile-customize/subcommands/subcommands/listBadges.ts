@@ -15,7 +15,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-            interaction.user
+            interaction.user,
+            { retrieveBadges: true }
         );
 
     const userBadges: PartialProfileBackground[] =

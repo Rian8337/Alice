@@ -146,7 +146,8 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         DatabaseManager.aliceDb.collections.playerInfo;
 
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user
+        interaction.user,
+        { retrieveChallengeData: true }
     );
 
     // Ask for verification from staff

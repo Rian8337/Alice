@@ -41,17 +41,25 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     switch (true) {
         case !!uid:
-            playerInfo = await dbManager.getFromUid(uid!);
+            playerInfo = await dbManager.getFromUid(uid!, {
+                retrieveChallengeData: true,
+            });
             break;
         case !!username:
-            playerInfo = await dbManager.getFromUsername(username!);
+            playerInfo = await dbManager.getFromUsername(username!, {
+                retrieveChallengeData: true,
+            });
             break;
         case !!discordid:
-            playerInfo = await dbManager.getFromUser(discordid!);
+            playerInfo = await dbManager.getFromUser(discordid!, {
+                retrieveChallengeData: true,
+            });
             break;
         default:
             // If no arguments are specified, default to self
-            playerInfo = await dbManager.getFromUser(interaction.user);
+            playerInfo = await dbManager.getFromUser(interaction.user, {
+                retrieveChallengeData: true,
+            });
     }
 
     const challenges: Collection<string, ChallengeCompletionData> =

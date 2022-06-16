@@ -79,7 +79,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const badge: ProfileBadge = badgeList.find((v) => v.id === badgeID)!;
 
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user
+        interaction.user,
+        { retrieveBadges: true }
     );
 
     const pictureConfig: ProfileImageConfig =

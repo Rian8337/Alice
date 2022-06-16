@@ -40,7 +40,11 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user
+        interaction.user,
+        {
+            retrieveActiveBadges: true,
+            retrieveBadges: true,
+        }
     );
 
     const pictureConfig: ProfileImageConfig =

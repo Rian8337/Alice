@@ -82,7 +82,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         DatabaseManager.aliceDb.collections.playerInfo;
 
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user
+        interaction.user,
+        { retrieveChallengeData: true }
     );
 
     // Keep track of how many points are gained

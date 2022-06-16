@@ -70,7 +70,8 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-            interaction.user
+            interaction.user,
+            { retrieveBackgrounds: true }
         );
 
     const pictureConfig: ProfileImageConfig =
