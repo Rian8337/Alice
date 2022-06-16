@@ -5,17 +5,13 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageEmbed, Snowflake } from "discord.js";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { Snowflake } from "discord.js";
 import { PPcheckLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/ppcheck/PPcheckLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: PPcheckLocalization = new PPcheckLocalization(
@@ -77,68 +73,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const ppRank: number = await dbManager.getUserDPPRank(bindInfo.pptotal);
-
-    const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(
+    DPPHelper.displayDPPList(
         interaction,
         bindInfo,
-        ppRank,
-        localization.language
-    );
-
-    const onPageChange: OnButtonPageChange = async (_, page) => {
-        for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-            const pp: PPEntry | undefined = bindInfo!.pp.at(i);
-
-            if (pp) {
-                let modstring = pp.mods ? `+${pp.mods}` : "";
-                if (
-                    pp.forcedAR ||
-                    (pp.speedMultiplier && pp.speedMultiplier !== 1)
-                ) {
-                    if (pp.mods) {
-                        modstring += " ";
-                    }
-
-                    modstring += "(";
-
-                    if (pp.forcedAR) {
-                        modstring += `AR${pp.forcedAR}`;
-                    }
-
-                    if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
-                        if (pp.forcedAR) {
-                            modstring += ", ";
-                        }
-
-                        modstring += `${pp.speedMultiplier}x`;
-                    }
-
-                    modstring += ")";
-                }
-
-                embed.addField(
-                    `${i + 1}. ${pp.title} ${modstring}`,
-                    `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ${
-                        Symbols.missIcon
-                    } | __${pp.pp} pp__ (Net pp: ${(
-                        pp.pp * Math.pow(0.95, i)
-                    ).toFixed(2)} pp)`
-                );
-            } else {
-                embed.addField(`${i + 1}. -`, "-");
-            }
-        }
-    };
-
-    MessageButtonCreator.createLimitedButtonBasedPaging(
-        interaction,
-        { embeds: [embed] },
-        [interaction.user.id],
-        Math.max(interaction.options.getInteger("page") ?? 1, 1),
-        Math.ceil(bindInfo.pp.size / 5),
-        120,
-        onPageChange
+        interaction.options.getInteger("page") ?? 1
     );
 };
 

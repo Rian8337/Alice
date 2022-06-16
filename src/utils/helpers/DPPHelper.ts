@@ -1,17 +1,27 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
+import { Symbols } from "@alice-enums/utils/Symbols";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
+import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { Collection, Snowflake } from "discord.js";
+import {
+    BaseCommandInteraction,
+    Collection,
+    MessageEmbed,
+    Snowflake,
+} from "discord.js";
+import { CommandHelper } from "./CommandHelper";
 
 /**
- * A helper for droid performance points submission.
+ * A helper for droid performance points related things.
  */
 export abstract class DPPHelper {
     /**
@@ -74,6 +84,88 @@ export abstract class DPPHelper {
             default:
                 return DPPSubmissionValidity.VALID;
         }
+    }
+
+    /**
+     * Displays a DPP list as a response to an interaction.
+     *
+     * @param interaction The interaction to respond to.
+     * @param bindInfo The bind information of the user.
+     * @param page The initial page to display.
+     */
+    static async displayDPPList(
+        interaction: BaseCommandInteraction,
+        bindInfo: UserBind,
+        page: number
+    ): Promise<void> {
+        const ppRank: number =
+            await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
+                bindInfo.pptotal
+            );
+
+        const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(
+            interaction,
+            bindInfo,
+            ppRank,
+            await CommandHelper.getLocale(interaction)
+        );
+
+        const list: PPEntry[] = [...bindInfo.pp.values()];
+
+        const onPageChange: OnButtonPageChange = async (_, page) => {
+            for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
+                const pp: PPEntry | undefined = list[i];
+
+                if (pp) {
+                    let modstring = pp.mods ? `+${pp.mods}` : "";
+                    if (
+                        pp.forcedAR ||
+                        (pp.speedMultiplier && pp.speedMultiplier !== 1)
+                    ) {
+                        if (pp.mods) {
+                            modstring += " ";
+                        }
+
+                        modstring += "(";
+
+                        if (pp.forcedAR) {
+                            modstring += `AR${pp.forcedAR}`;
+                        }
+
+                        if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
+                            if (pp.forcedAR) {
+                                modstring += ", ";
+                            }
+
+                            modstring += `${pp.speedMultiplier}x`;
+                        }
+
+                        modstring += ")";
+                    }
+
+                    embed.addField(
+                        `${i + 1}. ${pp.title} ${modstring}`,
+                        `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
+                            pp.miss
+                        } ${Symbols.missIcon} | __${pp.pp} pp__ (Net pp: ${(
+                            pp.pp * Math.pow(0.95, i)
+                        ).toFixed(2)} pp)`
+                    );
+                } else {
+                    embed.addField(`${i + 1}. -`, "-");
+                }
+            }
+        };
+
+        MessageButtonCreator.createLimitedButtonBasedPaging(
+            interaction,
+            { embeds: [embed] },
+            [interaction.user.id],
+            Math.max(page, 1),
+            Math.ceil(bindInfo.pp.size / 5),
+            120,
+            onPageChange
+        );
     }
 
     /**

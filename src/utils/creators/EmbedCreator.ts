@@ -1,4 +1,5 @@
 import {
+    BaseCommandInteraction,
     ColorResolvable,
     CommandInteraction,
     Guild,
@@ -262,7 +263,7 @@ export abstract class EmbedCreator {
      * @returns The embed.
      */
     static async createDPPListEmbed(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction,
         bindInfo: UserBind,
         ppRank?: number,
         language: Language = "en"
