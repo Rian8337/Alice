@@ -5,6 +5,13 @@ import { Collection as DiscordCollection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { FindOptions } from "mongodb";
 
+interface RankedScoreRetrieveOption {
+    /**
+     * Whether to include all plays in the ranked score information. Defaults to `false`.
+     */
+    retrieveAllPlays: boolean;
+}
+
 /**
  * A manager for the `playerscore` collection.
  */
@@ -58,15 +65,11 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<
      * Gets the ranked score information of an osu!droid account.
      *
      * @param uid The uid of the osu!droid account.
+     * @param options Options for the retrieval of the ranked score information.
      */
     getFromUid(
         uid: number,
-        options?: {
-            /**
-             * Whether to include all plays in the ranked score information. Defaults to `false`.
-             */
-            retrieveAllPlays: boolean;
-        }
+        options?: RankedScoreRetrieveOption
     ): Promise<RankedScore | null> {
         const dbOptions: FindOptions<DatabaseRankedScore> = {};
 
