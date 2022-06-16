@@ -65,7 +65,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             }
             break;
         case !!discordid:
-            bindInfo = await dbManager.getFromUser(discordid!);
+            bindInfo = await dbManager.getFromUser(discordid!, {
+                retrieveAllPlays: true,
+            });
             uid = bindInfo?.uid;
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
@@ -79,7 +81,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             break;
         default:
             // If no arguments are specified, default to self
-            bindInfo = await dbManager.getFromUser(interaction.user);
+            bindInfo = await dbManager.getFromUser(interaction.user, {
+                retrieveAllPlays: true,
+            });
             uid = bindInfo?.uid;
             if (!uid) {
                 return InteractionHelper.reply(interaction, {

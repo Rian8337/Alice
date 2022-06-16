@@ -47,9 +47,10 @@ export abstract class ProfileManager extends Manager {
     ): Promise<Buffer | null> {
         if (bindInfo === undefined) {
             bindInfo =
-                await DatabaseManager.elainaDb.collections.userBind.getOne({
-                    previous_bind: { $all: [uid] },
-                });
+                await DatabaseManager.elainaDb.collections.userBind.getFromUid(
+                    uid,
+                    { retrieveAllPlays: true }
+                );
         }
 
         if (rankedScoreInfo === undefined) {
