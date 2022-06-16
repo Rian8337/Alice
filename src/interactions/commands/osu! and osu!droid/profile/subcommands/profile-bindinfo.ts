@@ -40,36 +40,36 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     let bindInfo: UserBind | null | undefined;
 
-    let player: Player | undefined;
+    let player: Player | null = null;
 
     switch (true) {
         case !!uid:
-            player = await Player.getInformation({ uid: uid! });
-            if (player.uid) {
+            player = await Player.getInformation(uid!);
+            if (player?.uid) {
                 bindInfo = await dbManager.getFromUid(player.uid);
             }
             break;
         case !!username:
-            player = await Player.getInformation({ username: username! });
-            if (player.uid) {
+            player = await Player.getInformation(username!);
+            if (player?.uid) {
                 bindInfo = await dbManager.getFromUid(player.uid);
             }
             break;
         case !!discordid:
             bindInfo = await dbManager.getFromUser(discordid!);
             if (bindInfo?.uid) {
-                player = await Player.getInformation({ uid: bindInfo.uid });
+                player = await Player.getInformation(bindInfo.uid);
             }
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(interaction.user);
             if (bindInfo?.uid) {
-                player = await Player.getInformation({ uid: bindInfo.uid });
+                player = await Player.getInformation(bindInfo.uid);
             }
     }
 
-    if (!player?.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userProfileNotFound")

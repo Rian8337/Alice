@@ -61,11 +61,13 @@ export abstract class ProfileManager extends Manager {
         }
 
         if (!player) {
-            player = await Player.getInformation({ uid: uid });
+            const newPlayer: Player | null = await Player.getInformation(uid);
 
-            if (!player.username) {
+            if (!newPlayer) {
                 return null;
             }
+
+            player = newPlayer;
         }
 
         if (playerInfo === undefined && bindInfo) {
@@ -113,8 +115,16 @@ export abstract class ProfileManager extends Manager {
         bindInfo: UserBind,
         player?: Player,
         language: Language = "en"
-    ): Promise<Buffer> {
-        player ??= await Player.getInformation({ uid: uid });
+    ): Promise<Buffer | null> {
+        if (!player) {
+            const newPlayer: Player | null = await Player.getInformation(uid);
+
+            if (!newPlayer) {
+                return null;
+            }
+
+            player = newPlayer;
+        }
 
         return new ProfileCardCreator(
             player,

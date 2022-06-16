@@ -85,9 +85,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         hash = beatmapInfo.hash;
     }
 
-    const score: Score = await Score.getFromHash({ uid: uid, hash: hash });
+    const score: Score | null = await Score.getFromHash(uid, hash);
 
-    if (!score.title) {
+    if (!score) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(

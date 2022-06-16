@@ -41,9 +41,9 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
     // TODO: this is a lot of duplicate codes. should consider moving to a function
 
-    const player: Player = await Player.getInformation({ uid: uid });
+    const player: Player | null = await Player.getInformation(uid);
 
-    if (!player.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("profileNotFound")

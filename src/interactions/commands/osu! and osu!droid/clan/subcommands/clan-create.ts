@@ -92,9 +92,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player: Player = await Player.getInformation({ uid: bindInfo.uid });
+    const player: Player | null = await Player.getInformation(bindInfo.uid);
 
-    if (!player.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("profileNotFound")

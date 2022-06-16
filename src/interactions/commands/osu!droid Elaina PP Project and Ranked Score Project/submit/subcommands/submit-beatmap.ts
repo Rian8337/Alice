@@ -75,12 +75,12 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score: Score = await Score.getFromHash({
-        uid: bindInfo.uid,
-        hash: beatmapInfo.hash,
-    });
+    const score: Score | null = await Score.getFromHash(
+        bindInfo.uid,
+        beatmapInfo.hash
+    );
 
-    if (!score.title) {
+    if (!score) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noScoreSubmitted")

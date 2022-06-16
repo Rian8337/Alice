@@ -95,9 +95,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player: Player = await Player.getInformation({ uid: bindInfo.uid });
+    const player: Player | null = await Player.getInformation(bindInfo.uid);
 
-    if (!player.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfProfileNotFound")
@@ -197,12 +197,12 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             }
 
             for (const uid of bindInfo.previous_bind) {
-                const score: Score = await Score.getFromHash({
-                    uid: uid,
-                    hash: beatmapInfo.hash,
-                });
+                const score: Score | null = await Score.getFromHash(
+                    uid,
+                    beatmapInfo.hash
+                );
 
-                if (!score.title) {
+                if (!score) {
                     continue;
                 }
 

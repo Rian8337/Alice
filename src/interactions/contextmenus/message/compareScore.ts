@@ -51,7 +51,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.defer(interaction);
 
-    const player: Player = await Player.getInformation({ uid: bindInfo.uid });
+    const player: Player | null = await Player.getInformation(bindInfo.uid);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -74,12 +74,12 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score: Score = await Score.getFromHash({
-        uid: player.uid,
-        hash: beatmapInfo.hash,
-    });
+    const score: Score | null = await Score.getFromHash(
+        player.uid,
+        beatmapInfo.hash
+    );
 
-    if (!score.title) {
+    if (!score) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("scoreNotFound")

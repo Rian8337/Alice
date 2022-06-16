@@ -43,11 +43,11 @@ export const run: EventUtil["run"] = async () => {
                 let highestRankUid: number = 0;
 
                 for (const uid of bindInfo.previous_bind) {
-                    const player: Player = await Player.getInformation({
-                        uid: uid,
-                    });
+                    const player: Player | null = await Player.getInformation(
+                        uid
+                    );
 
-                    if (!player.username) {
+                    if (!player) {
                         continue;
                     }
 

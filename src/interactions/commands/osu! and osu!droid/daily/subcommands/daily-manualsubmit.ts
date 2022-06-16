@@ -254,9 +254,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
             }
         );
     } else {
-        const player: Player = await Player.getInformation({
-            uid: bindInfo.uid,
-        });
+        const player: Player = (await Player.getInformation(bindInfo.uid))!;
 
         await playerInfoDbManager.insert({
             uid: player.uid,

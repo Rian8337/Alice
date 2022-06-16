@@ -73,11 +73,11 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const playerList: Player[] = [];
 
     for (const p of match.player) {
-        const player: Player = await Player.getInformation({
-            uid: parseInt(p[1]),
-        });
+        const player: Player | null = await Player.getInformation(
+            parseInt(p[1])
+        );
 
-        if (!player.username) {
+        if (!player) {
             interaction.replied
                 ? interaction.channel!.send({
                       content: MessageCreator.createReject(

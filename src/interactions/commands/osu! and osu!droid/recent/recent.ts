@@ -42,16 +42,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     let bindInfo: UserBind | null | undefined;
 
-    let player: Player | undefined;
+    let player: Player | null = null;
 
     switch (true) {
         case !!uid:
-            player = await Player.getInformation({ uid: uid! });
-            uid = player.uid;
+            player = await Player.getInformation(uid!);
+            uid ??= player?.uid;
             break;
         case !!username:
-            player = await Player.getInformation({ username: username! });
-            uid = player.uid;
+            player = await Player.getInformation(username!);
+            uid ??= player?.uid;
             break;
         case !!discordid:
             bindInfo = await dbManager.getFromUser(discordid!);
@@ -66,7 +66,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation({ uid: bindInfo.uid });
+            player = await Player.getInformation(bindInfo.uid);
             break;
         default:
             // If no arguments are specified, default to self
@@ -82,10 +82,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation({ uid: bindInfo.uid });
+            player = await Player.getInformation(bindInfo.uid);
     }
 
-    if (!player.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerNotFound")

@@ -284,19 +284,19 @@ export class Clan extends Manager {
             );
         }
 
-        let player: Player = await Player.getInformation({
-            uid: toAcceptBindInfo.previous_bind[0],
-        });
+        let player: Player | null = await Player.getInformation(
+            toAcceptBindInfo.previous_bind[0]
+        );
 
         for (const uid of toAcceptBindInfo.previous_bind.slice(1)) {
-            const tempPlayer = await Player.getInformation({ uid: uid });
+            const tempPlayer = await Player.getInformation(uid);
 
-            if (player.rank > tempPlayer.rank) {
+            if (tempPlayer && (player?.rank ?? 0) > tempPlayer.rank) {
                 player = tempPlayer;
             }
         }
 
-        if (!player.username) {
+        if (!player) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("userBindedAccountNotFound")

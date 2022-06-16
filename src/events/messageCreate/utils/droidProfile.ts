@@ -26,9 +26,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const player: Player = await Player.getInformation({ uid: uid });
+        const player: Player | null = await Player.getInformation(uid);
 
-        if (!player.username) {
+        if (!player) {
             continue;
         }
 

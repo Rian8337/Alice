@@ -8,6 +8,7 @@ import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
@@ -29,12 +30,20 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.defer(interaction);
 
-    const template: Buffer = await ProfileManager.getProfileTemplate(
+    const template: Buffer | null = await ProfileManager.getProfileTemplate(
         bindInfo.uid,
         bindInfo,
         undefined,
         language
     );
+
+    if (!template) {
+        return InteractionHelper.reply(interaction, {
+            content: new ProfileLocalization(language).getTranslation(
+                "selfProfileNotFound"
+            ),
+        });
+    }
 
     InteractionHelper.reply(interaction, { files: [template] });
 };

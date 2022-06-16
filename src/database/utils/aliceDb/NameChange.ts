@@ -24,7 +24,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
     isProcessed: boolean;
     previous_usernames: string[];
     readonly _id?: ObjectId;
-    private player?: Player;
+    private player?: Player | null = null;
 
     constructor(
         data: DatabaseNameChange = DatabaseManager.aliceDb?.collections
@@ -58,9 +58,9 @@ export class NameChange extends Manager implements DatabaseNameChange {
             );
         }
 
-        this.player ??= await Player.getInformation({ uid: this.uid });
+        this.player ??= await Player.getInformation(this.uid);
 
-        if (!this.player.username) {
+        if (!this.player) {
             return this.deny("Cannot find player profile");
         }
 
@@ -198,7 +198,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 await CommandHelper.getUserPreferredLocale(user)
             );
 
-            this.player ??= await Player.getInformation({ uid: this.uid });
+            this.player ??= (await Player.getInformation(this.uid))!;
 
             const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
                 color: 2483712,
@@ -256,7 +256,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 await CommandHelper.getUserPreferredLocale(user)
             );
 
-            this.player ??= await Player.getInformation({ uid: this.uid });
+            this.player ??= (await Player.getInformation(this.uid))!;
 
             const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
                 color: 16711711,

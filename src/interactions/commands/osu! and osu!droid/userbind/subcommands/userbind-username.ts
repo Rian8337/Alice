@@ -25,9 +25,9 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
-    const player: Player = await Player.getInformation({ username: username });
+    const player: Player | null = await Player.getInformation(username);
 
-    if (!player.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("profileNotFound")

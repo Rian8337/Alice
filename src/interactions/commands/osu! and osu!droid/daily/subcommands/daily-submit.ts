@@ -48,13 +48,13 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player: Player = await Player.getInformation({ uid: bindInfo.uid });
+    const player: Player | null = await Player.getInformation(bindInfo.uid);
 
-    const score: Score | undefined = player.recentPlays.find(
+    const score: Score | undefined = player?.recentPlays.find(
         (s) => s.hash === challenge.hash
     );
 
-    if (!score) {
+    if (!player || !score) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("scoreNotFound")

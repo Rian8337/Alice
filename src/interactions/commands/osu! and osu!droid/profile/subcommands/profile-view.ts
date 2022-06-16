@@ -39,12 +39,12 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     let bindInfo: UserBind | null | undefined;
 
-    let player: Player | undefined;
+    let player: Player | null = null;
 
     switch (true) {
         case !!uid:
-            player = await Player.getInformation({ uid: uid! });
-            uid = player.uid;
+            player = await Player.getInformation(uid!);
+            uid ??= player?.uid;
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -54,8 +54,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             }
             break;
         case !!username:
-            player = await Player.getInformation({ username: username! });
-            uid = player.uid;
+            player = await Player.getInformation(username!);
+            uid ??= player?.uid;
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -96,9 +96,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             }
     }
 
-    player ??= await Player.getInformation({ uid: uid });
+    player ??= await Player.getInformation(uid);
 
-    if (!player.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(

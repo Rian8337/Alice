@@ -82,11 +82,11 @@ export const run: EventUtil["run"] = async (client) => {
                 let highestRank: number = Number.POSITIVE_INFINITY;
 
                 for (const uid of bindInfo.previous_bind) {
-                    const player: Player = await Player.getInformation({
-                        uid: uid,
-                    });
+                    const player: Player | null = await Player.getInformation(
+                        uid
+                    );
 
-                    if (!player.username) {
+                    if (!player) {
                         continue;
                     }
 

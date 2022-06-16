@@ -453,9 +453,9 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const player: Player = await Player.getInformation({ uid: uid });
+            const player: Player | null = await Player.getInformation(uid);
 
-            if (!player.username) {
+            if (!player) {
                 continue;
             }
 
@@ -694,9 +694,9 @@ export class UserBind extends Manager {
             this.uid = ArrayHelper.getRandomArrayElement(this.previous_bind);
         }
 
-        const player: Player = await Player.getInformation({ uid: uid });
+        const player: Player | null = await Player.getInformation(uid);
 
-        if (!player.username) {
+        if (!player) {
             this.previous_bind.push(uid);
 
             return this.createOperationResult(
@@ -825,19 +825,18 @@ export class UserBind extends Manager {
         uidOrUsernameOrPlayer: string | number | Player,
         language: Language = "en"
     ): Promise<OperationResult> {
-        const player: Player =
+        const player: Player | null =
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(
-                      typeof uidOrUsernameOrPlayer === "string"
-                          ? { username: uidOrUsernameOrPlayer }
-                          : { uid: uidOrUsernameOrPlayer }
+                      //@ts-expect-error: string | number union
+                      uidOrUsernameOrPlayer
                   );
 
         const localization: UserBindLocalization =
             this.getLocalization(language);
 
-        if (!player.username || !player.uid) {
+        if (!player) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("playerWithUidOrUsernameNotFound")
@@ -974,12 +973,12 @@ export class UserBind extends Manager {
         ppEntry: PPEntry
     ): Promise<Score | null> {
         for (const uid of this.previous_bind) {
-            const score: Score = await Score.getFromHash({
-                uid: uid,
-                hash: ppEntry.hash,
-            });
+            const score: Score | null = await Score.getFromHash(
+                uid,
+                ppEntry.hash
+            );
 
-            if (score.scoreID === ppEntry.scoreID) {
+            if (score?.scoreID === ppEntry.scoreID) {
                 return score;
             }
         }

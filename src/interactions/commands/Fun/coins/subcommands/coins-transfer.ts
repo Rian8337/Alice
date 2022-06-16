@@ -114,11 +114,11 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player: Player = await Player.getInformation({
-        uid: userPlayerInfo.uid,
-    });
+    const player: Player | null = await Player.getInformation(
+        userPlayerInfo.uid
+    );
 
-    if (!player.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("cannotFetchPlayerInformation")

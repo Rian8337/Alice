@@ -29,11 +29,11 @@ export const run: EventUtil["run"] = async (client) => {
             );
 
         for (const trackedPlayer of trackedPlayers.values()) {
-            const player: Player = await Player.getInformation({
-                uid: trackedPlayer.uid,
-            });
+            const player: Player | null = await Player.getInformation(
+                trackedPlayer.uid
+            );
 
-            if (!player.username) {
+            if (!player) {
                 continue;
             }
 

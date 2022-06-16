@@ -62,9 +62,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.defer(interaction);
 
-    const player: Player = await Player.getInformation({ uid: bindInfo.uid });
+    const player: Player | null = await Player.getInformation(bindInfo.uid);
 
-    if (!player.username) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("currentBindedAccountDoesntExist")
@@ -106,11 +106,9 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const newPlayer: Player = await Player.getInformation({
-        username: newUsername,
-    });
+    const newPlayer: Player | null = await Player.getInformation(newUsername);
 
-    if (newPlayer.username) {
+    if (newPlayer) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("newNameAlreadyTaken")
