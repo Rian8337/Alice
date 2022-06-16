@@ -16,16 +16,6 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
             await CommandHelper.getLocale(interaction)
         );
 
-    if (interaction.targetUser.bot) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.userNotBindedReject
-                )
-            ),
-        });
-    }
-
     const isSelfExecution: boolean =
         interaction.user.id === interaction.targetUser.id;
 
