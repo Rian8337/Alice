@@ -117,8 +117,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
             for (const uid of bindInfo.previous_bind) {
                 const rankedScoreInfo: RankedScore | null =
                     await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(
-                        uid,
-                        { retrieveAllPlays: false }
+                        uid
                     );
 
                 if ((rankedScoreInfo?.score ?? 0) >= badge.requirement) {

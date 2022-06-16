@@ -63,14 +63,14 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<
         uid: number,
         options?: {
             /**
-             * Whether to include all plays in the ranked score information.
+             * Whether to include all plays in the ranked score information. Defaults to `false`.
              */
             retrieveAllPlays: boolean;
         }
     ): Promise<RankedScore | null> {
         const dbOptions: FindOptions<DatabaseRankedScore> = {};
 
-        if (options?.retrieveAllPlays === false) {
+        if (!options?.retrieveAllPlays) {
             dbOptions.projection ??= {};
             dbOptions.projection.pp = 0;
         }
