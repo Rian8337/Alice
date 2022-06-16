@@ -38,7 +38,8 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         DatabaseManager.aliceDb.collections.rankedScore;
 
     const bindInfo: UserBind | null = await bindDbManager.getFromUser(
-        interaction.user
+        interaction.user,
+        { retrieveAllPlays: true }
     );
 
     if (!bindInfo) {
