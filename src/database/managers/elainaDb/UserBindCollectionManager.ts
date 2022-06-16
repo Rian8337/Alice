@@ -70,14 +70,21 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      * @returns The players.
      */
     async getRecalcUnscannedPlayers(options: {
+        /**
+         * The amount of players to retrieve.
+         */
         amount: number;
+
+        /**
+         * Whether to retrieve pp plays from them.
+         */
         retrieveAllPlays?: boolean;
     }): Promise<DiscordCollection<Snowflake, UserBind>> {
         const dbOptions: FindOptions<DatabaseUserBind> = {};
 
-        if (options.retrieveAllPlays) {
+        if (options.retrieveAllPlays === false) {
             dbOptions.projection ??= {};
-            dbOptions.projection.pp = 1;
+            dbOptions.projection.pp = 0;
         }
 
         const userBind: DatabaseUserBind[] = await this.collection
@@ -112,42 +119,110 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      * Gets the bind information of a Discord user.
      *
      * @param user The user.
+     * @param options Options for the retrieval of the bind information.
      */
-    getFromUser(user: User): Promise<UserBind | null>;
+    getFromUser(
+        user: User,
+        options?: {
+            /**
+             * Whether to include pp plays in the bind information.
+             */
+            retrieveAllPlays: boolean;
+        }
+    ): Promise<UserBind | null>;
 
     /**
      * Gets the bind information of a Discord user.
      *
      * @param userId The ID of the user.
+     * @param options Options for the retrieval of the bind information.
      */
-    getFromUser(userId: Snowflake): Promise<UserBind | null>;
+    getFromUser(
+        userId: Snowflake,
+        options?: {
+            /**
+             * Whether to include pp plays in the bind information.
+             */
+            retrieveAllPlays: boolean;
+        }
+    ): Promise<UserBind | null>;
 
-    getFromUser(userOrId: User | Snowflake): Promise<UserBind | null> {
+    getFromUser(
+        userOrId: User | Snowflake,
+        options?: {
+            /**
+             * Whether to include pp plays in the bind information.
+             */
+            retrieveAllPlays: boolean;
+        }
+    ): Promise<UserBind | null> {
         if (userOrId instanceof User && userOrId.bot) {
             return Promise.resolve(null);
         }
 
-        return this.getOne({
-            discordid: userOrId instanceof User ? userOrId.id : userOrId,
-        });
+        const dbOptions: FindOptions<DatabaseUserBind> = {};
+
+        if (options?.retrieveAllPlays === false) {
+            dbOptions.projection ??= {};
+            dbOptions.projection.pp = 0;
+        }
+
+        return this.getOne(
+            {
+                discordid: userOrId instanceof User ? userOrId.id : userOrId,
+            },
+            dbOptions
+        );
     }
 
     /**
      * Gets the bind information of an osu!droid account from its uid.
      *
      * @param uid The uid of the osu!droid account.
+     * @param options Options for the retrieval of the bind information.
      */
-    getFromUid(uid: number): Promise<UserBind | null> {
-        return this.getOne({ previous_bind: { $all: [uid] } });
+    getFromUid(
+        uid: number,
+        options?: {
+            /**
+             * Whether to include pp plays in the bind information.
+             */
+            retrieveAllPlays: boolean;
+        }
+    ): Promise<UserBind | null> {
+        const dbOptions: FindOptions<DatabaseUserBind> = {};
+
+        if (options?.retrieveAllPlays === false) {
+            dbOptions.projection ??= {};
+            dbOptions.projection.pp = 0;
+        }
+
+        return this.getOne({ previous_bind: { $all: [uid] } }, dbOptions);
     }
 
     /**
      * Gets the bind information of an osu!droid account from its username.
      *
      * @param username The username of the osu!droid account.
+     * @param options Options for the retrieval of the bind information.
      */
-    getFromUsername(username: string): Promise<UserBind | null> {
-        return this.getOne({ username: username });
+    getFromUsername(
+        username: string,
+        options?: {
+            /**
+             * Whether to include pp plays in the bind information.
+             */
+            retrieveAllPlays: boolean;
+        }
+    ): Promise<UserBind | null> {
+        const dbOptions: FindOptions<DatabaseUserBind> = {};
+
+        if (options?.retrieveAllPlays === false) {
+            dbOptions.projection ??= {};
+            dbOptions.projection.pp = 0;
+        }
+
+        return this.getOne({ username: username }, dbOptions);
     }
 
     /**

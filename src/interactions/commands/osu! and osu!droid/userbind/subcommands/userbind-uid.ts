@@ -23,7 +23,9 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
-    const uidBindInfo: UserBind | null = await dbManager.getFromUid(uid);
+    const uidBindInfo: UserBind | null = await dbManager.getFromUid(uid, {
+        retrieveAllPlays: false,
+    });
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
