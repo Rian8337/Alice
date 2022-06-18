@@ -623,7 +623,7 @@ export class UserBind extends Manager {
                 pptotal: this.pptotal,
                 playc: this.playc,
                 // Only set to true if hasAskedForRecalc is originally false
-                hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc,
+                // hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc,
             },
             $unset: {
                 calculationInfo: "",
