@@ -110,20 +110,20 @@ export abstract class RecalculationManager extends Manager {
                     continue;
                 }
 
-                if (bindInfo.hasAskedForRecalc) {
-                    await interaction.channel!.send({
-                        content: MessageCreator.createReject(
-                            localization.getTranslation(
-                                this.calculationFailedResponse
-                            ),
-                            interaction.user.toString(),
-                            calculatedUserMention,
-                            localization.getTranslation("userHasAskedForRecalc")
-                        ),
-                    });
+                // if (bindInfo.hasAskedForRecalc) {
+                //     await interaction.channel!.send({
+                //         content: MessageCreator.createReject(
+                //             localization.getTranslation(
+                //                 this.calculationFailedResponse
+                //             ),
+                //             interaction.user.toString(),
+                //             calculatedUserMention,
+                //             localization.getTranslation("userHasAskedForRecalc")
+                //         ),
+                //     });
 
-                    continue;
-                }
+                //     continue;
+                // }
 
                 if (await bindInfo.isDPPBanned()) {
                     await interaction.channel!.send({
