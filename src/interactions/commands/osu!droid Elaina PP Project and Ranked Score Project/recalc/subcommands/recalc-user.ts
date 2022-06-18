@@ -42,13 +42,13 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (bindInfo.hasAskedForRecalc) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("userHasRequestedRecalc")
-            ),
-        });
-    }
+    // if (bindInfo.hasAskedForRecalc) {
+    //     return InteractionHelper.reply(interaction, {
+    //         content: MessageCreator.createReject(
+    //             localization.getTranslation("userHasRequestedRecalc")
+    //         ),
+    //     });
+    // }
 
     if (await bindInfo.isDPPBanned()) {
         return InteractionHelper.reply(interaction, {
