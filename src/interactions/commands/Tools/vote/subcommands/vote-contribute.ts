@@ -98,16 +98,14 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         { $set: { choices: choices } }
     );
 
-    let string: string = `**${localization.getTranslation("topic")}: ${
-        voteInfo.topic
-    }**\n\n`;
+    let string: string = `**${localization.getTranslation("topic")}: ${voteInfo.topic
+        }**\n\n`;
 
     for (let i = 0; i < voteInfo.choices.length; ++i) {
         const choice: VoteChoice = voteInfo.choices[i];
 
-        string += `\`[${i + 1}] ${choice.choice} - ${
-            choice.voters.length
-        }\`\n\n`;
+        string += `\`[${i + 1}] ${choice.choice} - ${choice.voters.length
+            }\`\n\n`;
     }
 
     if (choiceIndex === -1) {
@@ -133,4 +131,5 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
 
 export const config: SlashSubcommand["config"] = {
     permissions: [],
+    replyEphemeral: true,
 };
