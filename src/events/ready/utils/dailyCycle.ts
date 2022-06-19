@@ -13,7 +13,7 @@ async function resetDailyCoinsAndMapShare(): Promise<void> {
         { $inc: { dailyreset: 86400 } }
     );
 
-    await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
+    await DatabaseManager.aliceDb.collections.playerInfo.updateMany(
         {},
         {
             $set: {
