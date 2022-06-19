@@ -78,6 +78,7 @@ export class TournamentMatch
             { matchid: this.matchid },
             {
                 $set: {
+                    channelId: this.channelId,
                     player: this.player,
                     result: this.result,
                     status: this.status,
