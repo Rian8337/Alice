@@ -1,4 +1,4 @@
-import { CommandInteraction, SelectMenuInteraction } from "discord.js";
+import { CommandInteraction, If, SelectMenuInteraction } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { Permission } from "@alice-types/core/Permission";
 
@@ -15,9 +15,7 @@ export interface SlashSubcommand<FromInteraction extends boolean = boolean> {
      */
     run(
         client: Bot,
-        interaction: FromInteraction extends true
-            ? CommandInteraction
-            : SelectMenuInteraction,
+        interaction: If<FromInteraction, CommandInteraction, SelectMenuInteraction>,
         ...args: unknown[]
     ): Promise<unknown>;
 
