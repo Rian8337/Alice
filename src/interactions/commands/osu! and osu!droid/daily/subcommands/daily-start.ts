@@ -10,7 +10,7 @@ import { CommandInteraction } from "discord.js";
 import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
-export const run: SlashSubcommand["run"] = async (
+export const run: SlashSubcommand<true>["run"] = async (
     _,
     interaction: CommandInteraction<"cached">
 ) => {
@@ -44,7 +44,7 @@ export const run: SlashSubcommand["run"] = async (
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const result: OperationResult = await challenge.start(
         localization.language

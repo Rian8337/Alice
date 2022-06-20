@@ -6,7 +6,7 @@ import { BirthdayLocalization } from "@alice-localization/interactions/commands/
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: BirthdayLocalization = new BirthdayLocalization(
         await CommandHelper.getLocale(interaction)
     );

@@ -119,12 +119,17 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                         options.components!.splice(index, 1);
                     }
                 } else {
-                    await InteractionHelper.reply(interaction, {
-                        content: MessageCreator.createReject(
-                            localization.getTranslation("timedOut")
-                        ),
-                        components: [],
-                    });
+                    interaction instanceof MessageComponentInteraction
+                        ? await InteractionHelper.update(interaction, {
+                              content: MessageCreator.createReject(
+                                  localization.getTranslation("timedOut")
+                              ),
+                          })
+                        : await InteractionHelper.reply(interaction, {
+                              content: MessageCreator.createReject(
+                                  localization.getTranslation("timedOut")
+                              ),
+                          });
 
                     if (!interaction.ephemeral) {
                         setTimeout(() => {

@@ -42,7 +42,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;

@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Role } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
         return;
     }

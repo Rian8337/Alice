@@ -9,7 +9,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo } from "@rian8337/osu-base";
 import { MessageAttachment } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -27,7 +27,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         challenge.beatmapid,

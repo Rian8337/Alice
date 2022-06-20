@@ -15,7 +15,10 @@ import {
     ThreadChannel,
 } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: SettingsLocalization = new SettingsLocalization(
         await CommandHelper.getLocale(interaction)
     );

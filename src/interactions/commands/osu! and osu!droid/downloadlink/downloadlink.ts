@@ -25,7 +25,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapHash,

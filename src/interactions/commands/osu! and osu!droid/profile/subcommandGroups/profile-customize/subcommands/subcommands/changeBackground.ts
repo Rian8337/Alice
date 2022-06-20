@@ -17,7 +17,10 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<false>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -28,7 +31,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         );
 
     if (!bindInfo) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
@@ -87,7 +90,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
     if (!isBackgroundOwned) {
         if ((playerInfo?.alicecoins ?? 0) < 500) {
-            return InteractionHelper.reply(interaction, {
+            return InteractionHelper.update(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation(
                         "coinsToBuyBackgroundNotEnough"
@@ -105,7 +108,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
     pictureConfig.activeBackground = background;
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const image: Buffer | null = await ProfileManager.getProfileStatistics(
         bindInfo.uid,
@@ -117,7 +120,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
     );
 
     if (!image) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfProfileNotFound")
             ),
@@ -165,7 +168,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         }
     );
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("switchBackgroundSuccess") +
                 (isBackgroundOwned

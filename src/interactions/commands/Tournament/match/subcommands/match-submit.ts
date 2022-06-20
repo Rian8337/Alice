@@ -17,7 +17,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
         await CommandHelper.getLocale(interaction)
     );

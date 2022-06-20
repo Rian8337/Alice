@@ -7,7 +7,7 @@ import { User } from "discord.js";
 import { FancyLocalization } from "@alice-localization/interactions/commands/Bot Creators/fancy/FancyLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: FancyLocalization = new FancyLocalization(
         await CommandHelper.getLocale(interaction)
     );

@@ -19,7 +19,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         .setRequireAPIkey(false)
         .setEndpoint("time.php");
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const pings: [number, number, number] = await Promise.all([
         HelperFunctions.getFunctionExecutionTime(

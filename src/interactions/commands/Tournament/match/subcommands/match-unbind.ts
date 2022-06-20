@@ -8,7 +8,10 @@ import { MatchLocalization } from "@alice-localization/interactions/commands/Tou
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: MatchLocalization = new MatchLocalization(
         await CommandHelper.getLocale(interaction)
     );

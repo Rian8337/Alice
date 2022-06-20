@@ -9,7 +9,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Message } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: RecalcLocalization = new RecalcLocalization(
         await CommandHelper.getLocale(interaction)
     );

@@ -10,7 +10,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MapStats, ModUtil } from "@rian8337/osu-base";
 import { MessageEmbed } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -62,7 +62,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const embed: MessageEmbed = await room.getResultEmbed(
         localization.language

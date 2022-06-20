@@ -17,7 +17,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -49,7 +49,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const scores: TournamentScore[] = await pool.getBeatmapLeaderboard(pick);
 

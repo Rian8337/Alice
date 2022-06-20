@@ -153,7 +153,7 @@ export abstract class ScoreDisplayHelper {
         page: number = 1,
         cacheBeatmapToChannel: boolean = true
     ): Promise<void> {
-        await InteractionHelper.defer(interaction);
+        await InteractionHelper.deferReply(interaction);
 
         const localization: ScoreDisplayHelperLocalization =
             this.getLocalization(await CommandHelper.getLocale(interaction));

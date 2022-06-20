@@ -9,7 +9,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Message, MessageAttachment, TextChannel } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     if (!interaction.inGuild()) {
         return;
     }
@@ -63,7 +66,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     attachment.setName(
         `${tag.attachments.length + 1}${attachment.url.substring(

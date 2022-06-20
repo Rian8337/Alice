@@ -11,7 +11,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Constants } from "@alice-core/Constants";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: UserbindLocalization = new UserbindLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -37,7 +37,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         interaction.user
     );
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     // TODO: this is a lot of duplicate codes. should consider moving to a function
 

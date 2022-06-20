@@ -18,7 +18,7 @@ import {
     ModUtil,
 } from "@rian8337/osu-base";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
         await CommandHelper.getLocale(interaction)
     );

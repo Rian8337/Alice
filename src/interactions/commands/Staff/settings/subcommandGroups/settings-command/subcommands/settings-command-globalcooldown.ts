@@ -5,7 +5,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     CommandUtilManager.globalCommandCooldown = interaction.options.getNumber(
         "duration",
         true

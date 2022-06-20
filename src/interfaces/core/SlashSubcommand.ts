@@ -1,11 +1,11 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, SelectMenuInteraction } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { Permission } from "@alice-types/core/Permission";
 
 /**
  * Represents a slash command's subcommand.
  */
-export interface SlashSubcommand {
+export interface SlashSubcommand<FromInteraction extends boolean = boolean> {
     /**
      * Executes the subcommand.
      *
@@ -15,7 +15,9 @@ export interface SlashSubcommand {
      */
     run(
         client: Bot,
-        interaction: CommandInteraction,
+        interaction: FromInteraction extends true
+            ? CommandInteraction
+            : SelectMenuInteraction,
         ...args: unknown[]
     ): Promise<unknown>;
 

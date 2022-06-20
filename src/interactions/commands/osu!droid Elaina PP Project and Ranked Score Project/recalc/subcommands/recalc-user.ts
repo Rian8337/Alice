@@ -11,7 +11,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { RecalcLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/recalc/RecalcLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: RecalcLocalization = new RecalcLocalization(
         await CommandHelper.getLocale(interaction)
     );

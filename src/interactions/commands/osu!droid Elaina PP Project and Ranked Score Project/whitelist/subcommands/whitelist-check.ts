@@ -8,7 +8,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { MapInfo } from "@rian8337/osu-base";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -29,7 +29,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID || hash,

@@ -8,7 +8,10 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Message, Permissions, TextChannel } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     if (!interaction.inGuild()) {
         return;
     }
@@ -58,7 +61,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
 
     // Also delete attachment
     if (tag.attachment_message) {
-        await InteractionHelper.defer(interaction);
+        await InteractionHelper.deferReply(interaction);
 
         const channel: TextChannel = <TextChannel>(
             await client.channels.fetch(Constants.tagAttachmentChannel)

@@ -12,7 +12,7 @@ import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { VideoSearchResult } from "yt-search";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
         await CommandHelper.getLocale(interaction)
     );

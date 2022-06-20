@@ -35,7 +35,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;

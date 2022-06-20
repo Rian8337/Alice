@@ -15,7 +15,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PrototypecheckLocalization =
         new PrototypecheckLocalization(
             await CommandHelper.getLocale(interaction)

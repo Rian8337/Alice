@@ -35,7 +35,7 @@ async function retrieveLeaderboard(page: number): Promise<string[]> {
     return content;
 }
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
         await CommandHelper.getLocale(interaction)
     );

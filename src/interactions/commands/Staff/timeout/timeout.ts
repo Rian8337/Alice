@@ -33,7 +33,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason", true);
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const result: OperationResult = await TimeoutManager.addTimeout(
         interaction,

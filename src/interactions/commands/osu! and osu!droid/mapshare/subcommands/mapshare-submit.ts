@@ -5,7 +5,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { TextInputComponent } from "discord.js";
 import { TextInputStyles } from "discord.js/typings/enums";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
         await CommandHelper.getLocale(interaction)
     );

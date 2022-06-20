@@ -11,7 +11,7 @@ import { TriviaHelper } from "@alice-utils/helpers/TriviaHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { GuildMember, MessageEmbed, SelectMenuInteraction } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: TriviaLocalization = new TriviaLocalization(
         await CommandHelper.getLocale(interaction)
     );

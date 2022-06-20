@@ -12,7 +12,7 @@ import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
 import yts, { VideoMetadataResult } from "yt-search";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
         await CommandHelper.getLocale(interaction)
     );

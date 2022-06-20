@@ -5,7 +5,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
@@ -24,6 +24,6 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     });
 };
 
-export const config: SlashSubcommand["config"] = {
+export const config: SlashSubcommand<true>["config"] = {
     permissions: [],
 };

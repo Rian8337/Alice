@@ -85,7 +85,7 @@ export const run: EventUtil["run"] = async (
 
     if (Config.isDebug && command.config?.instantDeferInDebug !== false) {
         // Attempt to instantly defer in debug mode (slower internet).
-        await InteractionHelper.defer(interaction);
+        await InteractionHelper.deferReply(interaction);
     }
 
     // Finally, run the command

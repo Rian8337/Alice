@@ -13,7 +13,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { Filter, Sort } from "mongodb";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
         await CommandHelper.getLocale(interaction)
     );

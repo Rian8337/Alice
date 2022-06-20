@@ -13,7 +13,10 @@ import {
     TextChannel,
 } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     if (!interaction.inGuild()) {
         return;
     }

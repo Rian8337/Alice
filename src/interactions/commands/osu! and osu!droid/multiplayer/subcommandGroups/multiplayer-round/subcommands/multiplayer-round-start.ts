@@ -16,7 +16,7 @@ import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MapStats, ModUtil } from "@rian8337/osu-base";
 import { MessageEmbed, MessageOptions } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
         await CommandHelper.getLocale(interaction)
     );

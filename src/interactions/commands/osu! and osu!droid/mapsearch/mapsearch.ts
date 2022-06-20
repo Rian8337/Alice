@@ -59,7 +59,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             'end"';
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const result: RequestResponse = await RESTManager.request(url);
 

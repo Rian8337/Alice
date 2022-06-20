@@ -50,7 +50,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapId,

@@ -56,7 +56,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     // Get calculation parameters
     const forceAR: number | undefined = interaction.options.getNumber(

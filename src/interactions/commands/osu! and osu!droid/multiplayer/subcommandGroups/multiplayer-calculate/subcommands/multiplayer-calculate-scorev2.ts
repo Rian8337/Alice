@@ -10,7 +10,7 @@ import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo, MapStats, Mod, ModUtil } from "@rian8337/osu-base";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -36,7 +36,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         room.settings.beatmap.id

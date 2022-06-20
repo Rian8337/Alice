@@ -12,7 +12,10 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: DailyLocalization = new DailyLocalization(
         await CommandHelper.getLocale(interaction)
     );

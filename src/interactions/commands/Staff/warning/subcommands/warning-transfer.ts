@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { User } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
         await CommandHelper.getLocale(interaction)
     );

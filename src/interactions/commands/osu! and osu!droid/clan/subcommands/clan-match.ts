@@ -11,7 +11,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { Collection, GuildMember, Snowflake } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: ClanLocalization = new ClanLocalization(
         await CommandHelper.getLocale(interaction)
     );

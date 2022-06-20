@@ -9,7 +9,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;

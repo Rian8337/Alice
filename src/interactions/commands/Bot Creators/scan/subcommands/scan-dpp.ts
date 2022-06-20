@@ -9,7 +9,10 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Collection, Snowflake } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: ScanLocalization = new ScanLocalization(
         await CommandHelper.getLocale(interaction)
     );

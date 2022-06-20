@@ -10,7 +10,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const language: Language = await CommandHelper.getLocale(interaction);
 
     const bindInfo: UserBind | null =
@@ -19,7 +19,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
                     Constants.selfNotBindedReject
@@ -28,7 +28,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferUpdate(interaction);
 
     const template: Buffer | null = await ProfileManager.getProfileTemplate(
         bindInfo.uid,
@@ -38,14 +38,14 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     );
 
     if (!template) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(interaction, {
             content: new ProfileLocalization(language).getTranslation(
                 "selfProfileNotFound"
             ),
         });
     }
 
-    InteractionHelper.reply(interaction, { files: [template] });
+    InteractionHelper.update(interaction, { files: [template] });
 };
 
 export const config: SlashSubcommand["config"] = {

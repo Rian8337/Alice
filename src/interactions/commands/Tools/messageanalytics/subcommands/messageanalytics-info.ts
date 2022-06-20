@@ -35,7 +35,10 @@ function daysToMilliseconds(days: number): number {
     return 24 * 3.6e6 * days;
 }
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: MessageanalyticsLocalization =
         new MessageanalyticsLocalization(
             await CommandHelper.getLocale(interaction)

@@ -245,7 +245,7 @@ export const run: EventUtil["run"] = async (
             subcommand?.config.instantDeferInDebug !== false;
 
         if (instantDefer) {
-            await InteractionHelper.defer(interaction);
+            await InteractionHelper.deferReply(interaction);
         }
     }
 

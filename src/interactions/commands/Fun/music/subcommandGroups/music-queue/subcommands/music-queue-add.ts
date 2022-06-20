@@ -16,7 +16,7 @@ import {
 } from "discord.js";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
         await CommandHelper.getLocale(interaction)
     );

@@ -166,7 +166,7 @@ function createEmbed(
     return embed;
 }
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: TriviaLocalization = new TriviaLocalization(
         await CommandHelper.getLocale(interaction)
     );

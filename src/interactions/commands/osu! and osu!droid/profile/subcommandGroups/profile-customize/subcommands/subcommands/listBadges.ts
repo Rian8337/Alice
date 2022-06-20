@@ -9,7 +9,7 @@ import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const badgeList: Collection<string, ProfileBadge> =
         await DatabaseManager.aliceDb.collections.profileBadges.getAllBadgesSorted();
 

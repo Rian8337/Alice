@@ -75,7 +75,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         uid = bindInfo.uid;
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         hash ? hash : beatmapID

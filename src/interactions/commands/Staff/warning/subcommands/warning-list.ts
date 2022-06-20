@@ -13,7 +13,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
         await CommandHelper.getLocale(interaction)
     );

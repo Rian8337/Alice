@@ -16,7 +16,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { SelectMenuInteraction } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -30,7 +30,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         );
 
     if (!bindInfo) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject
@@ -54,7 +54,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     const ownedBadges: PartialProfileBackground[] = pictureConfig.badges;
 
     if (ownedBadges.length === 0) {
-        return InteractionHelper.reply(interaction, {
+        return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userDoesntOwnAnyBadge")
             ),
@@ -121,7 +121,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         { $set: { picture_config: pictureConfig } }
     );
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("equipBadgeSuccess"),
             interaction.user.toString(),

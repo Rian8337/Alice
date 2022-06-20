@@ -33,7 +33,10 @@ import {
     Snowflake,
 } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: DailyLocalization = new DailyLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -53,7 +56,7 @@ export const run: SlashSubcommand["run"] = async (client, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const replay: MessageAttachment = interaction.options.getAttachment(
         "replay",

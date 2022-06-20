@@ -1,10 +1,12 @@
 import {
+    BaseCommandInteraction,
     BaseGuildTextChannel,
     Collection,
     CommandInteraction,
     DMChannel,
     GuildMember,
     Interaction,
+    MessageComponentInteraction,
     MessageSelectOptionData,
     PermissionResolvable,
     SelectMenuInteraction,
@@ -74,12 +76,10 @@ export abstract class CommandHelper extends Manager {
             return;
         }
 
-        await selectMenuInteraction.deferUpdate();
-
         const pickedSubcommand: string = selectMenuInteraction.values[0];
 
         return this.runSlashSubOrGroup(
-            interaction,
+            selectMenuInteraction,
             await import(
                 `${mainCommandDirectory}/subcommands/${pickedSubcommand}`
             ),
@@ -300,7 +300,7 @@ export abstract class CommandHelper extends Manager {
      * @param subcommand The subcommand to run.
      */
     private static runSlashSubOrGroup(
-        interaction: CommandInteraction,
+        interaction: CommandInteraction | SelectMenuInteraction,
         subcommand?: SlashSubcommand,
         language: Language = "en"
     ): Promise<unknown> {
@@ -394,7 +394,7 @@ export abstract class CommandHelper extends Manager {
      * @returns Whether the interaction can run the command.
      */
     static userFulfillsCommandPermission(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         permissions: Permission[]
     ): boolean {
         // Allow bot owner to override all permission requirement
@@ -421,7 +421,7 @@ export abstract class CommandHelper extends Manager {
      * @returns Whether the guild member has all the specified permissions.
      */
     static checkPermission(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         ...permissions: PermissionResolvable[]
     ): boolean {
         if (permissions.length === 0) {

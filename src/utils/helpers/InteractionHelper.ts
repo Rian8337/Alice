@@ -11,12 +11,12 @@ import {
  */
 export abstract class InteractionHelper {
     /**
-     * Defers an interaction.
+     * Defers a reply to an interaction.
      *
      * @param interaction The interaction to defer.
      * @param ephemeral Whether the reply should be ephemeral. Defaults to the interaction's `ephemeral` property.
      */
-    static async defer(
+    static async deferReply(
         interaction: Interaction & InteractionResponseFields,
         ephemeral?: boolean
     ): Promise<void> {
@@ -24,6 +24,19 @@ export abstract class InteractionHelper {
             return interaction.deferReply({
                 ephemeral: ephemeral ?? interaction.ephemeral ?? false,
             });
+        }
+    }
+
+    /**
+     * Defers an update to an interaction.
+     *
+     * @param interaction The interaction to defer.
+     */
+    static async deferUpdate(
+        interaction: MessageComponentInteraction
+    ): Promise<void> {
+        if (!interaction.deferred && !interaction.replied) {
+            return interaction.deferUpdate();
         }
     }
 
@@ -38,12 +51,12 @@ export abstract class InteractionHelper {
         interaction: Interaction & InteractionResponseFields,
         reply: WebhookEditMessageOptions
     ): Promise<Message> {
+        // Reset message components
+        reply.components ??= [];
+
         let message: Message;
 
         if (interaction.deferred || interaction.replied) {
-            // Reset message components
-            reply.components ??= [];
-
             message = <Message>await interaction.editReply(reply);
         } else {
             message = <Message>await interaction.reply({
@@ -67,6 +80,9 @@ export abstract class InteractionHelper {
         interaction: MessageComponentInteraction,
         response: WebhookEditMessageOptions
     ): Promise<Message> {
+        // Reset message components
+        response.components ??= [];
+
         return <Promise<Message>>interaction.update({
             ...response,
             fetchReply: true,

@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo } from "@rian8337/osu-base";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -61,7 +61,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     if (challenge.beatmapid !== beatmapId) {
-        await InteractionHelper.defer(interaction);
+        await InteractionHelper.deferReply(interaction);
 
         const result: OperationResult =
             await DatabaseManager.aliceDb.collections.challenge.updateOne(

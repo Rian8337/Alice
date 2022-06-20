@@ -9,7 +9,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
 import { Collection, Guild, TextChannel } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: MessageanalyticsLocalization =
         new MessageanalyticsLocalization(
             await CommandHelper.getLocale(interaction)

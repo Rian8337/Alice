@@ -13,7 +13,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -28,7 +28,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;

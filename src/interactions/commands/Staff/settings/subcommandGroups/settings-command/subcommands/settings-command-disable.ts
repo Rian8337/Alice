@@ -11,7 +11,10 @@ import { SettingsLocalization } from "@alice-localization/interactions/commands/
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: SettingsLocalization = new SettingsLocalization(
         await CommandHelper.getLocale(interaction)
     );

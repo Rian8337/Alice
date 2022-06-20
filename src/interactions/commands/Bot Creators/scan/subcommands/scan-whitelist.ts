@@ -13,7 +13,10 @@ import { ScanLocalization } from "@alice-localization/interactions/commands/Bot 
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (
+    client,
+    interaction
+) => {
     const localization: ScanLocalization = new ScanLocalization(
         await CommandHelper.getLocale(interaction)
     );

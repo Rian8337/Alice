@@ -12,7 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
         await CommandHelper.getLocale(interaction)
     );

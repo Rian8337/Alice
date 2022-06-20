@@ -7,7 +7,6 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
     BaseCommandInteraction,
     ButtonInteraction,
-    CommandInteraction,
     InteractionReplyOptions,
     Message,
     MessageActionRow,
@@ -106,7 +105,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      */
     static async createConfirmation(
         interaction:
-            | CommandInteraction
+            | BaseCommandInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction,
         options: InteractionReplyOptions,
@@ -125,10 +124,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         options.components ??= [];
         options.components.push(component);
 
-        const message: Message = await InteractionHelper.reply(
-            interaction,
-            options
-        );
+        const message: Message =
+            interaction instanceof MessageComponentInteraction
+                ? await InteractionHelper.update(interaction, options)
+                : await InteractionHelper.reply(interaction, options);
 
         const collectorOptions = this.createButtonCollector(
             message,
@@ -168,20 +167,35 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                 if (pressed) {
                     if (pressed.customId === "yes") {
-                        await InteractionHelper.reply(interaction, {
-                            content: MessageCreator.createPrefixedMessage(
-                                localization.getTranslation("pleaseWait"),
-                                Symbols.timer
-                            ),
-                            components: [],
-                        });
+                        interaction instanceof MessageComponentInteraction
+                            ? await InteractionHelper.update(interaction, {
+                                  content: MessageCreator.createPrefixedMessage(
+                                      localization.getTranslation("pleaseWait"),
+                                      Symbols.timer
+                                  ),
+                              })
+                            : await InteractionHelper.reply(interaction, {
+                                  content: MessageCreator.createPrefixedMessage(
+                                      localization.getTranslation("pleaseWait"),
+                                      Symbols.timer
+                                  ),
+                              });
                     } else {
-                        await InteractionHelper.reply(interaction, {
-                            content: MessageCreator.createReject(
-                                localization.getTranslation("actionCancelled")
-                            ),
-                            components: [],
-                        });
+                        interaction instanceof MessageComponentInteraction
+                            ? await InteractionHelper.update(interaction, {
+                                  content: MessageCreator.createReject(
+                                      localization.getTranslation(
+                                          "actionCancelled"
+                                      )
+                                  ),
+                              })
+                            : await InteractionHelper.reply(interaction, {
+                                  content: MessageCreator.createReject(
+                                      localization.getTranslation(
+                                          "actionCancelled"
+                                      )
+                                  ),
+                              });
 
                         if (!interaction.ephemeral) {
                             setTimeout(() => {
@@ -281,10 +295,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
         await onPageChange(options, startPage, ...onPageChangeArgs);
 
-        const message: Message = await InteractionHelper.reply(
-            interaction,
-            options
-        );
+        const message: Message =
+            interaction instanceof MessageComponentInteraction
+                ? await InteractionHelper.update(interaction, options)
+                : await InteractionHelper.reply(interaction, options);
 
         if (maxPage === 1) {
             return message;
@@ -368,7 +382,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
             if (!collectorOptions.componentIsDeleted) {
                 try {
-                    await InteractionHelper.reply(interaction, options);
+                    interaction instanceof MessageComponentInteraction
+                        ? await InteractionHelper.update(interaction, options)
+                        : await InteractionHelper.reply(interaction, options);
                     // eslint-disable-next-line no-empty
                 } catch {}
             }

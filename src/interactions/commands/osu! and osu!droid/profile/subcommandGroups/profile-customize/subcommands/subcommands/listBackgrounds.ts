@@ -10,7 +10,7 @@ import { ProfileLocalization } from "@alice-localization/interactions/commands/o
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction)
     );

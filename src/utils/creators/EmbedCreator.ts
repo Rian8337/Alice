@@ -1,13 +1,13 @@
 import {
     BaseCommandInteraction,
     ColorResolvable,
-    CommandInteraction,
     Guild,
     GuildEmoji,
     GuildMember,
     MessageActionRow,
     MessageAttachment,
     MessageButton,
+    MessageComponentInteraction,
     MessageEmbed,
     MessageOptions,
     User,
@@ -313,7 +313,7 @@ export abstract class EmbedCreator {
      * @returns The embed.
      */
     static createInputEmbed(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         title: string,
         description: string,
         language: Language = "en"

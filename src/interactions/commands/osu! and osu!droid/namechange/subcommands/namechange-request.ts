@@ -13,7 +13,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -60,7 +60,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
         }
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const player: Player | null = await Player.getInformation(bindInfo.uid);
 

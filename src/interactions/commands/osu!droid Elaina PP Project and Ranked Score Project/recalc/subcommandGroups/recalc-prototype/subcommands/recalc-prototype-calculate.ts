@@ -11,7 +11,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { RecalculationManager } from "@alice-utils/managers/RecalculationManager";
 import { Snowflake } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: RecalcLocalization = new RecalcLocalization(
         await CommandHelper.getLocale(interaction)
     );

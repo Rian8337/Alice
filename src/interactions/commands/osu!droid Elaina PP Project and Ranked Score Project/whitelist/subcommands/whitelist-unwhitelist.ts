@@ -12,7 +12,7 @@ import { WhitelistLocalization } from "@alice-localization/interactions/commands
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (_, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -61,7 +61,7 @@ export const run: SlashSubcommand["run"] = async (_, interaction) => {
     }
 
     // Collect beatmaps first
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const beatmaps: MapInfo[] = [];
 

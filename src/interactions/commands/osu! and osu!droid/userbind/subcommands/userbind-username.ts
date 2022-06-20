@@ -11,12 +11,12 @@ import { UserbindLocalization } from "@alice-localization/interactions/commands/
 import { Constants } from "@alice-core/Constants";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashSubcommand["run"] = async (client, interaction) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: UserbindLocalization = new UserbindLocalization(
         await CommandHelper.getLocale(interaction)
     );
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const username: string = interaction.options.getString("username", true);
 

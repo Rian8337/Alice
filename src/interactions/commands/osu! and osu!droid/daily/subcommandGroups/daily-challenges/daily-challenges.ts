@@ -1,5 +1,5 @@
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommandGroup } from "@alice-interfaces/core/SlashSubcommandGroup";
 import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -7,7 +7,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CommandInteraction } from "discord.js";
 
-export const run: SlashSubcommand["run"] = async (
+export const run: SlashSubcommandGroup["run"] = async (
     _,
     interaction: CommandInteraction<"cached">
 ) => {
@@ -29,7 +29,7 @@ export const run: SlashSubcommand["run"] = async (
     CommandHelper.runSlashSubcommandFromInteraction(interaction, language);
 };
 
-export const config: SlashSubcommand["config"] = {
+export const config: SlashSubcommandGroup["config"] = {
     permissions: ["SPECIAL"],
     replyEphemeral: true,
 };

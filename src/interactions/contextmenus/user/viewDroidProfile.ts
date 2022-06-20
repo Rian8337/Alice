@@ -37,7 +37,7 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.defer(interaction);
+    await InteractionHelper.deferReply(interaction);
 
     const player: Player | null = await Player.getInformation(bindInfo.uid);
 

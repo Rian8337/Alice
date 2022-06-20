@@ -1,9 +1,10 @@
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
-    CommandInteraction,
+    BaseCommandInteraction,
     InteractionReplyOptions,
     Message,
     MessageCollector,
+    MessageComponentInteraction,
     Snowflake,
 } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
@@ -24,7 +25,7 @@ export abstract class MessageInputCreator {
      * @returns The picked choice or given input, `undefined` if the users didn't pick any choice or give any input.
      */
     static async createInputDetector(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction | MessageComponentInteraction,
         options: InteractionReplyOptions,
         choices: string[],
         users: Snowflake[],
@@ -58,9 +59,15 @@ export abstract class MessageInputCreator {
         return new Promise((resolve) => {
             collector.once("end", async (collected) => {
                 if (collected.size === 0) {
-                    await InteractionHelper.reply(interaction, {
-                        content: MessageCreator.createReject("Timed out."),
-                    });
+                    interaction instanceof MessageComponentInteraction
+                        ? await InteractionHelper.update(interaction, {
+                              content:
+                                  MessageCreator.createReject("Timed out."),
+                          })
+                        : await InteractionHelper.reply(interaction, {
+                              content:
+                                  MessageCreator.createReject("Timed out."),
+                          });
 
                     if (!interaction.ephemeral) {
                         setTimeout(() => {
