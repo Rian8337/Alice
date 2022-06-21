@@ -77,7 +77,7 @@ export abstract class ProfileManager extends Manager {
                     {
                         projection: {
                             _id: 0,
-                            pictureConfig: 1,
+                            picture_config: 1,
                         },
                     }
                 );
