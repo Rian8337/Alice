@@ -26,6 +26,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     "status.isPlaying": 1,
                     "settings.roomHost": 1,
+                    "settings.requiredMods": 1,
+                    "settings.speedMultiplier": 1,
                 },
             }
         );
