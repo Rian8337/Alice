@@ -16,6 +16,7 @@ import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MapStats, ModUtil, RequestResponse } from "@rian8337/osu-base";
 import { MessageEmbed, MessageOptions } from "discord.js";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { Config } from "@alice-core/Config";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -27,11 +28,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             interaction.user,
             {
                 projection: {
-                    _id: 0,
                     textChannelId: 1,
-                    "settings.roomHost": 1,
+                    settings: 1,
                     "status.isPlaying": 1,
-                    "settings.beatmap": 1,
                     "players.isReady": 1,
                     "players.isSpectating": 1,
                     "players.username": 1,
@@ -65,7 +64,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    if (room.players.length <= 1) {
+    // Allow solo play in debug mode for testing.
+    if (!Config.isDebug && room.players.length <= 1) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooFewPlayers")
@@ -141,7 +141,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 roomId: room.roomId,
             },
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             json: true,
         }
