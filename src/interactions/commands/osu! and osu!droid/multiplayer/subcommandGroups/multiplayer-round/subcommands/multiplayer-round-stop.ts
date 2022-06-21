@@ -64,6 +64,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 key: process.env.DROID_SERVER_INTERNAL_KEY,
                 roomId: room.roomId,
             },
+            headers: {
+                "Content-Type": "application/json"
+            },
+            json: true,
         }
     );
 
