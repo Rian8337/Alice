@@ -8,6 +8,8 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { RequestResponse } from "@rian8337/osu-base";
+import { RESTManager } from "@alice-utils/managers/RESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -43,6 +45,28 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("noTimerSet")
             ),
         });
+    }
+
+    await InteractionHelper.deferReply(interaction);
+
+    const response: RequestResponse = await RESTManager.request(
+        "https://droidppboard.herokuapp.com/api/droid/stopPlaying",
+        {
+            method: "POST",
+            body: {
+                key: process.env.DROID_SERVER_INTERNAL_KEY,
+                roomId: room.roomId,
+            },
+        }
+    );
+
+    if (response.statusCode !== 200) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("timerStopFailed"),
+                JSON.parse(response.data.toString()).message
+            )
+        })
     }
 
     room.status.isPlaying = false;

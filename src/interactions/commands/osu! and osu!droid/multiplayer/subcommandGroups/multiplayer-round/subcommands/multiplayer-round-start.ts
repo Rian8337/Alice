@@ -13,8 +13,9 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { MapStats, ModUtil } from "@rian8337/osu-base";
+import { MapStats, ModUtil, RequestResponse } from "@rian8337/osu-base";
 import { MessageEmbed, MessageOptions } from "discord.js";
+import { RESTManager } from "@alice-utils/managers/RESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -95,6 +96,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
+    await InteractionHelper.deferReply(interaction);
+
     room.status.isPlaying = true;
     room.status.playingSince = Date.now() + duration * 1000;
 
@@ -103,7 +106,28 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("roundStartFailed")
+                localization.getTranslation("roundStartFailed"),
+                result.reason!
+            ),
+        });
+    }
+
+    const response: RequestResponse = await RESTManager.request(
+        "https://droidppboard.herokuapp.com/api/droid/startPlaying",
+        {
+            method: "POST",
+            body: {
+                key: process.env.DROID_SERVER_INTERNAL_KEY,
+                roomId: room.roomId,
+            },
+        }
+    );
+
+    if (response.statusCode !== 200) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("roundStartFailed"),
+                JSON.parse(response.data.toString()).message
             ),
         });
     }
