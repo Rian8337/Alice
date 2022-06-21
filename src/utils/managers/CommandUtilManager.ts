@@ -86,8 +86,11 @@ export abstract class CommandUtilManager extends Manager {
                 {
                     projection: {
                         _id: 0,
-                        preferredLocale: 0,
-                        "channelSettings.preferredLocale": 0,
+                        disabledCommands: 1,
+                        disabledEventUtils: 1,
+                        "channelSettings.id": 1,
+                        "channelSettings.disabledCommands": 1,
+                        "channelSettings.disabledEventUtils": 1,
                     },
                 }
             );
