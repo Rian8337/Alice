@@ -3,20 +3,8 @@ import { MultiplayerRoom } from "../../utils/aliceDb/MultiplayerRoom";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
 import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
-import { GuildMember, Snowflake, User } from "discord.js";
-import { FindOptions } from "mongodb";
-
-interface MultiplayerRoomRetrieveOption {
-    /**
-     * Whether to include players in the room. Defaults to `false`.
-     */
-    retrievePlayers?: boolean;
-
-    /**
-     * Whether to include current scores in the room. Defaults to `false`.
-     */
-    retrieveScores?: boolean;
-}
+import { Collection, GuildMember, Snowflake, User } from "discord.js";
+import { Filter, FindOptions } from "mongodb";
 
 /**
  * A manager for the `multiplayer` collection.
@@ -62,6 +50,23 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
         };
     }
 
+    override getOne(
+        filter?: Filter<DatabaseMultiplayerRoom>,
+        options?: FindOptions<DatabaseMultiplayerRoom>
+    ): Promise<MultiplayerRoom | null> {
+        return super.getOne(filter, this.processOptions(options));
+    }
+
+    override get<K extends keyof DatabaseMultiplayerRoom>(
+        key: K,
+        filter?: Filter<DatabaseMultiplayerRoom>,
+        options?: FindOptions<DatabaseMultiplayerRoom>
+    ): Promise<
+        Collection<NonNullable<DatabaseMultiplayerRoom[K]>, MultiplayerRoom>
+    > {
+        return super.get(key, filter, this.processOptions(options));
+    }
+
     /**
      * Gets a multiplayer room from a participating player.
      *
@@ -71,7 +76,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         discordId: Snowflake,
-        options?: MultiplayerRoomRetrieveOption
+        options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null>;
 
     /**
@@ -83,7 +88,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         user: User,
-        options?: MultiplayerRoomRetrieveOption
+        options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null>;
 
     /**
@@ -95,7 +100,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         member: GuildMember,
-        options?: MultiplayerRoomRetrieveOption
+        options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null>;
 
     /**
@@ -107,12 +112,12 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         uid: number,
-        options?: MultiplayerRoomRetrieveOption
+        options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null>;
 
     getFromUser(
         input: Snowflake | User | GuildMember | number,
-        options?: MultiplayerRoomRetrieveOption
+        options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null> {
         return this.getOne(
             input instanceof GuildMember || input instanceof User
@@ -120,7 +125,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
                 : typeof input === "string"
                 ? { "players.discordId": input }
                 : { "players.uid": input },
-            this.getDbOptions(options)
+            this.processOptions(options)
         );
     }
 
@@ -133,9 +138,9 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
      */
     getFromId(
         roomId: string,
-        options?: MultiplayerRoomRetrieveOption
+        options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null> {
-        return this.getOne({ roomId: roomId }, this.getDbOptions(options));
+        return this.getOne({ roomId: roomId }, this.processOptions(options));
     }
 
     /**
@@ -147,11 +152,11 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
      */
     getFromChannel(
         channelId: Snowflake,
-        options?: MultiplayerRoomRetrieveOption
+        options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null> {
         return this.getOne(
             { threadChannelId: channelId },
-            this.getDbOptions(options)
+            this.processOptions(options)
         );
     }
 
@@ -174,27 +179,17 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
     }
 
     /**
-     * Gets database options for retrieving multiplayer room.
+     * Processes retrieval options.
      *
-     * @param options The options to parse.
+     * @param options The options.
      */
-    private getDbOptions(
-        options?: MultiplayerRoomRetrieveOption
-    ): FindOptions<DatabaseMultiplayerRoom> {
-        const dbOptions: FindOptions<MultiplayerRoom> = {};
-
-        if (options) {
-            dbOptions.projection ??= {};
-
-            if (!options?.retrievePlayers) {
-                dbOptions.projection.players = 0;
-            }
-
-            if (!options?.retrieveScores) {
-                dbOptions.projection.currentScores = 0;
-            }
+    private processOptions(
+        options?: FindOptions<DatabaseMultiplayerRoom>
+    ): FindOptions<DatabaseMultiplayerRoom> | undefined {
+        if (options?.projection) {
+            options.projection.roomId = 1;
         }
 
-        return dbOptions;
+        return options;
     }
 }

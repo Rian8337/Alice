@@ -17,8 +17,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const room: MultiplayerRoom | null =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromUser(
-            interaction.user,
-            { retrievePlayers: true, retrieveScores: true }
+            interaction.user
         );
 
     if (!room) {

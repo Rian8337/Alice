@@ -24,7 +24,12 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const currentPlayerRoom: MultiplayerRoom | null =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromUser(
-            interaction.user
+            interaction.user,
+            {
+                projection: {
+                    _id: 1,
+                },
+            }
         );
 
     if (currentPlayerRoom) {
@@ -40,7 +45,18 @@ export const run: SlashSubcommand<true>["run"] = async (
     const room: MultiplayerRoom | null =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(
             id,
-            { retrievePlayers: true }
+            {
+                projection: {
+                    _id: 0,
+                    textChannelId: 1,
+                    threadChannelId: 1,
+                    "status.isPlaying": 1,
+                    "settings.maxPlayers": 1,
+                    "settings.password": 1,
+                    "settings.teamMode": 1,
+                    "players.uid": 1,
+                },
+            }
         );
 
     if (!room) {

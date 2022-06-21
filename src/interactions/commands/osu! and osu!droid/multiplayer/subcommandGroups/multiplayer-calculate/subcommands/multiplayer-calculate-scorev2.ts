@@ -17,7 +17,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const room: MultiplayerRoom | null =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromChannel(
-            interaction.channelId
+            interaction.channelId,
+            {
+                projection: {
+                    _id: 0,
+                    "settings.beatmap": 1,
+                    "settings.modMultipliers": 1,
+                },
+            }
         );
 
     if (!room) {

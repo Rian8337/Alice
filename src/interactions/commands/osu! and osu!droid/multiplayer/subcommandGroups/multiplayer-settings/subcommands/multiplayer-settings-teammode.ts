@@ -8,10 +8,11 @@ import { MultiplayerLocalization } from "@alice-localization/interactions/comman
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { SelectMenuInteraction } from "discord.js";
+import { DatabaseMultiplayerRoom } from "@alice-interfaces/database/aliceDb/DatabaseMultiplayerRoom";
+import { UpdateFilter } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -21,7 +22,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const room: MultiplayerRoom | null =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromUser(
             interaction.user,
-            { retrievePlayers: true }
+            {
+                projection: {
+                    _id: 0,
+                    "status.isPlaying": 1,
+                    "settings.roomHost": 1,
+                    "settings.teamMode": 1,
+                },
+            }
         );
 
     if (!room) {
@@ -91,29 +99,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (originalTeamMode !== pickedTeamMode) {
         room.settings.teamMode = pickedTeamMode;
 
-        for (const player of room.players) {
-            switch (pickedTeamMode) {
-                case MultiplayerTeamMode.headToHead:
-                    delete player.team;
-                    break;
-                case MultiplayerTeamMode.teamVS:
-                    // Randomize team.
-                    player.team = ArrayHelper.getRandomArrayElement([
-                        MultiplayerTeam.red,
-                        MultiplayerTeam.blue,
-                    ]);
-            }
+        const query: UpdateFilter<DatabaseMultiplayerRoom> = {
+            $set: {
+                "settings.teamMode": pickedTeamMode,
+            },
+        };
+
+        switch (pickedTeamMode) {
+            case MultiplayerTeamMode.headToHead:
+                query.$unset = {};
+                query.$unset["players.$[].team"] = "";
+                break;
+            case MultiplayerTeamMode.teamVS:
+                // Have to do this so that TypeScript doesn't complain
+                query.$set ??= {};
+                query.$set["players.$[].team"] = MultiplayerTeam.red;
         }
 
         const result: OperationResult =
             await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
                 { roomId: room.roomId },
-                {
-                    $set: {
-                        "settings.allowedMods": room.settings.allowedMods,
-                        "settings.requiredMods": room.settings.requiredMods,
-                    },
-                }
+                query
             );
 
         if (!result.success) {

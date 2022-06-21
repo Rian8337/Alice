@@ -25,7 +25,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const room: MultiplayerRoom | null =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromUser(
             interaction.user,
-            { retrievePlayers: true }
+            {
+                projection: {
+                    _id: 0,
+                    textChannelId: 1,
+                    "settings.roomHost": 1,
+                    "status.isPlaying": 1,
+                    "settings.beatmap": 1,
+                    "players.isReady": 1,
+                    "players.isSpectating": 1,
+                    "players.username": 1,
+                },
+            }
         );
 
     if (!room) {
@@ -170,7 +181,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     // Assume that players are AFK or room was force-shutdown by someone with moderating permissions. Close the room.
                     await DatabaseManager.aliceDb.collections.multiplayerRoom.deleteOne(
                         {
-                            textChannelId: interaction.channelId,
+                            threadChannelId: interaction.channelId,
                         }
                     );
 
@@ -186,8 +197,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
                 const room: MultiplayerRoom | null =
                     await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromChannel(
-                        interaction.channelId,
-                        { retrievePlayers: true, retrieveScores: true }
+                        interaction.channelId
                     );
 
                 if (!room) {

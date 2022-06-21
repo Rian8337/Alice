@@ -4,7 +4,6 @@ import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
 import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { MultiplayerPlayer } from "@alice-interfaces/multiplayer/MultiplayerPlayer";
 import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -16,9 +15,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     );
 
     const room: MultiplayerRoom | null =
-        await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromChannel(
-            interaction.channelId,
-            { retrievePlayers: true }
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromUser(
+            interaction.user,
+            {
+                projection: {
+                    "settings.teamMode": 1,
+                },
+            }
         );
 
     if (!room) {
@@ -37,26 +40,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const player: MultiplayerPlayer | undefined = room.players.find(
-        (v) => v.discordId === interaction.user.id
+    const team: MultiplayerTeam = <MultiplayerTeam>(
+        interaction.options.getInteger("team", true)
     );
-
-    if (!player) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("selfNotInRoom")
-            ),
-        });
-    }
-
-    player.team = <MultiplayerTeam>interaction.options.getInteger("team", true);
 
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
             { roomId: room.roomId },
             {
                 $set: {
-                    "players.$[playerFilter].team": player.team,
+                    "players.$[playerFilter].team": team,
                 },
             },
             {
@@ -78,7 +71,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("teamSelectSuccess"),
-            room.teamToString(player.team, localization.language)
+            room.teamToString(team, localization.language)
         ),
     });
 };
