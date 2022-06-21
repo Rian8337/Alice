@@ -15,11 +15,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const room: MultiplayerRoom | null = id
         ? await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(
-              id
-          )
+            id,
+            { retrievePlayers: true }
+        )
         : await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromChannel(
-              interaction.channelId
-          );
+            interaction.channelId,
+            { retrievePlayers: true }
+        );
 
     if (!room) {
         return InteractionHelper.reply(interaction, {

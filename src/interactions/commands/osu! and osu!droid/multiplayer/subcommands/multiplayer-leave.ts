@@ -17,7 +17,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const room: MultiplayerRoom | null =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromChannel(
-            interaction.channelId
+            interaction.channelId,
+            { retrievePlayers: true }
         );
 
     if (!room) {
@@ -61,15 +62,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            `${localization.getTranslation("playerLeaveSuccess")}${
-                changeHost && room.players.length > 0
-                    ? `\n\n${StringHelper.formatString(
-                          localization.getTranslation(
-                              "roomHostChangeNotification"
-                          ),
-                          `<@${room.settings.roomHost}>`
-                      )}`
-                    : ""
+            `${localization.getTranslation("playerLeaveSuccess")}${changeHost && room.players.length > 0
+                ? `\n\n${StringHelper.formatString(
+                    localization.getTranslation(
+                        "roomHostChangeNotification"
+                    ),
+                    `<@${room.settings.roomHost}>`
+                )}`
+                : ""
             }`
         ),
     });

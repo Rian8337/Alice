@@ -4,6 +4,19 @@ import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
 import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
 import { GuildMember, Snowflake, User } from "discord.js";
+import { FindOptions } from "mongodb";
+
+interface MultiplayerRoomRetrieveOption {
+    /**
+     * Whether to include players in the room. Defaults to `false`.
+     */
+    retrievePlayers?: boolean;
+
+    /**
+     * Whether to include current scores in the room. Defaults to `false`.
+     */
+    retrieveScores?: boolean;
+}
 
 /**
  * A manager for the `multiplayer` collection.
@@ -53,43 +66,61 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
      * Gets a multiplayer room from a participating player.
      *
      * @param discordId The Discord ID of the player.
+     * @param options Options for the retrieval of the multiplayer room.
      * @returns The multiplayer room, `null` if the player isn't participating in a multiplayer room.
      */
-    getFromUser(discordId: Snowflake): Promise<MultiplayerRoom | null>;
+    getFromUser(
+        discordId: Snowflake,
+        options?: MultiplayerRoomRetrieveOption
+    ): Promise<MultiplayerRoom | null>;
 
     /**
      * Gets a multiplayer room from a participating player.
      *
      * @param user The player.
+     * @param options Options for the retrieval of the multiplayer room.
      * @returns The multiplayer room, `null` if the player isn't participating in a multiplayer room.
      */
-    getFromUser(user: User): Promise<MultiplayerRoom | null>;
+    getFromUser(
+        user: User,
+        options?: MultiplayerRoomRetrieveOption
+    ): Promise<MultiplayerRoom | null>;
 
     /**
      * Gets a multiplayer room from a participating player.
      *
      * @param member The player.
+     * @param options Options for the retrieval of the multiplayer room.
      * @returns The multiplayer room, `null` if the player isn't participating in a multiplayer room.
      */
-    getFromUser(member: GuildMember): Promise<MultiplayerRoom | null>;
+    getFromUser(
+        member: GuildMember,
+        options?: MultiplayerRoomRetrieveOption
+    ): Promise<MultiplayerRoom | null>;
 
     /**
      * Gets a multiplayer room from a participating player.
      *
      * @param uid The uid of the player.
+     * @param options Options for the retrieval of the multiplayer room.
      * @returns The multiplayer room, `null` if the player isn't participating in a multiplayer room.
      */
-    getFromUser(uid: number): Promise<MultiplayerRoom | null>;
+    getFromUser(
+        uid: number,
+        options?: MultiplayerRoomRetrieveOption
+    ): Promise<MultiplayerRoom | null>;
 
     getFromUser(
-        input: Snowflake | User | GuildMember | number
+        input: Snowflake | User | GuildMember | number,
+        options?: MultiplayerRoomRetrieveOption
     ): Promise<MultiplayerRoom | null> {
         return this.getOne(
             input instanceof GuildMember || input instanceof User
                 ? { "players.discordId": input.id }
                 : typeof input === "string"
                 ? { "players.discordId": input }
-                : { "players.uid": input }
+                : { "players.uid": input },
+            this.getDbOptions(options)
         );
     }
 
@@ -97,20 +128,31 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
      * Gets a multiplayer room from its ID.
      *
      * @param roomId The ID of the multiplayer room.
+     * @param options Options for the retrieval of the multiplayer room.
      * @returns The multiplayer room, `null` if there is no multiplayer room with that ID.
      */
-    getFromId(roomId: string): Promise<MultiplayerRoom | null> {
-        return this.getOne({ roomId: roomId });
+    getFromId(
+        roomId: string,
+        options?: MultiplayerRoomRetrieveOption
+    ): Promise<MultiplayerRoom | null> {
+        return this.getOne({ roomId: roomId }, this.getDbOptions(options));
     }
 
     /**
      * Gets a multiplayer room from its thread channel ID.
      *
      * @param channelId The ID of the thread channel where the multiplayer room resides on.
+     * @param options Options for the retrieval of the multiplayer room.
      * @returns The multiplayer room, `null` if there is no multiplayer room with that ID.
      */
-    getFromChannel(channelId: Snowflake): Promise<MultiplayerRoom | null> {
-        return this.getOne({ threadChannelId: channelId });
+    getFromChannel(
+        channelId: Snowflake,
+        options?: MultiplayerRoomRetrieveOption
+    ): Promise<MultiplayerRoom | null> {
+        return this.getOne(
+            { threadChannelId: channelId },
+            this.getDbOptions(options)
+        );
     }
 
     /**
@@ -129,5 +171,30 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
         );
 
         return room !== null;
+    }
+
+    /**
+     * Gets database options for retrieving multiplayer room.
+     *
+     * @param options The options to parse.
+     */
+    private getDbOptions(
+        options?: MultiplayerRoomRetrieveOption
+    ): FindOptions<DatabaseMultiplayerRoom> {
+        const dbOptions: FindOptions<MultiplayerRoom> = {};
+
+        if (options) {
+            dbOptions.projection ??= {};
+
+            if (!options?.retrievePlayers) {
+                dbOptions.projection.players = 0;
+            }
+
+            if (!options?.retrieveScores) {
+                dbOptions.projection.currentScores = 0;
+            }
+        }
+
+        return dbOptions;
     }
 }

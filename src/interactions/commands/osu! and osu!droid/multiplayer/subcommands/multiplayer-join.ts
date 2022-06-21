@@ -38,7 +38,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     const id: string = interaction.options.getString("id", true);
 
     const room: MultiplayerRoom | null =
-        await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(id);
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(id, { retrievePlayers: true });
 
     if (!room) {
         return InteractionHelper.reply(interaction, {
