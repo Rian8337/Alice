@@ -65,7 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 roomId: room.roomId,
             },
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             json: true,
         }
@@ -80,14 +80,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    room.status.isPlaying = false;
-
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
             { roomId: room.roomId },
             {
                 $set: {
-                    "status.isPlaying": room.status.isPlaying,
+                    "status.isPlaying": false,
                 },
             }
         );
