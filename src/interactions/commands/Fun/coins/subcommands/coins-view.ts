@@ -15,7 +15,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const playerInfo: PlayerInfo | null =
-        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(user);
+        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(user, {
+            projection: { _id: 0, alicecoins: 1 },
+        });
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

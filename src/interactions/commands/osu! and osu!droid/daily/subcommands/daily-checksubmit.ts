@@ -1,20 +1,21 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Collection, Snowflake } from "discord.js";
+import { Snowflake } from "discord.js";
+import { Filter, FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
         await CommandHelper.getLocale(interaction)
     );
 
-    const challengeID: string = interaction.options.getString(
+    const challengeId: string = interaction.options.getString(
         "challengeid",
         true
     );
@@ -34,45 +35,42 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const dbManager: PlayerInfoCollectionManager =
-        DatabaseManager.aliceDb.collections.playerInfo;
+    const query: Filter<DatabasePlayerInfo> = {
+        $and: [{ "challenges.id": challengeId }],
+    };
 
-    let playerInfo: PlayerInfo | null;
+    const findOptions: FindOptions<DatabasePlayerInfo> = {
+        projection: {
+            "challenges.$": 1,
+        },
+    };
 
     switch (true) {
         case !!uid:
-            playerInfo = await dbManager.getFromUid(uid!, {
-                retrieveChallengeData: true,
-            });
+            query.$and!.push({ uid: uid! });
             break;
         case !!username:
-            playerInfo = await dbManager.getFromUsername(username!, {
-                retrieveChallengeData: true,
-            });
-            break;
-        case !!discordid:
-            playerInfo = await dbManager.getFromUser(discordid!, {
-                retrieveChallengeData: true,
-            });
+            query.$and!.push({ username: username! });
             break;
         default:
             // If no arguments are specified, default to self
-            playerInfo = await dbManager.getFromUser(interaction.user, {
-                retrieveChallengeData: true,
-            });
+            query.$and!.push({ discordid: discordid ?? interaction.user.id });
     }
 
-    const challenges: Collection<string, ChallengeCompletionData> =
-        playerInfo?.challenges ?? new Collection();
+    const playerInfo: PlayerInfo | null =
+        await DatabaseManager.aliceDb.collections.playerInfo.getOne(
+            query,
+            findOptions
+        );
 
     const completionData: ChallengeCompletionData | undefined =
-        challenges.get(challengeID);
+        playerInfo?.challenges?.get(challengeId);
 
     if (completionData) {
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("userHasPlayedChallenge"),
-                challengeID,
+                challengeId,
                 completionData.highestLevel.toString()
             ),
         });
@@ -80,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("userHasNotPlayedChallenge"),
-                challengeID
+                challengeId
             ),
         });
     }

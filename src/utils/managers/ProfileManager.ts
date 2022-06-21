@@ -75,7 +75,10 @@ export abstract class ProfileManager extends Manager {
                 await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
                     bindInfo.discordid,
                     {
-                        retrieveActiveBadges: detailed,
+                        projection: {
+                            _id: 0,
+                            pictureConfig: 1,
+                        },
                     }
                 );
         }

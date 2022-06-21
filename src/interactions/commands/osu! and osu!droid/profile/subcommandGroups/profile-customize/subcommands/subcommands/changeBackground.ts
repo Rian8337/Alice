@@ -74,7 +74,14 @@ export const run: SlashSubcommand<false>["run"] = async (
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             interaction.user,
-            { retrieveBackgrounds: true }
+            {
+                projection: {
+                    _id: 0,
+                    picture_config: 1,
+                    alicecoins: 1,
+                    points: 1,
+                },
+            }
         );
 
     const pictureConfig: ProfileImageConfig =
@@ -163,7 +170,14 @@ export const run: SlashSubcommand<false>["run"] = async (
     await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: interaction.user.id },
         {
-            $set: { picture_config: pictureConfig },
+            $set: {
+                "picture_config.activeBackground": background,
+            },
+            $push: {
+                "picture_config.backgrounds": !isBackgroundOwned
+                    ? background
+                    : undefined,
+            },
             $inc: { alicecoins: isBackgroundOwned ? 0 : -500 },
         }
     );

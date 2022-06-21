@@ -61,7 +61,13 @@ async function kickUnverifiedMembers(client: Bot): Promise<void> {
 export const run: EventUtil["run"] = async (client) => {
     const playerInfo: PlayerInfo =
         (await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-            "386742340968120321"
+            "386742340968120321",
+            {
+                projection: {
+                    _id: 0,
+                    dailyreset: 1,
+                },
+            }
         ))!;
 
     let resetTime: number = playerInfo.dailyreset!;

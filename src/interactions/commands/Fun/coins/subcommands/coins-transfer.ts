@@ -76,7 +76,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const userPlayerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-            interaction.user
+            interaction.user,
+            {
+                projection: {
+                    _id: 0,
+                    alicecoins: 1,
+                },
+            }
         );
 
     if (!userPlayerInfo) {
@@ -103,7 +109,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const toTransferPlayerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-            toTransferGuildMember.id
+            toTransferGuildMember.id,
+            {
+                projection: {
+                    _id: 0,
+                    alicecoins: 1,
+                },
+            }
         );
 
     if (!toTransferPlayerInfo) {

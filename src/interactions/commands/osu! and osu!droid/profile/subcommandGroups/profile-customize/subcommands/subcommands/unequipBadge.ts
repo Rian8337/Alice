@@ -15,6 +15,8 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { SelectMenuInteraction } from "discord.js";
+import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
+import { UpdateFilter } from "mongodb";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -42,8 +44,11 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
         interaction.user,
         {
-            retrieveActiveBadges: true,
-            retrieveBadges: true,
+            projection: {
+                _id: 0,
+                "picture_config.badges": 1,
+                "picture_config.activeBadges": 1,
+            },
         }
     );
 
@@ -87,11 +92,24 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
 
     const badgeIndex: number = parseInt(selectMenuInteraction.values[0]) - 1;
 
-    pictureConfig.activeBadges[badgeIndex] = null;
+    const query: UpdateFilter<DatabasePlayerInfo> = {
+        $set: {},
+    };
+
+    Object.defineProperty(
+        query.$set,
+        `picture_config.activeBadges.${badgeIndex}`,
+        {
+            value: null,
+            configurable: true,
+            enumerable: true,
+            writable: true,
+        }
+    );
 
     await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: interaction.user.id },
-        { $set: { picture_config: pictureConfig } }
+        query
     );
 
     InteractionHelper.reply(interaction, {

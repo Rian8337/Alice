@@ -21,7 +21,12 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             interaction.user,
-            { retrieveBackgrounds: true }
+            {
+                projection: {
+                    _id: 0,
+                    "picture_config.backgrounds": 1,
+                },
+            }
         );
 
     const ownedBackgrounds: ProfileBackground[] = (

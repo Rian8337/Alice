@@ -4,28 +4,6 @@ import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake, User } from "discord.js";
 import { FindOptions } from "mongodb";
 
-interface PlayerInfoRetrieveOption {
-    /**
-     * Whether to include challenge data in the user info. Defaults to `false`.
-     */
-    retrieveChallengeData?: boolean;
-
-    /**
-     * Whether to include badge data in the user info. Defaults to `false`.
-     */
-    retrieveBadges?: boolean;
-
-    /**
-     * Whether to include active badge data in the user info. Defaults to `false`.
-     */
-    retrieveActiveBadges?: boolean;
-
-    /**
-     * Whether to include background data in the user info. Defaults to `false`.
-     */
-    retrieveBackgrounds?: boolean;
-}
-
 /**
  * A manager for the `playerinfo` collection.
  */
@@ -73,9 +51,9 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
      */
     getFromUid(
         uid: number,
-        options?: PlayerInfoRetrieveOption
+        options?: FindOptions<DatabasePlayerInfo>
     ): Promise<PlayerInfo | null> {
-        return this.getOne({ uid: uid }, this.getDbOptions(options));
+        return this.getOne({ uid: uid }, options);
     }
 
     /**
@@ -87,9 +65,9 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
      */
     getFromUsername(
         username: string,
-        options?: PlayerInfoRetrieveOption
+        options?: FindOptions<DatabasePlayerInfo>
     ): Promise<PlayerInfo | null> {
-        return this.getOne({ username: username }, this.getDbOptions(options));
+        return this.getOne({ username: username }, options);
     }
 
     /**
@@ -100,7 +78,7 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         id: Snowflake,
-        options?: PlayerInfoRetrieveOption
+        options?: FindOptions<DatabasePlayerInfo>
     ): Promise<PlayerInfo | null>;
 
     /**
@@ -111,51 +89,28 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         user: User,
-        options?: PlayerInfoRetrieveOption
+        options?: FindOptions<DatabasePlayerInfo>
     ): Promise<PlayerInfo | null>;
 
     getFromUser(
         userOrId: Snowflake | User,
-        options?: PlayerInfoRetrieveOption
+        options?: FindOptions<DatabasePlayerInfo>
     ): Promise<PlayerInfo | null> {
         return this.getOne(
             {
                 discordid: userOrId instanceof User ? userOrId.id : userOrId,
             },
-            this.getDbOptions(options)
+            options
         );
     }
 
-    /**
-     * Gets database options for retrieving user information.
-     *
-     * @param options The options to parse.
-     */
-    private getDbOptions(
-        options?: PlayerInfoRetrieveOption
-    ): FindOptions<DatabasePlayerInfo> {
-        const dbOptions: FindOptions<DatabasePlayerInfo> = {};
-
-        if (options) {
-            dbOptions.projection ??= {};
-
-            if (!options.retrieveActiveBadges) {
-                dbOptions.projection["picture_config.activeBadges"] = 0;
-            }
-
-            if (!options.retrieveBackgrounds) {
-                dbOptions.projection["picture_config.backgrounds"] = 0;
-            }
-
-            if (!options.retrieveBadges) {
-                dbOptions.projection["picture_config.badges"] = 0;
-            }
-
-            if (!options.retrieveChallengeData) {
-                dbOptions.projection.challenges = 0;
-            }
+    protected override processFindOptions(
+        options?: FindOptions<DatabasePlayerInfo>
+    ): FindOptions<DatabasePlayerInfo> | undefined {
+        if (options?.projection) {
+            options.projection.discordid = 1;
         }
 
-        return dbOptions;
+        return options;
     }
 }

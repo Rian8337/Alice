@@ -83,17 +83,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
         interaction.user,
-        { retrieveChallengeData: true }
+        {
+            projection: {
+                _id: 0,
+                alicecoins: 1,
+                points: 1,
+                challenges: 1,
+            },
+        }
     );
 
     // Keep track of how many points are gained
     let pointsGained: number = bonusLevel * 2 + challenge.points;
 
     if (playerInfo) {
-        const challengeData: ChallengeCompletionData | undefined =
-            playerInfo.challenges.get(challenge.challengeid);
+        const challengeData: ChallengeCompletionData =
+            playerInfo.challenges.get(challenge.challengeid) ?? {
+                id: challenge.challengeid,
+                highestLevel: bonusLevel,
+            };
 
-        if (challengeData) {
+        if (playerInfo.challenges.has(challenge.challengeid)) {
             // Player has completed challenge. Subtract the challenge's original points
             // and difference from highest challenge level
             pointsGained -=
@@ -106,25 +116,41 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 bonusLevel,
                 challengeData.highestLevel
             );
-        } else {
-            playerInfo.challenges.set(challenge.challengeid, {
-                id: challenge.challengeid,
-                highestLevel: bonusLevel,
-            });
-        }
 
-        await playerInfoDbManager.updateOne(
-            { discordid: interaction.user.id },
-            {
-                $set: {
-                    challenges: [...playerInfo.challenges.values()],
+            await playerInfoDbManager.updateOne(
+                { discordid: interaction.user.id },
+                {
+                    $set: {
+                        "challenges.$[challengeFilter].highestLevel":
+                            challengeData.highestLevel,
+                    },
+                    $inc: {
+                        alicecoins: pointsGained * 2,
+                        points: pointsGained,
+                    },
                 },
-                $inc: {
-                    alicecoins: pointsGained * 2,
-                    points: pointsGained,
-                },
-            }
-        );
+                {
+                    arrayFilters: [
+                        { "challengeFilter.id": challenge.challengeid },
+                    ],
+                }
+            );
+        } else {
+            playerInfo.challenges.set(challenge.challengeid, challengeData);
+
+            await playerInfoDbManager.updateOne(
+                { discordid: interaction.user.id },
+                {
+                    $push: {
+                        challenges: challengeData,
+                    },
+                    $inc: {
+                        alicecoins: pointsGained * 2,
+                        points: pointsGained,
+                    },
+                }
+            );
+        }
     } else {
         await playerInfoDbManager.insert({
             uid: player.uid,

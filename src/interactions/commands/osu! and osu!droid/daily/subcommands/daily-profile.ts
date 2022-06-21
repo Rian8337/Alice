@@ -3,6 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -11,6 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -32,27 +34,34 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     let playerInfo: PlayerInfo | null;
 
+    const findOptions: FindOptions<DatabasePlayerInfo> = {
+        projection: {
+            _id: 0,
+            points: 1,
+            alicecoins: 1,
+            challenges: 1,
+        },
+    };
+
     switch (true) {
         case !!uid:
-            playerInfo = await dbManager.getFromUid(uid!, {
-                retrieveChallengeData: true,
-            });
+            playerInfo = await dbManager.getFromUid(uid!, findOptions);
             break;
         case !!username:
-            playerInfo = await dbManager.getFromUsername(username!, {
-                retrieveChallengeData: true,
-            });
+            playerInfo = await dbManager.getFromUsername(
+                username!,
+                findOptions
+            );
             break;
         case !!discordid:
-            playerInfo = await dbManager.getFromUser(discordid!, {
-                retrieveChallengeData: true,
-            });
+            playerInfo = await dbManager.getFromUser(discordid!, findOptions);
             break;
         default:
             // If no arguments are specified, default to self
-            playerInfo = await dbManager.getFromUser(interaction.user, {
-                retrieveChallengeData: true,
-            });
+            playerInfo = await dbManager.getFromUser(
+                interaction.user,
+                findOptions
+            );
     }
 
     if (!playerInfo) {

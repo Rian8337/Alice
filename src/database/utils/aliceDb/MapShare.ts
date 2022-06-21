@@ -122,7 +122,13 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
         const playerInfo: PlayerInfo | null =
             await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-                this.id
+                this.id,
+                {
+                    projection: {
+                        _id: 0,
+                        alicecoins: 1,
+                    },
+                }
             );
 
         if (playerInfo) {

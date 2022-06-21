@@ -106,7 +106,13 @@ export const run: EventUtil["run"] = async (client) => {
 
                 const memberPlayerInfo: PlayerInfo | null =
                     await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-                        member.id
+                        member.id,
+                        {
+                            projection: {
+                                _id: 0,
+                                alicecoins: 1,
+                            },
+                        }
                     );
 
                 if (!memberPlayerInfo) {

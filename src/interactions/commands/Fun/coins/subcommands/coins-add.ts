@@ -44,7 +44,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-            userToAdd
+            userToAdd,
+            {
+                projection: {
+                    _id: 0,
+                    alicecoins: 1,
+                },
+            }
         );
 
     if (!playerInfo) {

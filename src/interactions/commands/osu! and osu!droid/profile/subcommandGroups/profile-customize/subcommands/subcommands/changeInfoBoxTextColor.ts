@@ -94,7 +94,13 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         DatabaseManager.aliceDb.collections.playerInfo;
 
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user
+        interaction.user,
+        {
+            projection: {
+                _id: 0,
+                picture_config: 1,
+            },
+        }
     );
 
     const pictureConfig: ProfileImageConfig =
@@ -143,7 +149,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     if (playerInfo) {
         await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: interaction.user.id },
-            { $set: { picture_config: pictureConfig } }
+            { $set: { "picture_config.textColor": color } }
         );
     } else {
         await DatabaseManager.aliceDb.collections.playerInfo.insert({

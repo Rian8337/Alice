@@ -32,7 +32,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const dbManager: PlayerInfoCollectionManager =
         DatabaseManager.aliceDb.collections.playerInfo;
 
-    const playerInfo: PlayerInfo | null = await dbManager.getFromUser(user);
+    const playerInfo: PlayerInfo | null = await dbManager.getFromUser(user, {
+        projection: { _id: 0, isBannedFromMapShare: 1 },
+    });
 
     if (playerInfo?.isBannedFromMapShare) {
         return InteractionHelper.reply(interaction, {

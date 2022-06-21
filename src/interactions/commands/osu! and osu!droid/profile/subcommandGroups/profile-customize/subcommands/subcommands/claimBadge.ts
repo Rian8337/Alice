@@ -80,7 +80,12 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
 
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
         interaction.user,
-        { retrieveBadges: true }
+        {
+            projection: {
+                _id: 0,
+                picture_config: 1,
+            },
+        }
     );
 
     const pictureConfig: ProfileImageConfig =
@@ -250,15 +255,14 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    pictureConfig.badges.push({
-        id: badge.id,
-        name: badge.name,
-    });
-
     if (playerInfo) {
         await playerInfoDbManager.updateOne(
             { discordid: interaction.user.id },
-            { $set: { picture_config: pictureConfig } }
+            {
+                $push: {
+                    "picture_config.badges": { id: badge.id, name: badge.name },
+                },
+            }
         );
     } else {
         await playerInfoDbManager.insert({

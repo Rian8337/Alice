@@ -160,7 +160,12 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-            interaction.user
+            interaction.user,
+            {
+                projection: {
+                    _id: 1,
+                },
+            }
         );
 
     if (playerInfo) {

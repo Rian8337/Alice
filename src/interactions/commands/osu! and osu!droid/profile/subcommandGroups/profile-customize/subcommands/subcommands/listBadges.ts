@@ -16,7 +16,12 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             interaction.user,
-            { retrieveBadges: true }
+            {
+                projection: {
+                    _id: 0,
+                    "picture_config.badges": 1,
+                },
+            }
         );
 
     const userBadges: PartialProfileBackground[] =
@@ -25,18 +30,10 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const finalBadgeList: ProfileBadgeOwnerInfo[] = [];
 
     for (const badge of badgeList.values()) {
-        finalBadgeList.push(
-            Object.defineProperty(
-                <ProfileBadgeOwnerInfo>(<unknown>badge),
-                "isOwned",
-                {
-                    value: !!userBadges.find((v) => v.id === badge.id),
-                    configurable: true,
-                    enumerable: true,
-                    writable: true,
-                }
-            )
-        );
+        finalBadgeList.push({
+            ...badge,
+            isOwned: !!userBadges.find((v) => v.id === badge.id),
+        });
     }
 
     finalBadgeList.sort((a, b) => {
