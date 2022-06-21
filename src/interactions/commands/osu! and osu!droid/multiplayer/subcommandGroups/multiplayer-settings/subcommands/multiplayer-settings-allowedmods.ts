@@ -55,7 +55,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const mods: Mod[] = ModUtil.pcStringToMods(
-        interaction.options.getString("mods") ?? ""
+        interaction.options.getString("mods") ?? "",
+        { checkIncompatible: false }
     );
 
     if (
