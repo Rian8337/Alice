@@ -7,7 +7,6 @@ import { MultiplayerLocalization } from "@alice-localization/interactions/comman
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -88,18 +87,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
-
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("updateReadyStateSuccess"),
-            `${player.isReady}`,
-            room.players
-                .filter((p) => p.isReady && !p.isSpectating)
-                .length.toLocaleString(BCP47),
-            room.players
-                .filter((p) => !p.isSpectating)
-                .length.toLocaleString(BCP47)
+            String(player.isReady)
         ),
     });
 };

@@ -83,7 +83,7 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         updateReadyStateFailed:
             "I'm sorry, I couldn't update your ready state: %s.",
         updateReadyStateSuccess:
-            "Successfully set your ready state to `%s` (%s/%s).",
+            "Successfully set your ready state to `%s`.",
         updateSpectatingStateFailed:
             "I'm sorry, I couldn't update your spectating state: %s.",
         updateSpectatingStateSuccess:
