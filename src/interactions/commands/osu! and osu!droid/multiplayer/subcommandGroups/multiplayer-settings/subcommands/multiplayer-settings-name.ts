@@ -61,7 +61,15 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (room.settings.roomName !== name) {
         room.settings.roomName = name;
 
-        const result: OperationResult = await room.updateRoom();
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+                { roomId: room.roomId },
+                {
+                    $set: {
+                        "settings.roomName": room.settings.roomName,
+                    },
+                }
+            );
 
         if (!result.success) {
             return InteractionHelper.reply(interaction, {

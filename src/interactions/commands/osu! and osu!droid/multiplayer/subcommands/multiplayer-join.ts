@@ -38,7 +38,10 @@ export const run: SlashSubcommand<true>["run"] = async (
     const id: string = interaction.options.getString("id", true);
 
     const room: MultiplayerRoom | null =
-        await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(id, { retrievePlayers: true });
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(
+            id,
+            { retrievePlayers: true }
+        );
 
     if (!room) {
         return InteractionHelper.reply(interaction, {
@@ -108,7 +111,15 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     room.players.push(player);
 
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+            { roomId: room.roomId },
+            {
+                $push: {
+                    players: player,
+                },
+            }
+        );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

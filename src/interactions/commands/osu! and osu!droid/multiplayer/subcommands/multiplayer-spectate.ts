@@ -56,7 +56,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         player.isReady = false;
     }
 
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+            { roomId: room.roomId },
+            {
+                $set: {
+                    "players.$[playerFilter].isReady": player.isReady,
+                    "players.$[playerFilter].isSpectating": player.isSpectating,
+                },
+            },
+            {
+                arrayFilters: [
+                    { "playerFilter.discordId": interaction.user.id },
+                ],
+            }
+        );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

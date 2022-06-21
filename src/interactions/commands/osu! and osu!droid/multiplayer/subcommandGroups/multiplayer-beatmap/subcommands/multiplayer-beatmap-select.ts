@@ -86,7 +86,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         duration: beatmap.totalLength,
     };
 
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+            { roomId: room.roomId },
+            {
+                $set: {
+                    "settings.beatmap": room.settings.beatmap,
+                },
+            }
+        );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

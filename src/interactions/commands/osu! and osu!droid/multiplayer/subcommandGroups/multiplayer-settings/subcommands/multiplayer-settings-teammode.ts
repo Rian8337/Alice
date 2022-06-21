@@ -105,7 +105,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             }
         }
 
-        const result: OperationResult = await room.updateRoom();
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+                { roomId: room.roomId },
+                {
+                    $set: {
+                        "settings.allowedMods": room.settings.allowedMods,
+                        "settings.requiredMods": room.settings.requiredMods,
+                    },
+                }
+            );
 
         if (!result.success) {
             return InteractionHelper.update(selectMenuInteraction, {

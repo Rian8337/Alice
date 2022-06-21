@@ -89,7 +89,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (originalWinCondition !== pickedWinCondition) {
         room.settings.winCondition = pickedWinCondition;
 
-        const result: OperationResult = await room.updateRoom();
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+                { roomId: room.roomId },
+                {
+                    $set: {
+                        "settings.winCondition": room.settings.winCondition,
+                    },
+                }
+            );
 
         if (!result.success) {
             return InteractionHelper.update(selectMenuInteraction, {

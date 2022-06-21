@@ -61,7 +61,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (room.settings.maxPlayers !== maxPlayers) {
         room.settings.maxPlayers = maxPlayers;
 
-        const result: OperationResult = await room.updateRoom();
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+                { roomId: room.roomId },
+                {
+                    $set: {
+                        "settings.maxPlayers": room.settings.maxPlayers,
+                    },
+                }
+            );
 
         if (!result.success) {
             return InteractionHelper.reply(interaction, {

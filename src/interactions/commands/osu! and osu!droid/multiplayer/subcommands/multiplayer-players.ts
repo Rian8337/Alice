@@ -21,13 +21,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const room: MultiplayerRoom | null = id
         ? await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(
-            id,
-            { retrievePlayers: true }
-        )
+              id,
+              { retrievePlayers: true }
+          )
         : await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromChannel(
-            interaction.channelId,
-            { retrievePlayers: true }
-        );
+              interaction.channelId,
+              { retrievePlayers: true }
+          );
 
     if (!room) {
         return InteractionHelper.reply(interaction, {
@@ -47,7 +47,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed
         .setTitle(room.settings.roomName)
         .setDescription(
-            `**${localization.getTranslation("roomHost")}** <@${room.settings.roomHost
+            `**${localization.getTranslation("roomHost")}** <@${
+                room.settings.roomHost
             }> (${room.settings.roomHost})`
         );
 
@@ -60,21 +61,23 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             const player: MultiplayerPlayer = room.players[i];
 
             embed.addField(
-                `${i + 1}. ${player.username} (${player.uid})${room.settings.roomHost === player.discordId
-                    ? ` ${Symbols.crown}`
-                    : ""
+                `${i + 1}. ${player.username} (${player.uid})${
+                    room.settings.roomHost === player.discordId
+                        ? ` ${Symbols.crown}`
+                        : ""
                 }`,
                 `**${localization.getTranslation(
                     "playerDiscordAccount"
-                )}**: <@${player.discordId}> (${player.discordId
+                )}**: <@${player.discordId}> (${
+                    player.discordId
                 })\n**${localization.getTranslation(
                     "playerState"
                 )}**: ${localization.getTranslation(
                     player.isSpectating
                         ? "spectating"
                         : player.isReady
-                            ? "ready"
-                            : "notReady"
+                        ? "ready"
+                        : "notReady"
                 )}`
             );
         }

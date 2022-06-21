@@ -66,7 +66,24 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         --room.settings.maxPlayers;
     }
 
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+            { roomId: room.roomId },
+            {
+                $pull: {
+                    players: {
+                        discordId: user.id,
+                    },
+                },
+                $inc: {
+                    "settings.maxPlayers": interaction.options.getBoolean(
+                        "lockslot"
+                    )
+                        ? -1
+                        : 0,
+                },
+            }
+        );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

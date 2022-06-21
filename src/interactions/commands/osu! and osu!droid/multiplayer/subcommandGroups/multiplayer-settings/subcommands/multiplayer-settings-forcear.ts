@@ -72,7 +72,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     if (needsUpdating) {
-        const result: OperationResult = await room.updateRoom();
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+                { roomId: room.roomId },
+                {
+                    $set: {
+                        "settings.forcedAR": room.settings.forcedAR,
+                    },
+                }
+            );
 
         if (!result.success) {
             return InteractionHelper.reply(interaction, {

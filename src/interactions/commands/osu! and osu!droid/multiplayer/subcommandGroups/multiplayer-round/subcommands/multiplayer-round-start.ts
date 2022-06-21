@@ -102,7 +102,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     room.status.isPlaying = true;
     room.status.playingSince = Date.now() + duration * 1000;
 
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+            { roomId: room.roomId },
+            {
+                $set: {
+                    status: room.status,
+                },
+            }
+        );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
@@ -190,15 +198,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     localization.language
                 );
 
-                for (const player of room.players) {
-                    player.isReady = false;
-                }
-
-                room.status.isPlaying = false;
-                room.status.playingSince = Date.now();
-                room.currentScores = [];
-
-                const result: OperationResult = await room.updateRoom();
+                const result: OperationResult = await room.finishRound();
 
                 if (!result.success) {
                     return interaction.channel!.send({

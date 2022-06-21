@@ -69,15 +69,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         localization.language
     );
 
-    for (const player of room.players) {
-        player.isReady = false;
-    }
-
-    room.status.isPlaying = false;
-    room.currentScores = [];
-    room.status.playingSince = Date.now();
-
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult = await room.finishRound();
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

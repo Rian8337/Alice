@@ -76,7 +76,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     room.settings.roomHost = user.id;
     hostPlayer.isSpectating = false;
 
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+            { roomId: room.roomId },
+            {
+                $set: {
+                    "settings.roomHost": room.settings.roomHost,
+                    "players.$[hostPlayerFilter].isSpectating": false,
+                },
+            },
+            {
+                arrayFilters: [
+                    { "hostPlayerFilter.discordId": interaction.user.id },
+                ],
+            }
+        );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

@@ -52,7 +52,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         delete room.settings.password;
     }
 
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+            { roomId: room.roomId },
+            room.settings.password
+                ? {
+                      $set: {
+                          "settings.password": room.settings.password,
+                      },
+                  }
+                : {
+                      $unset: {
+                          "settings.password": "",
+                      },
+                  }
+        );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

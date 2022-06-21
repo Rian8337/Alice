@@ -71,7 +71,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     room.status.isPlaying = false;
 
-    const result: OperationResult = await room.updateRoom();
+    const result: OperationResult =
+        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+            { roomId: room.roomId },
+            {
+                $set: {
+                    "status.isPlaying": room.status.isPlaying,
+                },
+            }
+        );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {

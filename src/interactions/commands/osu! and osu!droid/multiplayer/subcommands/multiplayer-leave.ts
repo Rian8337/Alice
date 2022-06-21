@@ -46,7 +46,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ).discordId;
         }
 
-        result = await room.updateRoom();
+        result =
+            await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+                { roomId: room.roomId },
+                {
+                    $pull: {
+                        players: {
+                            discordId: interaction.user.id,
+                        },
+                    },
+                    $set: {
+                        "settings.roomHost": room.settings.roomHost,
+                    },
+                }
+            );
     } else {
         result = await room.deleteRoom();
     }
@@ -62,14 +75,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            `${localization.getTranslation("playerLeaveSuccess")}${changeHost && room.players.length > 0
-                ? `\n\n${StringHelper.formatString(
-                    localization.getTranslation(
-                        "roomHostChangeNotification"
-                    ),
-                    `<@${room.settings.roomHost}>`
-                )}`
-                : ""
+            `${localization.getTranslation("playerLeaveSuccess")}${
+                changeHost && room.players.length > 0
+                    ? `\n\n${StringHelper.formatString(
+                          localization.getTranslation(
+                              "roomHostChangeNotification"
+                          ),
+                          `<@${room.settings.roomHost}>`
+                      )}`
+                    : ""
             }`
         ),
     });

@@ -62,7 +62,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (room.settings.speedMultiplier !== value) {
         room.settings.speedMultiplier = value;
 
-        const result: OperationResult = await room.updateRoom();
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+                { roomId: room.roomId },
+                {
+                    $set: {
+                        "settings.speedMultiplier":
+                            room.settings.speedMultiplier,
+                    },
+                }
+            );
 
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
