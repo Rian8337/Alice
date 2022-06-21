@@ -205,6 +205,6 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
             options.projection.id = 1;
         }
 
-        return options;
+        return super.processFindOptions(options);
     }
 }

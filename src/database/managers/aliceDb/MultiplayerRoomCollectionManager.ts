@@ -171,6 +171,6 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
             options.projection.roomId = 1;
         }
 
-        return options;
+        return super.processFindOptions(options);
     }
 }

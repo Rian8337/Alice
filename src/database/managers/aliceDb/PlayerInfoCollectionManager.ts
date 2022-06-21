@@ -111,6 +111,6 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
             options.projection.discordid = 1;
         }
 
-        return options;
+        return super.processFindOptions(options);
     }
 }

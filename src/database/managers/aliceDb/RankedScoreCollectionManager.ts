@@ -5,13 +5,6 @@ import { Collection as DiscordCollection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { FindOptions } from "mongodb";
 
-interface RankedScoreRetrieveOption {
-    /**
-     * Whether to include all plays in the ranked score information. Defaults to `false`.
-     */
-    retrieveAllPlays: boolean;
-}
-
 /**
  * A manager for the `playerscore` collection.
  */
@@ -69,15 +62,18 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<
      */
     getFromUid(
         uid: number,
-        options?: RankedScoreRetrieveOption
+        options?: FindOptions<DatabaseRankedScore>
     ): Promise<RankedScore | null> {
-        const dbOptions: FindOptions<DatabaseRankedScore> = {};
+        return this.getOne({ uid: uid }, options);
+    }
 
-        if (!options?.retrieveAllPlays) {
-            dbOptions.projection ??= {};
-            dbOptions.projection.scorelist = 0;
+    protected override processFindOptions(
+        options?: FindOptions<DatabaseRankedScore>
+    ): FindOptions<DatabaseRankedScore> | undefined {
+        if (options?.projection) {
+            options.projection.uid = 1;
         }
 
-        return this.getOne({ uid: uid }, dbOptions);
+        return super.processFindOptions(options);
     }
 }
