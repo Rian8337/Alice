@@ -33,7 +33,7 @@ import { ContextMenuCommand } from "@alice-interfaces/core/ContextMenuCommand";
  *
  * Upon initialization, the bot will automatically log in.
  */
-export class Bot extends Client {
+export class Bot extends Client<true> {
     /**
      * The logger of this bot.
      */
@@ -448,7 +448,7 @@ export class Bot extends Client {
                 defaultPermission: true,
             };
 
-            const applicationCommand = await this.application?.commands.create(
+            const applicationCommand = await this.application.commands.create(
                 data
             );
 
@@ -463,14 +463,14 @@ export class Bot extends Client {
 
         if (
             forceRegister ||
-            !(await this.application!.commands.fetch(deployCommandID))
+            !(await this.application.commands.fetch(deployCommandID))
         ) {
             await registerCommand("deploy");
         }
 
         if (
             forceRegister ||
-            !(await this.application!.commands.fetch(undeployCommandID))
+            !(await this.application.commands.fetch(undeployCommandID))
         ) {
             await registerCommand("undeploy");
         }
