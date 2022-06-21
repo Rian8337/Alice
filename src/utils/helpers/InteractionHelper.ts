@@ -83,9 +83,17 @@ export abstract class InteractionHelper {
         // Reset message components
         response.components ??= [];
 
-        return <Promise<Message>>interaction.update({
-            ...response,
-            fetchReply: true,
-        });
+        let message: Message;
+
+        if (interaction.deferred || interaction.replied) {
+            message = <Message>await interaction.editReply(response);
+        } else {
+            message = <Message>await interaction.update({
+                ...response,
+                fetchReply: true,
+            });
+        }
+
+        return message;
     }
 }
