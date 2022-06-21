@@ -112,7 +112,9 @@ export abstract class DatabaseCollectionManager<
         options?: FindOptions<T>
     ): Promise<DiscordCollection<NonNullable<T[K]>, C>> {
         const res: T[] = <T[]>(
-            await this.collection.find(filter, options).toArray()
+            await this.collection
+                .find(filter, this.processFindOptions(options))
+                .toArray()
         );
 
         const collection: DiscordCollection<
@@ -142,7 +144,10 @@ export abstract class DatabaseCollectionManager<
         filter: Filter<T> = {},
         options?: FindOptions<T>
     ): Promise<C | null> {
-        const res: T | null = await this.collection.findOne(filter, options);
+        const res: T | null = await this.collection.findOne(
+            filter,
+            this.processFindOptions(options)
+        );
 
         return res ? new this.utilityInstance(res) : null;
     }
@@ -206,5 +211,16 @@ export abstract class DatabaseCollectionManager<
                 }
             );
         });
+    }
+
+    /**
+     * Processes find options.
+     *
+     * @param options The options.
+     */
+    protected processFindOptions(
+        options?: FindOptions<T>
+    ): FindOptions<T> | undefined {
+        return options;
     }
 }

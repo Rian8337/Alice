@@ -3,8 +3,8 @@ import { MultiplayerRoom } from "../../utils/aliceDb/MultiplayerRoom";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
 import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
-import { Collection, GuildMember, Snowflake, User } from "discord.js";
-import { Filter, FindOptions } from "mongodb";
+import { GuildMember, Snowflake, User } from "discord.js";
+import { FindOptions } from "mongodb";
 
 /**
  * A manager for the `multiplayer` collection.
@@ -48,23 +48,6 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
                 },
             },
         };
-    }
-
-    override getOne(
-        filter?: Filter<DatabaseMultiplayerRoom>,
-        options?: FindOptions<DatabaseMultiplayerRoom>
-    ): Promise<MultiplayerRoom | null> {
-        return super.getOne(filter, this.processOptions(options));
-    }
-
-    override get<K extends keyof DatabaseMultiplayerRoom>(
-        key: K,
-        filter?: Filter<DatabaseMultiplayerRoom>,
-        options?: FindOptions<DatabaseMultiplayerRoom>
-    ): Promise<
-        Collection<NonNullable<DatabaseMultiplayerRoom[K]>, MultiplayerRoom>
-    > {
-        return super.get(key, filter, this.processOptions(options));
     }
 
     /**
@@ -125,7 +108,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
                 : typeof input === "string"
                 ? { "players.discordId": input }
                 : { "players.uid": input },
-            this.processOptions(options)
+            this.processFindOptions(options)
         );
     }
 
@@ -140,7 +123,10 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
         roomId: string,
         options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null> {
-        return this.getOne({ roomId: roomId }, this.processOptions(options));
+        return this.getOne(
+            { roomId: roomId },
+            this.processFindOptions(options)
+        );
     }
 
     /**
@@ -156,7 +142,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
     ): Promise<MultiplayerRoom | null> {
         return this.getOne(
             { threadChannelId: channelId },
-            this.processOptions(options)
+            this.processFindOptions(options)
         );
     }
 
@@ -178,12 +164,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
         return room !== null;
     }
 
-    /**
-     * Processes retrieval options.
-     *
-     * @param options The options.
-     */
-    private processOptions(
+    protected override processFindOptions(
         options?: FindOptions<DatabaseMultiplayerRoom>
     ): FindOptions<DatabaseMultiplayerRoom> | undefined {
         if (options?.projection) {
