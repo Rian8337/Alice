@@ -120,13 +120,16 @@ export class MultiplayerRoom
      * Deletes this room from the database.
      */
     async deleteRoom(): Promise<OperationResult> {
-        const text: TextChannel = <TextChannel>(
-            await this.client.channels.fetch(this.textChannelId)
+        const text: TextChannel | null = <TextChannel | null>(
+            await this.client.channels
+                .fetch(this.textChannelId)
+                .catch(() => null)
         );
 
-        const thread: ThreadChannel | null = await text.threads.fetch(
-            this.threadChannelId
-        );
+        const thread: ThreadChannel | null =
+            (await text?.threads
+                .fetch(this.threadChannelId)
+                .catch(() => null)) ?? null;
 
         if (thread && !thread.archived) {
             await thread.setLocked(true, "Multiplayer room closed");

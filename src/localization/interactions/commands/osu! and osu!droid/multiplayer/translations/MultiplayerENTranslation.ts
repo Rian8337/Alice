@@ -82,8 +82,7 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         pickTeamMode: "Please pick the team mode that you want to use.",
         updateReadyStateFailed:
             "I'm sorry, I couldn't update your ready state: %s.",
-        updateReadyStateSuccess:
-            "Successfully set your ready state to `%s`.",
+        updateReadyStateSuccess: "Successfully set your ready state to `%s`.",
         updateSpectatingStateFailed:
             "I'm sorry, I couldn't update your spectating state: %s.",
         updateSpectatingStateSuccess:
