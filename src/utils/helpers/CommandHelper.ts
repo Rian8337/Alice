@@ -169,7 +169,13 @@ export abstract class CommandHelper extends Manager {
         if (!language) {
             const guildSetting: GuildSettings | null =
                 await DatabaseManager.aliceDb.collections.guildSettings.getGuildSettingWithChannel(
-                    channelId
+                    channelId,
+                    {
+                        projection: {
+                            _id: 0,
+                            "channelSettings.$": 1,
+                        },
+                    }
                 );
 
             language =

@@ -1,3 +1,4 @@
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
@@ -6,6 +7,7 @@ import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelS
 import { Language } from "@alice-localization/base/Language";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Snowflake } from "discord.js";
+import { FindOptions } from "mongodb";
 
 /**
  * A manager for the `guildsettings` collection.
@@ -32,22 +34,31 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
      * Gets the settings of a guild.
      *
      * @param guildId The ID of the guild.
+     * @param options Options for the retrieval of the guild settings.
      * @returns The guild setting, `null` if not found.
      */
-    getGuildSetting(guildId: Snowflake): Promise<GuildSettings | null> {
-        return this.getOne({ id: guildId });
+    getGuildSetting(
+        guildId: Snowflake,
+        options?: FindOptions<DatabaseGuildSettings>
+    ): Promise<GuildSettings | null> {
+        return this.getOne({ id: guildId }, this.processFindOptions(options));
     }
 
     /**
      * Gets the settings of a guild with a channel.
      *
      * @param channelId The ID of the channel.
+     * @param options Options for the retrieval of the guild settings.
      * @returns The guild setting, `null` if not found.
      */
     getGuildSettingWithChannel(
-        channelId: Snowflake
+        channelId: Snowflake,
+        options?: FindOptions<DatabaseGuildSettings>
     ): Promise<GuildSettings | null> {
-        return this.getOne({ "channelSettings.id": channelId });
+        return this.getOne(
+            { "channelSettings.id": channelId },
+            this.processFindOptions(options)
+        );
     }
 
     /**
@@ -61,18 +72,39 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
         guildId: Snowflake,
         language: Language
     ): Promise<OperationResult> {
-        let guildSetting: GuildSettings | null = await this.getGuildSetting(
-            guildId
+        const guildSetting: GuildSettings | null = await this.getGuildSetting(
+            guildId,
+            {
+                projection: {
+                    _id: 0,
+                    preferredLocale: 1,
+                },
+            }
         );
 
         if (!guildSetting) {
-            guildSetting = this.defaultInstance;
-            guildSetting.id = guildId;
+            if (language === "en") {
+                return this.createOperationResult(true);
+            }
+
+            return DatabaseManager.aliceDb.collections.guildSettings.insert({
+                id: guildId,
+                preferredLocale: language,
+            });
         }
 
-        guildSetting.preferredLocale = language;
+        if (guildSetting.preferredLocale === language) {
+            return this.createOperationResult(true);
+        }
 
-        return guildSetting.updateData();
+        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+            { id: guildId },
+            {
+                $set: {
+                    preferredLocale: language,
+                },
+            }
+        );
     }
 
     /**
@@ -88,21 +120,56 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
         channelId: Snowflake,
         language: Language
     ): Promise<OperationResult> {
-        let guildSetting: GuildSettings | null = await this.getGuildSetting(
-            guildId
+        const guildSetting: GuildSettings | null = await this.getGuildSetting(
+            guildId,
+            {
+                projection: {
+                    _id: 0,
+                    channelSettings: 1,
+                },
+            }
         );
 
         if (!guildSetting) {
-            guildSetting = this.defaultInstance;
-            guildSetting.id = guildId;
+            if (language === "en") {
+                return this.createOperationResult(true);
+            }
+
+            return DatabaseManager.aliceDb.collections.guildSettings.insert({
+                id: guildId,
+                channelSettings: [
+                    {
+                        id: channelId,
+                        disabledCommands: [],
+                        disabledEventUtils: [],
+                        preferredLocale: language,
+                    },
+                ],
+            });
         }
 
-        const channelSetting: GuildChannelSettings =
-            guildSetting.channelSettings.get(channelId) ?? {
-                id: channelId,
-                disabledCommands: [],
-                disabledEventUtils: [],
-            };
+        const channelSetting: GuildChannelSettings | undefined =
+            guildSetting.channelSettings.get(channelId);
+
+        if (!channelSetting) {
+            if (language === "en") {
+                return this.createOperationResult(true);
+            }
+
+            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+                { id: guildId },
+                {
+                    $push: {
+                        channelSettings: {
+                            id: channelId,
+                            disabledCommands: [],
+                            disabledEventUtils: [],
+                            preferredLocale: language,
+                        },
+                    },
+                }
+            );
+        }
 
         if (channelSetting.preferredLocale === language) {
             // Don't need to make a call to database
@@ -117,6 +184,27 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
             CacheManager.channelLocale.set(channelId, language);
         }
 
-        return guildSetting.updateData();
+        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+            { id: guildId },
+            {
+                $set: {
+                    "channelSettings.$[channelFilter].preferredLocale":
+                        language,
+                },
+            },
+            {
+                arrayFilters: [{ "channelFilter.id": channelId }],
+            }
+        );
+    }
+
+    protected override processFindOptions(
+        options?: FindOptions<DatabaseGuildSettings>
+    ): FindOptions<DatabaseGuildSettings> | undefined {
+        if (options?.projection) {
+            options.projection.id = 1;
+        }
+
+        return options;
     }
 }

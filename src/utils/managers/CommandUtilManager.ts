@@ -1,4 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { GuildSettingsCollectionManager } from "@alice-database/managers/aliceDb/GuildSettingsCollectionManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
@@ -9,7 +10,13 @@ import { CommandUtilManagerLocalization } from "@alice-localization/utils/manage
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { Collection, NewsChannel, Snowflake, TextChannel } from "discord.js";
+import {
+    Collection,
+    GuildTextBasedChannel,
+    NewsChannel,
+    Snowflake,
+    TextChannel,
+} from "discord.js";
 
 /**
  * A manager for commands and utilities.
@@ -64,14 +71,25 @@ export abstract class CommandUtilManager extends Manager {
     static readonly globallyDisabledEventUtils: Collection<string, string[]> =
         new Collection();
 
+    private static get guildSettingsDb(): GuildSettingsCollectionManager {
+        return DatabaseManager.aliceDb.collections.guildSettings;
+    }
+
     /**
      * Initializes the manager.
      */
     static override async init(): Promise<void> {
         const guildSettings: Collection<string, GuildSettings> =
-            await DatabaseManager.aliceDb.collections.guildSettings.get(
+            await this.guildSettingsDb.get(
                 "id",
-                {}
+                {},
+                {
+                    projection: {
+                        _id: 0,
+                        preferredLocale: 0,
+                        "channelSettings.preferredLocale": 0,
+                    },
+                }
             );
 
         for (const guildSetting of guildSettings.values()) {
@@ -109,12 +127,17 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about database operation.
      */
     static async disableUtilityInChannel(
-        channel: TextChannel | NewsChannel,
+        channel: GuildTextBasedChannel,
         event: string,
         utility: string
     ): Promise<OperationResult> {
         const channelEventUtilSettings: DisabledEventUtil[] | undefined =
             this.channelDisabledEventUtils.get(channel.id);
+
+        const disabledEventUtil: DisabledEventUtil = {
+            event: event,
+            name: utility,
+        };
 
         if (channelEventUtilSettings) {
             if (
@@ -128,23 +151,32 @@ export abstract class CommandUtilManager extends Manager {
             channelEventUtilSettings.push({ name: event, event: utility });
 
             const guildSettings: GuildSettings =
-                (await DatabaseManager.aliceDb.collections.guildSettings.getGuildSetting(
-                    channel.guildId
+                (await this.guildSettingsDb.getGuildSettingWithChannel(
+                    channel.id,
+                    {
+                        projection: {
+                            _id: 0,
+                            "channelSettings.$": 1,
+                        },
+                    }
                 ))!;
 
             const channelSettings = guildSettings.channelSettings;
 
-            channelSettings.get(channel.id)!.disabledEventUtils.push({
-                name: event,
-                event: utility,
-            });
+            channelSettings
+                .get(channel.id)!
+                .disabledEventUtils.push(disabledEventUtil);
 
-            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+            return this.guildSettingsDb.updateOne(
                 { id: channel.guildId },
                 {
-                    $set: {
-                        channelSettings: [...channelSettings.values()],
+                    $push: {
+                        "channelSettings.$[channelFilter].disabledEventUtils":
+                            disabledEventUtil,
                     },
+                },
+                {
+                    arrayFilters: [{ "channelFilter.id": channel.id }],
                 }
             );
         } else {
@@ -153,12 +185,28 @@ export abstract class CommandUtilManager extends Manager {
             ]);
 
             const guildSettings: GuildSettings | null =
-                await DatabaseManager.aliceDb.collections.guildSettings.getGuildSetting(
-                    channel.guildId
-                );
+                await this.guildSettingsDb.getGuildSetting(channel.guildId, {
+                    projection: {
+                        _id: 0,
+                        channelSettings: 1,
+                    },
+                });
+
+            if (!guildSettings) {
+                return this.guildSettingsDb.insert({
+                    id: channel.guildId,
+                    channelSettings: [
+                        {
+                            id: channel.id,
+                            disabledCommands: [],
+                            disabledEventUtils: [disabledEventUtil],
+                        },
+                    ],
+                });
+            }
 
             const channelSettings: Collection<Snowflake, GuildChannelSettings> =
-                guildSettings?.channelSettings ?? new Collection();
+                guildSettings.channelSettings;
 
             const channelSetting: GuildChannelSettings = channelSettings.get(
                 channel.id
@@ -168,25 +216,21 @@ export abstract class CommandUtilManager extends Manager {
                 disabledEventUtils: [],
             };
 
-            channelSetting.disabledEventUtils.push({
-                event: event,
-                name: utility,
-            });
+            channelSetting.disabledEventUtils.push(disabledEventUtil);
 
             channelSettings.set(channel.id, channelSetting);
 
-            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+            return this.guildSettingsDb.updateOne(
                 { id: channel.guildId },
                 {
-                    $set: {
-                        channelSettings: [...channelSettings.values()],
-                    },
-                    $setOnInsert: {
-                        disabledEventUtils: [],
-                        disabledCommands: [],
+                    $push: {
+                        "channelSettings.$[channelFilter].disabledEventUtils":
+                            disabledEventUtil,
                     },
                 },
-                { upsert: true }
+                {
+                    arrayFilters: [{ "channelFilter.id": channel.id }],
+                }
             );
         }
     }
@@ -215,18 +259,20 @@ export abstract class CommandUtilManager extends Manager {
             return this.createOperationResult(true);
         }
 
-        guildEventUtilSettings.push({
+        const disabledEventUtil: DisabledEventUtil = {
             event: event,
             name: utility,
-        });
+        };
+
+        guildEventUtilSettings.push(disabledEventUtil);
 
         this.guildDisabledEventUtils.set(guildId, guildEventUtilSettings);
 
-        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+        return this.guildSettingsDb.updateOne(
             { id: guildId },
             {
-                $set: {
-                    disabledEventUtils: guildEventUtilSettings,
+                $push: {
+                    disabledEventUtils: disabledEventUtil,
                 },
                 $setOnInsert: {
                     channelSettings: [],
@@ -261,7 +307,7 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about the operation.
      */
     static async enableUtilityInChannel(
-        channel: TextChannel | NewsChannel,
+        channel: GuildTextBasedChannel,
         event: string,
         utility: string
     ): Promise<OperationResult> {
@@ -283,24 +329,35 @@ export abstract class CommandUtilManager extends Manager {
         channelEventUtilSettings.splice(settingIndex, 1);
 
         const guildSettings: GuildSettings =
-            (await DatabaseManager.aliceDb.collections.guildSettings.getGuildSetting(
-                channel.guildId
-            ))!;
+            (await this.guildSettingsDb.getGuildSettingWithChannel(channel.id, {
+                projection: {
+                    _id: 0,
+                    "channelSettings.$": 1,
+                },
+            }))!;
 
         const channelSettings: Collection<Snowflake, GuildChannelSettings> =
             guildSettings.channelSettings;
 
-        channelSettings.get(channel.id)!.disabledEventUtils.push({
+        const disabledEventUtil: DisabledEventUtil = {
             event: event,
             name: utility,
-        });
+        };
 
-        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+        channelSettings
+            .get(channel.id)!
+            .disabledEventUtils.push(disabledEventUtil);
+
+        return this.guildSettingsDb.updateOne(
             { id: channel.guildId },
             {
-                $set: {
-                    channelSettings: [...channelSettings.values()],
+                $pull: {
+                    "channelSettings.$[channelFilter].disabledEventUtils":
+                        disabledEventUtil,
                 },
+            },
+            {
+                arrayFilters: [{ "channelFilter.id": channel.id }],
             }
         );
     }
@@ -337,11 +394,14 @@ export abstract class CommandUtilManager extends Manager {
 
         this.guildDisabledEventUtils.set(guildId, guildEventUtilSettings);
 
-        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+        return this.guildSettingsDb.updateOne(
             { id: guildId },
             {
-                $set: {
-                    disabledEventUtils: guildEventUtilSettings,
+                $pull: {
+                    disabledEventUtils: {
+                        event: event,
+                        name: utility,
+                    },
                 },
             }
         );
@@ -370,39 +430,41 @@ export abstract class CommandUtilManager extends Manager {
      * @param channel The channel.
      * @param commandName The name of the command.
      * @param cooldown The cooldown to set, ranging from 5 to 3600 seconds. Use 0 to enable the command and -1 to disable the command.
+     * @param language The language to localize. Defaults to English.
      * @returns An object containing information about the operation.
      */
     static async setCommandCooldownInChannel(
         channel: TextChannel | NewsChannel,
         commandName: string,
-        cooldown: number
+        cooldown: number,
+        language: Language = "en"
     ): Promise<OperationResult> {
+        const localization: CommandUtilManagerLocalization =
+            this.getLocalization(language);
+
         if (
             cooldown > 0 &&
             !NumberHelper.isNumberInRange(cooldown, 5, 3600, true)
         ) {
             return this.createOperationResult(
                 false,
-                "cooldown must be between 5 and 3600 seconds"
+                localization.getTranslation("cooldownOutOfRange")
             );
         }
 
         const channelDisabledCommands: Collection<string, DisabledCommand> =
             this.channelDisabledCommands.get(channel.id) ?? new Collection();
 
-        if (channelDisabledCommands.size > 0) {
-            if (cooldown !== 0) {
-                if (channelDisabledCommands.get(commandName)?.cooldown === -1) {
-                    return this.createOperationResult(
-                        false,
-                        "command is already disabled"
-                    );
-                }
+        if (channelDisabledCommands.has(commandName)) {
+            const disabledCommand: DisabledCommand =
+                channelDisabledCommands.get(commandName)!;
 
-                channelDisabledCommands.set(commandName, {
-                    name: commandName,
-                    cooldown: cooldown,
-                });
+            if (disabledCommand.cooldown === cooldown) {
+                return this.createOperationResult(true);
+            }
+
+            if (cooldown !== 0) {
+                channelDisabledCommands.set(commandName, disabledCommand);
             } else {
                 channelDisabledCommands.delete(commandName);
             }
@@ -413,82 +475,95 @@ export abstract class CommandUtilManager extends Manager {
             );
 
             const guildSettings: GuildSettings =
-                (await DatabaseManager.aliceDb.collections.guildSettings.getGuildSetting(
-                    channel.guildId
-                ))!;
+                (await this.guildSettingsDb.getGuildSetting(channel.guildId))!;
 
             const channelSettings: Collection<Snowflake, GuildChannelSettings> =
                 guildSettings.channelSettings;
 
-            const channelSetting: GuildChannelSettings = channelSettings.get(
-                channel.id
-            ) ?? {
-                id: channel.id,
-                disabledCommands: [],
-                disabledEventUtils: [],
-            };
+            if (!channelSettings.has(channel.id)) {
+                return this.guildSettingsDb.updateOne(
+                    { id: channel.guildId },
+                    {
+                        $push: {
+                            channelSettings: {
+                                id: channel.id,
+                                disabledCommands: [disabledCommand],
+                                disabledEventUtils: [],
+                            },
+                        },
+                    }
+                );
+            }
 
-            channelSetting.disabledCommands = [
-                ...channelDisabledCommands.values(),
-            ];
-
-            channelSettings.set(channel.id, channelSetting);
-
-            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+            return this.guildSettingsDb.updateOne(
                 { id: channel.guildId },
                 {
-                    $set: {
-                        channelSettings: [...channelSettings.values()],
-                    },
-                    $setOnInsert: {
-                        disabledEventUtils: [],
-                        disabledCommands: [],
+                    $push: {
+                        "channelSettings.$[channelFilter].disabledCommands":
+                            disabledCommand,
                     },
                 },
-                { upsert: true }
+                {
+                    arrayFilters: [{ "channelFilter.id": channel.id }],
+                }
             );
         } else {
-            this.channelDisabledCommands.set(
-                channel.id,
-                new Collection([
-                    [commandName, { name: commandName, cooldown: cooldown }],
-                ])
-            );
-
-            const guildSettings: GuildSettings | null =
-                await DatabaseManager.aliceDb.collections.guildSettings.getGuildSetting(
-                    channel.guildId
-                );
-
-            if (!guildSettings && cooldown === 0) {
+            if (cooldown === 0) {
                 return this.createOperationResult(true);
             }
 
-            const channelSettings: Collection<Snowflake, GuildChannelSettings> =
-                guildSettings?.channelSettings ?? new Collection();
-
-            const channelSetting: GuildChannelSettings = channelSettings.get(
-                channel.id
-            ) ?? {
-                id: channel.id,
-                disabledCommands: [{ name: commandName, cooldown: cooldown }],
-                disabledEventUtils: [],
+            const disabledCommand: DisabledCommand = {
+                name: commandName,
+                cooldown: cooldown,
             };
 
-            channelSettings.set(channel.id, channelSetting);
+            this.channelDisabledCommands.set(
+                channel.id,
+                new Collection([[commandName, disabledCommand]])
+            );
 
-            return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+            const guildSettings: GuildSettings | null =
+                await this.guildSettingsDb.getGuildSetting(channel.guildId);
+
+            if (!guildSettings) {
+                return this.guildSettingsDb.insert({
+                    id: channel.guildId,
+                    channelSettings: [
+                        {
+                            id: channel.id,
+                            disabledCommands: [disabledCommand],
+                            disabledEventUtils: [],
+                        },
+                    ],
+                });
+            }
+
+            if (!guildSettings.channelSettings.has(channel.id)) {
+                return this.guildSettingsDb.updateOne(
+                    { id: channel.guildId },
+                    {
+                        $push: {
+                            channelSettings: {
+                                id: channel.id,
+                                disabledCommands: [disabledCommand],
+                                disabledEventUtils: [],
+                            },
+                        },
+                    }
+                );
+            }
+
+            return this.guildSettingsDb.updateOne(
                 { id: channel.guildId },
                 {
-                    $set: {
-                        channelSettings: [...channelSettings.values()],
-                    },
-                    $setOnInsert: {
-                        disabledEventUtils: [],
-                        disabledCommands: [],
+                    $push: {
+                        "channelSettings.$[channelFilter].disabledCommand":
+                            disabledCommand,
                     },
                 },
-                { upsert: true }
+                {
+                    arrayFilters: [{ "channelFilter.id": channel.id }],
+                }
             );
         }
     }
@@ -504,51 +579,65 @@ export abstract class CommandUtilManager extends Manager {
     static async setCommandCooldownInGuild(
         guildId: Snowflake,
         commandName: string,
-        cooldown: number
+        cooldown: number,
+        language: Language = "en"
     ): Promise<OperationResult> {
+        const localization: CommandUtilManagerLocalization =
+            this.getLocalization(language);
+
         if (
             cooldown > 0 &&
             !NumberHelper.isNumberInRange(cooldown, 5, 3600, true)
         ) {
             return this.createOperationResult(
                 false,
-                "cooldown must be between 5 and 3600 seconds"
+                localization.getTranslation("cooldownOutOfRange")
             );
         }
 
-        const guildCommandSettings: Collection<string, DisabledCommand> =
+        const guildDisabledCommands: Collection<string, DisabledCommand> =
             this.guildDisabledCommands.get(guildId) ?? new Collection();
 
-        if (cooldown !== 0) {
-            if (guildCommandSettings.get(commandName)?.cooldown === -1) {
-                return this.createOperationResult(
-                    false,
-                    "command is already disabled"
-                );
+        const guildDisabledCommand: DisabledCommand = guildDisabledCommands.get(
+            commandName
+        ) ?? {
+            name: commandName,
+            cooldown: cooldown,
+        };
+
+        this.guildDisabledCommands.set(guildId, guildDisabledCommands);
+
+        if (!guildDisabledCommands.has(commandName)) {
+            if (cooldown === 0) {
+                return this.createOperationResult(true);
             }
 
-            guildCommandSettings.set(commandName, {
-                name: commandName,
-                cooldown: cooldown,
-            });
-        } else {
-            guildCommandSettings.delete(commandName);
+            guildDisabledCommands.set(commandName, guildDisabledCommand);
+
+            return this.guildSettingsDb.updateOne(
+                { id: guildId },
+                {
+                    $push: {
+                        disabledCommands: guildDisabledCommand,
+                    },
+                }
+            );
         }
 
-        this.guildDisabledCommands.set(guildId, guildCommandSettings);
+        if (guildDisabledCommand.cooldown === cooldown) {
+            return this.createOperationResult(true);
+        }
 
-        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
+        return this.guildSettingsDb.updateOne(
             { id: guildId },
             {
                 $set: {
-                    disabledCommands: [...guildCommandSettings.values()],
-                },
-                $setOnInsert: {
-                    channelSettings: [],
-                    disabledEventUtils: [],
+                    "disabledCommands.$[commandFilter].cooldown": cooldown,
                 },
             },
-            { upsert: true }
+            {
+                arrayFilters: [{ "commandFilter.name": commandName }],
+            }
         );
     }
 

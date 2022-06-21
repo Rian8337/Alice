@@ -1,5 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseGuildSettings } from "@alice-interfaces/database/aliceDb/DatabaseGuildSettings";
 import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
 import { DisabledEventUtil } from "@alice-interfaces/moderation/DisabledEventUtil";
@@ -62,27 +61,5 @@ export class GuildSettings extends Manager {
         );
         this.disabledEventUtils = data.disabledEventUtils ?? [];
         this.preferredLocale = data.preferredLocale ?? "en";
-    }
-
-    /**
-     * Updates or adds this guild's settings to the database.
-     *
-     * @returns An object containing information about the operation.
-     */
-    async updateData(): Promise<OperationResult> {
-        return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
-            {
-                id: this.id,
-            },
-            {
-                $set: {
-                    channelSettings: [...this.channelSettings.values()],
-                    disabledCommands: [...this.disabledCommands.values()],
-                    disabledEventUtils: [...this.disabledEventUtils.values()],
-                    preferredLocale: this.preferredLocale,
-                },
-            },
-            { upsert: true }
-        );
     }
 }
