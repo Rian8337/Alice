@@ -15,7 +15,11 @@ export interface SlashSubcommand<FromInteraction extends boolean = boolean> {
      */
     run(
         client: Bot,
-        interaction: If<FromInteraction, CommandInteraction, SelectMenuInteraction>,
+        interaction: If<
+            FromInteraction,
+            CommandInteraction,
+            SelectMenuInteraction
+        >,
         ...args: unknown[]
     ): Promise<unknown>;
 

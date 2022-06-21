@@ -65,8 +65,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("timerStopFailed"),
                 JSON.parse(response.data.toString()).message
-            )
-        })
+            ),
+        });
     }
 
     room.status.isPlaying = false;
