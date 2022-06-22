@@ -24,6 +24,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     streak: 1,
                     alicecoins: 1,
+                    hasClaimedDaily: 1,
                 },
             }
         );
