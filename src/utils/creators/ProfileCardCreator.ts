@@ -599,6 +599,7 @@ export class ProfileCardCreator {
      * @returns The player's weighted accuracy.
      */
     private getWeightedAccuracy(ppEntries: PPEntry[]): number {
+        // TODO: store weighted accuracy in database
         if (ppEntries.length === 0) {
             return 0;
         }

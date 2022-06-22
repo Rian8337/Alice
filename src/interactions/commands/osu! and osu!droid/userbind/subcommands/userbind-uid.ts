@@ -23,7 +23,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
-    const uidBindInfo: UserBind | null = await dbManager.getFromUid(uid);
+    const uidBindInfo: UserBind | null = await dbManager.getFromUid(uid, {
+        projection: { _id: 0 },
+    });
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
@@ -34,7 +36,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const userBindInfo: UserBind | null = await dbManager.getFromUser(
-        interaction.user
+        interaction.user,
+        {
+            projection: {
+                _id: 0,
+                previous_bind: 1,
+            },
+        }
     );
 
     await InteractionHelper.deferReply(interaction);
@@ -52,7 +60,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     if (userBindInfo) {
-        if (!userBindInfo.isUidBinded(uid)) {
+        const isUidBinded: boolean = userBindInfo.isUidBinded(uid);
+
+        if (!isUidBinded) {
             if (interaction.guild?.id !== Constants.mainServer) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -115,7 +125,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
         }
 
-        if (userBindInfo.isUidBinded(uid)) {
+        if (isUidBinded) {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("oldAccountUidBindSuccessful"),

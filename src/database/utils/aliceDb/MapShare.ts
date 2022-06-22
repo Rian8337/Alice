@@ -136,7 +136,8 @@ export class MapShare extends Manager implements DatabaseMapShare {
         } else {
             const bindInfo: UserBind | null =
                 await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-                    this.id
+                    this.id,
+                    { projection: { _id: 0, uid: 1, username: 1 } }
                 );
 
             if (!bindInfo) {

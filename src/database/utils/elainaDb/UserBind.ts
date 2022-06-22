@@ -23,6 +23,7 @@ import {
     DroidAPIRequestBuilder,
     RequestResponse,
     Utils,
+    Precision,
 } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
@@ -121,6 +122,10 @@ export class UserBind extends Manager {
 
     private diffCalcHelper?: DroidBeatmapDifficultyHelper;
 
+    private get bindDb(): UserBindCollectionManager {
+        return DatabaseManager.elainaDb.collections.userBind;
+    }
+
     constructor(
         data: DatabaseUserBind = DatabaseManager.elainaDb?.collections.userBind
             .defaultDocument ?? {}
@@ -149,17 +154,19 @@ export class UserBind extends Manager {
      * Checks whether this player is dpp-banned.
      */
     async isDPPBanned(): Promise<boolean> {
-        for (const uid of this.previous_bind) {
-            if (
-                await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
-                    uid
+        return (
+            (
+                await DatabaseManager.elainaDb.collections.dppBan.get(
+                    "uid",
+                    {
+                        uid: {
+                            $in: this.previous_bind,
+                        },
+                    },
+                    { projection: { _id: 0 } }
                 )
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+            ).size > 0
+        );
     }
 
     /**
@@ -174,7 +181,7 @@ export class UserBind extends Manager {
             this.pptotal = 0;
             this.playc = 0;
 
-            return DatabaseManager.elainaDb.collections.userBind.updateOne(
+            return this.bindDb.updateOne(
                 { discordid: this.discordid },
                 {
                     $set: {
@@ -186,6 +193,8 @@ export class UserBind extends Manager {
                 }
             );
         }
+
+        const hashesToDelete: string[] = [];
 
         for (const ppEntry of this.pp.values()) {
             const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
@@ -200,25 +209,54 @@ export class UserBind extends Manager {
                 (await DPPHelper.checkSubmissionValidity(beatmapInfo)) !==
                     DPPSubmissionValidity.VALID
             ) {
+                hashesToDelete.push(ppEntry.hash);
                 this.pp.delete(ppEntry.hash);
                 this.playc = Math.max(0, this.playc - 1);
             }
         }
 
         // Even if there are no deletions, still update to keep track of scan progress.
-        this.pptotal = DPPHelper.calculateFinalPerformancePoints(this.pp);
-
-        return DatabaseManager.elainaDb.collections.userBind.updateOne(
-            { discordid: this.discordid },
-            {
-                $set: {
-                    pptotal: this.pptotal,
-                    pp: [...this.pp.values()],
-                    playc: this.playc,
-                    dppScanComplete: true,
-                },
-            }
+        const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
+            this.pp
         );
+
+        const query: UpdateFilter<DatabaseUserBind> = {
+            $set: {
+                dppScanComplete: true,
+            },
+        };
+
+        if (!Precision.almostEqualsNumber(totalPP, this.pptotal)) {
+            this.pptotal = totalPP;
+
+            Object.defineProperties(query.$set!, {
+                pptotal: {
+                    value: this.pptotal,
+                    writable: true,
+                    configurable: true,
+                    enumerable: true,
+                },
+                playc: {
+                    value: this.playc,
+                    writable: true,
+                    configurable: true,
+                    enumerable: true,
+                },
+            });
+
+            Object.defineProperty(query, "$pull", {
+                value: {
+                    "pp.hash": {
+                        $in: hashesToDelete,
+                    },
+                },
+                writable: true,
+                enumerable: true,
+                configurable: true,
+            });
+        }
+
+        return this.bindDb.updateOne({ discordid: this.discordid }, query);
     }
 
     /**
@@ -242,7 +280,7 @@ export class UserBind extends Manager {
 
         const finalPP: number = DPPHelper.calculateFinalPerformancePoints(list);
 
-        return DatabaseManager.elainaDb.collections.userBind.updateOne(
+        return this.bindDb.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -292,13 +330,15 @@ export class UserBind extends Manager {
 
             await HelperFunctions.sleep(0.2);
 
-            DPPHelper.insertScore(newList, score, calcResult);
+            DPPHelper.insertScore(newList, [
+                DPPHelper.scoreToPPEntry(score, calcResult),
+            ]);
         }
 
         this.pp = newList;
         this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
 
-        return DatabaseManager.elainaDb.collections.userBind.updateOne(
+        return this.bindDb.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -540,7 +580,9 @@ export class UserBind extends Manager {
                         if (calcResult) {
                             ++this.playc;
 
-                            DPPHelper.insertScore(newList, score, calcResult);
+                            DPPHelper.insertScore(newList, [
+                                DPPHelper.scoreToPPEntry(score, calcResult),
+                            ]);
                         }
                     }
 
@@ -591,7 +633,7 @@ export class UserBind extends Manager {
                         currentPPEntries: [...newList.values()],
                     };
 
-                    await DatabaseManager.elainaDb.collections.userBind.updateOne(
+                    await this.bindDb.updateOne(
                         { discordid: this.discordid },
                         {
                             $set: {
@@ -609,7 +651,7 @@ export class UserBind extends Manager {
                     currentPPEntries: [...newList.values()],
                 };
 
-                await DatabaseManager.elainaDb.collections.userBind.updateOne(
+                await this.bindDb.updateOne(
                     { discordid: this.discordid },
                     {
                         $set: {
@@ -645,10 +687,7 @@ export class UserBind extends Manager {
             });
         }
 
-        return DatabaseManager.elainaDb.collections.userBind.updateOne(
-            { discordid: this.discordid },
-            query
-        );
+        return this.bindDb.updateOne({ discordid: this.discordid }, query);
     }
 
     /**
@@ -682,8 +721,15 @@ export class UserBind extends Manager {
             );
         }
 
-        const otherBindInfo: UserBind | null =
-            await DatabaseManager.elainaDb.collections.userBind.getFromUser(to);
+        const otherBindInfo: UserBind | null = await this.bindDb.getFromUser(
+            to,
+            {
+                projection: {
+                    _id: 0,
+                    previous_bind: 1,
+                },
+            }
+        );
 
         const otherPreviousBind: number[] = otherBindInfo?.previous_bind ?? [];
 
@@ -715,11 +761,8 @@ export class UserBind extends Manager {
 
         otherPreviousBind.push(uid);
 
-        const dbManager: UserBindCollectionManager =
-            DatabaseManager.elainaDb.collections.userBind;
-
         if (this.previous_bind.length === 0) {
-            await dbManager.deleteOne({
+            await this.bindDb.deleteOne({
                 discordid: this.discordid,
             });
 
@@ -734,7 +777,7 @@ export class UserBind extends Manager {
 
             this.discordid = to;
 
-            await dbManager.updateOne(
+            await this.bindDb.updateOne(
                 { discordid: this.discordid },
                 {
                     $set: {
@@ -758,7 +801,7 @@ export class UserBind extends Manager {
                 { upsert: true }
             );
         } else {
-            await dbManager.updateOne(
+            await this.bindDb.updateOne(
                 { discordid: this.discordid },
                 {
                     $pull: {
@@ -770,7 +813,7 @@ export class UserBind extends Manager {
                 }
             );
 
-            await dbManager.updateOne(
+            await this.bindDb.updateOne(
                 { discordid: to },
                 {
                     $set: {
@@ -863,7 +906,7 @@ export class UserBind extends Manager {
         this.uid = player.uid;
         this.username = player.username;
 
-        return DatabaseManager.elainaDb.collections.userBind.updateOne(
+        return this.bindDb.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -919,16 +962,20 @@ export class UserBind extends Manager {
                 }
             }
 
-            return DatabaseManager.elainaDb.collections.userBind.deleteOne({
+            return this.bindDb.deleteOne({
                 discordid: this.discordid,
             });
         }
 
         if (this.uid === uid) {
             this.uid = ArrayHelper.getRandomArrayElement(this.previous_bind);
+
+            const player: Player = (await Player.getInformation(this.uid))!;
+
+            this.username = player.username;
         }
 
-        return DatabaseManager.elainaDb.collections.userBind.updateOne(
+        return this.bindDb.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -950,7 +997,7 @@ export class UserBind extends Manager {
     async setClan(name: string): Promise<OperationResult> {
         this.clan = name;
 
-        return DatabaseManager.elainaDb.collections.userBind.updateOne(
+        return this.bindDb.updateOne(
             { discordid: this.discordid },
             {
                 $set: {

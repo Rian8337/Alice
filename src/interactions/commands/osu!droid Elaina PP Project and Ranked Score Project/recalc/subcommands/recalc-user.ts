@@ -34,7 +34,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user", true);
 
     const bindInfo: UserBind | null =
-        await DatabaseManager.elainaDb.collections.userBind.getFromUser(user);
+        await DatabaseManager.elainaDb.collections.userBind.getFromUser(user, {
+            projection: { _id: 0, discordid: 1 },
+        });
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {

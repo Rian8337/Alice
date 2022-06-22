@@ -35,7 +35,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
-    const bindInfo: UserBind | null = await dbManager.getFromUid(uid);
+    const bindInfo: UserBind | null = await dbManager.getFromUid(uid, {
+        projection: { _id: 0, previous_bind: 1, uid: 1 },
+    });
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {

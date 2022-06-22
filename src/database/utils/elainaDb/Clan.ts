@@ -251,7 +251,18 @@ export class Clan extends Manager {
         }
 
         const toAcceptBindInfo: UserBind | null =
-            await DatabaseManager.elainaDb.collections.userBind.getFromUser(id);
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+                id,
+                {
+                    projection: {
+                        _id: 0,
+                        clan: 1,
+                        oldjoincooldown: 1,
+                        joincooldown: 1,
+                        previous_bind: 1,
+                    },
+                }
+            );
 
         if (!toAcceptBindInfo) {
             return this.createOperationResult(

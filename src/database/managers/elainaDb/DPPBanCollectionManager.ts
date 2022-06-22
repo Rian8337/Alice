@@ -1,5 +1,6 @@
 import { DPPBan } from "@alice-database/utils/elainaDb/DPPBan";
 import { DatabaseDPPBan } from "@alice-interfaces/database/elainaDb/DatabaseDPPBan";
+import { FindOptions } from "mongodb";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**
@@ -28,5 +29,15 @@ export class DPPBanCollectionManager extends DatabaseCollectionManager<
      */
     async isPlayerBanned(uid: number): Promise<boolean> {
         return !!(await this.getOne({ uid: uid }));
+    }
+
+    protected override processFindOptions(
+        options?: FindOptions<DatabaseDPPBan>
+    ): FindOptions<DatabaseDPPBan> | undefined {
+        if (options?.projection) {
+            options.projection.uid = 1;
+        }
+
+        return super.processFindOptions(options);
     }
 }

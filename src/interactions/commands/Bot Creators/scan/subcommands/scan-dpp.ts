@@ -30,7 +30,11 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     let players: Collection<Snowflake, UserBind>;
 
-    while ((players = await dbManager.getDPPUnscannedPlayers(50)).size) {
+    while (
+        (players = await dbManager.getDPPUnscannedPlayers(50, {
+            projection: { _id: 0, pp: 1, playc: 1 },
+        })).size
+    ) {
         for (const player of players.values()) {
             client.logger.info(`Now calculating ID ${player.discordid}`);
 

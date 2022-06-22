@@ -41,24 +41,40 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     switch (true) {
         case !!uid:
             bindInfo = await dbManager.getFromUid(uid!, {
-                retrieveAllPlays: true,
+                projection: {
+                    _id: 0,
+                    uid: 1,
+                    username: 1,
+                    pp: 1,
+                    pptotal: 1,
+                },
             });
             break;
         case !!username:
             bindInfo = await dbManager.getFromUsername(username!, {
-                retrieveAllPlays: true,
-            });
-            break;
-        case !!discordid:
-            bindInfo = await dbManager.getFromUser(discordid!, {
-                retrieveAllPlays: true,
+                projection: {
+                    _id: 0,
+                    uid: 1,
+                    username: 1,
+                    pp: 1,
+                    pptotal: 1,
+                },
             });
             break;
         default:
             // If no arguments are specified, default to self
-            bindInfo = await dbManager.getFromUser(interaction.user, {
-                retrieveAllPlays: true,
-            });
+            bindInfo = await dbManager.getFromUser(
+                discordid ?? interaction.user.id,
+                {
+                    projection: {
+                        _id: 0,
+                        uid: 1,
+                        username: 1,
+                        pp: 1,
+                        pptotal: 1,
+                    },
+                }
+            );
     }
 
     if (!bindInfo) {

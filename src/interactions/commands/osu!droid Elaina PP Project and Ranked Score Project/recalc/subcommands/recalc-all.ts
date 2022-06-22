@@ -49,10 +49,13 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     while (
         (player = (
-            await dbManager.getRecalcUnscannedPlayers({
-                amount: 1,
-                retrieveAllPlays:
-                    interaction.options.getBoolean("full") ?? false,
+            await dbManager.getRecalcUnscannedPlayers(1, {
+                projection: {
+                    _id: 0,
+                    pp: 1,
+                    previous_bind: 1,
+                    calculationInfo: 1,
+                },
             })
         ).first())
     ) {

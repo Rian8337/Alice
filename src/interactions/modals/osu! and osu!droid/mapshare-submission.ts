@@ -37,7 +37,14 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-            interaction.user
+            interaction.user,
+            {
+                projection: {
+                    _id: 0,
+                    uid: 1,
+                    username: 1,
+                },
+            }
         );
 
     if (!bindInfo) {

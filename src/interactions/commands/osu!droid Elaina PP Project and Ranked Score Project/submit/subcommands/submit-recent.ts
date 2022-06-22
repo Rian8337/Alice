@@ -16,7 +16,7 @@ import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import { MapInfo } from "@rian8337/osu-base";
+import { MapInfo, MathUtils } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { SubmitLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/submit/SubmitLocalization";
@@ -24,6 +24,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: SubmitLocalization = new SubmitLocalization(
@@ -39,7 +40,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const bindInfo: UserBind | null = await bindDbManager.getFromUser(
         interaction.user,
-        { retrieveAllPlays: true }
+        {
+            projection: {
+                _id: 0,
+                uid: 1,
+                username: 1,
+                pp: 1,
+                pptotal: 1,
+            },
+        }
     );
 
     if (!bindInfo) {
@@ -110,6 +119,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
+    const ppEntries: PPEntry[] = [];
+    const validScores: Score[] = [];
+
     for (const score of scoresToSubmit) {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
             score.hash,
@@ -169,7 +181,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     break;
                 }
 
-                DPPHelper.insertScore(bindInfo.pp, score, droidCalcResult);
+                ppEntries.push(
+                    DPPHelper.scoreToPPEntry(score, droidCalcResult)
+                );
 
                 const dpp: number = parseFloat(
                     droidCalcResult.result.total.toFixed(2)
@@ -183,6 +197,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         // Ranked score
         if (RankedScoreHelper.isBeatmapEligible(beatmapInfo.approved)) {
+            validScores.push(score);
+
             const scoreDiff: number =
                 score.score -
                 (rankedScoreInfo?.scorelist?.get(score.hash) ?? 0);
@@ -190,6 +206,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             fieldContent += `**${score.score.toLocaleString(
                 BCP47
             )}** | *+${scoreDiff.toLocaleString(BCP47)}*`;
+
             totalScore += scoreDiff;
         }
 
@@ -197,14 +214,31 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     // Finalization
+    DPPHelper.insertScore(bindInfo.pp, ppEntries);
+
+    const level: number = RankedScoreHelper.calculateLevel(totalScore);
+
+    if (rankedScoreInfo) {
+        await rankedScoreInfo.addScores(validScores);
+    } else {
+        await rankedScoreDbManager.insert({
+            uid: bindInfo.uid,
+            username: bindInfo.username,
+            level: level,
+            score: totalScore,
+            scorelist: validScores.map((v) => [v.score, v.hash]),
+            playc: validScores.length,
+        });
+    }
+
     const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
         bindInfo.pp
     );
     const ppDiff: number = totalPP - bindInfo.pptotal;
 
-    const level: number = RankedScoreHelper.calculateLevel(totalScore);
-    const levelRemain: number = parseFloat(
-        ((level - Math.floor(level)) * 100).toFixed(2)
+    const levelRemain: number = MathUtils.round(
+        (level - Math.floor(level)) * 100,
+        2
     );
     const scoreDiff: number = totalScore - (rankedScoreInfo?.score ?? 0);
 

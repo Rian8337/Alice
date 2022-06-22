@@ -35,8 +35,12 @@ export const run: EventUtil["run"] = async (client) => {
 
     while (
         (player = (
-            await dbManager.getRecalcUnscannedPlayers({
-                amount: 1,
+            await dbManager.getRecalcUnscannedPlayers(1, {
+                projection: {
+                    _id: 0,
+                    previous_bind: 1,
+                    calculationInfo: 1,
+                },
             })
         ).first())
     ) {

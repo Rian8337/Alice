@@ -172,19 +172,54 @@ export abstract class DPPHelper {
      * Inserts a score into a list of dpp plays.
      *
      * @param dppList The list of dpp plays, mapped by hash.
-     * @param score The score.
-     * @param calculationResult The calculation result of the score.
+     * @param entries The plays to add.
      */
     static insertScore(
         dppList: Collection<string, PPEntry>,
-        score: Score,
-        calculationResult: PerformanceCalculationResult<DroidPerformanceCalculator>
+        entries: PPEntry[]
     ): void {
-        if (isNaN(calculationResult.result.total)) {
-            return;
+        let needsSorting: boolean = false;
+
+        for (const entry of entries) {
+            if (isNaN(entry.pp)) {
+                continue;
+            }
+
+            if (
+                (dppList.get(entry.hash)?.pp ?? 0) >= entry.pp ||
+                (dppList.size === 75 && dppList.at(-1)!.pp >= entry.pp)
+            ) {
+                continue;
+            }
+
+            needsSorting = true;
+
+            dppList.set(entry.hash, entry);
         }
 
-        const ppEntry: PPEntry = {
+        if (needsSorting) {
+            dppList.sort((a, b) => {
+                return b.pp - a.pp;
+            });
+        }
+
+        while (dppList.size > 75) {
+            dppList.delete(dppList.lastKey()!);
+        }
+    }
+
+    /**
+     * Converts a score to PP entry.
+     *
+     * @param score The score to convert.
+     * @param calculationResult The dpp calculation result of the score.
+     * @returns A PP entry from the score and calculation result.
+     */
+    static scoreToPPEntry(
+        score: Score,
+        calculationResult: PerformanceCalculationResult<DroidPerformanceCalculator>
+    ): PPEntry {
+        return {
             hash: calculationResult.map.hash,
             title: calculationResult.map.fullTitle,
             pp: parseFloat(calculationResult.result.total.toFixed(2)),
@@ -194,23 +229,6 @@ export abstract class DPPHelper {
             miss: score.accuracy.nmiss,
             scoreID: score.scoreID,
         };
-
-        if (
-            (dppList.get(calculationResult.map.hash)?.pp ?? 0) >= ppEntry.pp ||
-            (dppList.size === 75 && dppList.at(-1)!.pp >= ppEntry.pp)
-        ) {
-            return;
-        }
-
-        dppList.set(calculationResult.map.hash, ppEntry);
-
-        dppList.sort((a, b) => {
-            return b.pp - a.pp;
-        });
-
-        while (dppList.size > 75) {
-            dppList.delete(dppList.lastKey()!);
-        }
     }
 
     /**
@@ -252,11 +270,13 @@ export abstract class DPPHelper {
                 { discordid: toUpdate.discordid },
                 {
                     $set: {
-                        pp: [...toUpdate.pp.values()],
                         pptotal: this.calculateFinalPerformancePoints(
                             toUpdate.pp
                         ),
                         playc: Math.max(0, toUpdate.playc - 1),
+                    },
+                    $pull: {
+                        "pp.hash": hash,
                     },
                 }
             );

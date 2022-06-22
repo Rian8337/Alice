@@ -379,7 +379,13 @@ export class Challenge extends Manager {
         if (firstPlaceScore) {
             const winnerBindInfo: UserBind | null =
                 await DatabaseManager.elainaDb.collections.userBind.getFromUid(
-                    firstPlaceScore.uid
+                    firstPlaceScore.uid,
+                    {
+                        projection: {
+                            _id: 0,
+                            uid: 1,
+                        },
+                    }
                 );
 
             if (winnerBindInfo) {
@@ -665,8 +671,8 @@ export class Challenge extends Manager {
                 ? scoreOrReplay
                 : scoreOrReplay.replay!;
 
-        const hitErrorInformation: HitErrorInformation =
-            replay.calculateHitError()!;
+        const hitErrorInformation: HitErrorInformation | null =
+            replay.calculateHitError();
 
         let level: number = 0;
 
@@ -771,7 +777,8 @@ export class Challenge extends Manager {
                     }
                     case "ur":
                         bonusComplete =
-                            hitErrorInformation.unstableRate <= tier.value;
+                            (hitErrorInformation?.unstableRate ??
+                                Number.POSITIVE_INFINITY) <= tier.value;
                         break;
                 }
 

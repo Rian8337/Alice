@@ -35,7 +35,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const uidBindInfo: UserBind | null = await dbManager.getFromUid(player.uid);
+    const uidBindInfo: UserBind | null = await dbManager.getFromUid(
+        player.uid,
+        { projection: { _id: 0 } }
+    );
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
@@ -46,11 +49,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const userBindInfo: UserBind | null = await dbManager.getFromUser(
-        interaction.user
+        interaction.user,
+        {
+            projection: {
+                _id: 0,
+                previous_bind: 1,
+            },
+        }
     );
 
     if (userBindInfo) {
-        if (!userBindInfo.isUidBinded(player.uid)) {
+        const isUidBinded: boolean = userBindInfo.isUidBinded(player.uid);
+
+        if (!isUidBinded) {
             if (interaction.guild?.id !== Constants.mainServer) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -113,7 +124,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
         }
 
-        if (userBindInfo.isUidBinded(player.uid)) {
+        if (isUidBinded) {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation(

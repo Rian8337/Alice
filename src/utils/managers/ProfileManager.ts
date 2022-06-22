@@ -49,7 +49,14 @@ export abstract class ProfileManager extends Manager {
             bindInfo =
                 await DatabaseManager.elainaDb.collections.userBind.getFromUid(
                     uid,
-                    { retrieveAllPlays: true }
+                    {
+                        projection: {
+                            _id: 0,
+                            pp: 1,
+                            pptotal: 1,
+                            clan: 1,
+                        },
+                    }
                 );
         }
 

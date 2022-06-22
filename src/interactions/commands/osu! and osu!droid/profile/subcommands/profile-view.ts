@@ -44,7 +44,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     switch (true) {
         case !!uid:
             player = await Player.getInformation(uid!);
+
             uid ??= player?.uid;
+
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -52,10 +54,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     ),
                 });
             }
+
             break;
         case !!username:
             player = await Player.getInformation(username!);
+
             uid ??= player?.uid;
+
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -66,9 +71,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             break;
         case !!discordid:
             bindInfo = await dbManager.getFromUser(discordid!, {
-                retrieveAllPlays: true,
+                projection: {
+                    _id: 0,
+                    uid: 1,
+                    pp: 1,
+                    pptotal: 1,
+                    clan: 1,
+                },
             });
+
             uid = bindInfo?.uid;
+
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -78,13 +91,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     ),
                 });
             }
+
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(interaction.user, {
-                retrieveAllPlays: true,
+                projection: {
+                    _id: 0,
+                    uid: 1,
+                    pp: 1,
+                    pptotal: 1,
+                    clan: 1,
+                },
             });
+
             uid = bindInfo?.uid;
+
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(

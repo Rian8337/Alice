@@ -56,15 +56,30 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             }
 
             firstBindInfo = await dbManager.getFromUid(uidToCompare!, {
-                retrieveAllPlays: true,
+                projection: {
+                    _id: 0,
+                    pp: 1,
+                    pptotal: 1,
+                    username: 1,
+                },
             });
 
             secondBindInfo = otherUid
                 ? await dbManager.getFromUid(otherUid, {
-                      retrieveAllPlays: true,
+                      projection: {
+                          _id: 0,
+                          pp: 1,
+                          pptotal: 1,
+                          username: 1,
+                      },
                   })
                 : await dbManager.getFromUser(interaction.user, {
-                      retrieveAllPlays: true,
+                      projection: {
+                          _id: 0,
+                          pp: 1,
+                          pptotal: 1,
+                          username: 1,
+                      },
                   });
             break;
         case "user":
@@ -93,15 +108,32 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             firstBindInfo = await dbManager.getFromUsername(
                 usernameToCompare!,
-                { retrieveAllPlays: true }
+                {
+                    projection: {
+                        _id: 0,
+                        pp: 1,
+                        pptotal: 1,
+                        username: 1,
+                    },
+                }
             );
 
             secondBindInfo = otherUsername
                 ? await dbManager.getFromUsername(otherUsername, {
-                      retrieveAllPlays: true,
+                      projection: {
+                          _id: 0,
+                          pp: 1,
+                          pptotal: 1,
+                          username: 1,
+                      },
                   })
                 : await dbManager.getFromUser(interaction.user, {
-                      retrieveAllPlays: true,
+                      projection: {
+                          _id: 0,
+                          pp: 1,
+                          pptotal: 1,
+                          username: 1,
+                      },
                   });
             break;
     }

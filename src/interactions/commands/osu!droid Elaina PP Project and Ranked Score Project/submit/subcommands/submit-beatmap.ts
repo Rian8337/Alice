@@ -38,7 +38,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const bindInfo: UserBind | null = await bindDbManager.getFromUser(
         interaction.user,
-        { retrieveAllPlays: true }
+        {
+            projection: {
+                _id: 0,
+                uid: 1,
+                username: 1,
+                pp: 1,
+                pptotal: 1,
+            },
+        }
     );
 
     if (!bindInfo) {
@@ -154,23 +162,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         score.accuracy.value() * 100
     ).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | `;
 
+    const currentTotalPP: number = bindInfo.pptotal;
+
     if (droidCalcResult) {
-        DPPHelper.insertScore(bindInfo.pp, score, droidCalcResult);
+        DPPHelper.insertScore(bindInfo.pp, [
+            DPPHelper.scoreToPPEntry(score, droidCalcResult),
+        ]);
+
+        await bindInfo.setNewDPPValue(bindInfo.pp, 1);
 
         const dpp: number = parseFloat(droidCalcResult.result.total.toFixed(2));
 
         fieldContent += `${dpp}pp`;
     }
 
-    const currentTotalPP: number = bindInfo.pptotal;
-
-    if (droidCalcResult) {
-        await bindInfo.setNewDPPValue(bindInfo.pp, 1);
-    }
-
-    const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
-        bindInfo.pp
-    );
+    const totalPP: number = bindInfo.pptotal;
 
     const ppDiff: number = totalPP - currentTotalPP;
 
