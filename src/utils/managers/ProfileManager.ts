@@ -56,7 +56,14 @@ export abstract class ProfileManager extends Manager {
         if (rankedScoreInfo === undefined) {
             rankedScoreInfo =
                 await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(
-                    uid
+                    uid,
+                    {
+                        projection: {
+                            _id: 0,
+                            score: 1,
+                            level: 1,
+                        },
+                    }
                 );
         }
 

@@ -186,9 +186,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Ranked score
     if (RankedScoreHelper.isBeatmapEligible(beatmapInfo.approved)) {
         const rankedScoreInfo: RankedScore | null =
-            await rankedScoreDbManager.getFromUid(bindInfo.uid, {
-                retrieveAllPlays: true,
-            });
+            await rankedScoreDbManager.getFromUid(bindInfo.uid);
 
         const scoreList: Collection<string, number> =
             rankedScoreInfo?.scorelist ?? new Collection();
