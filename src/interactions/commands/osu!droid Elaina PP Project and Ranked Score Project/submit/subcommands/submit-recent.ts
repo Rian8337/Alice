@@ -14,7 +14,7 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, MessageEmbed } from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { MapInfo } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
@@ -98,8 +98,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const rankedScoreInfo: RankedScore | null =
         await rankedScoreDbManager.getFromUid(bindInfo.uid);
 
-    const scoreList: Collection<string, number> =
-        rankedScoreInfo?.scorelist ?? new Collection();
     let totalScore: number = rankedScoreInfo?.score ?? 0;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
@@ -185,10 +183,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         // Ranked score
         if (RankedScoreHelper.isBeatmapEligible(beatmapInfo.approved)) {
-            const scoreDiff: number = RankedScoreHelper.insertScore(
-                scoreList,
-                score
-            );
+            const scoreDiff: number =
+                score.score -
+                (rankedScoreInfo?.scorelist?.get(score.hash) ?? 0);
 
             fieldContent += `**${score.score.toLocaleString(
                 BCP47
@@ -230,7 +227,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 (rankedScoreInfo?.level ?? 1) < Math.floor(level)
                     ? `\n${Symbols.upIcon} ${localization.getTranslation(
                           "levelUp"
-                      )}!`
+                      )}`
                     : ""
             }\n` +
             `${localization.getTranslation("scoreNeeded")}: **${(
@@ -243,17 +240,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);
 
     if (rankedScoreInfo) {
-        await rankedScoreInfo.setNewRankedScoreValue(
-            scoreList,
-            scoresToSubmit.length
-        );
+        await rankedScoreInfo.addScores(scoresToSubmit);
     } else {
         await rankedScoreDbManager.insert({
             uid: bindInfo.uid,
             username: bindInfo.username,
             level: level,
             score: totalScore,
-            scorelist: RankedScoreHelper.toArray(scoreList),
+            scorelist: scoresToSubmit.map((v) => [v.score, v.hash]),
             playc: 1,
         });
     }

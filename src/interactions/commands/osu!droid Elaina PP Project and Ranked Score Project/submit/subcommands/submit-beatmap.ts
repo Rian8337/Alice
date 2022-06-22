@@ -4,7 +4,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, MessageEmbed } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
@@ -175,12 +175,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const ppDiff: number = totalPP - currentTotalPP;
 
     embed.setDescription(
-        `**${localization.getTranslation("totalPP")}**: ${totalPP.toFixed(
+        `${localization.getTranslation("totalPP")}: **${totalPP.toFixed(
             2
-        )}pp\n` +
-            `**${localization.getTranslation("ppGained")}**: ${ppDiff.toFixed(
+        )}pp**\n` +
+            `${localization.getTranslation("ppGained")}: **${ppDiff.toFixed(
                 2
-            )} pp\n`
+            )}pp**\n`
     );
 
     // Ranked score
@@ -188,13 +188,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const rankedScoreInfo: RankedScore | null =
             await rankedScoreDbManager.getFromUid(bindInfo.uid);
 
-        const scoreList: Collection<string, number> =
-            rankedScoreInfo?.scorelist ?? new Collection();
-
-        const scoreDiff: number = RankedScoreHelper.insertScore(
-            scoreList,
-            score
-        );
+        const scoreDiff: number =
+            score.score - (rankedScoreInfo?.scorelist?.get(score.hash) ?? 0);
 
         const BCP47: string = LocaleHelper.convertToBCP47(
             localization.language
@@ -213,37 +208,37 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         embed.setDescription(
             embed.description! +
-                `**${localization.getTranslation(
+                `${localization.getTranslation(
                     "rankedScore"
-                )}**: ${totalScore.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation(
+                )}: **${totalScore.toLocaleString(BCP47)}**\n` +
+                `${localization.getTranslation(
                     "scoreGained"
-                )}**: ${scoreDiff.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation(
-                    "currentLevel"
-                )}**: ${Math.floor(level)} (${levelRemain}%)${
-                    (rankedScoreInfo?.level ?? 1) > Math.floor(level)
+                )}: **${scoreDiff.toLocaleString(BCP47)}**\n` +
+                `${localization.getTranslation("currentLevel")}: **${Math.floor(
+                    level
+                )} (${levelRemain}%)**${
+                    (rankedScoreInfo?.level ?? 1) < Math.floor(level)
                         ? `\n${Symbols.upIcon} ${localization.getTranslation(
                               "levelUp"
-                          )}!`
+                          )}`
                         : ""
                 }\n` +
-                `**${localization.getTranslation("scoreNeeded")}**: ${(
+                `${localization.getTranslation("scoreNeeded")}: **${(
                     RankedScoreHelper.calculateScoreRequirement(
                         Math.floor(level) + 1
                     ) - totalScore
-                ).toLocaleString(BCP47)}`
+                ).toLocaleString(BCP47)}**`
         );
 
         if (rankedScoreInfo) {
-            await rankedScoreInfo.setNewRankedScoreValue(scoreList, 1);
+            await rankedScoreInfo.addScores([score]);
         } else {
             await rankedScoreDbManager.insert({
                 uid: bindInfo.uid,
                 username: bindInfo.username,
                 level: level,
                 score: totalScore,
-                scorelist: RankedScoreHelper.toArray(scoreList),
+                scorelist: [[score.score, score.hash]],
                 playc: 1,
             });
         }

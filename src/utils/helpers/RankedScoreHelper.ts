@@ -2,7 +2,6 @@ import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { Collection } from "discord.js";
 import { ArrayHelper } from "./ArrayHelper";
 import { rankedStatus } from "@rian8337/osu-base";
-import { Score } from "@rian8337/osu-droid-utilities";
 
 /**
  * A helper to calculate things related to ranked score.
@@ -58,27 +57,6 @@ export abstract class RankedScoreHelper {
      */
     static isBeatmapEligible(rankedStatus: rankedStatus): boolean {
         return !WhitelistManager.beatmapNeedsWhitelisting(rankedStatus);
-    }
-
-    /**
-     * Inserts a score into a list of ranked score plays.
-     *
-     * Make sure to use `RankedScoreHelper.isBeatmapEligible()` before calling this method.
-     *
-     * @param scoreList The list of ranked score plays.
-     * @param score The score.
-     * @returns The score difference between the given score and the play inside the ranked score list, if any.
-     */
-    static insertScore(
-        scoreList: Collection<string, number>,
-        score: Score
-    ): number {
-        const scoreDiff: number =
-            score.score - (scoreList.get(score.hash) ?? 0);
-
-        scoreList.set(score.hash, score.score);
-
-        return scoreDiff;
     }
 
     /**

@@ -5,6 +5,8 @@ import { Manager } from "@alice-utils/base/Manager";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { ObjectId } from "bson";
 import { Collection } from "discord.js";
+import { UpdateFilter, UpdateOptions } from "mongodb";
+import { Score } from "@rian8337/osu-droid-utilities";
 
 /**
  * Represents an osu!droid account's ranked score.
@@ -64,38 +66,96 @@ export class RankedScore extends Manager {
     }
 
     /**
-     * Sets a new ranked score based on the given list.
+     * Adds new ranked scores.
      *
-     * @param list The list of scores.
-     * @param playCountIncrement The amount to increment towards play count.
+     * @param scores The list of scores.
      * @returns An object containing information about the operation.
      */
-    async setNewRankedScoreValue(
-        list: Collection<string, number>,
-        playCountIncrement: number
-    ): Promise<OperationResult> {
-        this.scorelist = list.clone();
+    async addScores(scores: Score[]): Promise<OperationResult> {
+        const scoresToAdd: [number, string][] = [];
 
-        this.score = list.reduce((a, v) => a + v, 0);
+        const query: UpdateFilter<DatabaseRankedScore> = {
+            $set: {},
+            $push: {
+                scorelist: {
+                    $each: scoresToAdd,
+                },
+            },
+            $inc: {
+                playc: scores.length,
+            },
+        };
+
+        const options: UpdateOptions = {
+            arrayFilters: [],
+        };
+
+        let addedScore: number = 0;
+
+        for (const score of scores) {
+            const cachedScore: number | undefined = this.scorelist.get(
+                score.hash
+            );
+
+            if (cachedScore) {
+                if (cachedScore >= score.score) {
+                    continue;
+                }
+
+                addedScore += score.score - cachedScore;
+
+                Object.defineProperty(
+                    query.$set,
+                    `scorelist.$[filter${score.hash}].1`,
+                    {
+                        value: score.hash,
+                        writable: true,
+                        enumerable: true,
+                        configurable: true,
+                    }
+                );
+
+                options.arrayFilters!.push(
+                    Object.defineProperty({}, `filter${score.hash}.0`, {
+                        value: score.hash,
+                        writable: true,
+                        enumerable: true,
+                        configurable: true,
+                    })
+                );
+            } else {
+                addedScore += score.score;
+
+                scoresToAdd.push([score.score, score.hash]);
+            }
+        }
+
+        if (addedScore === 0) {
+            return this.createOperationResult(true);
+        }
+
+        this.score += addedScore;
 
         this.level = RankedScoreHelper.calculateLevel(this.score);
 
-        this.playc += playCountIncrement;
+        Object.defineProperty(query.$set, "level", {
+            value: this.level,
+            writable: true,
+            configurable: true,
+            enumerable: true,
+        });
+
+        Object.defineProperty(query.$inc, "score", {
+            value: addedScore,
+            writable: true,
+            configurable: true,
+            enumerable: true,
+        });
 
         return DatabaseManager.aliceDb.collections.rankedScore.updateOne(
             { uid: this.uid },
-            {
-                $set: {
-                    level: this.level,
-                    score: this.score,
-                    scorelist: RankedScoreHelper.toArray(this.scorelist),
-                    username: this.username,
-                },
-                $inc: {
-                    playc: playCountIncrement,
-                },
-            },
-            { upsert: true }
+            query,
+            options
         );
     }
 }
