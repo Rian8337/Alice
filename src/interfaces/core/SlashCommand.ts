@@ -31,16 +31,16 @@ export interface SlashCommand {
         readonly name: string;
 
         /**
+         * The description of the command.
+         */
+        readonly description: string;
+
+        /**
          * The options of the command.
          *
          * This is used to define command arguments and subcommands.
          */
         readonly options: ApplicationCommandOptionData[];
-
-        /**
-         * The description of the command.
-         */
-        readonly description: string;
 
         /**
          * The usage example of the command.
