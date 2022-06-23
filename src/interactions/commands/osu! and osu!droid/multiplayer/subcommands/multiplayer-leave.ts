@@ -87,14 +87,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            `${localization.getTranslation("playerLeaveSuccess")}${changeHost && room.players.length > 0
-                ? `\n\n${StringHelper.formatString(
-                    localization.getTranslation(
-                        "roomHostChangeNotification"
-                    ),
-                    `<@${room.settings.roomHost}>`
-                )}`
-                : ""
+            `${localization.getTranslation("playerLeaveSuccess")}${
+                changeHost && room.players.length > 0
+                    ? `\n\n${StringHelper.formatString(
+                          localization.getTranslation(
+                              "roomHostChangeNotification"
+                          ),
+                          `<@${room.settings.roomHost}>`
+                      )}`
+                    : ""
             }`
         ),
     });

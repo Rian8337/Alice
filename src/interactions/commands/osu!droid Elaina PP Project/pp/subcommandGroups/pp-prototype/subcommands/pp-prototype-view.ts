@@ -58,7 +58,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
-                    !!uid || !!username || !!discordid
+                    uid || username || discordid
                         ? "userInfoNotAvailable"
                         : "selfInfoNotAvailable"
                 )
