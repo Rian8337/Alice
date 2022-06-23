@@ -313,6 +313,8 @@ export abstract class ScoreDisplayHelper {
 
             const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
+            embed.fields.pop();
+
             const topScore: Score = leaderboardCache.get(1)![0];
 
             if (!embed.title) {
