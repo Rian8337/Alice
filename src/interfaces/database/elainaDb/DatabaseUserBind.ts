@@ -33,6 +33,11 @@ export interface DatabaseUserBind extends BaseDocument {
     playc: number;
 
     /**
+     * The weighted accuracy of the player.
+     */
+    weightedAccuracy: number;
+
+    /**
      * The droid performance points entries of the user.
      */
     pp: PPEntry[];

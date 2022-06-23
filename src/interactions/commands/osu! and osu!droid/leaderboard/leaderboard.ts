@@ -72,18 +72,6 @@ export const config: SlashCommand["config"] = {
                 },
             ],
         },
-        {
-            name: "ranked",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "View the ranked score leaderboard.",
-            options: [
-                {
-                    name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
-                    description: "The page of the leaderboard. Defaults to 1.",
-                },
-            ],
-        },
     ],
     example: [
         {

@@ -26,9 +26,9 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                     uid: 1,
-                    pp: 1,
                     pptotal: 1,
                     clan: 1,
+                    weightedAccuracy: 1,
                 },
             }
         );
@@ -65,7 +65,6 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
         player.uid,
         player,
         bindInfo,
-        undefined,
         undefined,
         false,
         localization.language

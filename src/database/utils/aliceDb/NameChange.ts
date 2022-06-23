@@ -100,11 +100,6 @@ export class NameChange extends Manager implements DatabaseNameChange {
             { $set: { username: this.new_username! } }
         );
 
-        await DatabaseManager.aliceDb.collections.rankedScore.updateOne(
-            { uid: this.uid },
-            { $set: { username: this.new_username! } }
-        );
-
         this.isProcessed = true;
 
         const result: OperationResult =

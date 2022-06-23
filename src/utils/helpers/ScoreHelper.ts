@@ -145,6 +145,41 @@ export abstract class ScoreHelper {
     }
 
     /**
+     * Calculates the profile level from a score value.
+     *
+     * @param score The score value.
+     * @returns The profile level of the score value.
+     */
+    static calculateProfileLevel(score: number): number {
+        const calculateScoreRequirement = (level: number): number => {
+            return Math.round(
+                level <= 100
+                    ? ((5000 / 3) *
+                          (4 * Math.pow(level, 3) -
+                              3 * Math.pow(level, 2) -
+                              level) +
+                          1.25 * Math.pow(1.8, level - 60)) /
+                          1.128
+                    : 23875169174 + 15000000000 * (level - 100)
+            );
+        };
+
+        let level: number = 1;
+
+        while (calculateScoreRequirement(level + 1) <= score) {
+            ++level;
+        }
+
+        const nextLevelReq: number =
+            calculateScoreRequirement(level + 1) -
+            calculateScoreRequirement(level);
+        const curLevelReq: number = score - calculateScoreRequirement(level);
+        level += curLevelReq / nextLevelReq;
+
+        return level;
+    }
+
+    /**
      * Gets the ScoreV2 penalty for misses.
      *
      * @param tempScoreV2 The temporary ScoreV2 to calculate for.

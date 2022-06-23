@@ -5,7 +5,6 @@ import { Manager } from "@alice-utils/base/Manager";
 import { ProfileCardCreator } from "@alice-utils/creators/ProfileCardCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { Language } from "@alice-localization/base/Language";
 
 /**
@@ -41,7 +40,6 @@ export abstract class ProfileManager extends Manager {
         player?: Player,
         bindInfo?: UserBind | null,
         playerInfo?: PlayerInfo | null,
-        rankedScoreInfo?: RankedScore | null,
         detailed: boolean = false,
         language: Language = "en"
     ): Promise<Buffer | null> {
@@ -52,23 +50,9 @@ export abstract class ProfileManager extends Manager {
                     {
                         projection: {
                             _id: 0,
-                            pp: 1,
                             pptotal: 1,
                             clan: 1,
-                        },
-                    }
-                );
-        }
-
-        if (rankedScoreInfo === undefined) {
-            rankedScoreInfo =
-                await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(
-                    uid,
-                    {
-                        projection: {
-                            _id: 0,
-                            score: 1,
-                            level: 1,
+                            weightedAccuracy: 1,
                         },
                     }
                 );
@@ -103,7 +87,6 @@ export abstract class ProfileManager extends Manager {
             player,
             detailed,
             bindInfo,
-            rankedScoreInfo,
             playerInfo,
             language
         ).generateCard();
@@ -149,7 +132,6 @@ export abstract class ProfileManager extends Manager {
             player,
             false,
             bindInfo,
-            undefined,
             undefined,
             language
         ).generateTemplateCard();

@@ -20,11 +20,6 @@ export interface SubmitStrings {
     readonly profileNotFound: string;
     readonly totalPP: string;
     readonly ppGained: string;
-    readonly rankedScore: string;
-    readonly scoreGained: string;
-    readonly currentLevel: string;
-    readonly levelUp: string;
-    readonly scoreNeeded: string;
     readonly ppSubmissionInfo: string;
     readonly blacklistedBeatmapReject: string;
     readonly unrankedBeatmapReject: string;

@@ -1,8 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { RankedScoreCollectionManager } from "@alice-database/managers/aliceDb/RankedScoreCollectionManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -12,17 +10,15 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import { MapInfo, MathUtils } from "@rian8337/osu-base";
+import { MapInfo } from "@rian8337/osu-base";
 import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { SubmitLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project and Ranked Score Project/submit/SubmitLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 
@@ -35,8 +31,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const bindDbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
-    const rankedScoreDbManager: RankedScoreCollectionManager =
-        DatabaseManager.aliceDb.collections.rankedScore;
 
     const bindInfo: UserBind | null = await bindDbManager.getFromUser(
         interaction.user,
@@ -104,11 +98,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const rankedScoreInfo: RankedScore | null =
-        await rankedScoreDbManager.getFromUid(bindInfo.uid);
-
-    let totalScore: number = rankedScoreInfo?.score ?? 0;
-
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
@@ -117,10 +106,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const droidDiffHelper: DroidBeatmapDifficultyHelper =
         new DroidBeatmapDifficultyHelper();
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
-
     const ppEntries: PPEntry[] = [];
-    const validScores: Score[] = [];
 
     for (const score of scoresToSubmit) {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
@@ -193,22 +179,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             }
         }
 
-        fieldContent += "**\n";
-
-        // Ranked score
-        if (RankedScoreHelper.isBeatmapEligible(beatmapInfo.approved)) {
-            validScores.push(score);
-
-            const scoreDiff: number =
-                score.score -
-                (rankedScoreInfo?.scorelist?.get(score.hash) ?? 0);
-
-            fieldContent += `**${score.score.toLocaleString(
-                BCP47
-            )}** | *+${scoreDiff.toLocaleString(BCP47)}*`;
-
-            totalScore += scoreDiff;
-        }
+        fieldContent += "**";
 
         embed.addField(fieldTitle, fieldContent);
     }
@@ -216,75 +187,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Finalization
     DPPHelper.insertScore(bindInfo.pp, ppEntries);
 
-    const level: number = RankedScoreHelper.calculateLevel(totalScore);
-
-    if (rankedScoreInfo) {
-        await rankedScoreInfo.addScores(validScores);
-    } else {
-        await rankedScoreDbManager.insert({
-            uid: bindInfo.uid,
-            username: bindInfo.username,
-            level: level,
-            score: totalScore,
-            scorelist: validScores.map((v) => [v.score, v.hash]),
-            playc: validScores.length,
-        });
-    }
-
     const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
         bindInfo.pp
     );
-    const ppDiff: number = totalPP - bindInfo.pptotal;
-
-    const levelRemain: number = MathUtils.round(
-        (level - Math.floor(level)) * 100,
-        2
-    );
-    const scoreDiff: number = totalScore - (rankedScoreInfo?.score ?? 0);
 
     embed.setDescription(
         `${localization.getTranslation("totalPP")}: **${totalPP.toFixed(
             2
         )}pp**\n` +
-            `${localization.getTranslation("ppGained")}: **${ppDiff.toFixed(
-                2
-            )}pp**\n` +
-            `${localization.getTranslation(
-                "rankedScore"
-            )}: **${totalScore.toLocaleString(BCP47)}**\n` +
-            `${localization.getTranslation(
-                "scoreGained"
-            )}: **${scoreDiff.toLocaleString(BCP47)}**\n` +
-            `${localization.getTranslation("currentLevel")}: **${Math.floor(
-                level
-            )} (${levelRemain}%)**${
-                (rankedScoreInfo?.level ?? 1) < Math.floor(level)
-                    ? `\n${Symbols.upIcon} ${localization.getTranslation(
-                          "levelUp"
-                      )}`
-                    : ""
-            }\n` +
-            `${localization.getTranslation("scoreNeeded")}: **${(
-                RankedScoreHelper.calculateScoreRequirement(
-                    Math.floor(level) + 1
-                ) - totalScore
-            ).toLocaleString(BCP47)}**`
+            `${localization.getTranslation("ppGained")}: **${(
+                totalPP - bindInfo.pptotal
+            ).toFixed(2)}pp**`
     );
 
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);
-
-    if (rankedScoreInfo) {
-        await rankedScoreInfo.addScores(scoresToSubmit);
-    } else {
-        await rankedScoreDbManager.insert({
-            uid: bindInfo.uid,
-            username: bindInfo.username,
-            level: level,
-            score: totalScore,
-            scorelist: scoresToSubmit.map((v) => [v.score, v.hash]),
-            playc: 1,
-        });
-    }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

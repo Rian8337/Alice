@@ -232,6 +232,32 @@ export abstract class DPPHelper {
     }
 
     /**
+     * Calculates the weighted accuracy of a dpp list.
+     *
+     * @param dppList The list.
+     * @returns The weighted accuracy of the list.
+     */
+    static calculateWeightedAccuracy(
+        dppList: Collection<string, PPEntry>
+    ): number {
+        if (dppList.size === 0) {
+            return 0;
+        }
+
+        let accSum: number = 0;
+        let weight: number = 0;
+        let i: number = 0;
+
+        for (const pp of dppList.values()) {
+            accSum += pp.accuracy * Math.pow(0.95, i);
+            weight += Math.pow(0.95, i);
+            ++i;
+        }
+
+        return accSum / weight;
+    }
+
+    /**
      * Calculates the final performance points from a list of pp entries.
      *
      * @param list The list.

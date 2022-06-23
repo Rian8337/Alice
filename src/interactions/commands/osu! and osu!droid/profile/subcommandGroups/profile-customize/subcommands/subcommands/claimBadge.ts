@@ -11,7 +11,6 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Collection, SelectMenuInteraction } from "discord.js";
 import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
@@ -127,25 +126,6 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             break;
         case "score_total":
             canUserClaimBadge = player.score >= badge.requirement;
-            break;
-        case "score_ranked":
-            for (const uid of bindInfo.previous_bind) {
-                const rankedScoreInfo: RankedScore | null =
-                    await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(
-                        uid,
-                        {
-                            projection: {
-                                _id: 0,
-                                score: 1,
-                            },
-                        }
-                    );
-
-                if ((rankedScoreInfo?.score ?? 0) >= badge.requirement) {
-                    canUserClaimBadge = true;
-                    break;
-                }
-            }
             break;
         case "star_fc": {
             const beatmapIDInput: string | undefined =

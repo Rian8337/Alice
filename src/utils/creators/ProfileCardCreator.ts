@@ -7,15 +7,14 @@ import {
 } from "canvas";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { promises, Stats } from "fs";
-import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { Language } from "@alice-localization/base/Language";
 import { ProfileCardCreatorLocalization } from "@alice-localization/utils/creators/ProfileCardCreator/ProfileCardCreatorLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 /**
  * A utility to create profile cards.
@@ -35,11 +34,6 @@ export class ProfileCardCreator {
      * The bind information of the player.
      */
     private readonly bindInfo?: UserBind | null;
-
-    /**
-     * The ranked score information of the player.
-     */
-    private readonly rankedScoreInfo?: RankedScore | null;
 
     /**
      * Information about the binded Discord account of the player.
@@ -77,7 +71,6 @@ export class ProfileCardCreator {
         player: Player,
         detailed: boolean,
         bindInfo?: UserBind | null,
-        rankedScoreInfo?: RankedScore | null,
         playerInfo?: PlayerInfo | null,
         // Disable temporarily while finding a solution for unicode characters
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -86,7 +79,6 @@ export class ProfileCardCreator {
         this.player = player;
         this.detailed = detailed;
         this.bindInfo = bindInfo;
-        this.rankedScoreInfo = rankedScoreInfo;
         this.playerInfo = playerInfo;
         this.localization = new ProfileCardCreatorLocalization("en");
         this.BCP47 = LocaleHelper.convertToBCP47(this.localization.language);
@@ -310,17 +302,16 @@ export class ProfileCardCreator {
         this.context.globalAlpha = 1;
 
         // Level progress
-        if (this.rankedScoreInfo) {
-            const progress: number =
-                this.rankedScoreInfo.level -
-                Math.floor(this.rankedScoreInfo.level);
-            if (progress > 0) {
-                this.context.fillStyle = "#e1c800";
-                if (this.detailed || this.template) {
-                    this.context.fillRect(79, 208, progress * 401, 26);
-                } else {
-                    this.context.fillRect(217, 154, progress * 263, 26);
-                }
+        const level: number = ScoreHelper.calculateProfileLevel(
+            this.player.score
+        );
+        const progress: number = level - Math.floor(level);
+        if (progress > 0) {
+            this.context.fillStyle = "#e1c800";
+            if (this.detailed || this.template) {
+                this.context.fillRect(79, 208, progress * 401, 26);
+            } else {
+                this.context.fillRect(217, 154, progress * 263, 26);
             }
         }
 
@@ -329,33 +320,22 @@ export class ProfileCardCreator {
         this.context.textBaseline = "middle";
         this.context.fillStyle =
             this.playerInfo?.picture_config.textColor ?? "#000000";
-        const rankedScoreLevel: number = this.rankedScoreInfo?.level ?? 1;
         if (this.detailed || this.template) {
             this.context.font = "19px Exo";
             this.context.fillText(
-                `${(
-                    (rankedScoreLevel - Math.floor(rankedScoreLevel)) *
-                    100
-                ).toFixed(2)}%`,
+                `${(progress * 100).toFixed(2)}%`,
                 279.5,
                 221
             );
-            this.context.fillText(`Lv${Math.floor(rankedScoreLevel)}`, 43, 221);
+            this.context.fillText(`Lv${Math.floor(level)}`, 43, 221);
         } else {
             this.context.font = "16px Exo";
             this.context.fillText(
-                `${(
-                    (rankedScoreLevel - Math.floor(rankedScoreLevel)) *
-                    100
-                ).toFixed(2)}%`,
+                `${(progress * 100).toFixed(2)}%`,
                 348.5,
                 167
             );
-            this.context.fillText(
-                `Lv${Math.floor(rankedScoreLevel)}`,
-                189.5,
-                167
-            );
+            this.context.fillText(`Lv${Math.floor(level)}`, 189.5, 167);
         }
 
         this.context.restore();
@@ -382,7 +362,7 @@ export class ProfileCardCreator {
 
         let yOffset: number = 0;
 
-        const increaseYOffset: () => void = () => {
+        const increaseYOffset = (): void => {
             yOffset += this.detailed || this.template ? 20 : 18;
         };
 
@@ -397,25 +377,11 @@ export class ProfileCardCreator {
         );
         increaseYOffset();
 
-        if (this.rankedScoreInfo) {
-            this.context.fillText(
-                `${this.localization.getTranslation(
-                    "rankedScore"
-                )}: ${this.rankedScoreInfo.score.toLocaleString(this.BCP47)}`,
-                x,
-                y + yOffset
-            );
-            increaseYOffset();
-        }
-
         if (this.bindInfo) {
-            const weightedAccuracy: number = this.getWeightedAccuracy([
-                ...this.bindInfo.pp.values(),
-            ]);
             this.context.fillText(
                 `${this.localization.getTranslation("accuracy")}: ${
                     this.player.accuracy
-                }% | ${weightedAccuracy.toFixed(2)}%`,
+                }% | ${this.bindInfo.weightedAccuracy.toFixed(2)}%`,
                 x,
                 y + yOffset
             );
@@ -590,29 +556,6 @@ export class ProfileCardCreator {
         );
 
         this.context.restore();
-    }
-
-    /**
-     * Gets the weighted accuracy of a player.
-     *
-     * @param ppEntries The droid performance points (dpp) entries of the player.
-     * @returns The player's weighted accuracy.
-     */
-    private getWeightedAccuracy(ppEntries: PPEntry[]): number {
-        // TODO: store weighted accuracy in database
-        if (ppEntries.length === 0) {
-            return 0;
-        }
-
-        let accSum: number = 0;
-        let weight: number = 0;
-
-        for (let i = 0; i < ppEntries.length; ++i) {
-            accSum += ppEntries[i].accuracy * Math.pow(0.95, i);
-            weight += Math.pow(0.95, i);
-        }
-
-        return accSum / weight;
     }
 
     /**

@@ -16,7 +16,6 @@ import { NameChangeCollectionManager } from "./managers/aliceDb/NameChangeCollec
 import { OsuBindCollectionManager } from "./managers/aliceDb/OsuBindCollectionManager";
 import { PlayerInfoCollectionManager } from "./managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerSkinCollectionManager } from "./managers/aliceDb/PlayerSkinCollectionManager";
-import { RankedScoreCollectionManager } from "./managers/aliceDb/RankedScoreCollectionManager";
 import { ProfileBackgroundCollectionManager } from "./managers/aliceDb/ProfileBackgroundCollectionManager";
 import { VotingCollectionManager } from "./managers/aliceDb/VotingCollectionManager";
 import { PrototypePPCollectionManager } from "./managers/aliceDb/PrototypePPCollectionManager";
@@ -97,11 +96,6 @@ export class AliceDBCollection {
      * picture format, etc).
      */
     readonly playerInfo: PlayerInfoCollectionManager;
-
-    /**
-     * The database collection for osu!droid accounts' ranked score.
-     */
-    readonly rankedScore: RankedScoreCollectionManager;
 
     /**
      * The database collection for Discord users' osu!/osu!droid skin.
@@ -211,9 +205,6 @@ export class AliceDBCollection {
         );
         this.playerInfo = new PlayerInfoCollectionManager(
             aliceDb.collection("playerpoints")
-        );
-        this.rankedScore = new RankedScoreCollectionManager(
-            aliceDb.collection("rankedscore")
         );
         this.playerSkins = new PlayerSkinCollectionManager(
             aliceDb.collection("playerskins")

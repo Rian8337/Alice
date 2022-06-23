@@ -22,6 +22,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
             hasAskedForRecalc: false,
             playc: 0,
             pp: [],
+            weightedAccuracy: 0,
             pptotal: 0,
             previous_bind: [],
             uid: 0,
@@ -234,6 +235,21 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
                 },
             }
         ));
+    }
+
+    async getPlayers(): Promise<DiscordCollection<string, UserBind>> {
+        const res: DatabaseUserBind[] = await this.collection
+            .find(
+                { scanDone: { $ne: true } },
+                { projection: { _id: 0, discordid: 1, pp: 1, uid: 1 } }
+            )
+            .limit(50)
+            .toArray();
+
+        return ArrayHelper.arrayToCollection(
+            res.map((v) => new UserBind(v)),
+            "discordid"
+        );
     }
 
     protected override processFindOptions(

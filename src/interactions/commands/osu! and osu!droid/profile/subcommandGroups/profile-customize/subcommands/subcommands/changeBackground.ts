@@ -32,9 +32,9 @@ export const run: SlashSubcommand<false>["run"] = async (
                 projection: {
                     _id: 0,
                     uid: 1,
-                    pp: 1,
                     pptotal: 1,
                     clan: 1,
+                    weightedAccuracy: 1,
                 },
             }
         );
@@ -131,8 +131,8 @@ export const run: SlashSubcommand<false>["run"] = async (
         undefined,
         bindInfo,
         playerInfo,
-        undefined,
-        true
+        true,
+        localization.language
     );
 
     if (!image) {

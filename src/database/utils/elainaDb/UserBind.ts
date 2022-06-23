@@ -10,7 +10,6 @@ import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
-import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Collection, Snowflake } from "discord.js";
 import { Clan } from "./Clan";
@@ -31,7 +30,6 @@ import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
-import { RankedScore } from "../aliceDb/RankedScore";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -61,6 +59,11 @@ export class UserBind extends Manager {
      * The play count of the user (how many scores the user have submitted into the dpp system).
      */
     playc: number;
+
+    /**
+     * The weighted accuracy of the player.
+     */
+    weightedAccuracy: number;
 
     /**
      * The droid performance points entries of the user, mapped by hash.
@@ -138,6 +141,7 @@ export class UserBind extends Manager {
         this.username = data.username;
         this.pptotal = data.pptotal;
         this.playc = data.playc;
+        this.weightedAccuracy = data.weightedAccuracy;
         this.pp = ArrayHelper.arrayToCollection(data.pp ?? [], "hash");
         this.clan = data.clan;
         this.previous_bind = data.previous_bind ?? [];
@@ -278,6 +282,8 @@ export class UserBind extends Manager {
 
         this.playc += Math.max(0, playCountIncrement);
 
+        this.weightedAccuracy = DPPHelper.calculateWeightedAccuracy(this.pp);
+
         const finalPP: number = DPPHelper.calculateFinalPerformancePoints(list);
 
         return this.bindDb.updateOne(
@@ -286,6 +292,7 @@ export class UserBind extends Manager {
                 $set: {
                     pptotal: finalPP,
                     pp: [...this.pp.values()],
+                    weightedAccuracy: this.weightedAccuracy,
                 },
                 $inc: {
                     playc: Math.max(0, playCountIncrement),
@@ -510,28 +517,7 @@ export class UserBind extends Manager {
                         v,
                     ])
                 );
-            } else {
-                // Do manual operations to reduce memory usage (we don't need to cache
-                // submitted scores)
-                await DatabaseManager.aliceDb.collections.rankedScore.deleteOne(
-                    {
-                        uid: uid,
-                    }
-                );
             }
-
-            const rankedScoreData: RankedScore | null =
-                await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(
-                    uid,
-                    {
-                        projection: {
-                            _id: 0,
-                            score: 1,
-                        },
-                    }
-                );
-
-            let rankedScore: number = rankedScoreData?.score ?? 0;
 
             let scores: Score[];
 
@@ -545,9 +531,6 @@ export class UserBind extends Manager {
                 }
 
                 let calculatedCount: number = 0;
-
-                const rankedScoreCollection: Collection<string, number> =
-                    new Collection();
 
                 let score: Score | undefined;
 
@@ -585,46 +568,7 @@ export class UserBind extends Manager {
                             ]);
                         }
                     }
-
-                    if (
-                        RankedScoreHelper.isBeatmapEligible(
-                            beatmapInfo.approved
-                        )
-                    ) {
-                        rankedScoreCollection.set(
-                            beatmapInfo.hash,
-                            score.score
-                        );
-
-                        rankedScore += score.score;
-                    }
                 }
-
-                await DatabaseManager.aliceDb.collections.rankedScore.updateOne(
-                    { uid: uid },
-                    {
-                        $inc: {
-                            playc: rankedScoreCollection.size,
-                        },
-                        $addToSet: {
-                            scorelist: {
-                                $each: RankedScoreHelper.toArray(
-                                    rankedScoreCollection
-                                ),
-                            },
-                        },
-                        $setOnInsert: {
-                            username: player.username,
-                        },
-                        $set: {
-                            score: rankedScore,
-                            level: RankedScoreHelper.calculateLevel(
-                                rankedScore
-                            ),
-                        },
-                    },
-                    { upsert: true }
-                );
 
                 if (isDPPRecalc) {
                     this.calculationInfo = {
