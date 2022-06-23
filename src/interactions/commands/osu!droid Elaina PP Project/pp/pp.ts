@@ -219,6 +219,37 @@ export const config: SlashCommand["config"] = {
                 },
             ],
         },
+        {
+            name: "whatif",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description:
+                "Calculates changes in overall pp and user stats when a user gets a certain pp play.",
+            options: [
+                {
+                    name: "pp",
+                    type: ApplicationCommandOptionTypes.NUMBER,
+                    required: true,
+                    description:
+                        "The theoretical amount of pp achieved on a beatmap.",
+                    minValue: 0,
+                },
+                {
+                    name: "user",
+                    type: ApplicationCommandOptionTypes.USER,
+                    description: "The user to check.",
+                },
+                {
+                    name: "uid",
+                    type: ApplicationCommandOptionTypes.INTEGER,
+                    description: "The uid of the user.",
+                },
+                {
+                    name: "username",
+                    type: ApplicationCommandOptionTypes.STRING,
+                    description: "The username of the user.",
+                },
+            ],
+        },
     ],
     example: [
         {

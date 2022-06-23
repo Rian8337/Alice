@@ -56,5 +56,7 @@ export class PPESTranslation extends Translation<PPStrings> {
         beatmapTooShortReject: "Mapa demasiado corto",
         unrankedFeaturesReject: "Características no rankeables",
         beatmapNotFoundReject: "Mapa no encontrado",
+        whatIfScoreNotEntered: "",
+        whatIfScoreEntered: "",
     };
 }

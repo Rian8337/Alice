@@ -53,5 +53,7 @@ export class PPKRTranslation extends Translation<PPStrings> {
         beatmapTooShortReject: "비트맵 너무 짧음",
         unrankedFeaturesReject: "Unranked 기능",
         beatmapNotFoundReject: "비트맵 발견되지 않음",
+        whatIfScoreNotEntered: "",
+        whatIfScoreEntered: "",
     };
 }

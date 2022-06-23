@@ -42,6 +42,8 @@ export interface PPStrings {
     readonly beatmapTooShortReject: string;
     readonly unrankedFeaturesReject: string;
     readonly beatmapNotFoundReject: string;
+    readonly whatIfScoreNotEntered: string;
+    readonly whatIfScoreEntered: string;
 }
 
 /**

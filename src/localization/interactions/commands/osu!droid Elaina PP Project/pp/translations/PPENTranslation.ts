@@ -55,5 +55,9 @@ export class PPENTranslation extends Translation<PPStrings> {
         beatmapTooShortReject: "Beatmap too short",
         unrankedFeaturesReject: "Unranked features",
         beatmapNotFoundReject: "Beatmap not found",
+        whatIfScoreNotEntered:
+            "A score of `%spp` for `%s` would not affect their total pp.",
+        whatIfScoreEntered:
+            "A score of `%spp` (`%spp` weighted) for `%s` would be their `#%s` top play and increase their total pp to `%spp` (`+%spp`).",
     };
 }

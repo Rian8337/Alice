@@ -42,5 +42,7 @@ export class PPIDTranslation extends Translation<PPStrings> {
         beatmapTooShortReject: "",
         unrankedFeaturesReject: "",
         beatmapNotFoundReject: "",
+        whatIfScoreNotEntered: "",
+        whatIfScoreEntered: "",
     };
 }
