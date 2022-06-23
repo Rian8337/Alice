@@ -7,7 +7,6 @@ import { ProfileCardCreatorStrings } from "../ProfileCardCreatorLocalization";
 export class ProfileCardCreatorESTranslation extends Translation<ProfileCardCreatorStrings> {
     override readonly translations: ProfileCardCreatorStrings = {
         totalScore: "Puntaje Total",
-        rankedScore: "Puntaje Rankeable",
         accuracy: "Precisión",
         playCount: "Jugadas",
         droidPP: "Droid pp",

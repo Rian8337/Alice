@@ -7,7 +7,6 @@ import { ProfileCardCreatorKRTranslation } from "./translations/ProfileCardCreat
 
 export interface ProfileCardCreatorStrings {
     readonly totalScore: string;
-    readonly rankedScore: string;
     readonly accuracy: string;
     readonly playCount: string;
     readonly droidPP: string;
