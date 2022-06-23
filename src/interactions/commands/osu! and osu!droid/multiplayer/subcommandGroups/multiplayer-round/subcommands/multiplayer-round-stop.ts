@@ -22,7 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 projection: {
                     _id: 0,
-                    textChannelId: 1,
+                    channelId: 1,
                     "settings.roomHost": 1,
                 },
             }
@@ -46,7 +46,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    if (!CacheManager.multiplayerTimers.has(room.textChannelId)) {
+    if (!CacheManager.multiplayerTimers.has(room.channelId)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noTimerSet")
@@ -100,14 +100,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const timeouts: NodeJS.Timeout[] = CacheManager.multiplayerTimers.get(
-        room.textChannelId
+        room.channelId
     )!;
 
     for (const timeout of timeouts) {
         clearTimeout(timeout);
     }
 
-    CacheManager.multiplayerTimers.delete(room.textChannelId);
+    CacheManager.multiplayerTimers.delete(room.channelId);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

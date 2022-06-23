@@ -48,8 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             {
                 projection: {
                     _id: 0,
-                    textChannelId: 1,
-                    threadChannelId: 1,
+                    channelId: 1,
                     "status.isPlaying": 1,
                     "settings.maxPlayers": 1,
                     "settings.password": 1,
@@ -153,11 +152,11 @@ export const run: SlashSubcommand<true>["run"] = async (
     }
 
     const text: TextChannel = <TextChannel>(
-        await client.channels.fetch(room.textChannelId)
+        await client.channels.fetch(room.channelId)
     );
 
     const thread: ThreadChannel = <ThreadChannel>(
-        await text.threads.fetch(room.threadChannelId)
+        await text.threads.fetch(room.channelId)
     );
 
     thread.send({

@@ -20,13 +20,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 $and: [
                     { "players.discordId": interaction.user.id },
-                    { threadChannelId: interaction.channelId },
+                    { channelId: interaction.channelId },
                 ],
             },
             {
                 projection: {
                     _id: 0,
-                    threadChannelId: 1,
+                    channelId: 1,
                     "settings.roomHost": 1,
                     "players.discordId": 1,
                 },
@@ -87,15 +87,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            `${localization.getTranslation("playerLeaveSuccess")}${
-                changeHost && room.players.length > 0
-                    ? `\n\n${StringHelper.formatString(
-                          localization.getTranslation(
-                              "roomHostChangeNotification"
-                          ),
-                          `<@${room.settings.roomHost}>`
-                      )}`
-                    : ""
+            `${localization.getTranslation("playerLeaveSuccess")}${changeHost && room.players.length > 0
+                ? `\n\n${StringHelper.formatString(
+                    localization.getTranslation(
+                        "roomHostChangeNotification"
+                    ),
+                    `<@${room.settings.roomHost}>`
+                )}`
+                : ""
             }`
         ),
     });

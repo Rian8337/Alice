@@ -44,12 +44,7 @@ import {
     OsuStarRating,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
-import {
-    MessageEmbed,
-    Snowflake,
-    TextChannel,
-    ThreadChannel,
-} from "discord.js";
+import { AnyChannel, MessageEmbed, Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 
 /**
@@ -60,8 +55,7 @@ export class MultiplayerRoom
     implements DatabaseMultiplayerRoom
 {
     readonly roomId: string;
-    textChannelId: Snowflake;
-    threadChannelId: Snowflake;
+    channelId: Snowflake;
     players: MultiplayerPlayer[];
     status: MultiplayerRoomStatus;
     currentScores: MultiplayerScore[];
@@ -87,8 +81,7 @@ export class MultiplayerRoom
         super();
 
         this.roomId = data.roomId;
-        this.textChannelId = data.textChannelId;
-        this.threadChannelId = data.threadChannelId;
+        this.channelId = data.channelId;
         this.players = data.players;
         this.status = data.status;
         this.currentScores = data.currentScores;
@@ -120,19 +113,12 @@ export class MultiplayerRoom
      * Deletes this room from the database.
      */
     async deleteRoom(): Promise<OperationResult> {
-        const text: TextChannel | null = <TextChannel | null>(
-            await this.client.channels
-                .fetch(this.textChannelId)
-                .catch(() => null)
-        );
+        const channel: AnyChannel | null = await this.client.channels
+            .fetch(this.channelId)
+            .catch(() => null);
 
-        const thread: ThreadChannel | null =
-            (await text?.threads
-                .fetch(this.threadChannelId)
-                .catch(() => null)) ?? null;
-
-        if (thread && !thread.archived) {
-            await thread.setLocked(true, "Multiplayer room closed");
+        if (channel?.isThread() && !channel.archived) {
+            await channel.setLocked(true, "Multiplayer room closed");
         }
 
         return DatabaseManager.aliceDb.collections.multiplayerRoom.deleteOne({

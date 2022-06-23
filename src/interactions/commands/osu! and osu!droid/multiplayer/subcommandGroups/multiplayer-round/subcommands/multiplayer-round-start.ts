@@ -28,7 +28,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             interaction.user,
             {
                 projection: {
-                    textChannelId: 1,
+                    channelId: 1,
                     settings: 1,
                     "status.isPlaying": 1,
                     "players.isReady": 1,
@@ -81,7 +81,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    if (CacheManager.multiplayerTimers.has(room.textChannelId)) {
+    if (CacheManager.multiplayerTimers.has(room.channelId)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("timerIsSet")
@@ -173,7 +173,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embeds: [embed],
         });
 
-        CacheManager.multiplayerTimers.delete(room.textChannelId);
+        CacheManager.multiplayerTimers.delete(room.channelId);
 
         setTimeout(() => {
             setTimeout(async () => {
@@ -185,7 +185,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     // Assume that players are AFK or room was force-shutdown by someone with moderating permissions. Close the room.
                     await DatabaseManager.aliceDb.collections.multiplayerRoom.deleteOne(
                         {
-                            threadChannelId: interaction.channelId,
+                            channelId: interaction.channelId,
                         }
                     );
 
@@ -281,7 +281,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         );
     }
 
-    CacheManager.multiplayerTimers.set(room.textChannelId, timeouts);
+    CacheManager.multiplayerTimers.set(room.channelId, timeouts);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

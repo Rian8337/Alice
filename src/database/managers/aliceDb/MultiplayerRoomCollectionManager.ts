@@ -20,8 +20,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
     get defaultDocument(): DatabaseMultiplayerRoom {
         return {
             roomId: "",
-            textChannelId: "",
-            threadChannelId: "",
+            channelId: "",
             players: [],
             status: {
                 isPlaying: false,
@@ -141,7 +140,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
         options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null> {
         return this.getOne(
-            { threadChannelId: channelId },
+            { channelId: channelId },
             this.processFindOptions(options)
         );
     }
