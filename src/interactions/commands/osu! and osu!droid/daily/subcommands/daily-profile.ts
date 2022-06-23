@@ -53,13 +53,10 @@ export const run: SlashSubcommand<true>["run"] = async (
                 findOptions
             );
             break;
-        case !!discordid:
-            playerInfo = await dbManager.getFromUser(discordid!, findOptions);
-            break;
         default:
             // If no arguments are specified, default to self
             playerInfo = await dbManager.getFromUser(
-                interaction.user,
+                discordid ?? interaction.user.id,
                 findOptions
             );
     }

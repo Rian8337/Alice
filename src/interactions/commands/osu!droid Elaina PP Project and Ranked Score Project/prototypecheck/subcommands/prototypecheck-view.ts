@@ -48,12 +48,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         case !!username:
             ppInfo = await dbManager.getFromUsername(username!);
             break;
-        case !!discordid:
-            ppInfo = await dbManager.getFromUser(discordid!);
-            break;
         default:
             // If no arguments are specified, default to self
-            ppInfo = await dbManager.getFromUser(interaction.user);
+            ppInfo = await dbManager.getFromUser(
+                discordid ?? interaction.user.id
+            );
     }
 
     if (!ppInfo) {

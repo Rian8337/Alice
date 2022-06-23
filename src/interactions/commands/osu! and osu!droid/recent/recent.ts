@@ -57,48 +57,31 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             uid ??= player?.uid;
 
             break;
-        case !!discordid:
-            bindInfo = await dbManager.getFromUser(discordid!, {
-                projection: {
-                    _id: 0,
-                    uid: 1,
-                    pp: 1,
-                    pptotal: 1,
-                    clan: 1,
-                },
-            });
-
-            if (!bindInfo) {
-                return InteractionHelper.reply(interaction, {
-                    content: MessageCreator.createReject(
-                        new ConstantsLocalization(
-                            localization.language
-                        ).getTranslation(Constants.userNotBindedReject)
-                    ),
-                });
-            }
-
-            player = await Player.getInformation(bindInfo.uid);
-
-            break;
         default:
             // If no arguments are specified, default to self
-            bindInfo = await dbManager.getFromUser(interaction.user, {
-                projection: {
-                    _id: 0,
-                    uid: 1,
-                    pp: 1,
-                    pptotal: 1,
-                    clan: 1,
-                },
-            });
+            bindInfo = await dbManager.getFromUser(
+                discordid ?? interaction.user.id,
+                {
+                    projection: {
+                        _id: 0,
+                        uid: 1,
+                        pp: 1,
+                        pptotal: 1,
+                        clan: 1,
+                    },
+                }
+            );
 
             if (!bindInfo) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
                             localization.language
-                        ).getTranslation(Constants.selfNotBindedReject)
+                        ).getTranslation(
+                            discordid
+                                ? Constants.userNotBindedReject
+                                : Constants.selfNotBindedReject
+                        )
                     ),
                 });
             }
