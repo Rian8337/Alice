@@ -41,13 +41,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     switch (true) {
         case !!uid:
             bindInfo = await dbManager.getFromUid(uid!, {
-                projection: { _id: 0, pp: 1, pptotal: 1, username: 1 },
+                projection: {
+                    _id: 0,
+                    "pp.hash": 1,
+                    "pp.pp": 1,
+                    pptotal: 1,
+                    username: 1,
+                },
             });
 
             break;
         case !!username:
-            bindInfo = await dbManager.getFromUser(username!, {
-                projection: { _id: 0, pp: 1, pptotal: 1, username: 1 },
+            bindInfo = await dbManager.getFromUsername(username!, {
+                projection: {
+                    _id: 0,
+                    "pp.hash": 1,
+                    "pp.pp": 1,
+                    pptotal: 1,
+                    username: 1,
+                },
             });
 
             break;
@@ -58,7 +70,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 {
                     projection: {
                         _id: 0,
-                        pp: 1,
+                        "pp.hash": 1,
+                        "pp.pp": 1,
                         pptotal: 1,
                         username: 1,
                     },
