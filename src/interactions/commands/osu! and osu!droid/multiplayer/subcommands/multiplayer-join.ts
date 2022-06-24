@@ -12,7 +12,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { TextChannel, ThreadChannel } from "discord.js";
+import { ThreadChannel } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -151,18 +151,15 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const text: TextChannel = <TextChannel>(
-        await client.channels.fetch(room.channelId)
-    );
-
     const thread: ThreadChannel = <ThreadChannel>(
-        await text.threads.fetch(room.channelId)
+        await client.channels.fetch(room.channelId)
     );
 
     thread.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("joinRoomNotification"),
-            interaction.user.toString()
+            interaction.user.toString(),
+            bindInfo.uid.toString()
         ),
     });
 

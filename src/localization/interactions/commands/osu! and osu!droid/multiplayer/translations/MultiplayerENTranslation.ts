@@ -74,7 +74,7 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         roomTeamMemberList: "Team Member List",
         redTeam: "Red Team",
         blueTeam: "Blue Team",
-        joinRoomNotification: "%s has joined the room.",
+        joinRoomNotification: "%s (%s) has joined the room.",
         slotHasBeenFilled:
             "I'm sorry, you have more players than what you would be able to fit with that maximum player slot!",
         noModsDetected: "Hey, I cannot tell what mods you are entering!",
