@@ -12,6 +12,8 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { FindOptions } from "mongodb";
+import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -42,17 +44,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     let player: Player | null = null;
 
+    const findOptions: FindOptions<DatabaseUserBind> = {
+        projection: {
+            _id: 0,
+            uid: 1,
+        },
+    };
+
     switch (true) {
         case !!uid:
             player = await Player.getInformation(uid!);
 
             if (player?.uid) {
-                bindInfo = await dbManager.getFromUid(player.uid, {
-                    projection: {
-                        _id: 0,
-                        uid: 1,
-                    },
-                });
+                bindInfo = await dbManager.getFromUid(player.uid, findOptions);
             }
 
             break;
@@ -60,12 +64,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             player = await Player.getInformation(username!);
 
             if (player?.uid) {
-                bindInfo = await dbManager.getFromUid(player.uid, {
-                    projection: {
-                        _id: 0,
-                        uid: 1,
-                    },
-                });
+                bindInfo = await dbManager.getFromUid(player.uid, findOptions);
             }
 
             break;
@@ -73,12 +72,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
-                {
-                    projection: {
-                        _id: 0,
-                        uid: 1,
-                    },
-                }
+                findOptions
             );
 
             if (bindInfo?.uid) {

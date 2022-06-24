@@ -3,6 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -12,6 +13,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { MathUtils } from "@rian8337/osu-base";
 import { Snowflake } from "discord.js";
+import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -38,44 +40,30 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     let bindInfo: UserBind | null | undefined;
 
+    const findOptions: FindOptions<DatabaseUserBind> = {
+        projection: {
+            _id: 0,
+            "pp.hash": 1,
+            "pp.pp": 1,
+            pptotal: 1,
+            username: 1,
+        },
+    };
+
     switch (true) {
         case !!uid:
-            bindInfo = await dbManager.getFromUid(uid!, {
-                projection: {
-                    _id: 0,
-                    "pp.hash": 1,
-                    "pp.pp": 1,
-                    pptotal: 1,
-                    username: 1,
-                },
-            });
+            bindInfo = await dbManager.getFromUid(uid!, findOptions);
 
             break;
         case !!username:
-            bindInfo = await dbManager.getFromUsername(username!, {
-                projection: {
-                    _id: 0,
-                    "pp.hash": 1,
-                    "pp.pp": 1,
-                    pptotal: 1,
-                    username: 1,
-                },
-            });
+            bindInfo = await dbManager.getFromUsername(username!, findOptions);
 
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
-                {
-                    projection: {
-                        _id: 0,
-                        "pp.hash": 1,
-                        "pp.pp": 1,
-                        pptotal: 1,
-                        username: 1,
-                    },
-                }
+                findOptions
             );
     }
 

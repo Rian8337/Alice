@@ -10,6 +10,8 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { RecalculationManager } from "@alice-utils/managers/RecalculationManager";
 import { Snowflake } from "discord.js";
+import { FindOptions } from "mongodb";
+import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: RecalcLocalization = new RecalcLocalization(
@@ -36,33 +38,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     let bindInfo: UserBind | null;
 
+    const findOptions: FindOptions<DatabaseUserBind> = {
+        projection: {
+            _id: 0,
+            previous_bind: 1,
+        },
+    };
+
     switch (true) {
         case !!uid:
-            bindInfo = await dbManager.getFromUid(uid!, {
-                projection: {
-                    _id: 0,
-                    pp: 1,
-                    pptotal: 1,
-                    username: 1,
-                },
-            });
+            bindInfo = await dbManager.getFromUid(uid!, findOptions);
             break;
         case !!username:
-            bindInfo = await dbManager.getFromUsername(username!, {
-                projection: {
-                    _id: 0,
-                },
-            });
+            bindInfo = await dbManager.getFromUsername(username!, findOptions);
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
-                {
-                    projection: {
-                        _id: 0,
-                    },
-                }
+                findOptions
             );
     }
 

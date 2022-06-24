@@ -74,7 +74,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             bindInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
                 {
-                    projection: { _id: 0, uid: 1 },
+                    projection: {
+                        _id: 0,
+                        uid: 1,
+                    },
                 }
             );
 
