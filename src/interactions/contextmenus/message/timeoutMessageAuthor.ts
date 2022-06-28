@@ -1,3 +1,4 @@
+import { Constants } from "@alice-core/Constants";
 import { MessageContextMenuCommand } from "@alice-interfaces/core/MessageContextMenuCommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { TimeoutMessageAuthorLocalization } from "@alice-localization/interactions/contextmenus/message/timeoutMessageAuthor/TimeoutMessageAuthorLocalization";
@@ -9,9 +10,12 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
-import { Message, SelectMenuInteraction } from "discord.js";
+import { Guild, GuildMember, Message, SelectMenuInteraction } from "discord.js";
 
-export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
+export const run: MessageContextMenuCommand["run"] = async (
+    client,
+    interaction
+) => {
     const localization: TimeoutMessageAuthorLocalization =
         new TimeoutMessageAuthorLocalization(
             await CommandHelper.getLocale(interaction)
@@ -100,9 +104,17 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         loggedContent += "...";
     }
 
+    let member: GuildMember | null = interaction.targetMessage.member;
+
+    if (!member) {
+        const guild: Guild = await client.guilds.fetch(Constants.mainServer);
+
+        member = await guild.members.fetch(interaction.targetMessage.author);
+    }
+
     const result: OperationResult = await TimeoutManager.addTimeout(
         interaction,
-        interaction.targetMessage.member!,
+        member,
         StringHelper.formatString(
             localization.getTranslation("timeoutReason"),
             loggedContent,

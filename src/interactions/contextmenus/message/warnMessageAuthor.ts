@@ -1,3 +1,4 @@
+import { Constants } from "@alice-core/Constants";
 import { MessageContextMenuCommand } from "@alice-interfaces/core/MessageContextMenuCommand";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { WarnMessageAuthorLocalization } from "@alice-localization/interactions/contextmenus/message/warnMessageAuthor/WarnMessageAuthorLocalization";
@@ -11,9 +12,12 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { Utils } from "@rian8337/osu-base";
-import { Message, SelectMenuInteraction } from "discord.js";
+import { Guild, GuildMember, Message, SelectMenuInteraction } from "discord.js";
 
-export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
+export const run: MessageContextMenuCommand["run"] = async (
+    client,
+    interaction
+) => {
     const localization: WarnMessageAuthorLocalization =
         new WarnMessageAuthorLocalization(
             await CommandHelper.getLocale(interaction)
@@ -130,6 +134,14 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
 
     if (interaction.targetMessage.content.length > 100) {
         loggedContent += "...";
+    }
+
+    let member: GuildMember | null = interaction.targetMessage.member;
+
+    if (!member) {
+        const guild: Guild = await client.guilds.fetch(Constants.mainServer);
+
+        member = await guild.members.fetch(interaction.targetMessage.author);
     }
 
     const result: OperationResult = await WarningManager.issue(

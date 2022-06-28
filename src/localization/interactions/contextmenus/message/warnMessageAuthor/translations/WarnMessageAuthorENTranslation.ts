@@ -15,6 +15,7 @@ export class WarnMessageAuthorENTranslation extends Translation<WarnMessageAutho
         warnIssueFailed:
             "I'm sorry, I couldn't issue a warning to the user: %s.",
         warnIssueSuccess: "Successfully warned the user.",
-        warningReason: "Inappropriate message (contact a staff for more details): %s (%s)",
+        warningReason:
+            "Inappropriate message (contact a staff for more details): %s (%s)",
     };
 }
