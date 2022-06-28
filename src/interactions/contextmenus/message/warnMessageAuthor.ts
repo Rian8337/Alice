@@ -12,7 +12,13 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { Utils } from "@rian8337/osu-base";
-import { Guild, GuildMember, Message, SelectMenuInteraction } from "discord.js";
+import {
+    Guild,
+    GuildMember,
+    Message,
+    MessageEmbed,
+    SelectMenuInteraction,
+} from "discord.js";
 
 export const run: MessageContextMenuCommand["run"] = async (
     client,
@@ -127,15 +133,6 @@ export const run: MessageContextMenuCommand["run"] = async (
         return;
     }
 
-    let loggedContent: string = interaction.targetMessage.content.substring(
-        0,
-        100
-    );
-
-    if (interaction.targetMessage.content.length > 100) {
-        loggedContent += "...";
-    }
-
     let member: GuildMember | null = interaction.targetMessage.member;
 
     if (!member) {
@@ -143,6 +140,17 @@ export const run: MessageContextMenuCommand["run"] = async (
 
         member = await guild.members.fetch(interaction.targetMessage.author);
     }
+
+    const embed: MessageEmbed = interaction.targetMessage.embeds[0];
+
+    let loggedContent: string = embed.description!;
+
+    if (loggedContent.length > 256) {
+        loggedContent = loggedContent.substring(0, 256) + "...";
+    }
+
+    const channelId: string = embed.fields[1].value;
+    const messageId: string = embed.fields[5].value;
 
     const result: OperationResult = await WarningManager.issue(
         interaction,
@@ -152,7 +160,8 @@ export const run: MessageContextMenuCommand["run"] = async (
         StringHelper.formatString(
             localization.getTranslation("warningReason"),
             loggedContent,
-            interaction.targetMessage.url
+            // interaction.targetMessage.url returns the wrong link, so constructing manually for now.
+            `https://discord.com/channels/${Constants.mainServer}/${channelId}/${messageId}`
         )
     );
 
