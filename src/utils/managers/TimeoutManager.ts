@@ -1,5 +1,5 @@
 import {
-    CommandInteraction,
+    BaseCommandInteraction,
     GuildChannel,
     GuildMember,
     MessageEmbed,
@@ -45,7 +45,7 @@ export abstract class TimeoutManager extends PunishmentManager {
      * @returns An object containing information about the operation.
      */
     static async addTimeout(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction,
         member: GuildMember,
         reason: string,
         duration: number,
@@ -245,7 +245,7 @@ export abstract class TimeoutManager extends PunishmentManager {
      */
     static async removeTimeout(
         member: GuildMember,
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction,
         reason: string,
         language: Language = "en"
     ): Promise<OperationResult> {

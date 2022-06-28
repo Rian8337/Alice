@@ -12,7 +12,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import {
-    CommandInteraction,
+    BaseCommandInteraction,
     GuildChannel,
     GuildMember,
     MessageEmbed,
@@ -46,11 +46,11 @@ export abstract class WarningManager extends PunishmentManager {
      * @param interaction The interaction with the user that issued the warning.
      * @param member The guild member the warning is issued to.
      * @param points The amount of warning points to be issued to the guild member.
-     * @param duration The duration the warning will stay valid for.
+     * @param duration The duration the warning will stay valid for, in seconds.
      * @param reason The reason for warning the user.
      */
     static async issue(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction,
         member: GuildMember,
         points: number,
         duration: number,
@@ -246,7 +246,7 @@ export abstract class WarningManager extends PunishmentManager {
      * @param reason The reason for unissuing the warning.
      */
     static async unissue(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction,
         warning: Warning,
         reason: string
     ): Promise<OperationResult> {
@@ -417,7 +417,7 @@ export abstract class WarningManager extends PunishmentManager {
      * @returns An object containing information about the operation.
      */
     static async transfer(
-        interaction: CommandInteraction,
+        interaction: BaseCommandInteraction,
         fromUserId: Snowflake,
         toUserId: Snowflake,
         reason?: string | null
