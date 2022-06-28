@@ -88,7 +88,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         )
     );
 
-    reportChannel.send({ embeds: [embed] });
+    reportChannel.send({
+        content: MessageCreator.createWarn(
+            `${Config.verifyPerm
+                .map((v) => `<@${v}>`)
+                .join(" ")} user report in ${interaction.channel}`
+        ),
+        embeds: [embed],
+    });
 
     const replyEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
         color: "#527ea3",
