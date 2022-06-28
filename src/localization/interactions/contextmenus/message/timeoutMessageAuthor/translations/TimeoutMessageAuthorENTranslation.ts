@@ -11,6 +11,6 @@ export class TimeoutMessageAuthorENTranslation extends Translation<TimeoutMessag
         timeoutConfirmation: "Are you sure you want to timeout %s for %s?",
         timeoutFailed: "I'm sorry, I cannot timeout the user: `%s`.",
         timeoutSuccess: "Successfully timeouted the user for %s.",
-        timeoutReason: "Inappropriate message: %s (%s)",
+        timeoutReason: "Inappropriate message (contact a staff for more details): %s (%s)",
     };
 }
