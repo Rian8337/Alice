@@ -93,10 +93,10 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
 
     let loggedContent: string = interaction.targetMessage.content.substring(
         0,
-        800
+        100
     );
 
-    if (interaction.targetMessage.content.length > 800) {
+    if (interaction.targetMessage.content.length > 100) {
         loggedContent += "...";
     }
 
