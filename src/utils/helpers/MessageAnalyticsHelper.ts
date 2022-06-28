@@ -48,6 +48,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
         "757137127652982846",
         "696663321633357844",
         "803160572345712640",
+        "652902812354609162",
     ];
 
     /**
@@ -55,7 +56,6 @@ export abstract class MessageAnalyticsHelper extends Manager {
      *
      * Run each time daily counter is reset.
      *
-     * @param client The instance of the bot.
      * @param newDailyTime The new daily time, in milliseconds.
      */
     static async fetchDaily(newDailyTime: number): Promise<void> {
