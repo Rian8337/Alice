@@ -725,9 +725,9 @@ export abstract class BeatmapDifficultyHelper<
                 calculationParams.tapPenalty = replay.tapPenalty;
             }
 
-            if (!replay.hasBeenCheckedFor2Hand) {
-                replay.checkFor2Hand();
-            }
+            // if (!replay.hasBeenCheckedFor2Hand) {
+            //     replay.checkFor2Hand();
+            // }
         }
 
         const pp: RPC = new this.rebalancePerformanceCalculator(
