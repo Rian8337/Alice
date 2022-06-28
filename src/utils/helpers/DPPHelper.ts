@@ -10,7 +10,10 @@ import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalcul
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
-import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
+import {
+    DroidDifficultyCalculator,
+    DroidPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
 import {
     BaseCommandInteraction,
@@ -217,7 +220,10 @@ export abstract class DPPHelper {
      */
     static scoreToPPEntry(
         score: Score,
-        calculationResult: PerformanceCalculationResult<DroidPerformanceCalculator>
+        calculationResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        >
     ): PPEntry {
         return {
             hash: calculationResult.map.hash,

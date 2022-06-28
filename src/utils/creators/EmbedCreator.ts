@@ -19,18 +19,18 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
-import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { RebalanceStarRatingCalculationResult } from "@alice-utils/dpp/RebalanceStarRatingCalculationResult";
+import { RebalanceDifficultyCalculationResult } from "@alice-utils/dpp/RebalanceDifficultyCalculationResult";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
@@ -47,15 +47,15 @@ import {
     ModUtil,
 } from "@rian8337/osu-base";
 import {
-    DroidStarRating,
+    DroidDifficultyCalculator,
     DroidPerformanceCalculator,
-    OsuStarRating,
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
-    DroidStarRating as RebalanceDroidStarRating,
+    DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
-    OsuStarRating as RebalanceOsuStarRating,
+    OsuDifficultyCalculator as RebalanceOsuDifficultyCalculator,
     OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import {
@@ -155,7 +155,7 @@ export abstract class EmbedCreator {
      */
     static createBeatmapEmbed(
         beatmapInfo: MapInfo,
-        calculationParams?: StarRatingCalculationParameters,
+        calculationParams?: DifficultyCalculationParameters,
         language: Language = "en"
     ): MessageOptions {
         const localization: EmbedCreatorLocalization =
@@ -341,17 +341,29 @@ export abstract class EmbedCreator {
      * @returns The message options that contains the embed.
      */
     static async createCalculationEmbed(
-        calculationParams: StarRatingCalculationParameters,
+        calculationParams: DifficultyCalculationParameters,
         droidCalculationResult:
-            | StarRatingCalculationResult<DroidStarRating>
-            | PerformanceCalculationResult<DroidPerformanceCalculator>
-            | RebalanceStarRatingCalculationResult<RebalanceDroidStarRating>
-            | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>,
+            | DifficultyCalculationResult<DroidDifficultyCalculator>
+            | PerformanceCalculationResult<
+                  DroidDifficultyCalculator,
+                  DroidPerformanceCalculator
+              >
+            | RebalanceDifficultyCalculationResult<RebalanceDroidDifficultyCalculator>
+            | RebalancePerformanceCalculationResult<
+                  RebalanceDroidDifficultyCalculator,
+                  RebalanceDroidPerformanceCalculator
+              >,
         osuCalculationResult:
-            | StarRatingCalculationResult<OsuStarRating>
-            | PerformanceCalculationResult<OsuPerformanceCalculator>
-            | RebalanceStarRatingCalculationResult<RebalanceOsuStarRating>
-            | RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator>,
+            | DifficultyCalculationResult<OsuDifficultyCalculator>
+            | PerformanceCalculationResult<
+                  OsuDifficultyCalculator,
+                  OsuPerformanceCalculator
+              >
+            | RebalanceDifficultyCalculationResult<RebalanceOsuDifficultyCalculator>
+            | RebalancePerformanceCalculationResult<
+                  RebalanceOsuDifficultyCalculator,
+                  RebalanceOsuPerformanceCalculator
+              >,
         graphColor?: string,
         language: Language = "en"
     ): Promise<MessageOptions> {
@@ -395,7 +407,7 @@ export abstract class EmbedCreator {
                 .setColor(
                     <ColorResolvable>(
                         BeatmapManager.getBeatmapDifficultyColor(
-                            pcPP.stars.total
+                            pcPP.difficultyCalculator.total
                         )
                     )
                 )
@@ -420,25 +432,29 @@ export abstract class EmbedCreator {
                         calculationParams.isEstimated
                             ? ` (${localization.getTranslation("estimated")})`
                             : ""
-                    } - ${droidPP.stars.total.toFixed(2)}${Symbols.star}`,
+                    } - ${droidPP.difficultyCalculator.total.toFixed(2)}${
+                        Symbols.star
+                    }`,
                     `**${localization.getTranslation(
                         "pcPP"
                     )}**: ${pcPP.total.toFixed(2)} pp${
                         calculationParams.isEstimated
                             ? ` (${localization.getTranslation("estimated")})`
                             : ""
-                    } - ${pcPP.stars.total.toFixed(2)}${Symbols.star}`
+                    } - ${pcPP.difficultyCalculator.total.toFixed(2)}${
+                        Symbols.star
+                    }`
                 );
         } else {
-            const droidCalcResult: RebalanceStarRatingCalculationResult<RebalanceDroidStarRating> =
+            const droidCalcResult: RebalanceDifficultyCalculationResult<RebalanceDroidDifficultyCalculator> =
                 <
-                    RebalanceStarRatingCalculationResult<RebalanceDroidStarRating>
+                    RebalanceDifficultyCalculationResult<RebalanceDroidDifficultyCalculator>
                 >droidCalculationResult;
 
-            const osuCalcResult: RebalanceStarRatingCalculationResult<RebalanceOsuStarRating> =
-                <RebalanceStarRatingCalculationResult<RebalanceOsuStarRating>>(
-                    osuCalculationResult
-                );
+            const osuCalcResult: RebalanceDifficultyCalculationResult<RebalanceOsuDifficultyCalculator> =
+                <
+                    RebalanceDifficultyCalculationResult<RebalanceOsuDifficultyCalculator>
+                >osuCalculationResult;
 
             embed
                 .setColor(
@@ -476,11 +492,13 @@ export abstract class EmbedCreator {
             );
         }
 
-        const newRating: OsuStarRating | RebalanceOsuStarRating =
+        const newRating:
+            | OsuDifficultyCalculator
+            | RebalanceOsuDifficultyCalculator =
             osuCalculationResult instanceof PerformanceCalculationResult ||
             osuCalculationResult instanceof
                 RebalancePerformanceCalculationResult
-                ? osuCalculationResult.result.stars
+                ? osuCalculationResult.result.difficultyCalculator
                 : osuCalculationResult.result;
 
         if (
@@ -557,11 +575,19 @@ export abstract class EmbedCreator {
             iconURL: playerAvatarURL,
         });
 
-        const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-            await this.droidDiffCalcHelper.calculateScorePerformance(score);
+        const droidCalcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        > | null = await this.droidDiffCalcHelper.calculateScorePerformance(
+            score
+        );
 
-        const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-            await this.osuDiffCalcHelper.calculateScorePerformance(score);
+        const osuCalcResult: PerformanceCalculationResult<
+            OsuDifficultyCalculator,
+            OsuPerformanceCalculator
+        > | null = await this.osuDiffCalcHelper.calculateScorePerformance(
+            score
+        );
 
         let beatmapInformation: string = `${arrow} **${BeatmapManager.getRankEmote(
             <ScoreRank>score.rank
@@ -584,9 +610,11 @@ export abstract class EmbedCreator {
             .setAuthor({
                 name: `${
                     osuCalcResult.map.fullTitle
-                } ${score.getCompleteModString()} [${droidCalcResult.result.stars.total.toFixed(
+                } ${score.getCompleteModString()} [${droidCalcResult.result.difficultyCalculator.total.toFixed(
                     2
-                )}${Symbols.star} | ${osuCalcResult.result.stars.total.toFixed(
+                )}${
+                    Symbols.star
+                } | ${osuCalcResult.result.difficultyCalculator.total.toFixed(
                     2
                 )}${Symbols.star}]`,
                 iconURL: playerAvatarURL,
@@ -622,24 +650,28 @@ export abstract class EmbedCreator {
             });
 
             // Safe to non-null since previous calculation works.
-            const droidFcCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> =
-                (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
-                    new StarRatingCalculationResult(
-                        droidCalcResult.map,
-                        droidCalcResult.result.stars
-                    ),
-                    calcParams
-                ))!;
+            const droidFcCalcResult: PerformanceCalculationResult<
+                DroidDifficultyCalculator,
+                DroidPerformanceCalculator
+            > = (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
+                new DifficultyCalculationResult(
+                    droidCalcResult.map,
+                    droidCalcResult.result.difficultyCalculator
+                ),
+                calcParams
+            ))!;
 
             // Safe to non-null since previous calculation works.
-            const osuFcCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> =
-                (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
-                    new StarRatingCalculationResult(
-                        osuCalcResult.map,
-                        osuCalcResult.result.stars
-                    ),
-                    calcParams
-                ))!;
+            const osuFcCalcResult: PerformanceCalculationResult<
+                OsuDifficultyCalculator,
+                OsuPerformanceCalculator
+            > = (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
+                new DifficultyCalculationResult(
+                    osuCalcResult.map,
+                    osuCalcResult.result.difficultyCalculator
+                ),
+                calcParams
+            ))!;
 
             beatmapInformation += `(${droidFcCalcResult.result.total.toFixed(
                 2
@@ -668,7 +700,9 @@ export abstract class EmbedCreator {
         const replayData: ReplayData | undefined | null = score.replay?.data;
 
         if (replayData) {
-            score.replay!.map ??= droidCalcResult.result.stars;
+            const { difficultyCalculator } = droidCalcResult.result;
+
+            score.replay!.beatmap ??= difficultyCalculator;
 
             // Get amount of slider ticks and ends hit
             let collectedSliderTicks: number = 0;
@@ -677,7 +711,7 @@ export abstract class EmbedCreator {
             for (let i = 0; i < replayData.hitObjectData.length; ++i) {
                 // Using droid star rating as legacy slider tail doesn't exist.
                 const object: HitObject =
-                    droidCalcResult.result.stars.map.hitObjects.objects[i];
+                    difficultyCalculator.beatmap.hitObjects.objects[i];
                 const objectData: ReplayObjectData =
                     replayData.hitObjectData[i];
 
@@ -705,11 +739,11 @@ export abstract class EmbedCreator {
             }
 
             beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${
-                droidCalcResult.result.stars.map.hitObjects.sliderTicks
+                difficultyCalculator.beatmap.hitObjects.sliderTicks
             } ${localization.getTranslation(
                 "sliderTicks"
             )} ${arrow} ${collectedSliderEnds}/${
-                droidCalcResult.result.stars.map.hitObjects.sliderEnds
+                difficultyCalculator.beatmap.hitObjects.sliderEnds
             } ${localization.getTranslation("sliderEnds")}`;
 
             // Get hit error average and UR
@@ -746,20 +780,20 @@ export abstract class EmbedCreator {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
-        const calcParams: StarRatingCalculationParameters =
-            new StarRatingCalculationParameters(
+        const calcParams: DifficultyCalculationParameters =
+            new DifficultyCalculationParameters(
                 new MapStats({
                     mods: ModUtil.pcStringToMods(challenge.constrain),
                 })
             );
 
-        const droidCalcResult: StarRatingCalculationResult<DroidStarRating> =
+        const droidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> =
             (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
                 challenge.beatmapid,
                 calcParams
             ))!;
 
-        const osuCalcResult: StarRatingCalculationResult<OsuStarRating> =
+        const osuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> =
             (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
                 challenge.beatmapid,
                 calcParams
@@ -1014,16 +1048,16 @@ export abstract class EmbedCreator {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
-        const calcParams: StarRatingCalculationParameters =
-            new StarRatingCalculationParameters();
+        const calcParams: DifficultyCalculationParameters =
+            new DifficultyCalculationParameters();
 
-        const droidCalcResult: StarRatingCalculationResult<DroidStarRating> =
+        const droidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> =
             (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
                 submission.beatmap_id,
                 calcParams
             ))!;
 
-        const osuCalcResult: StarRatingCalculationResult<OsuStarRating> =
+        const osuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> =
             (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
                 submission.beatmap_id,
                 calcParams

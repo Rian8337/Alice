@@ -1,29 +1,29 @@
 import {
     Accuracy,
+    Beatmap,
     MapInfo,
     MapStats,
     Mod,
-    modes,
     ModNightCore,
     ModUtil,
 } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import {
-    DroidStarRating,
+    DifficultyCalculator,
     PerformanceCalculator,
-    StarRating,
 } from "@rian8337/osu-difficulty-calculator";
 import {
-    DroidStarRating as RebalanceDroidStarRating,
+    DifficultyCalculator as RebalanceDifficultyCalculator,
+    DroidDifficultyCalculator,
+    DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     PerformanceCalculator as RebalancePerformanceCalculator,
-    StarRating as RebalanceStarRating,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
-import { RebalanceStarRatingCalculationResult } from "@alice-utils/dpp/RebalanceStarRatingCalculationResult";
-import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
-import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { RebalanceDifficultyCalculationResult } from "@alice-utils/dpp/RebalanceDifficultyCalculationResult";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
+import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import {
     ThreeFingerChecker,
@@ -34,35 +34,38 @@ import {
  * A helper class for calculating difficulty and performance of beatmaps or scores.
  */
 export abstract class BeatmapDifficultyHelper<
-    DifficultyCalculator extends StarRating,
-    RebalanceDifficultyCalculator extends RebalanceStarRating,
-    PPCalculator extends PerformanceCalculator,
-    RebalancePPCalculator extends RebalancePerformanceCalculator
+    DC extends DifficultyCalculator,
+    PC extends PerformanceCalculator<DC>,
+    RDC extends RebalanceDifficultyCalculator,
+    RPC extends RebalancePerformanceCalculator<RDC>
 > {
     /**
      * The difficulty calculator to use.
      */
-    protected abstract readonly difficultyCalculator: new () => DifficultyCalculator;
+    protected abstract readonly difficultyCalculator: new (
+        beatmap: Beatmap
+    ) => DC;
 
     /**
      * The rebalance difficulty calculator to use.
      */
-    protected abstract readonly rebalanceDifficultyCalculator: new () => RebalanceDifficultyCalculator;
+    protected abstract readonly rebalanceDifficultyCalculator: new (
+        beatmap: Beatmap
+    ) => RDC;
 
     /**
      * The performance calculator to use.
      */
-    protected abstract readonly performanceCalculator: new () => PPCalculator;
+    protected abstract readonly performanceCalculator: new (
+        difficultyCalculator: DC
+    ) => PC;
 
     /**
      * The rebalance performance calculator to use.
      */
-    protected abstract readonly rebalancePerformanceCalculator: new () => RebalancePPCalculator;
-
-    /**
-     * The gamemode this helper is calculating for.
-     */
-    protected abstract readonly mode: modes;
+    protected abstract readonly rebalancePerformanceCalculator: new (
+        difficultyCalculator: RDC
+    ) => RPC;
 
     /**
      * Gets calculation parameters from a user's message.
@@ -194,12 +197,12 @@ export abstract class BeatmapDifficultyHelper<
         score: Score,
         useReplay: boolean = true,
         calcParams?: PerformanceCalculationParameters
-    ): Promise<PerformanceCalculationResult<PPCalculator> | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+    ): Promise<PerformanceCalculationResult<DC, PC> | null> {
+        const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
         );
 
-        if (!beatmap?.map) {
+        if (!beatmap) {
             return null;
         }
 
@@ -209,7 +212,7 @@ export abstract class BeatmapDifficultyHelper<
                 useReplay
             );
 
-        const result: StarRatingCalculationResult<DifficultyCalculator> | null =
+        const result: DifficultyCalculationResult<DC> | null =
             await this.calculateDifficulty(beatmap, calcParams);
 
         if (!result) {
@@ -218,7 +221,7 @@ export abstract class BeatmapDifficultyHelper<
 
         // Determine whether to use replay for 3f nerf or not.
         if (
-            result.result instanceof DroidStarRating &&
+            result.result instanceof DroidDifficultyCalculator &&
             !score.replay &&
             useReplay &&
             ThreeFingerChecker.isEligibleToDetect(result.result)
@@ -245,12 +248,12 @@ export abstract class BeatmapDifficultyHelper<
         score: Score,
         useReplay: boolean = true,
         calcParams?: PerformanceCalculationParameters
-    ): Promise<RebalancePerformanceCalculationResult<RebalancePPCalculator> | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+    ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null> {
+        const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
         );
 
-        if (!beatmap?.map) {
+        if (!beatmap) {
             return null;
         }
 
@@ -260,7 +263,7 @@ export abstract class BeatmapDifficultyHelper<
                 useReplay
             );
 
-        const result: RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator> | null =
+        const result: RebalanceDifficultyCalculationResult<RDC> | null =
             await this.calculateRebalanceDifficulty(beatmap, calcParams);
 
         if (!result) {
@@ -269,7 +272,7 @@ export abstract class BeatmapDifficultyHelper<
 
         // Determine whether to use replay for 3f nerf and 2h detection or not.
         if (
-            result.result instanceof RebalanceDroidStarRating &&
+            result.result instanceof RebalanceDroidDifficultyCalculator &&
             !score.replay &&
             useReplay
         ) {
@@ -295,7 +298,7 @@ export abstract class BeatmapDifficultyHelper<
         beatmap: MapInfo,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): Promise<PerformanceCalculationResult<PPCalculator> | null>;
+    ): Promise<PerformanceCalculationResult<DC, PC> | null>;
 
     /**
      * Calculates the difficulty and/or performance value of a beatmap.
@@ -306,39 +309,39 @@ export abstract class BeatmapDifficultyHelper<
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
     async calculateBeatmapPerformance(
-        star: StarRatingCalculationResult<DifficultyCalculator>,
+        star: DifficultyCalculationResult<DC>,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): Promise<PerformanceCalculationResult<PPCalculator> | null>;
+    ): Promise<PerformanceCalculationResult<DC, PC> | null>;
 
     /**
      * Calculates the difficulty and/or performance value of a beatmap.
      *
-     * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
      * @param replay The replay to use in calculation, used for calculating a replay's performance.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
     async calculateBeatmapPerformance(
-        beatmapIDorHash: number | string,
+        beatmapIdOrHash: number | string,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): Promise<PerformanceCalculationResult<PPCalculator> | null>;
+    ): Promise<PerformanceCalculationResult<DC, PC> | null>;
 
     async calculateBeatmapPerformance(
         beatmapOrHashOrStar:
             | MapInfo
             | number
             | string
-            | StarRatingCalculationResult<DifficultyCalculator>,
+            | DifficultyCalculationResult<DC>,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): Promise<PerformanceCalculationResult<PPCalculator> | null> {
-        let beatmap: MapInfo | null;
+    ): Promise<PerformanceCalculationResult<DC, PC> | null> {
+        let beatmap: MapInfo<true> | null;
 
         if (beatmapOrHashOrStar instanceof MapInfo) {
             beatmap = beatmapOrHashOrStar;
-        } else if (beatmapOrHashOrStar instanceof StarRatingCalculationResult) {
+        } else if (beatmapOrHashOrStar instanceof DifficultyCalculationResult) {
             beatmap = beatmapOrHashOrStar.map;
         } else {
             beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrStar);
@@ -356,8 +359,8 @@ export abstract class BeatmapDifficultyHelper<
             beatmap.maxCombo
         );
 
-        const star: StarRatingCalculationResult<DifficultyCalculator> | null =
-            beatmapOrHashOrStar instanceof StarRatingCalculationResult
+        const star: DifficultyCalculationResult<DC> | null =
+            beatmapOrHashOrStar instanceof DifficultyCalculationResult
                 ? beatmapOrHashOrStar
                 : await this.calculateDifficulty(beatmap, calculationParams);
 
@@ -380,7 +383,7 @@ export abstract class BeatmapDifficultyHelper<
         beatmap: MapInfo,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): Promise<RebalancePerformanceCalculationResult<RebalancePPCalculator> | null>;
+    ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null>;
 
     /**
      * Calculates the rebalance difficulty and/or performance value of a beatmap.
@@ -391,10 +394,10 @@ export abstract class BeatmapDifficultyHelper<
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
     async calculateBeatmapRebalancePerformance(
-        star: RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator>,
+        star: RebalanceDifficultyCalculationResult<RDC>,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): Promise<RebalancePerformanceCalculationResult<RebalancePPCalculator> | null>;
+    ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null>;
 
     /**
      * Calculates the rebalance difficulty and/or performance value of a beatmap.
@@ -408,23 +411,23 @@ export abstract class BeatmapDifficultyHelper<
         beatmapIDorHash: number | string,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): Promise<RebalancePerformanceCalculationResult<RebalancePPCalculator> | null>;
+    ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null>;
 
     async calculateBeatmapRebalancePerformance(
         beatmapOrHashOrStar:
             | MapInfo
             | number
             | string
-            | RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator>,
+            | RebalanceDifficultyCalculationResult<RDC>,
         calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): Promise<RebalancePerformanceCalculationResult<RebalancePPCalculator> | null> {
-        let beatmap: MapInfo | null;
+    ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null> {
+        let beatmap: MapInfo<true> | null;
 
         if (beatmapOrHashOrStar instanceof MapInfo) {
             beatmap = beatmapOrHashOrStar;
         } else if (
-            beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
+            beatmapOrHashOrStar instanceof RebalanceDifficultyCalculationResult
         ) {
             beatmap = beatmapOrHashOrStar.map;
         } else {
@@ -443,8 +446,8 @@ export abstract class BeatmapDifficultyHelper<
             beatmap.maxCombo
         );
 
-        const star: RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator> | null =
-            beatmapOrHashOrStar instanceof RebalanceStarRatingCalculationResult
+        const star: RebalanceDifficultyCalculationResult<RDC> | null =
+            beatmapOrHashOrStar instanceof RebalanceDifficultyCalculationResult
                 ? beatmapOrHashOrStar
                 : await this.calculateRebalanceDifficulty(
                       beatmap,
@@ -470,12 +473,12 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateScoreDifficulty(
         score: Score
-    ): Promise<StarRatingCalculationResult<DifficultyCalculator> | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+    ): Promise<DifficultyCalculationResult<DC> | null> {
+        const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
         );
 
-        if (!beatmap?.map) {
+        if (!beatmap) {
             return null;
         }
 
@@ -496,12 +499,12 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateScoreRebalanceDifficulty(
         score: Score
-    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator> | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+    ): Promise<RebalanceDifficultyCalculationResult<RebalanceDifficultyCalculator> | null> {
+        const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
         );
 
-        if (!beatmap?.map) {
+        if (!beatmap) {
             return null;
         }
 
@@ -523,25 +526,25 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateBeatmapDifficulty(
         beatmap: MapInfo,
-        calculationParams: StarRatingCalculationParameters
-    ): Promise<StarRatingCalculationResult<DifficultyCalculator> | null>;
+        calculationParams: DifficultyCalculationParameters
+    ): Promise<DifficultyCalculationResult<DC> | null>;
 
     /**
      * Calculates the difficulty of a beatmap.
      *
-     * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters.
      * @returns The calculation result.
      */
     async calculateBeatmapDifficulty(
-        beatmapIDorHash: number | string,
-        calculationParams: StarRatingCalculationParameters
-    ): Promise<StarRatingCalculationResult<DifficultyCalculator> | null>;
+        beatmapIdOrHash: number | string,
+        calculationParams: DifficultyCalculationParameters
+    ): Promise<DifficultyCalculationResult<DC> | null>;
 
     async calculateBeatmapDifficulty(
         beatmapOrIdOrHash: MapInfo | number | string,
-        calculationParams: StarRatingCalculationParameters
-    ): Promise<StarRatingCalculationResult<DifficultyCalculator> | null> {
+        calculationParams: DifficultyCalculationParameters
+    ): Promise<DifficultyCalculationResult<DC> | null> {
         const beatmap: MapInfo | null =
             beatmapOrIdOrHash instanceof MapInfo
                 ? beatmapOrIdOrHash
@@ -563,25 +566,25 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateBeatmapRebalanceDifficulty(
         beatmap: MapInfo,
-        calculationParams: StarRatingCalculationParameters
-    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator> | null>;
+        calculationParams: DifficultyCalculationParameters
+    ): Promise<RebalanceDifficultyCalculationResult<RDC> | null>;
 
     /**
      * Calculates the rebalance difficulty of a beatmap.
      *
-     * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
+     * @param beatmapIdorHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters.
      * @returns The calculation result.
      */
     async calculateBeatmapRebalanceDifficulty(
-        beatmapIDorHash: number | string,
-        calculationParams: StarRatingCalculationParameters
-    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator> | null>;
+        beatmapIdorHash: number | string,
+        calculationParams: DifficultyCalculationParameters
+    ): Promise<RebalanceDifficultyCalculationResult<RDC> | null>;
 
     async calculateBeatmapRebalanceDifficulty(
         beatmapOrIdOrHash: MapInfo | number | string,
-        calculationParams: StarRatingCalculationParameters
-    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator> | null> {
+        calculationParams: DifficultyCalculationParameters
+    ): Promise<RebalanceDifficultyCalculationResult<RDC> | null> {
         const beatmap: MapInfo | null =
             beatmapOrIdOrHash instanceof MapInfo
                 ? beatmapOrIdOrHash
@@ -603,25 +606,25 @@ export abstract class BeatmapDifficultyHelper<
      */
     private async calculateDifficulty(
         beatmap: MapInfo,
-        calculationParams: StarRatingCalculationParameters
-    ): Promise<StarRatingCalculationResult<DifficultyCalculator> | null> {
+        calculationParams: DifficultyCalculationParameters
+    ): Promise<DifficultyCalculationResult<DC> | null> {
         await this.initBeatmap(beatmap);
 
-        if (beatmap.map!.hitObjects.objects.length === 0) {
+        if (
+            !beatmap.hasDownloadedBeatmap() ||
+            beatmap.beatmap.hitObjects.objects.length === 0
+        ) {
             return null;
         }
 
-        const star: DifficultyCalculator =
-            new this.difficultyCalculator().calculate(
-                {
-                    map: beatmap.map!,
-                    mods: calculationParams.customStatistics?.mods,
-                    stats: calculationParams.customStatistics,
-                },
-                this.mode
-            );
+        const star: DC = new this.difficultyCalculator(
+            beatmap.beatmap
+        ).calculate({
+            mods: calculationParams.customStatistics?.mods,
+            stats: calculationParams.customStatistics,
+        });
 
-        return new StarRatingCalculationResult(beatmap, star);
+        return new DifficultyCalculationResult(beatmap, star);
     }
 
     /**
@@ -632,26 +635,26 @@ export abstract class BeatmapDifficultyHelper<
      * @returns The calculation result.
      */
     private async calculateRebalanceDifficulty(
-        beatmap: MapInfo,
-        calculationParams: StarRatingCalculationParameters
-    ): Promise<RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator> | null> {
+        beatmap: MapInfo<true>,
+        calculationParams: DifficultyCalculationParameters
+    ): Promise<RebalanceDifficultyCalculationResult<RDC> | null> {
         await this.initBeatmap(beatmap);
 
-        if (beatmap.map!.hitObjects.objects.length === 0) {
+        if (
+            !beatmap.hasDownloadedBeatmap() ||
+            beatmap.beatmap.hitObjects.objects.length === 0
+        ) {
             return null;
         }
 
-        const star: RebalanceDifficultyCalculator =
-            new this.rebalanceDifficultyCalculator().calculate(
-                {
-                    map: beatmap.map!,
-                    mods: calculationParams.customStatistics?.mods,
-                    stats: calculationParams.customStatistics,
-                },
-                this.mode
-            );
+        const star: RDC = new this.rebalanceDifficultyCalculator(
+            beatmap.beatmap
+        ).calculate({
+            mods: calculationParams.customStatistics?.mods,
+            stats: calculationParams.customStatistics,
+        });
 
-        return new RebalanceStarRatingCalculationResult(beatmap, star);
+        return new RebalanceDifficultyCalculationResult(beatmap, star);
     }
 
     /**
@@ -663,18 +666,18 @@ export abstract class BeatmapDifficultyHelper<
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
     private calculatePerformance(
-        star: StarRatingCalculationResult<DifficultyCalculator>,
+        star: DifficultyCalculationResult<DC>,
         calculationParams: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): PerformanceCalculationResult<PPCalculator> | null {
-        if (star.result.map.hitObjects.objects.length === 0) {
+    ): PerformanceCalculationResult<DC, PC> | null {
+        if (star.result.beatmap.hitObjects.objects.length === 0) {
             return null;
         }
 
         calculationParams.applyFromBeatmap(star.map);
 
-        if (replay && star.result instanceof DroidStarRating) {
-            replay.map = star.result;
+        if (replay && star.result instanceof DroidDifficultyCalculator) {
+            replay.beatmap = star.result;
 
             if (!replay.hasBeenCheckedFor3Finger) {
                 replay.checkFor3Finger();
@@ -682,8 +685,7 @@ export abstract class BeatmapDifficultyHelper<
             }
         }
 
-        const pp: PPCalculator = new this.performanceCalculator().calculate({
-            stars: star.result,
+        const pp: PC = new this.performanceCalculator(star.result).calculate({
             combo: calculationParams.combo,
             accPercent: calculationParams.accuracy,
             tapPenalty: calculationParams.tapPenalty,
@@ -702,18 +704,21 @@ export abstract class BeatmapDifficultyHelper<
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
     private calculateRebalancePerformance(
-        star: RebalanceStarRatingCalculationResult<RebalanceDifficultyCalculator>,
+        star: RebalanceDifficultyCalculationResult<RDC>,
         calculationParams: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
-    ): RebalancePerformanceCalculationResult<RebalancePPCalculator> | null {
-        if (star.result.map.hitObjects.objects.length === 0) {
+    ): RebalancePerformanceCalculationResult<RDC, RPC> | null {
+        if (star.result.beatmap.hitObjects.objects.length === 0) {
             return null;
         }
 
         calculationParams.applyFromBeatmap(star.map);
 
-        if (replay && star.result instanceof RebalanceDroidStarRating) {
-            replay.map = star.result;
+        if (
+            replay &&
+            star.result instanceof RebalanceDroidDifficultyCalculator
+        ) {
+            replay.beatmap = star.result;
 
             if (!replay.hasBeenCheckedFor3Finger) {
                 replay.checkFor3Finger();
@@ -725,14 +730,14 @@ export abstract class BeatmapDifficultyHelper<
             }
         }
 
-        const pp: RebalancePPCalculator =
-            new this.rebalancePerformanceCalculator().calculate({
-                stars: star.result,
-                combo: calculationParams.combo,
-                accPercent: calculationParams.accuracy,
-                tapPenalty: calculationParams.tapPenalty,
-                stats: calculationParams.customStatistics,
-            });
+        const pp: RPC = new this.rebalancePerformanceCalculator(
+            star.result
+        ).calculate({
+            combo: calculationParams.combo,
+            accPercent: calculationParams.accuracy,
+            tapPenalty: calculationParams.tapPenalty,
+            stats: calculationParams.customStatistics,
+        });
 
         return new RebalancePerformanceCalculationResult(star.map, pp, replay);
     }

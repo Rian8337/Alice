@@ -22,14 +22,14 @@ import { LocaleHelper } from "./LocaleHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
-import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
+import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { MapInfo } from "@rian8337/osu-base";
 import {
+    DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
-    DroidStarRating,
-    OsuStarRating,
 } from "@rian8337/osu-difficulty-calculator";
 import { DroidBeatmapDifficultyHelper } from "./DroidBeatmapDifficultyHelper";
 import { InteractionHelper } from "./InteractionHelper";
@@ -176,11 +176,17 @@ export abstract class ScoreDisplayHelper {
         // Calculation cache, mapped by score ID
         const droidCalculationCache: Collection<
             number,
-            PerformanceCalculationResult<DroidPerformanceCalculator> | null
+            PerformanceCalculationResult<
+                DroidDifficultyCalculator,
+                DroidPerformanceCalculator
+            > | null
         > = new Collection();
         const osuCalculationCache: Collection<
             number,
-            PerformanceCalculationResult<OsuPerformanceCalculator> | null
+            PerformanceCalculationResult<
+                OsuDifficultyCalculator,
+                OsuPerformanceCalculator
+            > | null
         > = new Collection();
 
         // Check first page first for score availability
@@ -210,24 +216,34 @@ export abstract class ScoreDisplayHelper {
             score: Score
         ): Promise<
             [
-                PerformanceCalculationResult<DroidPerformanceCalculator> | null,
-                PerformanceCalculationResult<OsuPerformanceCalculator> | null
+                PerformanceCalculationResult<
+                    DroidDifficultyCalculator,
+                    DroidPerformanceCalculator
+                > | null,
+                PerformanceCalculationResult<
+                    OsuDifficultyCalculator,
+                    OsuPerformanceCalculator
+                > | null
             ]
         > => {
-            const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                beatmapInfo
-                    ? droidCalculationCache.get(score.scoreID) ??
-                      (await droidDiffCalcHelper.calculateScorePerformance(
-                          score,
-                          false
-                      ))
-                    : null;
+            const droidCalcResult: PerformanceCalculationResult<
+                DroidDifficultyCalculator,
+                DroidPerformanceCalculator
+            > | null = beatmapInfo
+                ? droidCalculationCache.get(score.scoreID) ??
+                  (await droidDiffCalcHelper.calculateScorePerformance(
+                      score,
+                      false
+                  ))
+                : null;
 
-            const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-                beatmapInfo
-                    ? osuCalculationCache.get(score.scoreID) ??
-                      (await osuDiffCalcHelper.calculateScorePerformance(score))
-                    : null;
+            const osuCalcResult: PerformanceCalculationResult<
+                OsuDifficultyCalculator,
+                OsuPerformanceCalculator
+            > | null = beatmapInfo
+                ? osuCalculationCache.get(score.scoreID) ??
+                  (await osuDiffCalcHelper.calculateScorePerformance(score))
+                : null;
 
             if (!droidCalculationCache.has(score.scoreID)) {
                 droidCalculationCache.set(score.scoreID, droidCalcResult);
@@ -242,8 +258,14 @@ export abstract class ScoreDisplayHelper {
 
         const getScoreDescription = async (score: Score): Promise<string> => {
             const calcResult: [
-                PerformanceCalculationResult<DroidPerformanceCalculator> | null,
-                PerformanceCalculationResult<OsuPerformanceCalculator> | null
+                PerformanceCalculationResult<
+                    DroidDifficultyCalculator,
+                    DroidPerformanceCalculator
+                > | null,
+                PerformanceCalculationResult<
+                    OsuDifficultyCalculator,
+                    OsuPerformanceCalculator
+                > | null
             ] = await getCalculationResult(score);
 
             return (
@@ -284,10 +306,10 @@ export abstract class ScoreDisplayHelper {
                 leaderboardCache.set(actualPage, scores);
             }
 
-            const noModCalcParams: StarRatingCalculationParameters =
-                new StarRatingCalculationParameters();
+            const noModCalcParams: DifficultyCalculationParameters =
+                new DifficultyCalculationParameters();
 
-            const noModDroidCalcResult: StarRatingCalculationResult<DroidStarRating> | null =
+            const noModDroidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> | null =
                 beatmapInfo
                     ? await droidDiffCalcHelper.calculateBeatmapDifficulty(
                           beatmapInfo.hash,
@@ -295,7 +317,7 @@ export abstract class ScoreDisplayHelper {
                       )
                     : null;
 
-            const noModOsuCalcResult: StarRatingCalculationResult<OsuStarRating> | null =
+            const noModOsuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> | null =
                 beatmapInfo
                     ? await osuDiffCalcHelper.calculateBeatmapDifficulty(
                           beatmapInfo.hash,

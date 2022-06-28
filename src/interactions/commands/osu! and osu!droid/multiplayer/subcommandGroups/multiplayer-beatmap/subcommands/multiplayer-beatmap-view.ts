@@ -4,7 +4,7 @@ import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -50,7 +50,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         EmbedCreator.createBeatmapEmbed(
             (await BeatmapManager.getBeatmap(room.settings.beatmap.id, false))!,
-            new StarRatingCalculationParameters(
+            new DifficultyCalculationParameters(
                 new MapStats({
                     mods: ModUtil.pcStringToMods(room.settings.requiredMods),
                     speedMultiplier: room.settings.speedMultiplier,

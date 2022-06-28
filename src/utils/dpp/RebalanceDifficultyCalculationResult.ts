@@ -1,11 +1,11 @@
 import { MapInfo } from "@rian8337/osu-base";
-import { StarRating as RebalanceStarRating } from "@rian8337/osu-rebalance-difficulty-calculator";
+import { DifficultyCalculator as RebalanceDifficultyCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
 
 /**
  * Represents a beatmap's difficulty calculation result.
  */
-export class RebalanceStarRatingCalculationResult<
-    T extends RebalanceStarRating
+export class RebalanceDifficultyCalculationResult<
+    T extends RebalanceDifficultyCalculator
 > {
     /**
      * The beatmap being calculated.

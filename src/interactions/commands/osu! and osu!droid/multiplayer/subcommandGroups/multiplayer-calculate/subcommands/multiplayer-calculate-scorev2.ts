@@ -45,7 +45,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+    const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
         room.settings.beatmap.id
     );
 
@@ -74,7 +74,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ),
             misses,
             room.applyCustomModMultiplier(
-                beatmap.map!.maxDroidScore(
+                beatmap.beatmap.maxDroidScore(
                     new MapStats({
                         mods: requiredMods,
                     })

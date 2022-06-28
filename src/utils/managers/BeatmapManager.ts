@@ -45,18 +45,38 @@ export abstract class BeatmapManager extends Manager {
     /**
      * Gets a beatmap from the beatmap cache, or downloads it if it's not available.
      *
-     * @param beatmapIDorHash The beatmap ID or MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The beatmap ID or MD5 hash of the beatmap.
      * @param checkFile Whether to check if the beatmap's `.osu` file is downloaded, and downloads it if it's not. Defaults to `true`.
      * @param forceCheck Whether to skip the cache check and request the osu! API. Defaults to `false`.
      * @returns A `MapInfo` instance representing the beatmap.
      */
     static async getBeatmap(
-        beatmapIDorHash: number | string,
+        beatmapIdOrHash: number | string,
+        checkFile?: boolean,
+        forceCheck?: boolean
+    ): Promise<MapInfo<true> | null>;
+
+    /**
+     * Gets a beatmap from the beatmap cache, or downloads it if it's not available.
+     *
+     * @param beatmapIdOrHash The beatmap ID or MD5 hash of the beatmap.
+     * @param checkFile Whether to check if the beatmap's `.osu` file is downloaded, and downloads it if it's not. Defaults to `true`.
+     * @param forceCheck Whether to skip the cache check and request the osu! API. Defaults to `false`.
+     * @returns A `MapInfo` instance representing the beatmap.
+     */
+    static async getBeatmap(
+        beatmapIdOrHash: number | string,
+        checkFile: false,
+        forceCheck?: boolean
+    ): Promise<MapInfo<false> | null>;
+
+    static async getBeatmap(
+        beatmapIdOrHash: number | string,
         checkFile: boolean = true,
         forceCheck: boolean = false
     ): Promise<MapInfo | null> {
         const oldCache: MapInfo | undefined = CacheManager.beatmapCache.find(
-            (v) => v.beatmapID === beatmapIDorHash || v.hash === beatmapIDorHash
+            (v) => v.beatmapID === beatmapIdOrHash || v.hash === beatmapIdOrHash
         );
 
         if (oldCache && !forceCheck) {
@@ -67,13 +87,13 @@ export abstract class BeatmapManager extends Manager {
             return oldCache;
         }
 
-        const newCache: MapInfo = await MapInfo.getInformation(
-            typeof beatmapIDorHash === "number"
-                ? { beatmapID: beatmapIDorHash, file: checkFile }
-                : { hash: beatmapIDorHash, file: checkFile }
+        const newCache: MapInfo | null = await MapInfo.getInformation(
+            //@ts-expect-error: string | number union
+            beatmapIdOrHash,
+            checkFile
         );
 
-        if (!newCache.title || !newCache.objects) {
+        if (!newCache) {
             return null;
         }
 

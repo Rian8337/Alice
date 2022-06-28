@@ -20,7 +20,9 @@ import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapD
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapInfo } from "@rian8337/osu-base";
 import {
+    DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
@@ -162,7 +164,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         }]-${json.replaydata.time}.edr`
     );
 
-    if (!beatmapInfo?.map) {
+    if (!beatmapInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("fetchReplayNoBeatmapSuccessful"),
@@ -181,15 +183,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> =
-        (await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
-            score
-        ))!;
+    const droidCalcResult: PerformanceCalculationResult<
+        DroidDifficultyCalculator,
+        DroidPerformanceCalculator
+    > = (await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+        score
+    ))!;
 
-    const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> =
-        (await new OsuBeatmapDifficultyHelper().calculateScorePerformance(
-            score
-        ))!;
+    const osuCalcResult: PerformanceCalculationResult<
+        OsuDifficultyCalculator,
+        OsuPerformanceCalculator
+    > = (await new OsuBeatmapDifficultyHelper().calculateScorePerformance(
+        score
+    ))!;
 
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(

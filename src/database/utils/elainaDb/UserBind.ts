@@ -24,8 +24,14 @@ import {
     Utils,
     Precision,
 } from "@rian8337/osu-base";
-import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
-import { DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
+import {
+    DroidDifficultyCalculator,
+    DroidPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
+import {
+    DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
+    DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+} from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -328,8 +334,12 @@ export class UserBind extends Manager {
 
             await HelperFunctions.sleep(0.1);
 
-            const calcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                await this.diffCalcHelper.calculateScorePerformance(score);
+            const calcResult: PerformanceCalculationResult<
+                DroidDifficultyCalculator,
+                DroidPerformanceCalculator
+            > | null = await this.diffCalcHelper.calculateScorePerformance(
+                score
+            );
 
             if (!calcResult) {
                 continue;
@@ -381,10 +391,12 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const calcResult: RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator> | null =
-                await this.diffCalcHelper.calculateScoreRebalancePerformance(
-                    score
-                );
+            const calcResult: RebalancePerformanceCalculationResult<
+                RebalanceDroidDifficultyCalculator,
+                RebalanceDroidPerformanceCalculator
+            > | null = await this.diffCalcHelper.calculateScoreRebalancePerformance(
+                score
+            );
 
             if (!calcResult) {
                 continue;
@@ -555,10 +567,12 @@ export class UserBind extends Manager {
                         (await DPPHelper.checkSubmissionValidity(score)) ===
                         DPPSubmissionValidity.VALID
                     ) {
-                        const calcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                            await this.diffCalcHelper.calculateScorePerformance(
-                                score
-                            );
+                        const calcResult: PerformanceCalculationResult<
+                            DroidDifficultyCalculator,
+                            DroidPerformanceCalculator
+                        > | null = await this.diffCalcHelper.calculateScorePerformance(
+                            score
+                        );
 
                         if (calcResult) {
                             ++this.playc;

@@ -8,13 +8,13 @@ import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyH
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
 import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
-import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapInfo, MapStats } from "@rian8337/osu-base";
 import {
-    DroidStarRating,
-    OsuStarRating,
+    DroidDifficultyCalculator,
+    OsuDifficultyCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -171,13 +171,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         break;
                     }
 
-                    const droidCalcResult: StarRatingCalculationResult<DroidStarRating> | null =
+                    const droidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> | null =
                         await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
                             calcParams
                         );
 
-                    const osuCalcResult: StarRatingCalculationResult<OsuStarRating> | null =
+                    const osuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> | null =
                         await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
                             calcParams

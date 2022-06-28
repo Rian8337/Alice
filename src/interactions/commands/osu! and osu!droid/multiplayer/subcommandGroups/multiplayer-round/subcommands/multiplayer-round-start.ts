@@ -7,7 +7,7 @@ import { MultiplayerLocalization } from "@alice-localization/interactions/comman
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
@@ -230,7 +230,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         room.settings.beatmap!.id,
                         false
                     ))!,
-                    new StarRatingCalculationParameters(
+                    new DifficultyCalculationParameters(
                         new MapStats({
                             mods: ModUtil.pcStringToMods(
                                 room.settings.requiredMods

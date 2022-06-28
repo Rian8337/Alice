@@ -43,7 +43,9 @@ import {
     RequestResponse,
 } from "@rian8337/osu-base";
 import {
+    DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
@@ -478,24 +480,24 @@ export class Challenge extends Manager {
 
         this.droidDiffCalcHelper ??= new DroidBeatmapDifficultyHelper();
 
-        const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-            await this.droidDiffCalcHelper.calculateBeatmapPerformance(
-                this.beatmapid,
-                await BeatmapDifficultyHelper.getCalculationParamsFromScore(
-                    score
-                ),
-                score.replay
-            );
+        const droidCalcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        > | null = await this.droidDiffCalcHelper.calculateBeatmapPerformance(
+            this.beatmapid,
+            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+            score.replay
+        );
 
         this.osuDiffCalcHelper ??= new OsuBeatmapDifficultyHelper();
 
-        const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-            await this.osuDiffCalcHelper.calculateBeatmapPerformance(
-                this.beatmapid,
-                await BeatmapDifficultyHelper.getCalculationParamsFromScore(
-                    score
-                )
-            );
+        const osuCalcResult: PerformanceCalculationResult<
+            OsuDifficultyCalculator,
+            OsuPerformanceCalculator
+        > | null = await this.osuDiffCalcHelper.calculateBeatmapPerformance(
+            this.beatmapid,
+            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score)
+        );
 
         if (!droidCalcResult || !osuCalcResult) {
             return this.createOperationResult(
@@ -566,8 +568,14 @@ export class Challenge extends Manager {
         }
 
         const calcResult: [
-            PerformanceCalculationResult<DroidPerformanceCalculator>,
-            PerformanceCalculationResult<OsuPerformanceCalculator>
+            PerformanceCalculationResult<
+                DroidDifficultyCalculator,
+                DroidPerformanceCalculator
+            >,
+            PerformanceCalculationResult<
+                OsuDifficultyCalculator,
+                OsuPerformanceCalculator
+            >
         ] = (await this.getReplayCalculationResult(replay))!;
 
         const pass: boolean = await this.verifyPassCompletion(
@@ -620,10 +628,14 @@ export class Challenge extends Manager {
             }
         }
 
-        let droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-            null;
-        let osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-            null;
+        let droidCalcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        > | null = null;
+        let osuCalcResult: PerformanceCalculationResult<
+            OsuDifficultyCalculator,
+            OsuPerformanceCalculator
+        > | null = null;
 
         if (scoreOrReplay instanceof Score) {
             this.droidDiffCalcHelper ??= new DroidBeatmapDifficultyHelper();
@@ -646,8 +658,14 @@ export class Challenge extends Manager {
         } else {
             const calcResult:
                 | [
-                      PerformanceCalculationResult<DroidPerformanceCalculator>,
-                      PerformanceCalculationResult<OsuPerformanceCalculator>
+                      PerformanceCalculationResult<
+                          DroidDifficultyCalculator,
+                          DroidPerformanceCalculator
+                      >,
+                      PerformanceCalculationResult<
+                          OsuDifficultyCalculator,
+                          OsuPerformanceCalculator
+                      >
                   ]
                 | null = await this.getReplayCalculationResult(scoreOrReplay);
 
@@ -967,8 +985,14 @@ export class Challenge extends Manager {
      */
     private async verifyPassCompletion(
         score: Score,
-        droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator>,
-        osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator>,
+        droidCalcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        >,
+        osuCalcResult: PerformanceCalculationResult<
+            OsuDifficultyCalculator,
+            OsuPerformanceCalculator
+        >,
         hitErrorInformation: HitErrorInformation
     ): Promise<boolean>;
 
@@ -981,15 +1005,27 @@ export class Challenge extends Manager {
      */
     private async verifyPassCompletion(
         replay: ReplayAnalyzer,
-        droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator>,
-        osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator>,
+        droidCalcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        >,
+        osuCalcResult: PerformanceCalculationResult<
+            OsuDifficultyCalculator,
+            OsuPerformanceCalculator
+        >,
         hitErrorInformation: HitErrorInformation
     ): Promise<boolean>;
 
     private async verifyPassCompletion(
         scoreOrReplay: Score | ReplayAnalyzer,
-        droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator>,
-        osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator>,
+        droidCalcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        >,
+        osuCalcResult: PerformanceCalculationResult<
+            OsuDifficultyCalculator,
+            OsuPerformanceCalculator
+        >,
         hitErrorInformation: HitErrorInformation
     ): Promise<boolean> {
         switch (this.pass.id) {
@@ -1237,8 +1273,14 @@ export class Challenge extends Manager {
         replay: ReplayAnalyzer
     ): Promise<
         | [
-              PerformanceCalculationResult<DroidPerformanceCalculator>,
-              PerformanceCalculationResult<OsuPerformanceCalculator>
+              PerformanceCalculationResult<
+                  DroidDifficultyCalculator,
+                  DroidPerformanceCalculator
+              >,
+              PerformanceCalculationResult<
+                  OsuDifficultyCalculator,
+                  OsuPerformanceCalculator
+              >
           ]
         | null
     > {
@@ -1250,44 +1292,48 @@ export class Challenge extends Manager {
 
         this.droidDiffCalcHelper ??= new DroidBeatmapDifficultyHelper();
 
-        const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> =
-            (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
-                this.beatmapid,
-                new PerformanceCalculationParameters(
-                    data.accuracy,
-                    data.accuracy.value() * 100,
-                    data.maxCombo,
-                    1,
-                    new MapStats({
-                        mods: data.convertedMods,
-                        ar: data.forcedAR,
-                        isForceAR: data.forcedAR !== undefined,
-                        speedMultiplier: data.speedModification,
-                        oldStatistics: data.replayVersion <= 3,
-                    })
-                ),
-                replay
-            ))!;
+        const droidCalcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        > = (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
+            this.beatmapid,
+            new PerformanceCalculationParameters(
+                data.accuracy,
+                data.accuracy.value() * 100,
+                data.maxCombo,
+                1,
+                new MapStats({
+                    mods: data.convertedMods,
+                    ar: data.forcedAR,
+                    isForceAR: data.forcedAR !== undefined,
+                    speedMultiplier: data.speedModification,
+                    oldStatistics: data.replayVersion <= 3,
+                })
+            ),
+            replay
+        ))!;
 
         this.osuDiffCalcHelper ??= new OsuBeatmapDifficultyHelper();
 
-        const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> =
-            (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
-                this.beatmapid,
-                new PerformanceCalculationParameters(
-                    data.accuracy,
-                    data.accuracy.value() * 100,
-                    data.maxCombo,
-                    1,
-                    new MapStats({
-                        mods: data.convertedMods,
-                        ar: data.forcedAR,
-                        isForceAR: data.forcedAR !== undefined,
-                        speedMultiplier: data.speedModification,
-                        oldStatistics: data.replayVersion <= 3,
-                    })
-                )
-            ))!;
+        const osuCalcResult: PerformanceCalculationResult<
+            OsuDifficultyCalculator,
+            OsuPerformanceCalculator
+        > = (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
+            this.beatmapid,
+            new PerformanceCalculationParameters(
+                data.accuracy,
+                data.accuracy.value() * 100,
+                data.maxCombo,
+                1,
+                new MapStats({
+                    mods: data.convertedMods,
+                    ar: data.forcedAR,
+                    isForceAR: data.forcedAR !== undefined,
+                    speedMultiplier: data.speedModification,
+                    oldStatistics: data.replayVersion <= 3,
+                })
+            )
+        ))!;
 
         return [droidCalcResult, osuCalcResult];
     }
@@ -1311,11 +1357,11 @@ export class Challenge extends Manager {
     private async calculateChallengeScoreV2(
         scoreOrReplay: Score | ReplayData
     ): Promise<number> {
-        const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
+        const beatmapInfo: MapInfo<true> = (await BeatmapManager.getBeatmap(
             this.beatmapid
         ))!;
 
-        const maximumScore: number = beatmapInfo.map!.maxDroidScore(
+        const maximumScore: number = beatmapInfo.beatmap.maxDroidScore(
             new MapStats({
                 cs: beatmapInfo.cs,
                 ar: beatmapInfo.ar,

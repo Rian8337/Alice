@@ -14,7 +14,10 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { MapInfo } from "@rian8337/osu-base";
-import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
+import {
+    DroidDifficultyCalculator,
+    DroidPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -157,8 +160,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 );
                 break;
             default: {
-                const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                    await droidDiffHelper.calculateScorePerformance(score);
+                const droidCalcResult: PerformanceCalculationResult<
+                    DroidDifficultyCalculator,
+                    DroidPerformanceCalculator
+                > | null = await droidDiffHelper.calculateScorePerformance(
+                    score
+                );
 
                 if (!droidCalcResult) {
                     fieldContent += localization.getTranslation(

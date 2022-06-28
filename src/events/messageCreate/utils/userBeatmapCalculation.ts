@@ -13,7 +13,9 @@ import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapD
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapInfo, MapStats } from "@rian8337/osu-base";
 import {
+    DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
@@ -65,17 +67,21 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 beatmapInfo.hash
             );
 
-            const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                    beatmapID,
-                    calcParams
-                );
+            const droidCalcResult: PerformanceCalculationResult<
+                DroidDifficultyCalculator,
+                DroidPerformanceCalculator
+            > | null = await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                beatmapID,
+                calcParams
+            );
 
-            const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-                await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                    beatmapID,
-                    calcParams
-                );
+            const osuCalcResult: PerformanceCalculationResult<
+                OsuDifficultyCalculator,
+                OsuPerformanceCalculator
+            > | null = await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                beatmapID,
+                calcParams
+            );
 
             if (!droidCalcResult || !osuCalcResult) {
                 continue;
@@ -95,7 +101,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             if (message.content.includes("-d")) {
                 string += `${localization.getTranslation(
                     "droidStars"
-                )}: ${droidCalcResult.result.stars.toString()}\n${localization.getTranslation(
+                )}: ${droidCalcResult.result.difficultyCalculator.toString()}\n${localization.getTranslation(
                     "droidPP"
                 )}: ${droidCalcResult.result.toString()}\n`;
             }
@@ -103,7 +109,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             if (message.content.includes("-p")) {
                 string += `${localization.getTranslation(
                     "pcStars"
-                )}: ${osuCalcResult.result.stars.toString()}\n${localization.getTranslation(
+                )}: ${osuCalcResult.result.difficultyCalculator.toString()}\n${localization.getTranslation(
                     "pcPP"
                 )}: ${osuCalcResult.result.toString()}`;
             }
@@ -176,17 +182,21 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     break;
                 }
 
-                const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-                    await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                        beatmapInfo,
-                        calcParams
-                    );
+                const droidCalcResult: PerformanceCalculationResult<
+                    DroidDifficultyCalculator,
+                    DroidPerformanceCalculator
+                > | null = await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                    beatmapInfo,
+                    calcParams
+                );
 
-                const osuCalcResult: PerformanceCalculationResult<OsuPerformanceCalculator> | null =
-                    await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                        beatmapInfo,
-                        calcParams
-                    );
+                const osuCalcResult: PerformanceCalculationResult<
+                    OsuDifficultyCalculator,
+                    OsuPerformanceCalculator
+                > | null = await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                    beatmapInfo,
+                    calcParams
+                );
 
                 if (!droidCalcResult || !osuCalcResult) {
                     continue;
@@ -195,11 +205,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 embed.addField(
                     `__${
                         beatmapInfo.version
-                    }__ (${droidCalcResult.result.stars.total.toFixed(2)} ${
+                    }__ (${droidCalcResult.result.difficultyCalculator.total.toFixed(
+                        2
+                    )} ${
                         Symbols.star
-                    } | ${osuCalcResult.result.stars.total.toFixed(2)} ${
-                        Symbols.star
-                    })`,
+                    } | ${osuCalcResult.result.difficultyCalculator.total.toFixed(
+                        2
+                    )} ${Symbols.star})`,
                     `${beatmapInfo.showStatistics(2, stats)}\n` +
                         `${beatmapInfo.showStatistics(3, stats)}\n` +
                         `${beatmapInfo.showStatistics(4, stats)}\n` +

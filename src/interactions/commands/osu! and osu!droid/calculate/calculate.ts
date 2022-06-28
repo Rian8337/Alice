@@ -13,11 +13,15 @@ import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapD
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapStats, ModUtil, Accuracy } from "@rian8337/osu-base";
 import {
+    DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
+    DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+    OsuDifficultyCalculator as RebalanceOsuDifficultyCalculator,
     OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { CalculateLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/calculate/CalculateLocalization";
@@ -105,8 +109,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         );
 
     const droidCalcResult:
-        | PerformanceCalculationResult<DroidPerformanceCalculator>
-        | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>
+        | PerformanceCalculationResult<
+              DroidDifficultyCalculator,
+              DroidPerformanceCalculator
+          >
+        | RebalancePerformanceCalculationResult<
+              RebalanceDroidDifficultyCalculator,
+              RebalanceDroidPerformanceCalculator
+          >
         | null = await (interaction.options.getBoolean("lazercalculation")
         ? new DroidBeatmapDifficultyHelper().calculateBeatmapRebalancePerformance(
               beatmapID ?? hash,
@@ -118,8 +128,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
           ));
 
     const osuCalcResult:
-        | PerformanceCalculationResult<OsuPerformanceCalculator>
-        | RebalancePerformanceCalculationResult<RebalanceOsuPerformanceCalculator>
+        | PerformanceCalculationResult<
+              OsuDifficultyCalculator,
+              OsuPerformanceCalculator
+          >
+        | RebalancePerformanceCalculationResult<
+              RebalanceOsuDifficultyCalculator,
+              RebalanceOsuPerformanceCalculator
+          >
         | null = await (interaction.options.getBoolean("lazercalculation")
         ? new OsuBeatmapDifficultyHelper().calculateBeatmapRebalancePerformance(
               beatmapID ?? hash,
@@ -152,7 +168,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (interaction.options.getBoolean("showdroiddetail")) {
         string += `${localization.getTranslation(
             "rawDroidSr"
-        )}: ${droidCalcResult.result.stars.toString()}\n${localization.getTranslation(
+        )}: ${droidCalcResult.result.difficultyCalculator.toString()}\n${localization.getTranslation(
             "rawDroidPp"
         )}: ${droidCalcResult.result.toString()}\n`;
     }
@@ -160,7 +176,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (interaction.options.getBoolean("showosudetail")) {
         string += `${localization.getTranslation(
             "rawPcSr"
-        )}: ${osuCalcResult.result.stars.toString()}\n${localization.getTranslation(
+        )}: ${osuCalcResult.result.difficultyCalculator.toString()}\n${localization.getTranslation(
             "rawPcPp"
         )}: ${osuCalcResult.result.toString()}`;
     }

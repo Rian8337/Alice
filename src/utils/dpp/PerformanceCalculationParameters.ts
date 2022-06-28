@@ -1,10 +1,10 @@
 import { Accuracy, MapInfo, MapStats, Precision } from "@rian8337/osu-base";
-import { StarRatingCalculationParameters } from "./StarRatingCalculationParameters";
+import { DifficultyCalculationParameters } from "./DifficultyCalculationParameters";
 
 /**
  * Represents a parameter to alter performance calculation result.
  */
-export class PerformanceCalculationParameters extends StarRatingCalculationParameters {
+export class PerformanceCalculationParameters extends DifficultyCalculationParameters {
     /**
      * The combo achieved.
      */

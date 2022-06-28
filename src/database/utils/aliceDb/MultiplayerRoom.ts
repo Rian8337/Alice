@@ -20,8 +20,8 @@ import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
-import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
+import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
@@ -39,9 +39,9 @@ import {
     Precision,
 } from "@rian8337/osu-base";
 import {
-    DroidStarRating,
+    DroidDifficultyCalculator,
     DroidPerformanceCalculator,
-    OsuStarRating,
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { AnyChannel, MessageEmbed, Snowflake } from "discord.js";
@@ -64,11 +64,11 @@ export class MultiplayerRoom
 
     private readonly droidStarRatingCalculationCache: Record<
         string,
-        StarRatingCalculationResult<DroidStarRating>
+        DifficultyCalculationResult<DroidDifficultyCalculator>
     > = {};
     private readonly pcStarRatingCalculationCache: Record<
         string,
-        StarRatingCalculationResult<OsuStarRating>
+        DifficultyCalculationResult<OsuDifficultyCalculator>
     > = {};
 
     private convertedRequiredMods?: Mod[];
@@ -674,12 +674,13 @@ export class MultiplayerRoom
                     this.settings.requiredMods
                 );
 
-                const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-                    this.settings.beatmap!.hash
-                ))!;
+                const beatmapInfo: MapInfo<true> =
+                    (await BeatmapManager.getBeatmap(
+                        this.settings.beatmap!.hash
+                    ))!;
 
                 this.currentBeatmapMaxScore ??= this.applyCustomModMultiplier(
-                    beatmapInfo.map!.maxDroidScore(
+                    beatmapInfo.beatmap.maxDroidScore(
                         new MapStats({
                             mods: this.convertedRequiredMods,
                             speedMultiplier: this.settings.speedMultiplier,
@@ -733,31 +734,33 @@ export class MultiplayerRoom
                     this.settings.beatmap!.hash
                 ))!;
 
-                const starRating: StarRatingCalculationResult<DroidStarRating> =
+                const starRating: DifficultyCalculationResult<DroidDifficultyCalculator> =
                     this.droidStarRatingCalculationCache[sortedMod] ??
                     (await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                         beatmapInfo,
-                        new StarRatingCalculationParameters(customStats)
+                        new DifficultyCalculationParameters(customStats)
                     ))!;
 
                 this.droidStarRatingCalculationCache[sortedMod] ??= starRating;
 
-                const performance: PerformanceCalculationResult<DroidPerformanceCalculator> =
-                    (await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                        starRating,
-                        new PerformanceCalculationParameters(
-                            new Accuracy({
-                                n300: score.perfect,
-                                n100: score.good,
-                                n50: score.bad,
-                                nmiss: score.miss,
-                            }),
-                            undefined,
-                            score.maxCombo,
-                            1,
-                            customStats
-                        )
-                    ))!;
+                const performance: PerformanceCalculationResult<
+                    DroidDifficultyCalculator,
+                    DroidPerformanceCalculator
+                > = (await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                    starRating,
+                    new PerformanceCalculationParameters(
+                        new Accuracy({
+                            n300: score.perfect,
+                            n100: score.good,
+                            n50: score.bad,
+                            nmiss: score.miss,
+                        }),
+                        undefined,
+                        score.maxCombo,
+                        1,
+                        customStats
+                    )
+                ))!;
 
                 return MathUtils.round(performance.result.total, 2);
             }
@@ -780,31 +783,33 @@ export class MultiplayerRoom
                     this.settings.beatmap!.hash
                 ))!;
 
-                const starRating: StarRatingCalculationResult<OsuStarRating> =
+                const starRating: DifficultyCalculationResult<OsuDifficultyCalculator> =
                     this.pcStarRatingCalculationCache[sortedMod] ??
                     (await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                         beatmapInfo,
-                        new StarRatingCalculationParameters(customStats)
+                        new DifficultyCalculationParameters(customStats)
                     ))!;
 
                 this.pcStarRatingCalculationCache[sortedMod] ??= starRating;
 
-                const performance: PerformanceCalculationResult<OsuPerformanceCalculator> =
-                    (await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                        starRating,
-                        new PerformanceCalculationParameters(
-                            new Accuracy({
-                                n300: score.perfect,
-                                n100: score.good,
-                                n50: score.bad,
-                                nmiss: score.miss,
-                            }),
-                            undefined,
-                            score.maxCombo,
-                            1,
-                            customStats
-                        )
-                    ))!;
+                const performance: PerformanceCalculationResult<
+                    OsuDifficultyCalculator,
+                    OsuPerformanceCalculator
+                > = (await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                    starRating,
+                    new PerformanceCalculationParameters(
+                        new Accuracy({
+                            n300: score.perfect,
+                            n100: score.good,
+                            n50: score.bad,
+                            nmiss: score.miss,
+                        }),
+                        undefined,
+                        score.maxCombo,
+                        1,
+                        customStats
+                    )
+                ))!;
 
                 return MathUtils.round(performance.result.total, 2);
             }

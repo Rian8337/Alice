@@ -118,7 +118,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             await beatmap.retrieveBeatmapFile();
 
-            const maxScore: number = beatmap.map!.maxDroidScore(
+            if (!beatmap.hasDownloadedBeatmap()) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("beatmapNotFound")
+                    ),
+                });
+            }
+
+            const maxScore: number = beatmap.beatmap.maxDroidScore(
                 new MapStats({
                     mods: ModUtil.pcStringToMods(challenge.constrain),
                 })

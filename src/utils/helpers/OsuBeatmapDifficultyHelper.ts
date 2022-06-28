@@ -1,30 +1,27 @@
 import { BeatmapDifficultyHelper } from "./BeatmapDifficultyHelper";
-import { modes } from "@rian8337/osu-base";
 import {
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
-    OsuStarRating,
 } from "@rian8337/osu-difficulty-calculator";
 import {
+    OsuDifficultyCalculator as RebalanceOsuDifficultyCalculator,
     OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
-    OsuStarRating as RebalanceOsuStarRating,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 
 /**
  * A helper class for calculating osu!standard difficulty and performance of beatmaps or scores.
  */
 export class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
-    OsuStarRating,
-    RebalanceOsuStarRating,
+    OsuDifficultyCalculator,
     OsuPerformanceCalculator,
+    RebalanceOsuDifficultyCalculator,
     RebalanceOsuPerformanceCalculator
 > {
-    protected override readonly difficultyCalculator: new () => OsuStarRating =
-        OsuStarRating;
-    protected override readonly rebalanceDifficultyCalculator: new () => RebalanceOsuStarRating =
-        RebalanceOsuStarRating;
-    protected override readonly performanceCalculator: new () => OsuPerformanceCalculator =
+    protected override readonly difficultyCalculator = OsuDifficultyCalculator;
+    protected override readonly rebalanceDifficultyCalculator =
+        RebalanceOsuDifficultyCalculator;
+    protected override readonly performanceCalculator =
         OsuPerformanceCalculator;
-    protected override readonly rebalancePerformanceCalculator: new () => RebalanceOsuPerformanceCalculator =
+    protected override readonly rebalancePerformanceCalculator =
         RebalanceOsuPerformanceCalculator;
-    protected override readonly mode: modes = modes.osu;
 }

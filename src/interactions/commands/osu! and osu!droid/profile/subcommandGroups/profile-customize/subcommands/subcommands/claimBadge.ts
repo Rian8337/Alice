@@ -13,11 +13,11 @@ import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
+import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
-import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
-import { OsuStarRating } from "@rian8337/osu-difficulty-calculator";
+import { OsuDifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -206,10 +206,10 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     continue;
                 }
 
-                const star: StarRatingCalculationResult<OsuStarRating> =
+                const star: DifficultyCalculationResult<OsuDifficultyCalculator> =
                     (await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                         beatmapInfo,
-                        new StarRatingCalculationParameters()
+                        new DifficultyCalculationParameters()
                     ))!;
 
                 if (star.result.total >= badge.requirement) {

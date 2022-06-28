@@ -13,7 +13,10 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { MapInfo } from "@rian8337/osu-base";
-import { DroidPerformanceCalculator } from "@rian8337/osu-difficulty-calculator";
+import {
+    DroidDifficultyCalculator,
+    DroidPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -141,10 +144,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
     }
 
-    const droidCalcResult: PerformanceCalculationResult<DroidPerformanceCalculator> | null =
-        await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
-            score
-        );
+    const droidCalcResult: PerformanceCalculationResult<
+        DroidDifficultyCalculator,
+        DroidPerformanceCalculator
+    > | null = await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+        score
+    );
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
