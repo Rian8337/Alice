@@ -47,7 +47,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
                 // 2 days
                 86400 * 2,
                 // 4 days
-                86400 * 6,
+                86400 * 4,
                 // 1 week
                 86400 * 7,
             ].map((v) => {
