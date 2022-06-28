@@ -127,7 +127,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embed.addField(
                 fieldTitle,
                 fieldContent +
-                    localization.getTranslation("beatmapNotFound") +
+                    localization.getTranslation("beatmapNotFoundReject") +
                     "**"
             );
             continue;
