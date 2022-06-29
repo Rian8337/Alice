@@ -109,15 +109,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     await score.downloadReplay();
 
-    const data: ReplayData | null | undefined = score.replay?.data;
-
-    if (!data) {
+    if (!score.replay?.data) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noReplayFound")
             ),
         });
     }
+
+    const data: ReplayData = score.replay.data;
 
     const zip: AdmZip = new AdmZip();
 
@@ -206,8 +206,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             localization.language
         );
 
+    if (!score.replay.beatmap) {
+        score.replay.beatmap = droidCalcResult.result.difficultyCalculator;
+    }
+
     const hitErrorInformation: HitErrorInformation =
-        score.replay!.calculateHitError()!;
+        score.replay.calculateHitError()!;
 
     (<MessageEmbed>calcEmbedOptions.embeds![0])
         .setAuthor({
@@ -229,7 +233,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             )} | ${hitErrorInformation.unstableRate.toFixed(2)} UR`
         );
 
-    calcEmbedOptions.files?.push(replayAttachment);
+    calcEmbedOptions.files ??= [];
+    calcEmbedOptions.files.push(replayAttachment);
 
     InteractionHelper.reply(interaction, calcEmbedOptions);
 };
