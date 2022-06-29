@@ -104,7 +104,7 @@ export const category: SlashCommand["category"] = CommandCategory.GENERAL;
 
 export const config: SlashCommand["config"] = {
     name: "botinfo",
-    description: "Displays information about the bot.",
+    description: "Displays technical information about the bot.",
     options: [],
     example: [],
     permissions: [],
