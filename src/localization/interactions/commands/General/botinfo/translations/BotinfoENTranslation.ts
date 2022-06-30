@@ -7,7 +7,7 @@ import { BotinfoStrings } from "../BotinfoLocalization";
 export class BotinfoENTranslation extends Translation<BotinfoStrings> {
     override readonly translations: BotinfoStrings = {
         aboutBot:
-            "This is [Alice](%s), a multipurpose Discord bot by [Rian8337](%s) and [NeroYuki](%s) made for [osu!droid](%s). However, it has a plethora of other uses as well, and is mainly used to power the [osu!droid (International)](%s) Discord server.",
+            "This is [Alice](%s), a multipurpose Discord bot by [Rian8337](%s) and [NeroYuki](%s) made for [osu!droid](%s). However, it has a plethora of other uses as well, and is mainly used to power the [osu!droid (International)](%s) Discord server.\n\nIf you enjoy the features offered by the bot, feel free to buy us a coffee at [Ko-fi](%s)!",
         botInfo: "Bot Information",
         botVersion: "Version",
         botUptime: "Uptime",

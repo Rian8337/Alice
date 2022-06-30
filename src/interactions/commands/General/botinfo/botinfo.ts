@@ -45,7 +45,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 "https://github.com/Rian8337",
                 "https://github.com/NeroYuki",
                 "https://osudroid.moe",
-                "https://discord.gg/nyD92cE"
+                "https://discord.gg/nyD92cE",
+                "https://ko-fi.com/rian8337"
             )
         )
         .addField(
