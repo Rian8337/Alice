@@ -20,6 +20,6 @@ export class BotinfoENTranslation extends Translation<BotinfoStrings> {
         osuRebalDiffCalc: "Rebalance Star Rating and PP Calculator",
         osuDroidReplayAnalyzer: "osu!droid Replay Analyzer",
         osuDroidUtilities: "osu!droid Utilities",
-        osuStrainGraphGenerator: "Difficulty Strain Graph Generator",
+        osuStrainGraphGenerator: "Difficulty Graph Generator",
     };
 }
