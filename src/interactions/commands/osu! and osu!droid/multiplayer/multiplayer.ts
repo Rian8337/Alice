@@ -226,18 +226,18 @@ export const config: SlashCommand["config"] = {
                     description: "Starts a timer until round start.",
                     options: [
                         {
+                            name: "duration",
+                            type: ApplicationCommandOptionTypes.INTEGER,
+                            description:
+                                "The duration of the timer, in seconds. Defaults to 10.",
+                            minValue: 5,
+                            maxValue: 10,
+                        },
+                        {
                             name: "force",
                             type: ApplicationCommandOptionTypes.BOOLEAN,
                             description:
                                 "Whether to forcefully start the round regardless of ready state of all players.",
-                        },
-                        {
-                            name: "duration",
-                            type: ApplicationCommandOptionTypes.INTEGER,
-                            description:
-                                "The duration of the timer, in seconds. Defaults to 15.",
-                            minValue: 5,
-                            maxValue: 15,
                         },
                     ],
                 },

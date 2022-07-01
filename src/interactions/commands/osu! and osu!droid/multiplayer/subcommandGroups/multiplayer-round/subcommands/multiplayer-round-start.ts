@@ -104,7 +104,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         }
     }
 
-    const duration: number = interaction.options.getInteger("duration") ?? 15;
+    const duration: number = interaction.options.getInteger("duration") ?? 10;
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
