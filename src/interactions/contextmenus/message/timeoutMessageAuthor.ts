@@ -130,7 +130,8 @@ export const run: MessageContextMenuCommand["run"] = async (
             `https://discord.com/channels/${Constants.mainServer}/${channelId}/${messageId}`
         ),
         duration,
-        localization.language
+        localization.language,
+        channelId
     );
 
     if (!result.success) {

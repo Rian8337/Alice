@@ -48,13 +48,15 @@ export abstract class WarningManager extends PunishmentManager {
      * @param points The amount of warning points to be issued to the guild member.
      * @param duration The duration the warning will stay valid for, in seconds.
      * @param reason The reason for warning the user.
+     * @param channelId The channel where the user was warned. Defaults to the interaction's channel.
      */
     static async issue(
         interaction: BaseCommandInteraction,
         member: GuildMember,
         points: number,
         duration: number,
-        reason: string
+        reason: string,
+        channelId: Snowflake = interaction.channelId
     ): Promise<OperationResult> {
         const localization: WarningManagerLocalization = this.getLocalization(
             await CommandHelper.getLocale(interaction)
@@ -142,13 +144,13 @@ export abstract class WarningManager extends PunishmentManager {
                     member.id
                 } | ${logLocalization.getTranslation(
                     "channelId"
-                )}: ${interaction.channelId!}`,
+                )}: <#${channelId}>`,
             })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} ${StringHelper.formatString(
                     logLocalization.getTranslation("inChannel"),
-                    interaction.channel!.toString()
+                    `<#${channelId}>`
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     duration,
                     logLocalization.language
@@ -179,13 +181,13 @@ export abstract class WarningManager extends PunishmentManager {
                     member.id
                 } | ${userLocalization.getTranslation(
                     "channelId"
-                )}: ${interaction.channelId!}`,
+                )}: <#${channelId}>`,
             })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} ${StringHelper.formatString(
                     userLocalization.getTranslation("inChannel"),
-                    interaction.channel!.toString()
+                    `<@${channelId}>`
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     duration,
                     userLocalization.language
@@ -204,7 +206,7 @@ export abstract class WarningManager extends PunishmentManager {
             globalId: warningId,
             discordId: member.id,
             guildId: interaction.guildId!,
-            channelId: interaction.channelId!,
+            channelId: channelId,
             issuerId: interaction.user.id,
             creationDate: currentTime,
             expirationDate: currentTime + duration,

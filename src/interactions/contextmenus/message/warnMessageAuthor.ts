@@ -162,7 +162,8 @@ export const run: MessageContextMenuCommand["run"] = async (
             loggedContent,
             // interaction.targetMessage.url returns the wrong link, so constructing manually for now.
             `https://discord.com/channels/${Constants.mainServer}/${channelId}/${messageId}`
-        )
+        ),
+        channelId
     );
 
     if (!result.success) {

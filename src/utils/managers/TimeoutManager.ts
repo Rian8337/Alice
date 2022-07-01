@@ -3,6 +3,7 @@ import {
     GuildChannel,
     GuildMember,
     MessageEmbed,
+    Snowflake,
     TextChannel,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -42,6 +43,7 @@ export abstract class TimeoutManager extends PunishmentManager {
      * @param reason Reason for timeout.
      * @param duration The duration to timeout the user for, in seconds.
      * @param language The locale of the user who attempted to mute the guild member.
+     * @param channelId The channel where the user was timeouted. Defaults to the interaction's channel.
      * @returns An object containing information about the operation.
      */
     static async addTimeout(
@@ -49,7 +51,8 @@ export abstract class TimeoutManager extends PunishmentManager {
         member: GuildMember,
         reason: string,
         duration: number,
-        language: Language = "en"
+        language: Language = "en",
+        channelId: Snowflake = interaction.channelId
     ): Promise<OperationResult> {
         const localization: TimeoutManagerLocalization =
             this.getLocalization(language);
@@ -145,15 +148,15 @@ export abstract class TimeoutManager extends PunishmentManager {
             .setFooter({
                 text: `${logLocalization.getTranslation("userId")}: ${
                     member.id
-                } | ${logLocalization.getTranslation("channelId")}: ${
-                    interaction.channel?.id
-                }`,
+                } | ${logLocalization.getTranslation(
+                    "channelId"
+                )}: <#${channelId}>`,
             })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} ${StringHelper.formatString(
                     logLocalization.getTranslation("inChannel"),
-                    interaction.channel!.toString()
+                    `<#${channelId}>`
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     duration,
                     language
@@ -177,15 +180,15 @@ export abstract class TimeoutManager extends PunishmentManager {
             .setFooter({
                 text: `${userLocalization.getTranslation("userId")}: ${
                     member.id
-                } | ${userLocalization.getTranslation("channelId")}: ${
-                    interaction.channel?.id
-                }`,
+                } | ${userLocalization.getTranslation(
+                    "channelId"
+                )}: <#${channelId}>`,
             })
             .setTimestamp(new Date())
             .setDescription(
                 `**${member} ${StringHelper.formatString(
                     userLocalization.getTranslation("inChannel"),
-                    interaction.channel!.toString()
+                    `<#${channelId}>`
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     duration,
                     userLocalization.language
