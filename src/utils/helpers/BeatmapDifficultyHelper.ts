@@ -11,11 +11,11 @@ import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import {
     DifficultyCalculator,
+    DroidDifficultyCalculator,
     PerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     DifficultyCalculator as RebalanceDifficultyCalculator,
-    DroidDifficultyCalculator,
     DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     PerformanceCalculator as RebalancePerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
