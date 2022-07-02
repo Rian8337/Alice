@@ -55,7 +55,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             `${localization.getTranslation("botVersion")}: ${version}\n` +
                 `${localization.getTranslation(
                     "botUptime"
-                )}: ${DateTimeFormatHelper.secondsToDHMS(process.uptime())}`
+                )}: ${DateTimeFormatHelper.secondsToDHMS(client.uptime / 1000)}`
         )
         .addField(
             localization.getTranslation("coreLibraries"),
