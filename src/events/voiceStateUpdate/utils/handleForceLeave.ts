@@ -7,7 +7,7 @@ export const run: EventUtil["run"] = async (
     oldState: VoiceState,
     newState: VoiceState
 ) => {
-    if (oldState.member!.id === client.user!.id && !newState.channel) {
+    if (oldState.member!.id === client.user.id && !newState.channel) {
         MusicManager.leave(oldState.channel!);
     }
 };

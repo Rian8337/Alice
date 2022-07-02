@@ -14,9 +14,9 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     Config.maintenanceReason = reason;
 
     if (Config.maintenance) {
-        client.user!.setActivity("Maintenance mode");
+        client.user.setActivity("Maintenance mode");
     } else {
-        client.user!.setActivity(Config.activityList[0][0], {
+        client.user.setActivity(Config.activityList[0][0], {
             type: Config.activityList[0][1],
         });
     }

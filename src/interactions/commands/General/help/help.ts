@@ -201,7 +201,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                     `${localization.getTranslation("useHelpCommand")}\n` +
                     localization.getTranslation("issuesContact")
             )
-            .setThumbnail(client.user!.avatarURL({ dynamic: true })!);
+            .setThumbnail(client.user.avatarURL({ dynamic: true })!);
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             embed.addField(

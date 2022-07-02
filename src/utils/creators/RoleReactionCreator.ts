@@ -33,7 +33,7 @@ export abstract class RoleReactionCreator extends Manager {
             filter: (reaction, user) =>
                 (reaction.emoji.name === emoji ||
                     reaction.emoji.id === emoji) &&
-                user.id !== this.client.user?.id,
+                user.id !== this.client.user.id,
         });
 
         collector.on("collect", async (_, user) => {

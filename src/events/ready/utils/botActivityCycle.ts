@@ -5,7 +5,7 @@ import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (client) => {
     if (Config.isDebug) {
-        client.user!.setActivity("Debug mode", { type: "PLAYING" });
+        client.user.setActivity("Debug mode", { type: "PLAYING" });
         return;
     }
 
@@ -20,7 +20,7 @@ export const run: EventUtil["run"] = async (client) => {
         }
 
         const activity = ArrayHelper.getRandomArrayElement(Config.activityList);
-        client.user!.setActivity(activity[0], { type: activity[1] });
+        client.user.setActivity(activity[0], { type: activity[1] });
     }, 10 * 1000);
 };
 
