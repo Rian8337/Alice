@@ -12,7 +12,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
-export const run: SlashCommand["run"] = async (_, interaction) => {
+export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: BotinfoLocalization = new BotinfoLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -38,6 +38,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     };
 
     embed
+        .setThumbnail(client.user.avatarURL({ dynamic: true })!)
         .setDescription(
             StringHelper.formatString(
                 localization.getTranslation("aboutBot"),
