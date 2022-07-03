@@ -9,6 +9,10 @@ import { Config } from "@alice-core/Config";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: EventUtil["run"] = async (client) => {
+    if (!Config.isDebug) {
+        return;
+    }
+
     const notificationChannel: TextChannel = <TextChannel>(
         await client.channels.fetch("669221772083724318")
     );
