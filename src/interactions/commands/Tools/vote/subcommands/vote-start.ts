@@ -58,7 +58,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await DatabaseManager.aliceDb.collections.voting.insert({
         initiator: interaction.user.id,
-        channel: interaction.channel!.id,
+        channel: interaction.channelId,
         xpReq: xpReq || undefined,
         topic: topic,
         choices: choices,

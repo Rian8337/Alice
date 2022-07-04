@@ -15,7 +15,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const voteInfo: Voting | null =
         await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
-            interaction.channel!.id
+            interaction.channelId
         );
 
     if (!voteInfo) {

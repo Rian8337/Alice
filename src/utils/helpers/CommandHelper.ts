@@ -155,7 +155,7 @@ export abstract class CommandHelper extends Manager {
             channelId =
                 input.channel instanceof ThreadChannel
                     ? input.channel.parentId!
-                    : input.channel!.id;
+                    : input.channelId!;
         } else if (input instanceof ThreadChannel) {
             channelId = input.parentId!;
         } else if (input instanceof BaseGuildTextChannel) {
@@ -500,7 +500,7 @@ export abstract class CommandHelper extends Manager {
 
         return (
             CommandUtilManager.channelDisabledCommands
-                .get(interaction.channel!.id)
+                .get(interaction.channelId)
                 ?.get(interaction.commandName)?.cooldown !== -1
         );
     }

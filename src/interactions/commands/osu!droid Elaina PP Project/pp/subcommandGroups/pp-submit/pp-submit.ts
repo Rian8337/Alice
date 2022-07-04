@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
-        !Config.ppChannel.includes(interaction.channel!.id)
+        !Config.ppChannel.includes(interaction.channelId)
     ) {
         interaction.ephemeral = true;
 

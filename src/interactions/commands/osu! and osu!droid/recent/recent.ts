@@ -114,7 +114,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     BeatmapManager.setChannelLatestBeatmap(
-        interaction.channel!.id,
+        interaction.channelId,
         player.recentPlays[index - 1].hash
     );
 

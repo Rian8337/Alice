@@ -15,7 +15,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 
     const beatmapHash: string | undefined =
-        BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
+        BeatmapManager.getChannelLatestBeatmap(interaction.channelId);
 
     if (!beatmapHash) {
         return InteractionHelper.reply(interaction, {

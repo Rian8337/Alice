@@ -20,7 +20,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 
     const cachedBeatmapHash: string | undefined =
-        BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
+        BeatmapManager.getChannelLatestBeatmap(interaction.channelId);
 
     if (!cachedBeatmapHash) {
         interaction.ephemeral = true;

@@ -118,7 +118,7 @@ function endGame(
         );
 
     CacheManager.stillHasMathGameActive.delete(
-        mode === "single" ? interaction.user.id : interaction.channel!.id
+        mode === "single" ? interaction.user.id : interaction.channelId
     );
 
     interaction.channel!.send({
@@ -152,7 +152,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             break;
         case "multi":
             if (
-                CacheManager.stillHasMathGameActive.has(interaction.channel!.id)
+                CacheManager.stillHasMathGameActive.has(interaction.channelId)
             ) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -161,7 +161,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            CacheManager.stillHasMathGameActive.add(interaction.channel!.id);
+            CacheManager.stillHasMathGameActive.add(interaction.channelId);
             break;
     }
 

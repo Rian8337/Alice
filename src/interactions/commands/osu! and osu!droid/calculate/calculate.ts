@@ -38,7 +38,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     )[0];
 
     const hash: string | undefined = BeatmapManager.getChannelLatestBeatmap(
-        interaction.channel!.id
+        interaction.channelId
     );
 
     if (!beatmapID && !hash) {
@@ -186,7 +186,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     BeatmapManager.setChannelLatestBeatmap(
-        interaction.channel!.id,
+        interaction.channelId,
         osuCalcResult.map.hash
     );
 
