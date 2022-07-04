@@ -41,7 +41,7 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
         guildId: Snowflake,
         options?: FindOptions<DatabaseGuildSettings>
     ): Promise<GuildSettings | null> {
-        return this.getOne({ id: guildId }, this.processFindOptions(options));
+        return this.getOne({ id: guildId }, options);
     }
 
     /**
@@ -55,10 +55,7 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
         channelId: Snowflake,
         options?: FindOptions<DatabaseGuildSettings>
     ): Promise<GuildSettings | null> {
-        return this.getOne(
-            { "channelSettings.id": channelId },
-            this.processFindOptions(options)
-        );
+        return this.getOne({ "channelSettings.id": channelId }, options);
     }
 
     /**

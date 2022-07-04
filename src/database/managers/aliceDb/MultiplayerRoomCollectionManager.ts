@@ -107,7 +107,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
                 : typeof input === "string"
                 ? { "players.discordId": input }
                 : { "players.uid": input },
-            this.processFindOptions(options)
+            options
         );
     }
 
@@ -122,10 +122,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
         roomId: string,
         options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null> {
-        return this.getOne(
-            { roomId: roomId },
-            this.processFindOptions(options)
-        );
+        return this.getOne({ roomId: roomId }, options);
     }
 
     /**
@@ -139,10 +136,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
         channelId: Snowflake,
         options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null> {
-        return this.getOne(
-            { channelId: channelId },
-            this.processFindOptions(options)
-        );
+        return this.getOne({ channelId: channelId }, options);
     }
 
     /**

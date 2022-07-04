@@ -2,6 +2,7 @@ import { Voting } from "@alice-database/utils/aliceDb/Voting";
 import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake } from "discord.js";
+import { FindOptions } from "mongodb";
 
 /**
  * A manager for the `voting` collection.
@@ -27,8 +28,22 @@ export class VotingCollectionManager extends DatabaseCollectionManager<
      * Gets a current ongoing vote in a channel.
      *
      * @param channelId The ID of the channel.
+     * @param options Options for the retrieval of the vote.
      */
-    getCurrentVoteInChannel(channelId: Snowflake): Promise<Voting | null> {
-        return this.getOne({ channel: channelId });
+    getCurrentVoteInChannel(
+        channelId: Snowflake,
+        options?: FindOptions<DatabaseVoting>
+    ): Promise<Voting | null> {
+        return this.getOne({ channel: channelId }, options);
+    }
+
+    protected override processFindOptions(
+        options?: FindOptions<DatabaseVoting>
+    ): FindOptions<DatabaseVoting> | undefined {
+        if (options?.projection) {
+            options.projection.channel = 1;
+        }
+
+        return super.processFindOptions(options);
     }
 }
