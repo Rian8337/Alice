@@ -8,6 +8,8 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { UpdateFilter } from "mongodb";
+import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
@@ -16,7 +18,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const voteInfo: Voting | null =
         await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
-            interaction.channel!.id
+            interaction.channelId
         );
 
     if (!voteInfo) {
@@ -27,9 +29,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const choices: VoteChoice[] = voteInfo.choices;
+    const { choices } = voteInfo;
 
-    const pickedChoice: number = interaction.options.getInteger("option")! - 1;
+    const pickedChoice: number =
+        interaction.options.getInteger("option", true) - 1;
 
     if (
         !NumberHelper.isNumberInRange(
@@ -84,18 +87,38 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         }
     }
 
+    const query: UpdateFilter<DatabaseVoting> = {
+        $push: {},
+    };
+
+    Object.defineProperty(query.$push, `choices.${pickedChoice}.voters`, {
+        value: interaction.user.id,
+        configurable: true,
+        enumerable: true,
+        writable: true,
+    });
+
     if (choiceIndex !== -1) {
         choices[choiceIndex].voters.splice(
             choices[choiceIndex].voters.indexOf(interaction.user.id),
             1
         );
+
+        query.$pull = {};
+
+        Object.defineProperty(query.$pull, `choices.${choiceIndex}.voters`, {
+            value: interaction.user.id,
+            configurable: true,
+            enumerable: true,
+            writable: true,
+        });
     }
 
     choices[pickedChoice].voters.push(interaction.user.id);
 
     await DatabaseManager.aliceDb.collections.voting.updateOne(
-        { channel: interaction.channel!.id },
-        { $set: { choices: choices } }
+        { channel: interaction.channelId },
+        query
     );
 
     let string: string = `**${localization.getTranslation("topic")}: ${

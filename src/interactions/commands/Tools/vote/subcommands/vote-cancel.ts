@@ -1,6 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
-import { VoteChoice } from "@alice-interfaces/interactions/commands/Tools/VoteChoice";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
 import { VoteLocalization } from "@alice-localization/interactions/commands/Tools/vote/VoteLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -14,7 +13,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const voteInfo: Voting | null =
         await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
-            interaction.channel!.id
+            interaction.channelId,
+            {
+                projection: {
+                    choices: {
+                        $elemMatch: {
+                            voters: interaction.user.id,
+                        },
+                    },
+                },
+            }
         );
 
     if (!voteInfo) {
@@ -25,14 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const choices: VoteChoice[] = voteInfo.choices;
-
-    // Check if the user has already voted
-    const choiceIndex: number = choices.findIndex((c) =>
-        c.voters.includes(interaction.user.id)
-    );
-
-    if (choiceIndex === -1) {
+    if (!voteInfo.choices[0]) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notVotedYet")
@@ -40,34 +41,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    choices[choiceIndex].voters.splice(
-        choices[choiceIndex].voters.indexOf(interaction.user.id),
-        1
-    );
-
     await DatabaseManager.aliceDb.collections.voting.updateOne(
-        { channel: interaction.channel!.id },
-        { $set: { choices: choices } }
+        { channel: interaction.channelId },
+        {
+            $pull: {
+                "choices.$[choiceFilter].voters": interaction.user.id,
+            },
+        },
+        {
+            arrayFilters: [
+                { "choiceFilter.choice": voteInfo.choices[0].choice },
+            ],
+        }
     );
-
-    let string: string = `**${localization.getTranslation("topic")}: ${
-        voteInfo.topic
-    }**\n\n`;
-
-    for (let i = 0; i < voteInfo.choices.length; ++i) {
-        const choice: VoteChoice = voteInfo.choices[i];
-
-        string += `\`[${i + 1}] ${choice.choice} - ${
-            choice.voters.length
-        }\`\n\n`;
-    }
 
     InteractionHelper.reply(interaction, {
-        content:
-            MessageCreator.createAccept(
-                localization.getTranslation("voteCancelled"),
-                interaction.user.toString()
-            ) + `\n${string}`,
+        content: MessageCreator.createAccept(
+            localization.getTranslation("voteCancelled"),
+            interaction.user.toString()
+        ),
     });
 };
 
