@@ -7,6 +7,10 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Message, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
+    if (!Config.isDebug) {
+        return;
+    }
+
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
