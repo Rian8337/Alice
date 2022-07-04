@@ -38,6 +38,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionTypes.INTEGER,
                     required: true,
                     description: "The option to vote for.",
+                    minValue: 1,
                 },
             ],
         },
