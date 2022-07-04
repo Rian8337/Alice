@@ -856,7 +856,7 @@ export class MultiplayerRoom
 
         const submissionTimeDifference: number =
             score.date +
-            score.skippedTime / stats.speedMultiplier -
+            (score.skippedTime * 1000) / stats.speedMultiplier -
             beatmapFinishTime;
 
         const BCP47: string = LocaleHelper.convertToBCP47(language);
