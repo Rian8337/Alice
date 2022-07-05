@@ -230,7 +230,7 @@ export const run: EventUtil["run"] = async (
     client.logger.info(`${logMessage} ${optionsStr}`);
 
     interaction.ephemeral =
-        (interaction.channel instanceof DMChannel &&
+        (interaction.inGuild() &&
             (command.config.replyEphemeral ||
                 Config.maintenance ||
                 !CommandHelper.isCommandEnabled(interaction) ||
