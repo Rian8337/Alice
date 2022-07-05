@@ -230,11 +230,12 @@ export const run: EventUtil["run"] = async (
     client.logger.info(`${logMessage} ${optionsStr}`);
 
     interaction.ephemeral =
-        (command.config.replyEphemeral ||
-            Config.maintenance ||
-            !CommandHelper.isCommandEnabled(interaction) ||
-            subcommand?.config.replyEphemeral ||
-            subcommandGroup?.config.replyEphemeral) ??
+        (interaction.channel instanceof DMChannel &&
+            (command.config.replyEphemeral ||
+                Config.maintenance ||
+                !CommandHelper.isCommandEnabled(interaction) ||
+                subcommand?.config.replyEphemeral ||
+                subcommandGroup?.config.replyEphemeral)) ??
         false;
 
     if (Config.isDebug) {
