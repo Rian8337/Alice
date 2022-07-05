@@ -129,6 +129,8 @@ export const run: EventUtil["run"] = async (client) => {
 
         CacheManager.userHasActiveVerificationMenu.delete(i.user.id);
 
+        await selectMenuInteraction?.deferUpdate();
+
         return <keyof typeof VerifyLanguage>selectMenuInteraction?.values[0];
     };
 
