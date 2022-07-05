@@ -98,12 +98,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     for (const credential of playerCredentials.values()) {
         embed.addField(
             i.toString(),
-            `**${localization.getTranslation("username")}**: ${
+            `**${localization.getTranslation("username")}**: \`${
                 credential.Username
-            }\n` +
-                `**${localization.getTranslation("password")}**: ${
+            }\`\n` +
+                `**${localization.getTranslation("password")}**: \`${
                     credential.Password
-                }`
+                }\``
         );
 
         ++i;
