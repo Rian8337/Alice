@@ -24,6 +24,7 @@ import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Config } from "@alice-core/Config";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: EventUtil["run"] = async (client) => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
@@ -137,12 +138,13 @@ export const run: EventUtil["run"] = async (client) => {
     arrivalMessage
         .createMessageComponentCollector()
         .on("collect", async (i) => {
+            i.ephemeral = true;
+
             if (CacheManager.userHasActiveVerificationMenu.has(i.user.id)) {
-                i.reply({
+                InteractionHelper.reply(i, {
                     content: MessageCreator.createReject(
                         "I'm sorry, you're still in cooldown! Please wait for a moment."
                     ),
-                    ephemeral: true,
                 });
 
                 return;
@@ -151,11 +153,10 @@ export const run: EventUtil["run"] = async (client) => {
             const member: GuildMember = <GuildMember>i.member;
 
             if (TimeoutManager.isUserTimeouted(member)) {
-                i.reply({
+                InteractionHelper.reply(i, {
                     content: MessageCreator.createReject(
                         "I'm sorry, you are currently timeouted, therefore you cannot begin your verification process!"
                     ),
-                    ephemeral: true,
                 });
 
                 return;
@@ -175,7 +176,7 @@ export const run: EventUtil["run"] = async (client) => {
                         { encoding: "utf-8" }
                     );
 
-                    await i.editReply({
+                    await InteractionHelper.reply(i, {
                         content:
                             MessageCreator.createAccept(
                                 `Here is the arrival message translated in \`${VerifyLanguage[selectedLanguage]}\`.`
@@ -186,17 +187,16 @@ export const run: EventUtil["run"] = async (client) => {
                 case "verification": {
                     // I know this doesn't make sense, but just in case a staff clicks the button, this rejection message will appear
                     if (member.roles.cache.find((v) => v.name === "Member")) {
-                        i.reply({
+                        InteractionHelper.reply(i, {
                             content: MessageCreator.createReject(
                                 "I'm sorry, you have been verified!"
                             ),
-                            ephemeral: true,
                         });
 
                         return;
                     }
 
-                    await i.editReply({
+                    await InteractionHelper.reply(i, {
                         content: MessageCreator.createAccept(
                             "A thread will be created for you. Please wait."
                         ),
@@ -296,12 +296,13 @@ export const run: EventUtil["run"] = async (client) => {
     verificationTranslationMessage
         .createMessageComponentCollector()
         .on("collect", async (i) => {
+            i.ephemeral = true;
+
             if (CacheManager.userHasActiveVerificationMenu.has(i.user.id)) {
-                i.reply({
+                InteractionHelper.reply(i, {
                     content: MessageCreator.createReject(
                         "I'm sorry, you're still in cooldown! Please wait for a moment."
                     ),
-                    ephemeral: true,
                 });
 
                 return;
@@ -319,7 +320,7 @@ export const run: EventUtil["run"] = async (client) => {
                 { encoding: "utf-8" }
             );
 
-            await i.editReply({
+            await InteractionHelper.reply(i, {
                 content:
                     MessageCreator.createAccept(
                         `Here is the verification message translated in \`${VerifyLanguage[selectedLanguage]}\`.`
