@@ -45,6 +45,8 @@ export class ProfileKRTranslation extends Translation<ProfileStrings> {
         userCannotClaimBadge:
             "죄송해요, 뱃지를 얻기위한 조건을 충족시키지 못하셨어요!",
         claimBadgeSuccess: "%s, 성공적으로 %s 뱃지를 얻었어요.",
+        userNotBindedToAccount: "",
+        playerCredentialsNotFound: "",
         chooseBackground: "사용하고자 하는 배경을 선택하세요.",
         changeInfoBoxBackgroundColorTitle: "프로필 정보 칸 배경 색 바꾸기",
         enterColor: "사용하고자 하는 색상을 입력하세요.",
@@ -107,5 +109,10 @@ export class ProfileKRTranslation extends Translation<ProfileStrings> {
         bindInformation: "바인딩 정보",
         binded: "%s에게 바인딩됨 (user ID: %s)",
         notBinded: "바인딩 되어있지 않음",
+        playerCredentialsInfo: "",
+        username: "",
+        password: "",
+        doNotShareCredentialsWarning: "",
+        changeCredentialsDirection: "",
     };
 }

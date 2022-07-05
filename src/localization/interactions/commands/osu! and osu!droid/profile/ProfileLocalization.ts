@@ -32,6 +32,8 @@ export interface ProfileStrings {
     readonly userDoesntHaveScoreinBeatmap: string;
     readonly userCannotClaimBadge: string;
     readonly claimBadgeSuccess: string;
+    readonly userNotBindedToAccount: string;
+    readonly playerCredentialsNotFound: string;
     readonly chooseBackground: string;
     readonly changeInfoBoxBackgroundColorTitle: string;
     readonly enterColor: string;
@@ -84,6 +86,11 @@ export interface ProfileStrings {
     readonly bindInformation: string;
     readonly binded: string;
     readonly notBinded: string;
+    readonly playerCredentialsInfo: string;
+    readonly username: string;
+    readonly password: string;
+    readonly doNotShareCredentialsWarning: string;
+    readonly changeCredentialsDirection: string;
 }
 
 /**

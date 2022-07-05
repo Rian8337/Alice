@@ -46,6 +46,9 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         userCannotClaimBadge:
             "I'm sorry, you do not fulfill the requirement to get the badge!",
         claimBadgeSuccess: "%s, successfully claimed badge `%s`.",
+        userNotBindedToAccount: "I'm sorry, you are not binded to that uid!",
+        playerCredentialsNotFound:
+            "I'm sorry, you have no osu!droid accounts that were affected by the deletion incident!",
         chooseBackground: "Choose the background that you want to use.",
         changeInfoBoxBackgroundColorTitle:
             "Change Information Box Background Color",
@@ -114,5 +117,12 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         bindInformation: "Bind Information",
         binded: "Binded to <@%s> (user ID: %s)",
         notBinded: "Not binded",
+        playerCredentialsInfo: "Player Credentials",
+        username: "Username",
+        password: "Password",
+        doNotShareCredentialsWarning:
+            "Do not share these credentials with everyone else until you have changed your password.",
+        changeCredentialsDirection:
+            "Please login to [this](%s) site using these credentials and change your email and password.",
     };
 }

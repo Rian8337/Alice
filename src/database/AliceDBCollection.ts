@@ -25,6 +25,7 @@ import { IllegalMapCollectionManager } from "./managers/aliceDb/IllegalMapCollec
 import { UserLocaleCollectionManager } from "./managers/aliceDb/UserLocaleCollectionManager";
 import { WarningCollectionManager } from "./managers/aliceDb/WarningCollectionManager";
 import { MultiplayerRoomCollectionManager } from "./managers/aliceDb/MultiplayerRoomCollectionManager";
+import { RestoredPlayerCredentialsCollectionManager } from "./managers/aliceDb/RestoredPlayerCredentialsCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -164,6 +165,11 @@ export class AliceDBCollection {
     readonly multiplayerRoom: MultiplayerRoomCollectionManager;
 
     /**
+     * The database collection for restored players' credentials.
+     */
+    readonly restoredPlayerCredentials: RestoredPlayerCredentialsCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -243,5 +249,9 @@ export class AliceDBCollection {
         this.multiplayerRoom = new MultiplayerRoomCollectionManager(
             aliceDb.collection("multiplayerroom")
         );
+        this.restoredPlayerCredentials =
+            new RestoredPlayerCredentialsCollectionManager(
+                aliceDb.collection("restoredplayercredentials")
+            );
     }
 }

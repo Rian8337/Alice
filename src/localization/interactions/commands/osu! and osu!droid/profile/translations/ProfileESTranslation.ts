@@ -49,6 +49,8 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
         userCannotClaimBadge:
             "Lo siento, no cumples con los requisitos para poder obtener la medalla!",
         claimBadgeSuccess: "%s, reclamaste correctamente la medalla %s.",
+        userNotBindedToAccount: "",
+        playerCredentialsNotFound: "",
         chooseBackground: "Elige el fondo que deseas usar.",
         changeInfoBoxBackgroundColorTitle:
             "Cambiar el color del fondo de la zona de Información.",
@@ -118,5 +120,10 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
         bindInformation: "Información Enlazada",
         binded: "Enlazado a %s (ID del usuario: %s)",
         notBinded: "No enlazado",
+        playerCredentialsInfo: "",
+        username: "",
+        password: "",
+        doNotShareCredentialsWarning: "",
+        changeCredentialsDirection: "",
     };
 }

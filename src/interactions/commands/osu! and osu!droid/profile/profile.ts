@@ -39,6 +39,35 @@ export const config: SlashCommand["config"] = {
             ],
         },
         {
+            name: "customize",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            description: "Customize your profile card.",
+            options: [
+                {
+                    name: "background",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Customize your profile card's background.",
+                },
+                {
+                    name: "badge",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description: "Customize your profile card's badge.",
+                },
+                {
+                    name: "infobox",
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    description:
+                        "Customize your profile card's information box.",
+                },
+            ],
+        },
+        {
+            name: "restoreaccount",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description:
+                "Gives the credentials of your binded osu!droid accounts that were deleted in the deletion incident.",
+        },
+        {
             name: "view",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description:
@@ -74,29 +103,6 @@ export const config: SlashCommand["config"] = {
                             value: "detailed",
                         },
                     ],
-                },
-            ],
-        },
-        {
-            name: "customize",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
-            description: "Customize your profile card.",
-            options: [
-                {
-                    name: "background",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Customize your profile card's background.",
-                },
-                {
-                    name: "badge",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description: "Customize your profile card's badge.",
-                },
-                {
-                    name: "infobox",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                    description:
-                        "Customize your profile card's information box.",
                 },
             ],
         },

@@ -47,6 +47,10 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
         userCannotClaimBadge:
             "Maaf, kamu tidak memenuhi syarat untuk mengambil lencana ini!",
         claimBadgeSuccess: "%s, berhasil mengambil lencana `%s`.",
+        userNotBindedToAccount:
+            "Maaf, uid tersebut tidak terhubung dengan akun Discordmu!",
+        playerCredentialsNotFound:
+            "Maaf, aku tidak bisa menemukan kredensial uid tersebut!",
         chooseBackground: "Pilih latar belakang yang ingin kamu gunakan.",
         changeInfoBoxBackgroundColorTitle:
             "Ubah Warna Latar Belakang Kotak Informasi",
@@ -115,5 +119,12 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
         bindInformation: "Informasi Hubungan",
         binded: "Terhubung ke <@%s> (ID pengguna: %s)",
         notBinded: "Tidak terhubung",
+        playerCredentialsInfo: "",
+        username: "Nama Pemain",
+        password: "Kata Sandi",
+        doNotShareCredentialsWarning:
+            "Jangan berikan kredensial ini ke siapapun sebelum kamu mengubah kata sandi kamu.",
+        changeCredentialsDirection:
+            "Silakan masuk ke [laman ini](%s) menggunakan kredensial ini dan ubah email dan kata sandi kamu.",
     };
 }
