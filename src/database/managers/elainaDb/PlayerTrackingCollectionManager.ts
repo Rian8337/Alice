@@ -1,5 +1,5 @@
-import { PlayerTracking } from "@alice-database/utils/elainaDb/PlayerTracking";
-import { DatabasePlayerTracking } from "@alice-interfaces/database/elainaDb/DatabasePlayerTracking";
+import { TrackedPlayer } from "@alice-database/utils/elainaDb/TrackedPlayer";
+import { DatabaseTrackedPlayer } from "@alice-interfaces/database/elainaDb/DatabaseTrackedPlayer";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
@@ -7,14 +7,14 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
  * A manager for the `tracking` collection.
  */
 export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<
-    DatabasePlayerTracking,
-    PlayerTracking
+    DatabaseTrackedPlayer,
+    TrackedPlayer
 > {
     protected override readonly utilityInstance: new (
-        data: DatabasePlayerTracking
-    ) => PlayerTracking = PlayerTracking;
+        data: DatabaseTrackedPlayer
+    ) => TrackedPlayer = TrackedPlayer;
 
-    override get defaultDocument(): DatabasePlayerTracking {
+    override get defaultDocument(): DatabaseTrackedPlayer {
         return {
             uid: 0,
         };

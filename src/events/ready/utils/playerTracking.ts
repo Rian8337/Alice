@@ -1,12 +1,12 @@
 import { Config } from "@alice-core/Config";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerTracking } from "@alice-database/utils/elainaDb/PlayerTracking";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, MessageEmbed, TextChannel } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
+import { TrackedPlayer } from "@alice-database/utils/elainaDb/TrackedPlayer";
 
 export const run: EventUtil["run"] = async (client) => {
     const channel: TextChannel = <TextChannel>(
@@ -23,7 +23,7 @@ export const run: EventUtil["run"] = async (client) => {
             return;
         }
 
-        const trackedPlayers: Collection<number, PlayerTracking> =
+        const trackedPlayers: Collection<number, TrackedPlayer> =
             await DatabaseManager.elainaDb.collections.playerTracking.get(
                 "uid"
             );
