@@ -13,14 +13,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     );
 
     const nameChange: NameChange | null =
-        await DatabaseManager.aliceDb.collections.nameChange.getFromUser(
-            interaction.user
+        await DatabaseManager.aliceDb.collections.nameChange.getFromUid(
+            interaction.options.getInteger("uid", true)
         );
 
     if (!nameChange || nameChange.isProcessed) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userHasNoActiveRequest")
+            ),
+        });
+    }
+
+    if (nameChange.discordid !== interaction.user.id) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("userNotBindedToUid")
             ),
         });
     }

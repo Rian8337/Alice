@@ -6,6 +6,7 @@ import { NamechangeStrings } from "../NamechangeLocalization";
  */
 export class NamechangeIDTranslation extends Translation<NamechangeStrings> {
     override readonly translations: NamechangeStrings = {
+        userNotBindedToUid: "",
         noActiveRequest: "",
         invalidUid: "",
         uidHasNoActiveRequest: "",

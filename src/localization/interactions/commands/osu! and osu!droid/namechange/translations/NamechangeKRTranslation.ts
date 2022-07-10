@@ -6,6 +6,7 @@ import { NamechangeStrings } from "../NamechangeLocalization";
  */
 export class NamechangeKRTranslation extends Translation<NamechangeStrings> {
     override readonly translations: NamechangeStrings = {
+        userNotBindedToUid: "",
         noActiveRequest: "죄송해요, 현재 활성화된 유저네임 변경 요청이 없어요!",
         invalidUid: "저기, 유효한 uid를 입력해 주세요!",
         uidHasNoActiveRequest:

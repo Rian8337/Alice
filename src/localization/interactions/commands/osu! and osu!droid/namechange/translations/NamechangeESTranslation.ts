@@ -6,6 +6,7 @@ import { NamechangeStrings } from "../NamechangeLocalization";
  */
 export class NamechangeESTranslation extends Translation<NamechangeStrings> {
     override readonly translations: NamechangeStrings = {
+        userNotBindedToUid: "",
         noActiveRequest:
             "Lo siento, no hay ningún cambio de nick activo ahora!",
         invalidUid: "Hey, por favor ingresar un uid válido!",

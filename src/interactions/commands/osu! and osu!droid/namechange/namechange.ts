@@ -29,7 +29,15 @@ export const config: SlashCommand["config"] = {
         {
             name: "cancel",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "Cancels your active name change request.",
+            description: "Cancels an active name change request.",
+            options: [
+                {
+                    name: "uid",
+                    required: true,
+                    type: ApplicationCommandOptionTypes.INTEGER,
+                    description: "The uid of the osu!droid account.",
+                },
+            ],
         },
         {
             name: "deny",

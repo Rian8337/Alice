@@ -6,6 +6,7 @@ import { NamechangeIDTranslation } from "./translations/NamechangeIDTranslation"
 import { NamechangeKRTranslation } from "./translations/NamechangeKRTranslation";
 
 export interface NamechangeStrings {
+    readonly userNotBindedToUid: string;
     readonly noActiveRequest: string;
     readonly invalidUid: string;
     readonly uidHasNoActiveRequest: string;
