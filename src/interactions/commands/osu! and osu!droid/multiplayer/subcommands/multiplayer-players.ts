@@ -2,6 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { DatabaseMultiplayerRoom } from "@alice-interfaces/database/aliceDb/DatabaseMultiplayerRoom";
 import { MultiplayerPlayer } from "@alice-interfaces/multiplayer/MultiplayerPlayer";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
@@ -11,6 +12,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { GuildMember, MessageEmbed } from "discord.js";
+import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -19,28 +21,23 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const id: string | null = interaction.options.getString("id");
 
+    const findOptions: FindOptions<DatabaseMultiplayerRoom> = {
+        projection: {
+            _id: 0,
+            players: 1,
+            "settings.roomName": 1,
+            "settings.roomHost": 1,
+        },
+    };
+
     const room: MultiplayerRoom | null = id
         ? await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromId(
               id,
-              {
-                  projection: {
-                      _id: 0,
-                      players: 1,
-                      "settings.roomName": 1,
-                      "settings.roomHost": 1,
-                  },
-              }
+              findOptions
           )
         : await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromChannel(
               interaction.channelId,
-              {
-                  projection: {
-                      _id: 0,
-                      players: 1,
-                      "settings.roomName": 1,
-                      "settings.roomHost": 1,
-                  },
-              }
+              findOptions
           );
 
     if (!room) {
