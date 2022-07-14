@@ -15,7 +15,7 @@ export class PerformanceCalculationResult<
     /**
      * The beatmap being calculated.
      */
-    readonly map: MapInfo;
+    readonly map: MapInfo<true>;
 
     /**
      * The replay of the score, if one is used during calculation.
@@ -27,7 +27,7 @@ export class PerformanceCalculationResult<
      */
     readonly result: P;
 
-    constructor(map: MapInfo, result: P, replay?: ReplayAnalyzer) {
+    constructor(map: MapInfo<true>, result: P, replay?: ReplayAnalyzer) {
         this.map = map;
         this.result = result;
         this.replay = replay;

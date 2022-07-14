@@ -74,6 +74,9 @@ import {
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { MessageButtonStyles } from "discord.js/typings/enums";
+import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
+import { OldDifficultyCalculationResult } from "@alice-utils/dpp/OldDifficultyCalculationResult";
+import { std_ppv2 } from "ojsamadroid";
 
 /**
  * Utility to create message embeds.
@@ -343,7 +346,9 @@ export abstract class EmbedCreator {
     static async createCalculationEmbed(
         calculationParams: DifficultyCalculationParameters,
         droidCalculationResult:
+            | OldDifficultyCalculationResult
             | DifficultyCalculationResult<DroidDifficultyCalculator>
+            | OldPerformanceCalculationResult
             | PerformanceCalculationResult<
                   DroidDifficultyCalculator,
                   DroidPerformanceCalculator
@@ -384,15 +389,17 @@ export abstract class EmbedCreator {
             calculationParams instanceof PerformanceCalculationParameters &&
             (droidCalculationResult instanceof PerformanceCalculationResult ||
                 droidCalculationResult instanceof
-                    RebalancePerformanceCalculationResult) &&
+                    RebalancePerformanceCalculationResult ||
+                droidCalculationResult instanceof
+                    OldPerformanceCalculationResult) &&
             (osuCalculationResult instanceof PerformanceCalculationResult ||
                 osuCalculationResult instanceof
                     RebalancePerformanceCalculationResult)
         ) {
             const droidPP:
                 | DroidPerformanceCalculator
-                | RebalanceDroidPerformanceCalculator =
-                droidCalculationResult.result;
+                | RebalanceDroidPerformanceCalculator
+                | std_ppv2 = droidCalculationResult.result;
             const pcPP:
                 | OsuPerformanceCalculator
                 | RebalanceOsuPerformanceCalculator =
@@ -432,9 +439,16 @@ export abstract class EmbedCreator {
                         calculationParams.isEstimated
                             ? ` (${localization.getTranslation("estimated")})`
                             : ""
-                    } - ${droidPP.difficultyCalculator.total.toFixed(2)}${
-                        Symbols.star
-                    }`,
+                    } - ${
+                        droidCalculationResult instanceof
+                        OldPerformanceCalculationResult
+                            ? droidCalculationResult.difficultyCalculationResult.total.toFixed(
+                                  2
+                              )
+                            : droidCalculationResult.result.difficultyCalculator.total.toFixed(
+                                  2
+                              )
+                    }${Symbols.star}`,
                     `**${localization.getTranslation(
                         "pcPP"
                     )}**: ${pcPP.total.toFixed(2)} pp${
@@ -446,34 +460,30 @@ export abstract class EmbedCreator {
                     }`
                 );
         } else {
-            const droidCalcResult: RebalanceDifficultyCalculationResult<RebalanceDroidDifficultyCalculator> =
-                <
-                    RebalanceDifficultyCalculationResult<RebalanceDroidDifficultyCalculator>
-                >droidCalculationResult;
-
-            const osuCalcResult: RebalanceDifficultyCalculationResult<RebalanceOsuDifficultyCalculator> =
-                <
-                    RebalanceDifficultyCalculationResult<RebalanceOsuDifficultyCalculator>
-                >osuCalculationResult;
-
             embed
                 .setColor(
                     <ColorResolvable>(
                         BeatmapManager.getBeatmapDifficultyColor(
-                            osuCalcResult.result.total
+                            droidCalculationResult.result.total
                         )
                     )
                 )
                 .addField(
                     `**${localization.getTranslation("starRating")}**`,
                     `${Symbols.star.repeat(
-                        Math.min(10, Math.floor(droidCalcResult.result.total))
-                    )} ${droidCalcResult.result.total.toFixed(
+                        Math.min(
+                            10,
+                            Math.floor(droidCalculationResult.result.total)
+                        )
+                    )} ${droidCalculationResult.result.total.toFixed(
                         2
                     )} ${localization.getTranslation("droidStars")}\n` +
                         `${Symbols.star.repeat(
-                            Math.min(10, Math.floor(osuCalcResult.result.total))
-                        )} ${osuCalcResult.result.total.toFixed(
+                            Math.min(
+                                10,
+                                Math.floor(osuCalculationResult.result.total)
+                            )
+                        )} ${osuCalculationResult.result.total.toFixed(
                             2
                         )} ${localization.getTranslation("pcStars")}`
                 );

@@ -15,7 +15,7 @@ export class RebalancePerformanceCalculationResult<
     /**
      * The beatmap being calculated.
      */
-    readonly map: MapInfo;
+    readonly map: MapInfo<true>;
 
     /**
      * The replay of the score, if one is used during calculation.

@@ -10,14 +10,14 @@ export class RebalanceDifficultyCalculationResult<
     /**
      * The beatmap being calculated.
      */
-    readonly map: MapInfo;
+    readonly map: MapInfo<true>;
 
     /**
      * The difficulty of the beatmap.
      */
     readonly result: T;
 
-    constructor(map: MapInfo, result: T) {
+    constructor(map: MapInfo<true>, result: T) {
         this.map = map;
         this.result = result;
     }

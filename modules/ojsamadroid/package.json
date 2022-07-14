@@ -1,0 +1,43 @@
+{
+  "name": "ojsamadroid",
+  "version": "2.2.0",
+  "description": "pp and difficulty calculator for osu! in pure javascript",
+  "main": "ojsama.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "./download_suite && node test.js",
+    "build": "uglifyjs ojsama.js --mangle --source-map -o ojsama.min.js",
+    "doc": "./update_doc",
+    "lint": "eslint ojsama.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Francesco149/ojsama.git"
+  },
+  "keywords": [
+    "osu!",
+    "pp",
+    "beatmap",
+    "parser",
+    "difficulty",
+    "ppv2"
+  ],
+  "author": "Franc[e]sco <lolisamurai@tfwno.gf> (http://weeb.ddns.net)",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/Francesco149/ojsama/issues"
+  },
+  "homepage": "https://github.com/Francesco149/ojsama#readme",
+  "files": [
+    "ojsama.js",
+    "ojsama.min.js",
+    "ojsama.min.map",
+    "ojsama.d.ts",
+    "download_suite",
+    "update_doc",
+    "UNLICENSE"
+  ],
+  "types": "ojsama.d.ts"
+}

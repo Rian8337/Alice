@@ -1,10 +1,10 @@
 import { MapInfo } from "@rian8337/osu-base";
-import { DifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
+import { std_diff } from "ojsamadroid";
 
 /**
- * Represents a beatmap's difficulty calculation result.
+ * Represents a beatmap's old difficulty calculation result.
  */
-export class DifficultyCalculationResult<T extends DifficultyCalculator> {
+export class OldDifficultyCalculationResult {
     /**
      * The beatmap being calculated.
      */
@@ -13,9 +13,9 @@ export class DifficultyCalculationResult<T extends DifficultyCalculator> {
     /**
      * The difficulty calculator that calculated the beatmap.
      */
-    readonly result: T;
+    readonly result: std_diff;
 
-    constructor(map: MapInfo<true>, result: T) {
+    constructor(map: MapInfo<true>, result: std_diff) {
         this.map = map;
         this.result = result;
     }
