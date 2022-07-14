@@ -368,13 +368,29 @@ export class UserBind extends Manager {
         this.pp = newList;
         this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
 
-        return this.bindDb.updateOne(
+        await this.bindDb.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
                     pp: [...this.pp.values()],
                     pptotal: this.pptotal,
+                    weightedAccuracy: DPPHelper.calculateWeightedAccuracy(
+                        this.pp
+                    ),
                     dppRecalcComplete: true,
+                },
+            }
+        );
+
+        return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
+            { discordId: this.discordid },
+            {
+                $set: {
+                    pp: [...oldPPNewList.values()],
+                    pptotal:
+                        DPPHelper.calculateFinalPerformancePoints(oldPPNewList),
+                    weightedAccuracy:
+                        DPPHelper.calculateWeightedAccuracy(oldPPNewList),
                 },
             }
         );
@@ -658,12 +674,14 @@ export class UserBind extends Manager {
 
         this.pp = newList;
         this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
+        this.weightedAccuracy = DPPHelper.calculateWeightedAccuracy(this.pp);
 
         const query: UpdateFilter<DatabaseUserBind> = {
             $set: {
                 pp: [...this.pp.values()],
                 pptotal: this.pptotal,
                 playc: this.playc,
+                weightedAccuracy: this.weightedAccuracy,
                 // Only set to true if hasAskedForRecalc is originally false
                 hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc,
             },
@@ -691,6 +709,8 @@ export class UserBind extends Manager {
                     pptotal:
                         DPPHelper.calculateFinalPerformancePoints(oldPPNewList),
                     playc: this.playc,
+                    weightedAccuracy:
+                        DPPHelper.calculateWeightedAccuracy(oldPPNewList),
                 },
             }
         );

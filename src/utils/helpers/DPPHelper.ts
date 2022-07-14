@@ -267,8 +267,8 @@ export abstract class DPPHelper {
      * @param dppList The list.
      * @returns The weighted accuracy of the list.
      */
-    static calculateWeightedAccuracy(
-        dppList: Collection<string, PPEntry>
+    static calculateWeightedAccuracy<T extends OldPPEntry>(
+        dppList: Collection<string, T>
     ): number {
         if (dppList.size === 0) {
             return 0;
