@@ -1,4 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -319,11 +320,37 @@ export abstract class DPPHelper {
                 { projection: { _id: 0, discordid: 1, pp: 1, playc: 1 } }
             );
 
+        const oldPPToUpdateList: Collection<string, OldPPProfile> =
+            await DatabaseManager.aliceDb.collections.playerOldPPProfile.get(
+                "discordId",
+                { "pp.hash": hash },
+                { projection: { _id: 0, discordId: 1, pp: 1, playc: 1 } }
+            );
+
         for (const toUpdate of toUpdateList.values()) {
             toUpdate.pp.delete(hash);
 
             await DatabaseManager.elainaDb.collections.userBind.updateOne(
                 { discordid: toUpdate.discordid },
+                {
+                    $set: {
+                        pptotal: this.calculateFinalPerformancePoints(
+                            toUpdate.pp
+                        ),
+                        playc: Math.max(0, toUpdate.playc - 1),
+                    },
+                    $pull: {
+                        "pp.hash": hash,
+                    },
+                }
+            );
+        }
+
+        for (const toUpdate of oldPPToUpdateList.values()) {
+            toUpdate.pp.delete(hash);
+
+            await DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
+                { discordId: toUpdate.discordId },
                 {
                     $set: {
                         pptotal: this.calculateFinalPerformancePoints(
