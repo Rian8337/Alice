@@ -4,13 +4,15 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { EventUtil } from "structures/core/EventUtil";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Message, TextChannel } from "discord.js";
+import { Collection, Message, TextChannel } from "discord.js";
+import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
+import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
+import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
+import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { Score } from "@rian8337/osu-droid-utilities";
 
 export const run: EventUtil["run"] = async (client) => {
-    if (!Config.isDebug) {
-        return;
-    }
-
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
@@ -32,22 +34,79 @@ export const run: EventUtil["run"] = async (client) => {
 
     const total: number = calculatedCount + uncalculatedCount;
 
-    let player: UserBind | undefined;
+    let player: UserBind | null;
 
     while (
-        (player = (
-            await dbManager.getRecalcUnscannedPlayers(1, {
-                projection: {
-                    _id: 0,
-                    previous_bind: 1,
-                    calculationInfo: 1,
-                },
-            })
-        ).first())
+        (player = await dbManager.getRecalcUnscannedPlayers(1, {
+            projection: {
+                _id: 0,
+                previous_bind: 1,
+                pp: 1,
+                playc: 1,
+            },
+        }))
     ) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
-        await player.recalculateAllScores(false, true);
+        const ppEntries: OldPPEntry[] = [];
+
+        let i = 0;
+
+        for (const ppEntry of player.pp.values()) {
+            console.log(`${++i}/${player.pp.size} calculated`);
+
+            const score: Score | null = await player.getScoreRelativeToPP(
+                ppEntry
+            );
+
+            if (!score) {
+                continue;
+            }
+
+            const calcResult: OldPerformanceCalculationResult | null =
+                await BeatmapOldDifficultyHelper.calculateScorePerformance(
+                    score
+                );
+
+            if (!calcResult) {
+                continue;
+            }
+
+            await HelperFunctions.sleep(0.1);
+
+            ppEntries.push(DPPHelper.scoreToOldPPEntry(score, calcResult));
+        }
+
+        const newList: Collection<string, OldPPEntry> = new Collection();
+
+        DPPHelper.insertScore(newList, ppEntries);
+
+        await dbManager.updateOne(
+            { discordid: player.discordid },
+            {
+                $set: {
+                    dppRecalcComplete: true,
+                },
+            }
+        );
+
+        await DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
+            { discordId: player.discordid },
+            {
+                $set: {
+                    pp: [...newList.values()],
+                    pptotal: DPPHelper.calculateFinalPerformancePoints(newList),
+                    weightedAccuracy:
+                        DPPHelper.calculateWeightedAccuracy(newList),
+                },
+                $setOnInsert: {
+                    uid: player.uid,
+                    username: player.username,
+                    previous_bind: player.previous_bind,
+                },
+            },
+            { upsert: true }
+        );
 
         client.logger.info(`${++calculatedCount} players recalculated`);
 

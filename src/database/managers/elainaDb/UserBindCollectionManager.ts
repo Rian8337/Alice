@@ -76,9 +76,26 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      * @returns The players.
      */
     async getRecalcUnscannedPlayers(
+        amount: 1,
+        options?: FindOptions<DatabaseUserBind>
+    ): Promise<UserBind | null>;
+
+    /**
+     * Gets unscanned players based on the given amount.
+     *
+     * @param amount The amount of players to retrieve.
+     * @param options Options for the retrieval.
+     * @returns The players.
+     */
+    async getRecalcUnscannedPlayers(
+        amount: Exclude<number, 1>,
+        options?: FindOptions<DatabaseUserBind>
+    ): Promise<DiscordCollection<Snowflake, UserBind>>;
+
+    async getRecalcUnscannedPlayers(
         amount: number,
         options?: FindOptions<DatabaseUserBind>
-    ): Promise<DiscordCollection<Snowflake, UserBind>> {
+    ): Promise<DiscordCollection<Snowflake, UserBind> | UserBind | null> {
         const userBind: DatabaseUserBind[] = await this.collection
             .find(
                 { dppRecalcComplete: { $ne: true } },
@@ -87,6 +104,10 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
             .sort({ pptotal: -1 })
             .limit(amount)
             .toArray();
+
+        if (amount === 1) {
+            return userBind.length > 0 ? new UserBind(userBind[0]) : null;
+        }
 
         return ArrayHelper.arrayToCollection(
             userBind.map((v) => new UserBind(v)),

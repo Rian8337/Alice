@@ -45,19 +45,17 @@ export const run: SlashSubcommand<true>["run"] = async (
         ),
     });
 
-    let player: UserBind | undefined;
+    let player: UserBind | null;
 
     while (
-        (player = (
-            await dbManager.getRecalcUnscannedPlayers(1, {
-                projection: {
-                    _id: 0,
-                    pp: 1,
-                    previous_bind: 1,
-                    calculationInfo: 1,
-                },
-            })
-        ).first())
+        (player = await dbManager.getRecalcUnscannedPlayers(1, {
+            projection: {
+                _id: 0,
+                pp: 1,
+                previous_bind: 1,
+                calculationInfo: 1,
+            },
+        }))
     ) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 

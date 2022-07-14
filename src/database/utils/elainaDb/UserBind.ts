@@ -1087,9 +1087,7 @@ export class UserBind extends Manager {
      * @param ppEntry The pp entry to retrieve.
      * @returns The score, `null` if not found.
      */
-    private async getScoreRelativeToPP(
-        ppEntry: PPEntry
-    ): Promise<Score | null> {
+    async getScoreRelativeToPP(ppEntry: PPEntry): Promise<Score | null> {
         for (const uid of this.previous_bind) {
             const score: Score | null = await Score.getFromHash(
                 uid,
