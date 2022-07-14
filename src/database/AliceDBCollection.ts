@@ -26,6 +26,7 @@ import { UserLocaleCollectionManager } from "./managers/aliceDb/UserLocaleCollec
 import { WarningCollectionManager } from "./managers/aliceDb/WarningCollectionManager";
 import { MultiplayerRoomCollectionManager } from "./managers/aliceDb/MultiplayerRoomCollectionManager";
 import { RestoredPlayerCredentialsCollectionManager } from "./managers/aliceDb/RestoredPlayerCredentialsCollectionManager";
+import { OldPPProfileCollectionManager } from "./managers/aliceDb/OldPPProfileCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -170,6 +171,11 @@ export class AliceDBCollection {
     readonly restoredPlayerCredentials: RestoredPlayerCredentialsCollectionManager;
 
     /**
+     * The database collection for players' old dpp profiles.
+     */
+    readonly playerOldPPProfile: OldPPProfileCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -253,5 +259,8 @@ export class AliceDBCollection {
             new RestoredPlayerCredentialsCollectionManager(
                 aliceDb.collection("restoredplayercredentials")
             );
+        this.playerOldPPProfile = new OldPPProfileCollectionManager(
+            aliceDb.collection("playeroldpp")
+        );
     }
 }
