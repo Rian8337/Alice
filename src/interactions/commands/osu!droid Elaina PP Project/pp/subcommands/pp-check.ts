@@ -12,6 +12,9 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
+import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
+import { DatabaseOldPPProfile } from "@alice-structures/database/aliceDb/DatabaseOldPPProfile";
+import { OldPPProfileCollectionManager } from "@alice-database/managers/aliceDb/OldPPProfileCollectionManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -33,12 +36,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: UserBindCollectionManager | OldPPProfileCollectionManager =
+        (interaction.options.getString("type") ?? "live") === "live"
+            ? DatabaseManager.elainaDb.collections.userBind
+            : DatabaseManager.aliceDb.collections.playerOldPPProfile;
 
-    let bindInfo: UserBind | null;
+    let playerInfo: UserBind | OldPPProfile | null;
 
-    const findOptions: FindOptions<DatabaseUserBind> = {
+    const findOptions:
+        | FindOptions<DatabaseUserBind>
+        | FindOptions<DatabaseOldPPProfile> = {
         projection: {
             _id: 0,
             uid: 1,
@@ -50,20 +57,23 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     switch (true) {
         case !!uid:
-            bindInfo = await dbManager.getFromUid(uid!, findOptions);
+            playerInfo = await dbManager.getFromUid(uid!, findOptions);
             break;
         case !!username:
-            bindInfo = await dbManager.getFromUsername(username!, findOptions);
+            playerInfo = await dbManager.getFromUsername(
+                username!,
+                findOptions
+            );
             break;
         default:
             // If no arguments are specified, default to self
-            bindInfo = await dbManager.getFromUser(
+            playerInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
                 findOptions
             );
     }
 
-    if (!bindInfo) {
+    if (!playerInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
@@ -77,7 +87,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     DPPHelper.displayDPPList(
         interaction,
-        bindInfo,
+        playerInfo,
         interaction.options.getInteger("page") ?? 1
     );
 };

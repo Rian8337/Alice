@@ -69,6 +69,7 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         musicDuration: "Durasi",
         musicQueuer: "Dimasukkan oleh %s",
         ppProfileTitle: "Profil PP untuk %s",
+        oldPpProfileTitle: "Profil PP lama untuk %s",
         totalPP: "Total PP",
         ppProfile: "Profil PP",
         warningInfo: "Info Peringatan",

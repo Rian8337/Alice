@@ -96,31 +96,31 @@ export abstract class DPPHelper {
      * Displays a DPP list as a response to an interaction.
      *
      * @param interaction The interaction to respond to.
-     * @param bindInfo The bind information of the user.
+     * @param playerInfo The player's information.
      * @param page The initial page to display.
      */
     static async displayDPPList(
         interaction: BaseCommandInteraction,
-        bindInfo: UserBind,
+        playerInfo: UserBind | OldPPProfile,
         page: number
     ): Promise<void> {
-        const ppRank: number =
-            await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
-                bindInfo.pptotal
-            );
+        const ppRank: number = await (playerInfo instanceof OldPPProfile
+            ? DatabaseManager.aliceDb.collections.playerOldPPProfile
+            : DatabaseManager.elainaDb.collections.userBind
+        ).getUserDPPRank(playerInfo.pptotal);
 
         const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(
             interaction,
-            bindInfo,
+            playerInfo,
             ppRank,
             await CommandHelper.getLocale(interaction)
         );
 
-        const list: PPEntry[] = [...bindInfo.pp.values()];
+        const list: OldPPEntry[] = [...playerInfo.pp.values()];
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-                const pp: PPEntry | undefined = list[i];
+                const pp: OldPPEntry | undefined = list[i];
 
                 if (pp) {
                     let modstring = pp.mods ? `+${pp.mods}` : "";
@@ -168,7 +168,7 @@ export abstract class DPPHelper {
             { embeds: [embed] },
             [interaction.user.id],
             Math.max(page, 1),
-            Math.ceil(bindInfo.pp.size / 5),
+            Math.ceil(playerInfo.pp.size / 5),
             120,
             onPageChange
         );

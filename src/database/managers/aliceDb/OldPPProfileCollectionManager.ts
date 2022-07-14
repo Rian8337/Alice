@@ -122,6 +122,19 @@ export class OldPPProfileCollectionManager extends DatabaseCollectionManager<
         );
     }
 
+    /**
+     * Gets the dpp rank of a specified dpp value.
+     *
+     * @param totalPP The total PP.
+     */
+    async getUserDPPRank(totalPP: number): Promise<number> {
+        return (
+            (await this.collection.countDocuments({
+                pptotal: { $gt: totalPP },
+            })) + 1
+        );
+    }
+
     protected override processFindOptions(
         options?: FindOptions<DatabaseOldPPProfile>
     ): FindOptions<DatabaseOldPPProfile> | undefined {

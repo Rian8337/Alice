@@ -69,6 +69,7 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         ppProfileTitle: "%s의 PP 프로필",
         totalPP: "총 PP",
         ppProfile: "PP 프로필",
+        oldPpProfileTitle: "",
         warningInfo: "",
         warningId: "",
         warnedUser: "",

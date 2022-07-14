@@ -77,6 +77,7 @@ import { MessageButtonStyles } from "discord.js/typings/enums";
 import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { OldDifficultyCalculationResult } from "@alice-utils/dpp/OldDifficultyCalculationResult";
 import { std_ppv2 } from "ojsamadroid";
+import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 
 /**
  * Utility to create message embeds.
@@ -260,14 +261,14 @@ export abstract class EmbedCreator {
      * Creates an embed for displaying DPP list.
      *
      * @param interaction The interaction that triggered the embed creation.
-     * @param bindInfo The bind information of the player.
+     * @param playerInfo The player's information.
      * @param ppRank The DPP rank of the player.
      * @param language The locale of the user who attempted to create the embed. Defaults to English.
      * @returns The embed.
      */
     static async createDPPListEmbed(
         interaction: BaseCommandInteraction,
-        bindInfo: UserBind,
+        playerInfo: UserBind | OldPPProfile,
         ppRank?: number,
         language: Language = "en"
     ): Promise<MessageEmbed> {
@@ -279,29 +280,35 @@ export abstract class EmbedCreator {
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
 
-        ppRank ??=
-            await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
-                bindInfo.pptotal
-            );
+        ppRank ??= await (playerInfo instanceof OldPPProfile
+            ? DatabaseManager.aliceDb.collections.playerOldPPProfile
+            : DatabaseManager.elainaDb.collections.userBind
+        ).getUserDPPRank(playerInfo.pptotal);
 
         embed.setDescription(
             `**${StringHelper.formatString(
                 localization.getTranslation("ppProfileTitle"),
-                `<@${bindInfo.discordid}> (${bindInfo.username})`
+                `<@${
+                    playerInfo instanceof OldPPProfile
+                        ? playerInfo.discordId
+                        : playerInfo.discordid
+                }> (${playerInfo.username})`
             )}**\n` +
                 `${localization.getTranslation(
                     "totalPP"
-                )}: **${bindInfo.pptotal.toFixed(
+                )}: **${playerInfo.pptotal.toFixed(
                     2
                 )} pp (#${ppRank.toLocaleString(
                     LocaleHelper.convertToBCP47(language)
                 )})**\n` +
                 `${localization.getTranslation("recommendedStarRating")}: **${(
-                    Math.pow(bindInfo.pptotal, 0.4) * 0.225
+                    Math.pow(playerInfo.pptotal, 0.4) * 0.225
                 ).toFixed(2)}${Symbols.star}**\n` +
                 `[${localization.getTranslation(
                     "ppProfile"
-                )}](https://droidppboard.herokuapp.com/profile/${bindInfo.uid})`
+                )}](https://droidppboard.herokuapp.com/profile/${
+                    playerInfo.uid
+                })`
         );
 
         return embed;

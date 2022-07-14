@@ -68,6 +68,7 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         musicDuration: "Duration",
         musicQueuer: "Queued/requested by %s",
         ppProfileTitle: "PP Profile for %s",
+        oldPpProfileTitle: "Old PP Profile for %s",
         totalPP: "Total PP",
         ppProfile: "PP Profile",
         warningInfo: "Warning Info",

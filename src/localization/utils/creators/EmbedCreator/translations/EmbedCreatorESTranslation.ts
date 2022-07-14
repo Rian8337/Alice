@@ -69,6 +69,7 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         ppProfileTitle: "Perfil de PP de %s",
         totalPP: "PP total",
         ppProfile: "Perfil de Rendimiento (PP)",
+        oldPpProfileTitle: "",
         warningInfo: "",
         warnedUser: "",
         warningId: "",

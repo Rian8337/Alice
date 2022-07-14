@@ -44,6 +44,21 @@ export const config: SlashCommand["config"] = {
                     minValue: 1,
                     maxValue: 15,
                 },
+                {
+                    name: "type",
+                    type: ApplicationCommandOptionTypes.STRING,
+                    description: "The profile to view. Defaults to Live.",
+                    choices: [
+                        {
+                            name: "Live",
+                            value: "live",
+                        },
+                        {
+                            name: "Old",
+                            value: "old",
+                        },
+                    ],
+                },
             ],
         },
         {
