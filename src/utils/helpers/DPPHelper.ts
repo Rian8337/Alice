@@ -2,10 +2,12 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { Symbols } from "@alice-enums/utils/Symbols";
+import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
 import { PPEntry } from "@alice-structures/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
@@ -177,9 +179,9 @@ export abstract class DPPHelper {
      * @param dppList The list of dpp plays, mapped by hash.
      * @param entries The plays to add.
      */
-    static insertScore(
-        dppList: Collection<string, PPEntry>,
-        entries: PPEntry[]
+    static insertScore<T extends OldPPEntry>(
+        dppList: Collection<string, T>,
+        entries: T[]
     ): void {
         let needsSorting: boolean = false;
 
@@ -238,6 +240,28 @@ export abstract class DPPHelper {
     }
 
     /**
+     * Converts a score to an old PP entry.
+     *
+     * @param score The score to convert.
+     * @param calculationResult The dpp calculation result of the score.
+     * @returns An old PP entry from the score and calculation result.
+     */
+    static scoreToOldPPEntry(
+        score: Score,
+        calculationResult: OldPerformanceCalculationResult
+    ): OldPPEntry {
+        return {
+            hash: calculationResult.map.hash,
+            title: calculationResult.map.fullTitle,
+            pp: parseFloat(calculationResult.result.total.toFixed(2)),
+            mods: score.mods.reduce((a, v) => a + v.acronym, ""),
+            accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
+            combo: score.combo,
+            miss: score.accuracy.nmiss,
+        };
+    }
+
+    /**
      * Calculates the weighted accuracy of a dpp list.
      *
      * @param dppList The list.
@@ -269,8 +293,8 @@ export abstract class DPPHelper {
      * @param list The list.
      * @returns The final performance points.
      */
-    static calculateFinalPerformancePoints(
-        list: Collection<string, PPEntry>
+    static calculateFinalPerformancePoints<T extends OldPPEntry>(
+        list: Collection<string, T>
     ): number {
         list.sort((a, b) => {
             return b.pp - a.pp;

@@ -120,12 +120,11 @@ export abstract class BeatmapOldDifficultyHelper {
      * Gets calculation parameters from a score.
      *
      * @param score The score.
-     * @param useReplay Whether to use replay in the calculation when needed. Defaults to `true`.
      * @returns Calculation parameters of the score.
      */
-    static async getCalculationParamsFromScore(
+    static getCalculationParamsFromScore(
         score: Score
-    ): Promise<PerformanceCalculationParameters> {
+    ): PerformanceCalculationParameters {
         const stats: MapStats = new MapStats({
             mods: score.mods,
             ar: score.forcedAR,
@@ -163,9 +162,7 @@ export abstract class BeatmapOldDifficultyHelper {
         }
 
         calcParams ??=
-            await BeatmapOldDifficultyHelper.getCalculationParamsFromScore(
-                score
-            );
+            BeatmapOldDifficultyHelper.getCalculationParamsFromScore(score);
 
         const result: OldDifficultyCalculationResult | null =
             await this.calculateDifficulty(beatmap, calcParams);
@@ -276,9 +273,7 @@ export abstract class BeatmapOldDifficultyHelper {
 
         return this.calculateDifficulty(
             beatmap,
-            await BeatmapOldDifficultyHelper.getCalculationParamsFromScore(
-                score
-            )
+            BeatmapOldDifficultyHelper.getCalculationParamsFromScore(score)
         );
     }
 

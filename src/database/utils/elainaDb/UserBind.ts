@@ -36,6 +36,9 @@ import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
+import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
+import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
+import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -313,6 +316,7 @@ export class UserBind extends Manager {
      */
     async recalculateDPP(): Promise<OperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
+        const oldPPNewList: Collection<string, OldPPEntry> = new Collection();
 
         this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
 
@@ -345,10 +349,19 @@ export class UserBind extends Manager {
                 continue;
             }
 
+            const oldCalcResult: OldPerformanceCalculationResult =
+                (await BeatmapOldDifficultyHelper.calculateScorePerformance(
+                    score
+                ))!;
+
             await HelperFunctions.sleep(0.2);
 
             DPPHelper.insertScore(newList, [
                 DPPHelper.scoreToPPEntry(score, calcResult),
+            ]);
+
+            DPPHelper.insertScore(oldPPNewList, [
+                DPPHelper.scoreToOldPPEntry(score, oldCalcResult),
             ]);
         }
 
@@ -465,6 +478,7 @@ export class UserBind extends Manager {
         isDPPRecalc: boolean = false
     ): Promise<OperationResult> {
         let newList: Collection<string, PPEntry> = new Collection();
+        let oldPPNewList: Collection<string, OldPPEntry> = new Collection();
 
         this.playc = 0;
 
@@ -523,11 +537,17 @@ export class UserBind extends Manager {
             if (isDPPRecalc && this.calculationInfo) {
                 page = this.calculationInfo.page;
 
+                this.playc = this.calculationInfo.playc;
+
                 newList = new Collection(
                     this.calculationInfo.currentPPEntries.map((v) => [
                         v.hash,
                         v,
                     ])
+                );
+
+                oldPPNewList = new Collection(
+                    this.calculationInfo.oldPPEntries.map((v) => [v.hash, v])
                 );
             }
 
@@ -580,6 +600,18 @@ export class UserBind extends Manager {
                             DPPHelper.insertScore(newList, [
                                 DPPHelper.scoreToPPEntry(score, calcResult),
                             ]);
+
+                            const oldCalcResult: OldPerformanceCalculationResult =
+                                (await BeatmapOldDifficultyHelper.calculateScorePerformance(
+                                    score
+                                ))!;
+
+                            DPPHelper.insertScore(oldPPNewList, [
+                                DPPHelper.scoreToOldPPEntry(
+                                    score,
+                                    oldCalcResult
+                                ),
+                            ]);
                         }
                     }
                 }
@@ -588,7 +620,9 @@ export class UserBind extends Manager {
                     this.calculationInfo = {
                         uid: uid,
                         page: page,
+                        playc: this.playc,
                         currentPPEntries: [...newList.values()],
+                        oldPPEntries: [...oldPPNewList.values()],
                     };
 
                     await this.bindDb.updateOne(
@@ -606,7 +640,9 @@ export class UserBind extends Manager {
                 this.calculationInfo = {
                     uid: this.previous_bind[i + 1],
                     page: 0,
+                    playc: this.playc,
                     currentPPEntries: [...newList.values()],
+                    oldPPEntries: [...oldPPNewList.values()],
                 };
 
                 await this.bindDb.updateOne(
@@ -645,7 +681,19 @@ export class UserBind extends Manager {
             });
         }
 
-        return this.bindDb.updateOne({ discordid: this.discordid }, query);
+        await this.bindDb.updateOne({ discordid: this.discordid }, query);
+
+        return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
+            { discordId: this.discordid },
+            {
+                $set: {
+                    pp: [...oldPPNewList.values()],
+                    pptotal:
+                        DPPHelper.calculateFinalPerformancePoints(oldPPNewList),
+                    playc: this.playc,
+                },
+            }
+        );
     }
 
     /**
