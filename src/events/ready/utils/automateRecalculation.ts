@@ -37,14 +37,7 @@ export const run: EventUtil["run"] = async (client) => {
     let player: UserBind | null;
 
     while (
-        (player = await dbManager.getRecalcUnscannedPlayers(1, {
-            projection: {
-                _id: 0,
-                previous_bind: 1,
-                pp: 1,
-                playc: 1,
-            },
-        }))
+        (player = await dbManager.getRecalcUnscannedPlayers(1))
     ) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
