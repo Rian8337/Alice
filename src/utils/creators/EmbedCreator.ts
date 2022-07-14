@@ -287,7 +287,11 @@ export abstract class EmbedCreator {
 
         embed.setDescription(
             `**${StringHelper.formatString(
-                localization.getTranslation("ppProfileTitle"),
+                localization.getTranslation(
+                    playerInfo instanceof OldPPProfile
+                        ? "oldPpProfileTitle"
+                        : "ppProfileTitle"
+                ),
                 `<@${
                     playerInfo instanceof OldPPProfile
                         ? playerInfo.discordId
