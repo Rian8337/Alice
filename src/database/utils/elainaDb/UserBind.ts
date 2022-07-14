@@ -758,6 +758,15 @@ export class UserBind extends Manager {
                 },
                 { upsert: true }
             );
+
+            await DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
+                { discordId: this.discordid },
+                {
+                    $set: {
+                        discordId: to,
+                    },
+                }
+            );
         } else {
             await this.bindDb.updateOne(
                 { discordid: this.discordid },
@@ -864,7 +873,18 @@ export class UserBind extends Manager {
         this.uid = player.uid;
         this.username = player.username;
 
-        return this.bindDb.updateOne(
+        await this.bindDb.updateOne(
+            { discordid: this.discordid },
+            {
+                $set: {
+                    username: this.username,
+                    uid: this.uid,
+                    previous_bind: this.previous_bind,
+                },
+            }
+        );
+
+        return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -920,6 +940,12 @@ export class UserBind extends Manager {
                 }
             }
 
+            await DatabaseManager.aliceDb.collections.playerOldPPProfile.deleteOne(
+                {
+                    discordId: this.discordid,
+                }
+            );
+
             return this.bindDb.deleteOne({
                 discordid: this.discordid,
             });
@@ -933,8 +959,21 @@ export class UserBind extends Manager {
             this.username = player.username;
         }
 
-        return this.bindDb.updateOne(
+        await this.bindDb.updateOne(
             { discordid: this.discordid },
+            {
+                $set: {
+                    uid: this.uid,
+                    username: this.username,
+                },
+                $pull: {
+                    previous_bind: uid,
+                },
+            }
+        );
+
+        return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
+            { discordId: this.discordid },
             {
                 $set: {
                     uid: this.uid,
