@@ -34,7 +34,7 @@ export const config: SlashCommand["config"] = {
         {
             name: "dpp",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: "View the droid pp (dpp) leaderboard.",
+            description: "View the droid pp (dpp) live leaderboard.",
             options: [
                 {
                     name: "page",
@@ -52,6 +52,18 @@ export const config: SlashCommand["config"] = {
             name: "global",
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View the global score leaderboard.",
+            options: [
+                {
+                    name: "page",
+                    type: ApplicationCommandOptionTypes.INTEGER,
+                    description: "The page of the leaderboard. Defaults to 1.",
+                },
+            ],
+        },
+        {
+            name: "old",
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            description: "View the droid pp (dpp) old leaderboard.",
             options: [
                 {
                     name: "page",
