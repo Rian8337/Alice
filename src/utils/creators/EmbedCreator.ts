@@ -502,6 +502,13 @@ export abstract class EmbedCreator {
             );
         }
 
+        if (droidCalculationResult instanceof OldPerformanceCalculationResult) {
+            embed.setDescription(
+                `**${localization.getTranslation("oldCalculationNote")}**\n` +
+                    embed.description
+            );
+        }
+
         const newRating:
             | OsuDifficultyCalculator
             | RebalanceOsuDifficultyCalculator =

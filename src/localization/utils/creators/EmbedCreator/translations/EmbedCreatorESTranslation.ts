@@ -19,6 +19,7 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         pcStars: "PC stars",
         starRating: "Estrellas",
         rebalanceCalculationNote: "Los resultados podrian variar.",
+        oldCalculationNote: "",
         beatmapInfo: "Información del mapa",
         dateAchieved: "Conseguido el %s",
         penalized: "Penalizado",

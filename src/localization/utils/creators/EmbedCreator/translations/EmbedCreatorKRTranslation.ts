@@ -19,6 +19,7 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         pcStars: "PC stars",
         starRating: "스타 레이팅",
         rebalanceCalculationNote: "결과값은 변할 수 있어요.",
+        oldCalculationNote: "",
         beatmapInfo: "비트맵 정보",
         dateAchieved: "%s에 달성함",
         penalized: "패널티를 받음",

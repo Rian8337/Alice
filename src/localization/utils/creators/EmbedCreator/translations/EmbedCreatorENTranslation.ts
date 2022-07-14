@@ -19,6 +19,8 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         pcStars: "PC stars",
         starRating: "Star Rating",
         rebalanceCalculationNote: "The resulting values are subject to change.",
+        oldCalculationNote:
+            "The droid pp calculation result is from an old version of the system.",
         beatmapInfo: "Beatmap Information",
         dateAchieved: "Achieved on %s",
         penalized: "penalized",

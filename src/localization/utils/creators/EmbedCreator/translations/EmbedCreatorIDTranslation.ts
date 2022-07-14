@@ -20,6 +20,8 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         starRating: "Star Rating",
         rebalanceCalculationNote:
             "Hasil perhitungan dapat berubah seiring waktu.",
+        oldCalculationNote:
+            "Hasil perhitungan droid pp berasal dari sistem lama.",
         beatmapInfo: "Informasi Beatmap",
         dateAchieved: "Dicapai pada %s",
         penalized: "terpenalti",
