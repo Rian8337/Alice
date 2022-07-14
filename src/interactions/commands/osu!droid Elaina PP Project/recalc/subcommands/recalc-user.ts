@@ -40,7 +40,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(Constants.userNotBindedReject),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(localization.language).getTranslation(
+                    Constants.userNotBindedReject
+                )
+            ),
         });
     }
 
