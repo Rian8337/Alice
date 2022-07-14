@@ -95,9 +95,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             modstring += ")";
         }
 
-        csvString += `"${pp.title}","${modstring}",${pp.combo},${pp.accuracy},${
-            pp.miss
-        },${pp.prevPP},${pp.pp},${(pp.pp - pp.prevPP).toFixed(2)}\n`;
+        csvString += `"${pp.title.replace(/"/g, '""')}","${modstring}",${
+            pp.combo
+        },${pp.accuracy},${pp.miss},${pp.prevPP},${pp.pp},${(
+            pp.pp - pp.prevPP
+        ).toFixed(2)}\n`;
     }
 
     const attachment: MessageAttachment = new MessageAttachment(
