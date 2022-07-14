@@ -37,6 +37,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         Math.ceil(res.size / 20)
     );
 
+    const entries: UserBind[] = [...res.values()];
+
     const onPageChange: OnButtonPageChange = async (options, page) => {
         const usernameLengths: number[] = [];
 
@@ -46,7 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ++i
         ) {
             usernameLengths.push(
-                StringHelper.getUnicodeStringLength(res.at(i)!.username.trim())
+                StringHelper.getUnicodeStringLength(entries[i].username.trim())
             );
         }
 
@@ -61,7 +63,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .padEnd(4)} | ${localization.getTranslation("pp")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
-            const player: UserBind | undefined = res.at(i);
+            const player: UserBind | undefined = entries[i];
 
             if (player) {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username
