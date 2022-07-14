@@ -1373,6 +1373,10 @@ if (typeof exports !== "undefined") {
 
         for (i = 0; i < strains.length; ++i) {
             total += Math.pow(strains[i], 1.2);
+            var added = strains[i] * weight;
+            if (difficulty + added === difficulty) {
+                break;
+            }
             difficulty += strains[i] * weight;
             weight *= DECAY_WEIGHT;
         }
