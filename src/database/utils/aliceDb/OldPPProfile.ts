@@ -63,7 +63,7 @@ export class OldPPProfile extends Manager {
         this.pptotal = data.pptotal;
         this.playc = data.playc;
         this.weightedAccuracy = data.weightedAccuracy;
-        this.pp = ArrayHelper.arrayToCollection(data.pp, "hash");
+        this.pp = ArrayHelper.arrayToCollection(data.pp ?? [], "hash");
         this.previous_bind = data.previous_bind;
     }
 
