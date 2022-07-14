@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { AnyChannel, ThreadChannel } from "discord.js";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";

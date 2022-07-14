@@ -1,12 +1,12 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, TextChannel, User } from "discord.js";
 import { ChallengeCollectionManager } from "@alice-database/managers/aliceDb/ChallengeCollectionManager";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Config } from "@alice-core/Config";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 
 export const run: EventUtil["run"] = async (client) => {
     if (!Config.isDebug) {

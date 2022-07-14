@@ -1,9 +1,9 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseGuildSettings } from "@alice-interfaces/database/aliceDb/DatabaseGuildSettings";
-import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
+import { OperationResult } from "structures/core/OperationResult";
+import { DatabaseGuildSettings } from "structures/database/aliceDb/DatabaseGuildSettings";
+import { GuildChannelSettings } from "structures/moderation/GuildChannelSettings";
 import { Language } from "@alice-localization/base/Language";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Snowflake } from "discord.js";

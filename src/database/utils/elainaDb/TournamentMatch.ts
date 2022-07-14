@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseTournamentMatch } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMatch";
-import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
+import { OperationResult } from "structures/core/OperationResult";
+import { DatabaseTournamentMatch } from "structures/database/elainaDb/DatabaseTournamentMatch";
+import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";

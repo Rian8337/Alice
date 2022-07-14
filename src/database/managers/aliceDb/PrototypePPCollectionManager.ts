@@ -1,5 +1,5 @@
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
-import { DatabasePrototypePP } from "@alice-interfaces/database/aliceDb/DatabasePrototypePP";
+import { DatabasePrototypePP } from "structures/database/aliceDb/DatabasePrototypePP";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";

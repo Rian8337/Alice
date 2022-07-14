@@ -1,4 +1,4 @@
-import { MathEquation } from "@alice-interfaces/utils/MathEquation";
+import { MathEquation } from "@alice-structures/utils/MathEquation";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 

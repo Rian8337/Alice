@@ -1,8 +1,8 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { NamechangeLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

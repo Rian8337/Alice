@@ -1,8 +1,8 @@
 import { Collection, GuildEmoji, SelectMenuInteraction } from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { ProfileImageConfig } from "@alice-structures/profile/ProfileImageConfig";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";

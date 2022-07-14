@@ -1,5 +1,5 @@
 import { MapBlacklist } from "@alice-database/utils/elainaDb/MapBlacklist";
-import { DatabaseMapBlacklist } from "@alice-interfaces/database/elainaDb/DatabaseMapBlacklist";
+import { DatabaseMapBlacklist } from "structures/database/elainaDb/DatabaseMapBlacklist";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**

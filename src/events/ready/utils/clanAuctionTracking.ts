@@ -1,12 +1,12 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, GuildEmoji, MessageEmbed, TextChannel } from "discord.js";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
-import { AuctionBid } from "@alice-interfaces/clan/AuctionBid";
+import { AuctionBid } from "structures/clan/AuctionBid";
 import { Config } from "@alice-core/Config";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 

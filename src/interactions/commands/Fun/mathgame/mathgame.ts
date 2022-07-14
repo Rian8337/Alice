@@ -7,9 +7,9 @@ import {
     Snowflake,
 } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { MathEquation } from "@alice-interfaces/utils/MathEquation";
-import { MathGameType } from "@alice-types/commands/Fun/MathGameType";
+import { SlashCommand } from "structures/core/SlashCommand";
+import { MathEquation } from "@alice-structures/utils/MathEquation";
+import { MathGameType } from "structures/commands/Fun/MathGameType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

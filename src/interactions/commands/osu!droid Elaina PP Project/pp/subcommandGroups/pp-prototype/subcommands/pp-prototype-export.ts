@@ -4,7 +4,7 @@ import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageAttachment, Snowflake } from "discord.js";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 

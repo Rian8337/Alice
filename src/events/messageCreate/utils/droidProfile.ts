@@ -1,6 +1,6 @@
 import { Player } from "@rian8337/osu-droid-utilities";
 import { Message } from "discord.js";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";

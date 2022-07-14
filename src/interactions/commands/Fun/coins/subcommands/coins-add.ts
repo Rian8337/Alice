@@ -1,12 +1,12 @@
 import { User } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

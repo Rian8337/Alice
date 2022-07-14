@@ -1,6 +1,6 @@
 import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
@@ -13,7 +13,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { FindOptions } from "mongodb";
-import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
+import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(

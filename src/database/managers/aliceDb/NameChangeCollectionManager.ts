@@ -1,8 +1,8 @@
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
-import { DatabaseNameChange } from "@alice-interfaces/database/aliceDb/DatabaseNameChange";
+import { DatabaseNameChange } from "structures/database/aliceDb/DatabaseNameChange";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 
 /**
  * A manager for the `namechange` collection.

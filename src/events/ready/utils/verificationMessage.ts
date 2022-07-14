@@ -2,7 +2,7 @@ import { readFile } from "fs/promises";
 import { Constants } from "@alice-core/Constants";
 import { VerifyLanguage } from "@alice-enums/events/VerifyLanguage";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";

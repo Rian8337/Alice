@@ -1,9 +1,9 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

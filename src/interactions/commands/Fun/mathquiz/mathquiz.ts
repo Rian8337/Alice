@@ -1,7 +1,7 @@
 import { Message, MessageCollector } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { MathEquation } from "@alice-interfaces/utils/MathEquation";
+import { SlashCommand } from "structures/core/SlashCommand";
+import { MathEquation } from "@alice-structures/utils/MathEquation";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";

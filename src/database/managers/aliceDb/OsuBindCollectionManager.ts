@@ -1,5 +1,5 @@
 import { OsuBind } from "@alice-database/utils/aliceDb/OsuBind";
-import { DatabaseOsuBind } from "@alice-interfaces/database/aliceDb/DatabaseOsuBind";
+import { DatabaseOsuBind } from "structures/database/aliceDb/DatabaseOsuBind";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**

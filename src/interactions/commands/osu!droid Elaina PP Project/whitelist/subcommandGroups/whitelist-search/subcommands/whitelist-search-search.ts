@@ -1,10 +1,10 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { WhitelistLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
-import { Comparison } from "@alice-types/dpp/Comparison";
+import { Comparison } from "structures/dpp/Comparison";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

@@ -1,6 +1,6 @@
 import { Constants } from "@alice-core/Constants";
-import { MessageContextMenuCommand } from "@alice-interfaces/core/MessageContextMenuCommand";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { MessageContextMenuCommand } from "structures/core/MessageContextMenuCommand";
+import { OperationResult } from "structures/core/OperationResult";
 import { TimeoutMessageAuthorLocalization } from "@alice-localization/interactions/contextmenus/message/timeoutMessageAuthor/TimeoutMessageAuthorLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

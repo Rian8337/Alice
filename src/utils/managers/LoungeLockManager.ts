@@ -6,7 +6,7 @@ import {
     TextChannel,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PunishmentManager } from "./PunishmentManager";

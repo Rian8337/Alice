@@ -1,5 +1,5 @@
 import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
-import { DatabaseProfileBadge } from "@alice-interfaces/database/aliceDb/DatabaseProfileBadge";
+import { DatabaseProfileBadge } from "structures/database/aliceDb/DatabaseProfileBadge";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";

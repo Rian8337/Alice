@@ -11,19 +11,19 @@ import {
     User,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ClanMember } from "@alice-interfaces/clan/ClanMember";
-import { Powerup } from "@alice-interfaces/clan/Powerup";
-import { DatabaseClan } from "@alice-interfaces/database/elainaDb/DatabaseClan";
+import { ClanMember } from "structures/clan/ClanMember";
+import { Powerup } from "structures/clan/Powerup";
+import { DatabaseClan } from "structures/database/elainaDb/DatabaseClan";
 import { Manager } from "../../../utils/base/Manager";
 import { MessageCreator } from "../../../utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Constants } from "@alice-core/Constants";
-import { PowerupType } from "@alice-types/clan/PowerupType";
+import { PowerupType } from "structures/clan/PowerupType";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Image } from "canvas";
 import { Precision } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { UserBind } from "./UserBind";
 import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/database/utils/elainaDb/Clan/ClanLocalization";

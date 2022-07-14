@@ -1,5 +1,5 @@
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { DatabaseClan } from "@alice-interfaces/database/elainaDb/DatabaseClan";
+import { DatabaseClan } from "structures/database/elainaDb/DatabaseClan";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection } from "discord.js";
 import { Snowflake, User } from "discord.js";

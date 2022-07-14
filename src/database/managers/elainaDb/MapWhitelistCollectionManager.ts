@@ -1,5 +1,5 @@
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
-import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
+import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Filter, Sort } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";

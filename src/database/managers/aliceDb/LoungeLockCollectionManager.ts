@@ -1,7 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";
-import { DatabaseLoungeLock } from "@alice-interfaces/database/aliceDb/DatabaseLoungeLock";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { DatabaseLoungeLock } from "structures/database/aliceDb/DatabaseLoungeLock";
+import { OperationResult } from "structures/core/OperationResult";
 import { Snowflake } from "discord.js";
 
 /**

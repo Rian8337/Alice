@@ -1,10 +1,10 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NamechangeLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

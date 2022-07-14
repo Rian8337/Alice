@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

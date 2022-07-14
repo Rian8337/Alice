@@ -1,7 +1,7 @@
 import { GuildMember, MessageEmbed } from "discord.js";
 import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
+import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { GamestatsLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/gamestats/GamestatsLocalization";

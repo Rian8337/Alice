@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseProfileBadge } from "@alice-interfaces/database/aliceDb/DatabaseProfileBadge";
+import { DatabaseProfileBadge } from "structures/database/aliceDb/DatabaseProfileBadge";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 

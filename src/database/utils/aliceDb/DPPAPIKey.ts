@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseDPPAPIKey } from "@alice-interfaces/database/aliceDb/DatabaseDPPAPIKey";
+import { DatabaseDPPAPIKey } from "structures/database/aliceDb/DatabaseDPPAPIKey";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 

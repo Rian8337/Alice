@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseMapBlacklist } from "@alice-interfaces/database/elainaDb/DatabaseMapBlacklist";
+import { DatabaseMapBlacklist } from "structures/database/elainaDb/DatabaseMapBlacklist";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 

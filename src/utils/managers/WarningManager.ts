@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { WarningCollectionManager } from "@alice-database/managers/aliceDb/WarningCollectionManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { Language } from "@alice-localization/base/Language";
 import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
 import { WarningManagerLocalization } from "@alice-localization/utils/managers/WarningManager/WarningManagerLocalization";

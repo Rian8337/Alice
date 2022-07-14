@@ -1,7 +1,7 @@
 import { TrackedPlayer } from "@alice-database/utils/elainaDb/TrackedPlayer";
-import { DatabaseTrackedPlayer } from "@alice-interfaces/database/elainaDb/DatabaseTrackedPlayer";
+import { DatabaseTrackedPlayer } from "structures/database/elainaDb/DatabaseTrackedPlayer";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 
 /**
  * A manager for the `tracking` collection.

@@ -1,12 +1,12 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
+import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { Constants } from "@alice-core/Constants";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UnbindLocalization } from "@alice-localization/interactions/commands/Bot Creators/unbind/UnbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

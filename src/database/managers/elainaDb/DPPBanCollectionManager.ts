@@ -1,5 +1,5 @@
 import { DPPBan } from "@alice-database/utils/elainaDb/DPPBan";
-import { DatabaseDPPBan } from "@alice-interfaces/database/elainaDb/DatabaseDPPBan";
+import { DatabaseDPPBan } from "structures/database/elainaDb/DatabaseDPPBan";
 import { FindOptions } from "mongodb";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 

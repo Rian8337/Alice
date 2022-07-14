@@ -3,9 +3,9 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
-import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { PartialProfileBackground } from "@alice-structures/profile/PartialProfileBackground";
+import { ProfileImageConfig } from "@alice-structures/profile/ProfileImageConfig";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -16,7 +16,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { SelectMenuInteraction } from "discord.js";
 import { UpdateFilter } from "mongodb";
-import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
+import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerInfo";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(

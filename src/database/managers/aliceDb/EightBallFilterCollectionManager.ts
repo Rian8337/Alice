@@ -1,6 +1,6 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { EightBallFilter } from "@alice-database/utils/aliceDb/EightBallFilter";
-import { DatabaseEightBallFilter } from "@alice-interfaces/database/aliceDb/DatabaseEightBallFilter";
+import { DatabaseEightBallFilter } from "structures/database/aliceDb/DatabaseEightBallFilter";
 
 /**
  * A manager for the `responsefilter` collection.

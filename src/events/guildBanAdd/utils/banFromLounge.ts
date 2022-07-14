@@ -4,7 +4,7 @@ import {
     GuildBan,
     User,
 } from "discord.js";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 

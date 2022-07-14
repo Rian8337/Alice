@@ -1,4 +1,4 @@
-import { MessageContextMenuCommand } from "@alice-interfaces/core/MessageContextMenuCommand";
+import { MessageContextMenuCommand } from "structures/core/MessageContextMenuCommand";
 import { ViewBeatmapLeaderboardLocalization } from "@alice-localization/interactions/contextmenus/message/viewBeatmapLeaderboard/ViewBeatmapLeaderboardLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

@@ -1,11 +1,11 @@
 import { MessageOptions, Snowflake, TextChannel } from "discord.js";
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
+import { OperationResult } from "structures/core/OperationResult";
 import { Constants } from "@alice-core/Constants";
 import { Manager } from "@alice-utils/base/Manager";
-import { WhitelistStatus } from "@alice-types/dpp/WhitelistStatus";
+import { WhitelistStatus } from "structures/dpp/WhitelistStatus";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";

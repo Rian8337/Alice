@@ -1,13 +1,13 @@
 import {
     ChannelCooldownKey,
     GlobalCooldownKey,
-} from "@alice-types/core/CooldownKey";
+} from "structures/core/CooldownKey";
 import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollection";
 import { Collection, Snowflake } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
-import { TriviaQuestionCachedAnswer } from "@alice-interfaces/trivia/TriviaQuestionCachedAnswer";
-import { TriviaMapCachedAnswer } from "@alice-interfaces/trivia/TriviaMapCachedAnswer";
+import { TriviaQuestionCachedAnswer } from "@alice-structures/trivia/TriviaQuestionCachedAnswer";
+import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
 
 /**
  * A manager that holds anything that is cached.

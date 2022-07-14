@@ -3,9 +3,9 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { SlashSubcommandGroup } from "@alice-interfaces/core/SlashSubcommandGroup";
-import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SlashSubcommandGroup } from "structures/core/SlashSubcommandGroup";
+import { PPEntry } from "@alice-structures/dpp/PPEntry";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import {
     PPLocalization,

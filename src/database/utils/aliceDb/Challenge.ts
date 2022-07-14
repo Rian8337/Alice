@@ -1,14 +1,14 @@
 import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Bonus } from "@alice-interfaces/challenge/Bonus";
-import { BonusDescription } from "@alice-interfaces/challenge/BonusDescription";
-import { PassRequirement } from "@alice-interfaces/challenge/PassRequirement";
-import { DatabaseChallenge } from "@alice-interfaces/database/aliceDb/DatabaseChallenge";
+import { Bonus } from "structures/challenge/Bonus";
+import { BonusDescription } from "structures/challenge/BonusDescription";
+import { PassRequirement } from "structures/challenge/PassRequirement";
+import { DatabaseChallenge } from "structures/database/aliceDb/DatabaseChallenge";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { BonusID } from "@alice-types/challenge/BonusID";
-import { ChallengeStatusType } from "@alice-types/challenge/ChallengeStatusType";
-import { ChallengeType } from "@alice-types/challenge/ChallengeType";
+import { BonusID } from "structures/challenge/BonusID";
+import { ChallengeStatusType } from "structures/challenge/ChallengeStatusType";
+import { ChallengeType } from "structures/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
@@ -28,7 +28,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { UserBind } from "../elainaDb/UserBind";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import {

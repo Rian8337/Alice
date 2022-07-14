@@ -4,7 +4,7 @@ import {
     MessageEmbed,
     TextChannel,
 } from "discord.js";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";

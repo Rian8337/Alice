@@ -8,8 +8,8 @@ import {
 } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SlashCommand } from "structures/core/SlashCommand";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";

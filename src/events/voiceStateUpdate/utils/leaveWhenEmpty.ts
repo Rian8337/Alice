@@ -1,4 +1,4 @@
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { VoiceState } from "discord.js";
 

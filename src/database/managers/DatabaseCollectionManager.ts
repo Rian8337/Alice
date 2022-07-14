@@ -1,5 +1,5 @@
-import { BaseDocument } from "@alice-interfaces/database/BaseDocument";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { BaseDocument } from "structures/database/BaseDocument";
+import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { Collection as DiscordCollection } from "discord.js";
 import {

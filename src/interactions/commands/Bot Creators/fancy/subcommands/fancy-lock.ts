@@ -1,5 +1,5 @@
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";

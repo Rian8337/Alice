@@ -1,5 +1,5 @@
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { ScoreRank } from "@alice-types/utils/ScoreRank";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
+import { ScoreRank } from "structures/utils/ScoreRank";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";

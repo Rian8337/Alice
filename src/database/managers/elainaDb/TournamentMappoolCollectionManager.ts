@@ -1,5 +1,5 @@
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
-import { DatabaseTournamentMappool } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMappool";
+import { DatabaseTournamentMappool } from "structures/database/elainaDb/DatabaseTournamentMappool";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**

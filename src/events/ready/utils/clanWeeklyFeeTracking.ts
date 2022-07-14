@@ -1,7 +1,7 @@
 import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
@@ -9,7 +9,7 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 

@@ -1,5 +1,5 @@
 import { GuildChannel, Message, MessageEmbed, ThreadChannel } from "discord.js";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 
 export const run: EventUtil["run"] = async (

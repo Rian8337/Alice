@@ -7,7 +7,7 @@ import {
     TextChannel,
     User,
 } from "discord.js";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { DatabaseManager } from "@alice-database/DatabaseManager";

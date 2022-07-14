@@ -1,15 +1,15 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { AuctionBid } from "@alice-interfaces/clan/AuctionBid";
-import { DatabaseClanAuction } from "@alice-interfaces/database/aliceDb/DatabaseClanAuction";
+import { AuctionBid } from "structures/clan/AuctionBid";
+import { DatabaseClanAuction } from "structures/database/aliceDb/DatabaseClanAuction";
 import { Manager } from "@alice-utils/base/Manager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { ObjectId } from "bson";
 import { Collection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { Powerup } from "@alice-interfaces/clan/Powerup";
-import { PowerupType } from "@alice-types/clan/PowerupType";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { Powerup } from "structures/clan/Powerup";
+import { PowerupType } from "structures/clan/PowerupType";
+import { OperationResult } from "structures/core/OperationResult";
 import { Language } from "@alice-localization/base/Language";
 import { ClanAuctionLocalization } from "@alice-localization/database/utils/aliceDb/ClanAuction/ClanAuctionLocalization";
 

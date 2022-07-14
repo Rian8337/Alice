@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
+import { DatabaseGuildPunishmentConfig } from "structures/database/aliceDb/DatabaseGuildPunishmentConfig";
+import { OperationResult } from "structures/core/OperationResult";
+import { RoleTimeoutPermission } from "structures/moderation/RoleTimeoutPermission";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";

@@ -1,4 +1,4 @@
-import { Event } from "@alice-interfaces/core/Event";
+import { Event } from "structures/core/Event";
 import { EventHelper } from "@alice-utils/helpers/EventHelper";
 import { VoiceState } from "discord.js";
 

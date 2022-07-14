@@ -1,4 +1,4 @@
-import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
+import { YouTubeVideoInformation } from "@alice-structures/youtube/YouTubeVideoInformation";
 import { decode } from "html-entities";
 import { RequestResponse } from "@rian8337/osu-base";
 import { RESTManager } from "./RESTManager";

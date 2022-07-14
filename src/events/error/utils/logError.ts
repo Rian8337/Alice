@@ -1,4 +1,4 @@
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { MessageAttachment, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client, error: Error) => {

@@ -1,5 +1,5 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

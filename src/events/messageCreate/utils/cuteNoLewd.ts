@@ -1,6 +1,6 @@
 import { Message, Snowflake } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CuteNoLewdLocalization } from "@alice-localization/events/messageCreate/cuteNoLewd/CuteNoLewdLocalization";

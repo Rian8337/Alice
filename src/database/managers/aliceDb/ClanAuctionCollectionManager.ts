@@ -1,6 +1,6 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
-import { DatabaseClanAuction } from "@alice-interfaces/database/aliceDb/DatabaseClanAuction";
+import { DatabaseClanAuction } from "structures/database/aliceDb/DatabaseClanAuction";
 import { Collection as DiscordCollection } from "discord.js";
 
 /**

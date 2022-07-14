@@ -1,5 +1,5 @@
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { SlashSubcommandGroup } from "@alice-interfaces/core/SlashSubcommandGroup";
+import { SlashSubcommandGroup } from "structures/core/SlashSubcommandGroup";
 import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

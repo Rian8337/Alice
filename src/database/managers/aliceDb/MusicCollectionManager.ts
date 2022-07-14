@@ -1,5 +1,5 @@
 import { MusicCollection } from "@alice-database/utils/aliceDb/MusicCollection";
-import { DatabaseMusicCollection } from "@alice-interfaces/database/aliceDb/DatabaseMusicCollection";
+import { DatabaseMusicCollection } from "structures/database/aliceDb/DatabaseMusicCollection";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake, User, Collection as DiscordCollection } from "discord.js";
 

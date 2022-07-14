@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { VoteChoice } from "@alice-interfaces/interactions/commands/Tools/VoteChoice";
-import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { VoteChoice } from "structures/interactions/commands/Tools/VoteChoice";
+import { DatabaseVoting } from "structures/database/aliceDb/DatabaseVoting";
+import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";

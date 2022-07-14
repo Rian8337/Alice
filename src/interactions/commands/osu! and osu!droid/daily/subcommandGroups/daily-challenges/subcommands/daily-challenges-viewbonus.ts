@@ -1,8 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { BonusDescription } from "@alice-interfaces/challenge/BonusDescription";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { BonusDescription } from "structures/challenge/BonusDescription";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

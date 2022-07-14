@@ -18,7 +18,7 @@ import {
 } from "discord.js";
 import { ArrayHelper } from "./ArrayHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { TriviaQuestionResult } from "@alice-interfaces/trivia/TriviaQuestionResult";
+import { TriviaQuestionResult } from "@alice-structures/trivia/TriviaQuestionResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Language } from "@alice-localization/base/Language";
 import { TriviaHelperLocalization } from "@alice-localization/utils/helpers/TriviaHelper/TriviaHelperLocalization";
@@ -26,7 +26,7 @@ import { InteractionHelper } from "./InteractionHelper";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { TextInputStyles } from "discord.js/typings/enums";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { TriviaQuestionCachedAnswer } from "@alice-interfaces/trivia/TriviaQuestionCachedAnswer";
+import { TriviaQuestionCachedAnswer } from "@alice-structures/trivia/TriviaQuestionCachedAnswer";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 
 /**

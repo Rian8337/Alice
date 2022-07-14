@@ -1,13 +1,13 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { ProfileBadgeOwnerInfo } from "@alice-interfaces/interactions/commands/osu! and osu!droid/ProfileBadgeOwnerInfo";
+import { ProfileBadgeOwnerInfo } from "structures/interactions/commands/osu! and osu!droid/ProfileBadgeOwnerInfo";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
+import { PartialProfileBackground } from "@alice-structures/profile/PartialProfileBackground";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const badgeList: Collection<string, ProfileBadge> =

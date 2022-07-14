@@ -1,8 +1,8 @@
 import { PlayerSkin } from "@alice-database/utils/aliceDb/PlayerSkin";
-import { DatabasePlayerSkin } from "@alice-interfaces/database/aliceDb/DatabasePlayerSkin";
+import { DatabasePlayerSkin } from "structures/database/aliceDb/DatabasePlayerSkin";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake, User } from "discord.js";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 
 /**
  * A manager for the `playerskin` collection.

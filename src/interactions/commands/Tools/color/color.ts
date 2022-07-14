@@ -2,7 +2,7 @@ import { MessageAttachment } from "discord.js";
 import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
+import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ColorLocalization } from "@alice-localization/interactions/commands/Tools/color/ColorLocalization";

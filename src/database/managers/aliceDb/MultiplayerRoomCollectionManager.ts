@@ -1,4 +1,4 @@
-import { DatabaseMultiplayerRoom } from "@alice-interfaces/database/aliceDb/DatabaseMultiplayerRoom";
+import { DatabaseMultiplayerRoom } from "structures/database/aliceDb/DatabaseMultiplayerRoom";
 import { MultiplayerRoom } from "../../utils/aliceDb/MultiplayerRoom";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";

@@ -1,8 +1,8 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
+import { DatabaseMapShare } from "structures/database/aliceDb/DatabaseMapShare";
+import { OperationResult } from "structures/core/OperationResult";
+import { MapShareSubmissionStatus } from "structures/utils/MapShareSubmissionStatus";
 import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { ObjectId } from "bson";

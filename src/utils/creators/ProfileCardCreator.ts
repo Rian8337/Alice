@@ -10,7 +10,7 @@ import { promises, Stats } from "fs";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
+import { PartialProfileBackground } from "@alice-structures/profile/PartialProfileBackground";
 import { Language } from "@alice-localization/base/Language";
 import { ProfileCardCreatorLocalization } from "@alice-localization/utils/creators/ProfileCardCreator/ProfileCardCreatorLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";

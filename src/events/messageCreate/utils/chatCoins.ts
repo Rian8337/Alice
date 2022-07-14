@@ -1,6 +1,6 @@
 import { DMChannel, Message, Snowflake, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 

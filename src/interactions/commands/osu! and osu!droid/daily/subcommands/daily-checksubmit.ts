@@ -1,8 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
+import { ChallengeCompletionData } from "structures/challenge/ChallengeCompletionData";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerInfo";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabasePlayerSkin } from "@alice-interfaces/database/aliceDb/DatabasePlayerSkin";
+import { DatabasePlayerSkin } from "structures/database/aliceDb/DatabasePlayerSkin";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";

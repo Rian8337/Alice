@@ -1,8 +1,8 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { ProfileImageConfig } from "@alice-structures/profile/ProfileImageConfig";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";

@@ -1,9 +1,9 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanCollectionManager } from "@alice-database/managers/elainaDb/ClanCollectionManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { ClanMember } from "@alice-interfaces/clan/ClanMember";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { ClanMember } from "structures/clan/ClanMember";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";

@@ -26,7 +26,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { ScoreRank } from "@alice-types/utils/ScoreRank";
+import { ScoreRank } from "structures/utils/ScoreRank";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";

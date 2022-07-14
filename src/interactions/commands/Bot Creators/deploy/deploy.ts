@@ -3,13 +3,13 @@ import {
     ApplicationCommandTypes,
 } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
+import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandData } from "discord.js";
 import { DeployLocalization } from "@alice-localization/interactions/commands/Bot Creators/deploy/DeployLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ContextMenuCommand } from "@alice-interfaces/core/ContextMenuCommand";
+import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: DeployLocalization = new DeployLocalization(

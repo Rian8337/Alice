@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseNameChange } from "@alice-interfaces/database/aliceDb/DatabaseNameChange";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { DatabaseNameChange } from "structures/database/aliceDb/DatabaseNameChange";
+import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { MessageEmbed, Snowflake, User } from "discord.js";

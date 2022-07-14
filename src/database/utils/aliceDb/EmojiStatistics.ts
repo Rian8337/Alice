@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseEmojiStatistics } from "@alice-interfaces/database/aliceDb/DatabaseEmojiStatistics";
-import { EmojiStat } from "@alice-interfaces/moderation/EmojiStat";
+import { DatabaseEmojiStatistics } from "structures/database/aliceDb/DatabaseEmojiStatistics";
+import { EmojiStat } from "structures/moderation/EmojiStat";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";

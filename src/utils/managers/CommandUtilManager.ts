@@ -1,10 +1,10 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildSettingsCollectionManager } from "@alice-database/managers/aliceDb/GuildSettingsCollectionManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
-import { DisabledEventUtil } from "@alice-interfaces/moderation/DisabledEventUtil";
-import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
+import { OperationResult } from "structures/core/OperationResult";
+import { DisabledCommand } from "structures/moderation/DisabledCommand";
+import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
+import { GuildChannelSettings } from "structures/moderation/GuildChannelSettings";
 import { Language } from "@alice-localization/base/Language";
 import { CommandUtilManagerLocalization } from "@alice-localization/utils/managers/CommandUtilManager/CommandUtilManagerLocalization";
 import { Manager } from "@alice-utils/base/Manager";

@@ -3,7 +3,7 @@ import { RequestResponse } from "@rian8337/osu-base";
 import { Manager } from "@alice-utils/base/Manager";
 import { Image, loadImage } from "canvas";
 import { Snowflake } from "discord.js";
-import { TatsuAPIGuildMemberRanking } from "@alice-interfaces/utils/TatsuAPIGuildMemberRanking";
+import { TatsuAPIGuildMemberRanking } from "structures/utils/TatsuAPIGuildMemberRanking";
 
 export abstract class RESTManager extends Manager {
     /**

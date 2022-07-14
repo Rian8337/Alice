@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseEightBallFilter } from "@alice-interfaces/database/aliceDb/DatabaseEightBallFilter";
+import { DatabaseEightBallFilter } from "structures/database/aliceDb/DatabaseEightBallFilter";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 

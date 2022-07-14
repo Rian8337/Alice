@@ -1,6 +1,6 @@
 import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import {

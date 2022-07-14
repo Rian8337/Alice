@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { OperationResult } from "structures/core/OperationResult";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

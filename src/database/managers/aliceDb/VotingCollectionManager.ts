@@ -1,5 +1,5 @@
 import { Voting } from "@alice-database/utils/aliceDb/Voting";
-import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
+import { DatabaseVoting } from "structures/database/aliceDb/DatabaseVoting";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";

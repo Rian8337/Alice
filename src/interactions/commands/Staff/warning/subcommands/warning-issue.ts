@@ -1,5 +1,5 @@
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { OperationResult } from "structures/core/OperationResult";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { WarningLocalization } from "@alice-localization/interactions/commands/Staff/warning/WarningLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

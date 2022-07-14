@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseIllegalMap } from "@alice-interfaces/database/aliceDb/DatabaseIllegalMap";
+import { OperationResult } from "structures/core/OperationResult";
+import { DatabaseIllegalMap } from "structures/database/aliceDb/DatabaseIllegalMap";
 import { Manager } from "@alice-utils/base/Manager";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { DroidAPIRequestBuilder } from "@rian8337/osu-base";

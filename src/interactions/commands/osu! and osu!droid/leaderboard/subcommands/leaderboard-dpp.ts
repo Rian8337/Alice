@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";

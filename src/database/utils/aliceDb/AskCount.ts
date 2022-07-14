@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseAskCount } from "@alice-interfaces/database/aliceDb/DatabaseAskCount";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { DatabaseAskCount } from "structures/database/aliceDb/DatabaseAskCount";
+import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";

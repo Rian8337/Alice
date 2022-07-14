@@ -1,6 +1,6 @@
 import { User } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";

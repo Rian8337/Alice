@@ -1,14 +1,14 @@
 import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashCommand } from "structures/core/SlashCommand";
+import { EventUtil } from "structures/core/EventUtil";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { RunCommandLocalization } from "@alice-localization/events/interactionCreate/runCommand/RunCommandLocalization";
 import {
     ChannelCooldownKey,
     GlobalCooldownKey,
-} from "@alice-types/core/CooldownKey";
+} from "structures/core/CooldownKey";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

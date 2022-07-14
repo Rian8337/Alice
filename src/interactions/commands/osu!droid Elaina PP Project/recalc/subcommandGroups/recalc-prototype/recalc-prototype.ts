@@ -1,5 +1,5 @@
 import { Constants } from "@alice-core/Constants";
-import { SlashSubcommandGroup } from "@alice-interfaces/core/SlashSubcommandGroup";
+import { SlashSubcommandGroup } from "structures/core/SlashSubcommandGroup";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

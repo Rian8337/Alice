@@ -1,4 +1,4 @@
-import { SlashSubcommandGroup } from "@alice-interfaces/core/SlashSubcommandGroup";
+import { SlashSubcommandGroup } from "structures/core/SlashSubcommandGroup";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {

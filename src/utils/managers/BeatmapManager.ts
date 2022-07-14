@@ -10,7 +10,7 @@ import { CacheManager } from "./CacheManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
-import { ScoreRank } from "@alice-types/utils/ScoreRank";
+import { ScoreRank } from "structures/utils/ScoreRank";
 
 /**
  * A manager for beatmaps.

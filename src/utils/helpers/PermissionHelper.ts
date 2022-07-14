@@ -1,6 +1,6 @@
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
-import { GuildMemberPermissionComparison } from "@alice-types/utils/GuildMemberPermissionComparison";
-import { Permission } from "@alice-types/core/Permission";
+import { GuildMemberPermissionComparison } from "structures/utils/GuildMemberPermissionComparison";
+import { Permission } from "structures/core/Permission";
 import { StringHelper } from "./StringHelper";
 import { Constants } from "@alice-core/Constants";
 import { Bot } from "@alice-core/Bot";

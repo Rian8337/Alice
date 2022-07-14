@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseProfileBackground } from "@alice-interfaces/database/aliceDb/DatabaseProfileBackground";
+import { DatabaseProfileBackground } from "structures/database/aliceDb/DatabaseProfileBackground";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 

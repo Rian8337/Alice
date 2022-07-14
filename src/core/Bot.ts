@@ -10,23 +10,23 @@ import {
 } from "discord.js";
 import { MongoClient } from "mongodb";
 import consola, { Consola } from "consola";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { Event } from "@alice-interfaces/core/Event";
+import { SlashCommand } from "structures/core/SlashCommand";
+import { Event } from "structures/core/Event";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Config } from "./Config";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Manager } from "@alice-utils/base/Manager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
-import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
-import { BotInteractions } from "@alice-interfaces/core/BotInteractions";
-import { ContextMenuCommand } from "@alice-interfaces/core/ContextMenuCommand";
+import { ModalCommand } from "structures/core/ModalCommand";
+import { BotInteractions } from "structures/core/BotInteractions";
+import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
 
 /**
  * The starting point of the bot.

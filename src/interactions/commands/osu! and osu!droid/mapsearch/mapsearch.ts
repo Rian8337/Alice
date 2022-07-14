@@ -1,10 +1,10 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { SayobotAPIResponse } from "@alice-interfaces/sayobot/SayobotAPIResponse";
-import { SayobotBeatmap } from "@alice-interfaces/sayobot/SayobotBeatmap";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { SlashCommand } from "structures/core/SlashCommand";
+import { SayobotAPIResponse } from "@alice-structures/sayobot/SayobotAPIResponse";
+import { SayobotBeatmap } from "@alice-structures/sayobot/SayobotBeatmap";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

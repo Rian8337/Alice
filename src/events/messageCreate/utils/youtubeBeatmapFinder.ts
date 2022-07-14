@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, MessageOptions } from "discord.js";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
-import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
+import { YouTubeVideoInformation } from "@alice-structures/youtube/YouTubeVideoInformation";
 import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";

@@ -1,8 +1,8 @@
 import { MapInfo } from "@rian8337/osu-base";
 import { Config } from "@alice-core/Config";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { SlashCommand } from "structures/core/SlashCommand";
+import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";

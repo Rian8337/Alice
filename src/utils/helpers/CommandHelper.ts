@@ -15,16 +15,16 @@ import {
     ThreadChannel,
     User,
 } from "discord.js";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { CacheManager } from "../managers/CacheManager";
-import { CommandScope } from "@alice-types/core/CommandScope";
-import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
+import { CommandScope } from "structures/core/CommandScope";
+import { DisabledCommand } from "structures/moderation/DisabledCommand";
 import { Constants } from "@alice-core/Constants";
 import {
     ChannelCooldownKey,
     GlobalCooldownKey,
-} from "@alice-types/core/CooldownKey";
-import { Permission } from "@alice-types/core/Permission";
+} from "structures/core/CooldownKey";
+import { Permission } from "structures/core/Permission";
 import { Config } from "@alice-core/Config";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

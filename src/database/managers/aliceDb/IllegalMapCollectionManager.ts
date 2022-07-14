@@ -1,6 +1,6 @@
 import { Collection as DiscordCollection } from "discord.js";
 import { IllegalMap } from "@alice-database/utils/aliceDb/IllegalMap";
-import { DatabaseIllegalMap } from "@alice-interfaces/database/aliceDb/DatabaseIllegalMap";
+import { DatabaseIllegalMap } from "structures/database/aliceDb/DatabaseIllegalMap";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 

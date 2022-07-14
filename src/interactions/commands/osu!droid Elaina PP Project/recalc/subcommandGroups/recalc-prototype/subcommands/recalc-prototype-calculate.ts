@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { RecalcLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/recalc/RecalcLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -11,7 +11,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { RecalculationManager } from "@alice-utils/managers/RecalculationManager";
 import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
-import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
+import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: RecalcLocalization = new RecalcLocalization(

@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { WhitelistValidity } from "@alice-enums/utils/WhitelistValidity";
-import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
-import { WhitelistDifficultyStatistics } from "@alice-interfaces/dpp/WhitelistDifficultyStatistics";
+import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
+import { WhitelistDifficultyStatistics } from "structures/dpp/WhitelistDifficultyStatistics";
 import { Manager } from "@alice-utils/base/Manager";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";

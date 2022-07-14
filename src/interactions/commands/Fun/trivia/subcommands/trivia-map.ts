@@ -1,5 +1,5 @@
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { MapTriviaPlayer } from "@alice-interfaces/trivia/MapTriviaPlayer";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { MapTriviaPlayer } from "@alice-structures/trivia/MapTriviaPlayer";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
@@ -28,7 +28,7 @@ import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollec
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { TextInputStyles } from "discord.js/typings/enums";
-import { TriviaMapCachedAnswer } from "@alice-interfaces/trivia/TriviaMapCachedAnswer";
+import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     if (fetchAttempt === 5) {

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseGuildTag } from "@alice-interfaces/database/aliceDb/DatabaseGuildTag";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { DatabaseGuildTag } from "structures/database/aliceDb/DatabaseGuildTag";
+import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 

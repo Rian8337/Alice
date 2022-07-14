@@ -6,8 +6,8 @@ import {
     Snowflake,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { EmojiStat } from "@alice-interfaces/moderation/EmojiStat";
+import { EventUtil } from "structures/core/EventUtil";
+import { EmojiStat } from "structures/moderation/EmojiStat";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {

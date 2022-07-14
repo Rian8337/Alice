@@ -1,6 +1,6 @@
 import { Config } from "@alice-core/Config";
-import { ContextMenuCommand } from "@alice-interfaces/core/ContextMenuCommand";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
+import { EventUtil } from "structures/core/EventUtil";
 import { RunContextMenuLocalization } from "@alice-localization/events/interactionCreate/runContextMenu/RunContextMenuLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

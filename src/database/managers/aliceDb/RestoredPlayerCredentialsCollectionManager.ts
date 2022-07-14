@@ -1,5 +1,5 @@
 import { RestoredPlayerCredentials } from "@alice-database/utils/aliceDb/RestoredPlayerCredentials";
-import { DatabaseRestoredPlayerCredentials } from "@alice-interfaces/database/aliceDb/DatabaseRestoredPlayerCredentials";
+import { DatabaseRestoredPlayerCredentials } from "structures/database/aliceDb/DatabaseRestoredPlayerCredentials";
 import { FindOptions } from "mongodb";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 

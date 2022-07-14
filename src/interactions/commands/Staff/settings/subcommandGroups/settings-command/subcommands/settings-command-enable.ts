@@ -1,8 +1,8 @@
 import { Constants } from "@alice-core/Constants";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
+import { SlashCommand } from "structures/core/SlashCommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OperationResult } from "structures/core/OperationResult";
+import { CommandUtilScope } from "structures/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";

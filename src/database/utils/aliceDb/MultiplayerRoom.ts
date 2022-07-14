@@ -3,19 +3,19 @@ import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
 import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
 import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseMultiplayerRoom } from "@alice-interfaces/database/aliceDb/DatabaseMultiplayerRoom";
-import { MultiplayerPlayer } from "@alice-interfaces/multiplayer/MultiplayerPlayer";
-import { MultiplayerRoomSettings } from "@alice-interfaces/multiplayer/MultiplayerRoomSettings";
-import { MultiplayerRoomStatus } from "@alice-interfaces/multiplayer/MultiplayerRoomStatus";
-import { MultiplayerScore } from "@alice-interfaces/multiplayer/MultiplayerScore";
-import { MultiplayerScoreFinalResult } from "@alice-interfaces/multiplayer/MultiplayerScoreFinalResult";
+import { OperationResult } from "structures/core/OperationResult";
+import { DatabaseMultiplayerRoom } from "structures/database/aliceDb/DatabaseMultiplayerRoom";
+import { MultiplayerPlayer } from "@alice-structures/multiplayer/MultiplayerPlayer";
+import { MultiplayerRoomSettings } from "@alice-structures/multiplayer/MultiplayerRoomSettings";
+import { MultiplayerRoomStatus } from "@alice-structures/multiplayer/MultiplayerRoomStatus";
+import { MultiplayerScore } from "@alice-structures/multiplayer/MultiplayerScore";
+import { MultiplayerScoreFinalResult } from "@alice-structures/multiplayer/MultiplayerScoreFinalResult";
 import { Language } from "@alice-localization/base/Language";
 import {
     MultiplayerRoomLocalization,
     MultiplayerRoomStrings,
 } from "@alice-localization/database/utils/aliceDb/MultiplayerRoom/MultiplayerRoomLocalization";
-import { ScoreRank } from "@alice-types/utils/ScoreRank";
+import { ScoreRank } from "structures/utils/ScoreRank";
 import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";

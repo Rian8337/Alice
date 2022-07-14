@@ -1,6 +1,6 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { DPPAPIKey } from "@alice-database/utils/aliceDb/DPPAPIKey";
-import { DatabaseDPPAPIKey } from "@alice-interfaces/database/aliceDb/DatabaseDPPAPIKey";
+import { DatabaseDPPAPIKey } from "structures/database/aliceDb/DatabaseDPPAPIKey";
 
 /**
  * A manager for the `dppapikey` collection.

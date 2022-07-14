@@ -1,6 +1,6 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { AskCount } from "@alice-database/utils/aliceDb/AskCount";
-import { DatabaseAskCount } from "@alice-interfaces/database/aliceDb/DatabaseAskCount";
+import { DatabaseAskCount } from "structures/database/aliceDb/DatabaseAskCount";
 import { Snowflake } from "discord.js";
 
 /**

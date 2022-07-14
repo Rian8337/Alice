@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseTournamentMappool } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMappool";
-import { TournamentBeatmap } from "@alice-interfaces/tournament/TournamentBeatmap";
-import { TournamentScore } from "@alice-interfaces/tournament/TournamentScore";
+import { DatabaseTournamentMappool } from "structures/database/elainaDb/DatabaseTournamentMappool";
+import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
+import { TournamentScore } from "@alice-structures/tournament/TournamentScore";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";

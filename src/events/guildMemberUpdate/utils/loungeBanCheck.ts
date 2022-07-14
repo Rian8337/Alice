@@ -1,6 +1,6 @@
 import { GuildMember, MessageEmbed, Role, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";

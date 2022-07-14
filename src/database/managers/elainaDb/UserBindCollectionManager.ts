@@ -1,5 +1,5 @@
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
+import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Filter, FindOptions, WithId } from "mongodb";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";

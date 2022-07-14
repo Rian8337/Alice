@@ -1,6 +1,6 @@
 import { Config } from "@alice-core/Config";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { Collection } from "discord.js";

@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseTrackedPlayer } from "@alice-interfaces/database/elainaDb/DatabaseTrackedPlayer";
+import { DatabaseTrackedPlayer } from "structures/database/elainaDb/DatabaseTrackedPlayer";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 

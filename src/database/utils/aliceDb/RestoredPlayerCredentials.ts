@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseRestoredPlayerCredentials } from "@alice-interfaces/database/aliceDb/DatabaseRestoredPlayerCredentials";
+import { DatabaseRestoredPlayerCredentials } from "structures/database/aliceDb/DatabaseRestoredPlayerCredentials";
 import { Manager } from "@alice-utils/base/Manager";
 
 /**

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { DatabaseBirthday } from "structures/database/aliceDb/DatabaseBirthday";
+import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";

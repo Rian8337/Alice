@@ -1,5 +1,5 @@
 import { Config } from "@alice-core/Config";
-import { SlashSubcommandGroup } from "@alice-interfaces/core/SlashSubcommandGroup";
+import { SlashSubcommandGroup } from "structures/core/SlashSubcommandGroup";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

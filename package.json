@@ -72,9 +72,8 @@
     "@alice-enums": "dist/enums",
     "@alice-events": "dist/events",
     "@alice-interactions": "dist/interactions",
-    "@alice-interfaces": "dist/interfaces",
     "@alice-localization": "dist/localization",
-    "@alice-types": "dist/types",
+    "@alice-structures": "dist/structures",
     "@alice-utils": "dist/utils"
   },
   "eslintConfig": {

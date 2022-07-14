@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {

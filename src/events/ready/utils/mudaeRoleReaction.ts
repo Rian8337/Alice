@@ -1,4 +1,4 @@
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { RoleReactionCreator } from "@alice-utils/creators/RoleReactionCreator";
 import { Guild, TextChannel, Role, Message } from "discord.js";
 

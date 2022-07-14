@@ -1,5 +1,5 @@
-import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
-import { TriviaQuestionCachedAnswer } from "@alice-interfaces/trivia/TriviaQuestionCachedAnswer";
+import { ModalCommand } from "structures/core/ModalCommand";
+import { TriviaQuestionCachedAnswer } from "@alice-structures/trivia/TriviaQuestionCachedAnswer";
 import { TriviaQuestionsFillInTheBlankLocalization } from "@alice-localization/interactions/modals/Fun/trivia-questions-fillintheblank/TriviaQuestionsFillInTheBlankLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

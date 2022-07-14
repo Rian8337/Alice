@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { IllegalMap } from "@alice-database/utils/aliceDb/IllegalMap";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import { Collection } from "discord.js";
 
 export const run: EventUtil["run"] = async () => {

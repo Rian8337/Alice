@@ -6,8 +6,8 @@ import {
     Snowflake,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ActivityCategory } from "@alice-interfaces/interactions/commands/Tools/ActivityCategory";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { ActivityCategory } from "structures/interactions/commands/Tools/ActivityCategory";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -16,7 +16,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { ChannelDataCollectionManager } from "@alice-database/managers/aliceDb/ChannelDataCollectionManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import {
     MessageanalyticsLocalization,
     MessageanalyticsStrings,

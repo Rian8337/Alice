@@ -1,6 +1,6 @@
 import { GuildMember, MessageEmbed } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
+import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

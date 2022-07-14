@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseWarning } from "@alice-interfaces/database/aliceDb/DatabaseWarning";
+import { DatabaseWarning } from "structures/database/aliceDb/DatabaseWarning";
 import { Manager } from "@alice-utils/base/Manager";
 import { Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";

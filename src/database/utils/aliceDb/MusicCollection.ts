@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseMusicCollection } from "@alice-interfaces/database/aliceDb/DatabaseMusicCollection";
+import { OperationResult } from "structures/core/OperationResult";
+import { DatabaseMusicCollection } from "structures/database/aliceDb/DatabaseMusicCollection";
 import { Manager } from "@alice-utils/base/Manager";
 
 /**

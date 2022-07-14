@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseDPPBan } from "@alice-interfaces/database/elainaDb/DatabaseDPPBan";
+import { DatabaseDPPBan } from "structures/database/elainaDb/DatabaseDPPBan";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 

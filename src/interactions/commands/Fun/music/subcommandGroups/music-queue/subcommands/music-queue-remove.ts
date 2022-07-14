@@ -1,5 +1,5 @@
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { OperationResult } from "structures/core/OperationResult";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";

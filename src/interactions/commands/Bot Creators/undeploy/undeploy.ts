@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-interfaces/core/SlashCommand";
+import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommand } from "discord.js";
 import { UndeployLocalization } from "@alice-localization/interactions/commands/Bot Creators/undeploy/UndeployLocalization";

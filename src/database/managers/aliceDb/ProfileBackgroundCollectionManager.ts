@@ -1,5 +1,5 @@
 import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
-import { DatabaseProfileBackground } from "@alice-interfaces/database/aliceDb/DatabaseProfileBackground";
+import { DatabaseProfileBackground } from "structures/database/aliceDb/DatabaseProfileBackground";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**

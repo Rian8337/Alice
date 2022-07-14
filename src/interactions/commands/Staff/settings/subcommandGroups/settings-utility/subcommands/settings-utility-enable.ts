@@ -1,9 +1,9 @@
 import { Constants } from "@alice-core/Constants";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { EventUtil } from "structures/core/EventUtil";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { SettingsLocalization } from "@alice-localization/interactions/commands/Staff/settings/SettingsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
+import { CommandUtilScope } from "structures/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";

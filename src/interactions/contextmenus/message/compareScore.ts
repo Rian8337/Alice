@@ -1,7 +1,7 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { MessageContextMenuCommand } from "@alice-interfaces/core/MessageContextMenuCommand";
+import { MessageContextMenuCommand } from "structures/core/MessageContextMenuCommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { CompareScoreLocalization } from "@alice-localization/interactions/contextmenus/message/compareScore/CompareScoreLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";

@@ -1,6 +1,6 @@
 import { Config } from "@alice-core/Config";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { ModalCommand } from "@alice-interfaces/core/ModalCommand";
+import { EventUtil } from "structures/core/EventUtil";
+import { ModalCommand } from "structures/core/ModalCommand";
 import { RunModalSubmitLocalization } from "@alice-localization/events/interactionCreate/runModalSubmit/RunModalSubmitLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";

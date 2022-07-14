@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabasePrototypePP } from "@alice-interfaces/database/aliceDb/DatabasePrototypePP";
-import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
+import { DatabasePrototypePP } from "structures/database/aliceDb/DatabasePrototypePP";
+import { PrototypePPEntry } from "@alice-structures/dpp/PrototypePPEntry";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";

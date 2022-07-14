@@ -1,6 +1,6 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
-import { DatabaseEmojiStatistics } from "@alice-interfaces/database/aliceDb/DatabaseEmojiStatistics";
+import { DatabaseEmojiStatistics } from "structures/database/aliceDb/DatabaseEmojiStatistics";
 import { Guild, Snowflake } from "discord.js";
 
 /**

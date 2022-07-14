@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { RestoredPlayerCredentials } from "@alice-database/utils/aliceDb/RestoredPlayerCredentials";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";

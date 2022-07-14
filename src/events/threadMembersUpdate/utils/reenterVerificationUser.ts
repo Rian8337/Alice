@@ -1,5 +1,5 @@
 import { Constants } from "@alice-core/Constants";
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { EventUtil } from "structures/core/EventUtil";
 import {
     Collection,
     Role,

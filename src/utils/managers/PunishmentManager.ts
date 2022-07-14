@@ -8,7 +8,7 @@ import { Language } from "@alice-localization/base/Language";
 import { Collection, GuildMember, Permissions, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
-import { RoleTimeoutPermission } from "@alice-interfaces/moderation/RoleTimeoutPermission";
+import { RoleTimeoutPermission } from "structures/moderation/RoleTimeoutPermission";
 
 /**
  * A manager for punishments handed to users.

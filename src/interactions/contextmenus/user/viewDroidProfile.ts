@@ -1,7 +1,7 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { UserContextMenuCommand } from "@alice-interfaces/core/UserContextMenuCommand";
+import { UserContextMenuCommand } from "structures/core/UserContextMenuCommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { ViewDroidProfileLocalization } from "@alice-localization/interactions/contextmenus/user/viewDroidProfile/ViewDroidProfileLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";

@@ -7,7 +7,7 @@ import {
     TextChannel,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PunishmentManager } from "./PunishmentManager";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";

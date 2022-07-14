@@ -1,8 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseGuildSettings } from "@alice-interfaces/database/aliceDb/DatabaseGuildSettings";
-import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
-import { DisabledEventUtil } from "@alice-interfaces/moderation/DisabledEventUtil";
-import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
+import { DatabaseGuildSettings } from "structures/database/aliceDb/DatabaseGuildSettings";
+import { DisabledCommand } from "structures/moderation/DisabledCommand";
+import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
+import { GuildChannelSettings } from "structures/moderation/GuildChannelSettings";
 import { Language } from "@alice-localization/base/Language";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";

@@ -1,10 +1,10 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
-import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
-import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
-import { RecalculationProgress } from "@alice-interfaces/dpp/RecalculationProgress";
+import { OperationResult } from "structures/core/OperationResult";
+import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
+import { PPEntry } from "@alice-structures/dpp/PPEntry";
+import { PrototypePPEntry } from "@alice-structures/dpp/PrototypePPEntry";
+import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";

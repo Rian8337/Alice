@@ -1,7 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
-import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { DatabaseGuildPunishmentConfig } from "structures/database/aliceDb/DatabaseGuildPunishmentConfig";
+import { OperationResult } from "structures/core/OperationResult";
 import { Guild, Snowflake } from "discord.js";
 
 /**

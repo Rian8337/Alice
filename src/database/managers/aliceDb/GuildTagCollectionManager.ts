@@ -1,6 +1,6 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
-import { DatabaseGuildTag } from "@alice-interfaces/database/aliceDb/DatabaseGuildTag";
+import { DatabaseGuildTag } from "structures/database/aliceDb/DatabaseGuildTag";
 import { Collection as DiscordCollection, Snowflake } from "discord.js";
 
 /**

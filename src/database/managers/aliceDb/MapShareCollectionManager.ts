@@ -1,7 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
-import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
-import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
+import { DatabaseMapShare } from "structures/database/aliceDb/DatabaseMapShare";
+import { MapShareSubmissionStatus } from "structures/utils/MapShareSubmissionStatus";
 import { Collection as DiscordCollection } from "discord.js";
 
 /**

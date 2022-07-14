@@ -1,7 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { DatabaseChallenge } from "@alice-interfaces/database/aliceDb/DatabaseChallenge";
-import { ChallengeType } from "@alice-types/challenge/ChallengeType";
+import { DatabaseChallenge } from "structures/database/aliceDb/DatabaseChallenge";
+import { ChallengeType } from "structures/challenge/ChallengeType";
 
 /**
  * A manager for the `challenge` collection.

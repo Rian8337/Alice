@@ -14,7 +14,7 @@ import {
     ThreadChannel,
     VoiceChannel,
 } from "discord.js";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { Language } from "@alice-localization/base/Language";

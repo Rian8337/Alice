@@ -1,8 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
-import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
+import { ChallengeCompletionData } from "structures/challenge/ChallengeCompletionData";
+import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerInfo";
+import { OperationResult } from "structures/core/OperationResult";
+import { ProfileImageConfig } from "@alice-structures/profile/ProfileImageConfig";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";

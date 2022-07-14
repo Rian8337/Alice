@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SlashSubcommand } from "@alice-interfaces/core/SlashSubcommand";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";

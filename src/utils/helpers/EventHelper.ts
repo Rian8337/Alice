@@ -1,7 +1,7 @@
 import { Channel, Collection, Guild } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { DisabledEventUtil } from "@alice-interfaces/moderation/DisabledEventUtil";
+import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
 import { Config } from "@alice-core/Config";
 
 /**

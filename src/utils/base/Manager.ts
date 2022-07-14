@@ -1,5 +1,5 @@
 import { Bot } from "@alice-core/Bot";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { OperationResult } from "structures/core/OperationResult";
 
 /**
  * The base of all managers.

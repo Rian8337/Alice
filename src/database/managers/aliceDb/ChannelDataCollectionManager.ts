@@ -1,6 +1,6 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
-import { DatabaseChannelData } from "@alice-interfaces/database/aliceDb/DatabaseChannelData";
+import { DatabaseChannelData } from "structures/database/aliceDb/DatabaseChannelData";
 import { Collection as DiscordCollection } from "discord.js";
 import { Filter, WithId } from "mongodb";
 

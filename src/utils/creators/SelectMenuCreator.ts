@@ -11,7 +11,7 @@ import {
 } from "discord.js";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import { MessageCreator } from "./MessageCreator";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { MessageButtonCreator } from "./MessageButtonCreator";
 import { Language } from "@alice-localization/base/Language";
 import { SelectMenuCreatorLocalization } from "@alice-localization/utils/creators/SelectMenuCreator/SelectMenuCreatorLocalization";

@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseOsuBind } from "@alice-interfaces/database/aliceDb/DatabaseOsuBind";
+import { DatabaseOsuBind } from "structures/database/aliceDb/DatabaseOsuBind";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";

@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseChannelData } from "@alice-interfaces/database/aliceDb/DatabaseChannelData";
+import { DatabaseChannelData } from "structures/database/aliceDb/DatabaseChannelData";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";

@@ -1,6 +1,6 @@
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
-import { DatabaseWarning } from "@alice-interfaces/database/aliceDb/DatabaseWarning";
+import { OperationResult } from "structures/core/OperationResult";
+import { DatabaseWarning } from "structures/database/aliceDb/DatabaseWarning";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Collection as DiscordCollection, Snowflake } from "discord.js";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
