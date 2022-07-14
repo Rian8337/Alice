@@ -87,6 +87,7 @@ export const run: EventUtil["run"] = async (client) => {
                 $set: {
                     pp: [...newList.values()],
                     pptotal: DPPHelper.calculateFinalPerformancePoints(newList),
+                    playc: player.playc,
                     weightedAccuracy:
                         DPPHelper.calculateWeightedAccuracy(newList),
                 },
