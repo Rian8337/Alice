@@ -139,7 +139,7 @@ export class OldPPProfileCollectionManager extends DatabaseCollectionManager<
         options?: FindOptions<DatabaseOldPPProfile>
     ): FindOptions<DatabaseOldPPProfile> | undefined {
         if (options?.projection) {
-            options.projection.discordid = 1;
+            options.projection.discordId = 1;
         }
 
         return super.processFindOptions(options);
