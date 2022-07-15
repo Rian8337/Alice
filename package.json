@@ -58,7 +58,7 @@
     "html-entities": "^2.3.2",
     "libsodium-wrappers": "^0.7.9",
     "module-alias": "^2.2.2",
-    "mongodb": "^4.2.0",
+    "mongodb": "4.7.0",
     "ojsamadroid": "file:modules/ojsamadroid",
     "request": "^2.88.2",
     "utf-8-validate": "^5.0.5",
