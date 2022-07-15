@@ -13,6 +13,10 @@ import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { Score } from "@rian8337/osu-droid-utilities";
 
 export const run: EventUtil["run"] = async (client) => {
+    if (!Config.isDebug) {
+        return;
+    }
+
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
