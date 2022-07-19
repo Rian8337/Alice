@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed, Role, TextChannel } from "discord.js";
+import { GuildMember, EmbedBuilder, Role, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
@@ -42,7 +42,7 @@ export const run: EventUtil["run"] = async (_, __, newMember: GuildMember) => {
         }\``
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: "#b58d3c",
         timestamp: true,
     });
@@ -65,6 +65,6 @@ export const run: EventUtil["run"] = async (_, __, newMember: GuildMember) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for checking if a user is locked from lounge channel upon giving lounge pass role.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

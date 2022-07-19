@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,23 +15,23 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "map",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Starts a beatmap trivia in the channel.",
         },
         {
             name: "questions",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "The default quiz command.",
             options: [
                 {
                     name: "forcecategory",
-                    type: ApplicationCommandOptionTypes.BOOLEAN,
+                    type: ApplicationCommandOptionType.Boolean,
                     description:
                         "Whether to enforce a specific question category (you will be prompted to choose).",
                 },
                 {
                     name: "type",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description:
                         "The type of the question. Defaults to random.",
                     choices: [

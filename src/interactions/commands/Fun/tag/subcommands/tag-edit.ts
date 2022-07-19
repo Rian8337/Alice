@@ -5,7 +5,7 @@ import { TagLocalization } from "@alice-localization/interactions/commands/Fun/t
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Permissions, Util } from "discord.js";
+import { PermissionsBitField } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -18,9 +18,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const name: string = interaction.options.getString("name", true);
 
-    const content: string = Util.removeMentions(
-        interaction.options.getString("content") ?? ""
-    );
+    const content: string = interaction.options.getString("content") ?? "";
 
     if (name.length > 30) {
         return InteractionHelper.reply(interaction, {
@@ -57,7 +55,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         tag.author !== interaction.user.id &&
         !CommandHelper.checkPermission(
             interaction,
-            Permissions.FLAGS.ADMINISTRATOR
+            PermissionsBitField.Flags.Administrator
         )
     ) {
         return InteractionHelper.reply(interaction, {

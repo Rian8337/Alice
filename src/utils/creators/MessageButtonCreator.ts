@@ -5,19 +5,25 @@ import { MessageButtonCreatorLocalization } from "@alice-localization/utils/crea
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
-    BaseCommandInteraction,
     ButtonInteraction,
     InteractionReplyOptions,
     Message,
-    MessageActionRow,
-    MessageButton,
     MessageComponentInteraction,
-    MessageEmbed,
-    ModalSubmitInteraction,
     Snowflake,
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder,
+    ActionRow,
+    MessageActionRowComponent,
+    APIButtonComponentWithCustomId,
+    ButtonComponent,
+    APIActionRowComponent,
+    APIMessageActionRowComponent,
+    JSONEncodable,
+    APIEmbed,
 } from "discord.js";
-import { MessageButtonStyles } from "discord.js/typings/enums";
 import { MessageCreator } from "./MessageCreator";
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A utility to create message buttons.
@@ -39,7 +45,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @returns The collector that collects the button-pressing event.
      */
     static createLimitedButtonBasedPaging(
-        interaction: BaseCommandInteraction | MessageComponentInteraction,
+        interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
         startPage: number,
@@ -73,7 +79,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @returns The collector that collects the button-pressing event.
      */
     static createLimitlessButtonBasedPaging(
-        interaction: BaseCommandInteraction | MessageComponentInteraction,
+        interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
         startPage: number,
@@ -104,10 +110,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @returns A boolean determining whether the user confirmed.
      */
     static async createConfirmation(
-        interaction:
-            | BaseCommandInteraction
-            | MessageComponentInteraction
-            | ModalSubmitInteraction,
+        interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
         duration: number,
@@ -116,10 +119,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         const localization: MessageButtonCreatorLocalization =
             this.getLocalization(language);
 
-        const buttons: MessageButton[] = this.createConfirmationButtons();
+        const buttons: ButtonBuilder[] = this.createConfirmationButtons();
 
-        const component: MessageActionRow =
-            new MessageActionRow().addComponents(buttons);
+        const component: ActionRowBuilder<ButtonBuilder> =
+            new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
 
         options.components ??= [];
         options.components.push(component);
@@ -133,12 +136,16 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             message,
             duration,
             (i) =>
-                buttons.some((b) => b.customId === i.customId) &&
-                users.includes(i.user.id),
+                buttons.some(
+                    (b) =>
+                        (<APIButtonComponentWithCustomId>b.data).custom_id ===
+                        i.customId
+                ) && users.includes(i.user.id),
             (m) => {
-                const row: MessageActionRow | undefined = m.components.find(
-                    (c) => c.components.length === buttons.length
-                );
+                const row: ActionRow<MessageActionRowComponent> | undefined =
+                    m.components.find(
+                        (c) => c.components.length === buttons.length
+                    );
 
                 if (!row) {
                     return false;
@@ -146,8 +153,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                 return row.components.every(
                     (c, i) =>
-                        c instanceof MessageButton &&
-                        c.customId === buttons[i].customId
+                        c instanceof ButtonComponent &&
+                        c.customId ===
+                            (<APIButtonComponentWithCustomId>buttons[i].data)
+                                .custom_id
                 );
             }
         );
@@ -204,13 +213,18 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         }
                     }
 
-                    const index: number = options.components!.findIndex((v) => {
+                    const index: number = (<
+                        APIActionRowComponent<APIMessageActionRowComponent>[]
+                    >options.components).findIndex((v) => {
                         return (
                             v.components.length === buttons.length &&
                             v.components.every(
                                 (c, i) =>
-                                    c instanceof MessageButton &&
-                                    c.customId === buttons[i].customId
+                                    c instanceof ButtonComponent &&
+                                    c.customId ===
+                                        (<APIButtonComponentWithCustomId>(
+                                            buttons[i].data
+                                        )).custom_id
                             )
                         );
                     });
@@ -254,7 +268,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @returns The collector that collects the button-pressing event.
      */
     private static async createButtonBasedPaging(
-        interaction: BaseCommandInteraction | MessageComponentInteraction,
+        interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
         startPage: number,
@@ -265,13 +279,13 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     ): Promise<Message> {
         let currentPage: number = Math.min(startPage, maxPage);
 
-        const buttons: MessageButton[] = this.createPagingButtons(
+        const buttons: ButtonBuilder[] = this.createPagingButtons(
             currentPage,
             maxPage
         );
 
-        const component: MessageActionRow =
-            new MessageActionRow().addComponents(buttons);
+        const component: ActionRowBuilder<ButtonBuilder> =
+            new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
 
         if (maxPage !== 1) {
             options.components ??= [];
@@ -284,11 +298,20 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         function onPageChangeEmbedEdit(): void {
             if (options.embeds) {
                 for (let i = 0; i < options.embeds.length; ++i) {
-                    const embed: MessageEmbed = <MessageEmbed>options.embeds[i];
+                    const embed = options.embeds[i];
 
-                    embed.spliceFields(0, embed.fields.length);
+                    let data: APIEmbed;
 
-                    options.embeds[i] = embed;
+                    // Check if the interface is implemented.
+                    if ((<JSONEncodable<APIEmbed>>embed).toJSON) {
+                        data = (<JSONEncodable<APIEmbed>>embed).toJSON();
+                    } else {
+                        data = <APIEmbed>embed;
+                    }
+
+                    if (data.fields) {
+                        data.fields.length = 0;
+                    }
                 }
             }
         }
@@ -308,19 +331,26 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             message,
             duration,
             (i) =>
-                buttons.some((b) => b.customId === i.customId) &&
-                users.includes(i.user.id),
+                buttons.some(
+                    (b) =>
+                        (<APIButtonComponentWithCustomId>b.data).custom_id ===
+                        i.customId
+                ) && users.includes(i.user.id),
             (m) => {
-                const row: MessageActionRow | undefined = m.components.find(
-                    (c) => c.components.length === buttons.length
-                );
+                const row: ActionRow<MessageActionRowComponent> | undefined =
+                    m.components.find(
+                        (c) => c.components.length === buttons.length
+                    );
 
                 if (!row) {
                     return false;
                 }
 
                 return row.components.every(
-                    (c, i) => c.customId === buttons[i].customId
+                    (c, i) =>
+                        c.customId ===
+                        (<APIButtonComponentWithCustomId>buttons[i].data)
+                            .custom_id
                 );
             }
         );
@@ -353,9 +383,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     return;
             }
 
-            component
-                .spliceComponents(0, component.components.length)
-                .addComponents(this.createPagingButtons(currentPage, maxPage));
+            component.setComponents(
+                this.createPagingButtons(currentPage, maxPage)
+            );
 
             onPageChangeEmbedEdit();
 
@@ -365,13 +395,18 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         });
 
         collectorOptions.collector.once("end", async () => {
-            const index: number = options.components!.findIndex((v) => {
+            const index: number = (<
+                APIActionRowComponent<APIMessageActionRowComponent>[]
+            >options.components).findIndex((v) => {
                 return (
                     v.components.length === buttons.length &&
                     v.components.every(
                         (c, i) =>
-                            c instanceof MessageButton &&
-                            c.customId === buttons[i].customId
+                            c instanceof ButtonComponent &&
+                            c.customId ===
+                                (<APIButtonComponentWithCustomId>(
+                                    buttons[i].data
+                                )).custom_id
                     )
                 );
             });
@@ -404,36 +439,36 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     private static createPagingButtons(
         currentPage: number,
         maxPage: number
-    ): MessageButton[] {
+    ): ButtonBuilder[] {
         return [
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId("backward")
                 .setEmoji(Symbols.skipBackward)
-                .setStyle(MessageButtonStyles.PRIMARY)
+                .setStyle(ButtonStyle.Primary)
                 .setDisabled(currentPage === 1 || maxPage <= 5),
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId("back")
                 .setEmoji(Symbols.leftArrow)
-                .setStyle(MessageButtonStyles.SUCCESS)
+                .setStyle(ButtonStyle.Success)
                 .setDisabled(maxPage === 1),
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId("none")
                 .setLabel(
                     Number.isFinite(maxPage)
                         ? `${currentPage}/${maxPage}`
                         : currentPage.toString()
                 )
-                .setStyle(MessageButtonStyles.SECONDARY)
+                .setStyle(ButtonStyle.Secondary)
                 .setDisabled(true),
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId("next")
                 .setEmoji(Symbols.rightArrow)
-                .setStyle(MessageButtonStyles.SUCCESS)
+                .setStyle(ButtonStyle.Success)
                 .setDisabled(maxPage === 1),
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId("forward")
                 .setEmoji(Symbols.skipForward)
-                .setStyle(MessageButtonStyles.PRIMARY)
+                .setStyle(ButtonStyle.Primary)
                 .setDisabled(currentPage === maxPage || maxPage <= 5),
         ];
     }
@@ -443,18 +478,18 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      *
      * ID order: `[yes, no]`
      */
-    private static createConfirmationButtons(): MessageButton[] {
+    private static createConfirmationButtons(): ButtonBuilder[] {
         return [
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId("yes")
                 .setEmoji(Symbols.checkmark)
                 .setLabel("Yes")
-                .setStyle(MessageButtonStyles.SUCCESS),
-            new MessageButton()
+                .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
                 .setCustomId("no")
                 .setEmoji(Symbols.cross)
                 .setLabel("No")
-                .setStyle(MessageButtonStyles.DANGER),
+                .setStyle(ButtonStyle.Danger),
         ];
     }
 

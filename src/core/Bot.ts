@@ -1,11 +1,11 @@
 import { lstat, readdir } from "fs/promises";
 import { join } from "path";
-import { url } from "inspector";
 import {
     ApplicationCommandData,
     Client,
     Collection,
-    Intents,
+    GatewayIntentBits,
+    Partials,
     Snowflake,
 } from "discord.js";
 import { MongoClient } from "mongodb";
@@ -19,7 +19,6 @@ import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { EventUtil } from "structures/core/EventUtil";
-import { Config } from "./Config";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Manager } from "@alice-utils/base/Manager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
@@ -65,22 +64,25 @@ export class Bot extends Client<true> {
     constructor() {
         super({
             intents: [
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_MEMBERS,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.GUILD_BANS,
-                Intents.FLAGS.GUILD_VOICE_STATES,
-                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-                Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-                Intents.FLAGS.DIRECT_MESSAGES,
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.GuildMembers,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.GuildBans,
+                GatewayIntentBits.GuildVoiceStates,
+                GatewayIntentBits.GuildEmojisAndStickers,
+                GatewayIntentBits.GuildMessageReactions,
+                GatewayIntentBits.DirectMessages,
             ],
             partials: [
-                "CHANNEL",
-                "GUILD_MEMBER",
-                "GUILD_SCHEDULED_EVENT",
-                "USER",
-                "MESSAGE",
-                "REACTION",
+                Partials.Channel,
+                Partials.GuildMember,
+                Partials.GuildScheduledEvent,
+                Partials.User,
+                Partials.Message,
+                Partials.User,
+                Partials.Message,
+                Partials.Reaction,
+                Partials.ThreadMember,
             ],
         });
 
@@ -99,8 +101,6 @@ export class Bot extends Client<true> {
 
         this.logger.wrapAll();
 
-        Config.isDebug = !!url();
-
         await this.loadSlashCommands();
         await this.loadContextMenuCommands();
         await this.loadModalCommands();
@@ -108,7 +108,8 @@ export class Bot extends Client<true> {
         await this.connectToDatabase();
 
         await super.login(
-            Config.isDebug ? process.env.DEBUG_BOT_TOKEN : process.env.BOT_TOKEN
+            /* Config.isDebug ? process.env.DEBUG_BOT_TOKEN :  */ process.env
+                .BOT_TOKEN
         );
 
         await this.initUtils();
@@ -424,16 +425,12 @@ export class Bot extends Client<true> {
             await this.application?.fetch();
         }
 
-        const deployCommandID: Snowflake = <Snowflake>(
-            (Config.isDebug
+        const deployCommandID: Snowflake = <Snowflake>/* Config.isDebug
                 ? process.env.DEBUG_BOT_DEPLOY_ID
-                : process.env.BOT_DEPLOY_ID)
-        );
-        const undeployCommandID: Snowflake = <Snowflake>(
-            (Config.isDebug
+                : */ process.env.BOT_DEPLOY_ID;
+        const undeployCommandID: Snowflake = <Snowflake>/* Config.isDebug
                 ? process.env.DEBUG_BOT_UNDEPLOY_ID
-                : process.env.BOT_UNDEPLOY_ID)
-        );
+                : */ process.env.BOT_UNDEPLOY_ID;
 
         const registerCommand = async (name: string): Promise<void> => {
             this.logger.info(`Registering ${name} command`);
@@ -445,7 +442,6 @@ export class Bot extends Client<true> {
                 name: command.config.name,
                 description: command.config.description,
                 options: command.config.options,
-                defaultPermission: true,
             };
 
             const applicationCommand = await this.application.commands.create(

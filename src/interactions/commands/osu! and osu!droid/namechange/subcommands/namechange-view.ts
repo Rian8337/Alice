@@ -1,4 +1,4 @@
-import { Collection, MessageEmbed } from "discord.js";
+import { Collection, EmbedBuilder } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
@@ -31,12 +31,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return a.cooldown - b.cooldown;
     });
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: "#cb9000",
     });
 
     embed.setTitle(localization.getTranslation("nameChangeRequestList"));
+
+    const entries: NameChange[] = [...nameChanges.values()];
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
@@ -44,14 +46,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             i < Math.min(nameChanges.size, 10 + 10 * (page - 1));
             ++i
         ) {
-            const content: NameChange = nameChanges.at(i)!;
+            const content: NameChange = entries[i];
 
             if (content) {
-                embed.addField(
-                    `**${i + 1}**. **Uid ${content.uid}**`,
-                    `**${localization.getTranslation("discordAccount")}**: <@${
-                        content.discordid
-                    }> (${content.discordid})\n` +
+                embed.addFields({
+                    name: `**${i + 1}**. **Uid ${content.uid}**`,
+                    value:
+                        `**${localization.getTranslation(
+                            "discordAccount"
+                        )}**: <@${content.discordid}> (${
+                            content.discordid
+                        })\n` +
                         `**${localization.getTranslation(
                             "usernameRequested"
                         )}**: ${content.new_username}\n` +
@@ -60,8 +65,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         )}**: ${DateTimeFormatHelper.dateToLocaleString(
                             new Date((content.cooldown - 86400 * 30) * 1000),
                             localization.language
-                        )}`
-                );
+                        )}`,
+                });
             }
         }
     };

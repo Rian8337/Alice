@@ -1,13 +1,13 @@
 import AdmZip from "adm-zip";
 import {
     GuildMember,
-    MessageAttachment,
-    MessageEmbed,
+    EmbedBuilder,
     MessageOptions,
+    AttachmentBuilder,
 } from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
@@ -157,11 +157,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     zip.addFile("entry.json", Buffer.from(JSON.stringify(json, null, 2)));
 
-    const replayAttachment: MessageAttachment = new MessageAttachment(
+    const replayAttachment: AttachmentBuilder = new AttachmentBuilder(
         zip.toBuffer(),
-        `${data.fileName.substring(0, data.fileName.length - 4)} [${
-            data.playerName
-        }]-${json.replaydata.time}.edr`
+        {
+            name: `${data.fileName.substring(0, data.fileName.length - 4)} [${
+                data.playerName
+            }]-${json.replaydata.time}.edr`,
+        }
     );
 
     if (!beatmapInfo) {
@@ -213,25 +215,26 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const hitErrorInformation: HitErrorInformation =
         score.replay.calculateHitError()!;
 
-    (<MessageEmbed>calcEmbedOptions.embeds![0])
+    const embed: EmbedBuilder = EmbedBuilder.from(calcEmbedOptions.embeds![0]);
+
+    embed
         .setAuthor({
             name: StringHelper.formatString(
                 localization.getTranslation("playInfo"),
                 score.username
             ),
-            iconURL: (<MessageEmbed>calcEmbedOptions.embeds![0]).author
-                ?.iconURL,
+            iconURL: embed.data.author?.icon_url,
         })
-        .addField(
-            localization.getTranslation("hitErrorInfo"),
-            `${hitErrorInformation.negativeAvg.toFixed(
+        .addFields({
+            name: localization.getTranslation("hitErrorInfo"),
+            value: `${hitErrorInformation.negativeAvg.toFixed(
                 2
             )}ms - ${hitErrorInformation.positiveAvg.toFixed(
                 2
             )}ms ${localization.getTranslation(
                 "hitErrorAvg"
-            )} | ${hitErrorInformation.unstableRate.toFixed(2)} UR`
-        );
+            )} | ${hitErrorInformation.unstableRate.toFixed(2)} UR`,
+        });
 
     calcEmbedOptions.files ??= [];
     calcEmbedOptions.files.push(replayAttachment);
@@ -248,12 +251,12 @@ export const config: SlashCommand["config"] = {
         {
             name: "beatmap",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The beatmap ID or link.",
         },
         {
             name: "uid",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "The uid of the player. Defaults to your current binded uid.",
         },

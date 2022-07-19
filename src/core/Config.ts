@@ -1,3 +1,4 @@
+import { url } from "inspector";
 import { ActivityType, Snowflake } from "discord.js";
 
 export abstract class Config {
@@ -11,7 +12,10 @@ export abstract class Config {
      */
     static maintenanceReason: string = "Unknown";
 
-    static isDebug: boolean = false;
+    /**
+     * Whether the bot is running in debug mode.
+     */
+    static isDebug: boolean = !!url();
 
     static readonly enableDebugLog: boolean = false && Config.isDebug;
 
@@ -35,20 +39,22 @@ export abstract class Config {
 
     static readonly reportChannel: string = "reports";
 
-    static readonly activityList: [string, Exclude<ActivityType, "CUSTOM">][] =
-        [
-            ["Underworld Console", "PLAYING"],
-            ["Rulid Village", "WATCHING"],
-            ["/help", "LISTENING"],
-            ["Dark Territory", "WATCHING"],
-            ["in Axiom church", "PLAYING"],
-            ["with Integrity Knights", "PLAYING"],
-            ["flowers from my beloved Fragnant Olive", "WATCHING"],
-            ["Uncle Bercoulli's orders", "LISTENING"],
-            ["Centoria", "WATCHING"],
-            ["Human Empire", "WATCHING"],
-            ["The Great War of Underworld", "COMPETING"],
-        ];
+    static readonly activityList: [
+        string,
+        Exclude<ActivityType, ActivityType.Custom>
+    ][] = [
+        ["Underworld Console", ActivityType.Playing],
+        ["Rulid Village", ActivityType.Watching],
+        ["/help", ActivityType.Listening],
+        ["Dark Territory", ActivityType.Watching],
+        ["in Axiom church", ActivityType.Playing],
+        ["with Integrity Knights", ActivityType.Playing],
+        ["flowers from my beloved Fragnant Olive", ActivityType.Watching],
+        ["Uncle Bercoulli's orders", ActivityType.Listening],
+        ["Centoria", ActivityType.Watching],
+        ["Human Empire", ActivityType.Watching],
+        ["The Great War of Underworld", ActivityType.Competing],
+    ];
 
     static readonly avatarList: string[] = [
         "https://i.imgur.com/FAWi2Yl.png",

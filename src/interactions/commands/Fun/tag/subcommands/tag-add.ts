@@ -5,7 +5,6 @@ import { TagLocalization } from "@alice-localization/interactions/commands/Fun/t
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Util } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -18,9 +17,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const name: string = interaction.options.getString("name", true);
 
-    const content: string = Util.removeMentions(
-        interaction.options.getString("content") ?? ""
-    );
+    const content: string = interaction.options.getString("content") ?? "";
 
     if (name.length > 30) {
         return InteractionHelper.reply(interaction, {

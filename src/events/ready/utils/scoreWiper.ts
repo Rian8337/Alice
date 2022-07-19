@@ -31,6 +31,6 @@ export const run: EventUtil["run"] = async () => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for wiping abused osu!droid scores periodically.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

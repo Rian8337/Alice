@@ -11,7 +11,12 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import {
+    APIEmbedField,
+    Collection,
+    EmbedBuilder,
+    GuildMember,
+} from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { MapInfo } from "@rian8337/osu-base";
 import {
@@ -112,16 +117,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
-        author: interaction.user,
-        color: (<GuildMember>interaction.member).displayColor,
-    });
-
     const droidDiffHelper: DroidBeatmapDifficultyHelper =
         new DroidBeatmapDifficultyHelper();
 
     const ppEntries: PPEntry[] = [];
     const oldPPEntries: OldPPEntry[] = [];
+    const embedFields: APIEmbedField[] = [];
 
     for (const score of scoresToSubmit) {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
@@ -136,12 +137,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | **`;
 
         if (!beatmapInfo) {
-            embed.addField(
-                fieldTitle,
-                fieldContent +
+            embedFields.push({
+                name: fieldTitle,
+                value:
+                    fieldContent +
                     localization.getTranslation("beatmapNotFoundReject") +
-                    "**"
-            );
+                    "**",
+            });
             continue;
         }
 
@@ -209,7 +211,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         fieldContent += "**";
 
-        embed.addField(fieldTitle, fieldContent);
+        embedFields.push({ name: fieldTitle, value: fieldContent });
     }
 
     // Finalization
@@ -223,14 +225,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         bindInfo.pp
     );
 
-    embed.setDescription(
-        `${localization.getTranslation("totalPP")}: **${totalPP.toFixed(
-            2
-        )}pp**\n` +
-            `${localization.getTranslation("ppGained")}: **${(
-                totalPP - bindInfo.pptotal
-            ).toFixed(2)}pp**`
-    );
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
+
+    embed
+        .setDescription(
+            `${localization.getTranslation("totalPP")}: **${totalPP.toFixed(
+                2
+            )}pp**\n` +
+                `${localization.getTranslation("ppGained")}: **${(
+                    totalPP - bindInfo.pptotal
+                ).toFixed(2)}pp**`
+        )
+        .addFields(embedFields);
 
     await bindInfo.setNewDPPValue(bindInfo.pp, scoresToSubmit.length);
 

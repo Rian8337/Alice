@@ -1,5 +1,5 @@
 import { Bot } from "@alice-core/Bot";
-import { ContextMenuInteraction } from "discord.js";
+import { ContextMenuCommandInteraction } from "discord.js";
 
 /**
  * Represents a command that is executed through context menus.
@@ -11,7 +11,10 @@ export interface ContextMenuCommand {
      * @param client The instance of the bot.
      * @param interaction The interaction that executes the command.
      */
-    run(client: Bot, interaction: ContextMenuInteraction): Promise<unknown>;
+    run(
+        client: Bot,
+        interaction: ContextMenuCommandInteraction
+    ): Promise<unknown>;
 
     /**
      * Configurations for the command.

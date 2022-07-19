@@ -2,8 +2,7 @@ import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { TextInputComponent } from "discord.js";
-import { TextInputStyles } from "discord.js/typings/enums";
+import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -14,10 +13,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         "clan-announce",
         localization.getTranslation("announceModalTitle"),
-        new TextInputComponent()
+        new TextInputBuilder()
             .setCustomId("message")
             .setRequired(true)
-            .setStyle(TextInputStyles.PARAGRAPH)
+            .setStyle(TextInputStyle.Paragraph)
             .setMaxLength(1750)
             .setLabel(localization.getTranslation("announceModalMessageLabel"))
             .setPlaceholder(

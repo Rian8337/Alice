@@ -1,5 +1,5 @@
 import { GuildMember, MessageOptions } from "discord.js";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
@@ -236,49 +236,49 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "beatmap",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The beatmap ID or link to calculate. Defaults to the latest cached beatmap in the channel, if any.",
         },
         {
             name: "mods",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "Applied game modifications (HD, HR, etc). Defaults to No Mod.",
         },
         {
             name: "combo",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "Maximum combo reached, from 0 to the beatmap's maximum combo. Defaults to maximum combo.",
         },
         {
             name: "accuracy",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The accuracy gained, from 0 to 100. Defaults to 100.",
             minValue: 0,
             maxValue: 100,
         },
         {
             name: "x100",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "The amount of 100s gained. If specified, overrides the accuracy option. Defaults to 0.",
         },
         {
             name: "x50",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "The amount of 50s gained. If specified, overrides the accuracy option. Defaults to 0.",
         },
         {
             name: "misses",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description: "The amount of misses gained. Defaults to 0.",
         },
         {
             name: "approachrate",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description:
                 "The Approach Rate (AR) to be forced in calculation, from 0 to 12.5. Defaults to the beatmap's AR.",
             minValue: 0,
@@ -286,7 +286,7 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "speedmultiplier",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description:
                 "The speed multiplier to calculate for, from 0.5 to 2. Stackable with modifications. Defaults to 1.",
             minValue: 0.5,
@@ -294,17 +294,17 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "showdroiddetail",
-            type: ApplicationCommandOptionTypes.BOOLEAN,
+            type: ApplicationCommandOptionType.Boolean,
             description: "Whether to show detailed response for droid pp.",
         },
         {
             name: "showosudetail",
-            type: ApplicationCommandOptionTypes.BOOLEAN,
+            type: ApplicationCommandOptionType.Boolean,
             description: "Whether to show detailed response for PC pp.",
         },
         {
             name: "calculationmethod",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description: "The calculation method to use. Defaults to Live.",
             choices: [
                 {

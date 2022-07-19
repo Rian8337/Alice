@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { Collection, GuildMember, EmbedBuilder } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { ProfileBadgeOwnerInfo } from "structures/interactions/commands/osu! and osu!droid/ProfileBadgeOwnerInfo";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         return Number(b.isOwned) - Number(a.isOwned);
     });
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -53,13 +53,13 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         ) {
             const c: ProfileBadgeOwnerInfo = finalBadgeList[i];
 
-            embed.addField(
-                `${i + 1}. ${c.name} (\`${c.id}\`${
+            embed.addFields({
+                name: `${i + 1}. ${c.name} (\`${c.id}\`${
                     c.isOwned ? ", owned" : ""
                 })`,
                 // TODO: move description to bot-side instead of database
-                `Rewarded for ${c.description}`
-            );
+                value: `Rewarded for ${c.description}`,
+            });
         }
     };
 

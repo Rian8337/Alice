@@ -6,7 +6,7 @@ import { TagLocalization } from "@alice-localization/interactions/commands/Fun/t
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Message, Permissions, TextChannel } from "discord.js";
+import { Message, PermissionsBitField, TextChannel } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -49,7 +49,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         tag.author !== interaction.user.id &&
         !CommandHelper.checkPermission(
             interaction,
-            Permissions.FLAGS.ADMINISTRATOR
+            PermissionsBitField.Flags.Administrator
         )
     ) {
         return InteractionHelper.reply(interaction, {

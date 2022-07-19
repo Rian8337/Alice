@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -18,17 +18,17 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "dpp",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Scans the entire dpp database for unranked plays.",
         },
         {
             name: "whitelist",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Scans the entire whitelisting and dpp database for unwhitelisted/unavailable beatmaps.",
         },
     ],
     example: [],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     scope: "ALL",
 };

@@ -1,4 +1,4 @@
-import { GuildMember, Permissions, TextChannel } from "discord.js";
+import { GuildMember, PermissionsBitField, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { VoteChoice } from "structures/interactions/commands/Tools/VoteChoice";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
@@ -31,7 +31,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction.user.id !== voteInfo.initiator &&
         !(<TextChannel>interaction.channel)
             .permissionsFor(<GuildMember>interaction.member)
-            ?.any(Permissions.FLAGS.MANAGE_CHANNELS)
+            ?.any(PermissionsBitField.Flags.ManageChannels)
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(

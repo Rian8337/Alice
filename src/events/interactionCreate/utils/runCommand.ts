@@ -16,10 +16,10 @@ import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import {
+    BaseInteraction,
     CacheType,
     CommandInteractionOption,
     DMChannel,
-    Interaction,
     NewsChannel,
     TextChannel,
     ThreadChannel,
@@ -27,9 +27,9 @@ import {
 
 export const run: EventUtil["run"] = async (
     client,
-    interaction: Interaction
+    interaction: BaseInteraction
 ) => {
-    if (!interaction.isCommand()) {
+    if (!interaction.isChatInputCommand()) {
         return;
     }
 
@@ -42,12 +42,14 @@ export const run: EventUtil["run"] = async (
         CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("debugModeActive")
             ),
             ephemeral: true,
         });
+
+        return;
     }
 
     const command: SlashCommand | undefined = client.interactions.chatInput.get(
@@ -55,16 +57,18 @@ export const run: EventUtil["run"] = async (
     );
 
     if (!command) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotFound")
             ),
         });
+
+        return;
     }
 
     // Check for maintenance
     if (Config.maintenance && !botOwnerExecution) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 StringHelper.formatString(
                     localization.getTranslation("maintenanceMode"),
@@ -73,6 +77,8 @@ export const run: EventUtil["run"] = async (
             ),
             ephemeral: true,
         });
+
+        return;
     }
 
     // Check if command is executable in channel
@@ -82,12 +88,14 @@ export const run: EventUtil["run"] = async (
             command.config.scope
         )
     ) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotExecutableInChannel")
             ),
             ephemeral: true,
         });
+
+        return;
     }
 
     // Permissions
@@ -97,7 +105,7 @@ export const run: EventUtil["run"] = async (
             command.config.permissions
         )
     ) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 `${new ConstantsLocalization(
                     localization.language
@@ -107,6 +115,8 @@ export const run: EventUtil["run"] = async (
                 PermissionHelper.getPermissionString(command.config.permissions)
             ),
         });
+
+        return;
     }
 
     const subcommand: SlashSubcommand | undefined =
@@ -128,12 +138,14 @@ export const run: EventUtil["run"] = async (
             CommandHelper.isCooldownActive(channelCooldownKey) ||
             CommandHelper.isCooldownActive(globalCooldownKey)
         ) {
-            return interaction.reply({
+            interaction.reply({
                 content: MessageCreator.createReject(
                     localization.getTranslation("commandInCooldown")
                 ),
                 ephemeral: true,
             });
+
+            return;
         }
 
         const channelCooldown: number = Math.max(

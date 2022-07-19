@@ -74,6 +74,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for tracking Alice coins cooldown for users' chat activities.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

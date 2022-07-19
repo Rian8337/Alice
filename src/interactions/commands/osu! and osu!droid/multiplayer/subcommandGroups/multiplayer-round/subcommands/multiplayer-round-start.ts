@@ -14,7 +14,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MapStats, ModUtil, RequestResponse } from "@rian8337/osu-base";
-import { MessageEmbed, MessageOptions } from "discord.js";
+import { EmbedBuilder, MessageOptions } from "discord.js";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Config } from "@alice-core/Config";
 
@@ -157,7 +157,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const timeout: NodeJS.Timeout = setTimeout(async () => {
-        const embed: MessageEmbed = room.getStatsEmbed(localization.language);
+        const embed: EmbedBuilder = room.getStatsEmbed(localization.language);
 
         embed.setTitle(localization.getTranslation("roundInfo"));
 
@@ -208,7 +208,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     return;
                 }
 
-                const embed: MessageEmbed = await room.getResultEmbed(
+                const embed: EmbedBuilder = await room.getResultEmbed(
                     localization.language
                 );
 

@@ -57,6 +57,6 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for wiping a user's droid pp and ranked score data once a user is banned.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

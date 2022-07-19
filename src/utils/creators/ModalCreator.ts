@@ -1,10 +1,9 @@
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import {
-    BaseCommandInteraction,
-    MessageActionRow,
-    MessageComponentInteraction,
-    Modal,
-    ModalActionRowComponent,
-    TextInputComponent,
+    ActionRowBuilder,
+    ModalBuilder,
+    ModalSubmitInteraction,
+    TextInputBuilder,
 } from "discord.js";
 
 /**
@@ -20,19 +19,17 @@ export abstract class ModalCreator {
      * @param fields The fields in the modal.
      */
     static async createModal(
-        interaction: BaseCommandInteraction | MessageComponentInteraction,
+        interaction: Exclude<RepliableInteraction, ModalSubmitInteraction>,
         customId: string,
         title: string,
-        ...fields: TextInputComponent[]
+        ...fields: TextInputBuilder[]
     ): Promise<void> {
-        const modal: Modal = new Modal()
+        const modal: ModalBuilder = new ModalBuilder()
             .setCustomId(customId)
             .setTitle(title)
             .addComponents(
                 ...fields.map((v) =>
-                    new MessageActionRow<ModalActionRowComponent>().addComponents(
-                        v
-                    )
+                    new ActionRowBuilder<TextInputBuilder>().addComponents(v)
                 )
             );
 

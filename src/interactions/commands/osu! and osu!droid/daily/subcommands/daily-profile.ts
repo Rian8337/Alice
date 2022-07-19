@@ -11,7 +11,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { GuildEmoji, GuildMember, EmbedBuilder, Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (
@@ -69,7 +69,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: (<GuildMember>interaction.member).displayColor,
     });
 
@@ -82,16 +82,16 @@ export const run: SlashSubcommand<true>["run"] = async (
             iconURL: "https://image.frl/p/beyefgeq5m7tobjg.jpg",
             url: ProfileManager.getProfileLink(playerInfo.uid).toString(),
         })
-        .addField(
-            localization.getTranslation("statistics"),
-            `**${localization.getTranslation("points")}**: ${
+        .addFields({
+            name: localization.getTranslation("statistics"),
+            value: `**${localization.getTranslation("points")}**: ${
                 playerInfo.points
             }\n**Alice Coins**: ${coin}${
                 playerInfo.alicecoins
             }\n**${localization.getTranslation("challengesCompleted")}**: ${
                 playerInfo.challenges.size
-            }`
-        );
+            }`,
+        });
 
     InteractionHelper.reply(interaction, {
         embeds: [embed],

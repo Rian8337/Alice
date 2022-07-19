@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { EmbedBuilder, GuildMember, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -90,7 +90,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
@@ -102,7 +102,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("playerBindInfo"),
                 player.username
             ),
-            iconURL: interaction.user.avatarURL({ dynamic: true })!,
+            iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             url: ProfileManager.getProfileLink(player.uid).toString(),
         })
         .setThumbnail(player.avatarURL)

@@ -1,8 +1,7 @@
 import {
-    BaseCommandInteraction,
     GuildChannel,
     GuildMember,
-    MessageEmbed,
+    EmbedBuilder,
     Snowflake,
     TextChannel,
 } from "discord.js";
@@ -20,6 +19,7 @@ import { TimeoutManagerLocalization } from "@alice-localization/utils/managers/T
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A manager for timeouts.
@@ -47,12 +47,12 @@ export abstract class TimeoutManager extends PunishmentManager {
      * @returns An object containing information about the operation.
      */
     static async addTimeout(
-        interaction: BaseCommandInteraction,
+        interaction: RepliableInteraction,
         member: GuildMember,
         reason: string,
         duration: number,
         language: Language = "en",
-        channelId: Snowflake = interaction.channelId
+        channelId: Snowflake = interaction.channelId!
     ): Promise<OperationResult> {
         const localization: TimeoutManagerLocalization =
             this.getLocalization(language);
@@ -139,10 +139,10 @@ export abstract class TimeoutManager extends PunishmentManager {
         const logLocalization: TimeoutManagerLocalization =
             new TimeoutManagerLocalization("en");
 
-        const timeoutEmbed: MessageEmbed = new MessageEmbed()
+        const timeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(logLocalization.getTranslation("timeoutExecuted"))
             .setFooter({
@@ -171,10 +171,10 @@ export abstract class TimeoutManager extends PunishmentManager {
                 await CommandHelper.getUserPreferredLocale(member.id)
             );
 
-        const userTimeoutEmbed: MessageEmbed = new MessageEmbed()
+        const userTimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(userLocalization.getTranslation("timeoutExecuted"))
             .setFooter({
@@ -248,7 +248,7 @@ export abstract class TimeoutManager extends PunishmentManager {
      */
     static async removeTimeout(
         member: GuildMember,
-        interaction: BaseCommandInteraction,
+        interaction: RepliableInteraction,
         reason: string,
         language: Language = "en"
     ): Promise<OperationResult> {
@@ -299,10 +299,10 @@ export abstract class TimeoutManager extends PunishmentManager {
         const logLocalization: TimeoutManagerLocalization =
             new TimeoutManagerLocalization("en");
 
-        const untimeoutEmbed: MessageEmbed = new MessageEmbed()
+        const untimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(logLocalization.getTranslation("untimeoutExecuted"))
             .setFooter({
@@ -328,10 +328,10 @@ export abstract class TimeoutManager extends PunishmentManager {
                 await CommandHelper.getUserPreferredLocale(member.id)
             );
 
-        const userUntimeoutEmbed: MessageEmbed = new MessageEmbed()
+        const userUntimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(userLocalization.getTranslation("untimeoutExecuted"))
             .setFooter({
@@ -391,7 +391,7 @@ export abstract class TimeoutManager extends PunishmentManager {
     private static async notifyMember(
         member: GuildMember,
         content: string,
-        embed: MessageEmbed
+        embed: EmbedBuilder
     ): Promise<void> {
         await member.send({
             content: MessageCreator.createWarn(content),

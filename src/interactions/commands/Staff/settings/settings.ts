@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -18,24 +18,24 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "command",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Customizes settings for commands.",
             options: [
                 {
                     name: "cooldown",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the cooldown of a command.",
                     options: [
                         {
                             name: "command",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The command to set the cooldown for.",
                         },
                         {
                             name: "duration",
                             required: true,
-                            type: ApplicationCommandOptionTypes.NUMBER,
+                            type: ApplicationCommandOptionType.Number,
                             description:
                                 "The duration of the cooldown in seconds, ranging from 5 to 3600.",
                             minValue: 5,
@@ -43,7 +43,7 @@ export const config: SlashCommand["config"] = {
                         },
                         {
                             name: "scope",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The scope at which to disable the command. Defaults to channel.",
                             choices: [
@@ -65,18 +65,18 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "disable",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Disables a command.",
                     options: [
                         {
                             name: "command",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The command to disable.",
                         },
                         {
                             name: "scope",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The scope at which to disable the command. Defaults to channel.",
                             choices: [
@@ -98,18 +98,18 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "enable",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Enables a command.",
                     options: [
                         {
                             name: "command",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The command to enable.",
                         },
                         {
                             name: "scope",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The scope at which to disable the command. Defaults to channel.",
                             choices: [
@@ -131,13 +131,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "globalcooldown",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets a cooldown for all available commands.",
                     options: [
                         {
                             name: "duration",
                             required: true,
-                            type: ApplicationCommandOptionTypes.NUMBER,
+                            type: ApplicationCommandOptionType.Number,
                             description:
                                 "The duration of the cooldown, ranging from 5 to 3600.",
                             minValue: 5,
@@ -149,29 +149,29 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "utility",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Customizes settings for event utilities.",
             options: [
                 {
                     name: "disable",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Disables an event utility.",
                     options: [
                         {
                             name: "event",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The name of the event.",
                         },
                         {
                             name: "utility",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The name of the utility.",
                         },
                         {
                             name: "scope",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The scope at which to disable the command. Defaults to channel.",
                             choices: [
@@ -193,24 +193,24 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "enable",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Enables an event utility.",
                     options: [
                         {
                             name: "event",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The name of the event.",
                         },
                         {
                             name: "utility",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The name of the utility.",
                         },
                         {
                             name: "scope",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The scope at which to disable the command. Defaults to channel.",
                             choices: [
@@ -232,32 +232,32 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "list",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Lists all utilities that the bot has.",
                 },
             ],
         },
         {
             name: "timeoutpermission",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Customizes timeout permissions in a server.",
             options: [
                 {
                     name: "grant",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Grants timeout permission to a role.",
                     options: [
                         {
                             name: "role",
                             required: true,
-                            type: ApplicationCommandOptionTypes.ROLE,
+                            type: ApplicationCommandOptionType.Role,
                             description:
                                 "The role to grant timeout permission to.",
                         },
                         {
                             name: "duration",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "Maximum timeout time, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Use -1 for indefinite time.",
                         },
@@ -265,13 +265,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "revoke",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Revokes timeout permission from a role.",
                     options: [
                         {
                             name: "role",
                             required: true,
-                            type: ApplicationCommandOptionTypes.ROLE,
+                            type: ApplicationCommandOptionType.Role,
                             description:
                                 "The role to revoke timeout permission from.",
                         },
@@ -279,25 +279,25 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "list",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Lists roles that have timeout permission.",
                 },
             ],
         },
         {
             name: "timeoutimmunity",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Customizes timeout immunity settings in a server.",
             options: [
                 {
                     name: "grant",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Grants timeout immunity to a role.",
                     options: [
                         {
                             name: "role",
                             required: true,
-                            type: ApplicationCommandOptionTypes.ROLE,
+                            type: ApplicationCommandOptionType.Role,
                             description:
                                 "The role to grant timeout immunity to.",
                         },
@@ -305,13 +305,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "revoke",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Revokes timeout immunity from a role.",
                     options: [
                         {
                             name: "role",
                             required: true,
-                            type: ApplicationCommandOptionTypes.ROLE,
+                            type: ApplicationCommandOptionType.Role,
                             description:
                                 "The role to revoke timeout immunity from.",
                         },
@@ -319,25 +319,25 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "list",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Lists roles that have timeout immunity.",
                 },
             ],
         },
         {
             name: "punishmentlog",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Customizes punishment log channel in a guild.",
             options: [
                 {
                     name: "set",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the guild's punishment log channel.",
                     options: [
                         {
                             name: "channel",
                             required: true,
-                            type: ApplicationCommandOptionTypes.CHANNEL,
+                            type: ApplicationCommandOptionType.Channel,
                             description:
                                 "The text channel to set as the guild's punishment log channel.",
                         },
@@ -345,7 +345,7 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "unset",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Unsets the guild's punishment log channel.",
                 },
             ],

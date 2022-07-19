@@ -1,7 +1,7 @@
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(interaction);
@@ -18,13 +18,13 @@ export const config: SlashCommand["config"] = {
             name: "clear",
             description:
                 "Clears yours, the channel, or the server's preferred locale.",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: "scope",
                     required: true,
                     description: "The scope to clear.",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     choices: [
                         {
                             name: "Server",
@@ -46,13 +46,13 @@ export const config: SlashCommand["config"] = {
             name: "set",
             description:
                 "Sets yours, the channel, or the server's preferred locale.",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: "scope",
                     required: true,
                     description: "The scope to clear.",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     choices: [
                         {
                             name: "Server",
@@ -72,6 +72,6 @@ export const config: SlashCommand["config"] = {
         },
     ],
     example: [],
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
     scope: "ALL",
 };

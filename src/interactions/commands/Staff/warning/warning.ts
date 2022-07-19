@@ -1,7 +1,7 @@
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(
@@ -20,25 +20,25 @@ export const config: SlashCommand["config"] = {
         {
             name: "issue",
             description: "Issues a warning to a user.",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to give the warning to.",
                 },
                 {
                     name: "validduration",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The duration this warning will stay valid, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Min 3h.",
                 },
                 {
                     name: "points",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description:
                         "The amount of warning points to be issued to the user, from 1 to 10.",
                     minValue: 1,
@@ -47,7 +47,7 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "reason",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The reason for warning the user. Maximum length is 1500 characters.",
                 },
@@ -56,11 +56,11 @@ export const config: SlashCommand["config"] = {
         {
             name: "list",
             description: "Lists the warning of a user in the current server.",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description:
                         "The user to list the warning. Defaults to yourself.",
                 },
@@ -70,23 +70,23 @@ export const config: SlashCommand["config"] = {
             name: "transfer",
             description:
                 "Transfers a user's warnings into another user in the current server.",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: "from",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to transfer warnings from.",
                 },
                 {
                     name: "to",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to transfer warnings to.",
                 },
                 {
                     name: "reason",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The reason for transferring warnings.",
                 },
             ],
@@ -95,18 +95,18 @@ export const config: SlashCommand["config"] = {
             name: "unissue",
             description:
                 "Unissues a warning from a user in the current server.",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: "id",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The ID of the warning.",
                 },
                 {
                     name: "reason",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The reason for unissuing the warning.",
                 },
             ],
@@ -114,19 +114,19 @@ export const config: SlashCommand["config"] = {
         {
             name: "view",
             description: "Views a warning in the current server.",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: "id",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The ID of the warning.",
                 },
             ],
         },
     ],
     example: [],
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
     replyEphemeral: true,
     scope: "GUILD_CHANNEL",
 };

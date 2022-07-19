@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { GuildEmoji, Message, MessageAttachment, Snowflake } from "discord.js";
+import { AttachmentBuilder, GuildEmoji, Message, Snowflake } from "discord.js";
 import {
     MapInfo,
     OsuAPIRequestBuilder,
@@ -369,18 +369,17 @@ export abstract class BeatmapManager extends Manager {
     }
 
     /**
-     * Generates a `MessageAttachment` of a beatmap's difficulty icon.
+     * Generates an `AttachmentBuilder` of a beatmap's difficulty icon.
      *
      * @param rating The difficulty rating of the beatmap.
-     * @returns The generated `MessageAttachment`.
+     * @returns The generated `AttachmentBuilder`.
      */
     static getBeatmapDifficultyIconAttachment(
         rating: number
-    ): MessageAttachment {
-        return new MessageAttachment(
-            this.getBeatmapDifficultyIcon(rating),
-            `osu-${rating.toFixed(2)}.png`
-        );
+    ): AttachmentBuilder {
+        return new AttachmentBuilder(this.getBeatmapDifficultyIcon(rating), {
+            name: `osu-${rating.toFixed(2)}.png`,
+        });
     }
 
     /**

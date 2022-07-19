@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
 import { EventUtil } from "structures/core/EventUtil";
-import { AnyChannel, Collection } from "discord.js";
+import { Channel, Collection } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
     setInterval(async () => {
@@ -17,7 +17,7 @@ export const run: EventUtil["run"] = async (client) => {
             );
 
         for (const inactiveRoom of inactiveRooms.values()) {
-            const channel: AnyChannel | null = await client.channels
+            const channel: Channel | null = await client.channels
                 .fetch(inactiveRoom.channelId)
                 .catch(() => null);
 
@@ -31,6 +31,6 @@ export const run: EventUtil["run"] = async (client) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for periodically checking inactive multiplayer rooms.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

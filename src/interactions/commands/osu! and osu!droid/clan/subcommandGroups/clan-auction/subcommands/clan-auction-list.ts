@@ -12,7 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { Collection, GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -36,7 +36,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         Math.ceil(auctions.size / 5)
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });
@@ -51,11 +51,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ) {
             const auction: ClanAuction = auctions.at(i)!;
 
-            embed.addField(
-                `**${i + 1}. ${auction.name}**`,
-                `**${localization.getTranslation("auctionAuctioneer")}**: ${
-                    auction.auctioneer
-                }\n` +
+            embed.addFields({
+                name: `**${i + 1}. ${auction.name}**`,
+                value:
+                    `**${localization.getTranslation("auctionAuctioneer")}**: ${
+                        auction.auctioneer
+                    }\n` +
                     `**${localization.getTranslation(
                         "creationDate"
                     )}**: ${DateTimeFormatHelper.dateToLocaleString(
@@ -81,8 +82,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     )} Alice coins\n` +
                     `**${localization.getTranslation(
                         "auctionBidders"
-                    )}**: ${auction.bids.size.toLocaleString(BCP47)}`
-            );
+                    )}**: ${auction.bids.size.toLocaleString(BCP47)}`,
+            });
         }
     };
 

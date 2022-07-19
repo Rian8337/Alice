@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { GuildMember } from "discord.js";
@@ -70,20 +70,20 @@ export const config: SlashCommand["config"] = {
         {
             name: "user",
             required: true,
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description: "The user to timeout.",
         },
         {
             name: "duration",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The duration to timeout for, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Minimum is 30 seconds.",
         },
         {
             name: "reason",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The reason for timeouting the user. Maximum length is 1500 characters.",
         },
@@ -109,7 +109,7 @@ export const config: SlashCommand["config"] = {
                 'will timeout the user with that Discord ID for 2 hours with reason "bad".',
         },
     ],
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
     replyEphemeral: true,
     scope: "GUILD_CHANNEL",
 };

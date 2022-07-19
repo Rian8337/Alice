@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/PrototypePPCollectionManager";
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageAttachment, Snowflake } from "discord.js";
+import { AttachmentBuilder, Snowflake } from "discord.js";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -102,9 +102,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ).toFixed(2)}\n`;
     }
 
-    const attachment: MessageAttachment = new MessageAttachment(
+    const attachment: AttachmentBuilder = new AttachmentBuilder(
         Buffer.from(csvString),
-        `prototype_${ppInfo.uid}_${new Date().toUTCString()}.csv`
+        { name: `prototype_${ppInfo.uid}_${new Date().toUTCString()}.csv` }
     );
 
     InteractionHelper.reply(interaction, {

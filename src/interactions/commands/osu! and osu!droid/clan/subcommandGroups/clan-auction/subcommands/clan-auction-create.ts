@@ -11,7 +11,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { GuildEmoji, MessageEmbed, TextChannel } from "discord.js";
+import { GuildEmoji, EmbedBuilder, TextChannel } from "discord.js";
 import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -176,13 +176,13 @@ export const run: SlashSubcommand<true>["run"] = async (
         Constants.aliceCoinEmote
     )!;
 
-    const embed: MessageEmbed = EmbedCreator.createClanAuctionEmbed(
+    const embed: EmbedBuilder = EmbedCreator.createClanAuctionEmbed(
         newAuction,
         coinEmoji,
         localization.language
     );
 
-    embed.spliceFields(embed.fields.length - 1, 1);
+    embed.spliceFields(embed.data.fields!.length - 1, 1);
 
     await notificationChannel.send({
         content: MessageCreator.createWarn(

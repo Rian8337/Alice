@@ -2,6 +2,7 @@ import {
     ButtonInteraction,
     CacheType,
     CollectorFilter,
+    ComponentType,
     InteractionCollector,
     Message,
     PartialMessage,
@@ -34,7 +35,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         const collector: InteractionCollector<ButtonInteraction> =
             message.createMessageComponentCollector({
                 filter: (i) => i.isButton() && (filter?.(i) ?? true),
-                componentType: "BUTTON",
+                componentType: ComponentType.Button,
                 dispose: true,
                 time: duration * 1000,
             });
@@ -78,7 +79,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         const collector: InteractionCollector<SelectMenuInteraction> =
             message.createMessageComponentCollector({
                 filter: (i) => i.isSelectMenu() && (filter?.(i) ?? true),
-                componentType: "SELECT_MENU",
+                componentType: ComponentType.SelectMenu,
                 dispose: true,
                 time: duration * 1000,
             });

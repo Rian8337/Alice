@@ -1,7 +1,7 @@
 import {
     Guild,
     GuildChannel,
-    MessageEmbed,
+    EmbedBuilder,
     Snowflake,
     TextChannel,
 } from "discord.js";
@@ -102,7 +102,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
             );
         }
 
-        const logEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        const logEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
             timestamp: true,
         });
 
@@ -214,7 +214,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
             );
         }
 
-        const logEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        const logEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
             timestamp: true,
         });
 

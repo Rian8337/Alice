@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,25 +15,25 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "fetch",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Fetches message data for the main server.",
             options: [
                 {
                     name: "fromdate",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The UTC-based date to start fetching from, in <year>-<month>-<date> format.",
                 },
                 {
                     name: "untildate",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The UTC-based date to stop fetching, in <year>-<month>-<date> format. Defaults to the current time.",
                 },
                 {
                     name: "scope",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The scope at which to fetch the message data. Defaults to channel.",
                     choices: [
@@ -51,12 +51,12 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "info",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Views message analytics for the main server.",
             options: [
                 {
                     name: "type",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The activity interval type to view. Defaults to overall.",
                     choices: [
@@ -80,7 +80,7 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "date",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The UTC-based date to view, in <year>-<month>-<date> format. Defaults on the current time.",
                 },

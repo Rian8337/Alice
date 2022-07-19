@@ -13,12 +13,14 @@ import {
     GuildMember,
     Message,
     MessageComponentInteraction,
-    MessageEmbed,
+    EmbedBuilder,
     Role,
     SelectMenuInteraction,
     Snowflake,
     TextChannel,
     ThreadChannel,
+    GuildPremiumTier,
+    ChannelType,
 } from "discord.js";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
@@ -51,6 +53,10 @@ export const run: EventUtil["run"] = async (client) => {
     const getUserLanguagePreference = async (
         i: MessageComponentInteraction
     ): Promise<keyof typeof VerifyLanguage | undefined> => {
+        if (!i.isButton()) {
+            return;
+        }
+
         await i.reply({
             content: MessageCreator.createPrefixedMessage(
                 "Please wait...",
@@ -205,15 +211,15 @@ export const run: EventUtil["run"] = async (client) => {
                     await member.roles.add(onVerificationRole);
 
                     const isThreadPrivate: boolean =
-                        member.guild.premiumTier === "TIER_2" ||
-                        member.guild.premiumTier === "TIER_3";
+                        member.guild.premiumTier === GuildPremiumTier.Tier2 ||
+                        member.guild.premiumTier === GuildPremiumTier.Tier3;
 
                     const thread: ThreadChannel =
                         await verificationChannel.threads.create({
                             name: `User Verification Thread -- ${i.user.tag} (${i.user.id})`,
                             type: isThreadPrivate
-                                ? "GUILD_PRIVATE_THREAD"
-                                : "GUILD_PUBLIC_THREAD",
+                                ? ChannelType.GuildPrivateThread
+                                : ChannelType.GuildPublicThread,
                         });
 
                     if (!isThreadPrivate) {
@@ -232,23 +238,23 @@ export const run: EventUtil["run"] = async (client) => {
                         );
                     }
 
-                    const infoEmbed: MessageEmbed =
+                    const infoEmbed: EmbedBuilder =
                         EmbedCreator.createNormalEmbed({ color: "#ffdd00" });
 
-                    infoEmbed
-                        .setAuthor({ name: "User Information" })
-                        .addField(
-                            "Account Creation Date",
-                            member.user.createdAt.toUTCString()
-                        )
-                        .addField(
-                            "Bind Information",
-                            (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
+                    infoEmbed.setAuthor({ name: "User Information" }).addFields(
+                        {
+                            name: "Account Creation Date",
+                            value: member.user.createdAt.toUTCString(),
+                        },
+                        {
+                            name: "Bind Information",
+                            value: (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
                                 i.user
                             ))
                                 ? "Binded"
-                                : "Not binded"
-                        );
+                                : "Not binded",
+                        }
+                    );
 
                     if (
                         DateTimeFormatHelper.getTimeDifference(
@@ -256,19 +262,19 @@ export const run: EventUtil["run"] = async (client) => {
                         ) >
                         -86400 * 1000 * 7
                     ) {
-                        infoEmbed.addField(
-                            `${Symbols.exclamationMark} Account Age`,
-                            DateTimeFormatHelper.secondsToDHMS(
+                        infoEmbed.addFields({
+                            name: `${Symbols.exclamationMark} Account Age`,
+                            value: DateTimeFormatHelper.secondsToDHMS(
                                 Math.floor(
                                     -DateTimeFormatHelper.getTimeDifference(
                                         member.user.createdAt
                                     ) / 1000
                                 )
-                            )
-                        );
+                            ),
+                        });
                     }
 
-                    const mainEmbed: MessageEmbed =
+                    const mainEmbed: EmbedBuilder =
                         EmbedCreator.createNormalEmbed({ color: "#ffdd00" });
 
                     const verifyText: string = await readFile(
@@ -332,6 +338,6 @@ export const run: EventUtil["run"] = async (client) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for creating collectors for buttons for newly joined members.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

@@ -6,7 +6,15 @@ import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Guild, GuildChannel, Role, TextChannel } from "discord.js";
+import {
+    ChannelType,
+    Guild,
+    GuildChannel,
+    OverwriteType,
+    PermissionsBitField,
+    Role,
+    TextChannel,
+} from "discord.js";
 import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
@@ -139,34 +147,38 @@ export const run: SlashSubcommand<true>["run"] = async (
         guild.channels.cache.get("696663321633357844")
     )).position;
 
-    const clanChannel: GuildChannel = await guild.channels.create(clan.name, {
+    await guild.channels.create({
+        name: clan.name,
+        type: ChannelType.GuildText,
         topic: `Clan chat for ${clan.name} clan.`,
         parent: "696646649128288346",
+        position: position,
         permissionOverwrites: [
             {
-                id: clanRole,
-                allow: ["VIEW_CHANNEL"],
-                type: "role",
+                id: clanRole.id,
+                allow: [PermissionsBitField.Flags.ViewChannel],
+                type: OverwriteType.Role,
             },
             {
                 id: "353397345636974593",
-                deny: ["VIEW_CHANNEL"],
-                type: "role",
+                deny: [PermissionsBitField.Flags.ViewChannel],
+                type: OverwriteType.Role,
             },
             {
                 id: "369108742077284353",
-                allow: ["VIEW_CHANNEL", "MANAGE_MESSAGES"],
-                type: "role",
+                allow: [
+                    PermissionsBitField.Flags.ViewChannel,
+                    PermissionsBitField.Flags.ManageMessages,
+                ],
+                type: OverwriteType.Role,
             },
             {
                 id: clan.leader,
-                allow: ["MANAGE_MESSAGES"],
-                type: "member",
+                allow: [PermissionsBitField.Flags.ManageMessages],
+                type: OverwriteType.Member,
             },
         ],
     });
-
-    await clanChannel.setPosition(position);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

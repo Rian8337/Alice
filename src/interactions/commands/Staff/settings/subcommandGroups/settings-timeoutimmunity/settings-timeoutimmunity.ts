@@ -6,5 +6,5 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
 };
 
 export const config: SlashSubcommandGroup["config"] = {
-    permissions: ["ADMINISTRATOR"],
+    permissions: ["Administrator"],
 };

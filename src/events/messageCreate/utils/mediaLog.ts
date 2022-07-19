@@ -1,9 +1,4 @@
-import {
-    Message,
-    MessageAttachment,
-    MessageEmbed,
-    TextChannel,
-} from "discord.js";
+import { Message, EmbedBuilder, TextChannel } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -30,30 +25,28 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
             continue;
         }
 
-        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
             author: message.author,
             color: "#cb8900",
             footerText: `Author ID: ${message.author.id} | Channel ID: ${message.channel.id} | Message ID: ${message.id}`,
             timestamp: true,
         });
 
-        embed.addField(
-            "Channel",
-            `${message.channel} | [Go to Message](${message.url})`
-        );
+        embed.addFields({
+            name: "Channel",
+            value: `${message.channel} | [Go to Message](${message.url})`,
+        });
 
         if (message.content) {
-            embed.addField("Content", message.content.substring(0, 1025));
+            embed.addFields({
+                name: "Content",
+                value: message.content.substring(0, 1025),
+            });
         }
 
         try {
             logChannel.send({
-                files: [
-                    new MessageAttachment(
-                        attachment.url,
-                        attachment.name ?? undefined
-                    ),
-                ],
+                files: [attachment],
                 embeds: [embed],
             });
             // eslint-disable-next-line no-empty
@@ -64,6 +57,6 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for logging pictures and videos under 8 MB that are sent by users in main server.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

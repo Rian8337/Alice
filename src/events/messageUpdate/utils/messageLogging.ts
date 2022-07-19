@@ -1,4 +1,4 @@
-import { GuildChannel, Message, MessageEmbed, ThreadChannel } from "discord.js";
+import { GuildChannel, Message, EmbedBuilder, ThreadChannel } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 
@@ -24,30 +24,34 @@ export const run: EventUtil["run"] = async (
             (c) => c.id === "643770576238018570"
         );
 
-    if (!logChannel?.isText()) {
+    if (!logChannel?.isTextBased()) {
         return;
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: oldMessage.author,
         color: "#00cb16",
         footerText: `Author ID: ${oldMessage.author.id} | Channel ID: ${oldMessage.channel.id} | Message ID: ${oldMessage.id}`,
         timestamp: true,
     });
 
-    embed
-        .setTitle("Message edited")
-        .addField(
-            "Channel",
-            `${oldMessage.channel} | [Go to Message](${oldMessage.url})`
-        );
+    embed.setTitle("Message edited").addFields({
+        name: "Channel",
+        value: `${oldMessage.channel} | [Go to Message](${oldMessage.url})`,
+    });
 
     if (oldMessage.content) {
-        embed.addField("Old Message", oldMessage.content.substring(0, 1025));
+        embed.addFields({
+            name: "Old Message",
+            value: oldMessage.content.substring(0, 1025),
+        });
     }
 
     if (newMessage.content) {
-        embed.addField("New Message", newMessage.content.substring(0, 1025));
+        embed.addFields({
+            name: "New Message",
+            value: newMessage.content.substring(0, 1025),
+        });
     }
 
     logChannel.send({ embeds: [embed] });
@@ -55,6 +59,6 @@ export const run: EventUtil["run"] = async (
 
 export const config: EventUtil["config"] = {
     description: "Responsible for logging edited messages",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

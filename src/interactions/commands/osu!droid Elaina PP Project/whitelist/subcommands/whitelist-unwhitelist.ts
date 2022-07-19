@@ -6,7 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { GuildMember, MessageEmbed, MessageOptions } from "discord.js";
+import { EmbedBuilder, GuildMember, MessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { WhitelistLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -94,21 +94,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         localization.language
     );
 
-    const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
+    const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
 
-    embed
-        .spliceFields(0, embed.fields.length)
-        .addField(
-            beatmaps[0].showStatistics(6),
-            `${localization.getTranslation("starRating")}:\n${beatmaps
-                .map(
-                    (v) =>
-                        `- [${v.version}](https://osu.ppy.sh/b/${
-                            v.beatmapID
-                        }) - **${v.totalDifficulty.toFixed(2)}**`
-                )
-                .join("\n")}`
-        );
+    embed.spliceFields(0, embed.data.fields!.length).addFields({
+        name: beatmaps[0].showStatistics(6),
+        value: `${localization.getTranslation("starRating")}:\n${beatmaps
+            .map(
+                (v) =>
+                    `- [${v.version}](https://osu.ppy.sh/b/${
+                        v.beatmapID
+                    }) - **${v.totalDifficulty.toFixed(2)}**`
+            )
+            .join("\n")}`,
+    });
 
     const whitelistResponseStrings: string[] = [];
 
@@ -142,5 +140,5 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 };
 
 export const config: SlashSubcommand["config"] = {
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
 };

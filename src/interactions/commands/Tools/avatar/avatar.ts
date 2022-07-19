@@ -1,5 +1,5 @@
-import { GuildMember, MessageEmbed, User } from "discord.js";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { GuildMember, EmbedBuilder, User } from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
-    const avatarEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const avatarEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
@@ -17,14 +17,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             name: user.tag,
         })
         .setDescription(
-            `[Avatar Link](${user.avatarURL({ dynamic: true, size: 1024 })})`
+            `[Avatar Link](${user.avatarURL({ extension: "gif", size: 1024 })})`
         )
-        .setImage(user.avatarURL({ dynamic: true, size: 1024 })!);
+        .setImage(user.avatarURL({ extension: "gif", size: 1024 })!);
 
-    const embeds: MessageEmbed[] = [avatarEmbed];
+    const embeds: EmbedBuilder[] = [avatarEmbed];
 
     if (user.banner) {
-        const bannerEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        const bannerEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
 
@@ -34,11 +34,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             })
             .setDescription(
                 `[Banner Link](${user.bannerURL({
-                    dynamic: true,
+                    extension: "gif",
                     size: 1024,
                 })})`
             )
-            .setImage(user.bannerURL({ dynamic: true, size: 1024 })!);
+            .setImage(user.bannerURL({ extension: "gif", size: 1024 })!);
 
         embeds.push(bannerEmbed);
     }
@@ -57,7 +57,7 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "user",
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description:
                 "The user to get the avatar and/or profile banner from. If unspecified, will default to yourself.",
         },

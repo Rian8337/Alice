@@ -15,7 +15,7 @@ export const run: EventUtil["run"] = async (
 export const config: EventUtil["config"] = {
     description:
         "Responsible for destroying voice connections if the bot was forcefully disconnected by a user to prevent memory leak.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
     debugEnabled: true,
 };

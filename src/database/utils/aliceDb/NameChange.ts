@@ -3,7 +3,7 @@ import { DatabaseNameChange } from "structures/database/aliceDb/DatabaseNameChan
 import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
-import { MessageEmbed, Snowflake, User } from "discord.js";
+import { EmbedBuilder, Snowflake, User } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
@@ -195,7 +195,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
             this.player ??= (await Player.getInformation(this.uid))!;
 
-            const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+            const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
                 color: 2483712,
                 timestamp: true,
             });
@@ -253,7 +253,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
             this.player ??= (await Player.getInformation(this.uid))!;
 
-            const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+            const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
                 color: 16711711,
                 timestamp: true,
             });

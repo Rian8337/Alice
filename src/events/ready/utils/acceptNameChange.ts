@@ -16,6 +16,6 @@ export const run: EventUtil["run"] = async () => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for accepting name change requests.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

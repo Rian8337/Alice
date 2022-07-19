@@ -7,7 +7,12 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Message, MessageAttachment, TextChannel } from "discord.js";
+import {
+    Attachment,
+    AttachmentBuilder,
+    Message,
+    TextChannel,
+} from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -23,7 +28,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const name: string = interaction.options.getString("name", true);
 
-    const attachment: MessageAttachment = interaction.options.getAttachment(
+    const attachment: Attachment = interaction.options.getAttachment(
         "attachment",
         true
     );
@@ -68,11 +73,11 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     await InteractionHelper.deferReply(interaction);
 
-    attachment.setName(
-        `${tag.attachments.length + 1}${attachment.url.substring(
+    const builder: AttachmentBuilder = new AttachmentBuilder(attachment.url, {
+        name: `${tag.attachments.length + 1}${attachment.url.substring(
             attachment.url.lastIndexOf(".")
-        )}`
-    );
+        )}`,
+    });
 
     const channel: TextChannel = <TextChannel>(
         await client.channels.fetch(Constants.tagAttachmentChannel)
@@ -83,15 +88,16 @@ export const run: SlashSubcommand<true>["run"] = async (
             tag.attachment_message
         );
 
-        const finalAttachments: MessageAttachment[] = tag.attachments.map(
-            (v, i) => new MessageAttachment(v, `attachment-${i + 1}.png`)
+        const finalAttachments: AttachmentBuilder[] = tag.attachments.map(
+            (v, i) =>
+                new AttachmentBuilder(v, { name: `attachment-${i + 1}.png` })
         );
 
-        finalAttachments.push(attachment);
+        finalAttachments.push(builder);
 
         try {
             const editedMessage: Message = await message.edit({
-                attachments: finalAttachments,
+                files: finalAttachments,
             });
 
             tag.attachments = editedMessage.attachments.map((v) => v.url);

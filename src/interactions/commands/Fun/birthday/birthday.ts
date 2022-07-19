@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -18,19 +18,19 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "forceset",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Forcefully sets a user's birthday.",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The Discord user to set the birthday for.",
                 },
                 {
                     name: "month",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The month of birthday, ranging from 1 to 12.",
                     minValue: 1,
                     maxValue: 12,
@@ -38,7 +38,7 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "date",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description:
                         "The date of the birthday, ranging from 1 to the max date of the month.",
                     minValue: 1,
@@ -47,7 +47,7 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "timezone",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description:
                         "The timezone of the user, ranging from -12 to 14.",
                     minValue: -12,
@@ -57,13 +57,13 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "set",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Sets your birthday.",
             options: [
                 {
                     name: "month",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The month of birthday, ranging from 1 to 12.",
                     minValue: 1,
                     maxValue: 12,
@@ -71,7 +71,7 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "date",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description:
                         "The date of the birthday, ranging from 1 to the max date of the month.",
                     minValue: 1,
@@ -80,7 +80,7 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "timezone",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description:
                         "The timezone of the user, ranging from -12 to 14.",
                     minValue: -12,
@@ -90,12 +90,12 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "view",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Views a user's birthday.",
             options: [
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description:
                         "The Discord user to view. Defaults to yourself.",
                 },

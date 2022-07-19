@@ -7,7 +7,7 @@ import {
     ThreadMember,
 } from "discord.js";
 import { Config } from "@alice-core/Config";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { Constants } from "@alice-core/Constants";
@@ -132,7 +132,7 @@ export const config: SlashCommand["config"] = {
         {
             name: "user",
             required: true,
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description: "The user to verify.",
         },
     ],
@@ -158,6 +158,6 @@ export const config: SlashCommand["config"] = {
             description: "will verify the user with that Discord ID.",
         },
     ],
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
     scope: "GUILD_CHANNEL",
 };

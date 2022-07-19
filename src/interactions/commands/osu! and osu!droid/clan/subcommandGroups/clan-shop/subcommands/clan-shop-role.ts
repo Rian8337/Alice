@@ -131,7 +131,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     clanRole = await guild.roles.create({
         name: clan.name,
-        color: "DEFAULT",
+        color: "Default",
         permissions: [],
         position: globalClanRole.position,
         reason: "Clan leader bought clan role",

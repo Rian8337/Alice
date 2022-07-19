@@ -1,5 +1,5 @@
 import { Constants } from "@alice-core/Constants";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -53,45 +53,45 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "add",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Adds a match.",
             options: [
                 {
                     name: "id",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the match, in {<pool ID>.<match ID>} format.",
                 },
                 {
                     name: "name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of the match.",
                 },
                 {
                     name: "team1name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of team 1.",
                 },
                 {
                     name: "team2name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of team 2.",
                 },
                 {
                     name: "team1players",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The players in team 1, in the format {<player name> <uid>} for each player, separated by space.",
                 },
                 {
                     name: "team2players",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The players in team 2, in the format {<player name> <uid>} for each player, separated by space.",
                 },
@@ -99,26 +99,26 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "bind",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Binds a match to the current channel and creates a thread for the match.",
             options: [
                 {
                     name: "id",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The ID of the match.",
                 },
             ],
         },
         {
             name: "check",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Checks the status of a match.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the match. Defaults to the match in current binded thread.",
                 },
@@ -126,12 +126,12 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "end",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Ends a match.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the match. Defaults to the match in current binded thread.",
                 },
@@ -139,32 +139,32 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "manualsubmit",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Manually submits a round of score for a match.",
             options: [
                 {
                     name: "id",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The ID of the match.",
                 },
                 {
                     name: "pick",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The current pick (NM1, NM2, etc).",
                 },
                 {
                     name: "team1scores",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "Scores from team 1, in format {<score>[h] <acc> <miss>} for every player by order in the team.",
                 },
                 {
                     name: "team2scores",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "Scores from team 2, in format {<score>[h] <acc> <miss>} for every player by order in the team.",
                 },
@@ -172,46 +172,46 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "remove",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Removes a match.",
             options: [
                 {
                     name: "id",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The ID of the match.",
                 },
             ],
         },
         {
             name: "start",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Starts a round in a match. This can only be done in a binded thread (see /match bind).",
             options: [
                 {
                     name: "pick",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The current pick (NM1, NM2, etc).",
                 },
             ],
         },
         {
             name: "submit",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Submits the most recent play of each player in a match.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the match. Defaults to the match in current binded thread.",
                 },
                 {
                     name: "pick",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The pick to be submitted. If omitted, uses the most recent play from all participants in the match.",
                 },
@@ -219,13 +219,13 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "unbind",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Unbinds an ended match and closes (archives) its thread.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the match. Defaults to the match in current binded thread.",
                 },
@@ -233,12 +233,12 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "undo",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Undo the recent result of a match.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The match to undo. Defaults to the match in current binded channel.",
                 },
@@ -289,6 +289,6 @@ export const config: SlashCommand["config"] = {
                 "will bind the match with ID `t11f1.m1` to the channel the command is executed.",
         },
     ],
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
     scope: "GUILD_CHANNEL",
 };

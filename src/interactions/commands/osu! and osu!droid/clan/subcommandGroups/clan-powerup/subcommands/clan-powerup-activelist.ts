@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -27,7 +27,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });

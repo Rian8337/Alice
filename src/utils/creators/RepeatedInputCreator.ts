@@ -1,4 +1,4 @@
-import { CommandInteraction } from "discord.js";
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import { EmbedCreator } from "./EmbedCreator";
 import { MessageInputCreator } from "./MessageInputCreator";
 
@@ -9,7 +9,7 @@ export class RepeatedInputCreator {
     /**
      * The interaction that triggered this input creator.
      */
-    private readonly interaction: CommandInteraction;
+    private readonly interaction: RepliableInteraction;
 
     /**
      * The title of the choice embed.
@@ -20,7 +20,7 @@ export class RepeatedInputCreator {
      * @param interaction The interaction that triggered this input creator.
      * @param choiceTitle The title of the choice embed.
      */
-    constructor(interaction: CommandInteraction, choiceTitle: string) {
+    constructor(interaction: RepliableInteraction, choiceTitle: string) {
         this.interaction = interaction;
         this.choiceTitle = choiceTitle;
     }

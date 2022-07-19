@@ -2,7 +2,7 @@ import {
     Collection,
     Guild,
     GuildChannel,
-    MessageEmbed,
+    EmbedBuilder,
     Snowflake,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -194,7 +194,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         },
     ];
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: "#b58d3c",
     });

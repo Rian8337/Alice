@@ -2,7 +2,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(
@@ -20,22 +20,22 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "about",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "About this multiplayer system.",
         },
         {
             name: "beatmap",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Manages picked beatmaps for a multiplayer room.",
             options: [
                 {
                     name: "select",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Selects the beatmap that will be played.",
                     options: [
                         {
                             name: "beatmap",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The beatmap ID or link.",
                         },
@@ -43,33 +43,33 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "view",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Views the currently picked beatmap.",
                 },
             ],
         },
         {
             name: "calculate",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description:
                 "Calculation commands to calculate scores that are not submitted.",
             options: [
                 {
                     name: "scorev1",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Modifies a ScoreV1 value to account for custom mod multipliers.",
                     options: [
                         {
                             name: "score",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                             description: "The score value to calculate for.",
                             minValue: 0,
                         },
                         {
                             name: "mods",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description:
                                 "The combination of modos to calculate for.",
@@ -78,20 +78,20 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "scorev2",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Calculates a ScoreV2 value with respect to the currently picked beatmap.",
                     options: [
                         {
                             name: "score",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                             description: "The score value to calculate for.",
                             minValue: 0,
                         },
                         {
                             name: "accuracy",
-                            type: ApplicationCommandOptionTypes.NUMBER,
+                            type: ApplicationCommandOptionType.Number,
                             required: true,
                             description:
                                 "The accuracy to calculate for, from 0 to 100.",
@@ -100,7 +100,7 @@ export const config: SlashCommand["config"] = {
                         },
                         {
                             name: "misses",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                             description:
                                 "The amount of misses to calculate for.",
@@ -108,7 +108,7 @@ export const config: SlashCommand["config"] = {
                         },
                         {
                             name: "mods",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The combination of mods to calculate for. Used to apply HDDT penalty and custom mod multipliers.",
                         },
@@ -118,32 +118,32 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "create",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Creates a multiplayer room.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                     description:
                         "The ID of the room. Maximum is 20 characters.",
                 },
                 {
                     name: "name",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                     description:
                         "The name of the room. Maximum is 50 characters.",
                 },
                 {
                     name: "password",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The password required to join the room. Defaults to none.",
                 },
                 {
                     name: "slotamount",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description:
                         "The amount of player slots in the room. Defaults to 8.",
                     minValue: 2,
@@ -153,53 +153,53 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "leave",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Leaves the multiplayer room.",
         },
         {
             name: "join",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Joins a multiplayer room.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                     description: "The ID of the room.",
                 },
                 {
                     name: "password",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The password of the room, if any.",
                 },
             ],
         },
         {
             name: "kick",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Kicks a player from the multiplayer room.",
             options: [
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     required: true,
                     description: "The user to kick.",
                 },
                 {
                     name: "lockslot",
-                    type: ApplicationCommandOptionTypes.BOOLEAN,
+                    type: ApplicationCommandOptionType.Boolean,
                     description: "Whether to also lock the player's slot.",
                 },
             ],
         },
         {
             name: "players",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Lists all players in a multiplayer room.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the room. Defaults to the room in the current channel.",
                 },
@@ -207,27 +207,27 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "ready",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Toggles the ready state.",
         },
         {
             name: "round",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Round management.",
             options: [
                 {
                     name: "forcesubmit",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Forcefully submits the round's result.",
                 },
                 {
                     name: "start",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Starts a timer until round start.",
                     options: [
                         {
                             name: "duration",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The duration of the timer, in seconds. Defaults to 10.",
                             minValue: 5,
@@ -235,7 +235,7 @@ export const config: SlashCommand["config"] = {
                         },
                         {
                             name: "force",
-                            type: ApplicationCommandOptionTypes.BOOLEAN,
+                            type: ApplicationCommandOptionType.Boolean,
                             description:
                                 "Whether to forcefully start the round regardless of ready state of all players.",
                         },
@@ -243,24 +243,24 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "stop",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Stops the ongoing timer in the room.",
                 },
             ],
         },
         {
             name: "settings",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Manages settings for the multiplayer room.",
             options: [
                 {
                     name: "allowedmods",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets allowed mods to play.",
                     options: [
                         {
                             name: "mods",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The mods to set to. Defaults to none.",
                         },
@@ -268,18 +268,18 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "forcear",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the usage rule of force AR.",
                     options: [
                         {
                             name: "allowed",
-                            type: ApplicationCommandOptionTypes.BOOLEAN,
+                            type: ApplicationCommandOptionType.Boolean,
                             description:
                                 "Whether to allow the usage of force AR. Defaults to previously picked option or no.",
                         },
                         {
                             name: "minvalue",
-                            type: ApplicationCommandOptionTypes.NUMBER,
+                            type: ApplicationCommandOptionType.Number,
                             description:
                                 "The lowest allowable force AR value to use. Defaults to previously picked option or 0.",
                             minValue: 0,
@@ -287,7 +287,7 @@ export const config: SlashCommand["config"] = {
                         },
                         {
                             name: "maxvalue",
-                            type: ApplicationCommandOptionTypes.NUMBER,
+                            type: ApplicationCommandOptionType.Number,
                             description:
                                 "The highest allowable force AR value to use. Defaults to previously picked option or 12.5.",
                             minValue: 0,
@@ -297,20 +297,20 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "modmultiplier",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Sets a score multiplier for mods that will override the client's built-in score multiplier.",
                     options: [
                         {
                             name: "mods",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description:
                                 "The mods to set the score multiplier to.",
                         },
                         {
                             name: "multiplier",
-                            type: ApplicationCommandOptionTypes.NUMBER,
+                            type: ApplicationCommandOptionType.Number,
                             description:
                                 "The multiplier. Omit this option to reset all specified mods' multiplier to their default value.",
                             minValue: 0,
@@ -319,12 +319,12 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "name",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the name of the multiplayer room.",
                     options: [
                         {
                             name: "name",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description:
                                 "The name of the room. Maximum is 50 characters.",
@@ -333,13 +333,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "slotamount",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Sets the amount of player slots in the multiplayer room.",
                     options: [
                         {
                             name: "slotamount",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                             description: "The amount of player slots.",
                             minValue: 2,
@@ -349,13 +349,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "password",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Sets or removes the password required to join the multiplayer room.",
                     options: [
                         {
                             name: "password",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The password to set to. Defaults to none.",
                         },
@@ -363,12 +363,12 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "requiredmods",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets required mods to play.",
                     options: [
                         {
                             name: "mods",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The mods to set to. Defaults to none.",
                         },
@@ -376,13 +376,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "scoreportion",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Sets the portion of which the maximum score will contribute to ScoreV2, if win condition is ScoreV2.",
                     options: [
                         {
                             name: "value",
-                            type: ApplicationCommandOptionTypes.NUMBER,
+                            type: ApplicationCommandOptionType.Number,
                             description:
                                 "The value to set the score portion to. Defaults to 0.4.",
                             minValue: 0,
@@ -392,13 +392,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "sliderlock",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Sets the usage rule of in-game 2B slider lock option.",
                     options: [
                         {
                             name: "allow",
-                            type: ApplicationCommandOptionTypes.BOOLEAN,
+                            type: ApplicationCommandOptionType.Boolean,
                             required: true,
                             description:
                                 "Whether the option is allowed to be used.",
@@ -407,12 +407,12 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "speedmultiplier",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the custom speed multiplier to use.",
                     options: [
                         {
                             name: "value",
-                            type: ApplicationCommandOptionTypes.NUMBER,
+                            type: ApplicationCommandOptionType.Number,
                             description:
                                 "The custom speed multiplier value to use. Must be divisible by 0.05. Defaults to 1.",
                             minValue: 0.5,
@@ -422,17 +422,17 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "teammode",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the room's team mode.",
                 },
                 {
                     name: "transferhost",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Transfers host status to a user.",
                     options: [
                         {
                             name: "user",
-                            type: ApplicationCommandOptionTypes.USER,
+                            type: ApplicationCommandOptionType.User,
                             required: true,
                             description: "The user to transfer host status to.",
                         },
@@ -440,25 +440,25 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "wincondition",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the room's win condition.",
                 },
             ],
         },
         {
             name: "spectate",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Toggles spectating state for the room host without having to leave the multiplayer room.",
         },
         {
             name: "statistics",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Displays the statistics of a multiplayer room.",
             options: [
                 {
                     name: "id",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the room. If omitted, defaults to the current channel's multiplayer room.",
                 },
@@ -466,17 +466,17 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "team",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Manages teams for a multiplayer room.",
             options: [
                 {
                     name: "select",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Moves to a team.",
                     options: [
                         {
                             name: "team",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                             description: "The team to move to.",
                             choices: [
@@ -494,7 +494,7 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "view",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Views the current team configuration in a multiplayer room.",
                 },

@@ -10,7 +10,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildMember } from "discord.js";
 import { Filter, Sort } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -218,7 +218,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         delete sort["mapname"];
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -244,39 +244,41 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 sort
             );
 
-        for (const whitelistedBeatmap of result) {
-            embed.addField(
-                whitelistedBeatmap.mapname,
-                `**${localization.getTranslation(
-                    "download"
-                )}**: [osu!](https://osu.ppy.sh/d/${
-                    whitelistedBeatmap.mapid
-                }) [(no video)](https://osu.ppy.sh/d/${
-                    whitelistedBeatmap.mapid
-                }n) - [Chimu](https://chimu.moe/en/d/${
-                    whitelistedBeatmap.mapid
-                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
-                    whitelistedBeatmap.mapid
-                }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${
-                    whitelistedBeatmap.mapid
-                }) - [Beatconnect](https://beatconnect.io/b/${
-                    whitelistedBeatmap.mapid
-                }) - [Nerina](https://nerina.pw/d/${
-                    whitelistedBeatmap.mapid
-                })\n**CS**: ${whitelistedBeatmap.diffstat.cs} - **AR**: ${
-                    whitelistedBeatmap.diffstat.ar
-                } - **OD**: ${whitelistedBeatmap.diffstat.od} - **HP**: ${
-                    whitelistedBeatmap.diffstat.hp
-                } - **BPM**: ${whitelistedBeatmap.diffstat.bpm.toLocaleString(
-                    BCP47
-                )}\n**${localization.getTranslation(
-                    "dateWhitelisted"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
-                    whitelistedBeatmap._id!.getTimestamp(),
-                    localization.language
-                )}`
-            );
-        }
+        embed.addFields(
+            result.map((v) => {
+                return {
+                    name: v.mapname,
+                    value: `**${localization.getTranslation(
+                        "download"
+                    )}**: [osu!](https://osu.ppy.sh/d/${
+                        v.mapid
+                    }) [(no video)](https://osu.ppy.sh/d/${
+                        v.mapid
+                    }n) - [Chimu](https://chimu.moe/en/d/${
+                        v.mapid
+                    }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
+                        v.mapid
+                    }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${
+                        v.mapid
+                    }) - [Beatconnect](https://beatconnect.io/b/${
+                        v.mapid
+                    }) - [Nerina](https://nerina.pw/d/${v.mapid})\n**CS**: ${
+                        v.diffstat.cs
+                    } - **AR**: ${v.diffstat.ar} - **OD**: ${
+                        v.diffstat.od
+                    } - **HP**: ${
+                        v.diffstat.hp
+                    } - **BPM**: ${v.diffstat.bpm.toLocaleString(
+                        BCP47
+                    )}\n**${localization.getTranslation(
+                        "dateWhitelisted"
+                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        v._id!.getTimestamp(),
+                        localization.language
+                    )}`,
+                };
+            })
+        );
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

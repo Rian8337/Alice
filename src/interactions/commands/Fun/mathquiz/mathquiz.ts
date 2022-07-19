@@ -4,7 +4,7 @@ import { SlashCommand } from "structures/core/SlashCommand";
 import { MathEquation } from "@alice-structures/utils/MathEquation";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MathquizLocalization } from "@alice-localization/interactions/commands/Fun/mathquiz/MathquizLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -43,7 +43,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const msg: Message = <Message>await InteractionHelper.reply(interaction, {
+    const msg: Message = await InteractionHelper.reply(interaction, {
         content: MessageCreator.createWarn(
             localization.getTranslation("equationQuestion"),
             interaction.user.toString(),
@@ -107,7 +107,7 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "difflevel",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "The difficulty level of the equation, ranging from 1 to 20. Defaults to 1.",
             minValue: 1,
@@ -115,7 +115,7 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "operatoramount",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "The amount of operators to be used in the equation, ranging from 1 to 10. Defaults to 4.",
             minValue: 1,

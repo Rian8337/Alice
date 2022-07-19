@@ -1,6 +1,6 @@
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
@@ -16,19 +16,19 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "uid",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Switches your currently binded osu!droid account or binds an osu!droid account using its uid.",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "email",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The email associated with the osu!droid account. Required for first-time bind of the account.",
                 },
@@ -36,19 +36,19 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "username",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Switches your currently binded osu!droid account or binds an osu!droid account using its username.",
             options: [
                 {
                     name: "username",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The username of the osu!droid account.",
                 },
                 {
                     name: "email",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The email associated with the osu!droid account. Required for first-time bind of the account.",
                 },

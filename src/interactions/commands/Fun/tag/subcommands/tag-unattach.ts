@@ -7,9 +7,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
+    AttachmentBuilder,
     Message,
-    MessageAttachment,
-    Permissions,
+    PermissionsBitField,
     TextChannel,
 } from "discord.js";
 
@@ -56,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         tag.author !== interaction.user.id &&
         !CommandHelper.checkPermission(
             interaction,
-            Permissions.FLAGS.ADMINISTRATOR
+            PermissionsBitField.Flags.Administrator
         )
     ) {
         return InteractionHelper.reply(interaction, {
@@ -95,8 +95,11 @@ export const run: SlashSubcommand<true>["run"] = async (
         tag.attachments.splice(index - 1, 1);
 
         await message.edit({
-            attachments: tag.attachments.map(
-                (v, i) => new MessageAttachment(v, `attachment-${i + 1}.png`)
+            files: tag.attachments.map(
+                (v, i) =>
+                    new AttachmentBuilder(v, {
+                        name: `attachment-${i + 1}.png`,
+                    })
             ),
         });
     } else {

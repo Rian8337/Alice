@@ -10,7 +10,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
@@ -44,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -52,13 +52,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed.setTitle(localization.getTranslation("nameHistoryForUid"));
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
-        embed.addField(
-            localization.getTranslation("nameHistory"),
-            nameChange.previous_usernames
+        embed.addFields({
+            name: localization.getTranslation("nameHistory"),
+            value: nameChange.previous_usernames
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map((v, i) => `**${10 * (page - 1) + i + 1}.** ${v}`)
-                .join("\n")
-        );
+                .join("\n"),
+        });
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

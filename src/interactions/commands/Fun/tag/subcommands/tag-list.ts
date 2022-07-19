@@ -8,7 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Collection, MessageEmbed, User } from "discord.js";
+import { Collection, EmbedBuilder, User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
@@ -39,7 +39,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: interaction.member.displayColor,
     });

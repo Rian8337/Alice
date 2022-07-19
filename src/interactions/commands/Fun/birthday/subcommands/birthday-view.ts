@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { GuildMember, MessageEmbed, User } from "discord.js";
+import { GuildMember, EmbedBuilder, User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: BirthdayLocalization = new BirthdayLocalization(
@@ -33,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });

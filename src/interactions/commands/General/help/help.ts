@@ -4,7 +4,7 @@ import {
     ApplicationCommandSubGroupData,
     Collection,
     GuildMember,
-    MessageEmbed,
+    EmbedBuilder,
 } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
@@ -14,7 +14,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { HelpLocalization } from "@alice-localization/interactions/commands/General/help/HelpLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -47,7 +47,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     const commandName: string | null =
         interaction.options.getString("commandname");
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -75,7 +75,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                 let isOptional: boolean = false;
 
                 switch (arg.type) {
-                    case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP:
+                    case ApplicationCommandOptionType.SubcommandGroup:
                         precedingKeywords.push(arg.name);
                         for (const localArg of arg.options ?? []) {
                             precedingKeywords.push(localArg.name);
@@ -91,7 +91,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                             }
                         }
                         break;
-                    case ApplicationCommandOptionTypes.SUB_COMMAND:
+                    case ApplicationCommandOptionType.Subcommand:
                         precedingKeywords.push(arg.name);
                         for (const localArg of arg.options ?? []) {
                             isOptional ||= !localArg.required;
@@ -145,48 +145,58 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                     ) +
                     "`"
             )
-            .addField(
-                localization.getTranslation("examples"),
-                cmd.config.example
-                    .map(
-                        (v) =>
-                            `\`/${v.command}\`${
-                                v.arguments
-                                    ? ` ${v.arguments
-                                          .map(
-                                              (a) => `\`${a.name}:${a.value}\``
-                                          )
-                                          .join(" ")}`
-                                    : ""
-                            }\n` + v.description
-                    )
-                    .join("\n\n") || localization.getTranslation("none"),
-                true
-            )
-            .addField(
-                `${localization.getTranslation("usage")}\n` +
-                    `\`<...>\`: ${localization.getTranslation("required")}\n` +
-                    `\`[...]\`: ${localization.getTranslation(
-                        "optional"
-                    )}\n\n` +
-                    `\`${cmd.config.name}${
-                        argsString ? ` ${argsString}` : ""
-                    }\``,
-                `**${localization.getTranslation("details")}**\n` +
-                    cmd.config.options
-                        .map(
-                            (v) =>
-                                "`" +
-                                v.name +
-                                "`: *" +
-                                CommandHelper.optionTypeToString(
-                                    <ApplicationCommandOptionTypes>v.type
-                                ) +
-                                "*\n" +
-                                v.description
-                        )
-                        .join("\n\n") || localization.getTranslation("none"),
-                true
+            .addFields(
+                {
+                    name: localization.getTranslation("examples"),
+                    value:
+                        cmd.config.example
+                            .map(
+                                (v) =>
+                                    `\`/${v.command}\`${
+                                        v.arguments
+                                            ? ` ${v.arguments
+                                                  .map(
+                                                      (a) =>
+                                                          `\`${a.name}:${a.value}\``
+                                                  )
+                                                  .join(" ")}`
+                                            : ""
+                                    }\n` + v.description
+                            )
+                            .join("\n\n") ||
+                        localization.getTranslation("none"),
+                    inline: true,
+                },
+                {
+                    name:
+                        `${localization.getTranslation("usage")}\n` +
+                        `\`<...>\`: ${localization.getTranslation(
+                            "required"
+                        )}\n` +
+                        `\`[...]\`: ${localization.getTranslation(
+                            "optional"
+                        )}\n\n` +
+                        `\`${cmd.config.name}${
+                            argsString ? ` ${argsString}` : ""
+                        }\``,
+                    value:
+                        `**${localization.getTranslation("details")}**\n` +
+                            cmd.config.options
+                                .map(
+                                    (v) =>
+                                        "`" +
+                                        v.name +
+                                        "`: *" +
+                                        CommandHelper.optionTypeToString(
+                                            v.type
+                                        ) +
+                                        "*\n" +
+                                        v.description
+                                )
+                                .join("\n\n") ||
+                        localization.getTranslation("none"),
+                    inline: true,
+                }
             );
 
         InteractionHelper.reply(interaction, { embeds: [embed] });
@@ -201,18 +211,18 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                     `${localization.getTranslation("useHelpCommand")}\n` +
                     localization.getTranslation("issuesContact")
             )
-            .setThumbnail(client.user.avatarURL({ dynamic: true })!);
+            .setThumbnail(client.user.avatarURL({ extension: "gif" })!);
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
-            embed.addField(
-                `**${localization.getTranslation(
+            embed.addFields({
+                name: `**${localization.getTranslation(
                     "category"
                 )}**: ${commandList.keyAt(page - 1)}`,
-                commandList
+                value: commandList
                     .at(page - 1)!
                     .map((v) => `\`${v}\``)
-                    .join(" • ")
-            );
+                    .join(" • "),
+            });
         };
 
         MessageButtonCreator.createLimitedButtonBasedPaging(
@@ -235,7 +245,7 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "commandname",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The command to see the help section from. If unspecified, lists all available commands.",
         },

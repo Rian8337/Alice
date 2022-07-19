@@ -10,7 +10,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Collection, MessageEmbed } from "discord.js";
+import { Collection, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
@@ -37,7 +37,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const allowedTimeoutRoles: Collection<string, RoleTimeoutPermission> =
         guildConfig.allowedTimeoutRoles;
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: interaction.member.displayColor,
     });
@@ -82,5 +82,5 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 };
 
 export const config: SlashSubcommand["config"] = {
-    permissions: ["ADMINISTRATOR"],
+    permissions: ["Administrator"],
 };

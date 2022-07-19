@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { OperationResult } from "structures/core/OperationResult";
@@ -68,12 +68,12 @@ export const config: SlashCommand["config"] = {
         {
             name: "user",
             required: true,
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description: "The user to untimeout.",
         },
         {
             name: "reason",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The reason for untimeouting the user. Maximum length is 1500 characters.",
         },
@@ -109,7 +109,7 @@ export const config: SlashCommand["config"] = {
                 'will untimeout the user with that Discord ID for "bad".',
         },
     ],
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
     replyEphemeral: true,
     scope: "GUILD_CHANNEL",
 };

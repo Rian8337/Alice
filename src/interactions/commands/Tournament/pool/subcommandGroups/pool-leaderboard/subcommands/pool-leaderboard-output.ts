@@ -7,7 +7,7 @@ import { PoolLocalization } from "@alice-localization/interactions/commands/Tour
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageAttachment } from "discord.js";
+import { AttachmentBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
@@ -78,9 +78,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         },${score.score.accuracy.nmiss},"${score.score.date.toUTCString()}"\n`;
     }
 
-    const attachment: MessageAttachment = new MessageAttachment(
+    const attachment: AttachmentBuilder = new AttachmentBuilder(
         Buffer.from(csvString),
-        `leaderboard_${map.name}.csv`
+        { name: `leaderboard_${map.name}.csv` }
     );
 
     InteractionHelper.reply(interaction, {

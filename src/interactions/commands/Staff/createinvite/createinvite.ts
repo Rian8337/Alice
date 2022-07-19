@@ -1,10 +1,10 @@
 import {
     GuildMember,
-    MessageEmbed,
+    EmbedBuilder,
     NewsChannel,
     TextChannel,
 } from "discord.js";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -49,7 +49,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     (<TextChannel | NewsChannel>interaction.channel)
         .createInvite({ maxAge: maxAge, maxUses: maxUsage, reason: reason })
         .then((invite) => {
-            const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+            const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
                 author: interaction.user,
                 color: (<GuildMember>interaction.member).displayColor,
                 timestamp: true,
@@ -57,29 +57,36 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             embed
                 .setTitle(localization.getTranslation("inviteLinkCreated"))
-                .addField(
-                    localization.getTranslation("createdInChannel"),
-                    interaction.channel!.toString(),
-                    true
-                )
-                .addField(
-                    localization.getTranslation("maxUsage"),
-                    maxUsage === 0
-                        ? localization.getTranslation("infinite")
-                        : maxUsage.toString()
-                )
-                .addField(
-                    localization.getTranslation("expirationTime"),
-                    DateTimeFormatHelper.secondsToDHMS(
-                        maxAge,
-                        localization.language
-                    ) || localization.getTranslation("never"),
-                    true
-                )
-                .addField(localization.getTranslation("reason"), reason)
-                .addField(
-                    localization.getTranslation("inviteLink"),
-                    invite.url
+                .addFields(
+                    {
+                        name: localization.getTranslation("createdInChannel"),
+                        value: interaction.channel!.toString(),
+                        inline: true,
+                    },
+                    {
+                        name: localization.getTranslation("maxUsage"),
+                        value:
+                            maxUsage === 0
+                                ? localization.getTranslation("infinite")
+                                : maxUsage.toString(),
+                    },
+                    {
+                        name: localization.getTranslation("expirationTime"),
+                        value:
+                            DateTimeFormatHelper.secondsToDHMS(
+                                maxAge,
+                                localization.language
+                            ) || localization.getTranslation("never"),
+                        inline: true,
+                    },
+                    {
+                        name: localization.getTranslation("reason"),
+                        value: reason,
+                    },
+                    {
+                        name: localization.getTranslation("inviteLink"),
+                        value: invite.url,
+                    }
                 );
 
             InteractionHelper.reply(interaction, {
@@ -96,20 +103,20 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "validduration",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "In time format (e.g. 6:01:24:33 or 2d14h55m34s). Defaults to never expire.",
         },
         {
             name: "usage",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "The maximum usage until the invite link expires. Defaults to no limit.",
             minValue: 0,
         },
         {
             name: "reason",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The reason for creating the invite link.",
         },
     ],
@@ -141,6 +148,6 @@ export const config: SlashCommand["config"] = {
                 'will create an invite link that never expires for "Permanent invite link".',
         },
     ],
-    permissions: ["CREATE_INSTANT_INVITE"],
+    permissions: ["CreateInstantInvite"],
     scope: "GUILD_CHANNEL",
 };

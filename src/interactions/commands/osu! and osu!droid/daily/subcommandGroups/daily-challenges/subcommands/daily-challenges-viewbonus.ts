@@ -9,7 +9,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
@@ -29,7 +29,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });
@@ -49,7 +49,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const onPageChange: OnButtonPageChange = async (_, page) => {
         const content: BonusDescription = bonusDescription[page - 1];
 
-        embed.addField(content.id, content.description);
+        embed.addFields({ name: content.id, value: content.description });
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

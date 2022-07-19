@@ -15,7 +15,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
@@ -61,7 +61,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     }).setTitle(map.name);
@@ -110,14 +110,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     };
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
-        embed.addField(
-            `**${localization.getTranslation("topScore")}**`,
-            `**${topScore.score.username}${
-                topScore.score.mods.length > 0
-                    ? ` (${topScore.score.getCompleteModString()})`
-                    : ""
-            }**\n` + getScoreDescription(topScore)
-        );
+        embed.addFields({
+            name: `**${localization.getTranslation("topScore")}**`,
+            value:
+                `**${topScore.score.username}${
+                    topScore.score.mods.length > 0
+                        ? ` (${topScore.score.getCompleteModString()})`
+                        : ""
+                }**\n` + getScoreDescription(topScore),
+        });
 
         const actualPage: number = Math.floor((page - 1) / 20);
 
@@ -131,14 +132,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         let i = 20 * actualPage + 5 * pageRemainder;
 
         for (const score of displayedScores) {
-            embed.addField(
-                `**#${++i} ${score.score.username}${
+            embed.addFields({
+                name: `**#${++i} ${score.score.username}${
                     score.score.mods.length > 0
                         ? ` (${score.score.getCompleteModString()})`
                         : ""
                 }**`,
-                getScoreDescription(score)
-            );
+                value: getScoreDescription(score),
+            });
         }
     };
 

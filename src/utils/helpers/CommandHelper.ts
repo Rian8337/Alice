@@ -1,17 +1,15 @@
 import {
-    BaseCommandInteraction,
     BaseGuildTextChannel,
+    BaseInteraction,
+    ChannelType,
+    ChatInputCommandInteraction,
     Collection,
     CommandInteraction,
-    DMChannel,
     GuildMember,
-    Interaction,
-    MessageComponentInteraction,
-    MessageSelectOptionData,
     PermissionResolvable,
+    SelectMenuComponentOptionData,
     SelectMenuInteraction,
     Snowflake,
-    TextChannel,
     ThreadChannel,
     User,
 } from "discord.js";
@@ -32,7 +30,7 @@ import { PermissionHelper } from "./PermissionHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
 import { Manager } from "@alice-utils/base/Manager";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { Language } from "@alice-localization/base/Language";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
@@ -56,9 +54,9 @@ export abstract class CommandHelper extends Manager {
      * @param placeholder The placeholder text for the subcommand's select menu.
      */
     static async runSlashSubcommandNotFromInteraction(
-        interaction: CommandInteraction,
+        interaction: ChatInputCommandInteraction,
         mainCommandDirectory: string,
-        subcommandChoices: MessageSelectOptionData[],
+        subcommandChoices: SelectMenuComponentOptionData[],
         placeholder: string
     ): Promise<unknown> {
         const selectMenuInteraction: SelectMenuInteraction | null =
@@ -93,7 +91,7 @@ export abstract class CommandHelper extends Manager {
      * @param interaction The interaction.
      * @returns The preferred locale of the channel or server, either set locally to bot or from the interaction.
      */
-    static async getLocale(interaction: Interaction): Promise<Language>;
+    static async getLocale(interaction: BaseInteraction): Promise<Language>;
 
     /**
      * Gets the preferred locale of a channel.
@@ -122,15 +120,16 @@ export abstract class CommandHelper extends Manager {
     static async getLocale(channelId: Snowflake): Promise<Language>;
 
     static async getLocale(
-        input: Interaction | BaseGuildTextChannel | Snowflake | User
+        input: BaseInteraction | BaseGuildTextChannel | Snowflake | User
     ): Promise<Language> {
         let language: Language | undefined;
 
         if (
-            (input instanceof Interaction && input.channel?.type === "DM") ||
+            (input instanceof BaseInteraction &&
+                input.channel?.type === ChannelType.DM) ||
             input instanceof User
         ) {
-            if (input instanceof Interaction) {
+            if (input instanceof BaseInteraction) {
                 switch (input.locale) {
                     case "ko":
                         language = "kr";
@@ -144,14 +143,14 @@ export abstract class CommandHelper extends Manager {
             return (
                 language ??
                 this.getUserPreferredLocale(
-                    input instanceof Interaction ? input.user.id : input.id
+                    input instanceof BaseInteraction ? input.user.id : input.id
                 )
             );
         }
 
         let channelId: Snowflake;
 
-        if (input instanceof Interaction) {
+        if (input instanceof BaseInteraction) {
             channelId =
                 input.channel instanceof ThreadChannel
                     ? input.channel.parentId!
@@ -196,7 +195,7 @@ export abstract class CommandHelper extends Manager {
      * @returns The user's preferred locale, English if the user doesn't have a preferred locale.
      */
     static async getUserPreferredLocale(
-        interaction: Interaction
+        interaction: BaseInteraction
     ): Promise<Language>;
 
     /**
@@ -216,10 +215,10 @@ export abstract class CommandHelper extends Manager {
     static async getUserPreferredLocale(userId: Snowflake): Promise<Language>;
 
     static async getUserPreferredLocale(
-        input: Interaction | Snowflake | User
+        input: BaseInteraction | Snowflake | User
     ): Promise<Language> {
         const id: Snowflake =
-            input instanceof Interaction
+            input instanceof BaseInteraction
                 ? input.user.id
                 : input instanceof User
                 ? input.id
@@ -251,7 +250,7 @@ export abstract class CommandHelper extends Manager {
      * @param language The locale of the user who attempted to run the subcommand or subcommand group. Defaults to English.
      */
     static runSlashSubcommandOrGroup(
-        interaction: CommandInteraction,
+        interaction: ChatInputCommandInteraction,
         language: Language = "en"
     ): Promise<unknown> {
         if (interaction.options.getSubcommandGroup(false)) {
@@ -271,7 +270,7 @@ export abstract class CommandHelper extends Manager {
      * @param language The locale of the user who attempted to run the subcommand. Defaults to English.
      */
     static runSlashSubcommandFromInteraction(
-        interaction: CommandInteraction,
+        interaction: ChatInputCommandInteraction,
         language: Language = "en"
     ): Promise<unknown> {
         return this.runSlashSubOrGroup(
@@ -289,7 +288,7 @@ export abstract class CommandHelper extends Manager {
      * @param interaction The interaction that triggered the command.
      */
     static runSlashSubcommandGroup(
-        interaction: CommandInteraction,
+        interaction: ChatInputCommandInteraction,
         language: Language = "en"
     ): Promise<unknown> {
         return this.runSlashSubOrGroup(
@@ -306,7 +305,7 @@ export abstract class CommandHelper extends Manager {
      * @param subcommand The subcommand to run.
      */
     private static runSlashSubOrGroup(
-        interaction: CommandInteraction | SelectMenuInteraction,
+        interaction: ChatInputCommandInteraction | SelectMenuInteraction,
         subcommand?: SlashSubcommand,
         language: Language = "en"
     ): Promise<unknown> {
@@ -350,7 +349,7 @@ export abstract class CommandHelper extends Manager {
      * @returns The subcommand, if found.
      */
     static getSlashSubcommand(
-        interaction: CommandInteraction
+        interaction: ChatInputCommandInteraction
     ): SlashSubcommand | undefined {
         if (!interaction.options.getSubcommand(false)) {
             return;
@@ -376,7 +375,7 @@ export abstract class CommandHelper extends Manager {
      * @returns The subcommand group, if found.
      */
     static getSlashSubcommandGroup(
-        interaction: CommandInteraction
+        interaction: ChatInputCommandInteraction
     ): SlashSubcommand | undefined {
         if (!interaction.options.getSubcommandGroup(false)) {
             return;
@@ -400,15 +399,15 @@ export abstract class CommandHelper extends Manager {
      * @returns Whether the interaction can run the command.
      */
     static userFulfillsCommandPermission(
-        interaction: BaseCommandInteraction | MessageComponentInteraction,
+        interaction: BaseInteraction,
         permissions: Permission[]
     ): boolean {
         // Allow bot owner to override all permission requirement
-        if (permissions.some((v) => v === "BOT_OWNER")) {
+        if (permissions.some((v) => v === "BotOwner")) {
             return this.isExecutedByBotOwner(interaction);
         }
 
-        if (permissions.some((v) => v === "SPECIAL")) {
+        if (permissions.some((v) => v === "Special")) {
             return true;
         }
 
@@ -427,7 +426,7 @@ export abstract class CommandHelper extends Manager {
      * @returns Whether the guild member has all the specified permissions.
      */
     static checkPermission(
-        interaction: BaseCommandInteraction | MessageComponentInteraction,
+        interaction: BaseInteraction,
         ...permissions: PermissionResolvable[]
     ): boolean {
         if (permissions.length === 0) {
@@ -438,15 +437,11 @@ export abstract class CommandHelper extends Manager {
             interaction.member
         );
 
-        if (!member || interaction.channel instanceof DMChannel) {
+        if (!member || interaction.channel?.type === ChannelType.DM) {
             return false;
         }
 
-        return (
-            (<TextChannel | null>interaction.channel)
-                ?.permissionsFor(member)
-                .has(permissions) ?? false
-        );
+        return interaction.memberPermissions?.has(permissions) ?? false;
     }
 
     /**
@@ -457,14 +452,14 @@ export abstract class CommandHelper extends Manager {
      * @returns Whether the command can be executed in the scope.
      */
     static isCommandExecutableInScope(
-        interaction: CommandInteraction,
+        interaction: BaseInteraction,
         scope: CommandScope
     ): boolean {
         switch (scope) {
             case "DM":
-                return interaction.channel instanceof DMChannel;
+                return interaction.channel?.type === ChannelType.DM;
             case "GUILD_CHANNEL":
-                return !(interaction.channel instanceof DMChannel);
+                return interaction.channel?.type !== ChannelType.DM;
             default:
                 return true;
         }
@@ -511,29 +506,29 @@ export abstract class CommandHelper extends Manager {
      * @param type The command option type to convert.
      * @returns The command option type's string representation.
      */
-    static optionTypeToString(type: ApplicationCommandOptionTypes): string {
+    static optionTypeToString(type: ApplicationCommandOptionType): string {
         switch (type) {
-            case ApplicationCommandOptionTypes.BOOLEAN:
+            case ApplicationCommandOptionType.Boolean:
                 return "Boolean";
-            case ApplicationCommandOptionTypes.CHANNEL:
+            case ApplicationCommandOptionType.Channel:
                 return "Channel";
-            case ApplicationCommandOptionTypes.INTEGER:
+            case ApplicationCommandOptionType.Integer:
                 return "Integer";
-            case ApplicationCommandOptionTypes.MENTIONABLE:
+            case ApplicationCommandOptionType.Mentionable:
                 return "Mentionable";
-            case ApplicationCommandOptionTypes.NUMBER:
+            case ApplicationCommandOptionType.Number:
                 return "Number";
-            case ApplicationCommandOptionTypes.ROLE:
+            case ApplicationCommandOptionType.Role:
                 return "Role";
-            case ApplicationCommandOptionTypes.STRING:
+            case ApplicationCommandOptionType.String:
                 return "String";
-            case ApplicationCommandOptionTypes.SUB_COMMAND:
+            case ApplicationCommandOptionType.Subcommand:
                 return "Subcommand";
-            case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP:
+            case ApplicationCommandOptionType.SubcommandGroup:
                 return "Subcommand Group";
-            case ApplicationCommandOptionTypes.USER:
+            case ApplicationCommandOptionType.User:
                 return "User";
-            case ApplicationCommandOptionTypes.ATTACHMENT:
+            case ApplicationCommandOptionType.Attachment:
                 return "Attachment";
         }
     }
@@ -573,7 +568,7 @@ export abstract class CommandHelper extends Manager {
      * @param interaction The interaction.
      * @returns Whether the command is executed by a bot owner.
      */
-    static isExecutedByBotOwner(interaction: Interaction): boolean {
+    static isExecutedByBotOwner(interaction: BaseInteraction): boolean {
         return Config.botOwners.includes(interaction.user.id);
     }
 

@@ -1,11 +1,11 @@
 import {
     GuildMember,
-    MessageEmbed,
-    Permissions,
+    EmbedBuilder,
     TextChannel,
+    PermissionsBitField,
 } from "discord.js";
 import { Config } from "@alice-core/Config";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { Constants } from "@alice-core/Constants";
@@ -46,7 +46,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (toReport.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+    if (
+        toReport.user.bot ||
+        toReport.permissions.has(PermissionsBitField.Flags.Administrator)
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("userNotReportable")
@@ -64,14 +67,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason")!;
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: interaction.member.displayColor,
         timestamp: true,
     });
 
     embed
-        .setThumbnail(toReport.user.avatarURL({ dynamic: true })!)
+        .setThumbnail(toReport.user.avatarURL({ extension: "gif" })!)
         .setDescription(
             `**${localization.getTranslation("offender")}**: ${toReport} (${
                 toReport.id
@@ -97,7 +100,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     });
 
-    const replyEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const replyEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: "#527ea3",
         timestamp: true,
     });
@@ -136,13 +139,13 @@ export const config: SlashCommand["config"] = {
         {
             name: "user",
             required: true,
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description: "The user to report.",
         },
         {
             name: "reason",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The reason for reporting. Maximum length is 1500 characters.",
         },

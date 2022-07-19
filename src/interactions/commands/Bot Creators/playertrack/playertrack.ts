@@ -1,5 +1,5 @@
 import { Constants } from "@alice-core/Constants";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -41,26 +41,26 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "add",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Adds a player into the tracking list.",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the player.",
                 },
             ],
         },
         {
             name: "delete",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Deletes a player from the tracking list.",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the player.",
                 },
             ],
@@ -72,6 +72,6 @@ export const config: SlashCommand["config"] = {
             description: "will add uid 51076 into player tracking list.",
         },
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     scope: "ALL",
 };

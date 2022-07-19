@@ -3,7 +3,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MessageEmbed, MessageOptions } from "discord.js";
+import { EmbedBuilder, MessageOptions } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { DownloadlinkLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/downloadlink/DownloadlinkLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -46,9 +46,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         localization.language
     );
 
-    const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
+    const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
 
-    embed.spliceFields(0, embed.fields.length);
+    embed.spliceFields(0, embed.data.fields!.length);
 
     InteractionHelper.reply(interaction, embedOptions);
 };

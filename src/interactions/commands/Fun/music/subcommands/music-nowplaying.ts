@@ -4,7 +4,7 @@ import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -26,13 +26,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed =
+    const embed: EmbedBuilder =
         EmbedCreator.createMusicQueueEmbed(currentlyPlaying);
 
     embed
         .setAuthor({
             name: interaction.user.tag,
-            iconURL: interaction.user.avatarURL({ dynamic: true })!,
+            iconURL: interaction.user.avatarURL({ extension: "gif" })!,
         })
         .setColor((<GuildMember>interaction.member).displayColor);
 

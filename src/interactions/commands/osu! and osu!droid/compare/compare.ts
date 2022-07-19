@@ -2,13 +2,13 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { GuildMember, EmbedBuilder, Snowflake } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { CompareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/compare/CompareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -119,7 +119,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
+    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
@@ -143,17 +143,17 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "user",
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description: "The Discord user to compare.",
         },
         {
             name: "uid",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description: "The uid of the player.",
         },
         {
             name: "username",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The username of the player.",
         },
     ],

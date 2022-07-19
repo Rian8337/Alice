@@ -42,6 +42,6 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for checking if the user who left the main server is a member of a clan and kicks the user from the clan.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

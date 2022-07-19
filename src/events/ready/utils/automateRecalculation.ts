@@ -128,6 +128,6 @@ export const run: EventUtil["run"] = async (client) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for resuming ongoing calculation.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

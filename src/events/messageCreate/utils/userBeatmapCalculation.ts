@@ -8,7 +8,7 @@ import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCa
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { Message, MessageEmbed, MessageOptions } from "discord.js";
+import { Message, EmbedBuilder, MessageOptions, ChannelType } from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapInfo, MapStats } from "@rian8337/osu-base";
@@ -28,7 +28,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
     const localization: UserBeatmapCalculationLocalization =
         new UserBeatmapCalculationLocalization(
-            message.channel.type === "DM"
+            message.channel.type === ChannelType.DM
                 ? await CommandHelper.getLocale(message.author)
                 : await CommandHelper.getLocale(message.channel.id)
         );
@@ -157,13 +157,15 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             // Empty files first, we will reenter all attachments later
             embedOptions.files = [];
 
-            const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
+            const embed: EmbedBuilder = EmbedBuilder.from(
+                embedOptions.embeds![0]
+            );
 
             const stats: MapStats =
                 calcParams.customStatistics ?? new MapStats();
 
             embed
-                .spliceFields(0, embed.fields.length)
+                .spliceFields(0, embed.data.fields!.length)
                 .setTitle(
                     `${firstBeatmap.artist} - ${firstBeatmap.title} by ${firstBeatmap.creator}`
                 )
@@ -178,7 +180,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 );
 
             for (const beatmapInfo of beatmapInformations) {
-                if (embed.fields.length === 3) {
+                if (embed.data.fields!.length === 3) {
                     break;
                 }
 
@@ -202,8 +204,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     continue;
                 }
 
-                embed.addField(
-                    `__${
+                embed.addFields({
+                    name: `__${
                         beatmapInfo.version
                     }__ (${droidCalcResult.result.difficultyCalculator.total.toFixed(
                         2
@@ -212,13 +214,14 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     } | ${osuCalcResult.result.difficultyCalculator.total.toFixed(
                         2
                     )} ${Symbols.star})`,
-                    `${beatmapInfo.showStatistics(2, stats)}\n` +
+                    value:
+                        `${beatmapInfo.showStatistics(2, stats)}\n` +
                         `${beatmapInfo.showStatistics(3, stats)}\n` +
                         `${beatmapInfo.showStatistics(4, stats)}\n` +
                         `**${droidCalcResult.result.total.toFixed(
                             2
-                        )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`
-                );
+                        )}**dpp - ${osuCalcResult.result.total.toFixed(2)}pp`,
+                });
             }
 
             message.channel.send(embedOptions);
@@ -228,6 +231,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for calculating beatmaps that are sent by users.",
-    togglePermissions: ["MANAGE_CHANNELS"],
+    togglePermissions: ["ManageChannels"],
     toggleScope: ["GLOBAL", "GUILD", "CHANNEL"],
 };

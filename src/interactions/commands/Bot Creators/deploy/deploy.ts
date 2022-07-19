@@ -1,7 +1,8 @@
 import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    PermissionsString,
+} from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -20,11 +21,11 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
 
     let data: ApplicationCommandData;
 
-    const type: ApplicationCommandTypes =
+    const type: ApplicationCommandType =
         interaction.options.getInteger("type") ??
-        ApplicationCommandTypes.CHAT_INPUT;
+        ApplicationCommandType.ChatInput;
 
-    if (type === ApplicationCommandTypes.CHAT_INPUT) {
+    if (type === ApplicationCommandType.ChatInput) {
         const command: SlashCommand | undefined =
             client.interactions.chatInput.get(commandName);
 
@@ -40,10 +41,19 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             name: command.config.name,
             description: command.config.description,
             options: command.config.options,
+            dmPermission:
+                command.config.scope === "DM" || command.config.scope === "ALL",
+            defaultMemberPermissions:
+                command.config.permissions.length > 0 &&
+                command.config.scope === "GUILD_CHANNEL" &&
+                (command.config.permissions.includes("BotOwner") ||
+                    command.config.permissions.includes("Special"))
+                    ? []
+                    : <PermissionsString[]>command.config.permissions,
         };
     } else {
         const command: ContextMenuCommand | undefined = (
-            type === ApplicationCommandTypes.MESSAGE
+            type === ApplicationCommandType.Message
                 ? client.interactions.contextMenu.message
                 : client.interactions.contextMenu.user
         ).get(commandName);
@@ -62,8 +72,6 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             type: type,
         };
     }
-
-    data.type ??= type;
 
     await (interaction.options.getBoolean("serveronly")
         ? interaction.guild!
@@ -87,31 +95,31 @@ export const config: SlashCommand["config"] = {
         {
             name: "command",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The command name.",
         },
         {
             name: "serveronly",
-            type: ApplicationCommandOptionTypes.BOOLEAN,
+            type: ApplicationCommandOptionType.Boolean,
             description:
                 "Whether to only deploy the command in the server this command is executed in.",
         },
         {
             name: "type",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description: "The type of the command. Defaults to chat input.",
             choices: [
                 {
                     name: "Chat Input",
-                    value: ApplicationCommandTypes.CHAT_INPUT,
+                    value: ApplicationCommandType.ChatInput,
                 },
                 {
                     name: "User Context Menu",
-                    value: ApplicationCommandTypes.USER,
+                    value: ApplicationCommandType.User,
                 },
                 {
                     name: "Message Context Menu",
-                    value: ApplicationCommandTypes.MESSAGE,
+                    value: ApplicationCommandType.Message,
                 },
             ],
         },
@@ -144,7 +152,7 @@ export const config: SlashCommand["config"] = {
                 'will deploy the command with name "help" in debug server.',
         },
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     scope: "ALL",
     replyEphemeral: true,
 };

@@ -5,12 +5,12 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { CommandInteraction } from "discord.js";
 
-export const run: SlashSubcommandGroup["run"] = async (
-    _,
-    interaction: CommandInteraction<"cached">
-) => {
+export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
+
     const language: Language = await CommandHelper.getLocale(interaction);
 
     if (
@@ -30,6 +30,6 @@ export const run: SlashSubcommandGroup["run"] = async (
 };
 
 export const config: SlashSubcommandGroup["config"] = {
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
     replyEphemeral: true,
 };

@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -11,7 +11,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 import { rankedStatus, RequestResponse } from "@rian8337/osu-base";
 import { MapsearchLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapsearch/MapsearchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -83,7 +83,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
         footerText: localization.getTranslation("serviceProvider"),
@@ -98,7 +98,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
-        embed.spliceFields(0, embed.fields.length);
+        embed.spliceFields(0, embed.data.fields!.length);
 
         for (
             let i = 5 * (page - 1);
@@ -122,9 +122,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 }
             }
 
-            embed.addField(
-                `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`,
-                `**${localization.getTranslation(
+            embed.addFields({
+                name: `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`,
+                value: `**${localization.getTranslation(
                     "download"
                 )}**: [osu!](https://osu.ppy.sh/d/${
                     d.sid
@@ -152,8 +152,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     Symbols.heart
                 } **${d.favourite_count.toLocaleString(BCP47)}** - ${
                     Symbols.playButton
-                } **${d.play_count.toLocaleString(BCP47)}**`
-            );
+                } **${d.play_count.toLocaleString(BCP47)}**`,
+            });
         }
     };
 
@@ -176,79 +176,79 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "keyword",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The keyword to search for.",
         },
         {
             name: "minstars",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum star rating to search for.",
         },
         {
             name: "maxstars",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum star rating to search for.",
         },
         {
             name: "mincs",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum CS (Circle Size) to search for.",
         },
         {
             name: "maxcs",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum CS (Circle Size) to search for.",
         },
         {
             name: "minar",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum AR (Approach Rate) to search for.",
         },
         {
             name: "maxar",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum AR (Approach Rate) to search for.",
         },
         {
             name: "minod",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum OD (Overall Difficulty) to search for.",
         },
         {
             name: "maxod",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum OD (Overall Difficulty) to search for.",
         },
         {
             name: "minhp",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum HP (health drain rate) to search for.",
         },
         {
             name: "maxhp",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum HP (health drain rate) to search for.",
         },
         {
             name: "minduration",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The minimum duration to search for, in time format (e.g. 6:01:24:33 or 2d14h55m34s).",
         },
         {
             name: "maxduration",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The maximum duration to search for, in time format (e.g. 6:01:24:33 or 2d14h55m34s).",
         },
         {
             name: "minbpm",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The minimum BPM to search for.",
         },
         {
             name: "maxbpm",
-            type: ApplicationCommandOptionTypes.NUMBER,
+            type: ApplicationCommandOptionType.Number,
             description: "The maximum BPM to search for.",
         },
     ],

@@ -1,6 +1,6 @@
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import {
-    Interaction,
-    InteractionResponseFields,
+    InteractionResponse,
     Message,
     MessageComponentInteraction,
     WebhookEditMessageOptions,
@@ -17,9 +17,9 @@ export abstract class InteractionHelper {
      * @param ephemeral Whether the reply should be ephemeral. Defaults to the interaction's `ephemeral` property.
      */
     static async deferReply(
-        interaction: Interaction & InteractionResponseFields,
+        interaction: RepliableInteraction,
         ephemeral?: boolean
-    ): Promise<void> {
+    ): Promise<InteractionResponse | void> {
         if (!interaction.deferred && !interaction.replied) {
             return interaction.deferReply({
                 ephemeral: ephemeral ?? interaction.ephemeral ?? false,
@@ -34,7 +34,7 @@ export abstract class InteractionHelper {
      */
     static async deferUpdate(
         interaction: MessageComponentInteraction
-    ): Promise<void> {
+    ): Promise<InteractionResponse | void> {
         if (!interaction.deferred && !interaction.replied) {
             return interaction.deferUpdate();
         }
@@ -48,7 +48,7 @@ export abstract class InteractionHelper {
      * @returns The response of the interaction.
      */
     static async reply(
-        interaction: Interaction & InteractionResponseFields,
+        interaction: RepliableInteraction,
         reply: WebhookEditMessageOptions
     ): Promise<Message> {
         // Reset message components
@@ -57,9 +57,9 @@ export abstract class InteractionHelper {
         let message: Message;
 
         if (interaction.deferred || interaction.replied) {
-            message = <Message>await interaction.editReply(reply);
+            message = await interaction.editReply(reply);
         } else {
-            message = <Message>await interaction.reply({
+            message = await interaction.reply({
                 ...reply,
                 fetchReply: true,
                 ephemeral: interaction.ephemeral ?? false,
@@ -86,9 +86,9 @@ export abstract class InteractionHelper {
         let message: Message;
 
         if (interaction.deferred || interaction.replied) {
-            message = <Message>await interaction.editReply(response);
+            message = await interaction.editReply(response);
         } else {
-            message = <Message>await interaction.update({
+            message = await interaction.update({
                 ...response,
                 fetchReply: true,
             });

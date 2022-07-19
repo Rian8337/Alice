@@ -74,6 +74,6 @@ export const run: EventUtil["run"] = async () => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for occasionally updating ranks of clan members.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

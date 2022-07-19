@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageAttachment, Role } from "discord.js";
+import { Attachment, Role } from "discord.js";
 import { Precision } from "@rian8337/osu-base";
 import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -13,8 +13,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    const attachment: MessageAttachment | null =
-        interaction.options.getAttachment("attachment", true);
+    const attachment: Attachment | null = interaction.options.getAttachment(
+        "attachment",
+        true
+    );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(

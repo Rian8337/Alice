@@ -11,7 +11,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
-import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
+import { Collection, GuildMember, EmbedBuilder, User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
@@ -50,7 +50,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });
@@ -62,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 user.tag
             )
         )
-        .setThumbnail(user.avatarURL({ dynamic: true })!)
+        .setThumbnail(user.avatarURL({ extension: "gif" })!)
         .setDescription(
             `**${localization.getTranslation("totalActivePoints")}**: ${warnings
                 .filter((v) => v.isActive)
@@ -86,11 +86,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ) {
             const warning: Warning = warnings.at(i)!;
 
-            embed.addField(
-                `${i + 1}. ID ${warning.guildSpecificId}`,
-                `**${localization.getTranslation("warningIssuer")}**: <@${
-                    warning.issuerId
-                }> (${warning.issuerId})\n` +
+            embed.addFields({
+                name: `${i + 1}. ID ${warning.guildSpecificId}`,
+                value:
+                    `**${localization.getTranslation("warningIssuer")}**: <@${
+                        warning.issuerId
+                    }> (${warning.issuerId})\n` +
                     `**${localization.getTranslation("channel")}**: <#${
                         warning.channelId
                     }> (${warning.channelId})\n` +
@@ -105,8 +106,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     )}**: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.expirationDate * 1000),
                         localization.language
-                    )}`
-            );
+                    )}`,
+            });
         }
     };
 

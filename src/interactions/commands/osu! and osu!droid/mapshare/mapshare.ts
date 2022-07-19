@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,13 +15,13 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "accept",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Accepts a map sharing submission.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The beatmap ID or link that the submission is sharing.",
                 },
@@ -29,26 +29,26 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "ban",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Bans a user from submitting a map share submission.",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to ban.",
                 },
             ],
         },
         {
             name: "deny",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Denies a map sharing submission.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The beatmap ID or link that the submission is sharing.",
                 },
@@ -56,13 +56,13 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "list",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Lists all map sharing submissions with the specified status.",
             options: [
                 {
                     name: "status",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The status of submissions to list. Defaults to pending.",
                     choices: [
@@ -86,21 +86,21 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The page to view. Defaults to 1.",
                 },
             ],
         },
         {
             name: "post",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Posts a map sharing submission to the map share channel.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The beatmap ID or link that the submission is sharing.",
                 },
@@ -108,32 +108,32 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "submit",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Submits a new map sharing submission.",
         },
         {
             name: "unban",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Unbans a user from submitting a map share submission.",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to unban.",
                 },
             ],
         },
         {
             name: "view",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Views a map sharing submission.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The beatmap ID or link that the submission is sharing.",
                 },

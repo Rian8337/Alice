@@ -3,9 +3,10 @@ import {
     GuildAuditLogsEntry,
     GuildBan,
     GuildChannel,
-    MessageEmbed,
+    EmbedBuilder,
     TextChannel,
     User,
+    AuditLogEvent,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -13,19 +14,14 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 
 export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
-    const auditLogEntries: GuildAuditLogs<"MEMBER_BAN_REMOVE"> =
+    const auditLogEntries: GuildAuditLogs<AuditLogEvent.MemberBanRemove> =
         await guildBan.guild.fetchAuditLogs({
             limit: 1,
-            type: "MEMBER_BAN_REMOVE",
+            type: AuditLogEvent.MemberBanRemove,
         });
 
     const unbanLog:
-        | GuildAuditLogsEntry<
-              "MEMBER_BAN_REMOVE",
-              "MEMBER_BAN_REMOVE",
-              "CREATE",
-              "USER"
-          >
+        | GuildAuditLogsEntry<AuditLogEvent.MemberBanRemove, "Create", "User">
         | undefined = auditLogEntries.entries.first();
 
     if (!unbanLog) {
@@ -54,22 +50,22 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         timestamp: true,
     });
 
     embed
         .setTitle("Unban Executed")
-        .setThumbnail(guildBan.user.avatarURL({ dynamic: true })!)
-        .addField(
-            `Unbanned user: ${guildBan.user.tag}`,
-            `User ID: ${guildBan.user.id}`
-        );
+        .setThumbnail(guildBan.user.avatarURL({ extension: "gif" })!)
+        .addFields({
+            name: `Unbanned user: ${guildBan.user.tag}`,
+            value: `User ID: ${guildBan.user.id}`,
+        });
 
     if (unbanLog.executor) {
         embed.setAuthor({
             name: unbanLog.executor.tag,
-            iconURL: unbanLog.executor.avatarURL({ dynamic: true })!,
+            iconURL: unbanLog.executor.avatarURL({ extension: "gif" })!,
         });
     }
 
@@ -78,6 +74,6 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for notifying about unban actions.",
-    togglePermissions: ["MANAGE_GUILD"],
+    togglePermissions: ["ManageGuild"],
     toggleScope: ["GLOBAL", "GUILD"],
 };

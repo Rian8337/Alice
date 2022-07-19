@@ -13,8 +13,6 @@ export interface OnButtonPageChange {
     (
         options: InteractionReplyOptions,
         page: number,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ...args: any[]
-    ): // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Promise<any>;
+        ...args: unknown[]
+    ): Promise<void>;
 }

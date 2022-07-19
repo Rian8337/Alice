@@ -1,13 +1,13 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GuildEmoji, GuildMember, MessageEmbed } from "discord.js";
+import { GuildEmoji, GuildMember, EmbedBuilder } from "discord.js";
 import { EmojistatisticsLocalization } from "@alice-localization/interactions/commands/Tools/emojistatistics/EmojistatisticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
@@ -84,7 +84,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             : b.averagePerMonth - a.averagePerMonth;
     });
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: (<GuildMember>interaction.member).displayColor,
     });
 
@@ -94,7 +94,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation("emojiStatisticsForServer"),
                 interaction.guild!.name
             ),
-            iconURL: interaction.guild!.iconURL({ dynamic: true })!,
+            iconURL: interaction.guild!.iconURL({ extension: "gif" })!,
         })
         .setDescription(
             `**${localization.getTranslation(
@@ -112,26 +112,27 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             i < Math.min(validEmojis.length, 5 + 5 * (page - 1));
             ++i
         ) {
-            embed.addField(
-                `${i + 1}.${validEmojis[i].emoji.name}`,
-                `**${localization.getTranslation("emoji")}**: ${
-                    validEmojis[i].emoji
-                } \n` +
+            const emoji = validEmojis[i];
+
+            embed.addFields({
+                name: `${i + 1}.${emoji.emoji.name}`,
+                value:
+                    `**${localization.getTranslation("emoji")}**: ${
+                        emoji.emoji
+                    } \n` +
                     `**${localization.getTranslation(
                         "dateCreation"
                     )}**: ${DateTimeFormatHelper.dateToLocaleString(
-                        validEmojis[i].emoji.createdAt,
+                        emoji.emoji.createdAt,
                         localization.language
                     )} \n` +
                     `**${localization.getTranslation(
                         "overallUsage"
-                    )}**: ${validEmojis[i].count.toLocaleString(BCP47)} \n` +
+                    )}**: ${emoji.count.toLocaleString(BCP47)} \n` +
                     `**${localization.getTranslation(
                         "averagePerMonthUsage"
-                    )}**: ${validEmojis[i].averagePerMonth.toLocaleString(
-                        BCP47
-                    )} `
-            );
+                    )}**: ${emoji.averagePerMonth.toLocaleString(BCP47)} `,
+            });
         }
     };
 
@@ -154,7 +155,7 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "sortoption",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "Whether to sort based on overall or average per month usage. Defaults to overall.",
             choices: [

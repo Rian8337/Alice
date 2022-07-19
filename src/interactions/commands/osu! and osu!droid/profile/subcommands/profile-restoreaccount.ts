@@ -11,7 +11,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { Collection, EmbedBuilder, GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -76,7 +76,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -96,15 +96,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     let i: number = 1;
 
     for (const credential of playerCredentials.values()) {
-        embed.addField(
-            i.toString(),
-            `**${localization.getTranslation("username")}**: \`${
-                credential.Username
-            }\`\n` +
+        embed.addFields({
+            name: i.toString(),
+            value:
+                `**${localization.getTranslation("username")}**: \`${
+                    credential.Username
+                }\`\n` +
                 `**${localization.getTranslation("password")}**: \`${
                     credential.Password
-                }\``
-        );
+                }\``,
+        });
 
         ++i;
     }

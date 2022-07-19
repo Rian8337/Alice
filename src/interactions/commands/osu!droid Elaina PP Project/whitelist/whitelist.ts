@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -19,12 +19,12 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "check",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Checks if a beatmap is whitelisted.",
             options: [
                 {
                     name: "beatmap",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The beatmap ID or link. Defaults the latest beatmap cache from the channel (if any).",
                 },
@@ -32,22 +32,22 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "search",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Tools for browsing the list of whitelisted beatmaps.",
             options: [
                 {
                     name: "search",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Searches for whitelisted beatmaps.",
                     options: [
                         {
                             name: "query",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The query to search for.",
                         },
                         {
                             name: "page",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description: "The page to search for.",
                             minValue: 1,
                         },
@@ -55,7 +55,7 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "filters",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Lists available filters of the whitelist search query.",
                 },
@@ -63,13 +63,13 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "unwhitelist",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Unwhitelist a beatmap or beatmapset.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The beatmap ID, beatmap link, or beatmapset link.",
                 },
@@ -77,13 +77,13 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "whitelist",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Whitelist a beatmap or beatmapset.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The beatmap ID, beatmap link, or beatmapset link.",
                 },
@@ -136,6 +136,6 @@ export const config: SlashCommand["config"] = {
                 "will whitelist/unwhitelist the linked beatmap/beatmapset (the link contains both beatmap ID and beatmapset ID), depending on the action taken by the user.",
         },
     ],
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
     scope: "GUILD_CHANNEL",
 };

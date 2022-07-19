@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -116,7 +116,7 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "page",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "The page to display, ranging from 1 to 10. Defaults to 1.",
             minValue: 1,
@@ -124,17 +124,17 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "user",
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description: "The Discord user to show.",
         },
         {
             name: "uid",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description: "The uid of the player.",
         },
         {
             name: "username",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The username of the player.",
         },
     ],

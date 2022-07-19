@@ -28,9 +28,9 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import {
     Collection,
     GuildMember,
-    MessageAttachment,
-    MessageEmbed,
+    EmbedBuilder,
     Snowflake,
+    Attachment,
 } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     await InteractionHelper.deferReply(interaction);
 
-    const replay: MessageAttachment = interaction.options.getAttachment(
+    const replay: Attachment = interaction.options.getAttachment(
         "replay",
         true
     );
@@ -172,7 +172,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     const staffMembers: Collection<Snowflake, GuildMember> =
         await PermissionHelper.getMainGuildStaffMembers(client);
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });

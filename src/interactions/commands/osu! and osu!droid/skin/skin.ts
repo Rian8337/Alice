@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -16,25 +16,25 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "set",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Set your skin.",
             options: [
                 {
                     name: "url",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The URL to the skin.",
                 },
             ],
         },
         {
             name: "view",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View a user's skin.",
             options: [
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to view. Defaults to yourself",
                 },
             ],

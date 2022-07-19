@@ -81,6 +81,6 @@ export const run: EventUtil["run"] = async (client) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for tracking daily and weekly challenges.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

@@ -42,7 +42,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
-        command.config.permissions.some((v) => v === "BOT_OWNER")
+        command.config.permissions.some((v) => v === "BotOwner")
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -57,7 +57,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         case "channel":
             if (
                 !CommandHelper.userFulfillsCommandPermission(interaction, [
-                    "MANAGE_CHANNELS",
+                    "ManageChannels",
                 ])
             ) {
                 return InteractionHelper.reply(interaction, {
@@ -80,7 +80,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         case "guild":
             if (
                 !CommandHelper.userFulfillsCommandPermission(interaction, [
-                    "MANAGE_GUILD",
+                    "ManageGuild",
                 ])
             ) {
                 return InteractionHelper.reply(interaction, {

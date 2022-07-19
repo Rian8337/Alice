@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EightBallResponseType } from "@alice-enums/utils/EightBallResponseType";
@@ -66,7 +66,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         })
     ).first()!;
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: message.author,
         color: message.member?.displayColor,
     });
@@ -106,6 +106,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 export const config: EventUtil["config"] = {
     description:
         'Responsible for responding to questions prefixed with "Alice, ".',
-    togglePermissions: ["MANAGE_CHANNELS"],
+    togglePermissions: ["ManageChannels"],
     toggleScope: ["GLOBAL", "GUILD", "CHANNEL"],
 };

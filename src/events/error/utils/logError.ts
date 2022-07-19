@@ -1,5 +1,5 @@
 import { EventUtil } from "structures/core/EventUtil";
-import { MessageAttachment, TextChannel } from "discord.js";
+import { AttachmentBuilder, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client, error: Error) => {
     const errorLogChannel: TextChannel = <TextChannel>(
@@ -12,9 +12,9 @@ export const run: EventUtil["run"] = async (client, error: Error) => {
         return;
     }
 
-    const attachment: MessageAttachment = new MessageAttachment(
-        Buffer.from(<string>error.stack),
-        "stack.txt"
+    const attachment: AttachmentBuilder = new AttachmentBuilder(
+        Buffer.from(error.stack!),
+        { name: "stack.txt" }
     );
 
     errorLogChannel.send({
@@ -27,6 +27,6 @@ export const run: EventUtil["run"] = async (client, error: Error) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for logging errors to the error log channel.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

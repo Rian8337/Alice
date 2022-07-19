@@ -25,7 +25,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (
                 !interaction.inCachedGuild() ||
                 !CommandHelper.userFulfillsCommandPermission(interaction, [
-                    "MANAGE_GUILD",
+                    "ManageGuild",
                 ])
             ) {
                 return InteractionHelper.reply(interaction, {
@@ -48,7 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (
                 !interaction.inCachedGuild() ||
                 !CommandHelper.userFulfillsCommandPermission(interaction, [
-                    "MANAGE_CHANNELS",
+                    "ManageChannels",
                 ])
             ) {
                 return InteractionHelper.reply(interaction, {

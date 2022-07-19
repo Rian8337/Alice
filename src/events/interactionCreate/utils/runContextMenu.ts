@@ -7,8 +7,8 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import {
+    BaseInteraction,
     DMChannel,
-    Interaction,
     NewsChannel,
     TextChannel,
     ThreadChannel,
@@ -16,9 +16,12 @@ import {
 
 export const run: EventUtil["run"] = async (
     client,
-    interaction: Interaction
+    interaction: BaseInteraction
 ) => {
-    if (!interaction.isContextMenu()) {
+    if (
+        !interaction.isUserContextMenuCommand() &&
+        !interaction.isMessageContextMenuCommand()
+    ) {
         return;
     }
 
@@ -32,31 +35,35 @@ export const run: EventUtil["run"] = async (
         CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("debugModeActive")
             ),
             ephemeral: true,
         });
+
+        return;
     }
 
     const command: ContextMenuCommand | undefined = (
-        interaction.isMessageContextMenu()
+        interaction.isMessageContextMenuCommand()
             ? client.interactions.contextMenu.message
             : client.interactions.contextMenu.user
     ).get(interaction.commandName);
 
     if (!command) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotFound")
             ),
         });
+
+        return;
     }
 
     // Check for maintenance
     if (Config.maintenance && !botOwnerExecution) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 StringHelper.formatString(
                     localization.getTranslation("maintenanceMode"),
@@ -65,6 +72,8 @@ export const run: EventUtil["run"] = async (
             ),
             ephemeral: true,
         });
+
+        return;
     }
 
     // Log used command

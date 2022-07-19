@@ -50,6 +50,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for linking osu!droid profile if one is sent.",
-    togglePermissions: ["MANAGE_CHANNELS"],
+    togglePermissions: ["ManageChannels"],
     toggleScope: ["GLOBAL", "GUILD", "CHANNEL"],
 };

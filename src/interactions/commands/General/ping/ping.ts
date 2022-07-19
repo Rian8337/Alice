@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -39,28 +39,29 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         ),
     ]);
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    embed
-        .addField(
-            localization.getTranslation("discordWs"),
-            `${Math.abs(client.ws.ping)}ms`
-        )
-        .addField(
-            localization.getTranslation("droidServer"),
-            `${Math.round(pings[0])}ms`
-        )
-        .addField(
-            localization.getTranslation("elainaDb"),
-            `${Math.round(pings[1])}ms`
-        )
-        .addField(
-            localization.getTranslation("aliceDb"),
-            `${Math.round(pings[2])}ms`
-        );
+    embed.addFields(
+        {
+            name: localization.getTranslation("discordWs"),
+            value: `${Math.abs(client.ws.ping)}ms`,
+        },
+        {
+            name: localization.getTranslation("droidServer"),
+            value: `${Math.round(pings[0])}ms`,
+        },
+        {
+            name: localization.getTranslation("elainaDb"),
+            value: `${Math.round(pings[1])}ms`,
+        },
+        {
+            name: localization.getTranslation("aliceDb"),
+            value: `${Math.round(pings[2])}ms`,
+        }
+    );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

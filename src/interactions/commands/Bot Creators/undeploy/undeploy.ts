@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -56,12 +56,12 @@ export const config: SlashCommand["config"] = {
         {
             name: "command",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The command name.",
         },
         {
             name: "serveronly",
-            type: ApplicationCommandOptionTypes.BOOLEAN,
+            type: ApplicationCommandOptionType.Boolean,
             description:
                 "Whether to only undeploy the command in the server this command is executed in.",
         },
@@ -94,7 +94,7 @@ export const config: SlashCommand["config"] = {
                 'will undeploy the command with name "help" in debug server.',
         },
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     scope: "ALL",
     replyEphemeral: true,
 };

@@ -47,6 +47,6 @@ export const run: EventUtil["run"] = async (
 export const config: EventUtil["config"] = {
     description:
         "Responsible for reentering a user to a verification thread if they leave from it.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

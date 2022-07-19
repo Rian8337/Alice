@@ -4,7 +4,7 @@ import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -43,7 +43,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createMatchSummaryEmbed(match);
+    const embed: EmbedBuilder = EmbedCreator.createMatchSummaryEmbed(match);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

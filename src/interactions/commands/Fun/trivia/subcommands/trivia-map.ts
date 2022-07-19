@@ -8,11 +8,16 @@ import {
     Collection,
     GuildMember,
     Message,
-    MessageActionRow,
-    MessageButton,
-    MessageEmbed,
+    EmbedBuilder,
     Snowflake,
-    TextInputComponent,
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder,
+    APIButtonComponentWithCustomId,
+    ActionRow,
+    MessageActionRowComponent,
+    TextInputBuilder,
+    TextInputStyle,
 } from "discord.js";
 import {
     MapInfo,
@@ -27,7 +32,6 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
-import { TextInputStyles } from "discord.js/typings/enums";
 import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
@@ -135,8 +139,8 @@ function createEmbed(
     artist: string,
     title: string,
     localization: TriviaLocalization
-): MessageEmbed {
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+): EmbedBuilder {
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: "#fccf03",
     });
 
@@ -195,7 +199,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     CacheManager.mapTriviaAnswers.set(interaction.channelId, answerCollection);
 
-    const answersEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const answersEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -270,14 +274,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             titleBlankAmount
         );
 
-        const button: MessageButton = new MessageButton()
+        const button: ButtonBuilder = new ButtonBuilder()
             .setCustomId("answerMapTrivia")
-            .setStyle("PRIMARY")
+            .setStyle(ButtonStyle.Primary)
             .setLabel(localization.getTranslation("answerQuestion"))
             .setEmoji(Symbols.memo);
 
-        const component: MessageActionRow =
-            new MessageActionRow().addComponents(button);
+        const component: ActionRowBuilder<ButtonBuilder> =
+            new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
         const message: Message = await interaction.channel!.send({
             content: MessageCreator.createWarn(
@@ -389,17 +393,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const { collector } = InteractionCollectorCreator.createButtonCollector(
             message,
             45,
-            (i) => button.customId === i.customId,
+            (i) =>
+                (<APIButtonComponentWithCustomId>button.data).custom_id ===
+                i.customId,
             (m) => {
-                const row: MessageActionRow | undefined = m.components.find(
-                    (c) => c.components.length === 1
-                );
+                const row: ActionRow<MessageActionRowComponent> | undefined =
+                    m.components.find((c) => c.components.length === 1);
 
                 if (!row) {
                     return false;
                 }
 
-                return row.components[0].customId === button.customId;
+                return (
+                    row.components[0].customId ===
+                    (<APIButtonComponentWithCustomId>button.data).custom_id
+                );
             }
         );
 
@@ -411,17 +419,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 const answer: TriviaMapCachedAnswer | undefined =
                     answerCollection.get(i.user.id);
 
-                const textInputComponents: TextInputComponent[] = [];
+                const textInputBuilders: TextInputBuilder[] = [];
 
                 if (
                     answer?.answer.artist.toLowerCase() !==
                     beatmapInfo.artist.toLowerCase()
                 ) {
-                    textInputComponents.push(
-                        new TextInputComponent()
+                    textInputBuilders.push(
+                        new TextInputBuilder()
                             .setCustomId("artist")
                             .setRequired(true)
-                            .setStyle(TextInputStyles.SHORT)
+                            .setStyle(TextInputStyle.Short)
                             .setLabel(
                                 playerLocalization.getTranslation(
                                     "answerModalArtistLabel"
@@ -439,11 +447,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     answer?.answer.title.toLowerCase() !==
                     beatmapInfo.title.toLowerCase()
                 ) {
-                    textInputComponents.push(
-                        new TextInputComponent()
+                    textInputBuilders.push(
+                        new TextInputBuilder()
                             .setCustomId("title")
                             .setRequired(true)
-                            .setStyle(TextInputStyles.SHORT)
+                            .setStyle(TextInputStyle.Short)
                             .setLabel(
                                 playerLocalization.getTranslation(
                                     "answerModalTitleLabel"
@@ -457,7 +465,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     );
                 }
 
-                if (textInputComponents.length === 0) {
+                if (textInputBuilders.length === 0) {
                     i.ephemeral = true;
 
                     await InteractionHelper.reply(i, {
@@ -475,12 +483,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     i,
                     "trivia-map-answer",
                     playerLocalization.getTranslation("answerModalTitle"),
-                    ...textInputComponents
+                    ...textInputBuilders
                 );
             });
 
             collector.once("end", async () => {
-                const beatmapEmbed: MessageEmbed = createEmbed(
+                const beatmapEmbed: EmbedBuilder = createEmbed(
                     level,
                     beatmapInfo,
                     beatmapInfo.artist,
@@ -573,60 +581,71 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
                 if (correctAnswers.length > 0) {
                     answersEmbed
-                        .spliceFields(0, answersEmbed.fields.length)
+                        .spliceFields(0, answersEmbed.data.fields!.length)
                         .setDescription(
                             localization.getTranslation("correctAnswerGotten")
                         )
-                        .addField(
-                            localization.getTranslation(
-                                "answerEmbedArtistGuessTitle"
-                            ),
-                            correctAnswers
-                                .filter(
-                                    (v) =>
-                                        v.answer.artist === beatmapInfo.artist
-                                )
-                                .sort(
-                                    (a, b) =>
-                                        a.artistAnswerSubmissionTime -
-                                        b.artistAnswerSubmissionTime
-                                )
-                                .map(
-                                    (v) =>
-                                        `${v.user.username} - ${MathUtils.round(
-                                            (v.artistAnswerSubmissionTime -
-                                                message.createdTimestamp) /
-                                                1000,
-                                            3
-                                        )} s`
-                                )
-                                .join("\n") ||
-                                localization.getTranslation("none")
-                        )
-                        .addField(
-                            localization.getTranslation(
-                                "answerEmbedTitleGuessTitle"
-                            ),
-                            correctAnswers
-                                .filter(
-                                    (v) => v.answer.title === beatmapInfo.title
-                                )
-                                .sort(
-                                    (a, b) =>
-                                        a.titleAnswerSubmissionTime -
-                                        b.titleAnswerSubmissionTime
-                                )
-                                .map(
-                                    (v) =>
-                                        `${v.user.username} - ${MathUtils.round(
-                                            (v.titleAnswerSubmissionTime -
-                                                message.createdTimestamp) /
-                                                1000,
-                                            3
-                                        )} s`
-                                )
-                                .join("\n") ||
-                                localization.getTranslation("none")
+                        .addFields(
+                            {
+                                name: localization.getTranslation(
+                                    "answerEmbedArtistGuessTitle"
+                                ),
+                                value:
+                                    correctAnswers
+                                        .filter(
+                                            (v) =>
+                                                v.answer.artist ===
+                                                beatmapInfo.artist
+                                        )
+                                        .sort(
+                                            (a, b) =>
+                                                a.artistAnswerSubmissionTime -
+                                                b.artistAnswerSubmissionTime
+                                        )
+                                        .map(
+                                            (v) =>
+                                                `${
+                                                    v.user.username
+                                                } - ${MathUtils.round(
+                                                    (v.artistAnswerSubmissionTime -
+                                                        message.createdTimestamp) /
+                                                        1000,
+                                                    3
+                                                )} s`
+                                        )
+                                        .join("\n") ||
+                                    localization.getTranslation("none"),
+                            },
+                            {
+                                name: localization.getTranslation(
+                                    "answerEmbedTitleGuessTitle"
+                                ),
+                                value:
+                                    correctAnswers
+                                        .filter(
+                                            (v) =>
+                                                v.answer.title ===
+                                                beatmapInfo.title
+                                        )
+                                        .sort(
+                                            (a, b) =>
+                                                a.titleAnswerSubmissionTime -
+                                                b.titleAnswerSubmissionTime
+                                        )
+                                        .map(
+                                            (v) =>
+                                                `${
+                                                    v.user.username
+                                                } - ${MathUtils.round(
+                                                    (v.titleAnswerSubmissionTime -
+                                                        message.createdTimestamp) /
+                                                        1000,
+                                                    3
+                                                )} s`
+                                        )
+                                        .join("\n") ||
+                                    localization.getTranslation("none"),
+                            }
                         );
 
                     await message.reply({
@@ -660,7 +679,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return b.score - a.score;
     });
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: "#037ffc",
     });
 
@@ -686,15 +705,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 )}\n` +
                 `**${localization.getTranslation("level")}**: ${level}`
         )
-        .addField(
-            localization.getTranslation("leaderboard"),
-            [...statistics.values()]
-                .slice(0, 10)
-                .map(
-                    (v, i) => `**#${i + 1}**: <@${v.id}>: ${v.score.toFixed(2)}`
-                )
-                .join("\n") || localization.getTranslation("none")
-        );
+        .addFields({
+            name: localization.getTranslation("leaderboard"),
+            value:
+                [...statistics.values()]
+                    .slice(0, 10)
+                    .map(
+                        (v, i) =>
+                            `**#${i + 1}**: <@${v.id}>: ${v.score.toFixed(2)}`
+                    )
+                    .join("\n") || localization.getTranslation("none"),
+        });
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(

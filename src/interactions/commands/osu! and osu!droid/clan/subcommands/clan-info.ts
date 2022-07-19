@@ -20,9 +20,9 @@ import {
 import {
     GuildEmoji,
     GuildMember,
-    MessageAttachment,
-    MessageEmbed,
+    EmbedBuilder,
     MessageOptions,
+    AttachmentBuilder,
 } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
@@ -54,7 +54,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color:
             (await clan.getClanRole())?.color ??
@@ -67,38 +67,38 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    embed
-        .setTitle(clan.name)
-        .addField(
-            localization.getTranslation("clanLeader"),
-            `<@${clan.leader}> (${clan.leader})`,
-            true
-        )
-        .addField(
-            localization.getTranslation("clanPower"),
-            clan.power.toLocaleString(BCP47),
-            true
-        )
-        .addField(
-            localization.getTranslation("clanMemberCount"),
-            `${clan.member_list.size}/25`,
-            true
-        )
-        .addField(
-            localization.getTranslation("creationDate"),
-            DateTimeFormatHelper.dateToLocaleString(
+    embed.setTitle(clan.name).addFields(
+        {
+            name: localization.getTranslation("clanLeader"),
+            value: `<@${clan.leader}> (${clan.leader})`,
+            inline: true,
+        },
+        {
+            name: localization.getTranslation("clanPower"),
+            value: clan.power.toLocaleString(BCP47),
+            inline: true,
+        },
+        {
+            name: localization.getTranslation("clanMemberCount"),
+            value: `${clan.member_list.size}/25`,
+            inline: true,
+        },
+        {
+            name: localization.getTranslation("creationDate"),
+            value: DateTimeFormatHelper.dateToLocaleString(
                 new Date(clan.createdAt * 1000),
                 localization.language
             ),
-            true
-        )
-        .addField(
-            localization.getTranslation("clanTotalUpkeepEstimation"),
-            `${coinEmoji}${clan
+            inline: true,
+        },
+        {
+            name: localization.getTranslation("clanTotalUpkeepEstimation"),
+            value: `${coinEmoji}${clan
                 .calculateOverallUpkeep()
                 .toLocaleString(BCP47)} Alice coins`,
-            true
-        );
+            inline: true,
+        }
+    );
 
     if (clan.iconURL) {
         embed.setThumbnail(clan.iconURL);
@@ -131,9 +131,9 @@ export const run: SlashSubcommand<true>["run"] = async (
             250
         );
 
-        const attachment: MessageAttachment = new MessageAttachment(
+        const attachment: AttachmentBuilder = new AttachmentBuilder(
             canvas.toBuffer(),
-            "banner.png"
+            { name: "banner.png" }
         );
 
         embed.setImage("attachment://banner.png");

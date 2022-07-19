@@ -11,10 +11,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
 import {
+    Embed,
     Guild,
     GuildMember,
     Message,
-    MessageEmbed,
     SelectMenuInteraction,
 } from "discord.js";
 
@@ -109,7 +109,7 @@ export const run: MessageContextMenuCommand["run"] = async (
         member = await guild.members.fetch(interaction.targetMessage.author);
     }
 
-    const embed: MessageEmbed = interaction.targetMessage.embeds[0];
+    const embed: Embed = interaction.targetMessage.embeds[0];
 
     let loggedContent: string = embed.description!;
 

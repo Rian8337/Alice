@@ -6,7 +6,6 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo } from "@rian8337/osu-base";
-import { Message } from "discord.js";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     const localization: ViewBeatmapLeaderboardLocalization =
@@ -15,7 +14,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         );
 
     const beatmapId: number | null = BeatmapManager.getBeatmapIDFromMessage(
-        <Message>interaction.targetMessage
+        interaction.targetMessage
     );
 
     if (!beatmapId) {

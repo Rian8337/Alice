@@ -6,7 +6,7 @@ import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { EmbedBuilder, GuildMember, Snowflake } from "discord.js";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -102,9 +102,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             )}**`
     );
 
+    const entries: PrototypePPEntry[] = [...ppInfo.pp.values()];
+
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-            const pp: PrototypePPEntry | undefined = ppInfo!.pp.at(i);
+            const pp: PrototypePPEntry | undefined = entries[i];
 
             if (pp) {
                 let modstring = pp.mods ? `+${pp.mods}` : "";
@@ -133,16 +135,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     modstring += ")";
                 }
 
-                embed.addField(
-                    `${i + 1}. ${pp.title} ${modstring}`,
-                    `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
+                embed.addFields({
+                    name: `${i + 1}. ${pp.title} ${modstring}`,
+                    value: `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
                         pp.miss
                     } ❌ | **${pp.prevPP}** ⮕ **${pp.pp}** pp (${(
                         pp.pp - pp.prevPP
-                    ).toFixed(2)} pp)`
-                );
+                    ).toFixed(2)} pp)`,
+                });
             } else {
-                embed.addField(`${i + 1}. -`, "-");
+                embed.addFields({ name: `${i + 1}. -`, value: "-" });
             }
         }
     };

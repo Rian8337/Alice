@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -18,44 +18,44 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "bindinfo",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View your bind information or an osu!droid account.",
             options: [
                 {
                     name: "uid",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "username",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The username the osu!droid account.",
                 },
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The Discord user.",
                 },
             ],
         },
         {
             name: "customize",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Customize your profile card.",
             options: [
                 {
                     name: "background",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Customize your profile card's background.",
                 },
                 {
                     name: "badge",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Customize your profile card's badge.",
                 },
                 {
                     name: "infobox",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Customize your profile card's information box.",
                 },
@@ -63,34 +63,34 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "restoreaccount",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Gives the credentials of your binded osu!droid accounts that were deleted in the deletion incident.",
         },
         {
             name: "view",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "View your osu!droid account's profile or someone else's.",
             options: [
                 {
                     name: "uid",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "username",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The username the osu!droid account.",
                 },
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The Discord user.",
                 },
                 {
                     name: "type",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The type of the profile to show. Defaults to simplified.",
                     choices: [

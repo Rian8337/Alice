@@ -3,6 +3,7 @@ import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { Symbols } from "@alice-enums/utils/Symbols";
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
 import { PPEntry } from "@alice-structures/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
@@ -18,12 +19,7 @@ import {
     DroidPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
-import {
-    BaseCommandInteraction,
-    Collection,
-    MessageEmbed,
-    Snowflake,
-} from "discord.js";
+import { Collection, EmbedBuilder, Snowflake } from "discord.js";
 import { CommandHelper } from "./CommandHelper";
 
 /**
@@ -100,7 +96,7 @@ export abstract class DPPHelper {
      * @param page The initial page to display.
      */
     static async displayDPPList(
-        interaction: BaseCommandInteraction,
+        interaction: RepliableInteraction,
         playerInfo: UserBind | OldPPProfile,
         page: number
     ): Promise<void> {
@@ -109,7 +105,7 @@ export abstract class DPPHelper {
             : DatabaseManager.elainaDb.collections.userBind
         ).getUserDPPRank(playerInfo.pptotal);
 
-        const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(
+        const embed: EmbedBuilder = await EmbedCreator.createDPPListEmbed(
             interaction,
             playerInfo,
             ppRank,
@@ -149,16 +145,16 @@ export abstract class DPPHelper {
                         modstring += ")";
                     }
 
-                    embed.addField(
-                        `${i + 1}. ${pp.title} ${modstring}`,
-                        `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
+                    embed.addFields({
+                        name: `${i + 1}. ${pp.title} ${modstring}`,
+                        value: `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
                             pp.miss
                         } ${Symbols.missIcon} | __${pp.pp} pp__ (Net pp: ${(
                             pp.pp * Math.pow(0.95, i)
-                        ).toFixed(2)} pp)`
-                    );
+                        ).toFixed(2)} pp)`,
+                    });
                 } else {
-                    embed.addField(`${i + 1}. -`, "-");
+                    embed.addFields({ name: `${i + 1}. -`, value: "-" });
                 }
             }
         };

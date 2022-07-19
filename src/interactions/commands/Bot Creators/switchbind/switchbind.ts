@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
@@ -82,13 +82,13 @@ export const config: SlashCommand["config"] = {
         {
             name: "uid",
             required: true,
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description: "The uid of the osu!droid account to switch.",
         },
         {
             name: "user",
             required: true,
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description: "The user to switch the bind to.",
         },
     ],
@@ -124,6 +124,6 @@ export const config: SlashCommand["config"] = {
                 "will switch the osu!droid account with uid 5475's bind to the Discord account with ID 132783516176875520.",
         },
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     scope: "ALL",
 };

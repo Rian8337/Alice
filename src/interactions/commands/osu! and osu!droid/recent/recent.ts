@@ -2,13 +2,13 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { GuildMember, EmbedBuilder, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { RecentLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/recent/RecentLocalization";
@@ -118,7 +118,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         player.recentPlays[index - 1].hash
     );
 
-    const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
+    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
         player.recentPlays[index - 1],
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
@@ -142,22 +142,22 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "user",
-            type: ApplicationCommandOptionTypes.USER,
+            type: ApplicationCommandOptionType.User,
             description: "The Discord user to show.",
         },
         {
             name: "uid",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description: "The uid of the player.",
         },
         {
             name: "username",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The username of the player.",
         },
         {
             name: "index",
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description:
                 "The n-th play to show, ranging from 1 to 50. Defaults to the most recent play.",
             minValue: 1,

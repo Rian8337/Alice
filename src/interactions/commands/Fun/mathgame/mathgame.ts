@@ -3,7 +3,7 @@ import {
     CommandInteraction,
     GuildMember,
     MessageCollector,
-    MessageEmbed,
+    EmbedBuilder,
     Snowflake,
 } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
@@ -14,7 +14,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
@@ -77,7 +77,7 @@ function endGame(
         0
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: (<GuildMember | null>interaction.member)?.displayColor,
         timestamp: true,
     });
@@ -326,7 +326,7 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "mode",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             choices: [
                 {
                     name: "Singleplayer",

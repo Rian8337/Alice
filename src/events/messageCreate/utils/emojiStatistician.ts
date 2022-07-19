@@ -53,6 +53,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for collecting emoji usage data of a guild.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

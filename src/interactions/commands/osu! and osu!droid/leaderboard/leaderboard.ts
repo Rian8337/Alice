@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,71 +15,71 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "beatmap",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View a beatmap's leaderboard.",
             options: [
                 {
                     name: "beatmap",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The beatmap ID or link to view. If unspecified, will take the latest cached beatmap in the channel.",
                 },
                 {
                     name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The page of the leaderboard. Defaults to 1.",
                 },
             ],
         },
         {
             name: "dpp",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View the droid pp (dpp) live leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The page of the leaderboard. Defaults to 1.",
                 },
                 {
                     name: "clan",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The clan name to view the leaderboard from.",
                 },
             ],
         },
         {
             name: "global",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View the global score leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The page of the leaderboard. Defaults to 1.",
                 },
             ],
         },
         {
             name: "old",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View the droid pp (dpp) old leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The page of the leaderboard. Defaults to 1.",
                 },
             ],
         },
         {
             name: "prototype",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View the droid pp (dpp) prototype leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The page of the leaderboard. Defaults to 1.",
                 },
             ],

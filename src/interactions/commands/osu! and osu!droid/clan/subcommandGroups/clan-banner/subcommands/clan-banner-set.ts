@@ -6,14 +6,14 @@ import { ClanLocalization } from "@alice-localization/interactions/commands/osu!
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageAttachment } from "discord.js";
+import { Attachment } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
         await CommandHelper.getLocale(interaction)
     );
 
-    const attachment: MessageAttachment = interaction.options.getAttachment(
+    const attachment: Attachment = interaction.options.getAttachment(
         "attachment",
         true
     );

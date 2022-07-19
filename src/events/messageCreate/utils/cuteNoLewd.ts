@@ -60,6 +60,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for giving thumbs up and down reactions for pictures in #cute-no-lewd.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

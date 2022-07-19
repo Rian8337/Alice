@@ -1,6 +1,6 @@
 import {
     Message,
-    MessageEmbed,
+    EmbedBuilder,
     MessageMentions,
     Role,
     TextChannel,
@@ -33,34 +33,37 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
         mentionedUsers.push(user);
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: message.author,
         color: "#00cb16",
         footerText: `Author ID: ${message.author.id} | Channel ID: ${message.channel.id} | Message ID: ${message.id}`,
         timestamp: true,
     });
 
-    embed.addField(
-        "Channel",
-        `${message.channel} | [Go to Message](${message.url})`
-    );
+    embed.addFields({
+        name: "Channel",
+        value: `${message.channel} | [Go to Message](${message.url})`,
+    });
 
     if (mentionedUsers.length > 0) {
-        embed.addField(
-            "Mentioned Users",
-            mentionedUsers.map((v) => v.toString()).join(" ")
-        );
+        embed.addFields({
+            name: "Mentioned Users",
+            value: mentionedUsers.map((v) => v.toString()).join(" "),
+        });
     }
 
     if (mentionedRoles.length > 0) {
-        embed.addField(
-            "Mentioned Roles",
-            mentionedRoles.map((v) => v.toString()).join(" ")
-        );
+        embed.addFields({
+            name: "Mentioned Roles",
+            value: mentionedRoles.map((v) => v.toString()).join(" "),
+        });
     }
 
     if (message.content) {
-        embed.addField("Content", message.content.substring(0, 1025));
+        embed.addFields({
+            name: "Content",
+            value: message.content.substring(0, 1025),
+        });
     }
 
     (<TextChannel>await client.channels.fetch("683504788272578577")).send({
@@ -70,6 +73,6 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for logging mentions in main server.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

@@ -9,7 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -65,23 +65,31 @@ export const run: SlashSubcommand<true>["run"] = async (
         map.duration / (pick.includes("DT") ? 1.5 : 1)
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         timestamp: true,
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    embed
-        .setTitle(localization.getTranslation("roundInfo"))
-        .addField(localization.getTranslation("matchId"), match.matchid, true)
-        .addField(localization.getTranslation("map"), map.pickId, true)
-        .addField(
-            localization.getTranslation("mapLength"),
-            DateTimeFormatHelper.secondsToDHMS(
+    embed.setTitle(localization.getTranslation("roundInfo")).addFields(
+        {
+            name: localization.getTranslation("matchId"),
+            value: match.matchid,
+            inline: true,
+        },
+        {
+            name: localization.getTranslation("map"),
+            value: map.pickId,
+            inline: true,
+        },
+        {
+            name: localization.getTranslation("mapLength"),
+            value: DateTimeFormatHelper.secondsToDHMS(
                 timeLimit,
                 localization.language
             ),
-            true
-        );
+            inline: true,
+        }
+    );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

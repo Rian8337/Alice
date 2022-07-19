@@ -1,10 +1,10 @@
 import { ObjectId } from "bson";
 import {
+    AttachmentBuilder,
     Collection,
     Guild,
     GuildMember,
     Message,
-    MessageAttachment,
     Role,
     Snowflake,
     TextChannel,
@@ -456,7 +456,7 @@ export class Clan extends Manager {
             if (channel) {
                 await channel.permissionOverwrites.delete(this.leader);
                 await channel.permissionOverwrites.create(newLeader, {
-                    MANAGE_MESSAGES: true,
+                    ManageMessages: true,
                 });
             }
 
@@ -485,7 +485,7 @@ export class Clan extends Manager {
         if (channel) {
             await channel.permissionOverwrites.delete(this.leader);
             await channel.permissionOverwrites.create(member.id, {
-                MANAGE_MESSAGES: true,
+                ManageMessages: true,
             });
         }
 
@@ -869,9 +869,9 @@ export class Clan extends Manager {
                 await message.delete();
             }
 
-            const attachment: MessageAttachment = new MessageAttachment(
+            const attachment: AttachmentBuilder = new AttachmentBuilder(
                 iconURL,
-                "icon.png"
+                { name: "icon.png" }
             );
 
             const message: Message = await channel.send({
@@ -942,9 +942,9 @@ export class Clan extends Manager {
                 await message.delete();
             }
 
-            const attachment: MessageAttachment = new MessageAttachment(
+            const attachment: AttachmentBuilder = new AttachmentBuilder(
                 bannerURL,
-                "banner.png"
+                { name: "banner.png" }
             );
 
             const message: Message = await channel.send({

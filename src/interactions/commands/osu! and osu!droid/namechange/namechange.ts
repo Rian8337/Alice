@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,45 +15,45 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "accept",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Accept a name change request (bot owner only).",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
             ],
         },
         {
             name: "cancel",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Cancels an active name change request.",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
             ],
         },
         {
             name: "deny",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Deny a name change request (bot owner only).",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "reason",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The reason for denying the name change request.",
                 },
@@ -61,20 +61,20 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "request",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Request a name change.",
             options: [
                 {
                     name: "email",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The email that is connected to your currently binded osu!droid account.",
                 },
                 {
                     name: "newusername",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The username to be requested. Cannot contain unicode and must be between 2-20 characters.",
                 },
@@ -82,21 +82,21 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "history",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "View the name change history of an osu!droid account.",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
             ],
         },
         {
             name: "view",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View currently active name change requests.",
         },
     ],

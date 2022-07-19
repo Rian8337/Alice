@@ -1,11 +1,15 @@
 import {
-    BaseCommandInteraction,
+    ActionRow,
+    ActionRowBuilder,
+    APIActionRowComponent,
+    APIMessageActionRowComponent,
     InteractionReplyOptions,
     Message,
-    MessageActionRow,
+    MessageActionRowComponent,
     MessageComponentInteraction,
-    MessageSelectMenu,
-    MessageSelectOptionData,
+    SelectMenuBuilder,
+    SelectMenuComponent,
+    SelectMenuComponentOptionData,
     SelectMenuInteraction,
     Snowflake,
 } from "discord.js";
@@ -17,6 +21,7 @@ import { Language } from "@alice-localization/base/Language";
 import { SelectMenuCreatorLocalization } from "@alice-localization/utils/creators/SelectMenuCreator/SelectMenuCreatorLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A utility to create message select menus.
@@ -33,32 +38,28 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * @returns The interaction with the user.
      */
     static async createSelectMenu(
-        interaction: BaseCommandInteraction | MessageComponentInteraction,
+        interaction: RepliableInteraction,
         options: InteractionReplyOptions,
-        choices: MessageSelectOptionData[],
+        choices: SelectMenuComponentOptionData[],
         users: Snowflake[],
         duration: number
     ): Promise<SelectMenuInteraction | null> {
         const localization: SelectMenuCreatorLocalization =
             this.getLocalization(await CommandHelper.getLocale(interaction));
 
-        const selectMenu: MessageSelectMenu = new MessageSelectMenu()
+        const selectMenu: SelectMenuBuilder = new SelectMenuBuilder()
             .setCustomId(interaction.user.id + "selectMenu")
             .addOptions(choices.slice(0, 25));
 
-        const component: MessageActionRow =
-            new MessageActionRow().addComponents(selectMenu);
+        const component: ActionRowBuilder<SelectMenuBuilder> =
+            new ActionRowBuilder<SelectMenuBuilder>().addComponents(selectMenu);
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
-            selectMenu
-                .spliceOptions(0, selectMenu.options.length)
-                .addOptions(
-                    choices.slice(25 * (page - 1), 25 + 25 * (page - 1))
-                );
+            selectMenu.setOptions(
+                choices.slice(25 * (page - 1), 25 + 25 * (page - 1))
+            );
 
-            component
-                .spliceComponents(0, component.components.length)
-                .addComponents(selectMenu);
+            component.setComponents(selectMenu);
         };
 
         options.components ??= [];
@@ -79,19 +80,19 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
             message,
             duration,
             (i) =>
-                selectMenu.customId === i.customId && users.includes(i.user.id),
+                selectMenu.data.custom_id === i.customId &&
+                users.includes(i.user.id),
             (m) => {
-                const row: MessageActionRow | undefined = m.components.find(
-                    (c) => c.components.length === 1
-                );
+                const row: ActionRow<MessageActionRowComponent> | undefined =
+                    m.components.find((c) => c.components.length === 1);
 
                 if (!row) {
                     return false;
                 }
 
                 return (
-                    row.components[0] instanceof MessageSelectMenu &&
-                    row.components[0].customId === selectMenu.customId
+                    row.components[0] instanceof SelectMenuComponent &&
+                    row.components[0].customId === selectMenu.data.custom_id
                 );
             }
         );
@@ -107,11 +108,14 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 const i: SelectMenuInteraction | undefined = collected.first();
 
                 if (i) {
-                    const index: number = options.components!.findIndex((v) => {
+                    const index: number = (<
+                        APIActionRowComponent<APIMessageActionRowComponent>[]
+                    >options.components).findIndex((v) => {
                         return (
                             v.components.length === 1 &&
-                            v.components[0] instanceof MessageSelectMenu &&
-                            v.components[0].customId === selectMenu.customId
+                            v.components[0] instanceof SelectMenuComponent &&
+                            v.components[0].customId ===
+                                selectMenu.data.custom_id
                         );
                     });
 

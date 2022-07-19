@@ -9,7 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
+import { Collection, GuildMember, EmbedBuilder, User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
@@ -35,7 +35,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: user,
         color: (<GuildMember>interaction.member).displayColor,
     });
@@ -52,15 +52,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             i < Math.min(collections.size, 10 + 10 * (page - 1));
             ++i
         ) {
-            embed.addField(
-                `${i + 1}. ${collections.at(i)!.name}`,
-                `${localization.getTranslation(
+            const item: MusicCollection = collections.at(i)!;
+            embed.addFields({
+                name: `${i + 1}. ${item.name}`,
+                value: `${localization.getTranslation(
                     "createdAt"
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
-                    new Date(collections.at(i)!.createdAt),
+                    new Date(item.createdAt),
                     localization.language
-                )}`
-            );
+                )}`,
+            });
         }
     };
 

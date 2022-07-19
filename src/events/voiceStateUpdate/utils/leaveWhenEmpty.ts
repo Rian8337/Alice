@@ -14,7 +14,7 @@ export const run: EventUtil["run"] = async (
 
 export const config: EventUtil["config"] = {
     description: "Responsible for leaving voice channels when they are empty.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
     debugEnabled: true,
 };

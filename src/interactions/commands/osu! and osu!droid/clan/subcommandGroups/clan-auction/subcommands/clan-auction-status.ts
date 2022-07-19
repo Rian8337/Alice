@@ -11,7 +11,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -38,7 +38,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });
@@ -67,18 +67,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     localization.language
                 )}`
         )
-        .addField(
-            localization.getTranslation("auctionItem"),
-            `**${localization.getTranslation(
-                "auctionPowerup"
-            )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
+        .addFields({
+            name: localization.getTranslation("auctionItem"),
+            value:
+                `**${localization.getTranslation(
+                    "auctionPowerup"
+                )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                 `**${localization.getTranslation(
                     "auctionAmount"
                 )}**: ${auction.amount.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "auctionMinimumBid"
-                )}**: ${auction.min_price.toLocaleString(BCP47)} Alice coins`
-        );
+                )}**: ${auction.min_price.toLocaleString(BCP47)} Alice coins`,
+        });
 
     const bids: AuctionBid[] = [...auction.bids.values()];
 
@@ -105,10 +106,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ].amount.toLocaleString(BCP47)}** Alice coins`;
     }
 
-    embed.addField(
-        localization.getTranslation("auctionBidInfo"),
-        biddersDescription
-    );
+    embed.addFields({
+        name: localization.getTranslation("auctionBidInfo"),
+        value: biddersDescription,
+    });
 
     InteractionHelper.reply(interaction, {
         embeds: [embed],

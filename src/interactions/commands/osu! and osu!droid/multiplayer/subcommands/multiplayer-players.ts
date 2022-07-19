@@ -11,7 +11,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -50,7 +50,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -71,13 +71,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ) {
             const player: MultiplayerPlayer = room.players[i];
 
-            embed.addField(
-                `${i + 1}. ${player.username} (${player.uid})${
+            embed.addFields({
+                name: `${i + 1}. ${player.username} (${player.uid})${
                     room.settings.roomHost === player.discordId
                         ? ` ${Symbols.crown}`
                         : ""
                 }`,
-                `**${localization.getTranslation(
+                value: `**${localization.getTranslation(
                     "playerDiscordAccount"
                 )}**: <@${player.discordId}> (${
                     player.discordId
@@ -89,8 +89,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         : player.isReady
                         ? "ready"
                         : "notReady"
-                )}`
-            );
+                )}`,
+            });
         }
     };
 

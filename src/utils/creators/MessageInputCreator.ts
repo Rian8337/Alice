@@ -1,6 +1,6 @@
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
-    BaseCommandInteraction,
     InteractionReplyOptions,
     Message,
     MessageCollector,
@@ -25,7 +25,7 @@ export abstract class MessageInputCreator {
      * @returns The picked choice or given input, `undefined` if the users didn't pick any choice or give any input.
      */
     static async createInputDetector(
-        interaction: BaseCommandInteraction | MessageComponentInteraction,
+        interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         choices: string[],
         users: Snowflake[],

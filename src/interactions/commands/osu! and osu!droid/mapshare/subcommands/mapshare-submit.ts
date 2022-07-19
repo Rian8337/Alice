@@ -2,8 +2,7 @@ import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { TextInputComponent } from "discord.js";
-import { TextInputStyles } from "discord.js/typings/enums";
+import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
@@ -14,18 +13,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         "mapshare-submission",
         localization.getTranslation("submitModalTitle"),
-        new TextInputComponent()
+        new TextInputBuilder()
             .setCustomId("beatmap")
             .setRequired(true)
-            .setStyle(TextInputStyles.SHORT)
+            .setStyle(TextInputStyle.Short)
             .setLabel(localization.getTranslation("submitModalBeatmapLabel"))
             .setPlaceholder(
                 localization.getTranslation("submitModalBeatmapPlaceholder")
             ),
-        new TextInputComponent()
+        new TextInputBuilder()
             .setCustomId("summary")
             .setRequired(true)
-            .setStyle(TextInputStyles.PARAGRAPH)
+            .setStyle(TextInputStyle.Paragraph)
             .setLabel(localization.getTranslation("submitModalSummaryLabel"))
             .setPlaceholder(
                 localization.getTranslation("submitModalSummaryPlaceholder")

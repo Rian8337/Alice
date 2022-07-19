@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { Collection, GuildMember, EmbedBuilder } from "discord.js";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
@@ -39,7 +39,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         )
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -53,14 +53,14 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             ++i
         ) {
             const bg: ProfileBackground = backgroundsArray[i];
-            embed.addField(
-                `${i + 1}. ${bg.name}`,
-                `${localization.getTranslation("owned")}: **${
+            embed.addFields({
+                name: `${i + 1}. ${bg.name}`,
+                value: `${localization.getTranslation("owned")}: **${
                     ownedBackgrounds.find((v) => v.id === bg.id)
                         ? Symbols.checkmark
                         : Symbols.cross
-                }**`
-            );
+                }**`,
+            });
         }
     };
 

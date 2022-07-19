@@ -132,6 +132,6 @@ export const run: EventUtil["run"] = async (client) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for tracking birthday.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

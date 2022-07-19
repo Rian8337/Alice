@@ -3,7 +3,7 @@ import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch"
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { AnyChannel, ThreadChannel } from "discord.js";
+import { Channel, ThreadChannel } from "discord.js";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -52,7 +52,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     }
 
     if (match.channelId) {
-        const channel: AnyChannel | null = await client.channels.fetch(
+        const channel: Channel | null = await client.channels.fetch(
             match.channelId
         );
 

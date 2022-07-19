@@ -6,7 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const id: string | null = interaction.options.getString("id");
@@ -27,7 +27,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createMatchSummaryEmbed(match);
+    const embed: EmbedBuilder = EmbedCreator.createMatchSummaryEmbed(match);
 
     InteractionHelper.reply(interaction, {
         embeds: [embed],

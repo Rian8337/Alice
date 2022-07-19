@@ -4,7 +4,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { Collection, EmbedBuilder, GuildMember } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
@@ -162,7 +162,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         score
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -228,14 +228,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     );
 
     // Finalization
-    embed
-        .setTitle(localization.getTranslation("ppSubmissionInfo"))
-        .addField(
-            `${beatmapInfo.fullTitle} +${
-                score.mods.map((v) => v.acronym).join(",") || "No Mod"
-            }`,
-            fieldContent
-        );
+    embed.setTitle(localization.getTranslation("ppSubmissionInfo")).addFields({
+        name: `${beatmapInfo.fullTitle} +${
+            score.mods.map((v) => v.acronym).join(",") || "No Mod"
+        }`,
+        value: fieldContent,
+    });
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

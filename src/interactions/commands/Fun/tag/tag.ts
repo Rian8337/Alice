@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,19 +15,19 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "add",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Adds a new tag.",
             options: [
                 {
                     name: "name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The name of the tag. Must be less than or equal to 30 characters.",
                 },
                 {
                     name: "content",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The content of the tag. Must be less than or equal to 1500 characters.",
                 },
@@ -35,128 +35,128 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "attach",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Inserts an attachment to a tag.",
             options: [
                 {
                     name: "name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of the tag.",
                 },
                 {
                     name: "attachment",
                     required: true,
-                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    type: ApplicationCommandOptionType.Attachment,
                     description: "The attachment. Must be less than 8 MB.",
                 },
             ],
         },
         {
             name: "delete",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Deletes a tag.",
             options: [
                 {
                     name: "name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of the tag.",
                 },
             ],
         },
         {
             name: "edit",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Edits a tag.",
             options: [
                 {
                     name: "name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of the tag.",
                 },
                 {
                     name: "content",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The new content of the tag.",
                 },
             ],
         },
         {
             name: "info",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Views information of a tag.",
             options: [
                 {
                     name: "name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of the tag.",
                 },
             ],
         },
         {
             name: "list",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Lists the tags that a user owns.",
             options: [
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The Discord user. Defaults to yourself.",
                 },
             ],
         },
         {
             name: "move",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Transfers the ownership of tags from a user to someone else.",
             options: [
                 {
                     name: "olduser",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to transfer the tags from.",
                 },
                 {
                     name: "newuser",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to transfer the tags to.",
                 },
             ],
         },
         {
             name: "view",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Views a tag.",
             options: [
                 {
                     name: "name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of the tag.",
                 },
             ],
         },
         {
             name: "unattach",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Unattaches a tag's attachment.",
             options: [
                 {
                     name: "name",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The name of the tag.",
                 },
                 {
                     name: "index",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The index of the attachment to unattach.",
                     choices: [
                         {

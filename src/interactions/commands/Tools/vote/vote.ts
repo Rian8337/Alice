@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,27 +15,27 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "cancel",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Cancels your picked option in the ongoing vote.",
         },
         {
             name: "check",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Checks the ongoing vote in the channel.",
         },
         {
             name: "end",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Ends the ongoing vote in the channel.",
         },
         {
             name: "contribute",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Contributes to the ongoing vote.",
             options: [
                 {
                     name: "option",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     required: true,
                     description: "The option to vote for.",
                     minValue: 1,
@@ -44,24 +44,24 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "start",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Starts a vote in the channel.",
             options: [
                 {
                     name: "topic",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The topic of the vote.",
                 },
                 {
                     name: "choices",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: 'The choices of the vote, separated by "|".',
                 },
                 {
                     name: "xpreq",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The Tatsu XP requirement for users to vote.",
                 },
             ],

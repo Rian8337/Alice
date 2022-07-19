@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { EventUtil } from "structures/core/EventUtil";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -8,10 +8,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const embed: MessageEmbed = message.embeds[0];
+    const embed: EmbedBuilder | null = message.embeds[0]
+        ? EmbedBuilder.from(message.embeds[0])
+        : null;
 
     // Prioritize embed author
-    const url: string | undefined | null = embed?.author?.url ?? embed?.url;
+    const url: string | null =
+        embed?.data.author?.url ?? embed?.data.url ?? null;
 
     if (!url) {
         return;
@@ -41,6 +44,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for caching latest beatmap in discussion from messages from bots.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

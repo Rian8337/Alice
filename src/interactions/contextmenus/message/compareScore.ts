@@ -11,7 +11,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildMember } from "discord.js";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     const localization: CompareScoreLocalization = new CompareScoreLocalization(
@@ -19,7 +19,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     );
 
     const beatmapId: number | null = BeatmapManager.getBeatmapIDFromMessage(
-        <Message>interaction.targetMessage
+        interaction.targetMessage
     );
 
     if (!beatmapId) {
@@ -93,7 +93,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
+    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,

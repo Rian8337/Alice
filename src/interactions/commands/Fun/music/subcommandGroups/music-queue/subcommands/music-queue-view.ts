@@ -3,7 +3,7 @@ import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -28,7 +28,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });
@@ -36,13 +36,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed.setTitle(localization.getTranslation("currentQueue"));
 
     for (let i = 0; i < queue.length; ++i) {
-        embed.addField(
-            `${i + 1}. ${queue[i].information.title}`,
-            StringHelper.formatString(
+        embed.addFields({
+            name: `${i + 1}. ${queue[i].information.title}`,
+            value: StringHelper.formatString(
                 localization.getTranslation("requestedBy"),
                 `<@${queue[i].queuer}>`
-            )
-        );
+            ),
+        });
     }
 
     InteractionHelper.reply(interaction, {

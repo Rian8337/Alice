@@ -15,7 +15,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction.options.getChannel("channel", true)
     );
 
-    if (!channel.isText()) {
+    if (!channel.isTextBased()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("chosenChannelIsNotText")
@@ -37,5 +37,5 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 };
 
 export const config: SlashSubcommand["config"] = {
-    permissions: ["MANAGE_GUILD"],
+    permissions: ["ManageGuild"],
 };

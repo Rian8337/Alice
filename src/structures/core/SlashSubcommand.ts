@@ -1,4 +1,8 @@
-import { CommandInteraction, If, SelectMenuInteraction } from "discord.js";
+import {
+    ChatInputCommandInteraction,
+    If,
+    SelectMenuInteraction,
+} from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { Permission } from "structures/core/Permission";
 
@@ -17,7 +21,7 @@ export interface SlashSubcommand<FromInteraction extends boolean = boolean> {
         client: Bot,
         interaction: If<
             FromInteraction,
-            CommandInteraction,
+            ChatInputCommandInteraction,
             SelectMenuInteraction
         >,
         ...args: unknown[]

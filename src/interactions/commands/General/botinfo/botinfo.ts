@@ -3,7 +3,7 @@ import { SlashCommand } from "structures/core/SlashCommand";
 import { BotinfoLocalization } from "@alice-localization/interactions/commands/General/botinfo/BotinfoLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 //@ts-expect-error: package.json will be included in distribution folder otherwise
 import { version } from "../../../../../package.json";
 //@ts-expect-error: package-lock.json will be included in distribution folder otherwise
@@ -17,7 +17,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -38,7 +38,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     };
 
     embed
-        .setThumbnail(client.user.avatarURL({ dynamic: true })!)
+        .setThumbnail(client.user.avatarURL({ extension: "gif" })!)
         .setDescription(
             StringHelper.formatString(
                 localization.getTranslation("aboutBot"),
@@ -50,50 +50,61 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                 "https://ko-fi.com/rian8337"
             )
         )
-        .addField(
-            localization.getTranslation("botInfo"),
-            `${localization.getTranslation("botVersion")}: ${version}\n` +
-                `${localization.getTranslation(
-                    "botUptime"
-                )}: ${DateTimeFormatHelper.secondsToDHMS(client.uptime / 1000)}`
-        )
-        .addField(
-            localization.getTranslation("coreLibraries"),
-            `${localization.getTranslation("discordJs")}: [${
-                dependencies["discord.js"].version
-            }](https://discord.js.org)\n` +
-                `${localization.getTranslation("typescript")}: [${
-                    dependencies["typescript"].version
-                }](https://typescriptlang.org)`
-        )
-        .addField(
-            localization.getTranslation("osuLibraries"),
-            `${localization.getTranslation(
-                "osuBase"
-            )}: ${getOsuModuleVersionAndSource("osu-base")}\n` +
-                `${localization.getTranslation(
-                    "osuDiffCalc"
-                )}: ${getOsuModuleVersionAndSource(
-                    "osu-difficulty-calculator"
-                )}\n` +
-                `${localization.getTranslation(
-                    "osuRebalDiffCalc"
-                )}: ${getOsuModuleVersionAndSource(
-                    "osu-rebalance-difficulty-calculator"
-                )}\n` +
-                `${localization.getTranslation(
-                    "osuDroidReplayAnalyzer"
-                )}: ${getOsuModuleVersionAndSource(
-                    "osu-droid-replay-analyzer"
-                )}\n` +
-                `${localization.getTranslation(
-                    "osuDroidUtilities"
-                )}: ${getOsuModuleVersionAndSource("osu-droid-utilities")}\n` +
-                `${localization.getTranslation(
-                    "osuStrainGraphGenerator"
-                )}: ${getOsuModuleVersionAndSource(
-                    "osu-strain-graph-generator"
-                )}`
+        .addFields(
+            {
+                name: localization.getTranslation("botInfo"),
+                value:
+                    `${localization.getTranslation(
+                        "botVersion"
+                    )}: ${version}\n` +
+                    `${localization.getTranslation(
+                        "botUptime"
+                    )}: ${DateTimeFormatHelper.secondsToDHMS(
+                        client.uptime / 1000
+                    )}`,
+            },
+            {
+                name: localization.getTranslation("coreLibraries"),
+                value:
+                    `${localization.getTranslation("discordJs")}: [${
+                        dependencies["discord.js"].version
+                    }](https://discord.js.org)\n` +
+                    `${localization.getTranslation("typescript")}: [${
+                        dependencies["typescript"].version
+                    }](https://typescriptlang.org)`,
+            },
+            {
+                name: localization.getTranslation("osuLibraries"),
+                value:
+                    `${localization.getTranslation(
+                        "osuBase"
+                    )}: ${getOsuModuleVersionAndSource("osu-base")}\n` +
+                    `${localization.getTranslation(
+                        "osuDiffCalc"
+                    )}: ${getOsuModuleVersionAndSource(
+                        "osu-difficulty-calculator"
+                    )}\n` +
+                    `${localization.getTranslation(
+                        "osuRebalDiffCalc"
+                    )}: ${getOsuModuleVersionAndSource(
+                        "osu-rebalance-difficulty-calculator"
+                    )}\n` +
+                    `${localization.getTranslation(
+                        "osuDroidReplayAnalyzer"
+                    )}: ${getOsuModuleVersionAndSource(
+                        "osu-droid-replay-analyzer"
+                    )}\n` +
+                    `${localization.getTranslation(
+                        "osuDroidUtilities"
+                    )}: ${getOsuModuleVersionAndSource(
+                        "osu-droid-utilities"
+                    )}\n` +
+                    `${localization.getTranslation(
+                        "osuStrainGraphGenerator"
+                    )}: ${getOsuModuleVersionAndSource(
+                        "osu-strain-graph-generator"
+                    )}`,
+            }
         );
 
     InteractionHelper.reply(interaction, {

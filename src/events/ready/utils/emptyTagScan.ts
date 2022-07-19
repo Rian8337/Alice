@@ -37,6 +37,6 @@ export const run: EventUtil["run"] = async () => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for periodically scanning for empty guild tags to prevent tag hoarding.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

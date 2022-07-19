@@ -30,5 +30,5 @@ export const run: SlashSubcommandGroup["run"] = async (client, interaction) => {
 };
 
 export const config: SlashSubcommandGroup["config"] = {
-    permissions: ["SPECIAL"],
+    permissions: ["Special"],
 };

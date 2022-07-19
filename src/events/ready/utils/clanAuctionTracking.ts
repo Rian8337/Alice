@@ -4,7 +4,7 @@ import { EventUtil } from "structures/core/EventUtil";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Collection, GuildEmoji, MessageEmbed, TextChannel } from "discord.js";
+import { Collection, GuildEmoji, EmbedBuilder, TextChannel } from "discord.js";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { AuctionBid } from "structures/clan/AuctionBid";
 import { Config } from "@alice-core/Config";
@@ -36,13 +36,13 @@ export const run: EventUtil["run"] = async (client) => {
             );
 
         for (const expiredAuction of expiredAuctions.values()) {
-            const embed: MessageEmbed = EmbedCreator.createClanAuctionEmbed(
+            const embed: EmbedBuilder = EmbedCreator.createClanAuctionEmbed(
                 expiredAuction,
                 coinEmoji
             );
 
             if (expiredAuction.bids.size === 0) {
-                embed.addField("Winner", "None");
+                embed.addFields({ name: "Winner", value: "None" });
                 await expiredAuction.returnItemToAuctioneer();
                 return notificationChannel.send({
                     content: MessageCreator.createWarn(
@@ -56,7 +56,7 @@ export const run: EventUtil["run"] = async (client) => {
                 await expiredAuction.getWinnerClan();
 
             if (!winnerClan) {
-                embed.addField("Winner", "None");
+                embed.addFields({ name: "Winner", value: "None" });
                 await expiredAuction.returnItemToAuctioneer();
                 return notificationChannel.send({
                     content: MessageCreator.createWarn(
@@ -75,10 +75,10 @@ export const run: EventUtil["run"] = async (client) => {
                 (v) => v.clan === winnerClan.name
             );
 
-            embed.addField(
-                "Winner",
-                `${winnerClan.name} - \`${bidArray[bidIndex].amount}\` Alice coins`
-            );
+            embed.addFields({
+                name: "Winner",
+                value: `${winnerClan.name} - \`${bidArray[bidIndex].amount}\` Alice coins`,
+            });
 
             await notificationChannel.send({
                 content: MessageCreator.createWarn(
@@ -98,6 +98,6 @@ export const run: EventUtil["run"] = async (client) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for tracking clan auctions.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

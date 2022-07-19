@@ -1,7 +1,6 @@
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
 import { GuildMemberPermissionComparison } from "structures/utils/GuildMemberPermissionComparison";
 import { Permission } from "structures/core/Permission";
-import { StringHelper } from "./StringHelper";
 import { Constants } from "@alice-core/Constants";
 import { Bot } from "@alice-core/Bot";
 import { Config } from "@alice-core/Config";
@@ -51,20 +50,17 @@ export abstract class PermissionHelper {
 
         permissions.forEach((permission) => {
             switch (permission) {
-                case "SEND_TTS_MESSAGES":
+                case "SendTTSMessages":
                     permissionsString.push("Send TTS Messages");
                     break;
-                case "USE_VAD":
+                case "UseVAD":
                     permissionsString.push(
                         "Use VAD (Voice Activity Detection)"
                     );
                     break;
                 default:
                     permissionsString.push(
-                        permission
-                            .split("_")
-                            .map((v) => StringHelper.capitalizeString(v, true))
-                            .join(" ")
+                        permission.split(/(?=[A-Z])/g).join(" ")
                     );
             }
         });

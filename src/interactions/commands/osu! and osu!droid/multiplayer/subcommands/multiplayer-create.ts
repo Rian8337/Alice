@@ -17,7 +17,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    if (!interaction.channel?.isText() || interaction.channel.isThread()) {
+    if (!interaction.channel?.isTextBased() || interaction.channel.isThread()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(

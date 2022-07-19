@@ -1,4 +1,5 @@
 import {
+    AuditLogEvent,
     GuildAuditLogs,
     GuildAuditLogsEntry,
     GuildBan,
@@ -13,19 +14,14 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const auditLogEntries: GuildAuditLogs<"MEMBER_BAN_ADD"> =
+    const auditLogEntries: GuildAuditLogs<AuditLogEvent.MemberBanAdd> =
         await guildBan.guild.fetchAuditLogs({
             limit: 1,
-            type: "MEMBER_BAN_ADD",
+            type: AuditLogEvent.MemberBanAdd,
         });
 
     const banLog:
-        | GuildAuditLogsEntry<
-              "MEMBER_BAN_ADD",
-              "MEMBER_BAN_ADD",
-              "DELETE",
-              "USER"
-          >
+        | GuildAuditLogsEntry<AuditLogEvent.MemberBanAdd, "Delete", "User">
         | undefined = auditLogEntries.entries.first();
 
     if (!banLog) {
@@ -48,6 +44,6 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for locking users from lounge if they are banned from the main server.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

@@ -6,7 +6,7 @@ import { OperationResult } from "structures/core/OperationResult";
 import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
@@ -233,7 +233,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         description = localization.getTranslation("draw");
     }
 
-    const resultEmbed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const resultEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         timestamp: true,
         color: embedColor,
     });
@@ -241,9 +241,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     resultEmbed
         .setAuthor({ name: match.name })
         .setTitle(map.name)
-        .addField(`${match.team[0][0]}: ${team1OverallScore}`, team1String)
-        .addField(`${match.team[1][0]}: ${team2OverallScore}`, team2String)
-        .addField("=================================", `**${description}**`);
+        .addFields(
+            {
+                name: `${match.team[0][0]}: ${team1OverallScore}`,
+                value: team1String,
+            },
+            {
+                name: `${match.team[1][0]}: ${team2OverallScore}`,
+                value: team2String,
+            },
+            {
+                name: "=================================",
+                value: `**${description}**`,
+            }
+        );
 
     if (!interaction.replied) {
         await InteractionHelper.reply(interaction, {
@@ -258,7 +269,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Blue team wins
     match.team[1][1] += Number(team2OverallScore > team1OverallScore);
 
-    const summaryEmbed: MessageEmbed =
+    const summaryEmbed: EmbedBuilder =
         EmbedCreator.createMatchSummaryEmbed(match);
 
     for (let i = 0; i < scoreV2List.length; ++i) {

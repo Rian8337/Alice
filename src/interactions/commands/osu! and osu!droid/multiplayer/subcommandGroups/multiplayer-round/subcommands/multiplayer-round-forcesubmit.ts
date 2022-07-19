@@ -8,7 +8,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MapStats, ModUtil } from "@rian8337/osu-base";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -64,7 +64,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const embed: MessageEmbed = await room.getResultEmbed(
+    const embed: EmbedBuilder = await room.getResultEmbed(
         localization.language
     );
 

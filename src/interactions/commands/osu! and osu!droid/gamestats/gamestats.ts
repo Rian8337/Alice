@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -39,20 +39,20 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const userCountAbove200Scores: number = data[9];
     const totalScoreCount: number = data[11];
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayHexColor,
     });
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    embed
-        .setTitle(localization.getTranslation("overallGameStats"))
-        .addField(
-            localization.getTranslation("registeredAccounts"),
-            `**${localization.getTranslation(
-                "totalRegisteredAccounts"
-            )}**: ${totalUserCount.toLocaleString(BCP47)}\n` +
+    embed.setTitle(localization.getTranslation("overallGameStats")).addFields(
+        {
+            name: localization.getTranslation("registeredAccounts"),
+            value:
+                `**${localization.getTranslation(
+                    "totalRegisteredAccounts"
+                )}**: ${totalUserCount.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "moreThan5ScoresAcc"
                 )}**: ${userCountAbove5Scores.toLocaleString(BCP47)}\n` +
@@ -64,12 +64,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 )}**: ${userCountAbove100Scores.toLocaleString(BCP47)}\n` +
                 `**${localization.getTranslation(
                     "moreThan200ScoresAcc"
-                )}**: ${userCountAbove200Scores.toLocaleString(BCP47)}`
-        )
-        .addField(
-            localization.getTranslation("totalScores"),
-            totalScoreCount.toLocaleString(BCP47)
-        );
+                )}**: ${userCountAbove200Scores.toLocaleString(BCP47)}`,
+        },
+        {
+            name: localization.getTranslation("totalScores"),
+            value: totalScoreCount.toLocaleString(BCP47),
+        }
+    );
 
     InteractionHelper.reply(interaction, {
         embeds: [embed],

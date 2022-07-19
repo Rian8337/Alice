@@ -12,8 +12,9 @@ import {
     GuildAuditLogsEntry,
     GuildChannel,
     GuildMember,
-    MessageEmbed,
+    EmbedBuilder,
     TextChannel,
+    AuditLogEvent,
 } from "discord.js";
 
 export const run: EventUtil["run"] = async (
@@ -34,19 +35,14 @@ export const run: EventUtil["run"] = async (
         newMember.communicationDisabledUntil
     ) {
         // Member was timeouted
-        const auditLogEntries: GuildAuditLogs<"MEMBER_UPDATE"> =
+        const auditLogEntries: GuildAuditLogs<AuditLogEvent.MemberUpdate> =
             await newMember.guild.fetchAuditLogs({
                 limit: 1,
-                type: "MEMBER_UPDATE",
+                type: AuditLogEvent.MemberUpdate,
             });
 
         const auditLog:
-            | GuildAuditLogsEntry<
-                  "MEMBER_UPDATE",
-                  "MEMBER_UPDATE",
-                  "UPDATE",
-                  "USER"
-              >
+            | GuildAuditLogsEntry<AuditLogEvent.MemberUpdate, "Update", "User">
             | undefined = auditLogEntries.entries.first();
 
         if (
@@ -86,10 +82,10 @@ export const run: EventUtil["run"] = async (
             DateTimeFormatHelper.getTimeDifference(timeoutDate) / 1000
         );
 
-        const timeoutEmbed: MessageEmbed = new MessageEmbed()
+        const timeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
-                iconURL: auditLog.executor.avatarURL({ dynamic: true })!,
+                iconURL: auditLog.executor.avatarURL({ extension: "gif" })!,
             })
             .setTitle(localization.getTranslation("timeoutExecuted"))
             .setFooter({
@@ -109,10 +105,10 @@ export const run: EventUtil["run"] = async (
                         localization.getTranslation("notSpecified"))
             );
 
-        const userTimeoutEmbed: MessageEmbed = new MessageEmbed()
+        const userTimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: newMember.user.tag,
-                iconURL: newMember.user.avatarURL({ dynamic: true })!,
+                iconURL: newMember.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(userLocalization.getTranslation("timeoutExecuted"))
             .setFooter({
@@ -165,19 +161,14 @@ export const run: EventUtil["run"] = async (
         !newMember.communicationDisabledUntil
     ) {
         // Member was untimeouted
-        const auditLogEntries: GuildAuditLogs<"MEMBER_UPDATE"> =
+        const auditLogEntries: GuildAuditLogs<AuditLogEvent.MemberUpdate> =
             await newMember.guild.fetchAuditLogs({
                 limit: 1,
-                type: "MEMBER_UPDATE",
+                type: AuditLogEvent.MemberUpdate,
             });
 
         const auditLog:
-            | GuildAuditLogsEntry<
-                  "MEMBER_UPDATE",
-                  "MEMBER_UPDATE",
-                  "UPDATE",
-                  "USER"
-              >
+            | GuildAuditLogsEntry<AuditLogEvent.MemberUpdate, "Update", "User">
             | undefined = auditLogEntries.entries.first();
 
         if (
@@ -211,10 +202,10 @@ export const run: EventUtil["run"] = async (
             return;
         }
 
-        const untimeoutEmbed: MessageEmbed = new MessageEmbed()
+        const untimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
-                iconURL: auditLog.executor.avatarURL({ dynamic: true })!,
+                iconURL: auditLog.executor.avatarURL({ extension: "gif" })!,
             })
             .setTitle(localization.getTranslation("untimeoutExecuted"))
             .setFooter({
@@ -229,10 +220,10 @@ export const run: EventUtil["run"] = async (
                         localization.getTranslation("notSpecified"))
             );
 
-        const userUntimeoutEmbed: MessageEmbed = new MessageEmbed()
+        const userUntimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
-                iconURL: auditLog.executor.avatarURL({ dynamic: true })!,
+                iconURL: auditLog.executor.avatarURL({ extension: "gif" })!,
             })
             .setTitle(userLocalization.getTranslation("untimeoutExecuted"))
             .setFooter({
@@ -267,6 +258,6 @@ export const run: EventUtil["run"] = async (
 
 export const config: EventUtil["config"] = {
     description: "Responsible for logging manually given/taken timeouts.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

@@ -4,7 +4,7 @@ import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { Collection, MessageEmbed, TextChannel } from "discord.js";
+import { Collection, EmbedBuilder, TextChannel } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { TrackedPlayer } from "@alice-database/utils/elainaDb/TrackedPlayer";
 
@@ -44,7 +44,7 @@ export const run: EventUtil["run"] = async (client) => {
                     break;
                 }
 
-                const embed: MessageEmbed =
+                const embed: EmbedBuilder =
                     await EmbedCreator.createRecentPlayEmbed(
                         score,
                         player.avatarURL,
@@ -65,6 +65,6 @@ export const run: EventUtil["run"] = async (client) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for tracking players that are tracked from the `addtrack` command.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

@@ -12,7 +12,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { Collection, GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
@@ -41,7 +41,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         Math.ceil(submissions.size / 10)
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });
@@ -53,22 +53,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         )
     );
 
+    const entries: MapShare[] = [...submissions.values()];
+
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
             let i = 10 * (page - 1);
             i < Math.min(submissions.size, 10 + 10 * (page - 1));
             ++i
         ) {
-            const submission: MapShare = submissions.at(i)!;
+            const submission: MapShare = entries[i];
 
-            embed.addField(
-                `${i + 1}. ${StringHelper.formatString(
+            embed.addFields({
+                name: `${i + 1}. ${StringHelper.formatString(
                     localization.getTranslation("submissionFromUser"),
                     submission.submitter
                 )}`,
-                `**${localization.getTranslation("userId")}**: ${
-                    submission.id
-                }\n` +
+                value:
+                    `**${localization.getTranslation("userId")}**: ${
+                        submission.id
+                    }\n` +
                     `**${localization.getTranslation("beatmapId")}**: ${
                         submission.beatmap_id
                     } ([${localization.getTranslation(
@@ -79,8 +82,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     )}**: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(submission.date * 1000),
                         localization.language
-                    )}`
-            );
+                    )}`,
+            });
         }
     };
 

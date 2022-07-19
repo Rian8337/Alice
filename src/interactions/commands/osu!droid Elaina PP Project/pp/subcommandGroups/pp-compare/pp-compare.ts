@@ -17,7 +17,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { User, Collection, MessageEmbed, GuildMember } from "discord.js";
+import { User, Collection, GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -201,7 +201,7 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
         secondBindInfo.pptotal
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -301,13 +301,16 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
                 firstPlayerDescription = `**${firstPlayerDescription}** ${Symbols.crown}`;
             }
 
-            embed.addField(
-                `${i + 1}. ${firstPP.title}`,
-                `**${firstBindInfo!.username}**: ${firstPlayerDescription}\n` +
+            embed.addFields({
+                name: `${i + 1}. ${firstPP.title}`,
+                value:
+                    `**${
+                        firstBindInfo!.username
+                    }**: ${firstPlayerDescription}\n` +
                     `**${
                         secondBindInfo!.username
-                    }**: ${secondPlayerDescription}`
-            );
+                    }**: ${secondPlayerDescription}`,
+            });
         }
     };
 

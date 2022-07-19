@@ -12,14 +12,14 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import {
-    BaseCommandInteraction,
     GuildChannel,
     GuildMember,
-    MessageEmbed,
+    EmbedBuilder,
     Snowflake,
     TextChannel,
 } from "discord.js";
 import { PunishmentManager } from "./PunishmentManager";
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A manager for warnings.
@@ -51,12 +51,12 @@ export abstract class WarningManager extends PunishmentManager {
      * @param channelId The channel where the user was warned. Defaults to the interaction's channel.
      */
     static async issue(
-        interaction: BaseCommandInteraction,
+        interaction: RepliableInteraction,
         member: GuildMember,
         points: number,
         duration: number,
         reason: string,
-        channelId: Snowflake = interaction.channelId
+        channelId: Snowflake = interaction.channelId!
     ): Promise<OperationResult> {
         const localization: WarningManagerLocalization = this.getLocalization(
             await CommandHelper.getLocale(interaction)
@@ -131,10 +131,10 @@ export abstract class WarningManager extends PunishmentManager {
         const logLocalization: WarningManagerLocalization =
             new WarningManagerLocalization("en");
 
-        const warningEmbed: MessageEmbed = new MessageEmbed()
+        const warningEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(logLocalization.getTranslation("warningIssued"))
             .setFooter({
@@ -168,10 +168,10 @@ export abstract class WarningManager extends PunishmentManager {
                 await CommandHelper.getUserPreferredLocale(member.id)
             );
 
-        const userWarningEmbed: MessageEmbed = new MessageEmbed()
+        const userWarningEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(userLocalization.getTranslation("warningIssued"))
             .setFooter({
@@ -248,7 +248,7 @@ export abstract class WarningManager extends PunishmentManager {
      * @param reason The reason for unissuing the warning.
      */
     static async unissue(
-        interaction: BaseCommandInteraction,
+        interaction: RepliableInteraction,
         warning: Warning,
         reason: string
     ): Promise<OperationResult> {
@@ -308,10 +308,10 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const warningEmbed: MessageEmbed = new MessageEmbed()
+        const warningEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(localization.getTranslation("warningUnissued"))
             .setFooter({
@@ -350,10 +350,10 @@ export abstract class WarningManager extends PunishmentManager {
                 await CommandHelper.getUserPreferredLocale(member.id)
             );
 
-        const userWarningEmbed: MessageEmbed = new MessageEmbed()
+        const userWarningEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(userLocalization.getTranslation("warningUnissued"))
             .setFooter({
@@ -419,7 +419,7 @@ export abstract class WarningManager extends PunishmentManager {
      * @returns An object containing information about the operation.
      */
     static async transfer(
-        interaction: BaseCommandInteraction,
+        interaction: RepliableInteraction,
         fromUserId: Snowflake,
         toUserId: Snowflake,
         reason?: string | null
@@ -455,10 +455,10 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const logEmbed: MessageEmbed = new MessageEmbed()
+        const logEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ dynamic: true })!,
+                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
             })
             .setTitle(localization.getTranslation("warningTransferred"))
             .setDescription(
@@ -507,7 +507,7 @@ export abstract class WarningManager extends PunishmentManager {
     private static async notifyMember(
         member: GuildMember,
         content: string,
-        embed: MessageEmbed
+        embed: EmbedBuilder
     ): Promise<void> {
         await member.send({
             content: MessageCreator.createWarn(content),

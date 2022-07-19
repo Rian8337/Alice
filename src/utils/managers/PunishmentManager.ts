@@ -5,7 +5,12 @@ import {
     PunishmentManagerStrings,
 } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
 import { Language } from "@alice-localization/base/Language";
-import { Collection, GuildMember, Permissions, Snowflake } from "discord.js";
+import {
+    Collection,
+    GuildMember,
+    PermissionsBitField,
+    Snowflake,
+} from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { RoleTimeoutPermission } from "structures/moderation/RoleTimeoutPermission";
@@ -43,7 +48,7 @@ export abstract class PunishmentManager extends Manager {
         member: GuildMember,
         duration: number
     ): Promise<boolean> {
-        if (member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)) {
+        if (member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
             return true;
         }
 
@@ -91,7 +96,7 @@ export abstract class PunishmentManager extends Manager {
      */
     static async userIsImmune(member: GuildMember): Promise<boolean> {
         if (
-            member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ||
+            member.permissions.has(PermissionsBitField.Flags.Administrator) ||
             member.user.bot
         ) {
             return true;

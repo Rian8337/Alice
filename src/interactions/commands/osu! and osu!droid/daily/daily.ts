@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -19,18 +19,18 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "about",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "All you need to know about daily and weekly challenges!",
         },
         {
             name: "bonuses",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Views bonuses for the current ongoing challenge.",
             options: [
                 {
                     name: "type",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The type of the challenge. Defaults to daily.",
                     choices: [
@@ -48,12 +48,12 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "check",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Checks the current ongoing challenge.",
             options: [
                 {
                     name: "type",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The type of the challenge. Defaults to daily.",
                     choices: [
@@ -71,59 +71,59 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "checksubmit",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Checks if you, an osu!droid account, or Discord user has completed a challenge.",
             options: [
                 {
                     name: "challengeid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The ID of the challenge.",
                 },
                 {
                     name: "uid",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "username",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The username the osu!droid account.",
                 },
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The Discord user.",
                 },
             ],
         },
         {
             name: "challenges",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Manages challenges.",
             options: [
                 {
                     name: "add",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Adds a challenge.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
                         {
                             name: "beatmap",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description:
                                 "The beatmap ID or link that will be used in the challenge.",
                         },
                         {
                             name: "points",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                             description:
                                 "The amount of points awarded for completing the challenge.",
@@ -131,27 +131,27 @@ export const config: SlashCommand["config"] = {
                         },
                         {
                             name: "passrequirement",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The type of the pass requirement.",
                             choices: Challenge.passCommandChoices,
                         },
                         {
                             name: "passvalue",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description:
                                 "The value that must be fulfilled to pass the challenge.",
                         },
                         {
                             name: "featured",
-                            type: ApplicationCommandOptionTypes.USER,
+                            type: ApplicationCommandOptionType.User,
                             description:
                                 "The user who featured the challenge. Defaults to yourself.",
                         },
                         {
                             name: "constrain",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The mods required to complete the challenge. Defaults to none.",
                         },
@@ -159,12 +159,12 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "beatmap",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Changes the beatmap used in a challenge.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
@@ -172,12 +172,12 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "beatmapfile",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Gets the beatmap file of a challenge.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
@@ -185,32 +185,32 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "bonus",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Adds or modifies a bonus.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
                         {
                             name: "type",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The type of the bonus.",
                             choices: Challenge.bonusCommandChoices,
                         },
                         {
                             name: "level",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                             description: "The level of the bonus.",
                             minValue: 1,
                         },
                         {
                             name: "value",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The value to set the bonus to. Omit to delete the bonus level.",
                         },
@@ -218,13 +218,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "check",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Similar to /daily check, but will respond privately.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
@@ -232,18 +232,18 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "constrain",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Modifies the constrain of a challenge.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
                         {
                             name: "constrain",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The mods required to complete the challenge. Omit to clear the challenge's constrain.",
                         },
@@ -251,13 +251,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "delete",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Deletes a challenge given that it's still scheduled.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
@@ -265,25 +265,25 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "downloadlink",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Sets the download link to the beatmapset of the challenge.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
                         {
                             name: "link1",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The download link.",
                         },
                         {
                             name: "link2",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The alternative download link, if any.",
                         },
@@ -291,18 +291,18 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "featured",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Modifies the featured user of a challenge.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
                         {
                             name: "user",
-                            type: ApplicationCommandOptionTypes.USER,
+                            type: ApplicationCommandOptionType.User,
                             description:
                                 "The user to feature. Defaults to yourself.",
                         },
@@ -310,19 +310,19 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "passrequirement",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Modifies the pass requirement of a challenge.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
                         {
                             name: "type",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description:
                                 "The type of the new pass requirement.",
@@ -330,7 +330,7 @@ export const config: SlashCommand["config"] = {
                         },
                         {
                             name: "value",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description:
                                 "The value that must be fulfilled to pass the challenge.",
@@ -339,18 +339,18 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "points",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Modifies the points awarded in a challenge.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
                         {
                             name: "points",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                             description:
                                 "The points awarded for completing the challenge.",
@@ -360,13 +360,13 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "viewbonus",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Similar to /daily bonuses, but will respond privately.",
                     options: [
                         {
                             name: "id",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             description: "The ID of the challenge.",
                         },
@@ -376,75 +376,75 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "leaderboard",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Views daily and weekly challenges leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The page to view. Defaults to 1.",
                 },
             ],
         },
         {
             name: "manualsubmit",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Manually submits a replay towards the current ongoing challenge.",
             options: [
                 {
                     name: "replay",
                     required: true,
-                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    type: ApplicationCommandOptionType.Attachment,
                     description: "The replay file (.odr).",
                 },
             ],
         },
         {
             name: "profile",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Checks yours or an osu!droid account's challenge profile.",
             options: [
                 {
                     name: "uid",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
                 },
                 {
                     name: "username",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The username the osu!droid account.",
                 },
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The Discord user.",
                 },
             ],
         },
         {
             name: "start",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Starts a challenge.",
             options: [
                 {
                     name: "challengeid",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The ID of the challenge.",
                 },
             ],
         },
         {
             name: "submit",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Submits your 50 most recent plays towards the current ongoing challenge.",
             options: [
                 {
                     name: "type",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The type of the challenge. Defaults to daily.",
                     choices: [

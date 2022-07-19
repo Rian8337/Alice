@@ -4,11 +4,10 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import {
-    BaseCommandInteraction,
     Collection,
     GuildMember,
     Message,
-    MessageEmbed,
+    EmbedBuilder,
     MessageOptions,
     Snowflake,
 } from "discord.js";
@@ -36,6 +35,7 @@ import { InteractionHelper } from "./InteractionHelper";
 import { OsuBeatmapDifficultyHelper } from "./OsuBeatmapDifficultyHelper";
 import { ScoreHelper } from "./ScoreHelper";
 import { CommandHelper } from "./CommandHelper";
+import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A helper for displaying scores to a user.
@@ -49,14 +49,14 @@ export abstract class ScoreDisplayHelper {
      * @returns A message showing the player's recent plays.
      */
     static async showRecentPlays(
-        interaction: BaseCommandInteraction,
+        interaction: RepliableInteraction,
         player: Player,
         page: number = 1
     ): Promise<Message> {
         const localization: ScoreDisplayHelperLocalization =
             this.getLocalization(await CommandHelper.getLocale(interaction));
 
-        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+        const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
             author: interaction.user,
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
@@ -82,22 +82,23 @@ export abstract class ScoreDisplayHelper {
             ) {
                 const score: Score = player.recentPlays[i];
 
-                embed.addField(
-                    `${i + 1}. **${BeatmapManager.getRankEmote(
+                embed.addFields({
+                    name: `${i + 1}. **${BeatmapManager.getRankEmote(
                         <ScoreRank>score.rank
                     )}** | ${score.title} ${score.getCompleteModString()}`,
-                    `${score.score.toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
-                    )} / ${score.combo}x / ${(
-                        score.accuracy.value() * 100
-                    ).toFixed(2)}% / [${score.accuracy.n300}/${
-                        score.accuracy.n100
-                    }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
+                    value:
+                        `${score.score.toLocaleString(
+                            LocaleHelper.convertToBCP47(localization.language)
+                        )} / ${score.combo}x / ${(
+                            score.accuracy.value() * 100
+                        ).toFixed(2)}% / [${score.accuracy.n300}/${
+                            score.accuracy.n100
+                        }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
                         `\`${DateTimeFormatHelper.dateToLocaleString(
                             score.date,
                             localization.language
-                        )}\``
-                );
+                        )}\``,
+                });
             }
         };
 
@@ -148,7 +149,7 @@ export abstract class ScoreDisplayHelper {
      * @param cacheBeatmapToChannel Whether to cache the beatmap as the channel's latest beatmap. Defaults to `true`.
      */
     static async showBeatmapLeaderboard(
-        interaction: BaseCommandInteraction,
+        interaction: RepliableInteraction,
         hash: string,
         page: number = 1,
         cacheBeatmapToChannel: boolean = true
@@ -165,7 +166,7 @@ export abstract class ScoreDisplayHelper {
 
         if (beatmapInfo && cacheBeatmapToChannel) {
             BeatmapManager.setChannelLatestBeatmap(
-                interaction.channelId,
+                interaction.channelId!,
                 beatmapInfo.hash
             );
         }
@@ -333,17 +334,19 @@ export abstract class ScoreDisplayHelper {
                   )
                 : { embeds: [EmbedCreator.createNormalEmbed()] };
 
-            const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
+            const embed: EmbedBuilder = EmbedBuilder.from(
+                embedOptions.embeds![0]
+            );
 
-            embed.fields.pop();
+            embed.data.fields!.pop();
 
             const topScore: Score = leaderboardCache.get(1)![0];
 
-            if (!embed.title) {
+            if (!embed.data.title) {
                 embed.setTitle(topScore.title);
             } else if (noModDroidCalcResult && noModOsuCalcResult) {
                 embed.setTitle(
-                    embed.title +
+                    embed.data.title +
                         ` [${noModDroidCalcResult.result.total.toFixed(2)}${
                             Symbols.star
                         } | ${noModOsuCalcResult.result.total.toFixed(2)}${
@@ -352,14 +355,15 @@ export abstract class ScoreDisplayHelper {
                 );
             }
 
-            embed.addField(
-                `**${localization.getTranslation("topScore")}**`,
-                `**${topScore.username}${
-                    topScore.mods.length > 0
-                        ? ` (${topScore.getCompleteModString()})`
-                        : ""
-                }**\n` + (await getScoreDescription(topScore))
-            );
+            embed.addFields({
+                name: `**${localization.getTranslation("topScore")}**`,
+                value:
+                    `**${topScore.username}${
+                        topScore.mods.length > 0
+                            ? ` (${topScore.getCompleteModString()})`
+                            : ""
+                    }**\n` + (await getScoreDescription(topScore)),
+            });
 
             const displayedScores: Score[] = scores.slice(
                 5 * pageRemainder,
@@ -369,14 +373,14 @@ export abstract class ScoreDisplayHelper {
             let i = 20 * actualPage + 5 * pageRemainder;
 
             for (const score of displayedScores) {
-                embed.addField(
-                    `**#${++i} ${score.username}${
+                embed.addFields({
+                    name: `**#${++i} ${score.username}${
                         score.mods.length > 0
                             ? ` (${score.getCompleteModString()})`
                             : ""
                     }**`,
-                    await getScoreDescription(score)
-                );
+                    value: await getScoreDescription(score),
+                });
             }
 
             Object.assign(options, embedOptions);

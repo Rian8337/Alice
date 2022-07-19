@@ -1,7 +1,7 @@
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(
@@ -18,27 +18,27 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "check",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Checks yours or a player's droid pp (dpp) profile.",
             options: [
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to check.",
                 },
                 {
                     name: "uid",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the player.",
                 },
                 {
                     name: "username",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The username of the player.",
                 },
                 {
                     name: "page",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description:
                         "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Defaults to 1.",
                     minValue: 1,
@@ -46,7 +46,7 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "type",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The profile to view. Defaults to Live.",
                     choices: [
                         {
@@ -63,25 +63,25 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "compare",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description:
                 "Compares yours or a player's droid pp (dpp) profile with another player's droid pp (dpp) profile.",
             options: [
                 {
                     name: "uid",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Compares two players' droid pp (dpp) profile using their uid.",
                     options: [
                         {
                             name: "uidtocompare",
                             required: true,
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description: "The uid to compare against.",
                         },
                         {
                             name: "otheruid",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The other uid to compare against. If unspecified, defaults to yourself.",
                         },
@@ -89,19 +89,19 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Compares two players' droid pp (dpp) profile using their binded Discord account.",
                     options: [
                         {
                             name: "usertocompare",
                             required: true,
-                            type: ApplicationCommandOptionTypes.USER,
+                            type: ApplicationCommandOptionType.User,
                             description: "The Discord user to compare against.",
                         },
                         {
                             name: "otheruser",
-                            type: ApplicationCommandOptionTypes.USER,
+                            type: ApplicationCommandOptionType.User,
                             description:
                                 "The other Discord user to compare against. If unspecified, defaults to yourself.",
                         },
@@ -109,19 +109,19 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "username",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Compares two players' droid pp (dpp) profile using their username.",
                     options: [
                         {
                             name: "usernametocompare",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The username to compare against.",
                         },
                         {
                             name: "otherusername",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description:
                                 "The other username to compare against. If unspecified, defaults to yourself.",
                         },
@@ -131,57 +131,57 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "prototype",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description:
                 "Main subcommand group for checking a player's prototype droid pp (dpp) profile.",
             options: [
                 {
                     name: "export",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Exports yours or a player's prototype droid pp (dpp) profile.",
                     options: [
                         {
                             name: "user",
-                            type: ApplicationCommandOptionTypes.USER,
+                            type: ApplicationCommandOptionType.User,
                             description: "The user to export.",
                         },
                         {
                             name: "uid",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description: "The uid of the player.",
                         },
                         {
                             name: "username",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The username of the player.",
                         },
                     ],
                 },
                 {
                     name: "view",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Checks yours or a player's prototype droid pp (dpp) profile.",
                     options: [
                         {
                             name: "user",
-                            type: ApplicationCommandOptionTypes.USER,
+                            type: ApplicationCommandOptionType.User,
                             description: "The user to check.",
                         },
                         {
                             name: "uid",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description: "The uid of the player.",
                         },
                         {
                             name: "username",
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The username of the player.",
                         },
                         {
                             name: "page",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Defaults to 1.",
                             minValue: 1,
@@ -193,30 +193,30 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "submit",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Submits one or more score(s) the droid pp system.",
             options: [
                 {
                     name: "beatmap",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Submits a score from a beatmap.",
                     options: [
                         {
                             name: "beatmap",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The beatmap ID or link.",
                         },
                     ],
                 },
                 {
                     name: "recent",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     description: "Submits score(s) from your recent plays.",
                     options: [
                         {
                             name: "amount",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1.",
                             minValue: 1,
@@ -224,7 +224,7 @@ export const config: SlashCommand["config"] = {
                         },
                         {
                             name: "offset",
-                            type: ApplicationCommandOptionTypes.INTEGER,
+                            type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50.",
                             minValue: 1,
@@ -236,13 +236,13 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "whatif",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Calculates changes in overall pp and user stats when a user gets a certain pp play.",
             options: [
                 {
                     name: "pp",
-                    type: ApplicationCommandOptionTypes.NUMBER,
+                    type: ApplicationCommandOptionType.Number,
                     required: true,
                     description:
                         "The theoretical amount of pp achieved on a beatmap.",
@@ -250,17 +250,17 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to check.",
                 },
                 {
                     name: "uid",
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the user.",
                 },
                 {
                     name: "username",
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The username of the user.",
                 },
             ],

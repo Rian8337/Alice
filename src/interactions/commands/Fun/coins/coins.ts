@@ -3,7 +3,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -40,74 +40,74 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "add",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Adds Alice coins to a user (bot owner only).",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to add Alice coins to.",
                 },
                 {
                     name: "amount",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The amount of Alice coins to add.",
                 },
             ],
         },
         {
             name: "claim",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Claim daily Alice coins.",
         },
         {
             name: "remove",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Remove Alice coins from a user (bot owner only).",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to remove Alice coins from.",
                 },
                 {
                     name: "amount",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The amount of Alice coins to remove.",
                 },
             ],
         },
         {
             name: "transfer",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Transfer your Alice coins to a user",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to transfer Alice coins to.",
                 },
                 {
                     name: "amount",
                     required: true,
-                    type: ApplicationCommandOptionTypes.INTEGER,
+                    type: ApplicationCommandOptionType.Integer,
                     description: "The amount of Alice coins to transfer.",
                 },
             ],
         },
         {
             name: "view",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "View a user's Alice coins.",
             options: [
                 {
                     name: "user",
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The user to view. Defaults to yourself.",
                 },
             ],

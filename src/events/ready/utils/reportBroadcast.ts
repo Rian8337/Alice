@@ -7,7 +7,7 @@ import {
     Collection,
     Guild,
     Message,
-    MessageEmbed,
+    EmbedBuilder,
     Snowflake,
     TextChannel,
 } from "discord.js";
@@ -31,7 +31,7 @@ export const run: EventUtil["run"] = async (client) => {
 
         await guild.channels.fetch();
 
-        const embed: MessageEmbed =
+        const embed: EmbedBuilder =
             EmbedCreator.createReportBroadcastEmbed(guild);
 
         for (const channel of guild.channels.cache.values()) {
@@ -83,6 +83,6 @@ export const run: EventUtil["run"] = async (client) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for occasionally broadcasting report announcement",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

@@ -8,7 +8,8 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import {
     DMChannel,
-    Interaction,
+    InteractionType,
+    ModalSubmitInteraction,
     NewsChannel,
     TextChannel,
     ThreadChannel,
@@ -16,9 +17,9 @@ import {
 
 export const run: EventUtil["run"] = async (
     client,
-    interaction: Interaction
+    interaction: ModalSubmitInteraction
 ) => {
-    if (!interaction.isModalSubmit()) {
+    if (interaction.type !== InteractionType.ModalSubmit) {
         return;
     }
 
@@ -32,28 +33,32 @@ export const run: EventUtil["run"] = async (
         CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("debugModeActive")
             ),
             ephemeral: true,
         });
+
+        return;
     }
 
     const command: ModalCommand | undefined =
         client.interactions.modalSubmit.get(interaction.customId);
 
     if (!command) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotFound")
             ),
         });
+
+        return;
     }
 
     // Check for maintenance
     if (Config.maintenance && !botOwnerExecution) {
-        return interaction.reply({
+        interaction.reply({
             content: MessageCreator.createReject(
                 StringHelper.formatString(
                     localization.getTranslation("maintenanceMode"),
@@ -62,6 +67,8 @@ export const run: EventUtil["run"] = async (
             ),
             ephemeral: true,
         });
+
+        return;
     }
 
     // Log used command

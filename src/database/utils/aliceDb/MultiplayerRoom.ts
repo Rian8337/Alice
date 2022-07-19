@@ -44,7 +44,7 @@ import {
     OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
-import { AnyChannel, MessageEmbed, Snowflake } from "discord.js";
+import { Channel, EmbedBuilder, Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 
 /**
@@ -113,7 +113,7 @@ export class MultiplayerRoom
      * Deletes this room from the database.
      */
     async deleteRoom(): Promise<OperationResult> {
-        const channel: AnyChannel | null = await this.client.channels
+        const channel: Channel | null = await this.client.channels
             .fetch(this.channelId)
             .catch(() => null);
 
@@ -131,12 +131,12 @@ export class MultiplayerRoom
      *
      * @param language The language to localize. Defaults to English.
      */
-    getStatsEmbed(language: Language = "en"): MessageEmbed {
+    getStatsEmbed(language: Language = "en"): EmbedBuilder {
         const localization: MultiplayerRoomLocalization =
             this.getLocalization(language);
 
-        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
-            color: "BLURPLE",
+        const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+            color: "Blurple",
         });
 
         const BCP47: string = LocaleHelper.convertToBCP47(language);
@@ -169,55 +169,62 @@ export class MultiplayerRoom
                         BCP47
                     )}/${this.settings.maxPlayers.toLocaleString(BCP47)}`
             )
-            .addField(
-                localization.getTranslation("currentBeatmap"),
-                this.settings.beatmap
-                    ? `[${this.settings.beatmap.name}](https://osu.ppy.sh/b/${this.settings.beatmap.id})`
-                    : localization.getTranslation("none")
-            )
-            .addField(
-                localization.getTranslation("settings"),
-                `**${localization.getTranslation(
-                    "teamMode"
-                )}**: ${this.teamModeToString(language)}\n` +
-                    `**${localization.getTranslation(
-                        "winCondition"
-                    )}**: ${this.winConditionToString(language)}\n` +
-                    `**${localization.getTranslation("scorePortion")}**: ${(
-                        this.settings.scorePortion * 100
-                    )
-                        .toFixed(2)
-                        .toLocaleUpperCase(BCP47)}%\n` +
-                    `**${localization.getTranslation("forceAR")}**: ${
-                        this.settings.forcedAR.allowed
-                            ? Symbols.checkmark
-                            : Symbols.cross
-                    } (${this.settings.forcedAR.minValue.toLocaleString(
-                        BCP47
-                    )} min, ${this.settings.forcedAR.maxValue.toLocaleString(
-                        BCP47
-                    )} max)\n` +
-                    `**${localization.getTranslation(
-                        "speedMultiplier"
-                    )}**: ${this.settings.speedMultiplier.toLocaleString(
-                        BCP47
-                    )}\n` +
-                    `**${localization.getTranslation("allowSliderLock")}**: ${
-                        this.settings.allowSliderLock
-                            ? Symbols.checkmark
-                            : Symbols.cross
-                    }\n` +
-                    `**${localization.getTranslation("requiredMods")}**: ${
-                        this.settings.requiredMods ||
-                        localization.getTranslation("none")
-                    }\n` +
-                    `**${localization.getTranslation("allowedMods")}**: ${
-                        this.settings.allowedMods ||
-                        localization.getTranslation("none")
-                    }\n` +
-                    `**${localization.getTranslation(
-                        "customModMultipliers"
-                    )}**: ${this.getCustomModMultipliersDescription(language)}`
+            .addFields(
+                {
+                    name: localization.getTranslation("currentBeatmap"),
+                    value: this.settings.beatmap
+                        ? `[${this.settings.beatmap.name}](https://osu.ppy.sh/b/${this.settings.beatmap.id})`
+                        : localization.getTranslation("none"),
+                },
+                {
+                    name: localization.getTranslation("settings"),
+                    value:
+                        `**${localization.getTranslation(
+                            "teamMode"
+                        )}**: ${this.teamModeToString(language)}\n` +
+                        `**${localization.getTranslation(
+                            "winCondition"
+                        )}**: ${this.winConditionToString(language)}\n` +
+                        `**${localization.getTranslation("scorePortion")}**: ${(
+                            this.settings.scorePortion * 100
+                        )
+                            .toFixed(2)
+                            .toLocaleUpperCase(BCP47)}%\n` +
+                        `**${localization.getTranslation("forceAR")}**: ${
+                            this.settings.forcedAR.allowed
+                                ? Symbols.checkmark
+                                : Symbols.cross
+                        } (${this.settings.forcedAR.minValue.toLocaleString(
+                            BCP47
+                        )} min, ${this.settings.forcedAR.maxValue.toLocaleString(
+                            BCP47
+                        )} max)\n` +
+                        `**${localization.getTranslation(
+                            "speedMultiplier"
+                        )}**: ${this.settings.speedMultiplier.toLocaleString(
+                            BCP47
+                        )}\n` +
+                        `**${localization.getTranslation(
+                            "allowSliderLock"
+                        )}**: ${
+                            this.settings.allowSliderLock
+                                ? Symbols.checkmark
+                                : Symbols.cross
+                        }\n` +
+                        `**${localization.getTranslation("requiredMods")}**: ${
+                            this.settings.requiredMods ||
+                            localization.getTranslation("none")
+                        }\n` +
+                        `**${localization.getTranslation("allowedMods")}**: ${
+                            this.settings.allowedMods ||
+                            localization.getTranslation("none")
+                        }\n` +
+                        `**${localization.getTranslation(
+                            "customModMultipliers"
+                        )}**: ${this.getCustomModMultipliersDescription(
+                            language
+                        )}`,
+                }
             );
 
         return embed;
@@ -229,7 +236,7 @@ export class MultiplayerRoom
      * @param language The language to localize.
      */
 
-    async getResultEmbed(language: Language = "en"): Promise<MessageEmbed> {
+    async getResultEmbed(language: Language = "en"): Promise<EmbedBuilder> {
         switch (this.settings.teamMode) {
             case MultiplayerTeamMode.headToHead:
                 return this.getHeadToHeadResultEmbed(language);
@@ -353,11 +360,11 @@ export class MultiplayerRoom
      */
     private async getHeadToHeadResultEmbed(
         language: Language
-    ): Promise<MessageEmbed> {
+    ): Promise<EmbedBuilder> {
         const localization: MultiplayerRoomLocalization =
             this.getLocalization(language);
 
-        const embed: MessageEmbed = await this.getInitialResultEmbed(language);
+        const embed: EmbedBuilder = await this.getInitialResultEmbed(language);
 
         const validScores: MultiplayerScoreFinalResult[] = [];
         const invalidScores: MultiplayerScoreFinalResult[] = [];
@@ -430,30 +437,35 @@ export class MultiplayerRoom
             winners.push(score.username);
         }
 
-        embed
-            .addField(
-                localization.getTranslation("roomResults"),
-                [
-                    validScores
-                        .map((v, i) =>
-                            this.getScoreEmbedDescription(v, i + 1, language)
-                        )
-                        .join("\n\n"),
-                    invalidScores
-                        .map(
-                            (v, i) =>
+        embed.addFields(
+            {
+                name: localization.getTranslation("roomResults"),
+                value:
+                    [
+                        validScores
+                            .map((v, i) =>
                                 this.getScoreEmbedDescription(
                                     v,
-                                    validScores.length + i + 1,
+                                    i + 1,
                                     language
-                                ) + ` - **${v.reason}**`
-                        )
-                        .join("\n\n"),
-                ].join("\n\n") || localization.getTranslation("none")
-            )
-            .addField(
-                "=================================",
-                `**${
+                                )
+                            )
+                            .join("\n\n"),
+                        invalidScores
+                            .map(
+                                (v, i) =>
+                                    this.getScoreEmbedDescription(
+                                        v,
+                                        validScores.length + i + 1,
+                                        language
+                                    ) + ` - **${v.reason}**`
+                            )
+                            .join("\n\n"),
+                    ].join("\n\n") || localization.getTranslation("none"),
+            },
+            {
+                name: "=================================",
+                value: `**${
                     winners.length === this.players.length
                         ? localization.getTranslation("draw")
                         : StringHelper.formatString(
@@ -461,8 +473,9 @@ export class MultiplayerRoom
                               winners.join(", ") ||
                                   localization.getTranslation("none")
                           )
-                }**`
-            );
+                }**`,
+            }
+        );
 
         return embed;
     }
@@ -474,11 +487,11 @@ export class MultiplayerRoom
      */
     private async getTeamVSResultEmbed(
         language: Language
-    ): Promise<MessageEmbed> {
+    ): Promise<EmbedBuilder> {
         const localization: MultiplayerRoomLocalization =
             this.getLocalization(language);
 
-        const embed: MessageEmbed = await this.getInitialResultEmbed(language);
+        const embed: EmbedBuilder = await this.getInitialResultEmbed(language);
 
         const validRedTeamScores: MultiplayerScoreFinalResult[] = [];
         const validBlueTeamScores: MultiplayerScoreFinalResult[] = [];
@@ -566,79 +579,89 @@ export class MultiplayerRoom
         embed
             .setColor(
                 Precision.almostEqualsNumber(redTotalScore, blueTotalScore)
-                    ? "DEFAULT"
+                    ? "Default"
                     : redTotalScore > blueTotalScore
                     ? 16711680
                     : 262399
             )
-            .addField(
-                localization.getTranslation("redTeam"),
-                `**${localization.getTranslation(
-                    "totalScore"
-                )}: ${redTotalScore.toLocaleString(BCP47)}**\n` +
-                    [
-                        validRedTeamScores
-                            .map((v, i) =>
-                                this.getScoreEmbedDescription(
-                                    v,
-                                    i + 1,
-                                    language
-                                )
-                            )
-                            .join("\n\n"),
-                        invalidRedTeamScores
-                            .map(
-                                (v, i) =>
-                                    this.getScoreEmbedDescription(
-                                        v,
-                                        validRedTeamScores.length + i + 1,
-                                        language
-                                    ) + ` - **${v.reason}**`
-                            )
-                            .join("\n\n"),
-                    ].join("\n\n") || localization.getTranslation("none")
-            )
-            .addField(
-                localization.getTranslation("blueTeam"),
-                `**${localization.getTranslation(
-                    "totalScore"
-                )}: ${blueTotalScore.toLocaleString(BCP47)}**\n` +
-                    [
-                        validBlueTeamScores
-                            .map((v, i) =>
-                                this.getScoreEmbedDescription(
-                                    v,
-                                    i + 1,
-                                    language
-                                )
-                            )
-                            .join("\n\n"),
-                        invalidBlueTeamScores
-                            .map(
-                                (v, i) =>
-                                    this.getScoreEmbedDescription(
-                                        v,
-                                        validBlueTeamScores.length + i + 1,
-                                        language
-                                    ) + ` - **${v.reason}**`
-                            )
-                            .join("\n\n"),
-                    ].join("\n\n") || localization.getTranslation("none")
-            )
-            .addField(
-                "=================================",
-                `**${
-                    redTotalScore === blueTotalScore
-                        ? localization.getTranslation("draw")
-                        : StringHelper.formatString(
-                              localization.getTranslation("won"),
-                              localization.getTranslation(
-                                  redTotalScore > blueTotalScore
-                                      ? "redTeam"
-                                      : "blueTeam"
+            .addFields(
+                {
+                    name: localization.getTranslation("redTeam"),
+                    value:
+                        `**${localization.getTranslation(
+                            "totalScore"
+                        )}: ${redTotalScore.toLocaleString(BCP47)}**\n` +
+                            [
+                                validRedTeamScores
+                                    .map((v, i) =>
+                                        this.getScoreEmbedDescription(
+                                            v,
+                                            i + 1,
+                                            language
+                                        )
+                                    )
+                                    .join("\n\n"),
+                                invalidRedTeamScores
+                                    .map(
+                                        (v, i) =>
+                                            this.getScoreEmbedDescription(
+                                                v,
+                                                validRedTeamScores.length +
+                                                    i +
+                                                    1,
+                                                language
+                                            ) + ` - **${v.reason}**`
+                                    )
+                                    .join("\n\n"),
+                            ].join("\n\n") ||
+                        localization.getTranslation("none"),
+                },
+                {
+                    name: localization.getTranslation("blueTeam"),
+                    value:
+                        `**${localization.getTranslation(
+                            "totalScore"
+                        )}: ${blueTotalScore.toLocaleString(BCP47)}**\n` +
+                            [
+                                validBlueTeamScores
+                                    .map((v, i) =>
+                                        this.getScoreEmbedDescription(
+                                            v,
+                                            i + 1,
+                                            language
+                                        )
+                                    )
+                                    .join("\n\n"),
+                                invalidBlueTeamScores
+                                    .map(
+                                        (v, i) =>
+                                            this.getScoreEmbedDescription(
+                                                v,
+                                                validBlueTeamScores.length +
+                                                    i +
+                                                    1,
+                                                language
+                                            ) + ` - **${v.reason}**`
+                                    )
+                                    .join("\n\n"),
+                            ].join("\n\n") ||
+                        localization.getTranslation("none"),
+                },
+                {
+                    name: "=================================",
+                    value: `**${
+                        redTotalScore === blueTotalScore
+                            ? localization.getTranslation("draw")
+                            : StringHelper.formatString(
+                                  localization.getTranslation("won"),
+                                  localization.getTranslation(
+                                      redTotalScore > blueTotalScore
+                                          ? "redTeam"
+                                          : "blueTeam"
+                                  )
                               )
-                          )
-                }**`
+                    }**`,
+                }
             );
 
         return embed;
@@ -1094,12 +1117,12 @@ export class MultiplayerRoom
      */
     private async getInitialResultEmbed(
         language: Language
-    ): Promise<MessageEmbed> {
+    ): Promise<EmbedBuilder> {
         const localization: MultiplayerRoomLocalization =
             this.getLocalization(language);
 
-        const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
-            color: "FUCHSIA",
+        const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+            color: "Fuchsia",
         });
 
         const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(

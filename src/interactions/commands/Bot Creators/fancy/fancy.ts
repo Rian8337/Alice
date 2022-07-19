@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -18,45 +18,45 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "lock",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Locks a user from the lounge channel.",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The Discord user to lock.",
                 },
                 {
                     name: "duration",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description:
                         "The duration to lock for, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Use -1 to permanent lock.",
                 },
                 {
                     name: "reason",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The reason for unlocking the user.",
                 },
             ],
         },
         {
             name: "unlock",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description: "Unlocks a user from the lounge channel.",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: ApplicationCommandOptionTypes.USER,
+                    type: ApplicationCommandOptionType.User,
                     description: "The Discord user to unlock.",
                 },
                 {
                     name: "reason",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The reason for unlocking the user.",
                 },
             ],
@@ -74,7 +74,7 @@ export const config: SlashCommand["config"] = {
             description: "will lock Rian8337 from the lounge channel.",
         },
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     replyEphemeral: true,
-    scope: "ALL",
+    scope: "GUILD_CHANNEL",
 };

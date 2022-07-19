@@ -8,10 +8,9 @@ import {
 } from "@discordjs/voice";
 import {
     Collection,
+    GuildTextBasedChannel,
     Snowflake,
     StageChannel,
-    TextChannel,
-    ThreadChannel,
     VoiceChannel,
 } from "discord.js";
 import { OperationResult } from "structures/core/OperationResult";
@@ -41,7 +40,7 @@ export abstract class MusicManager extends Manager {
      */
     static async enqueue(
         channel: VoiceChannel | StageChannel,
-        executionChannel: TextChannel | ThreadChannel,
+        executionChannel: GuildTextBasedChannel,
         queue: MusicQueue,
         language: Language = "en",
         index?: number

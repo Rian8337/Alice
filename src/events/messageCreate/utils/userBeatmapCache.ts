@@ -42,6 +42,6 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 export const config: EventUtil["config"] = {
     description:
         "Responsible for caching latest beatmap in discussion from messages from users.",
-    togglePermissions: ["BOT_OWNER"],
+    togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

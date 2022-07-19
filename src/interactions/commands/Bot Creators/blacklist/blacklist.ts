@@ -7,11 +7,13 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { BlacklistLocalization } from "@alice-localization/interactions/commands/Bot Creators/blacklist/BlacklistLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { SelectMenuInteraction } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    SelectMenuInteraction,
+} from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: BlacklistLocalization = new BlacklistLocalization(
@@ -150,13 +152,13 @@ export const config: SlashCommand["config"] = {
         {
             name: "beatmap",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The beatmap ID or link to take an action with.",
         },
         {
             name: "reason",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 "The reason for taking the action. Required for blacklisting action.",
         },
@@ -208,6 +210,6 @@ export const config: SlashCommand["config"] = {
                 'will blacklist/unblacklist the linked beatmap with reason "Broken due to diffcalc".',
         },
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     scope: "ALL",
 };

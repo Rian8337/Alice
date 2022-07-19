@@ -3,45 +3,45 @@ import { WhitelistLocalization } from "@alice-localization/interactions/commands
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
         await CommandHelper.getLocale(interaction)
     );
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    embed
-        .setTitle(localization.getTranslation("filteringBeatmaps"))
-        .addField(
-            localization.getTranslation("filterOptionsTitle"),
-            localization.getTranslation("filterOptionsDescription")
-        )
-        .addField(
-            localization.getTranslation("sortingOptionsTitle"),
-            localization.getTranslation("sortingOptionsDescription")
-        )
-        .addField(
-            localization.getTranslation("equalitySymbolsTitle"),
-            localization.getTranslation("equalitySymbolsDescription")
-        )
-        .addField(
-            localization.getTranslation("behaviorTitle"),
-            localization.getTranslation("behaviorDescription")
-        )
-        .addField(
-            localization.getTranslation("examplesTitle"),
-            [
+    embed.setTitle(localization.getTranslation("filteringBeatmaps")).addFields(
+        {
+            name: localization.getTranslation("filterOptionsTitle"),
+            value: localization.getTranslation("filterOptionsDescription"),
+        },
+        {
+            name: localization.getTranslation("sortingOptionsTitle"),
+            value: localization.getTranslation("sortingOptionsDescription"),
+        },
+        {
+            name: localization.getTranslation("equalitySymbolsTitle"),
+            value: localization.getTranslation("equalitySymbolsDescription"),
+        },
+        {
+            name: localization.getTranslation("behaviorTitle"),
+            value: localization.getTranslation("behaviorDescription"),
+        },
+        {
+            name: localization.getTranslation("examplesTitle"),
+            value: [
                 localization.getTranslation("examplesDescription1"),
                 localization.getTranslation("examplesDescription2"),
                 localization.getTranslation("examplesDescription3"),
                 localization.getTranslation("examplesDescription4"),
-            ].join("\n\n")
-        );
+            ].join("\n\n"),
+        }
+    );
 
     InteractionHelper.reply(interaction, {
         embeds: [embed],

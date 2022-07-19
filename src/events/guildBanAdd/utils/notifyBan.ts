@@ -3,9 +3,10 @@ import {
     GuildAuditLogsEntry,
     GuildBan,
     GuildChannel,
-    MessageEmbed,
+    EmbedBuilder,
     TextChannel,
     User,
+    AuditLogEvent,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -13,19 +14,14 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 
 export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
-    const auditLogEntries: GuildAuditLogs<"MEMBER_BAN_ADD"> =
+    const auditLogEntries: GuildAuditLogs<AuditLogEvent.MemberBanAdd> =
         await guildBan.guild.fetchAuditLogs({
             limit: 1,
-            type: "MEMBER_BAN_ADD",
+            type: AuditLogEvent.MemberBanAdd,
         });
 
     const banLog:
-        | GuildAuditLogsEntry<
-              "MEMBER_BAN_ADD",
-              "MEMBER_BAN_ADD",
-              "DELETE",
-              "USER"
-          >
+        | GuildAuditLogsEntry<AuditLogEvent.MemberBanAdd, "Delete", "User">
         | undefined = auditLogEntries.entries.first();
 
     if (!banLog) {
@@ -54,23 +50,28 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         timestamp: true,
     });
 
     embed
         .setTitle("Ban Executed")
-        .setThumbnail(user.avatarURL({ dynamic: true })!)
-        .addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
-        .addField(
-            "=========================",
-            `Reason: ${banLog.reason ?? "Not specified."}`
+        .setThumbnail(user.avatarURL({ extension: "gif" })!)
+        .addFields(
+            {
+                name: `Banned user: ${user.tag}`,
+                value: `User ID: ${user.id}`,
+            },
+            {
+                name: "=========================",
+                value: `Reason: ${banLog.reason ?? "Not specified."}`,
+            }
         );
 
     if (banLog.executor) {
         embed.setAuthor({
             name: banLog.executor.tag,
-            iconURL: banLog.executor.avatarURL({ dynamic: true })!,
+            iconURL: banLog.executor.avatarURL({ extension: "gif" })!,
         });
     }
 
@@ -79,6 +80,6 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
 export const config: EventUtil["config"] = {
     description: "Responsible for notifying about ban actions.",
-    togglePermissions: ["MANAGE_GUILD"],
+    togglePermissions: ["ManageGuild"],
     toggleScope: ["GLOBAL", "GUILD"],
 };

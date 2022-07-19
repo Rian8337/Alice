@@ -50,7 +50,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const options: MessageOptions = {};
+    const options: MessageOptions = {
+        allowedMentions: {
+            parse: [],
+        },
+    };
 
     if (tag.content) {
         options.content = tag.content;

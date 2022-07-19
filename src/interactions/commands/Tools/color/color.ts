@@ -1,6 +1,5 @@
-import { MessageAttachment } from "discord.js";
 import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType, AttachmentBuilder } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -30,7 +29,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     c.fillStyle = color;
     c.fillRect(0, 0, 75, 75);
 
-    const attachment: MessageAttachment = new MessageAttachment(
+    const attachment: AttachmentBuilder = new AttachmentBuilder(
         canvas.toBuffer()
     );
 
@@ -52,7 +51,7 @@ export const config: SlashCommand["config"] = {
         {
             name: "hexcode",
             required: true,
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description: "The hex code of the color.",
         },
     ],

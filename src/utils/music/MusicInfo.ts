@@ -13,6 +13,7 @@ import {
 } from "@discordjs/voice";
 import {
     DMChannel,
+    GuildTextBasedChannel,
     PartialDMChannel,
     Snowflake,
     TextBasedChannel,
@@ -96,80 +97,74 @@ export class MusicInfo {
     constructor(
         connection: VoiceConnection,
         voiceChannelId: Snowflake,
-        executionChannel: Exclude<
-            TextBasedChannel,
-            DMChannel | PartialDMChannel
-        >
+        executionChannel: GuildTextBasedChannel
     ) {
         this.connection = connection;
         this.voiceChannelId = voiceChannelId;
         this.executionChannel = executionChannel;
         this.createdAt = new Date();
 
-        this.connection.on<"stateChange">(
-            "stateChange",
-            async (_, newState) => {
-                switch (newState.status) {
-                    case VoiceConnectionStatus.Disconnected:
-                        if (
-                            newState.reason ===
-                                VoiceConnectionDisconnectReason.WebSocketClose &&
-                            newState.closeCode === 4014
-                        ) {
-                            try {
-                                // Probably moved voice channel.
-                                await entersState(
-                                    this.connection,
-                                    VoiceConnectionStatus.Connecting,
-                                    5e3
-                                );
-                            } catch {
-                                // Probably removed from voice channel.
-                                this.connection.destroy();
-                            }
-                        } else if (this.connection.rejoinAttempts < 5) {
-                            await HelperFunctions.sleep(
-                                (this.connection.rejoinAttempts + 1) * 5e3
+        this.connection.on("stateChange", async (_, newState) => {
+            switch (newState.status) {
+                case VoiceConnectionStatus.Disconnected:
+                    if (
+                        newState.reason ===
+                            VoiceConnectionDisconnectReason.WebSocketClose &&
+                        newState.closeCode === 4014
+                    ) {
+                        try {
+                            // Probably moved voice channel.
+                            await entersState(
+                                this.connection,
+                                VoiceConnectionStatus.Connecting,
+                                5e3
                             );
-                            this.connection.rejoin();
-                        } else {
+                        } catch {
+                            // Probably removed from voice channel.
                             this.connection.destroy();
                         }
-                        break;
-                    case VoiceConnectionStatus.Destroyed:
-                        this.stop();
-                        break;
-                    case VoiceConnectionStatus.Connecting:
-                    case VoiceConnectionStatus.Signalling:
-                        if (!this.readyLock) {
-                            // Set a 20 second time limit for the connection to become ready before
-                            // destroying the voice connection. This stops the voice connection from permanently
-                            // existing in one of these states.
-                            this.readyLock = true;
+                    } else if (this.connection.rejoinAttempts < 5) {
+                        await HelperFunctions.sleep(
+                            (this.connection.rejoinAttempts + 1) * 5e3
+                        );
+                        this.connection.rejoin();
+                    } else {
+                        this.connection.destroy();
+                    }
+                    break;
+                case VoiceConnectionStatus.Destroyed:
+                    this.stop();
+                    break;
+                case VoiceConnectionStatus.Connecting:
+                case VoiceConnectionStatus.Signalling:
+                    if (!this.readyLock) {
+                        // Set a 20 second time limit for the connection to become ready before
+                        // destroying the voice connection. This stops the voice connection from permanently
+                        // existing in one of these states.
+                        this.readyLock = true;
 
-                            try {
-                                await entersState(
-                                    this.connection,
-                                    VoiceConnectionStatus.Ready,
-                                    2e4
-                                );
-                            } catch {
-                                if (
-                                    this.connection.state.status !==
-                                    VoiceConnectionStatus.Destroyed
-                                ) {
-                                    this.connection.destroy();
-                                }
+                        try {
+                            await entersState(
+                                this.connection,
+                                VoiceConnectionStatus.Ready,
+                                2e4
+                            );
+                        } catch {
+                            if (
+                                this.connection.state.status !==
+                                VoiceConnectionStatus.Destroyed
+                            ) {
+                                this.connection.destroy();
                             }
-
-                            this.readyLock = false;
                         }
-                        break;
-                }
-            }
-        );
 
-        this.player.on<"stateChange">("stateChange", (oldState, newState) => {
+                        this.readyLock = false;
+                    }
+                    break;
+            }
+        });
+
+        this.player.on("stateChange", (oldState, newState) => {
             if (
                 newState.status === AudioPlayerStatus.Idle &&
                 oldState.status !== AudioPlayerStatus.Idle

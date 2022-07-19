@@ -1,5 +1,5 @@
 import { Config } from "@alice-core/Config";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -40,7 +40,7 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "reason",
-            type: ApplicationCommandOptionTypes.STRING,
+            type: ApplicationCommandOptionType.String,
             description:
                 'The reason to toggle maintenance mode. Defaults to "Unknown".',
         },
@@ -52,6 +52,6 @@ export const config: SlashCommand["config"] = {
                 'will toggle maintenance mode for "Discord API problem".',
         },
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     scope: "ALL",
 };

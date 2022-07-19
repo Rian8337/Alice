@@ -10,7 +10,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageEmbed, GuildMember } from "discord.js";
+import { EmbedBuilder, GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
@@ -32,7 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -45,15 +45,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ) {
             const map: TournamentBeatmap = pool.maps.at(i)!;
 
-            embed.addField(
-                map.name,
-                `**${localization.getTranslation(
+            embed.addFields({
+                name: map.name,
+                value: `**${localization.getTranslation(
                     "length"
                 )}**: ${DateTimeFormatHelper.secondsToDHMS(
                     map.duration,
                     localization.language
-                )}`
-            );
+                )}`,
+            });
         }
     };
 

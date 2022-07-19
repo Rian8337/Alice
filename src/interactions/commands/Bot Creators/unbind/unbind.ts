@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
@@ -78,7 +78,7 @@ export const config: SlashCommand["config"] = {
         {
             name: "uid",
             required: true,
-            type: ApplicationCommandOptionTypes.INTEGER,
+            type: ApplicationCommandOptionType.Integer,
             description: "The uid to unbind.",
         },
     ],
@@ -95,6 +95,6 @@ export const config: SlashCommand["config"] = {
                 "will unbind the osu!droid account with uid 51076 if it is binded to a Discord account.",
         },
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: ["BotOwner"],
     scope: "ALL",
 };

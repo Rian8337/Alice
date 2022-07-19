@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
@@ -27,28 +27,30 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    embed
-        .setTitle(collection.name)
-        .addField(
-            localization.getTranslation("collectionOwner"),
-            `<@${collection.owner}> (${collection.owner})`
-        )
-        .addField(
-            localization.getTranslation("creationDate"),
-            DateTimeFormatHelper.dateToLocaleString(
+    embed.setTitle(collection.name).addFields(
+        {
+            name: localization.getTranslation("collectionOwner"),
+            value: `<@${collection.owner}> (${collection.owner})`,
+        },
+        {
+            name: localization.getTranslation("creationDate"),
+            value: DateTimeFormatHelper.dateToLocaleString(
                 new Date(collection.createdAt),
                 localization.language
-            )
-        )
-        .addField(
-            localization.getTranslation("collectionLinks"),
-            collection.videoIds.map((v, i) => `${i + 1}. ${v}`).join("\n")
-        );
+            ),
+        },
+        {
+            name: localization.getTranslation("collectionLinks"),
+            value: collection.videoIds
+                .map((v, i) => `${i + 1}. ${v}`)
+                .join("\n"),
+        }
+    );
 
     InteractionHelper.reply(interaction, {
         embeds: [embed],

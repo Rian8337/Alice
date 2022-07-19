@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -18,25 +18,25 @@ export const config: SlashCommand["config"] = {
     options: [
         {
             name: "leaderboard",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Leaderboard commands for tournament mappools.",
             options: [
                 {
                     name: "output",
                     description:
                         "Outputs the ScoreV2 leaderboard of a tournament beatmap to a CSV file.",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: "id",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The ID of the mappool.",
                         },
                         {
                             name: "pick",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The pick to output (NM1, NM2, etc).",
                         },
                     ],
@@ -45,18 +45,18 @@ export const config: SlashCommand["config"] = {
                     name: "view",
                     description:
                         "Views the ScoreV2 leaderboard of a tournament beatmap in a registered tournament mappool.",
-                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: "id",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The ID of the mappool.",
                         },
                         {
                             name: "pick",
                             required: true,
-                            type: ApplicationCommandOptionTypes.STRING,
+                            type: ApplicationCommandOptionType.String,
                             description: "The pick to view (NM1, NM2, etc).",
                         },
                     ],
@@ -65,14 +65,14 @@ export const config: SlashCommand["config"] = {
         },
         {
             name: "view",
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
+            type: ApplicationCommandOptionType.Subcommand,
             description:
                 "Retrieves a list of beatmaps from a registered tournament mappool.",
             options: [
                 {
                     name: "id",
                     required: true,
-                    type: ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     description: "The ID of the mappool.",
                 },
             ],
