@@ -26,6 +26,7 @@ import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { ModalCommand } from "structures/core/ModalCommand";
 import { BotInteractions } from "structures/core/BotInteractions";
 import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
+import { Config } from "./Config";
 
 /**
  * The starting point of the bot.
@@ -108,8 +109,7 @@ export class Bot extends Client<true> {
         await this.connectToDatabase();
 
         await super.login(
-            /* Config.isDebug ? process.env.DEBUG_BOT_TOKEN :  */ process.env
-                .BOT_TOKEN
+            Config.isDebug ? process.env.DEBUG_BOT_TOKEN : process.env.BOT_TOKEN
         );
 
         await this.initUtils();
@@ -421,16 +421,16 @@ export class Bot extends Client<true> {
     private async registerDeployCommands(
         forceRegister?: boolean
     ): Promise<void> {
-        if (!this.application?.owner) {
-            await this.application?.fetch();
-        }
-
-        const deployCommandID: Snowflake = <Snowflake>/* Config.isDebug
+        const deployCommandID: Snowflake = <Snowflake>(
+            (Config.isDebug
                 ? process.env.DEBUG_BOT_DEPLOY_ID
-                : */ process.env.BOT_DEPLOY_ID;
-        const undeployCommandID: Snowflake = <Snowflake>/* Config.isDebug
+                : process.env.BOT_DEPLOY_ID)
+        );
+        const undeployCommandID: Snowflake = <Snowflake>(
+            (Config.isDebug
                 ? process.env.DEBUG_BOT_UNDEPLOY_ID
-                : */ process.env.BOT_UNDEPLOY_ID;
+                : process.env.BOT_UNDEPLOY_ID)
+        );
 
         const registerCommand = async (name: string): Promise<void> => {
             this.logger.info(`Registering ${name} command`);
