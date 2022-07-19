@@ -152,7 +152,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const wordCount: number = summary.split(" ").length;
+    const wordCount: number = summary.split(/\s+/g).length;
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
