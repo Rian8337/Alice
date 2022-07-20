@@ -33,7 +33,7 @@ export abstract class NumberHelper extends MathUtils {
      * @returns Whether the value is a numeric value.
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static isNumeric(value: any): boolean {
+    static isNumeric(value: any): value is number {
         return !isNaN(value - parseFloat(value));
     }
 
