@@ -73,6 +73,7 @@ export class Bot extends Client<true> {
                 GatewayIntentBits.GuildEmojisAndStickers,
                 GatewayIntentBits.GuildMessageReactions,
                 GatewayIntentBits.DirectMessages,
+                GatewayIntentBits.MessageContent,
             ],
             partials: [
                 Partials.Channel,
