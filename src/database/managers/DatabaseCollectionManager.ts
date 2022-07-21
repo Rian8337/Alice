@@ -111,6 +111,11 @@ export abstract class DatabaseCollectionManager<
         filter: Filter<T> = {},
         options?: FindOptions<T>
     ): Promise<DiscordCollection<NonNullable<T[K]>, C>> {
+        if (options?.projection?.[<keyof Document>key] === 0) {
+            // Prevent cases where key is undefined.
+            options.projection[<keyof Document>key] = 1;
+        }
+
         const res: T[] = <T[]>(
             await this.collection
                 .find(filter, this.processFindOptions(options))
