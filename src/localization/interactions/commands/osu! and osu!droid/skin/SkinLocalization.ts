@@ -6,10 +6,20 @@ import { SkinIDTranslation } from "./translations/SkinIDTranslation";
 import { SkinKRTranslation } from "./translations/SkinKRTranslation";
 
 export interface SkinStrings {
-    readonly skinSet: string;
+    readonly invalidSkinLink: string;
+    readonly skinNameNotAvailable: string;
+    readonly skinNotFound: string;
+    readonly skinNotOwnedByUser: string;
     readonly noSkinSetForUser: string;
-    readonly userSkinInfo: string;
-    readonly tsukushiSite: string;
+    readonly previewImageTooBig: string;
+    readonly invalidPreviewImage: string;
+    readonly userSkinList: string;
+    readonly addSkinFailed: string;
+    readonly addSkinSuccess: string;
+    readonly deleteSkinFailed: string;
+    readonly deleteSkinSuccess: string;
+    readonly editSkinFailed: string;
+    readonly editSkinSuccess: string;
 }
 
 /**

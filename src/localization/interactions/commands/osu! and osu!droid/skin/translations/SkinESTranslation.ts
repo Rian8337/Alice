@@ -6,10 +6,19 @@ import { SkinStrings } from "../SkinLocalization";
  */
 export class SkinESTranslation extends Translation<SkinStrings> {
     override readonly translations: SkinStrings = {
-        skinSet: "%s, colocaste correctamente <%s> como tu skin.",
         noSkinSetForUser: "Lo siento, este usuario no tiene ninguna skin!",
-        userSkinInfo: "Skin de %s : %s",
-        tsukushiSite:
-            "Para ver una colección de skins, visita https://tsukushi.site",
+        invalidSkinLink: "",
+        skinNameNotAvailable: "",
+        skinNotFound: "",
+        skinNotOwnedByUser: "",
+        previewImageTooBig: "",
+        invalidPreviewImage: "",
+        userSkinList: "",
+        addSkinFailed: "",
+        addSkinSuccess: "",
+        deleteSkinFailed: "",
+        deleteSkinSuccess: "",
+        editSkinFailed: "",
+        editSkinSuccess: "",
     };
 }

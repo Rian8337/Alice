@@ -1,3 +1,4 @@
+import { SkinPreview } from "@alice-structures/skins/SkinPreview";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 
@@ -11,7 +12,22 @@ export interface DatabasePlayerSkin extends BaseDocument {
     discordid: Snowflake;
 
     /**
-     * The URL to the user's skin.
+     * The name of the skin.
      */
-    skin: string;
+    name: string;
+
+    /**
+     * The description of the skin.
+     */
+    description: string;
+
+    /**
+     * The URL to the skin.
+     */
+    url: string;
+
+    /**
+     * The previews of the skin.
+     */
+    previews?: SkinPreview;
 }

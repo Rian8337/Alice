@@ -2,7 +2,6 @@ import { PlayerSkin } from "@alice-database/utils/aliceDb/PlayerSkin";
 import { DatabasePlayerSkin } from "structures/database/aliceDb/DatabasePlayerSkin";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake, User } from "discord.js";
-import { OperationResult } from "structures/core/OperationResult";
 
 /**
  * A manager for the `playerskin` collection.
@@ -18,54 +17,51 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<
     override get defaultDocument(): DatabasePlayerSkin {
         return {
             discordid: "",
-            skin: "",
+            name: "",
+            description: "",
+            url: "",
         };
     }
 
     /**
-     * Gets a user's skin.
+     * Gets a skin by its name.
      *
-     * @param user The user to get the skin from.
+     * @param name The name of the skin.
+     * @returns The skin, `null` if not found.
      */
-    getUserSkin(user: User): Promise<PlayerSkin | null>;
-
-    /**
-     * Gets a user's skin.
-     *
-     * @param id The ID of the user to get the skin from.
-     */
-    getUserSkin(id: Snowflake): Promise<PlayerSkin | null>;
-
-    getUserSkin(userOrId: User | Snowflake): Promise<PlayerSkin | null> {
+    getFromName(name: string): Promise<PlayerSkin | null> {
         return this.getOne({
-            discordid: userOrId instanceof User ? userOrId.id : userOrId,
+            name: name,
         });
     }
 
-    /**
-     * Inserts or updates a user's skin.
-     *
-     * @param id The ID of the user.
-     * @param link The link to the skin.
-     */
-    insertNewSkin(id: Snowflake, link: string): Promise<OperationResult>;
+    getRaw(): Promise<DatabasePlayerSkin[]> {
+        return this.collection.find().toArray();
+    }
 
     /**
-     * Inserts or updates a user's skin.
+     * Checks a skin name availability of a user.
      *
      * @param user The user.
-     * @param link The link to the skin.
+     * @param name The name of the skin.
+     * @returns Whether the name is available.
      */
-    insertNewSkin(user: User, link: string): Promise<OperationResult>;
-
-    insertNewSkin(
-        userOrId: User | Snowflake,
-        link: string
-    ): Promise<OperationResult> {
-        return this.updateOne(
-            { discordid: userOrId instanceof User ? userOrId.id : userOrId },
-            { $set: { skin: link } },
-            { upsert: true }
+    async checkSkinNameAvailability(
+        user: User | Snowflake,
+        name: string
+    ): Promise<boolean> {
+        const skin: PlayerSkin | null = await this.getOne(
+            {
+                discordid: user instanceof User ? user.id : user,
+                name: name,
+            },
+            {
+                projection: {
+                    _id: 1,
+                },
+            }
         );
+
+        return skin !== null;
     }
 }

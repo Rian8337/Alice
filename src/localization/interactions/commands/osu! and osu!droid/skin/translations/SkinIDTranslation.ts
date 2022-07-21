@@ -6,9 +6,19 @@ import { SkinStrings } from "../SkinLocalization";
  */
 export class SkinIDTranslation extends Translation<SkinStrings> {
     override readonly translations: SkinStrings = {
-        skinSet: "",
         noSkinSetForUser: "",
-        userSkinInfo: "",
-        tsukushiSite: "",
+        invalidSkinLink: "",
+        skinNameNotAvailable: "",
+        skinNotFound: "",
+        skinNotOwnedByUser: "",
+        previewImageTooBig: "",
+        invalidPreviewImage: "",
+        userSkinList: "",
+        addSkinFailed: "",
+        addSkinSuccess: "",
+        deleteSkinFailed: "",
+        deleteSkinSuccess: "",
+        editSkinFailed: "",
+        editSkinSuccess: "",
     };
 }

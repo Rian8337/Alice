@@ -2,14 +2,20 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabasePlayerSkin } from "structures/database/aliceDb/DatabasePlayerSkin";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
-import { Snowflake } from "discord.js";
+import { Channel, Snowflake } from "discord.js";
+import { SkinPreview } from "@alice-structures/skins/SkinPreview";
+import { OperationResult } from "@alice-structures/core/OperationResult";
+import { Constants } from "@alice-core/Constants";
 
 /**
  * Represents an information about a Discord user's osu!/osu!droid skin.
  */
 export class PlayerSkin extends Manager implements DatabasePlayerSkin {
     discordid: Snowflake;
-    skin: string;
+    description: string;
+    url: string;
+    name: string;
+    previews?: SkinPreview;
     readonly _id?: ObjectId;
 
     constructor(
@@ -20,6 +26,32 @@ export class PlayerSkin extends Manager implements DatabasePlayerSkin {
 
         this._id = data._id;
         this.discordid = data.discordid;
-        this.skin = data.skin;
+        this.description = data.description;
+        this.name = data.name;
+        this.url = data.url;
+        this.previews = data.previews;
+    }
+
+    /**
+     * Deletes this skin.
+     *
+     * @returns An object containing information about the operation.
+     */
+    async delete(): Promise<OperationResult> {
+        if (this.previews) {
+            // Delete attachments
+            const skinChannel: Channel | null =
+                await this.client.channels.fetch(Constants.skinPreviewChannel);
+
+            if (skinChannel?.isTextBased()) {
+                for (const preview of Object.values(this.previews)) {
+                    await skinChannel.messages.delete(preview.messageId);
+                }
+            }
+        }
+
+        return DatabaseManager.aliceDb.collections.playerSkins.deleteOne({
+            name: this.name,
+        });
     }
 }

@@ -85,4 +85,9 @@ export class Constants {
      * The ID of the channel for managing map share submissions.
      */
     static readonly mapShareChannel: Snowflake = "715423228461449297";
+
+    /**
+     * The ID of the channel that is storing skin previews.
+     */
+    static readonly skinPreviewChannel: Snowflake = "999480010459070505";
 }
