@@ -1,7 +1,7 @@
 import {
     ApplicationCommandOptionType,
     ApplicationCommandType,
-    PermissionsString,
+    PermissionResolvable,
 } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -37,19 +37,25 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             });
         }
 
+        let memberPermissions: PermissionResolvable[] | null = null;
+
+        if (
+            command.config.permissions.length > 0 &&
+            command.config.scope === "GUILD_CHANNEL"
+        ) {
+            if (command.config.permissions.includes("BotOwner")) {
+                memberPermissions = [];
+            } else if (!command.config.permissions.includes("Special")) {
+                memberPermissions = <PermissionResolvable[]>command.config.permissions;
+            }
+        }
+
         data = {
             name: command.config.name,
             description: command.config.description,
             options: command.config.options,
-            dmPermission:
-                command.config.scope === "DM" || command.config.scope === "ALL",
-            defaultMemberPermissions:
-                command.config.permissions.length > 0 &&
-                command.config.scope === "GUILD_CHANNEL" &&
-                (command.config.permissions.includes("BotOwner") ||
-                    command.config.permissions.includes("Special"))
-                    ? []
-                    : <PermissionsString[]>command.config.permissions,
+            dmPermission: command.config.scope !== "GUILD_CHANNEL",
+            defaultMemberPermissions: memberPermissions,
         };
     } else {
         const command: ContextMenuCommand | undefined = (
