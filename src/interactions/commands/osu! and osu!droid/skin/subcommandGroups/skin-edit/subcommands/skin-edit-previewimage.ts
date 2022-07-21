@@ -69,6 +69,8 @@ export const run: SlashSubcommand<true>["run"] = async (
 
         skin.previews ??= {};
 
+        await InteractionHelper.deferReply(interaction);
+
         const skinChannel: Channel | null = await client.channels.fetch(
             Constants.skinPreviewChannel
         );
@@ -96,7 +98,20 @@ export const run: SlashSubcommand<true>["run"] = async (
     } else if (skin.previews?.[type]) {
         needsUpdating = true;
 
-        delete skin.previews?.[type];
+        await InteractionHelper.deferReply(interaction);
+
+        const skinChannel: Channel | null = await client.channels.fetch(
+            Constants.skinPreviewChannel
+        );
+
+        if (!skinChannel?.isTextBased()) {
+            return;
+        }
+
+        // Delete the previous message.
+        await skinChannel.messages.delete(skin.previews[type]!.messageId);
+
+        delete skin.previews[type];
 
         if (Object.keys(skin.previews).length === 0) {
             delete skin.previews;
@@ -107,11 +122,17 @@ export const run: SlashSubcommand<true>["run"] = async (
         const result: OperationResult =
             await DatabaseManager.aliceDb.collections.playerSkins.updateOne(
                 { name: skin.name },
-                {
-                    $set: {
-                        previews: skin.previews,
-                    },
-                }
+                skin.previews
+                    ? {
+                          $set: {
+                              previews: skin.previews,
+                          },
+                      }
+                    : {
+                          $unset: {
+                              previews: "",
+                          },
+                      }
             );
 
         if (!result.success) {
