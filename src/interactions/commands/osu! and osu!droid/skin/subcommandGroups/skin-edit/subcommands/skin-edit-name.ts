@@ -6,6 +6,7 @@ import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: SkinLocalization = new SkinLocalization(
@@ -38,6 +39,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const newName: string = interaction.options.getString("newname", true);
+
+    if (StringHelper.hasUnicode(newName)) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("invalidSkinName")
+            ),
+        });
+    }
 
     if (
         !(await DatabaseManager.aliceDb.collections.playerSkins.checkSkinNameAvailability(

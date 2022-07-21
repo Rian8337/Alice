@@ -16,6 +16,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const link: string = interaction.options.getString("link", true);
 
+    if (StringHelper.hasUnicode(name)) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("invalidSkinName")
+            ),
+        });
+    }
+
     if (
         !(await DatabaseManager.aliceDb.collections.playerSkins.checkSkinNameAvailability(
             interaction.user,

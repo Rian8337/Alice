@@ -6,6 +6,7 @@ import { SkinIDTranslation } from "./translations/SkinIDTranslation";
 import { SkinKRTranslation } from "./translations/SkinKRTranslation";
 
 export interface SkinStrings {
+    readonly invalidSkinName: string;
     readonly invalidSkinLink: string;
     readonly skinNameNotAvailable: string;
     readonly skinNotFound: string;

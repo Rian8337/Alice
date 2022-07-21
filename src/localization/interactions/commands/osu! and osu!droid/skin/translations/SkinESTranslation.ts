@@ -7,6 +7,7 @@ import { SkinStrings } from "../SkinLocalization";
 export class SkinESTranslation extends Translation<SkinStrings> {
     override readonly translations: SkinStrings = {
         noSkinSetForUser: "Lo siento, este usuario no tiene ninguna skin!",
+        invalidSkinName: "",
         invalidSkinLink: "",
         skinNameNotAvailable: "",
         skinNotFound: "",

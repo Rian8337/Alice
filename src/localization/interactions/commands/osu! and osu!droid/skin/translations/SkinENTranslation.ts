@@ -6,6 +6,7 @@ import { SkinStrings } from "../SkinLocalization";
  */
 export class SkinENTranslation extends Translation<SkinStrings> {
     override readonly translations: SkinStrings = {
+        invalidSkinName: "Hey, skin names cannot contain unicode characters!",
         invalidSkinLink: "I'm sorry, the link you've entered is invalid!",
         skinNameNotAvailable:
             "I'm sorry, you already have a skin with that name!",
