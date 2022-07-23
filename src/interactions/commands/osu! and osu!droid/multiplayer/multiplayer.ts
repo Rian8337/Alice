@@ -117,6 +117,12 @@ export const config: SlashCommand["config"] = {
             ],
         },
         {
+            name: "close",
+            type: ApplicationCommandOptionType.Subcommand,
+            description:
+                "Abruptly closes the multiplayer room in the current channel.",
+        },
+        {
             name: "create",
             type: ApplicationCommandOptionType.Subcommand,
             description: "Creates a multiplayer room.",
