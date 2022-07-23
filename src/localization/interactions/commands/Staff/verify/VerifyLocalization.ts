@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { VerifyENTranslation } from "./translations/VerifyENTranslation";
 import { VerifyESTranslation } from "./translations/VerifyESTranslation";
-import { VerifyIDTranslation } from "./translations/VerifyIDTranslation";
 import { VerifyKRTranslation } from "./translations/VerifyKRTranslation";
 
 export interface VerifyStrings {
@@ -22,7 +21,6 @@ export class VerifyLocalization extends Localization<VerifyStrings> {
     > = {
         en: new VerifyENTranslation(),
         kr: new VerifyKRTranslation(),
-        id: new VerifyIDTranslation(),
         es: new VerifyESTranslation(),
     };
 }

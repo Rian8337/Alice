@@ -6,6 +6,6 @@ import { DroidProfileStrings } from "../DroidProfileLocalization";
  */
 export class DroidProfileIDTranslation extends Translation<DroidProfileStrings> {
     override readonly translations: DroidProfileStrings = {
-        droidProfile: "",
+        droidProfile: "Profil osu!droid untuk %s:",
     };
 }

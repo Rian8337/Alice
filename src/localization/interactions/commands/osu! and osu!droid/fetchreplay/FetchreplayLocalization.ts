@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { FetchreplayENTranslation } from "./translations/FetchreplayENTranslation";
 import { FetchreplayESTranslation } from "./translations/FetchreplayESTranslation";
-import { FetchreplayIDTranslation } from "./translations/FetchreplayIDTranslation";
 import { FetchreplayKRTranslation } from "./translations/FetchreplayKRTranslation";
 
 export interface FetchreplayStrings {
@@ -25,7 +24,6 @@ export class FetchreplayLocalization extends Localization<FetchreplayStrings> {
     > = {
         en: new FetchreplayENTranslation(),
         kr: new FetchreplayKRTranslation(),
-        id: new FetchreplayIDTranslation(),
         es: new FetchreplayESTranslation(),
     };
 }

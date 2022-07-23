@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MatchENTranslation } from "./translations/MatchENTranslation";
 import { MatchESTranslation } from "./translations/MatchESTranslation";
-import { MatchIDTranslation } from "./translations/MatchIDTranslation";
 import { MatchKRTranslation } from "./translations/MatchKRTranslation";
 
 export interface MatchStrings {
@@ -56,7 +55,6 @@ export class MatchLocalization extends Localization<MatchStrings> {
     > = {
         en: new MatchENTranslation(),
         kr: new MatchKRTranslation(),
-        id: new MatchIDTranslation(),
         es: new MatchESTranslation(),
     };
 }

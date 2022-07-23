@@ -6,6 +6,7 @@ import { BirthdayTrackingStrings } from "../BirthdayTrackingLocalization";
  */
 export class BirthdayTrackingIDTranslation extends Translation<BirthdayTrackingStrings> {
     override readonly translations: BirthdayTrackingStrings = {
-        happyBirthday: "",
+        happyBirthday:
+            "Hei, aku ingin mengucapkan selamat ulang tahun padamu! Semoga kamu memiliki hari yang menyenangkan dengan keluarga, saudara, dan teman. Mohon terima kado sebesar `1,000` koin Alice dan role ulang tahun untuk hari ini dariku.",
     };
 }

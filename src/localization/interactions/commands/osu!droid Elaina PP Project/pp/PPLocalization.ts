@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { PPENTranslation } from "./translations/PPENTranslation";
 import { PPESTranslation } from "./translations/PPESTranslation";
-import { PPIDTranslation } from "./translations/PPIDTranslation";
 import { PPKRTranslation } from "./translations/PPKRTranslation";
 
 export interface PPStrings {
@@ -55,7 +54,6 @@ export class PPLocalization extends Localization<PPStrings> {
     > = {
         en: new PPENTranslation(),
         es: new PPESTranslation(),
-        id: new PPIDTranslation(),
         kr: new PPKRTranslation(),
     };
 }

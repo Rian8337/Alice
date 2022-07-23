@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { NamechangeENTranslation } from "./translations/NamechangeENTranslation";
 import { NamechangeESTranslation } from "./translations/NamechangeESTranslation";
-import { NamechangeIDTranslation } from "./translations/NamechangeIDTranslation";
 import { NamechangeKRTranslation } from "./translations/NamechangeKRTranslation";
 
 export interface NamechangeStrings {
@@ -43,7 +42,6 @@ export class NamechangeLocalization extends Localization<NamechangeStrings> {
     > = {
         en: new NamechangeENTranslation(),
         kr: new NamechangeKRTranslation(),
-        id: new NamechangeIDTranslation(),
         es: new NamechangeESTranslation(),
     };
 }

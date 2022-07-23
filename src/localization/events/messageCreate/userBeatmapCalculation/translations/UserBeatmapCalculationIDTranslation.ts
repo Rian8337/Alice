@@ -6,10 +6,11 @@ import { UserBeatmapCalculationStrings } from "../UserBeatmapCalculationLocaliza
  */
 export class UserBeatmapCalculationIDTranslation extends Translation<UserBeatmapCalculationStrings> {
     override readonly translations: UserBeatmapCalculationStrings = {
-        droidStars: "",
-        droidPP: "",
-        pcStars: "",
-        pcPP: "",
-        beatmapLimitation: "",
+        droidStars: "Raw droid star",
+        droidPP: "Droid pp",
+        pcStars: "Raw PC star",
+        pcPP: "PC pp",
+        beatmapLimitation:
+            "Aku menemukan %s beatmap, tetapi hanya menampilkan 3 karena keterbatasanku.",
     };
 }

@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { TournamentMatchENTranslation } from "./translations/TournamentMatchENTranslation";
 import { TournamentMatchESTranslation } from "./translations/TournamentMatchESTranslation";
-import { TournamentMatchIDTranslation } from "./translations/TournamentMatchIDTranslation";
 import { TournamentMatchKRTranslation } from "./translations/TournamentMatchKRTranslation";
 
 export interface TournamentMatchStrings {
@@ -24,7 +23,6 @@ export class TournamentMatchLocalization extends Localization<TournamentMatchStr
     > = {
         en: new TournamentMatchENTranslation(),
         kr: new TournamentMatchKRTranslation(),
-        id: new TournamentMatchIDTranslation(),
         es: new TournamentMatchESTranslation(),
     };
 }

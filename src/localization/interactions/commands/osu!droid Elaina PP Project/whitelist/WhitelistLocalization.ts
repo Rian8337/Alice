@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { WhitelistENTranslation } from "./translations/WhitelistENTranslation";
 import { WhitelistESTranslation } from "./translations/WhitelistESTranslation";
-import { WhitelistIDTranslation } from "./translations/WhitelistIDTranslation";
 import { WhitelistKRTranslation } from "./translations/WhitelistKRTranslation";
 
 export interface WhitelistStrings {
@@ -49,7 +48,6 @@ export class WhitelistLocalization extends Localization<WhitelistStrings> {
     > = {
         en: new WhitelistENTranslation(),
         kr: new WhitelistKRTranslation(),
-        id: new WhitelistIDTranslation(),
         es: new WhitelistESTranslation(),
     };
 }

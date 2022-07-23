@@ -1,7 +1,6 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { WarningENTranslation } from "./translations/WarningENTranslation";
-import { WarningIDTranslation } from "./translations/WarningIDTranslation";
 import { WarningKRTranslation } from "./translations/WarningKRTranslation";
 
 export interface WarningStrings {
@@ -37,6 +36,5 @@ export class WarningLocalization extends Localization<WarningStrings> {
     > = {
         en: new WarningENTranslation(),
         kr: new WarningKRTranslation(),
-        id: new WarningIDTranslation(),
     };
 }

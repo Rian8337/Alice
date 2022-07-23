@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { RunCommandENTranslation } from "./translations/RunCommandENTranslation";
 import { RunCommandESTranslation } from "./translations/RunCommandESTranslation";
-import { RunCommandIDTranslation } from "./translations/RunCommandIDTranslation";
 import { RunCommandKRTranslation } from "./translations/RunCommandKRTranslation";
 
 export interface RunCommandStrings {
@@ -24,7 +23,6 @@ export class RunCommandLocalization extends Localization<RunCommandStrings> {
     > = {
         en: new RunCommandENTranslation(),
         kr: new RunCommandKRTranslation(),
-        id: new RunCommandIDTranslation(),
         es: new RunCommandESTranslation(),
     };
 }

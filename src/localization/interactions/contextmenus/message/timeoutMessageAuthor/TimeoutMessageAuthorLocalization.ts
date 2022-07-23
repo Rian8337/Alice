@@ -1,8 +1,6 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { TimeoutMessageAuthorENTranslation } from "./translations/TimeoutMessageAuthorENTranslation";
-import { TimeoutMessageAuthorESTranslation } from "./translations/TimeoutMessageAuthorESTranslation";
-import { TimeoutMessageAuthorKRTranslation } from "./translations/TimeoutMessageAuthorKRTranslation";
 
 export interface TimeoutMessageAuthorStrings {
     readonly selectDuration: string;
@@ -20,7 +18,5 @@ export class TimeoutMessageAuthorLocalization extends Localization<TimeoutMessag
         Translations<TimeoutMessageAuthorStrings>
     > = {
         en: new TimeoutMessageAuthorENTranslation(),
-        es: new TimeoutMessageAuthorESTranslation(),
-        kr: new TimeoutMessageAuthorKRTranslation(),
     };
 }

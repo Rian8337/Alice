@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { VoteENTranslation } from "./translations/VoteENTranslation";
 import { VoteESTranslation } from "./translations/VoteESTranslation";
-import { VoteIDTranslation } from "./translations/VoteIDTranslation";
 import { VoteKRTranslation } from "./translations/VoteKRTranslation";
 
 export interface VoteStrings {
@@ -33,7 +32,6 @@ export class VoteLocalization extends Localization<VoteStrings> {
     > = {
         en: new VoteENTranslation(),
         kr: new VoteKRTranslation(),
-        id: new VoteIDTranslation(),
         es: new VoteESTranslation(),
     };
 }

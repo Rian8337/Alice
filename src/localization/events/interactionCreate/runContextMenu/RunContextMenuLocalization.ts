@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { RunContextMenuENTranslation } from "./translations/RunContextMenuENTranslation";
 import { RunContextMenuESTranslation } from "./translations/RunContextMenuESTranslation";
-import { RunContextMenuIDTranslation } from "./translations/RunContextMenuIDTranslation";
 import { RunContextMenuKRTranslation } from "./translations/RunContextMenuKRTranslation";
 
 export interface RunContextMenuStrings {
@@ -21,7 +20,6 @@ export class RunContextMenuLocalization extends Localization<RunContextMenuStrin
     > = {
         en: new RunContextMenuENTranslation(),
         es: new RunContextMenuESTranslation(),
-        id: new RunContextMenuIDTranslation(),
         kr: new RunContextMenuKRTranslation(),
     };
 }

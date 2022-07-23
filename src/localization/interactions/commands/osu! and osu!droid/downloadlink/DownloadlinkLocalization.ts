@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { DownloadlinkENTranslation } from "./translations/DownloadlinkENTranslation";
 import { DownloadlinkESTranslation } from "./translations/DownloadlinkESTranslation";
-import { DownloadlinkIDTranslation } from "./translations/DownloadlinkIDTranslation";
 import { DownloadlinkKRTranslation } from "./translations/DownloadlinkKRTranslation";
 
 export interface DownloadlinkStrings {
@@ -19,7 +18,6 @@ export class DownloadlinkLocalization extends Localization<DownloadlinkStrings> 
     > = {
         en: new DownloadlinkENTranslation(),
         kr: new DownloadlinkKRTranslation(),
-        id: new DownloadlinkIDTranslation(),
         es: new DownloadlinkESTranslation(),
     };
 }

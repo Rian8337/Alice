@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { PoolENTranslation } from "./translations/PoolENTranslation";
 import { PoolESTranslation } from "./translations/PoolESTranslation";
-import { PoolIDTranslation } from "./translations/PoolIDTranslation";
 import { PoolKRTranslation } from "./translations/PoolKRTranslation";
 
 export interface PoolStrings {
@@ -22,7 +21,6 @@ export class PoolLocalization extends Localization<PoolStrings> {
     > = {
         en: new PoolENTranslation(),
         kr: new PoolKRTranslation(),
-        id: new PoolIDTranslation(),
         es: new PoolESTranslation(),
     };
 }

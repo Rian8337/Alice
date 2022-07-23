@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { TriviaENTranslation } from "./translations/TriviaENTranslation";
 import { TriviaESTranslation } from "./translations/TriviaESTranslation";
-import { TriviaIDTranslation } from "./translations/TriviaIDTranslation";
 import { TriviaKRTranslation } from "./translations/TriviaKRTranslation";
 
 export interface TriviaStrings {
@@ -51,7 +50,6 @@ export class TriviaLocalization extends Localization<TriviaStrings> {
     > = {
         en: new TriviaENTranslation(),
         kr: new TriviaKRTranslation(),
-        id: new TriviaIDTranslation(),
         es: new TriviaESTranslation(),
     };
 }

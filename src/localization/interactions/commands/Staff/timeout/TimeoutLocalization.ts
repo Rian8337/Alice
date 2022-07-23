@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { TimeoutENTranslation } from "./translations/TimeoutENTranslation";
 import { TimeoutESTranslation } from "./translations/TimeoutESTranslation";
-import { TimeoutIDTranslation } from "./translations/TimeoutIDTranslation";
 import { TimeoutKRTranslation } from "./translations/TimeoutKRTranslation";
 
 export interface TimeoutStrings {
@@ -20,7 +19,6 @@ export class TimeoutLocalization extends Localization<TimeoutStrings> {
     > = {
         en: new TimeoutENTranslation(),
         kr: new TimeoutKRTranslation(),
-        id: new TimeoutIDTranslation(),
         es: new TimeoutESTranslation(),
     };
 }

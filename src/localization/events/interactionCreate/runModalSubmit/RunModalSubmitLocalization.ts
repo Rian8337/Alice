@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { RunModalSubmitENTranslation } from "./translations/RunModalSubmitENTranslation";
 import { RunModalSubmitESTranslation } from "./translations/RunModalSubmitESTranslation";
-import { RunModalSubmitIDTranslation } from "./translations/RunModalSubmitIDTranslation";
 import { RunModalSubmitKRTranslation } from "./translations/RunModalSubmitKRTranslation";
 
 export interface RunModalSubmitStrings {
@@ -21,7 +20,6 @@ export class RunModalSubmitLocalization extends Localization<RunModalSubmitStrin
     > = {
         en: new RunModalSubmitENTranslation(),
         kr: new RunModalSubmitKRTranslation(),
-        id: new RunModalSubmitIDTranslation(),
         es: new RunModalSubmitESTranslation(),
     };
 }

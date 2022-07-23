@@ -1,9 +1,6 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { TriviaQuestionsFillInTheBlankENTranslation } from "./translations/TriviaQuestionsFillInTheBlankENTranslation";
-import { TriviaQuestionsFillInTheBlankESTranslation } from "./translations/TriviaQuestionsFillInTheBlankESTranslation";
-import { TriviaQuestionsFillInTheBlankIDTranslation } from "./translations/TriviaQuestionsFillInTheBlankIDTranslation";
-import { TriviaQuestionsFillInTheBlankKRTranslation } from "./translations/TriviaQuestionsFillInTheBlankKRTranslation";
 
 export interface TriviaQuestionsFillInTheBlankStrings {
     readonly noOngoingQuestionInChannel: string;
@@ -18,8 +15,5 @@ export class TriviaQuestionsFillInTheBlankLocalization extends Localization<Triv
         Translations<TriviaQuestionsFillInTheBlankStrings>
     > = {
         en: new TriviaQuestionsFillInTheBlankENTranslation(),
-        es: new TriviaQuestionsFillInTheBlankESTranslation(),
-        id: new TriviaQuestionsFillInTheBlankIDTranslation(),
-        kr: new TriviaQuestionsFillInTheBlankKRTranslation(),
     };
 }

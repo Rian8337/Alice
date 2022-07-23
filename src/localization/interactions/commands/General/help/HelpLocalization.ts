@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { HelpENTranslation } from "./translations/HelpENTranslation";
 import { HelpESTranslation } from "./translations/HelpESTranslation";
-import { HelpIDTranslation } from "./translations/HelpIDTranslation";
 import { HelpKRTranslation } from "./translations/HelpKRTranslation";
 
 export interface HelpStrings {
@@ -30,7 +29,6 @@ export class HelpLocalization extends Localization<HelpStrings> {
     > = {
         en: new HelpENTranslation(),
         kr: new HelpKRTranslation(),
-        id: new HelpIDTranslation(),
         es: new HelpESTranslation(),
     };
 }

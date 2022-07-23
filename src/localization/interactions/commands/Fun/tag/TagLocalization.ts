@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { TagENTranslation } from "./translations/TagENTranslation";
 import { TagESTranslation } from "./translations/TagESTranslation";
-import { TagIDTranslation } from "./translations/TagIDTranslation";
 import { TagKRTranslation } from "./translations/TagKRTranslation";
 
 export interface TagStrings {
@@ -43,7 +42,6 @@ export class TagLocalization extends Localization<TagStrings> {
     > = {
         en: new TagENTranslation(),
         kr: new TagKRTranslation(),
-        id: new TagIDTranslation(),
         es: new TagESTranslation(),
     };
 }

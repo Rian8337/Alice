@@ -6,6 +6,7 @@ import { YoutubeBeatmapFinderStrings } from "../YoutubeBeatmapFinderLocalization
  */
 export class YoutubeBeatmapFinderIDTranslation extends Translation<YoutubeBeatmapFinderStrings> {
     override readonly translations: YoutubeBeatmapFinderStrings = {
-        beatmapLimitation: "",
+        beatmapLimitation:
+            "Aku menemukan %s beatmap, tetapi hanya menampilkan 3 karena keterbatasanku.",
     };
 }

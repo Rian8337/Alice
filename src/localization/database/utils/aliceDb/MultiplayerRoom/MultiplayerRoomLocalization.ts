@@ -1,9 +1,6 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MultiplayerRoomENTranslation } from "./translations/MultiplayerRoomENTranslation";
-import { MultiplayerRoomESTranslation } from "./translations/MultiplayerRoomESTranslation";
-import { MultiplayerRoomIDTranslation } from "./translations/MultiplayerRoomIDTranslation";
-import { MultiplayerRoomKRTranslation } from "./translations/MultiplayerRoomKRTranslation";
 
 export interface MultiplayerRoomStrings {
     readonly scoreV1: string;
@@ -62,8 +59,5 @@ export class MultiplayerRoomLocalization extends Localization<MultiplayerRoomStr
         Translations<MultiplayerRoomStrings>
     > = {
         en: new MultiplayerRoomENTranslation(),
-        kr: new MultiplayerRoomKRTranslation(),
-        id: new MultiplayerRoomIDTranslation(),
-        es: new MultiplayerRoomESTranslation(),
     };
 }

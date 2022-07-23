@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { SettingsENTranslation } from "./translations/SettingsENTranslation";
 import { SettingsESTranslation } from "./translations/SettingsESTranslation";
-import { SettingsIDTranslation } from "./translations/SettingsIDTranslation";
 import { SettingsKRTranslation } from "./translations/SettingsKRTranslation";
 
 export interface SettingsStrings {
@@ -45,7 +44,6 @@ export class SettingsLocalization extends Localization<SettingsStrings> {
     > = {
         en: new SettingsENTranslation(),
         kr: new SettingsKRTranslation(),
-        id: new SettingsIDTranslation(),
         es: new SettingsESTranslation(),
     };
 }

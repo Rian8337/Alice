@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MapshareSubmissionENTranslation } from "./translations/MapshareSubmissionENTranslation";
 import { MapshareSubmissionESTranslation } from "./translations/MapshareSubmissionESTranslation";
-import { MapshareSubmissionIDTranslation } from "./translations/MapshareSubmissionIDTranslation";
 import { MapshareSubmissionKRTranslation } from "./translations/MapshareSubmissionKRTranslation";
 
 export interface MapshareSubmissionStrings {
@@ -29,7 +28,6 @@ export class MapshareSubmissionLocalization extends Localization<MapshareSubmiss
     > = {
         en: new MapshareSubmissionENTranslation(),
         es: new MapshareSubmissionESTranslation(),
-        id: new MapshareSubmissionIDTranslation(),
         kr: new MapshareSubmissionKRTranslation(),
     };
 }

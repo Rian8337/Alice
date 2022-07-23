@@ -6,6 +6,7 @@ import { CuteNoLewdStrings } from "../CuteNoLewdLocalization";
  */
 export class CuteNoLewdIDTranslation extends Translation<CuteNoLewdStrings> {
     override readonly translations: CuteNoLewdStrings = {
-        imageSentTooFast: "",
+        imageSentTooFast:
+            "%s, kamu hanya dapat mengirim gambar setiap 5 detik!",
     };
 }

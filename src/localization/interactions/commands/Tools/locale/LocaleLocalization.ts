@@ -1,8 +1,6 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { LocaleENTranslation } from "./translations/LocaleENTranslation";
-import { LocaleIDTranslation } from "./translations/LocaleIDTranslation";
-import { LocaleKRTranslation } from "./translations/LocaleKRTranslation";
 
 export interface LocaleStrings {
     readonly selectLanguage: string;
@@ -20,7 +18,5 @@ export class LocaleLocalization extends Localization<LocaleStrings> {
         Translations<LocaleStrings>
     > = {
         en: new LocaleENTranslation(),
-        kr: new LocaleKRTranslation(),
-        id: new LocaleIDTranslation(),
     };
 }

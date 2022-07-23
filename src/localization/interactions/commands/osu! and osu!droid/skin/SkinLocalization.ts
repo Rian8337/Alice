@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { SkinENTranslation } from "./translations/SkinENTranslation";
 import { SkinESTranslation } from "./translations/SkinESTranslation";
-import { SkinIDTranslation } from "./translations/SkinIDTranslation";
 import { SkinKRTranslation } from "./translations/SkinKRTranslation";
 
 export interface SkinStrings {
@@ -32,7 +31,6 @@ export class SkinLocalization extends Localization<SkinStrings> {
     > = {
         en: new SkinENTranslation(),
         kr: new SkinKRTranslation(),
-        id: new SkinIDTranslation(),
         es: new SkinESTranslation(),
     };
 }
