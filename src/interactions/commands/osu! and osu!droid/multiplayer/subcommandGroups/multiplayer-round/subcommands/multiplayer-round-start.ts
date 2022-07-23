@@ -164,7 +164,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const stats: MapStats = new MapStats({
             mods: ModUtil.pcStringToMods(room.settings.requiredMods),
             speedMultiplier: room.settings.speedMultiplier,
-        });
+        }).calculate();
 
         await interaction.channel!.send({
             content: MessageCreator.createAccept(
