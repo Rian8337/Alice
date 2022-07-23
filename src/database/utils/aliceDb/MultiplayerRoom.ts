@@ -44,7 +44,7 @@ import {
     OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
-import { Channel, EmbedBuilder, Snowflake } from "discord.js";
+import { APIEmbedField, Channel, EmbedBuilder, Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 
 /**
@@ -435,33 +435,22 @@ export class MultiplayerRoom
             winners.push(score.username);
         }
 
-        embed.addFields(
-            {
-                name: localization.getTranslation("roomResults"),
-                value:
-                    [
-                        validScores
-                            .map((v, i) =>
-                                this.getScoreEmbedDescription(
-                                    v,
-                                    i + 1,
-                                    language
-                                )
-                            )
-                            .join("\n\n"),
-                        invalidScores
-                            .map(
-                                (v, i) =>
-                                    this.getScoreEmbedDescription(
-                                        v,
-                                        validScores.length + i + 1,
-                                        language
-                                    ) + ` - **${v.reason}**`
-                            )
-                            .join("\n\n"),
-                    ].join("\n\n") || localization.getTranslation("none"),
-            },
-            {
+        embed
+            .addFields(
+                validScores.map((v, i) =>
+                    this.getScoreEmbedDescription(v, i + 1, language)
+                )
+            )
+            .addFields(
+                invalidScores.map((v, i) =>
+                    this.getScoreEmbedDescription(
+                        v,
+                        validScores.length + i + 1,
+                        language
+                    )
+                )
+            )
+            .addFields({
                 name: "=================================",
                 value: `**${
                     winners.length === this.players.length
@@ -472,8 +461,7 @@ export class MultiplayerRoom
                                   localization.getTranslation("none")
                           )
                 }**`,
-            }
-        );
+            });
 
         return embed;
     }
@@ -1006,7 +994,7 @@ export class MultiplayerRoom
         score: MultiplayerScoreFinalResult,
         index: number,
         language: Language
-    ): string {
+    ): APIEmbedField {
         const { mods, forcedAR, speedMultiplier } = this.convertModString(
             score.modstring
         );
@@ -1037,15 +1025,16 @@ export class MultiplayerRoom
                 nmiss: score.miss,
             }).value() * 100 || 0;
 
-        return `**#${index} ${
-            score.username
-        } - ${modstring}: __${score.grade.toLocaleString(
-            BCP47
-        )}__**\n${score.score.toLocaleString(
-            BCP47
-        )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
-            score.maxCombo
-        }x - ${accuracy.toFixed(2)}% - ${score.miss} ${Symbols.missIcon}`;
+        return {
+            name: `**#${index} ${
+                score.username
+            } - ${modstring}: __${score.grade.toLocaleString(BCP47)}__**`,
+            value: `${score.score.toLocaleString(
+                BCP47
+            )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
+                score.maxCombo
+            }x - ${accuracy.toFixed(2)}% - ${score.miss} ${Symbols.missIcon}`,
+        };
     }
 
     /**
