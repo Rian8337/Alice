@@ -76,7 +76,9 @@ export const config: SlashCommand["config"] = {
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The username to be requested. Cannot contain unicode and must be between 2-20 characters.",
+                        "The username to be requested. Cannot contain unicode characters.",
+                    minLength: 2,
+                    maxLength: 20,
                 },
             ],
         },

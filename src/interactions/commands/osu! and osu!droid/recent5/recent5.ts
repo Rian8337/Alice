@@ -136,6 +136,7 @@ export const config: SlashCommand["config"] = {
             name: "username",
             type: ApplicationCommandOptionType.String,
             description: "The username of the player.",
+            maxLength: 20,
         },
     ],
     example: [

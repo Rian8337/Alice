@@ -74,8 +74,8 @@ export const config: SlashCommand["config"] = {
         {
             name: "reason",
             type: ApplicationCommandOptionType.String,
-            description:
-                "The reason for untimeouting the user. Maximum length is 1500 characters.",
+            description: "The reason for untimeouting the user.",
+            maxLength: 1500,
         },
     ],
     example: [

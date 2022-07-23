@@ -229,7 +229,8 @@ export const config: SlashCommand["config"] = {
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The name of the clan. Must be less than 25 characters and cannot contain unicodes.",
+                        "The name of the clan. Cannot contain unicode characters.",
+                    maxLength: 25,
                 },
             ],
         },

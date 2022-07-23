@@ -35,6 +35,7 @@ export const config: SlashCommand["config"] = {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
                     description: "The username of the player.",
+                    maxLength: 20,
                 },
                 {
                     name: "page",
@@ -118,12 +119,14 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The username to compare against.",
+                            maxLength: 20,
                         },
                         {
                             name: "otherusername",
                             type: ApplicationCommandOptionType.String,
                             description:
                                 "The other username to compare against. If unspecified, defaults to yourself.",
+                            maxLength: 20,
                         },
                     ],
                 },
@@ -155,6 +158,7 @@ export const config: SlashCommand["config"] = {
                             name: "username",
                             type: ApplicationCommandOptionType.String,
                             description: "The username of the player.",
+                            maxLength: 20,
                         },
                     ],
                 },
@@ -178,6 +182,7 @@ export const config: SlashCommand["config"] = {
                             name: "username",
                             type: ApplicationCommandOptionType.String,
                             description: "The username of the player.",
+                            maxLength: 20,
                         },
                         {
                             name: "page",
@@ -262,6 +267,7 @@ export const config: SlashCommand["config"] = {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
                     description: "The username of the user.",
+                    maxLength: 20,
                 },
             ],
         },

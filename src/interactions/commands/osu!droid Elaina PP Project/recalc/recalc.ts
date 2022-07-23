@@ -57,6 +57,7 @@ export const config: SlashCommand["config"] = {
                             name: "username",
                             type: ApplicationCommandOptionType.String,
                             description: "The username of the user.",
+                            maxLength: 20,
                         },
                     ],
                 },

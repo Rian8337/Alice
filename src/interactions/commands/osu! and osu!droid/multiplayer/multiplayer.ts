@@ -125,15 +125,15 @@ export const config: SlashCommand["config"] = {
                     name: "id",
                     type: ApplicationCommandOptionType.String,
                     required: true,
-                    description:
-                        "The ID of the room. Maximum is 20 characters.",
+                    description: "The ID of the room.",
+                    maxLength: 20,
                 },
                 {
                     name: "name",
                     type: ApplicationCommandOptionType.String,
                     required: true,
-                    description:
-                        "The name of the room. Maximum is 50 characters.",
+                    description: "The name of the room.",
+                    maxLength: 50,
                 },
                 {
                     name: "password",
@@ -166,6 +166,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     required: true,
                     description: "The ID of the room.",
+                    maxLength: 20,
                 },
                 {
                     name: "password",
@@ -326,8 +327,8 @@ export const config: SlashCommand["config"] = {
                             name: "name",
                             type: ApplicationCommandOptionType.String,
                             required: true,
-                            description:
-                                "The name of the room. Maximum is 50 characters.",
+                            description: "The name of the room.",
+                            maxLength: 50,
                         },
                     ],
                 },

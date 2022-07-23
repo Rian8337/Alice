@@ -30,6 +30,7 @@ export const config: SlashCommand["config"] = {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
                     description: "The username the osu!droid account.",
+                    maxLength: 20,
                 },
                 {
                     name: "user",
@@ -82,6 +83,7 @@ export const config: SlashCommand["config"] = {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
                     description: "The username the osu!droid account.",
+                    maxLength: 20,
                 },
                 {
                     name: "user",

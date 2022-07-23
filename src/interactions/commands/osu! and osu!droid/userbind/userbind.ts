@@ -45,6 +45,7 @@ export const config: SlashCommand["config"] = {
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     description: "The username of the osu!droid account.",
+                    maxLength: 20,
                 },
                 {
                     name: "email",
