@@ -442,13 +442,17 @@ export class MultiplayerRoom
                 )
             )
             .addFields(
-                invalidScores.map((v, i) =>
-                    this.getScoreEmbedDescription(
+                invalidScores.map((v, i) => {
+                    const field = this.getScoreEmbedDescription(
                         v,
                         validScores.length + i + 1,
                         language
-                    )
-                )
+                    );
+
+                    field.value += ` - **${v.reason}**`
+
+                    return field;
+                })
             )
             .addFields({
                 name: "=================================",
