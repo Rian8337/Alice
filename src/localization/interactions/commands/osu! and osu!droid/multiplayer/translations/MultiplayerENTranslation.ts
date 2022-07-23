@@ -78,6 +78,7 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         slotHasBeenFilled:
             "I'm sorry, you have more players than what you would be able to fit with that maximum player slot!",
         noModsDetected: "Hey, I cannot tell what mods you are entering!",
+        closeRoomAttempt: "Attempting to close the multiplayer room.",
         pickWinCondition: "Please pick the win condition that you want to use.",
         pickTeamMode: "Please pick the team mode that you want to use.",
         updateReadyStateFailed:

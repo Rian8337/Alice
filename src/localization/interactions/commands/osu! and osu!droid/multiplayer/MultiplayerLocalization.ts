@@ -55,6 +55,7 @@ export interface MultiplayerStrings {
     readonly noModsDetected: string;
     readonly pickWinCondition: string;
     readonly pickTeamMode: string;
+    readonly closeRoomAttempt: string;
     readonly updateReadyStateFailed: string;
     readonly updateReadyStateSuccess: string;
     readonly updateSpectatingStateFailed: string;
