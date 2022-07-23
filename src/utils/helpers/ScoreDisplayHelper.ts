@@ -334,9 +334,7 @@ export abstract class ScoreDisplayHelper {
                   )
                 : { embeds: [EmbedCreator.createNormalEmbed()] };
 
-            const embed: EmbedBuilder = EmbedBuilder.from(
-                embedOptions.embeds![0]
-            );
+            const embed: EmbedBuilder = <EmbedBuilder>embedOptions.embeds![0];
 
             embed.data.fields!.pop();
 
