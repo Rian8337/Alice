@@ -89,7 +89,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const accuracyPortionScoreV2: number =
         ScoreHelper.calculateAccuracyPortionScoreV2(
-            interaction.options.getNumber("accuracy", true),
+            interaction.options.getNumber("accuracy", true) / 100,
             misses,
             1 - room.settings.scorePortion
         );
