@@ -27,6 +27,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     "status.isPlaying": 1,
                     "players.$": 1,
+                    "settings.roomHost": 1,
                 },
             }
         );
