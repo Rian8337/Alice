@@ -450,7 +450,11 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 .setCustomId("back")
                 .setEmoji(Symbols.leftArrow)
                 .setStyle(ButtonStyle.Success)
-                .setDisabled(maxPage === 1),
+                .setDisabled(
+                    maxPage === 1 ||
+                        (maxPage === Number.POSITIVE_INFINITY &&
+                            currentPage === 1)
+                ),
             new ButtonBuilder()
                 .setCustomId("none")
                 .setLabel(
