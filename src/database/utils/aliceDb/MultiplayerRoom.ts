@@ -449,7 +449,7 @@ export class MultiplayerRoom
                         language
                     );
 
-                    field.value += ` - **${v.reason}**`
+                    field.value += ` - **${v.reason}**`;
 
                     return field;
                 })
@@ -574,85 +574,67 @@ export class MultiplayerRoom
                     ? 16711680
                     : 262399
             )
+            .addFields({
+                name: localization.getTranslation("redTeam"),
+                value: `**${localization.getTranslation(
+                    "totalScore"
+                )}: ${redTotalScore.toLocaleString(BCP47)}**`,
+            })
             .addFields(
-                {
-                    name: localization.getTranslation("redTeam"),
-                    value:
-                        `**${localization.getTranslation(
-                            "totalScore"
-                        )}: ${redTotalScore.toLocaleString(BCP47)}**\n` +
-                            [
-                                validRedTeamScores
-                                    .map((v, i) =>
-                                        this.getScoreEmbedDescription(
-                                            v,
-                                            i + 1,
-                                            language
-                                        )
-                                    )
-                                    .join("\n\n"),
-                                invalidRedTeamScores
-                                    .map(
-                                        (v, i) =>
-                                            this.getScoreEmbedDescription(
-                                                v,
-                                                validRedTeamScores.length +
-                                                    i +
-                                                    1,
-                                                language
-                                            ) + ` - **${v.reason}**`
-                                    )
-                                    .join("\n\n"),
-                            ].join("\n\n") ||
-                        localization.getTranslation("none"),
-                },
-                {
-                    name: localization.getTranslation("blueTeam"),
-                    value:
-                        `**${localization.getTranslation(
-                            "totalScore"
-                        )}: ${blueTotalScore.toLocaleString(BCP47)}**\n` +
-                            [
-                                validBlueTeamScores
-                                    .map((v, i) =>
-                                        this.getScoreEmbedDescription(
-                                            v,
-                                            i + 1,
-                                            language
-                                        )
-                                    )
-                                    .join("\n\n"),
-                                invalidBlueTeamScores
-                                    .map(
-                                        (v, i) =>
-                                            this.getScoreEmbedDescription(
-                                                v,
-                                                validBlueTeamScores.length +
-                                                    i +
-                                                    1,
-                                                language
-                                            ) + ` - **${v.reason}**`
-                                    )
-                                    .join("\n\n"),
-                            ].join("\n\n") ||
-                        localization.getTranslation("none"),
-                },
-                {
-                    name: "=================================",
-                    value: `**${
-                        redTotalScore === blueTotalScore
-                            ? localization.getTranslation("draw")
-                            : StringHelper.formatString(
-                                  localization.getTranslation("won"),
-                                  localization.getTranslation(
-                                      redTotalScore > blueTotalScore
-                                          ? "redTeam"
-                                          : "blueTeam"
-                                  )
+                validRedTeamScores.map((v, i) =>
+                    this.getScoreEmbedDescription(v, i + 1, language)
+                )
+            )
+            .addFields(
+                invalidRedTeamScores.map((v, i) => {
+                    const field = this.getScoreEmbedDescription(
+                        v,
+                        validRedTeamScores.length + i + 1,
+                        language
+                    );
+
+                    field.value += ` - **${v.reason}**`;
+
+                    return field;
+                })
+            )
+            .addFields({
+                name: "=================================",
+                value: "=================================",
+            })
+            .addFields(
+                validBlueTeamScores.map((v, i) =>
+                    this.getScoreEmbedDescription(v, i + 1, language)
+                )
+            )
+            .addFields(
+                invalidBlueTeamScores.map((v, i) => {
+                    const field = this.getScoreEmbedDescription(
+                        v,
+                        validBlueTeamScores.length + i + 1,
+                        language
+                    );
+
+                    field.value += ` - **${v.reason}**`;
+
+                    return field;
+                })
+            )
+            .addFields({
+                name: "=================================",
+                value: `**${
+                    redTotalScore === blueTotalScore
+                        ? localization.getTranslation("draw")
+                        : StringHelper.formatString(
+                              localization.getTranslation("won"),
+                              localization.getTranslation(
+                                  redTotalScore > blueTotalScore
+                                      ? "redTeam"
+                                      : "blueTeam"
                               )
-                    }**`,
-                }
-            );
+                          )
+                }**`,
+            });
 
         return embed;
     }
