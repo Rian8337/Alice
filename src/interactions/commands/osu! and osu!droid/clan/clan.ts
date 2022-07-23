@@ -608,7 +608,7 @@ export const config: SlashCommand["config"] = {
                         "Unlocks the ability to change your clan role's icon.",
                 },
                 {
-                    name: "Special",
+                    name: "special",
                     type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "A shop section specifically for special events.",
