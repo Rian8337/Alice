@@ -46,7 +46,9 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             if (command.config.permissions.includes("BotOwner")) {
                 memberPermissions = [];
             } else if (!command.config.permissions.includes("Special")) {
-                memberPermissions = <PermissionResolvable[]>command.config.permissions;
+                memberPermissions = <PermissionResolvable[]>(
+                    command.config.permissions
+                );
             }
         }
 
