@@ -1,9 +1,6 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { MultiplayerENTranslation } from "./translations/MultiplayerENTranslation";
-import { MultiplayerESTranslation } from "./translations/MultiplayerESTranslation";
-import { MultiplayerIDTranslation } from "./translations/MultiplayerIDTranslation";
-import { MultiplayerKRTranslation } from "./translations/MultiplayerKRTranslation";
 
 export interface MultiplayerStrings {
     readonly about: string;
@@ -135,8 +132,5 @@ export class MultiplayerLocalization extends Localization<MultiplayerStrings> {
         Translations<MultiplayerStrings>
     > = {
         en: new MultiplayerENTranslation(),
-        es: new MultiplayerESTranslation(),
-        kr: new MultiplayerKRTranslation(),
-        id: new MultiplayerIDTranslation(),
     };
 }
