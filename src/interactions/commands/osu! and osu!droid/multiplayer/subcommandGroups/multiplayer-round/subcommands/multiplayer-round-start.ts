@@ -119,6 +119,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 $set: {
                     status: room.status,
+                    currentScores: [],
                 },
             }
         );

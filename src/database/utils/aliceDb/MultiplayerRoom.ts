@@ -95,7 +95,6 @@ export class MultiplayerRoom
     finishRound(): Promise<OperationResult> {
         this.status.isPlaying = false;
         this.status.playingSince = Date.now();
-        this.currentScores = [];
 
         return DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
             { roomId: this.roomId },
@@ -103,7 +102,6 @@ export class MultiplayerRoom
                 $set: {
                     "players.$[].isReady": false,
                     status: this.status,
-                    currentScores: this.currentScores,
                 },
             }
         );
