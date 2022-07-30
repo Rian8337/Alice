@@ -2,7 +2,6 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
 import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MultiplayerPlayer } from "@alice-structures/multiplayer/MultiplayerPlayer";
 import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
@@ -51,10 +50,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             room.settings.roomHost === interaction.user.id;
 
         if (changeHost) {
-            room.settings.roomHost =
-                ArrayHelper.getRandomArrayElement<MultiplayerPlayer>(
-                    room.players
-                ).discordId;
+            room.settings.roomHost = ArrayHelper.getRandomArrayElement(
+                room.players
+            ).discordId;
         }
 
         const result: OperationResult =
