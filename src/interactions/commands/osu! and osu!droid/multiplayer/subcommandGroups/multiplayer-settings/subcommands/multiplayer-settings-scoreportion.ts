@@ -88,7 +88,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     InteractionHelper.reply(interaction, {
-        content: MessageCreator.createReject(
+        content: MessageCreator.createAccept(
             localization.getTranslation("setScorePortionSuccess"),
             scorePortion.toLocaleString(
                 LocaleHelper.convertToBCP47(localization.language)
