@@ -55,7 +55,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const scorePortion: number =
-        interaction.options.getNumber("scorePortion") ?? 0.4;
+        interaction.options.getNumber("value") ?? 0.4;
 
     if (!NumberHelper.isNumberInRange(scorePortion, 0, 1)) {
         return InteractionHelper.reply(interaction, {
