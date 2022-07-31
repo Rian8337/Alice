@@ -1024,11 +1024,11 @@ export class MultiplayerRoom
         return {
             name: `**#${index} ${
                 score.username
-            } - ${modstring}: __${score.grade.toLocaleString(BCP47)}__${
+            } - ${modstring}: __${score.grade.toLocaleString(BCP47)}__**${
                 afterScore
                     ? ` (${diff >= 0 ? `+` : ""}${diff.toLocaleString(BCP47)})`
                     : ""
-            }**`,
+            }`,
             value: `${score.score.toLocaleString(
                 BCP47
             )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
