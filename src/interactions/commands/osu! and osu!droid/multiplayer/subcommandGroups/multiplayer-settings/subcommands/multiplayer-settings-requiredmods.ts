@@ -88,7 +88,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Filter allowed mods with respect to required mods
     const allowedMods: Mod[] = [];
 
-    for (const mod of ModUtil.pcStringToMods(room.settings.allowedMods)) {
+    for (const mod of ModUtil.pcStringToMods(room.settings.allowedMods, {
+        checkIncompatible: false,
+    })) {
         if (!mods.some((m) => m.acronym === mod.acronym)) {
             allowedMods.push(mod);
         }
