@@ -443,8 +443,8 @@ export class MultiplayerRoom
 
         embed
             .addFields(
-                validScores.map((v, i) =>
-                    this.getScoreEmbedDescription(v, i + 1, language)
+                validScores.map((v, i, a) =>
+                    this.getScoreEmbedDescription(v, i + 1, language, a[i + 1])
                 )
             )
             .addFields(
@@ -587,8 +587,8 @@ export class MultiplayerRoom
                 )}: ${redTotalScore.toLocaleString(BCP47)}**`,
             })
             .addFields(
-                validRedTeamScores.map((v, i) =>
-                    this.getScoreEmbedDescription(v, i + 1, language)
+                validRedTeamScores.map((v, i, a) =>
+                    this.getScoreEmbedDescription(v, i + 1, language, a[i + 1])
                 )
             )
             .addFields(
@@ -609,8 +609,8 @@ export class MultiplayerRoom
                 value: "=================================",
             })
             .addFields(
-                validBlueTeamScores.map((v, i) =>
-                    this.getScoreEmbedDescription(v, i + 1, language)
+                validBlueTeamScores.map((v, i, a) =>
+                    this.getScoreEmbedDescription(v, i + 1, language, a[i + 1])
                 )
             )
             .addFields(
@@ -980,12 +980,14 @@ export class MultiplayerRoom
      * @param score The score.
      * @param grade The grade of the score.
      * @param language The language to localize.
+     * @param afterScore The score that comes after the passed score, if any.
      * @returns The score's description.
      */
     private getScoreEmbedDescription(
         score: MultiplayerScoreFinalResult,
         index: number,
-        language: Language
+        language: Language,
+        afterScore?: MultiplayerScoreFinalResult
     ): APIEmbedField {
         const { mods, forcedAR, speedMultiplier } = this.convertModString(
             score.modstring
@@ -1017,10 +1019,16 @@ export class MultiplayerRoom
                 nmiss: score.miss,
             }).value() * 100 || 0;
 
+        const diff: number = afterScore ? score.grade - afterScore.grade : 0;
+
         return {
             name: `**#${index} ${
                 score.username
-            } - ${modstring}: __${score.grade.toLocaleString(BCP47)}__**`,
+            } - ${modstring}: __${score.grade.toLocaleString(BCP47)}__${
+                afterScore
+                    ? ` (${diff >= 0 ? `+` : ""}${diff.toLocaleString(BCP47)})`
+                    : ""
+            }**`,
             value: `${score.score.toLocaleString(
                 BCP47
             )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
