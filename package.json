@@ -10,7 +10,9 @@
     "compile-build": "tsc --build tsconfig.json",
     "format-code": "npx prettier -w --loglevel=silent \"src/**\"",
     "startDebug": "node --trace-warnings --inspect .",
-    "start": "node --trace-warnings ."
+    "start": "node --trace-warnings .",
+    "update-osu-libraries-beta": "npm i @rian8337/osu-base@beta @rian8337/osu-difficulty-calculator@beta @rian8337/osu-droid-replay-analyzer@beta @rian8337/osu-droid-utilities@beta @rian8337/osu-rebalance-difficulty-calculator@beta @rian8337/osu-strain-graph-generator@beta",
+    "update-osu-libraries-release": "npm i @rian8337/osu-base @rian8337/osu-difficulty-calculator @rian8337/osu-droid-replay-analyzer @rian8337/osu-droid-utilities @rian8337/osu-rebalance-difficulty-calculator @rian8337/osu-strain-graph-generator"
   },
   "engines": {
     "node": "16.x"
@@ -41,12 +43,12 @@
   },
   "dependencies": {
     "@discordjs/voice": "^0.11.0",
-    "@rian8337/osu-base": "^2.1.1-beta.0",
-    "@rian8337/osu-difficulty-calculator": "^2.1.1-beta.0",
-    "@rian8337/osu-droid-replay-analyzer": "^2.1.1-beta.0",
-    "@rian8337/osu-droid-utilities": "^2.1.1-beta.0",
-    "@rian8337/osu-rebalance-difficulty-calculator": "^2.1.1-beta.0",
-    "@rian8337/osu-strain-graph-generator": "^2.1.1-beta.0",
+    "@rian8337/osu-base": "^2.1.1",
+    "@rian8337/osu-difficulty-calculator": "^2.1.1",
+    "@rian8337/osu-droid-replay-analyzer": "^2.1.1",
+    "@rian8337/osu-droid-utilities": "^2.1.1",
+    "@rian8337/osu-rebalance-difficulty-calculator": "^2.1.1",
+    "@rian8337/osu-strain-graph-generator": "^2.1.1",
     "adm-zip": "^0.5.5",
     "bufferutil": "^4.0.3",
     "canvas": "^2.8.0",
