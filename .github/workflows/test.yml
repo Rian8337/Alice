@@ -16,8 +16,8 @@ jobs:
       - name: Install main dependencies
         run: npm i
 
-      - name: Build
-        run: npm run compile-linux
+      - name: Type Check
+        run: tsc --noEmit
 
       - name: ESLint
         run: npm run analyze-code
