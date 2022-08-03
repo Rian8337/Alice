@@ -578,8 +578,6 @@ export class UserBind extends Manager {
                     );
                 }
 
-                let calculatedCount: number = 0;
-
                 let score: Score | undefined;
 
                 while ((score = scores.shift())) {
@@ -588,12 +586,6 @@ export class UserBind extends Manager {
                             score.hash,
                             false
                         ).catch(() => null);
-
-                    if (isDPPRecalc) {
-                        this.client.logger.info(
-                            `${++calculatedCount}/${scoreCount} scores calculated`
-                        );
-                    }
 
                     if (!beatmapInfo) {
                         continue;
