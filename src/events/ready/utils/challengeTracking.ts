@@ -7,6 +7,7 @@ import { ChallengeCollectionManager } from "@alice-database/managers/aliceDb/Cha
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Config } from "@alice-core/Config";
 import { OperationResult } from "structures/core/OperationResult";
+import consola from "consola";
 
 export const run: EventUtil["run"] = async (client) => {
     if (!Config.isDebug) {
@@ -37,13 +38,13 @@ export const run: EventUtil["run"] = async (client) => {
         if (!ongoingChallenges.some((v) => v.challengeid.startsWith("d"))) {
             await botOwner
                 .send("Hey dear, I need you to start a daily challenge now!")
-                .catch(client.logger.error);
+                .catch(consola.error);
         }
 
         if (!ongoingChallenges.some((v) => v.challengeid.startsWith("w"))) {
             await botOwner
                 .send("Hey dear, I need you to start a weekly challenge now!")
-                .catch(client.logger.error);
+                .catch(consola.error);
         }
 
         for (const ongoingChallenge of ongoingChallenges.values()) {

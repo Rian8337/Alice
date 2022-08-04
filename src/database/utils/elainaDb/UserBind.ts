@@ -17,6 +17,7 @@ import { ObjectId, UpdateFilter } from "mongodb";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import consola from "consola";
 import {
     MapInfo,
     DroidAPIRequestBuilder,
@@ -450,7 +451,7 @@ export class UserBind extends Manager {
                 cursorIndexes: indexes,
             };
 
-            this.client.logger.info(
+            consola.info(
                 `${calcResult.map.fullTitle}${
                     entry.mods ? ` +${entry.mods}` : ""
                 }: ${entry.prevPP} ⮕  ${entry.pp}`
@@ -459,7 +460,7 @@ export class UserBind extends Manager {
             newList.set(ppEntry.hash, entry);
         }
 
-        this.client.logger.info(
+        consola.info(
             `${this.pptotal} ⮕  ${DPPHelper.calculateFinalPerformancePoints(
                 newList
             ).toFixed(2)}`
@@ -573,7 +574,7 @@ export class UserBind extends Manager {
                 const scoreCount: number = scores.length;
 
                 if (isDPPRecalc) {
-                    this.client.logger.info(
+                    consola.info(
                         `Calculating ${scoreCount} scores from page ${page}`
                     );
                 }

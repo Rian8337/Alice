@@ -8,7 +8,7 @@ import {
     Partials,
     Snowflake,
 } from "discord.js";
-import consola, { Consola } from "consola";
+import consola from "consola";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { Event } from "structures/core/Event";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
@@ -33,11 +33,6 @@ import { Config } from "./Config";
  * Upon initialization, the bot will automatically log in.
  */
 export class Bot extends Client<true> {
-    /**
-     * The logger of this bot.
-     */
-    readonly logger: Consola = consola;
-
     /**
      * The interactions that this bot has.
      */
@@ -100,7 +95,7 @@ export class Bot extends Client<true> {
 
         this.isInitialized = true;
 
-        this.logger.wrapAll();
+        consola.wrapAll();
 
         await this.loadSlashCommands();
         await this.loadContextMenuCommands();
@@ -115,15 +110,15 @@ export class Bot extends Client<true> {
         await this.initUtils();
         await this.registerDeployCommands();
 
-        this.logger.success("Discord API connection established");
-        this.logger.success("Alice Synthesis Thirty is up and running");
+        consola.success("Discord API connection established");
+        consola.success("Alice Synthesis Thirty is up and running");
     }
 
     /**
      * Loads slash commands from `interactions/commands` directory.
      */
     private async loadSlashCommands(): Promise<void> {
-        this.logger.info("Loading slash commands");
+        consola.info("Loading slash commands");
 
         const commandPath: string = join(
             __dirname,
@@ -137,14 +132,14 @@ export class Bot extends Client<true> {
         let i = 0;
 
         for (const folder of folders) {
-            this.logger.info("%d. Loading folder %s", ++i, folder);
+            consola.info("%d. Loading folder %s", ++i, folder);
 
             const commands: string[] = await readdir(join(commandPath, folder));
 
             let j = 0;
 
             for (const command of commands) {
-                this.logger.success("%d.%d. %s loaded", i, ++j, command);
+                consola.success("%d.%d. %s loaded", i, ++j, command);
 
                 const filePath: string = join(commandPath, folder, command);
 
@@ -261,12 +256,12 @@ export class Bot extends Client<true> {
         ): Promise<void> => {
             const commands: string[] = await readdir(join(commandPath, folder));
 
-            this.logger.info("Loading %s context menu commands", folder);
+            consola.info("Loading %s context menu commands", folder);
 
             let i = 0;
 
             for (const command of commands.filter((v) => v.endsWith(".js"))) {
-                this.logger.success(
+                consola.success(
                     "%d. %s loaded",
                     ++i,
                     command.substring(0, command.length - 3)
@@ -289,7 +284,7 @@ export class Bot extends Client<true> {
      * Loads modal submit commands from `interactions/modals` directory.
      */
     private async loadModalCommands(): Promise<void> {
-        this.logger.info("Loading modal submit commands");
+        consola.info("Loading modal submit commands");
 
         const commandPath: string = join(
             __dirname,
@@ -303,14 +298,14 @@ export class Bot extends Client<true> {
         let i = 0;
 
         for (const folder of folders) {
-            this.logger.info("%d. Loading folder %s", ++i, folder);
+            consola.info("%d. Loading folder %s", ++i, folder);
 
             const commands: string[] = await readdir(join(commandPath, folder));
 
             let j = 0;
 
             for (const command of commands.filter((v) => v.endsWith(".js"))) {
-                this.logger.success(
+                consola.success(
                     "%d.%d. %s loaded",
                     i,
                     ++j,
@@ -333,7 +328,7 @@ export class Bot extends Client<true> {
      * Loads events and event utilities from `events` directory.
      */
     private async loadEvents(): Promise<void> {
-        this.logger.info("Loading events and event utilities");
+        consola.info("Loading events and event utilities");
 
         const eventsPath: string = join(__dirname, "..", "events");
 
@@ -359,7 +354,7 @@ export class Bot extends Client<true> {
             for (const eventUtil of eventUtils
                 .filter((v) => v.endsWith(".js"))
                 .map((v) => v.substring(0, v.length - 3))) {
-                this.logger.success(
+                consola.success(
                     "%d.%d. %s :: %s event utility loaded",
                     i,
                     ++j,
@@ -408,7 +403,7 @@ export class Bot extends Client<true> {
         );
 
         const registerCommand = async (name: string): Promise<void> => {
-            this.logger.info(`Registering ${name} command`);
+            consola.info(`Registering ${name} command`);
 
             const command: SlashCommand =
                 this.interactions.chatInput.get(name)!;
@@ -423,11 +418,11 @@ export class Bot extends Client<true> {
                 data
             );
 
-            this.logger.info(
+            consola.info(
                 `Command ${name} registered with ID ${applicationCommand?.id}`
             );
 
-            this.logger.info(
+            consola.info(
                 `${StringHelper.capitalizeString(name)} command registered`
             );
         };

@@ -7,6 +7,7 @@ import { RecalcLocalization } from "@alice-localization/interactions/commands/os
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import consola from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -34,7 +35,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     let player: PrototypePP | undefined;
 
     while ((player = (await dbManager.getUnscannedPlayers(1)).first())) {
-        client.logger.info(`Now calculating ID ${player.discordid}`);
+        consola.info(`Now calculating ID ${player.discordid}`);
 
         const bindInfo: UserBind | null =
             await DatabaseManager.elainaDb.collections.userBind.getFromUser(
@@ -58,7 +59,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
         await bindInfo.calculatePrototypeDPP();
 
-        client.logger.info(`${++calculatedCount} players recalculated`);
+        consola.info(`${++calculatedCount} players recalculated`);
     }
 
     interaction.channel!.send({

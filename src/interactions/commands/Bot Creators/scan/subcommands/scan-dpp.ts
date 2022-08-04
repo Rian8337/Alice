@@ -8,6 +8,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Collection, Snowflake } from "discord.js";
+import consola from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -36,7 +37,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         })).size
     ) {
         for (const player of players.values()) {
-            client.logger.info(`Now calculating ID ${player.discordid}`);
+            consola.info(`Now calculating ID ${player.discordid}`);
 
             await player.scanDPP();
 
@@ -44,8 +45,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                 player.pp
             );
 
-            client.logger.info(`Final pp: ${finalPP}`);
-            client.logger.info(`${++calculatedCount} players scanned`);
+            consola.info(`Final pp: ${finalPP}`);
+            consola.info(`${++calculatedCount} players scanned`);
         }
     }
 

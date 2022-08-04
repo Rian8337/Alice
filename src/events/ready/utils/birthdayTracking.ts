@@ -9,6 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
+import consola from "consola";
 
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
@@ -120,7 +121,7 @@ export const run: EventUtil["run"] = async (client) => {
                         Symbols.cake
                     )
                 )
-                .catch(client.logger.error);
+                .catch(consola.error);
 
             await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
                 { discordid: user.id },

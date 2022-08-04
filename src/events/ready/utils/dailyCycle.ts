@@ -6,6 +6,7 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { EventUtil } from "structures/core/EventUtil";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import consola from "consola";
 
 async function resetDailyCoinsAndMapShare(): Promise<void> {
     await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
@@ -26,7 +27,7 @@ async function resetDailyCoinsAndMapShare(): Promise<void> {
 }
 
 async function kickUnverifiedMembers(client: Bot): Promise<void> {
-    client.logger.info("Checking for unverified members to prune");
+    consola.info("Checking for unverified members to prune");
 
     const guild = await client.guilds.fetch(Constants.mainServer);
 
@@ -47,15 +48,15 @@ async function kickUnverifiedMembers(client: Bot): Promise<void> {
 
     let kickedCount = 0;
 
-    client.logger.info("Kicking", totalKick, "members");
+    consola.info("Kicking", totalKick, "members");
 
     for (const [, member] of unverifiedMembers) {
         await member.kick("Unverified prune");
 
-        client.logger.info(`${++kickedCount}/${totalKick} members kicked`);
+        consola.info(`${++kickedCount}/${totalKick} members kicked`);
     }
 
-    client.logger.info("Pruning done");
+    consola.info("Pruning done");
 }
 
 export const run: EventUtil["run"] = async (client) => {

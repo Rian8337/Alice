@@ -13,6 +13,7 @@ import {
     TextChannel,
     ThreadChannel,
 } from "discord.js";
+import consola from "consola";
 
 export const run: EventUtil["run"] = async (
     client,
@@ -77,7 +78,7 @@ export const run: EventUtil["run"] = async (
     }
 
     // Log used command
-    client.logger.info(
+    consola.info(
         `Context Menu: ${interaction.user.tag} (${
             interaction.channel instanceof DMChannel
                 ? "DM"

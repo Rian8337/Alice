@@ -3,6 +3,7 @@ import { Bot } from "@alice-core/Bot";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
 import { Config } from "@alice-core/Config";
+import consola from "consola";
 
 /**
  * A helper class for events.
@@ -53,7 +54,7 @@ export abstract class EventHelper {
             }
 
             if (Config.enableDebugLog) {
-                client.logger.info(
+                consola.info(
                     `Triggered ${utility} event utility from ${eventName} event`
                 );
             }

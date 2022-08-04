@@ -24,6 +24,7 @@ import {
     TextChannel,
     ThreadChannel,
 } from "discord.js";
+import consola from "consola";
 
 export const run: EventUtil["run"] = async (
     client,
@@ -239,7 +240,7 @@ export const run: EventUtil["run"] = async (
         })
         .join(" ");
 
-    client.logger.info(`${logMessage} ${optionsStr}`);
+    consola.info(`${logMessage} ${optionsStr}`);
 
     interaction.ephemeral =
         (interaction.inGuild() &&

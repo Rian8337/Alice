@@ -12,6 +12,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { ScanLocalization } from "@alice-localization/interactions/commands/Bot Creators/scan/ScanLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import consola from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -55,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                 }
                 // eslint-disable-next-line no-fallthrough
                 case WhitelistValidity.VALID:
-                    client.logger.info(++scannedCount);
+                    consola.info(++scannedCount);
 
                     await HelperFunctions.sleep(0.05);
 

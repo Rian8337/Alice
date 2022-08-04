@@ -8,6 +8,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Message } from "discord.js";
+import consola from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -57,7 +58,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             },
         }))
     ) {
-        client.logger.info(`Now calculating ID ${player.discordid}`);
+        consola.info(`Now calculating ID ${player.discordid}`);
 
         if (interaction.options.getBoolean("full")) {
             await player.recalculateAllScores(false, true);
@@ -65,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             await player.recalculateDPP();
         }
 
-        client.logger.info(`${++calculatedCount} players recalculated`);
+        consola.info(`${++calculatedCount} players recalculated`);
 
         await message.edit({
             content: MessageCreator.createWarn(

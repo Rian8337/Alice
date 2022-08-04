@@ -4,6 +4,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { EventUtil } from "@alice-structures/core/EventUtil";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import consola from "consola";
 import { Message, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
@@ -31,11 +32,11 @@ export const run: EventUtil["run"] = async (client) => {
     let player: UserBind | null;
 
     while ((player = await dbManager.getRecalcUnscannedPlayers(1))) {
-        client.logger.info(`Now calculating ID ${player.discordid}`);
+        consola.info(`Now calculating ID ${player.discordid}`);
 
         await player.recalculateAllScores(false, true);
 
-        client.logger.info(`${++calculatedCount} players recalculated`);
+        consola.info(`${++calculatedCount} players recalculated`);
 
         await message.edit({
             content: MessageCreator.createWarn(

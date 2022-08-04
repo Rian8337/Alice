@@ -8,6 +8,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
 import { Collection, Guild, TextChannel } from "discord.js";
+import consola from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -121,7 +122,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             continue;
         }
 
-        client.logger.info(`Fetching messages in #${channel.name}`);
+        consola.info(`Fetching messages in #${channel.name}`);
 
         const messageData: Collection<number, number> =
             await MessageAnalyticsHelper.getChannelMessageCount(
@@ -130,7 +131,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                 toDate.getTime()
             );
 
-        client.logger.info(
+        consola.info(
             `Channel #${channel.name} has ${messageData.reduce(
                 (a, v) => a + v,
                 0

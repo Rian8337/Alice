@@ -1,12 +1,13 @@
 import { EventUtil } from "structures/core/EventUtil";
 import { AttachmentBuilder, TextChannel } from "discord.js";
+import consola from "consola";
 
 export const run: EventUtil["run"] = async (client, error: Error) => {
     const errorLogChannel: TextChannel = <TextChannel>(
         await client.channels.fetch("833903416475516939")
     );
 
-    client.logger.error(error);
+    consola.error(error);
 
     if (!errorLogChannel) {
         return;
