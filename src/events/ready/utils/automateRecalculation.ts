@@ -30,9 +30,7 @@ export const run: EventUtil["run"] = async (client) => {
 
     let player: UserBind | null;
 
-    while (
-        (player = await dbManager.getRecalcUnscannedPlayers(1))
-    ) {
+    while ((player = await dbManager.getRecalcUnscannedPlayers(1))) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
         await player.recalculateAllScores(false, true);

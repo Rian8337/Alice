@@ -8,7 +8,6 @@ import {
     Partials,
     Snowflake,
 } from "discord.js";
-import { MongoClient } from "mongodb";
 import consola, { Consola } from "consola";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { Event } from "structures/core/Event";
@@ -107,7 +106,7 @@ export class Bot extends Client<true> {
         await this.loadContextMenuCommands();
         await this.loadModalCommands();
         await this.loadEvents();
-        await this.connectToDatabase();
+        await DatabaseManager.init();
 
         await super.login(
             Config.isDebug ? process.env.DEBUG_BOT_TOKEN : process.env.BOT_TOKEN
@@ -118,31 +117,6 @@ export class Bot extends Client<true> {
 
         this.logger.success("Discord API connection established");
         this.logger.success("Alice Synthesis Thirty is up and running");
-    }
-
-    /**
-     * Connects to the bot's databases.
-     */
-    private async connectToDatabase(): Promise<void> {
-        // Elaina DB
-        const elainaURI: string =
-            "mongodb://" +
-            process.env.ELAINA_DB_KEY +
-            "@elainadb-shard-00-00-r6qx3.mongodb.net:27017,elainadb-shard-00-01-r6qx3.mongodb.net:27017,elainadb-shard-00-02-r6qx3.mongodb.net:27017/test?ssl=true&replicaSet=ElainaDB-shard-0&authSource=admin&retryWrites=true";
-        const elainaDb: MongoClient = await new MongoClient(
-            elainaURI
-        ).connect();
-        this.logger.success("Connection to Elaina DB established");
-
-        // Alice DB
-        const aliceURI: string =
-            "mongodb+srv://" +
-            process.env.ALICE_DB_KEY +
-            "@alicedb-hoexz.gcp.mongodb.net/test?retryWrites=true&w=majority";
-        const aliceDb: MongoClient = await new MongoClient(aliceURI).connect();
-        this.logger.success("Connection to Alice DB established");
-
-        DatabaseManager.init(elainaDb.db("ElainaDB"), aliceDb.db("AliceDB"));
     }
 
     /**
