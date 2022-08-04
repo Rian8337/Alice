@@ -31,7 +31,12 @@ DatabaseManager.init().then(async () => {
 
         await player.recalculateAllScores(false, true);
 
-        consola.info(`${++calculatedCount}/${total} players recalculated (${(calculatedCount * 100 / total).toFixed(2)}%)`);
+        consola.info(
+            `${++calculatedCount}/${total} players recalculated (${(
+                (calculatedCount * 100) /
+                total
+            ).toFixed(2)}%)`
+        );
     }
 
     consola.info("Recalculation done");
