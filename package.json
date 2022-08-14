@@ -65,6 +65,7 @@
     "ojsamadroid": "file:modules/ojsamadroid",
     "request": "^2.88.2",
     "utf-8-validate": "^5.0.5",
+    "words-count": "^2.0.2",
     "youtube-dl-exec": "2.1.0",
     "yt-search": "^2.10.2",
     "zlib-sync": "^0.1.7"
