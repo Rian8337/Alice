@@ -168,58 +168,59 @@ export class Challenge extends Manager {
 
     static readonly challengeManagerRole: Snowflake = "973476729039499284";
 
-    static readonly passCommandChoices: ApplicationCommandOptionChoiceData[] = [
-        {
-            name: "Score V1",
-            value: "score",
-        },
-        {
-            name: "Accuracy",
-            value: "acc",
-        },
-        {
-            name: "Score V2",
-            value: "scorev2",
-        },
-        {
-            name: "Misses",
-            value: "miss",
-        },
-        {
-            name: "Maximum Combo",
-            value: "combo",
-        },
-        {
-            name: "Rank",
-            value: "rank",
-        },
-        {
-            name: "Droid PP",
-            value: "dpp",
-        },
-        {
-            name: "PC pp",
-            value: "pp",
-        },
-        {
-            name: "Minimum 300",
-            value: "m300",
-        },
-        {
-            name: "Maximum 100",
-            value: "m100",
-        },
-        {
-            name: "Maximum 50",
-            value: "m50",
-        },
-        {
-            name: "Unstable Rate",
-            value: "ur",
-        },
-    ];
+    static readonly passCommandChoices: ApplicationCommandOptionChoiceData<string>[] =
+        [
+            {
+                name: "Score V1",
+                value: "score",
+            },
+            {
+                name: "Accuracy",
+                value: "acc",
+            },
+            {
+                name: "Score V2",
+                value: "scorev2",
+            },
+            {
+                name: "Misses",
+                value: "miss",
+            },
+            {
+                name: "Maximum Combo",
+                value: "combo",
+            },
+            {
+                name: "Rank",
+                value: "rank",
+            },
+            {
+                name: "Droid PP",
+                value: "dpp",
+            },
+            {
+                name: "PC pp",
+                value: "pp",
+            },
+            {
+                name: "Minimum 300",
+                value: "m300",
+            },
+            {
+                name: "Maximum 100",
+                value: "m100",
+            },
+            {
+                name: "Maximum 50",
+                value: "m50",
+            },
+            {
+                name: "Unstable Rate",
+                value: "ur",
+            },
+        ];
 
-    static readonly bonusCommandChoices: ApplicationCommandOptionChoiceData[] =
+    static readonly bonusCommandChoices: ApplicationCommandOptionChoiceData<string>[] =
         [
             ...this.passCommandChoices,
             {
