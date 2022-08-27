@@ -66,7 +66,7 @@ export interface DatabaseUserBind extends BaseDocument {
     oldclan?: string;
 
     /**
-     * The epoch time at which the user can rejoin his/her old clan, in seconds.
+     * The epoch time at which the user can rejoin their old clan, in seconds.
      */
     oldjoincooldown?: number;
 
