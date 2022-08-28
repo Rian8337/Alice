@@ -70,10 +70,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ...(await BeatmapManager.getBeatmaps(beatmapsetID, false))
         );
     } else {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-            beatmapID,
-            false
-        );
+        const beatmapInfo: MapInfo<false> | null =
+            await BeatmapManager.getBeatmap(beatmapID, { checkFile: false });
 
         if (beatmapInfo) {
             beatmaps.push(beatmapInfo);

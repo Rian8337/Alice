@@ -42,7 +42,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         challenge.beatmapid,
-        false
+        { checkFile: false }
     );
 
     if (!beatmap) {

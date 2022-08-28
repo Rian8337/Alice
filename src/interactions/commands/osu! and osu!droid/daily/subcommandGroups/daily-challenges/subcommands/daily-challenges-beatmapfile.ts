@@ -29,9 +29,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+    const beatmap: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         challenge.beatmapid,
-        false
+        { checkFile: false }
     );
 
     if (!beatmap) {

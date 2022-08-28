@@ -75,10 +75,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
-        beatmapId,
-        false
-    );
+    const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(beatmapId, {
+        checkFile: false,
+    });
 
     if (!beatmap) {
         return InteractionHelper.reply(interaction, {

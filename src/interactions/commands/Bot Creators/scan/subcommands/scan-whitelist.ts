@@ -49,8 +49,10 @@ export const run: SlashSubcommand<true>["run"] = async (
                 case WhitelistValidity.OUTDATED_HASH: {
                     await DPPHelper.deletePlays(entry.hashid);
 
-                    const beatmapInfo: MapInfo =
-                        (await BeatmapManager.getBeatmap(entry.mapid, false))!;
+                    const beatmapInfo: MapInfo<false> =
+                        (await BeatmapManager.getBeatmap(entry.mapid, {
+                            checkFile: false,
+                        }))!;
 
                     entry.hashid = beatmapInfo.hash;
                 }

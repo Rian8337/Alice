@@ -22,10 +22,10 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         const beatmapID: number = BeatmapManager.getBeatmapID(arg)[0];
 
         if (beatmapID) {
-            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-                beatmapID,
-                false
-            );
+            const beatmapInfo: MapInfo<false> | null =
+                await BeatmapManager.getBeatmap(beatmapID, {
+                    checkFile: false,
+                });
 
             if (!beatmapInfo) {
                 continue;

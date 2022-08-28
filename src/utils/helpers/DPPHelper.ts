@@ -57,7 +57,9 @@ export abstract class DPPHelper {
         const beatmapInfo: MapInfo | null =
             beatmapOrScore instanceof MapInfo
                 ? beatmapOrScore
-                : await BeatmapManager.getBeatmap(beatmapOrScore.hash, false);
+                : await BeatmapManager.getBeatmap(beatmapOrScore.hash, {
+                      checkFile: false,
+                  });
 
         if (!beatmapInfo) {
             return DPPSubmissionValidity.BEATMAP_NOT_FOUND;

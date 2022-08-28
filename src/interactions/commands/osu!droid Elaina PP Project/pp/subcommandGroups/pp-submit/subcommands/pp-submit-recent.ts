@@ -125,10 +125,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const embedFields: APIEmbedField[] = [];
 
     for (const score of scoresToSubmit) {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-            score.hash,
-            false
-        );
+        const beatmapInfo: MapInfo<false> | null =
+            await BeatmapManager.getBeatmap(score.hash, { checkFile: false });
         const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${
             score.mods.map((v) => v.acronym).join(",") || "No Mod"
         }`;

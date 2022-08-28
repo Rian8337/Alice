@@ -28,7 +28,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID,
-        false
+        { checkFile: false }
     );
 
     if (!beatmapInfo) {

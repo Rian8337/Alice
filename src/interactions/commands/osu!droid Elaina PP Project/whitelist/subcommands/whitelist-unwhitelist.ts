@@ -63,17 +63,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Collect beatmaps first
     await InteractionHelper.deferReply(interaction);
 
-    const beatmaps: MapInfo[] = [];
+    const beatmaps: MapInfo<false>[] = [];
 
     if (beatmapsetID) {
         beatmaps.push(
             ...(await BeatmapManager.getBeatmaps(beatmapsetID, false))
         );
     } else {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-            beatmapID,
-            false
-        );
+        const beatmapInfo: MapInfo<false> | null =
+            await BeatmapManager.getBeatmap(beatmapID, { checkFile: false });
 
         if (beatmapInfo) {
             beatmaps.push(beatmapInfo);

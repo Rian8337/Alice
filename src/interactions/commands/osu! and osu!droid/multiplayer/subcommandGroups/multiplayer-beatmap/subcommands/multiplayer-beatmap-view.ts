@@ -49,7 +49,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(
         interaction,
         EmbedCreator.createBeatmapEmbed(
-            (await BeatmapManager.getBeatmap(room.settings.beatmap.id, false))!,
+            (await BeatmapManager.getBeatmap(room.settings.beatmap.id, {
+                checkFile: false,
+            }))!,
             new DifficultyCalculationParameters(
                 new MapStats({
                     mods: ModUtil.pcStringToMods(room.settings.requiredMods),

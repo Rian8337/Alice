@@ -36,11 +36,10 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
      * Checks whether this whitelisted beatmap is still valid.
      */
     async checkValidity(): Promise<WhitelistValidity> {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-            this.hashid,
-            false,
-            true
-        );
+        const beatmapInfo = await BeatmapManager.getBeatmap(this.hashid, {
+            checkFile: false,
+            forceCheck: true,
+        });
 
         if (!beatmapInfo) {
             return WhitelistValidity.BEATMAP_NOT_FOUND;
@@ -65,10 +64,8 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
      * Note that this will not update the beatmap statistics in database.
      */
     async updateDiffstat(): Promise<void> {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-            this.hashid,
-            false
-        );
+        const beatmapInfo: MapInfo<false> | null =
+            await BeatmapManager.getBeatmap(this.hashid, { checkFile: false });
 
         if (!beatmapInfo) {
             return;

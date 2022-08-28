@@ -59,9 +59,9 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+    const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         beatmapId,
-        false
+        { checkFile: false }
     );
 
     if (!beatmapInfo) {

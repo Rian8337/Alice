@@ -229,7 +229,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 const options: MessageOptions = EmbedCreator.createBeatmapEmbed(
                     (await BeatmapManager.getBeatmap(
                         room.settings.beatmap!.id,
-                        false
+                        { checkFile: false }
                     ))!,
                     new DifficultyCalculationParameters(
                         new MapStats({

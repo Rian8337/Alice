@@ -79,8 +79,10 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
             // Prioritize beatmap ID over beatmapset ID
             if (beatmapID) {
-                const beatmapInfo: MapInfo | null =
-                    await BeatmapManager.getBeatmap(beatmapID, false);
+                const beatmapInfo: MapInfo<false> | null =
+                    await BeatmapManager.getBeatmap(beatmapID, {
+                        checkFile: false,
+                    });
 
                 if (!beatmapInfo) {
                     continue;

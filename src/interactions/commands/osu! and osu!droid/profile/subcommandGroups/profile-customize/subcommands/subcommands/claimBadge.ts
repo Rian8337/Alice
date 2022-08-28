@@ -168,10 +168,10 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 });
             }
 
-            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-                beatmapID,
-                false
-            );
+            const beatmapInfo: MapInfo<false> | null =
+                await BeatmapManager.getBeatmap(beatmapID, {
+                    checkFile: false,
+                });
 
             if (!beatmapInfo) {
                 return InteractionHelper.update(interaction, {

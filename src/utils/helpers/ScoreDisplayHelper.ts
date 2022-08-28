@@ -159,10 +159,8 @@ export abstract class ScoreDisplayHelper {
         const localization: ScoreDisplayHelperLocalization =
             this.getLocalization(await CommandHelper.getLocale(interaction));
 
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-            hash,
-            false
-        );
+        const beatmapInfo: MapInfo<false> | null =
+            await BeatmapManager.getBeatmap(hash, { checkFile: false });
 
         if (beatmapInfo && cacheBeatmapToChannel) {
             BeatmapManager.setChannelLatestBeatmap(

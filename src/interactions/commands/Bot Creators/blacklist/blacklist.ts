@@ -66,9 +66,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     await selectMenuInteraction.deferUpdate();
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+    const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         beatmapID,
-        false
+        { checkFile: false }
     );
 
     if (!beatmapInfo) {

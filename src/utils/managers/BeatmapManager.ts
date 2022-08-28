@@ -11,6 +11,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { ScoreRank } from "structures/utils/ScoreRank";
+import { BeatmapRetrievalOptions } from "@alice-structures/utils/BeatmapRetrievalOptions";
 
 /**
  * A manager for beatmaps.
@@ -46,41 +47,19 @@ export abstract class BeatmapManager extends Manager {
      * Gets a beatmap from the beatmap cache, or downloads it if it's not available.
      *
      * @param beatmapIdOrHash The beatmap ID or MD5 hash of the beatmap.
-     * @param checkFile Whether to check if the beatmap's `.osu` file is downloaded, and downloads it if it's not. Defaults to `true`.
-     * @param forceCheck Whether to skip the cache check and request the osu! API. Defaults to `false`.
+     * @param options Options for the retrieval of the beatmap.
      * @returns A `MapInfo` instance representing the beatmap.
      */
-    static async getBeatmap(
+    static async getBeatmap<T extends boolean = true>(
         beatmapIdOrHash: number | string,
-        checkFile?: boolean,
-        forceCheck?: boolean
-    ): Promise<MapInfo<true> | null>;
-
-    /**
-     * Gets a beatmap from the beatmap cache, or downloads it if it's not available.
-     *
-     * @param beatmapIdOrHash The beatmap ID or MD5 hash of the beatmap.
-     * @param checkFile Whether to check if the beatmap's `.osu` file is downloaded, and downloads it if it's not. Defaults to `true`.
-     * @param forceCheck Whether to skip the cache check and request the osu! API. Defaults to `false`.
-     * @returns A `MapInfo` instance representing the beatmap.
-     */
-    static async getBeatmap(
-        beatmapIdOrHash: number | string,
-        checkFile: false,
-        forceCheck?: boolean
-    ): Promise<MapInfo<false> | null>;
-
-    static async getBeatmap(
-        beatmapIdOrHash: number | string,
-        checkFile: boolean = true,
-        forceCheck: boolean = false
-    ): Promise<MapInfo | null> {
+        options?: BeatmapRetrievalOptions & { checkFile?: T }
+    ): Promise<MapInfo<T> | null> {
         const oldCache: MapInfo | undefined = CacheManager.beatmapCache.find(
             (v) => v.beatmapID === beatmapIdOrHash || v.hash === beatmapIdOrHash
         );
 
-        if (oldCache && !forceCheck) {
-            if (checkFile) {
+        if (oldCache && !options?.forceCheck) {
+            if (options?.checkFile !== false) {
                 await oldCache.retrieveBeatmapFile();
             }
 
@@ -90,14 +69,16 @@ export abstract class BeatmapManager extends Manager {
         const newCache: MapInfo | null = await MapInfo.getInformation(
             //@ts-expect-error: string | number union
             beatmapIdOrHash,
-            checkFile
+            options?.checkFile
         );
 
         if (!newCache) {
             return null;
         }
 
-        CacheManager.beatmapCache.set(newCache.beatmapID, newCache);
+        if (options?.cacheBeatmap !== false) {
+            CacheManager.beatmapCache.set(newCache.beatmapID, newCache);
+        }
 
         return newCache;
     }

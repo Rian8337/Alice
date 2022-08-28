@@ -213,7 +213,7 @@ export class UserBind extends Manager {
         for (const ppEntry of this.pp.values()) {
             const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
                 ppEntry.hash,
-                false
+                { checkFile: false }
             );
 
             await HelperFunctions.sleep(0.2);
@@ -583,10 +583,9 @@ export class UserBind extends Manager {
 
                 while ((score = scores.shift())) {
                     const beatmapInfo: MapInfo | null =
-                        await BeatmapManager.getBeatmap(
-                            score.hash,
-                            false
-                        ).catch(() => null);
+                        await BeatmapManager.getBeatmap(score.hash, {
+                            checkFile: false,
+                        }).catch(() => null);
 
                     if (!beatmapInfo) {
                         continue;

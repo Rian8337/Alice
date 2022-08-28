@@ -33,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID || hash,
-        false
+        { checkFile: false }
     );
 
     if (!beatmapInfo) {
