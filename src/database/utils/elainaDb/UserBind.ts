@@ -211,10 +211,11 @@ export class UserBind extends Manager {
         const hashesToDelete: string[] = [];
 
         for (const ppEntry of this.pp.values()) {
-            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-                ppEntry.hash,
-                { checkFile: false }
-            );
+            const beatmapInfo: MapInfo<false> | null =
+                await BeatmapManager.getBeatmap(ppEntry.hash, {
+                    checkFile: false,
+                    cacheBeatmap: false,
+                });
 
             await HelperFunctions.sleep(0.2);
 
@@ -585,6 +586,7 @@ export class UserBind extends Manager {
                     const beatmapInfo: MapInfo | null =
                         await BeatmapManager.getBeatmap(score.hash, {
                             checkFile: false,
+                            cacheBeatmap: false,
                         }).catch(() => null);
 
                     if (!beatmapInfo) {

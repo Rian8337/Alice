@@ -13,7 +13,7 @@ export interface BeatmapRetrievalOptions {
     forceCheck?: boolean;
 
     /**
-     * Whether to cache the beatmap after retrieval.
+     * Whether to cache the beatmap after retrieval. Defaults to `true`.
      */
     cacheBeatmap?: boolean;
 }
