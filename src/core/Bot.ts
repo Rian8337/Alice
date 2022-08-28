@@ -75,8 +75,6 @@ export class Bot extends Client<true> {
                 Partials.GuildScheduledEvent,
                 Partials.User,
                 Partials.Message,
-                Partials.User,
-                Partials.Message,
                 Partials.Reaction,
                 Partials.ThreadMember,
             ],
