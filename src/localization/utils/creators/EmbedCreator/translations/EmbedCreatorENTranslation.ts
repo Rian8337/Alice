@@ -39,7 +39,7 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         constrain: "Constrain",
         modOnly: "%s mod only",
         rankableMods: "Any rankable mod except EZ, NF, and HT",
-        challengeBonuses: "Use `/daily bonuses` to check bonuses.",
+        challengeBonuses: "Use </daily bonuses:889506666498895942> to check bonuses.",
         auctionInfo: "Auction Information",
         auctionName: "Name",
         auctionAuctioneer: "Auctioneer",
@@ -53,7 +53,7 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         auctionTopBidders: "Top Bidders",
         broadcast: "Broadcast",
         broadcast1:
-            "If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using `/report` command (more information is available using `/help report`)",
+            "If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using </report:937926296560869466> command (more information is available using `/help report`)",
         broadcast2:
             "Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!",
         mapShareSubmission: "Submission by %s",

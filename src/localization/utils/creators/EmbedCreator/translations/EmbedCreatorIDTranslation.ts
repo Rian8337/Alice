@@ -54,7 +54,7 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         auctionTopBidders: "Penawar Teratas",
         broadcast: "Siaran",
         broadcast1:
-            "Apabila kamu melihat pengguna yang melanggar peraturan, bertingkah laku tidak benar, atau mencoba memberi kekesalan secara sengaja, mohon laporkan pengguna tersebut menggunakan perintah `/report` (informasi lebih dapat diakses menggunakan perintah `/help report`).",
+            "Apabila kamu melihat pengguna yang melanggar peraturan, bertingkah laku tidak benar, atau mencoba memberi kekesalan secara sengaja, mohon laporkan pengguna tersebut menggunakan perintah </report:937926296560869466> (informasi lebih dapat diakses menggunakan perintah `/help report`).",
         broadcast2:
             "Perlu diingat bahwa hanya anggota staff yang dapat melihat laporan, sehingga privasimu akan terjaga. Kami menghargai kontribusimu dalam membawa lingkungan yang bersahabat!",
         mapShareSubmission: "Pengajuan dari %s",

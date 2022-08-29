@@ -144,7 +144,7 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         roundStartSuccess:
             "The round will start in %s seconds! Good luck and have fun!",
         matchStatusUpdateFailed:
-            "I'm sorry, I couldn't update the match status: %s.\n\nPlease use `/multiplayer round forcesubmit` to update the match status.",
+            "I'm sorry, I couldn't update the match status: %s.\n\nPlease use </multiplayer round forcesubmit:978330292005765131> to update the match status.",
         matchStatusUpdateSuccess: "Successfully updated match status.",
         setMaxPlayerSlotFailed:
             "I'm sorry, I couldn't set the multiplayer room's maximum player slots: %s.",

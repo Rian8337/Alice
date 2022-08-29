@@ -38,7 +38,7 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         constrain: "제한사항",
         modOnly: "%s 모드만 사용",
         rankableMods: "EZ, NF 및 HT를 제외한 모든 랭크 가능 모드",
-        challengeBonuses: "보너스를 확인하려면 `/daily bonuses`를 사용하세요.",
+        challengeBonuses: "보너스를 확인하려면 </daily bonuses:889506666498895942>를 사용하세요.",
         auctionInfo: "경매 정보",
         auctionName: "이름",
         auctionAuctioneer: "경매인(경매 시작자)",
@@ -52,7 +52,7 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         auctionTopBidders: "최고 입찰자",
         broadcast: "안내",
         broadcast1:
-            "유저가 규칙을 위반하거나, 적절하지 못한 행동을 하거나, 의도적으로 짜증나게 한다면, `/report` 명령어를 사용해서 유저를 신고해 주세요(`/help report`로 더 많은 정보를 얻을 수 있어요)",
+            "유저가 규칙을 위반하거나, 적절하지 못한 행동을 하거나, 의도적으로 짜증나게 한다면, </report:937926296560869466> 명령어를 사용해서 유저를 신고해 주세요(`/help report`로 더 많은 정보를 얻을 수 있어요)",
         broadcast2:
             "오직 스태프 멤버만 신고를 볼 수 있기 때문에, 여러분의 프라이버시는 안전하다는걸 알아주세요. 더욱 깨끗한 서버 환경을 위한 여러분의 노력과 기여에는 언제나 감사드려요!",
         mapShareSubmission: "%s의 제출",
