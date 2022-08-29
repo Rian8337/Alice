@@ -16,6 +16,7 @@ import {
     NewsChannel,
     Snowflake,
     TextChannel,
+    VoiceChannel,
 } from "discord.js";
 
 /**
@@ -437,7 +438,7 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about the operation.
      */
     static async setCommandCooldownInChannel(
-        channel: TextChannel | NewsChannel,
+        channel: TextChannel | NewsChannel | VoiceChannel,
         commandName: string,
         cooldown: number,
         language: Language = "en"

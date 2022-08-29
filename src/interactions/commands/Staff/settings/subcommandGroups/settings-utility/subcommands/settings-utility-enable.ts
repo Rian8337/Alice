@@ -8,17 +8,16 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import {
-    Collection,
-    NewsChannel,
-    TextChannel,
-    ThreadChannel,
-} from "discord.js";
+import { Collection } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
     interaction
 ) => {
+    if (!interaction.inGuild()) {
+        return;
+    }
+
     const localization: SettingsLocalization = new SettingsLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -69,9 +68,9 @@ export const run: SlashSubcommand<true>["run"] = async (
     switch (scope) {
         case "channel":
             await CommandUtilManager.enableUtilityInChannel(
-                interaction.channel instanceof ThreadChannel
+                interaction.channel!.isThread()
                     ? interaction.channel.parent!
-                    : <TextChannel | NewsChannel>interaction.channel,
+                    : interaction.channel!,
                 event,
                 utility
             );

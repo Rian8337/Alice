@@ -3,7 +3,7 @@ import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch"
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Channel, ThreadChannel } from "discord.js";
+import { Channel } from "discord.js";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -56,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             match.channelId
         );
 
-        if (channel instanceof ThreadChannel) {
+        if (channel?.isThread()) {
             await channel.setLocked(true);
             await channel.setArchived(true, "Match removed");
         }

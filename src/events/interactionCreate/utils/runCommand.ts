@@ -19,10 +19,6 @@ import {
     BaseInteraction,
     CacheType,
     CommandInteractionOption,
-    DMChannel,
-    NewsChannel,
-    TextChannel,
-    ThreadChannel,
 } from "discord.js";
 import consola from "consola";
 
@@ -190,13 +186,9 @@ export const run: EventUtil["run"] = async (
 
     // Log used command along with its subcommand group, subcommand, and options
     let logMessage: string = `Slash: ${interaction.user.tag} (${
-        interaction.channel instanceof DMChannel
+        interaction.channel!.isDMBased()
             ? "DM"
-            : `#${
-                  (<TextChannel | NewsChannel | ThreadChannel>(
-                      interaction.channel!
-                  )).name
-              }`
+            : `#${interaction.channel!.name}`
     }): ${interaction.commandName}`;
 
     if (interaction.options.getSubcommandGroup(false)) {

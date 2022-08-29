@@ -4,7 +4,6 @@ import {
     GuildBan,
     GuildChannel,
     EmbedBuilder,
-    TextChannel,
     User,
     AuditLogEvent,
 } from "discord.js";
@@ -46,7 +45,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
     const logChannel: GuildChannel | null =
         await guildConfig.getGuildLogChannel(guildBan.guild);
 
-    if (!(logChannel instanceof TextChannel)) {
+    if (!logChannel?.isTextBased()) {
         return;
     }
 

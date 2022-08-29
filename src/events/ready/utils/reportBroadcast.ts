@@ -9,7 +9,6 @@ import {
     Message,
     EmbedBuilder,
     Snowflake,
-    TextChannel,
 } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
@@ -36,7 +35,7 @@ export const run: EventUtil["run"] = async (client) => {
 
         for (const channel of guild.channels.cache.values()) {
             if (
-                !(channel instanceof TextChannel) ||
+                !channel.isTextBased() ||
                 excludedChannels.includes(channel.id)
             ) {
                 continue;

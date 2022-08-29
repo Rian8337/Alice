@@ -6,14 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import {
-    DMChannel,
-    InteractionType,
-    ModalSubmitInteraction,
-    NewsChannel,
-    TextChannel,
-    ThreadChannel,
-} from "discord.js";
+import { InteractionType, ModalSubmitInteraction } from "discord.js";
 import consola from "consola";
 
 export const run: EventUtil["run"] = async (
@@ -75,13 +68,9 @@ export const run: EventUtil["run"] = async (
     // Log used command
     consola.info(
         `Modal: ${interaction.user.tag} (${
-            interaction.channel instanceof DMChannel
+            interaction.channel!.isDMBased()
                 ? "DM"
-                : `#${
-                      (<TextChannel | NewsChannel | ThreadChannel>(
-                          interaction.channel!
-                      )).name
-                  }`
+                : `#${interaction.channel!.name}`
         }): ${interaction.customId}`
     );
 

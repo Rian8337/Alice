@@ -7,13 +7,22 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
-import { Collection, Guild, TextChannel } from "discord.js";
+import {
+    Collection,
+    Guild,
+    GuildBasedChannel,
+    TextBasedChannel,
+} from "discord.js";
 import consola from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
     interaction
 ) => {
+    if (!interaction.inGuild()) {
+        return;
+    }
+
     const localization: MessageanalyticsLocalization =
         new MessageanalyticsLocalization(
             await CommandHelper.getLocale(interaction)
@@ -69,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
-    const channelsToFetch: TextChannel[] = [];
+    const channelsToFetch: (GuildBasedChannel & TextBasedChannel)[] = [];
 
     if ((interaction.options.getString("scope") ?? "channel") === "channel") {
         if (interaction.guildId !== guild.id) {
@@ -80,7 +89,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             });
         }
 
-        if (!(interaction.channel instanceof TextChannel)) {
+        if (!interaction.channel?.isTextBased()) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("notATextChannel")
@@ -99,7 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         channelsToFetch.push(interaction.channel);
     } else {
         for (const channel of guild.channels.cache.values()) {
-            if (channel instanceof TextChannel) {
+            if (channel.isTextBased()) {
                 channelsToFetch.push(channel);
             }
         }

@@ -38,8 +38,6 @@ export abstract class LoungeLockManager extends PunishmentManager {
 
     /**
      * Initializes the manager.
-     *
-     * @param client The instance of the bot.
      */
     static override async init(): Promise<void> {
         this.loungeLockDb = DatabaseManager.aliceDb.collections.loungeLock;
@@ -93,7 +91,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
         const logChannel: GuildChannel | null =
             await guildConfig.getGuildLogChannel(this.mainServer);
 
-        if (!(logChannel instanceof TextChannel)) {
+        if (!logChannel?.isTextBased()) {
             return this.createOperationResult(
                 false,
                 punishmentManagerLocalization.getTranslation(
@@ -205,7 +203,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
             );
         }
 
-        if (!(logChannel instanceof TextChannel)) {
+        if (!logChannel?.isTextBased()) {
             return this.createOperationResult(
                 false,
                 punishmentManagerLocalization.getTranslation(

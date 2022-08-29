@@ -5,10 +5,12 @@ import {
     Collection,
     FetchedThreads,
     Guild,
+    GuildBasedChannel,
     GuildChannel,
     Message,
     MessageManager,
     Snowflake,
+    TextBasedChannel,
     TextChannel,
     ThreadChannel,
 } from "discord.js";
@@ -70,7 +72,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 continue;
             }
 
-            if (!(channel instanceof TextChannel)) {
+            if (!channel.isTextBased()) {
                 continue;
             }
 
@@ -108,7 +110,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
      * @returns A collection of amount of messages per day, mapped by the epoch time of the day, in milliseconds.
      */
     static async getChannelMessageCount(
-        channel: TextChannel,
+        channel: GuildBasedChannel & TextBasedChannel,
         fetchStartTime: number,
         fetchEndTime: number
     ): Promise<Collection<number, number>> {
@@ -125,41 +127,44 @@ export abstract class MessageAnalyticsHelper extends Manager {
             finalCollection.set(date, amount);
         }
 
-        const activeThreads: FetchedThreads =
-            await channel.threads.fetchActive();
+        if (channel instanceof TextChannel) {
+            // Count threads for text channels
+            const activeThreads: FetchedThreads =
+                await channel.threads.fetchActive();
 
-        for (const activeThread of activeThreads.threads.values()) {
-            const threadCollection: Collection<number, number> =
-                await this.getUserMessagesCount(
-                    activeThread,
-                    fetchStartTime,
-                    fetchEndTime
-                );
+            for (const activeThread of activeThreads.threads.values()) {
+                const threadCollection: Collection<number, number> =
+                    await this.getUserMessagesCount(
+                        activeThread,
+                        fetchStartTime,
+                        fetchEndTime
+                    );
 
-            for (const [date, amount] of threadCollection) {
-                finalCollection.set(
-                    date,
-                    (finalCollection.get(date) ?? 0) + amount
-                );
+                for (const [date, amount] of threadCollection) {
+                    finalCollection.set(
+                        date,
+                        (finalCollection.get(date) ?? 0) + amount
+                    );
+                }
             }
-        }
 
-        const archivedThreads: FetchedThreads =
-            await channel.threads.fetchArchived({ fetchAll: true });
+            const archivedThreads: FetchedThreads =
+                await channel.threads.fetchArchived({ fetchAll: true });
 
-        for (const archivedThread of archivedThreads.threads.values()) {
-            const threadCollection: Collection<number, number> =
-                await this.getUserMessagesCount(
-                    archivedThread,
-                    fetchStartTime,
-                    fetchEndTime
-                );
+            for (const archivedThread of archivedThreads.threads.values()) {
+                const threadCollection: Collection<number, number> =
+                    await this.getUserMessagesCount(
+                        archivedThread,
+                        fetchStartTime,
+                        fetchEndTime
+                    );
 
-            for (const [date, amount] of threadCollection) {
-                finalCollection.set(
-                    date,
-                    (finalCollection.get(date) ?? 0) + amount
-                );
+                for (const [date, amount] of threadCollection) {
+                    finalCollection.set(
+                        date,
+                        (finalCollection.get(date) ?? 0) + amount
+                    );
+                }
             }
         }
 
@@ -179,7 +184,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
      * @returns The amount of messages sent by users in the channel.
      */
     private static async getUserMessagesCount(
-        channel: TextChannel | ThreadChannel,
+        channel: GuildBasedChannel & TextBasedChannel,
         fetchStartTime: number,
         fetchEndTime: number
     ): Promise<Collection<number, number>> {

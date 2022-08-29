@@ -1,4 +1,4 @@
-import { DMChannel, Message, Snowflake, TextChannel } from "discord.js";
+import { Message, Snowflake, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
@@ -7,7 +7,7 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 const coinCooldown: Set<Snowflake> = new Set();
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
-    if (message.channel instanceof DMChannel || message.author.bot) {
+    if (message.channel.isDMBased() || message.author.bot) {
         return;
     }
 

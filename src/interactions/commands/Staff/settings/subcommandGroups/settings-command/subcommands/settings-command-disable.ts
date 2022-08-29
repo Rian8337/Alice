@@ -6,7 +6,6 @@ import { CommandUtilScope } from "structures/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { NewsChannel, TextChannel, ThreadChannel } from "discord.js";
 import { SettingsLocalization } from "@alice-localization/interactions/commands/Staff/settings/SettingsLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -15,6 +14,10 @@ export const run: SlashSubcommand<true>["run"] = async (
     client,
     interaction
 ) => {
+    if (!interaction.inGuild()) {
+        return;
+    }
+
     const localization: SettingsLocalization = new SettingsLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -68,9 +71,9 @@ export const run: SlashSubcommand<true>["run"] = async (
             }
 
             result = await CommandUtilManager.setCommandCooldownInChannel(
-                interaction.channel instanceof ThreadChannel
+                interaction.channel!.isThread()
                     ? interaction.channel.parent!
-                    : <TextChannel | NewsChannel>interaction.channel,
+                    : interaction.channel!,
                 commandName,
                 -1
             );

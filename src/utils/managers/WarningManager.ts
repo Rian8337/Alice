@@ -11,13 +11,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import {
-    GuildChannel,
-    GuildMember,
-    EmbedBuilder,
-    Snowflake,
-    TextChannel,
-} from "discord.js";
+import { GuildChannel, GuildMember, EmbedBuilder, Snowflake } from "discord.js";
 import { PunishmentManager } from "./PunishmentManager";
 import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
@@ -115,7 +109,7 @@ export abstract class WarningManager extends PunishmentManager {
         const logChannel: GuildChannel | null =
             await guildConfig.getGuildLogChannel(member.guild);
 
-        if (!(logChannel instanceof TextChannel)) {
+        if (!logChannel?.isTextBased()) {
             return this.createOperationResult(
                 false,
                 punishmentManagerLocalization.getTranslation(
@@ -299,7 +293,7 @@ export abstract class WarningManager extends PunishmentManager {
         const logChannel: GuildChannel | null =
             await guildConfig.getGuildLogChannel(member.guild);
 
-        if (!(logChannel instanceof TextChannel)) {
+        if (!logChannel?.isTextBased()) {
             return this.createOperationResult(
                 false,
                 punishmentManagerLocalization.getTranslation(
@@ -446,7 +440,7 @@ export abstract class WarningManager extends PunishmentManager {
         const logChannel: GuildChannel | null =
             await guildConfig.getGuildLogChannel(interaction.guild!);
 
-        if (!(logChannel instanceof TextChannel)) {
+        if (!logChannel?.isTextBased()) {
             return this.createOperationResult(
                 false,
                 punishmentManagerLocalization.getTranslation(

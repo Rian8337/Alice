@@ -1,17 +1,11 @@
-import {
-    Collection,
-    DMChannel,
-    GuildEmoji,
-    Message,
-    Snowflake,
-} from "discord.js";
+import { Collection, GuildEmoji, Message, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
 import { EmojiStat } from "structures/moderation/EmojiStat";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
-    if (message.channel instanceof DMChannel || message.author.bot) {
+    if (message.channel.isDMBased() || message.author.bot) {
         return;
     }
 

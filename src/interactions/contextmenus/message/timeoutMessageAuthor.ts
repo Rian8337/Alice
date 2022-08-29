@@ -10,13 +10,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
-import {
-    Embed,
-    Guild,
-    GuildMember,
-    Message,
-    SelectMenuInteraction,
-} from "discord.js";
+import { Embed, Guild, GuildMember, SelectMenuInteraction } from "discord.js";
 
 export const run: MessageContextMenuCommand["run"] = async (
     client,
@@ -26,10 +20,6 @@ export const run: MessageContextMenuCommand["run"] = async (
         new TimeoutMessageAuthorLocalization(
             await CommandHelper.getLocale(interaction)
         );
-
-    if (!(interaction.targetMessage instanceof Message)) {
-        return;
-    }
 
     const selectMenuInteraction: SelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(

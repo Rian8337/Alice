@@ -13,7 +13,6 @@ import {
     GuildChannel,
     GuildMember,
     EmbedBuilder,
-    TextChannel,
     AuditLogEvent,
 } from "discord.js";
 
@@ -72,7 +71,7 @@ export const run: EventUtil["run"] = async (
         const logChannel: GuildChannel | null =
             await guildConfig.getGuildLogChannel(newMember.guild);
 
-        if (!(logChannel instanceof TextChannel)) {
+        if (!logChannel?.isTextBased()) {
             return;
         }
 
@@ -198,7 +197,7 @@ export const run: EventUtil["run"] = async (
         const logChannel: GuildChannel | null =
             await guildConfig.getGuildLogChannel(newMember.guild);
 
-        if (!(logChannel instanceof TextChannel)) {
+        if (!logChannel?.isTextBased()) {
             return;
         }
 
