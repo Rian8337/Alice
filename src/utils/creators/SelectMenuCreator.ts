@@ -6,7 +6,6 @@ import {
     InteractionReplyOptions,
     Message,
     MessageActionRowComponent,
-    MessageComponentInteraction,
     SelectMenuBuilder,
     SelectMenuComponent,
     SelectMenuComponentOptionData,
@@ -123,7 +122,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                         options.components!.splice(index, 1);
                     }
                 } else {
-                    interaction instanceof MessageComponentInteraction
+                    interaction.isMessageComponent()
                         ? await InteractionHelper.update(interaction, {
                               content: MessageCreator.createReject(
                                   localization.getTranslation("timedOut")

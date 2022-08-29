@@ -4,7 +4,6 @@ import {
     InteractionReplyOptions,
     Message,
     MessageCollector,
-    MessageComponentInteraction,
     Snowflake,
 } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
@@ -59,7 +58,7 @@ export abstract class MessageInputCreator {
         return new Promise((resolve) => {
             collector.once("end", async (collected) => {
                 if (collected.size === 0) {
-                    interaction instanceof MessageComponentInteraction
+                    interaction.isMessageComponent()
                         ? await InteractionHelper.update(interaction, {
                               content:
                                   MessageCreator.createReject("Timed out."),

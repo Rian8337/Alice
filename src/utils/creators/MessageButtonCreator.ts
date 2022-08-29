@@ -8,7 +8,6 @@ import {
     ButtonInteraction,
     InteractionReplyOptions,
     Message,
-    MessageComponentInteraction,
     Snowflake,
     ButtonBuilder,
     ButtonStyle,
@@ -127,10 +126,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         options.components ??= [];
         options.components.push(component);
 
-        const message: Message =
-            interaction instanceof MessageComponentInteraction
-                ? await InteractionHelper.update(interaction, options)
-                : await InteractionHelper.reply(interaction, options);
+        const message: Message = interaction.isMessageComponent()
+            ? await InteractionHelper.update(interaction, options)
+            : await InteractionHelper.reply(interaction, options);
 
         const collectorOptions = this.createButtonCollector(
             message,
@@ -176,7 +174,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                 if (pressed) {
                     if (pressed.customId === "yes") {
-                        interaction instanceof MessageComponentInteraction
+                        interaction.isMessageComponent()
                             ? await InteractionHelper.update(interaction, {
                                   content: MessageCreator.createPrefixedMessage(
                                       localization.getTranslation("pleaseWait"),
@@ -190,7 +188,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                                   ),
                               });
                     } else {
-                        interaction instanceof MessageComponentInteraction
+                        interaction.isMessageComponent()
                             ? await InteractionHelper.update(interaction, {
                                   content: MessageCreator.createReject(
                                       localization.getTranslation(
@@ -318,10 +316,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
         await onPageChange(options, startPage, ...onPageChangeArgs);
 
-        const message: Message =
-            interaction instanceof MessageComponentInteraction
-                ? await InteractionHelper.update(interaction, options)
-                : await InteractionHelper.reply(interaction, options);
+        const message: Message = interaction.isMessageComponent()
+            ? await InteractionHelper.update(interaction, options)
+            : await InteractionHelper.reply(interaction, options);
 
         if (maxPage === 1) {
             return message;
@@ -417,7 +414,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
             if (!collectorOptions.componentIsDeleted) {
                 try {
-                    interaction instanceof MessageComponentInteraction
+                    interaction.isMessageComponent()
                         ? await InteractionHelper.update(interaction, options)
                         : await InteractionHelper.reply(interaction, options);
                     // eslint-disable-next-line no-empty
