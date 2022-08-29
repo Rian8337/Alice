@@ -38,7 +38,8 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         constrain: "제한사항",
         modOnly: "%s 모드만 사용",
         rankableMods: "EZ, NF 및 HT를 제외한 모든 랭크 가능 모드",
-        challengeBonuses: "보너스를 확인하려면 </daily bonuses:889506666498895942>를 사용하세요.",
+        challengeBonuses:
+            "보너스를 확인하려면 </daily bonuses:889506666498895942>를 사용하세요.",
         auctionInfo: "경매 정보",
         auctionName: "이름",
         auctionAuctioneer: "경매인(경매 시작자)",

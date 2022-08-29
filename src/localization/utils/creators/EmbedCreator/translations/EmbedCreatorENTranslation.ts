@@ -39,7 +39,8 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         constrain: "Constrain",
         modOnly: "%s mod only",
         rankableMods: "Any rankable mod except EZ, NF, and HT",
-        challengeBonuses: "Use </daily bonuses:889506666498895942> to check bonuses.",
+        challengeBonuses:
+            "Use </daily bonuses:889506666498895942> to check bonuses.",
         auctionInfo: "Auction Information",
         auctionName: "Name",
         auctionAuctioneer: "Auctioneer",
