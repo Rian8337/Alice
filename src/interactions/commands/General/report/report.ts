@@ -148,6 +148,7 @@ export const config: SlashCommand["config"] = {
             type: ApplicationCommandOptionType.String,
             description:
                 "The reason for reporting. Maximum length is 1500 characters.",
+            maxLength: 1500,
         },
     ],
     example: [

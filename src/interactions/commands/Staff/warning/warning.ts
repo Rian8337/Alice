@@ -50,6 +50,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     description:
                         "The reason for warning the user. Maximum length is 1500 characters.",
+                    maxLength: 1500,
                 },
             ],
         },
@@ -102,12 +103,15 @@ export const config: SlashCommand["config"] = {
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
                     description: "The ID of the warning.",
+                    minValue: 1,
                 },
                 {
                     name: "reason",
                     required: true,
                     type: ApplicationCommandOptionType.String,
-                    description: "The reason for unissuing the warning.",
+                    description:
+                        "The reason for unissuing the warning. Maximum length is 1500 characters.",
+                    maxLength: 1500,
                 },
             ],
         },
@@ -121,6 +125,7 @@ export const config: SlashCommand["config"] = {
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
                     description: "The ID of the warning.",
+                    minValue: 1,
                 },
             ],
         },

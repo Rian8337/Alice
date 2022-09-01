@@ -209,6 +209,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the room. Defaults to the room in the current channel.",
+                    maxLength: 20,
                 },
             ],
         },
@@ -468,6 +469,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     description:
                         "The ID of the room. If omitted, defaults to the current channel's multiplayer room.",
+                    maxLength: 20,
                 },
             ],
         },

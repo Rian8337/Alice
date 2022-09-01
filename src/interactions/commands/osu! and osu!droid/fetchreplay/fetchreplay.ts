@@ -259,6 +259,7 @@ export const config: SlashCommand["config"] = {
             type: ApplicationCommandOptionType.Integer,
             description:
                 "The uid of the player. Defaults to your current binded uid.",
+            minValue: Constants.uidMinLimit,
         },
     ],
     example: [

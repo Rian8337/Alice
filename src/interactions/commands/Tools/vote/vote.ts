@@ -63,6 +63,7 @@ export const config: SlashCommand["config"] = {
                     name: "xpreq",
                     type: ApplicationCommandOptionType.Integer,
                     description: "The Tatsu XP requirement for users to vote.",
+                    minValue: 0,
                 },
             ],
         },

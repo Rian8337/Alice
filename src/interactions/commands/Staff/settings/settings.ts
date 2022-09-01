@@ -31,6 +31,7 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The command to set the cooldown for.",
+                            maxLength: 32,
                         },
                         {
                             name: "duration",
@@ -73,6 +74,7 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The command to disable.",
+                            maxLength: 32,
                         },
                         {
                             name: "scope",
@@ -106,6 +108,7 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The command to enable.",
+                            maxLength: 32,
                         },
                         {
                             name: "scope",

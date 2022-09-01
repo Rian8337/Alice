@@ -251,6 +251,7 @@ export const config: SlashCommand["config"] = {
             type: ApplicationCommandOptionType.Integer,
             description:
                 "Maximum combo reached, from 0 to the beatmap's maximum combo. Defaults to maximum combo.",
+            minValue: 0,
         },
         {
             name: "accuracy",
@@ -264,17 +265,20 @@ export const config: SlashCommand["config"] = {
             type: ApplicationCommandOptionType.Integer,
             description:
                 "The amount of 100s gained. If specified, overrides the accuracy option. Defaults to 0.",
+            minValue: 0,
         },
         {
             name: "x50",
             type: ApplicationCommandOptionType.Integer,
             description:
                 "The amount of 50s gained. If specified, overrides the accuracy option. Defaults to 0.",
+            minValue: 0,
         },
         {
             name: "misses",
             type: ApplicationCommandOptionType.Integer,
             description: "The amount of misses gained. Defaults to 0.",
+            minValue: 0,
         },
         {
             name: "approachrate",

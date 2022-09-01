@@ -88,6 +88,7 @@ export const config: SlashCommand["config"] = {
                     name: "page",
                     type: ApplicationCommandOptionType.Integer,
                     description: "The page to view. Defaults to 1.",
+                    minValue: 1,
                 },
             ],
         },

@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { TriviaQuestionType } from "@alice-enums/trivia/TriviaQuestionType";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(interaction);
@@ -37,11 +38,11 @@ export const config: SlashCommand["config"] = {
                     choices: [
                         {
                             name: "Multiple Choice",
-                            value: 1,
+                            value: TriviaQuestionType.multipleChoiceFirstType,
                         },
                         {
                             name: "Fill-in-the-blank",
-                            value: 2,
+                            value: TriviaQuestionType.fillInTheBlank,
                         },
                     ],
                 },

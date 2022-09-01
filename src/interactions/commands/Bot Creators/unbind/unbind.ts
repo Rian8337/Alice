@@ -80,6 +80,7 @@ export const config: SlashCommand["config"] = {
             required: true,
             type: ApplicationCommandOptionType.Integer,
             description: "The uid to unbind.",
+            minValue: Constants.uidMinLimit,
         },
     ],
     example: [

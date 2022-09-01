@@ -67,12 +67,14 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.String,
                             description:
                                 "The name of the auction. Must be less than 20 characters.",
+                            maxLength: 20,
                         },
                         {
                             name: "amount",
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
                             description: "The amount of Alice coins to bid.",
+                            minValue: 0,
                         },
                     ],
                 },
@@ -87,6 +89,7 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The name of the auction.",
+                            maxLength: 20,
                         },
                     ],
                 },
@@ -100,6 +103,7 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The name of the auction.",
+                            maxLength: 20,
                         },
                         {
                             name: "powerup",
@@ -113,6 +117,7 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The amount of powerups to be auctioned.",
+                            minValue: 0,
                         },
                         {
                             name: "minimumbidamount",
@@ -120,6 +125,7 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The minimum bid amount for the auction.",
+                            minValue: 0,
                         },
                         {
                             name: "duration",
@@ -139,6 +145,7 @@ export const config: SlashCommand["config"] = {
                             name: "page",
                             type: ApplicationCommandOptionType.Integer,
                             description: "The page to view. Defaults to 1.",
+                            minValue: 1,
                         },
                     ],
                 },
@@ -152,6 +159,7 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The name of the auction.",
+                            maxLength: 20,
                         },
                     ],
                 },
@@ -257,6 +265,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     description:
                         "The name of the clan. Defaults to your own clan.",
+                    maxLength: 25,
                 },
             ],
         },
@@ -275,6 +284,7 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.String,
                             description:
                                 "The name of the clan. Defaults to your own clan.",
+                            maxLength: 25,
                         },
                     ],
                 },
@@ -295,6 +305,7 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.String,
                             description:
                                 "The name of the clan. Defaults to your own clan.",
+                            maxLength: 25,
                         },
                     ],
                 },
@@ -328,6 +339,7 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.String,
                             description:
                                 "The name of the clan. Defaults to your own clan.",
+                            maxLength: 25,
                         },
                     ],
                 },
@@ -343,6 +355,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     description:
                         "The name of the clan. Defaults to your own clan, if any.",
+                    maxLength: 25,
                 },
             ],
         },
@@ -361,6 +374,7 @@ export const config: SlashCommand["config"] = {
                     name: "name",
                     type: ApplicationCommandOptionType.String,
                     description: "The name of the clan.",
+                    maxLength: 25,
                 },
             ],
         },
@@ -373,6 +387,7 @@ export const config: SlashCommand["config"] = {
                     name: "page",
                     type: ApplicationCommandOptionType.Integer,
                     description: "The page to view. Defaults to 1.",
+                    minValue: 1,
                 },
             ],
         },
@@ -391,6 +406,7 @@ export const config: SlashCommand["config"] = {
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     description: "The name of the clan.",
+                    maxLength: 25,
                 },
                 {
                     name: "ismatchmode",
@@ -410,6 +426,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     description:
                         "The name of the clan. Defaults to your own clan, if any.",
+                    maxLength: 25,
                 },
             ],
         },
@@ -428,12 +445,14 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The name of the clan.",
+                            maxLength: 25,
                         },
                         {
                             name: "amount",
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
                             description: "The amount of power to give.",
+                            minValue: 0,
                         },
                     ],
                 },
@@ -447,12 +466,14 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The name of the clan.",
+                            maxLength: 25,
                         },
                         {
                             name: "amount",
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
                             description: "The amount of power to take.",
+                            minValue: 0,
                         },
                     ],
                 },
@@ -587,6 +608,7 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The new name of your clan.",
+                            maxLength: 25,
                         },
                     ],
                 },

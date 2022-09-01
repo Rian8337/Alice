@@ -2,6 +2,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ApplicationCommandOptionType } from "discord.js";
+import { Constants } from "@alice-core/Constants";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(
@@ -30,11 +31,13 @@ export const config: SlashCommand["config"] = {
                     name: "uid",
                     type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the player.",
+                    minValue: Constants.uidMinLimit,
                 },
                 {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
                     description: "The username of the player.",
+                    minLength: 2,
                     maxLength: 20,
                 },
                 {
@@ -79,12 +82,14 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
                             description: "The uid to compare against.",
+                            minValue: Constants.uidMinLimit,
                         },
                         {
                             name: "otheruid",
                             type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The other uid to compare against. If unspecified, defaults to yourself.",
+                            minValue: Constants.uidMinLimit,
                         },
                     ],
                 },
@@ -119,6 +124,7 @@ export const config: SlashCommand["config"] = {
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             description: "The username to compare against.",
+                            minLength: 2,
                             maxLength: 20,
                         },
                         {
@@ -126,6 +132,7 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.String,
                             description:
                                 "The other username to compare against. If unspecified, defaults to yourself.",
+                            minLength: 2,
                             maxLength: 20,
                         },
                     ],
@@ -153,11 +160,13 @@ export const config: SlashCommand["config"] = {
                             name: "uid",
                             type: ApplicationCommandOptionType.Integer,
                             description: "The uid of the player.",
+                            minValue: Constants.uidMinLimit,
                         },
                         {
                             name: "username",
                             type: ApplicationCommandOptionType.String,
                             description: "The username of the player.",
+                            minLength: 2,
                             maxLength: 20,
                         },
                     ],
@@ -177,11 +186,13 @@ export const config: SlashCommand["config"] = {
                             name: "uid",
                             type: ApplicationCommandOptionType.Integer,
                             description: "The uid of the player.",
+                            minValue: Constants.uidMinLimit,
                         },
                         {
                             name: "username",
                             type: ApplicationCommandOptionType.String,
                             description: "The username of the player.",
+                            minLength: 2,
                             maxLength: 20,
                         },
                         {
@@ -262,11 +273,13 @@ export const config: SlashCommand["config"] = {
                     name: "uid",
                     type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the user.",
+                    minValue: Constants.uidMinLimit,
                 },
                 {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
                     description: "The username of the user.",
+                    minLength: 2,
                     maxLength: 20,
                 },
             ],

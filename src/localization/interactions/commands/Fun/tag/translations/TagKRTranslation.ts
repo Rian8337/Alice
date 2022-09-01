@@ -6,8 +6,6 @@ import { TagStrings } from "../TagLocalization";
  */
 export class TagKRTranslation extends Translation<TagStrings> {
     override readonly translations: TagStrings = {
-        nameTooLong: "저기, 이 태그 이름은 너무 길어요!",
-        contentTooLong: "저기, 태그의 내용이 너무 길어요!",
         tagExists: "죄송해요, 해당 이름을 가진 태그는 이미 있어요!",
         tagDoesntExist: "죄송해요, 해당 이름을 가진 태그는 존재하지 않네요!",
         tagDoesntHaveContentAndAttachments:

@@ -77,12 +77,12 @@ export abstract class TriviaHelper {
             const availableQuestions: string[][] = questionData.filter((v) => {
                 const questionType: number = parseInt(v[1]);
 
-                if (type === TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE) {
+                if (type === TriviaQuestionType.multipleChoiceFirstType) {
                     return (
                         questionType ===
-                            TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE ||
+                            TriviaQuestionType.multipleChoiceFirstType ||
                         questionType ===
-                            TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE
+                            TriviaQuestionType.multipleChoiceSecondType
                     );
                 } else {
                     return questionType === type;
@@ -127,13 +127,13 @@ export abstract class TriviaHelper {
         const correctAnswers: string[] = [];
 
         const isMultipleChoice: boolean =
-            type === TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE ||
-            type === TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE;
+            type === TriviaQuestionType.multipleChoiceFirstType ||
+            type === TriviaQuestionType.multipleChoiceSecondType;
 
         if (isMultipleChoice) {
             correctAnswers.push(components[0]);
 
-            if (type === TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE) {
+            if (type === TriviaQuestionType.multipleChoiceSecondType) {
                 components.shift();
             }
         } else {

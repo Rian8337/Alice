@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Constants } from "@alice-core/Constants";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(
@@ -25,11 +26,13 @@ export const config: SlashCommand["config"] = {
                     name: "uid",
                     type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
+                    minValue: Constants.uidMinLimit,
                 },
                 {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
                     description: "The username the osu!droid account.",
+                    minLength: 2,
                     maxLength: 20,
                 },
                 {
@@ -78,11 +81,13 @@ export const config: SlashCommand["config"] = {
                     name: "uid",
                     type: ApplicationCommandOptionType.Integer,
                     description: "The uid of the osu!droid account.",
+                    minValue: Constants.uidMinLimit,
                 },
                 {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
                     description: "The username the osu!droid account.",
+                    minLength: 2,
                     maxLength: 20,
                 },
                 {

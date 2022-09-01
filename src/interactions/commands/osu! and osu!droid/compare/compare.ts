@@ -150,11 +150,13 @@ export const config: SlashCommand["config"] = {
             name: "uid",
             type: ApplicationCommandOptionType.Integer,
             description: "The uid of the player.",
+            minValue: Constants.uidMinLimit,
         },
         {
             name: "username",
             type: ApplicationCommandOptionType.String,
             description: "The username of the player.",
+            minLength: 2,
             maxLength: 20,
         },
     ],

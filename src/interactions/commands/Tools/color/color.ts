@@ -53,6 +53,7 @@ export const config: SlashCommand["config"] = {
             required: true,
             type: ApplicationCommandOptionType.String,
             description: "The hex code of the color.",
+            maxLength: 7,
         },
     ],
     example: [

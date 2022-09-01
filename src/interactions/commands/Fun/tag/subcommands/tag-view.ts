@@ -18,14 +18,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const name: string = interaction.options.getString("name", true);
 
-    if (name.length > 30) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("nameTooLong")
-            ),
-        });
-    }
-
     const tag: GuildTag | null =
         await DatabaseManager.aliceDb.collections.guildTags.getByName(
             interaction.guildId,

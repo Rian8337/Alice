@@ -5,8 +5,6 @@ import { TagESTranslation } from "./translations/TagESTranslation";
 import { TagKRTranslation } from "./translations/TagKRTranslation";
 
 export interface TagStrings {
-    readonly nameTooLong: string;
-    readonly contentTooLong: string;
     readonly tagExists: string;
     readonly tagDoesntExist: string;
     readonly tagDoesntHaveContentAndAttachments: string;

@@ -100,7 +100,15 @@ export const config: SlashCommand["config"] = {
                     name: "enqueue",
                     type: ApplicationCommandOptionType.Subcommand,
                     description:
-                        "Enqueues this music collection into the music queue.",
+                        "Enqueues a music collection into the music queue.",
+                    options: [
+                        {
+                            name: "name",
+                            required: true,
+                            type: ApplicationCommandOptionType.String,
+                            description: "The name of the collection.",
+                        },
+                    ],
                 },
                 {
                     name: "list",
@@ -132,6 +140,8 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.Integer,
                             description:
                                 "The position of the YouTube URL to remove in the music collection's links list.",
+                            minValue: 1,
+                            maxValue: 10,
                         },
                     ],
                 },

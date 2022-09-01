@@ -6,8 +6,6 @@ import { TagStrings } from "../TagLocalization";
  */
 export class TagESTranslation extends Translation<TagStrings> {
     override readonly translations: TagStrings = {
-        nameTooLong: "Hey, ese nombre para el tag es muy largo!",
-        contentTooLong: "Hey, el contenido para el tag es muy largo!",
         tagExists: "Lo siento, ya existe un tag con ese nombre!",
         tagDoesntExist: "Lo siento, no existe ningún tag con ese nombre!",
         tagDoesntHaveContentAndAttachments:
