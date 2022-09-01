@@ -30,14 +30,12 @@ export const run: EventUtil["run"] = async (
         CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
-        interaction.reply({
+        return interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("debugModeActive")
             ),
             ephemeral: true,
         });
-
-        return;
     }
 
     const command: ContextMenuCommand | undefined = (
@@ -47,18 +45,16 @@ export const run: EventUtil["run"] = async (
     ).get(interaction.commandName);
 
     if (!command) {
-        interaction.reply({
+        return interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotFound")
             ),
         });
-
-        return;
     }
 
     // Check for maintenance
     if (Config.maintenance && !botOwnerExecution) {
-        interaction.reply({
+        return interaction.reply({
             content: MessageCreator.createReject(
                 StringHelper.formatString(
                     localization.getTranslation("maintenanceMode"),
@@ -67,8 +63,6 @@ export const run: EventUtil["run"] = async (
             ),
             ephemeral: true,
         });
-
-        return;
     }
 
     // Log used command

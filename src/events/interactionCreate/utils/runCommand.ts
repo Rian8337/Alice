@@ -54,18 +54,16 @@ export const run: EventUtil["run"] = async (
     );
 
     if (!command) {
-        interaction.reply({
+        return interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotFound")
             ),
         });
-
-        return;
     }
 
     // Check for maintenance
     if (Config.maintenance && !botOwnerExecution) {
-        interaction.reply({
+        return interaction.reply({
             content: MessageCreator.createReject(
                 StringHelper.formatString(
                     localization.getTranslation("maintenanceMode"),
@@ -74,8 +72,6 @@ export const run: EventUtil["run"] = async (
             ),
             ephemeral: true,
         });
-
-        return;
     }
 
     // Check if command is executable in channel
@@ -85,14 +81,12 @@ export const run: EventUtil["run"] = async (
             command.config.scope
         )
     ) {
-        interaction.reply({
+        return interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotExecutableInChannel")
             ),
             ephemeral: true,
         });
-
-        return;
     }
 
     // Permissions
@@ -102,7 +96,7 @@ export const run: EventUtil["run"] = async (
             command.config.permissions
         )
     ) {
-        interaction.reply({
+        return interaction.reply({
             content: MessageCreator.createReject(
                 `${new ConstantsLocalization(
                     localization.language
@@ -112,8 +106,6 @@ export const run: EventUtil["run"] = async (
                 PermissionHelper.getPermissionString(command.config.permissions)
             ),
         });
-
-        return;
     }
 
     const subcommand: SlashSubcommand | undefined =
@@ -135,14 +127,12 @@ export const run: EventUtil["run"] = async (
             CommandHelper.isCooldownActive(channelCooldownKey) ||
             CommandHelper.isCooldownActive(globalCooldownKey)
         ) {
-            interaction.reply({
+            return interaction.reply({
                 content: MessageCreator.createReject(
                     localization.getTranslation("commandInCooldown")
                 ),
                 ephemeral: true,
             });
-
-            return;
         }
 
         const channelCooldown: number = Math.max(
