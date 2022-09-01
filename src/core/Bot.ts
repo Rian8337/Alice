@@ -37,6 +37,7 @@ export class Bot extends Client<true> {
      * The interactions that this bot has.
      */
     readonly interactions: BotInteractions = {
+        autocomplete: new Collection(),
         chatInput: new Collection(),
         contextMenu: {
             message: new Collection(),
