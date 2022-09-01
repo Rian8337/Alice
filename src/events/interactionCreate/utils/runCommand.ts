@@ -39,14 +39,12 @@ export const run: EventUtil["run"] = async (
         CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
-        interaction.reply({
+        return interaction.reply({
             content: MessageCreator.createReject(
                 localization.getTranslation("debugModeActive")
             ),
             ephemeral: true,
         });
-
-        return;
     }
 
     const command: SlashCommand | undefined = client.interactions.chatInput.get(
