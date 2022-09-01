@@ -345,26 +345,20 @@ export class Bot extends Client<true> {
         for (const folder of folders) {
             consola.info("%d. Loading folder %s", ++i, folder);
 
-            const commands: string[] = await readdir(join(commandPath, folder));
+            const handlers: string[] = await readdir(join(commandPath, folder));
 
             let j = 0;
 
-            for (const command of commands.filter((v) => v.endsWith(".js"))) {
-                consola.success(
-                    "%d.%d. %s loaded",
-                    i,
-                    ++j,
-                    command.substring(0, command.length - 3)
-                );
+            for (const handler of handlers) {
+                consola.success("%d.%d. %s loaded", i, ++j, handler);
+
+                const filePath: string = join(commandPath, folder, handler);
 
                 const file: AutocompleteHandler = await import(
-                    join(commandPath, folder, command)
+                    `${filePath}/${handler}`
                 );
 
-                this.interactions.autocomplete.set(
-                    command.substring(0, command.length - 3),
-                    file
-                );
+                this.interactions.autocomplete.set(handler, file);
             }
         }
     }
