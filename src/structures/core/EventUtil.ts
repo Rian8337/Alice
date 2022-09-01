@@ -1,11 +1,19 @@
+import { Bot } from "@alice-core/Bot";
 import { EventUtilToggleScope } from "structures/core/EventUtilToggleScope";
 import { Permission } from "structures/core/Permission";
-import { Event } from "./Event";
 
 /**
  * Defines an event utility.
  */
-export interface EventUtil extends Event {
+export interface EventUtil {
+    /**
+     * Executes the event utility.
+     *
+     * @param client The instance of the bot.
+     * @param args Additional arguments for the event utility.
+     */
+    run(client: Bot, ...args: unknown[]): Promise<unknown>;
+
     /**
      * Configurations for this event utility.
      */

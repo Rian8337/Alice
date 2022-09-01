@@ -10,5 +10,5 @@ export interface Event {
      * @param client The instance of the bot.
      * @param args Additional arguments for the event.
      */
-    run(client: Bot, ...args: unknown[]): Promise<unknown>;
+    run(client: Bot, ...args: unknown[]): Promise<void>;
 }
