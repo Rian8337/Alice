@@ -249,6 +249,7 @@ export const config: SlashCommand["config"] = {
             description:
                 "The command to see the help section from. If unspecified, lists all available commands.",
             maxLength: 32,
+            autocomplete: true,
         },
     ],
     example: [
