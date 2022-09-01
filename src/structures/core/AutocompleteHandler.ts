@@ -11,10 +11,7 @@ export interface AutocompleteHandler {
      * @param client The instance of the bot.
      * @param interaction The interaction that executes the handler.
      */
-    run(
-        client: Bot,
-        interaction: AutocompleteInteraction
-    ): Promise<unknown>;
+    run(client: Bot, interaction: AutocompleteInteraction): Promise<unknown>;
 
     /**
      * Configurations for the handler.
