@@ -105,6 +105,8 @@ export const config: SlashCommand["config"] = {
             required: true,
             type: ApplicationCommandOptionType.String,
             description: "The command name.",
+            maxLength: 32,
+            autocomplete: true,
         },
         {
             name: "serveronly",
