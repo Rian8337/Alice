@@ -26,6 +26,7 @@ import { ModalCommand } from "structures/core/ModalCommand";
 import { BotInteractions } from "structures/core/BotInteractions";
 import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
 import { Config } from "./Config";
+import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler";
 
 /**
  * The starting point of the bot.
@@ -99,6 +100,7 @@ export class Bot extends Client<true> {
         await this.loadSlashCommands();
         await this.loadContextMenuCommands();
         await this.loadModalCommands();
+        await this.loadAutocompleteHandlers();
         await this.loadEvents();
         await DatabaseManager.init();
 
@@ -316,6 +318,50 @@ export class Bot extends Client<true> {
                 );
 
                 this.interactions.modalSubmit.set(
+                    command.substring(0, command.length - 3),
+                    file
+                );
+            }
+        }
+    }
+
+    /**
+     * Loads autocomplete handlers from `interactions/autocomplete` directory.
+     */
+    private async loadAutocompleteHandlers(): Promise<void> {
+        consola.info("Loading autocomplete handlers");
+
+        const commandPath: string = join(
+            __dirname,
+            "..",
+            "interactions",
+            "autocomplete"
+        );
+
+        const folders: string[] = await readdir(commandPath);
+
+        let i = 0;
+
+        for (const folder of folders) {
+            consola.info("%d. Loading folder %s", ++i, folder);
+
+            const commands: string[] = await readdir(join(commandPath, folder));
+
+            let j = 0;
+
+            for (const command of commands.filter((v) => v.endsWith(".js"))) {
+                consola.success(
+                    "%d.%d. %s loaded",
+                    i,
+                    ++j,
+                    command.substring(0, command.length - 3)
+                );
+
+                const file: AutocompleteHandler = await import(
+                    join(commandPath, folder, command)
+                );
+
+                this.interactions.autocomplete.set(
                     command.substring(0, command.length - 3),
                     file
                 );
