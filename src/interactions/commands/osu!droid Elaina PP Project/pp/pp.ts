@@ -127,6 +127,7 @@ export const config: SlashCommand["config"] = {
                             description: "The username to compare against.",
                             minLength: 2,
                             maxLength: 20,
+                            autocomplete: true,
                         },
                         {
                             name: "otherusername",
@@ -135,6 +136,7 @@ export const config: SlashCommand["config"] = {
                                 "The other username to compare against. If unspecified, defaults to yourself.",
                             minLength: 2,
                             maxLength: 20,
+                            autocomplete: true,
                         },
                     ],
                 },

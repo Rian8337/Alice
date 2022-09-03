@@ -8,11 +8,22 @@ export const run: AutocompleteHandler["run"] = async (_, interaction) => {
 
     const focusedValue: string = interaction.options.getFocused();
 
-    interaction.respond(
-        await DatabaseManager.elainaDb.collections.userBind.searchPlayersForAutocomplete(
-            focusedValue
-        )
-    );
+    if (
+        interaction.options.getSubcommandGroup(false) === "prototype" &&
+        interaction.options.getSubcommand(false) === "export"
+    ) {
+        interaction.respond(
+            await DatabaseManager.aliceDb.collections.prototypePP.searchPlayersForAutocomplete(
+                focusedValue
+            )
+        );
+    } else {
+        interaction.respond(
+            await DatabaseManager.elainaDb.collections.userBind.searchPlayersForAutocomplete(
+                focusedValue
+            )
+        );
+    }
 };
 
 export const config: AutocompleteHandler["config"] = {
