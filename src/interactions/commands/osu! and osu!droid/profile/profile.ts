@@ -34,6 +34,7 @@ export const config: SlashCommand["config"] = {
                     description: "The username of the osu!droid account.",
                     minLength: 2,
                     maxLength: 20,
+                    autocomplete: true,
                 },
                 {
                     name: "user",
@@ -89,6 +90,7 @@ export const config: SlashCommand["config"] = {
                     description: "The username of the osu!droid account.",
                     minLength: 2,
                     maxLength: 20,
+                    autocomplete: true,
                 },
                 {
                     name: "user",
