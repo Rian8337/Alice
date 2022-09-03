@@ -258,21 +258,6 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
         ));
     }
 
-    async getPlayers(): Promise<DiscordCollection<string, UserBind>> {
-        const res: DatabaseUserBind[] = await this.collection
-            .find(
-                { scanDone: { $ne: true } },
-                { projection: { _id: 0, discordid: 1, pp: 1, uid: 1 } }
-            )
-            .limit(50)
-            .toArray();
-
-        return ArrayHelper.arrayToCollection(
-            res.map((v) => new UserBind(v)),
-            "discordid"
-        );
-    }
-
     protected override processFindOptions(
         options?: FindOptions<DatabaseUserBind>
     ): FindOptions<DatabaseUserBind> | undefined {
