@@ -91,9 +91,10 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
-                    description: "The username the osu!droid account.",
+                    description: "The username of the osu!droid account.",
                     minLength: 2,
                     maxLength: 20,
+                    autocomplete: true,
                 },
                 {
                     name: "user",
@@ -420,9 +421,10 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "username",
                     type: ApplicationCommandOptionType.String,
-                    description: "The username the osu!droid account.",
+                    description: "The username of the osu!droid account.",
                     minLength: 2,
                     maxLength: 20,
+                    autocomplete: true,
                 },
                 {
                     name: "user",

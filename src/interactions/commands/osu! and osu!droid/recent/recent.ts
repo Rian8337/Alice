@@ -157,6 +157,7 @@ export const config: SlashCommand["config"] = {
             description: "The username of the player.",
             minLength: 2,
             maxLength: 20,
+            autocomplete: true,
         },
         {
             name: "index",

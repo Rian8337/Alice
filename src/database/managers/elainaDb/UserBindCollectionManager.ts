@@ -2,7 +2,12 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Filter, FindOptions, WithId } from "mongodb";
-import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
+import {
+    ApplicationCommandOptionChoiceData,
+    Collection as DiscordCollection,
+    Snowflake,
+    User,
+} from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
 /**
@@ -256,6 +261,33 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
                 },
             }
         ));
+    }
+
+    /**
+     * Searches players based on username for autocomplete response.
+     *
+     * @param searchQuery The username to search.
+     * @param amount The maximum amount of usernames to return. Defaults to 25.
+     * @returns The usernames that match the query.
+     */
+    async searchPlayersForAutocomplete(
+        searchQuery: string | RegExp,
+        amount: number = 25
+    ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
+        const result: DatabaseUserBind[] = await this.collection
+            .find(
+                { username: new RegExp(searchQuery, "i") },
+                { projection: { _id: 0, username: 1 } }
+            )
+            .limit(amount)
+            .toArray();
+
+        return result.map((v) => {
+            return {
+                name: v.username,
+                value: v.username,
+            };
+        });
     }
 
     protected override processFindOptions(

@@ -61,6 +61,7 @@ export const config: SlashCommand["config"] = {
                             description: "The username of the user.",
                             minLength: 2,
                             maxLength: 20,
+                            autocomplete: true,
                         },
                     ],
                 },
