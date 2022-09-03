@@ -159,6 +159,8 @@ export class Bot extends Client<true> {
                 await this.loadSlashSubcommands(command, filePath);
             }
         }
+
+        this.interactions.chatInput.sort((_, __, a, b) => a.localeCompare(b));
     }
 
     /**
