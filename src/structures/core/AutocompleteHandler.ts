@@ -2,7 +2,7 @@ import { Bot } from "@alice-core/Bot";
 import { AutocompleteInteraction } from "discord.js";
 
 /**
- * Represents a command's autocomplete handler.
+ * Represents a slash command's autocomplete handler.
  */
 export interface AutocompleteHandler {
     /**

@@ -27,6 +27,7 @@ import { BotInteractions } from "structures/core/BotInteractions";
 import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
 import { Config } from "./Config";
 import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler";
+import { AutocompleteSubhandler } from "@alice-structures/core/AutocompleteSubhandler";
 
 /**
  * The starting point of the bot.
@@ -403,13 +404,15 @@ export class Bot extends Client<true> {
             return;
         }
 
-        const collection: Collection<string, AutocompleteHandler> =
+        const collection: Collection<string, AutocompleteSubhandler> =
             this.interactions.autocomplete.get(handlerName)!.subcommandGroups;
 
         for (const s of subcommandGroupHandlers) {
             const filePath: string = `${subcommandGroupHandlerPath}/${s}`;
 
-            const file: AutocompleteHandler = await import(join(filePath, s));
+            const file: AutocompleteSubhandler = await import(
+                join(filePath, s)
+            );
 
             collection.set(s, file);
 
@@ -443,7 +446,7 @@ export class Bot extends Client<true> {
             return;
         }
 
-        const collection: Collection<string, AutocompleteHandler> =
+        const collection: Collection<string, AutocompleteSubhandler> =
             this.interactions.autocomplete.get(handlerName)!.subcommands;
 
         for (const s of subcommandHandlers.filter((v) => v.endsWith(".js"))) {
@@ -455,7 +458,7 @@ export class Bot extends Client<true> {
                 continue;
             }
 
-            const file: AutocompleteHandler = await import(filePath);
+            const file: AutocompleteSubhandler = await import(filePath);
 
             collection.set(s.substring(0, s.length - 3), file);
         }

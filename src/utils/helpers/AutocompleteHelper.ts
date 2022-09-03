@@ -1,4 +1,4 @@
-import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler";
+import { AutocompleteSubhandler } from "@alice-structures/core/AutocompleteSubhandler";
 import { Manager } from "@alice-utils/base/Manager";
 import { AutocompleteInteraction } from "discord.js";
 
@@ -7,42 +7,42 @@ import { AutocompleteInteraction } from "discord.js";
  */
 export abstract class AutocompleteHelper extends Manager {
     /**
-     * Runs a subcommand autocomplete handler.
+     * Runs an autocomplete subhandler from a slash command that uses a subcommand.
      *
      * @param interaction The interaction.
      */
-    static runSubcommandHandler(
+    static runSubcommandSubhandler(
         interaction: AutocompleteInteraction
     ): Promise<unknown> {
-        return this.runSubOrGroupHandler(
+        return this.runSubOrGroupSubhandler(
             interaction,
-            this.getSubcommandHandler(interaction)
+            this.getSubcommandSubhandler(interaction)
         );
     }
 
     /**
-     * Runs a subcommand group autocomplete handler.
+     * Runs an autocomplete subhandler from a slash command that uses a subcommand group.
      *
      * @param interaction The interaction.
      */
-    static runSubcommandGroupHandler(
+    static runSubcommandGroupSubhandler(
         interaction: AutocompleteInteraction
     ): Promise<unknown> {
-        return this.runSubOrGroupHandler(
+        return this.runSubOrGroupSubhandler(
             interaction,
-            this.getSubcommandGroupHandler(interaction)
+            this.getSubcommandGroupSubhandler(interaction)
         );
     }
 
     /**
-     * Gets the subcommand autocomplete handler that is run by the user via an interaction.
+     * Gets the subcommand autocomplete subhandler that is run by the user via an interaction.
      *
      * @param interaction The interaction.
      * @returns The handler, if found.
      */
-    static getSubcommandHandler(
+    static getSubcommandSubhandler(
         interaction: AutocompleteInteraction
-    ): AutocompleteHandler | null {
+    ): AutocompleteSubhandler | null {
         if (!interaction.options.getSubcommand(false)) {
             return null;
         }
@@ -63,14 +63,14 @@ export abstract class AutocompleteHelper extends Manager {
     }
 
     /**
-     * Gets the subcommand group autocomplete handler that is run by the user via an interaction.
+     * Gets the subcommand group autocomplete subhandler that is run by the user via an interaction.
      *
      * @param interaction The interaction.
      * @returns The handler, if found.
      */
-    static getSubcommandGroupHandler(
+    static getSubcommandGroupSubhandler(
         interaction: AutocompleteInteraction
-    ): AutocompleteHandler | null {
+    ): AutocompleteSubhandler | null {
         if (!interaction.options.getSubcommandGroup(false)) {
             return null;
         }
@@ -95,9 +95,9 @@ export abstract class AutocompleteHelper extends Manager {
      * @param interaction The interaction.
      * @param handler The handler to run.
      */
-    private static runSubOrGroupHandler(
+    private static runSubOrGroupSubhandler(
         interaction: AutocompleteInteraction,
-        handler: AutocompleteHandler | null
+        handler: AutocompleteSubhandler | null
     ): Promise<unknown> {
         if (!handler) {
             return interaction.respond([]);
