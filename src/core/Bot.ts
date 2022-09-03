@@ -160,6 +160,8 @@ export class Bot extends Client<true> {
             }
         }
 
+        // Sort command alphabetically by name so that autocomplete
+        // returns command list in order.
         this.interactions.chatInput.sort((_, __, a, b) => a.localeCompare(b));
     }
 
@@ -360,8 +362,102 @@ export class Bot extends Client<true> {
                     `${filePath}/${handler}`
                 );
 
-                this.interactions.autocomplete.set(handler, file);
+                this.interactions.autocomplete.set(handler, {
+                    ...file,
+                    subcommandGroups: new Collection(),
+                    subcommands: new Collection(),
+                });
+
+                await this.loadSubcommandGroupAutocompleteHandlers(
+                    handler,
+                    filePath
+                );
+
+                await this.loadSubcommandAutocompleteHandlers(
+                    handler,
+                    filePath
+                );
             }
+        }
+    }
+
+    /**
+     * Loads subcommand group autocomplete handlers from the specified directory and caches them.
+     *
+     * @param handlerName The name of the handler.
+     * @param handlerDirectory The directory of the handler.
+     */
+    private async loadSubcommandGroupAutocompleteHandlers(
+        handlerName: string,
+        handlerDirectory: string
+    ): Promise<void> {
+        const subcommandGroupHandlerPath: string = join(
+            handlerDirectory,
+            "subcommandGroups"
+        );
+        let subcommandGroupHandlers: string[];
+
+        try {
+            subcommandGroupHandlers = await readdir(subcommandGroupHandlerPath);
+        } catch {
+            return;
+        }
+
+        const collection: Collection<string, AutocompleteHandler> =
+            this.interactions.autocomplete.get(handlerName)!.subcommandGroups;
+
+        for (const s of subcommandGroupHandlers) {
+            const filePath: string = `${subcommandGroupHandlerPath}/${s}`;
+
+            const file: AutocompleteHandler = await import(join(filePath, s));
+
+            collection.set(s, file);
+
+            await this.loadSubcommandAutocompleteHandlers(
+                handlerName,
+                filePath
+            );
+        }
+    }
+
+    /**
+     * Loads subcommand autocomplete handlers from the specified directory and caches them.
+     *
+     * @param handlerName The name of the handler.
+     * @param handlerDirectory The directory of the handler.
+     */
+    private async loadSubcommandAutocompleteHandlers(
+        handlerName: string,
+        handlerDirectory: string
+    ): Promise<void> {
+        const subcommandHandlersPath: string = join(
+            handlerDirectory,
+            "subcommands"
+        );
+
+        let subcommandHandlers: string[];
+
+        try {
+            subcommandHandlers = await readdir(subcommandHandlersPath);
+        } catch {
+            return;
+        }
+
+        const collection: Collection<string, AutocompleteHandler> =
+            this.interactions.autocomplete.get(handlerName)!.subcommands;
+
+        for (const s of subcommandHandlers.filter((v) => v.endsWith(".js"))) {
+            const filePath: string = join(subcommandHandlersPath, s);
+
+            const fileStat = await lstat(filePath);
+
+            if (fileStat.isDirectory()) {
+                continue;
+            }
+
+            const file: AutocompleteHandler = await import(filePath);
+
+            collection.set(s.substring(0, s.length - 3), file);
         }
     }
 
