@@ -106,7 +106,7 @@ export abstract class ScoreHelper {
                 (score * (mods.some((m) => m instanceof ModNoFail) ? 2 : 1)) /
                     (maxScore *
                         (applyHiddenPenalty
-                            ? new ModHidden().scoreMultiplier
+                            ? new ModHidden().droidScoreMultiplier
                             : 1))
             ) *
             1e6 *

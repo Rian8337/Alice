@@ -191,7 +191,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         case "mod": {
             const mods: Mod[] = ModUtil.pcStringToMods(value);
 
-            if (mods.some((m) => !m.droidRanked)) {
+            if (mods.some((m) => !m.isApplicableToDroid() || !m.droidRanked)) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("unrankedModsIncluded")

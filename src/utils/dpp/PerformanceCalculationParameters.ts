@@ -1,10 +1,9 @@
-import { Accuracy, MapInfo, MapStats, Precision } from "@rian8337/osu-base";
-import { DifficultyCalculationParameters } from "./DifficultyCalculationParameters";
+import { Accuracy, MapInfo, Precision } from "@rian8337/osu-base";
 
 /**
  * Represents a parameter to alter performance calculation result.
  */
-export class PerformanceCalculationParameters extends DifficultyCalculationParameters {
+export class PerformanceCalculationParameters {
     /**
      * The combo achieved.
      */
@@ -26,26 +25,28 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
     inputAccuracy: number;
 
     /**
-     * Whether the calculation result from this parameter will be an estimation.
+     * Whether the calculation result from this parameter is an estimation.
      */
-    isEstimated: boolean = false;
+    get isEstimated(): boolean {
+        return !Precision.almostEqualsNumber(
+            this.accuracy.value() * 100,
+            this.inputAccuracy,
+            1e-2
+        );
+    }
 
     /**
      * @param accuracy The accuracy achieved.
      * @param inputAccuracy The accuracy that a user inputs, if any.
      * @param combo The combo achieved.
      * @param tapPenalty The tap penalty to apply for penalized scores.
-     * @param customStatistics Custom statistics to apply mods, custom speed multiplier and force AR as well as NightCore mod penalty for replay version 3 or older.
      */
     constructor(
         accuracy: Accuracy,
         inputAccuracy: number = 100,
         combo?: number,
-        tapPenalty: number = 1,
-        customStatistics?: MapStats
+        tapPenalty: number = 1
     ) {
-        super(customStatistics);
-
         this.accuracy = accuracy;
         this.combo = combo;
         this.tapPenalty = tapPenalty;
@@ -75,12 +76,6 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
                 nmiss: this.accuracy.nmiss,
                 nobjects: beatmap.objects,
             });
-
-            this.isEstimated = !Precision.almostEqualsNumber(
-                this.accuracy.value() * 100,
-                this.inputAccuracy,
-                1e-2
-            );
         }
     }
 }

@@ -4,7 +4,6 @@ import { EventUtil } from "structures/core/EventUtil";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -20,6 +19,7 @@ import {
 } from "@rian8337/osu-difficulty-calculator";
 import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (Config.maintenance || message.author.bot) {
@@ -33,7 +33,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 : await CommandHelper.getLocale(message.channel.id)
         );
 
-    const calcParams: PerformanceCalculationParameters =
+    const calcParams: ProcessedCalculationParameters =
         BeatmapDifficultyHelper.getCalculationParamsFromMessage(
             message.content
         );
@@ -89,7 +89,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
             const calcEmbedOptions: MessageOptions =
                 await EmbedCreator.createCalculationEmbed(
-                    calcParams,
+                    calcParams.difficulty,
                     droidCalcResult,
                     osuCalcResult,
                     message.member?.displayHexColor,
@@ -162,7 +162,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             );
 
             const stats: MapStats =
-                calcParams.customStatistics ?? new MapStats();
+                calcParams.difficulty.customStatistics ?? new MapStats();
 
             embed
                 .spliceFields(0, embed.data.fields!.length)

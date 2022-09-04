@@ -63,6 +63,7 @@ import {
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { MD5 } from "crypto-js";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 
 /**
  * Represents a daily or weekly challenge.
@@ -1298,19 +1299,23 @@ export class Challenge extends Manager {
             DroidPerformanceCalculator
         > = (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
             this.beatmapid,
-            new PerformanceCalculationParameters(
-                data.accuracy,
-                data.accuracy.value() * 100,
-                data.maxCombo,
-                1,
-                new MapStats({
-                    mods: data.convertedMods,
-                    ar: data.forcedAR,
-                    isForceAR: data.forcedAR !== undefined,
-                    speedMultiplier: data.speedModification,
-                    oldStatistics: data.replayVersion <= 3,
-                })
-            ),
+            {
+                difficulty: new DifficultyCalculationParameters(
+                    new MapStats({
+                        mods: data.convertedMods,
+                        ar: data.forcedAR,
+                        isForceAR: data.forcedAR !== undefined,
+                        speedMultiplier: data.speedModification,
+                        oldStatistics: data.replayVersion <= 3,
+                    })
+                ),
+                performance: new PerformanceCalculationParameters(
+                    data.accuracy,
+                    data.accuracy.value() * 100,
+                    data.maxCombo,
+                    1
+                ),
+            },
             replay
         ))!;
 
@@ -1321,19 +1326,23 @@ export class Challenge extends Manager {
             OsuPerformanceCalculator
         > = (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
             this.beatmapid,
-            new PerformanceCalculationParameters(
-                data.accuracy,
-                data.accuracy.value() * 100,
-                data.maxCombo,
-                1,
-                new MapStats({
-                    mods: data.convertedMods,
-                    ar: data.forcedAR,
-                    isForceAR: data.forcedAR !== undefined,
-                    speedMultiplier: data.speedModification,
-                    oldStatistics: data.replayVersion <= 3,
-                })
-            )
+            {
+                difficulty: new DifficultyCalculationParameters(
+                    new MapStats({
+                        mods: data.convertedMods,
+                        ar: data.forcedAR,
+                        isForceAR: data.forcedAR !== undefined,
+                        speedMultiplier: data.speedModification,
+                        oldStatistics: data.replayVersion <= 3,
+                    })
+                ),
+                performance: new PerformanceCalculationParameters(
+                    data.accuracy,
+                    data.accuracy.value() * 100,
+                    data.maxCombo,
+                    1
+                ),
+            }
         ))!;
 
         return [droidCalcResult, osuCalcResult];

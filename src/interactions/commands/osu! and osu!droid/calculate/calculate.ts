@@ -30,6 +30,8 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
+import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
+import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CalculateLocalization = new CalculateLocalization(
@@ -89,8 +91,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         isForceAR: !isNaN(<number>forceAR),
     });
 
-    const calcParams: PerformanceCalculationParameters =
-        new PerformanceCalculationParameters(
+    const calcParams: ProcessedCalculationParameters = {
+        difficulty: new DifficultyCalculationParameters(stats),
+        performance: new PerformanceCalculationParameters(
             new Accuracy({
                 n100: Math.max(0, interaction.options.getInteger("x100") ?? 0),
                 n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
@@ -107,9 +110,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             interaction.options.getInteger("combo")
                 ? Math.max(0, interaction.options.getInteger("combo", true))
                 : undefined,
-            1,
-            stats
-        );
+            1
+        ),
+    };
 
     let droidCalcResult:
         | PerformanceCalculationResult<
@@ -184,7 +187,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(
-            calcParams,
+            calcParams.difficulty,
             droidCalcResult,
             osuCalcResult,
             (<GuildMember | null>interaction.member)?.displayHexColor,

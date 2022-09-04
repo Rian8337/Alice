@@ -77,6 +77,7 @@ import { OldDifficultyCalculationResult } from "@alice-utils/dpp/OldDifficultyCa
 import { std_ppv2 } from "ojsamadroid";
 import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
+import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
 
 /**
  * Utility to create message embeds.
@@ -673,13 +674,13 @@ export abstract class EmbedCreator {
             score.accuracy.nmiss > 0 ||
             score.combo < osuCalcResult.map.maxCombo
         ) {
-            const calcParams: PerformanceCalculationParameters =
+            const calcParams: ProcessedCalculationParameters =
                 await BeatmapDifficultyHelper.getCalculationParamsFromScore(
                     score
                 );
 
-            calcParams.combo = osuCalcResult.map.maxCombo;
-            calcParams.accuracy = new Accuracy({
+            calcParams.performance.combo = osuCalcResult.map.maxCombo;
+            calcParams.performance.accuracy = new Accuracy({
                 n300: score.accuracy.n300 + score.accuracy.nmiss,
                 n100: score.accuracy.n100,
                 n50: score.accuracy.n50,
@@ -695,7 +696,7 @@ export abstract class EmbedCreator {
                     droidCalcResult.map,
                     droidCalcResult.result.difficultyCalculator
                 ),
-                calcParams
+                calcParams.performance
             ))!;
 
             // Safe to non-null since previous calculation works.
@@ -707,7 +708,7 @@ export abstract class EmbedCreator {
                     osuCalcResult.map,
                     osuCalcResult.result.difficultyCalculator
                 ),
-                calcParams
+                calcParams.performance
             ))!;
 
             beatmapInformation += `(${droidFcCalcResult.result.total.toFixed(
@@ -716,7 +717,7 @@ export abstract class EmbedCreator {
                 2
             )}PP ${StringHelper.formatString(
                 localization.getTranslation("forFC"),
-                (calcParams.accuracy.value() * 100).toFixed(2) + "%"
+                (calcParams.performance.accuracy.value() * 100).toFixed(2) + "%"
             )}) `;
         }
 

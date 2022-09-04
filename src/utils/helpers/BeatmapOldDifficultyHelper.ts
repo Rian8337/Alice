@@ -29,6 +29,7 @@ import {
     std_ppv2,
     timing,
 } from "ojsamadroid";
+import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
 
 /**
  * A helper class for calculating old difficulty and performance of beatmaps or scores.
@@ -42,7 +43,7 @@ export abstract class BeatmapOldDifficultyHelper {
      */
     static getCalculationParamsFromMessage(
         message: string
-    ): PerformanceCalculationParameters {
+    ): ProcessedCalculationParameters {
         const mods: Mod[] = [];
         let combo: number | undefined;
         let forceAR: number | undefined;
@@ -96,24 +97,26 @@ export abstract class BeatmapOldDifficultyHelper {
             }
         }
 
-        const stats: MapStats = new MapStats({
-            mods: mods,
-            ar: forceAR,
-            speedMultiplier: speedMultiplier,
-            isForceAR: !isNaN(<number>forceAR),
-        });
-
-        return new PerformanceCalculationParameters(
-            new Accuracy({
-                n100: count100,
-                n50: count50,
-                nmiss: countMiss,
-            }),
-            accPercent,
-            combo,
-            1,
-            stats
-        );
+        return {
+            difficulty: new DifficultyCalculationParameters(
+                new MapStats({
+                    mods: mods,
+                    ar: forceAR,
+                    speedMultiplier: speedMultiplier,
+                    isForceAR: !isNaN(forceAR!),
+                })
+            ),
+            performance: new PerformanceCalculationParameters(
+                new Accuracy({
+                    n100: count100,
+                    n50: count50,
+                    nmiss: countMiss,
+                }),
+                accPercent,
+                combo,
+                1
+            ),
+        };
     }
 
     /**
@@ -124,22 +127,24 @@ export abstract class BeatmapOldDifficultyHelper {
      */
     static getCalculationParamsFromScore(
         score: Score
-    ): PerformanceCalculationParameters {
-        const stats: MapStats = new MapStats({
-            mods: score.mods,
-            ar: score.forcedAR,
-            speedMultiplier: score.speedMultiplier,
-            isForceAR: !isNaN(score.forcedAR!),
-            oldStatistics: true,
-        });
-
-        return new PerformanceCalculationParameters(
-            score.accuracy,
-            score.accuracy.value() * 100,
-            score.combo,
-            1,
-            stats
-        );
+    ): ProcessedCalculationParameters {
+        return {
+            difficulty: new DifficultyCalculationParameters(
+                new MapStats({
+                    mods: score.mods,
+                    ar: score.forcedAR,
+                    speedMultiplier: score.speedMultiplier,
+                    isForceAR: !isNaN(score.forcedAR!),
+                    oldStatistics: true,
+                })
+            ),
+            performance: new PerformanceCalculationParameters(
+                score.accuracy,
+                score.accuracy.value() * 100,
+                score.combo,
+                1
+            ),
+        };
     }
 
     /**
@@ -151,7 +156,7 @@ export abstract class BeatmapOldDifficultyHelper {
      */
     static async calculateScorePerformance(
         score: Score,
-        calcParams?: PerformanceCalculationParameters
+        calcParams?: ProcessedCalculationParameters
     ): Promise<OldPerformanceCalculationResult | null> {
         const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
@@ -165,13 +170,13 @@ export abstract class BeatmapOldDifficultyHelper {
             BeatmapOldDifficultyHelper.getCalculationParamsFromScore(score);
 
         const result: OldDifficultyCalculationResult | null =
-            await this.calculateDifficulty(beatmap, calcParams);
+            await this.calculateDifficulty(beatmap, calcParams.difficulty);
 
         if (!result) {
             return null;
         }
 
-        return this.calculatePerformance(result, calcParams);
+        return this.calculatePerformance(result, calcParams.performance);
     }
 
     /**
@@ -183,7 +188,7 @@ export abstract class BeatmapOldDifficultyHelper {
      */
     static async calculateBeatmapPerformance(
         beatmap: MapInfo,
-        calculationParams?: PerformanceCalculationParameters
+        calculationParams?: ProcessedCalculationParameters
     ): Promise<OldPerformanceCalculationResult | null>;
 
     /**
@@ -207,7 +212,7 @@ export abstract class BeatmapOldDifficultyHelper {
      */
     static async calculateBeatmapPerformance(
         beatmapIdOrHash: number | string,
-        calculationParams?: PerformanceCalculationParameters
+        calculationParams?: ProcessedCalculationParameters
     ): Promise<OldPerformanceCalculationResult | null>;
 
     static async calculateBeatmapPerformance(
@@ -216,7 +221,9 @@ export abstract class BeatmapOldDifficultyHelper {
             | number
             | string
             | OldDifficultyCalculationResult,
-        calculationParams?: PerformanceCalculationParameters
+        calculationParams?:
+            | PerformanceCalculationParameters
+            | ProcessedCalculationParameters
     ): Promise<OldPerformanceCalculationResult | null> {
         let beatmap: MapInfo<true> | null;
 
@@ -245,13 +252,22 @@ export abstract class BeatmapOldDifficultyHelper {
         const star: OldDifficultyCalculationResult | null =
             beatmapOrHashOrStar instanceof OldDifficultyCalculationResult
                 ? beatmapOrHashOrStar
-                : await this.calculateDifficulty(beatmap, calculationParams);
+                : await this.calculateDifficulty(
+                      beatmap,
+                      (<ProcessedCalculationParameters>calculationParams)
+                          .difficulty
+                  );
 
         if (!star) {
             return null;
         }
 
-        return this.calculatePerformance(star, calculationParams);
+        return this.calculatePerformance(
+            star,
+            calculationParams instanceof PerformanceCalculationParameters
+                ? calculationParams
+                : calculationParams.performance
+        );
     }
 
     /**
@@ -274,6 +290,7 @@ export abstract class BeatmapOldDifficultyHelper {
         return this.calculateDifficulty(
             beatmap,
             BeatmapOldDifficultyHelper.getCalculationParamsFromScore(score)
+                .difficulty
         );
     }
 
@@ -406,7 +423,7 @@ export abstract class BeatmapOldDifficultyHelper {
     /**
      * Converts a beatmap into ojsamadroid's beatmap.
      *
-     * Keep in mind that this function will only converts the data necessary for
+     * Keep in mind that this function only converts the data necessary for
      * difficulty and performance calculation.
      *
      * @param beatmap The beatmap to convert.

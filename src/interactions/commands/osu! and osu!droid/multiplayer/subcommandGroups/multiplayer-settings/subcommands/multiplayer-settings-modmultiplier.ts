@@ -99,8 +99,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     let needsUpdating: boolean = false;
 
     for (const mod of mods) {
+        if (!mod.isApplicableToDroid()) {
+            continue;
+        }
+
         if (multiplier !== null) {
-            if (mod.scoreMultiplier !== multiplier) {
+            if (mod.droidScoreMultiplier !== multiplier) {
                 needsUpdating = true;
 
                 room.settings.modMultipliers[mod.acronym] = multiplier;

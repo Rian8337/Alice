@@ -18,7 +18,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
-import { MapInfo } from "@rian8337/osu-base";
+import { IModApplicableToDroid, MapInfo, Mod } from "@rian8337/osu-base";
 import {
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
@@ -130,7 +130,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             playername:
                 data.replayVersion < 3 ? score.username : data.playerName,
             replayfile: `${score.scoreID}.odr`,
-            mod: `${score.mods.map((v) => v.droidString).join("")}${
+            mod: `${(<(Mod & IModApplicableToDroid)[]>score.mods)
+                .map((v) => v.droidString)
+                .join("")}${
                 score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
             }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
             score: score.score,
@@ -201,7 +203,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(
-            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+            (
+                await BeatmapDifficultyHelper.getCalculationParamsFromScore(
+                    score
+                )
+            ).difficulty,
             droidCalcResult,
             osuCalcResult,
             (<GuildMember | null>interaction.member)?.displayHexColor,

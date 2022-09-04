@@ -341,10 +341,13 @@ export class MultiplayerRoom
         }
 
         for (const mod of mods) {
-            if (this.settings.modMultipliers[mod.acronym]) {
+            if (
+                mod.isApplicableToDroid() &&
+                this.settings.modMultipliers[mod.acronym]
+            ) {
                 score *=
                     this.settings.modMultipliers[mod.acronym] /
-                    mod.scoreMultiplier;
+                    mod.droidScoreMultiplier;
             }
         }
 
@@ -752,8 +755,7 @@ export class MultiplayerRoom
                         }),
                         undefined,
                         score.maxCombo,
-                        1,
-                        customStats
+                        1
                     )
                 ))!;
 
@@ -801,8 +803,7 @@ export class MultiplayerRoom
                         }),
                         undefined,
                         score.maxCombo,
-                        1,
-                        customStats
+                        1
                     )
                 ))!;
 

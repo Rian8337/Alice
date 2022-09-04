@@ -5,7 +5,6 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
 import { YouTubeVideoInformation } from "@alice-structures/youtube/YouTubeVideoInformation";
 import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
@@ -18,6 +17,7 @@ import {
 } from "@rian8337/osu-difficulty-calculator";
 import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -34,7 +34,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     const ytRegex: RegExp =
         /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]+).*/;
 
-    const calcParams: PerformanceCalculationParameters =
+    const calcParams: ProcessedCalculationParameters =
         BeatmapDifficultyHelper.getCalculationParamsFromMessage(
             message.content
         );
@@ -151,7 +151,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 );
 
                 const stats: MapStats =
-                    calcParams.customStatistics ?? new MapStats();
+                    calcParams.difficulty.customStatistics ?? new MapStats();
 
                 embed
                     .spliceFields(0, embed.data.fields!.length)
@@ -176,13 +176,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     const droidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> | null =
                         await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
-                            calcParams
+                            calcParams.difficulty
                         );
 
                     const osuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> | null =
                         await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
-                            calcParams
+                            calcParams.difficulty
                         );
 
                     if (!droidCalcResult || !osuCalcResult) {
