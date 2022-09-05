@@ -19,7 +19,7 @@ import {
 } from "@rian8337/osu-difficulty-calculator";
 import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (Config.maintenance || message.author.bot) {
@@ -33,7 +33,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 : await CommandHelper.getLocale(message.channel.id)
         );
 
-    const calcParams: ProcessedCalculationParameters =
+    const calcParams: PerformanceCalculationParameters =
         BeatmapDifficultyHelper.getCalculationParamsFromMessage(
             message.content
         );
@@ -89,7 +89,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
             const calcEmbedOptions: MessageOptions =
                 await EmbedCreator.createCalculationEmbed(
-                    calcParams.difficulty,
+                    calcParams,
                     droidCalcResult,
                     osuCalcResult,
                     message.member?.displayHexColor,
@@ -162,7 +162,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             );
 
             const stats: MapStats =
-                calcParams.difficulty.customStatistics ?? new MapStats();
+                calcParams.customStatistics ?? new MapStats();
 
             embed
                 .spliceFields(0, embed.data.fields!.length)

@@ -1,9 +1,10 @@
-import { Accuracy, MapInfo, Precision } from "@rian8337/osu-base";
+import { Accuracy, MapInfo, MapStats, Precision } from "@rian8337/osu-base";
+import { DifficultyCalculationParameters } from "./DifficultyCalculationParameters";
 
 /**
  * Represents a parameter to alter performance calculation result.
  */
-export class PerformanceCalculationParameters {
+export class PerformanceCalculationParameters extends DifficultyCalculationParameters {
     /**
      * The combo achieved.
      */
@@ -40,13 +41,17 @@ export class PerformanceCalculationParameters {
      * @param inputAccuracy The accuracy that a user inputs, if any.
      * @param combo The combo achieved.
      * @param tapPenalty The tap penalty to apply for penalized scores.
+     * @param customStatistics The custom statistics that was used in difficulty calculation.
      */
     constructor(
         accuracy: Accuracy,
         inputAccuracy: number = 100,
         combo?: number,
-        tapPenalty: number = 1
+        tapPenalty: number = 1,
+        customStatistics?: MapStats
     ) {
+        super(customStatistics);
+
         this.accuracy = accuracy;
         this.combo = combo;
         this.tapPenalty = tapPenalty;

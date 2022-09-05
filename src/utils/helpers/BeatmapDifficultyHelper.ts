@@ -29,7 +29,6 @@ import {
     ThreeFingerChecker,
     ReplayAnalyzer,
 } from "@rian8337/osu-droid-replay-analyzer";
-import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
 
 /**
  * A helper class for calculating difficulty and performance of beatmaps or scores.
@@ -76,7 +75,7 @@ export abstract class BeatmapDifficultyHelper<
      */
     static getCalculationParamsFromMessage(
         message: string
-    ): ProcessedCalculationParameters {
+    ): PerformanceCalculationParameters {
         const mods: Mod[] = [];
         let combo: number | undefined;
         let forceAR: number | undefined;
@@ -130,26 +129,22 @@ export abstract class BeatmapDifficultyHelper<
             }
         }
 
-        return {
-            difficulty: new DifficultyCalculationParameters(
-                new MapStats({
-                    mods: mods,
-                    ar: forceAR,
-                    speedMultiplier: speedMultiplier,
-                    isForceAR: !isNaN(forceAR!),
-                })
-            ),
-            performance: new PerformanceCalculationParameters(
-                new Accuracy({
-                    n100: count100,
-                    n50: count50,
-                    nmiss: countMiss,
-                }),
-                accPercent,
-                combo,
-                1
-            ),
-        };
+        return new PerformanceCalculationParameters(
+            new Accuracy({
+                n100: count100,
+                n50: count50,
+                nmiss: countMiss,
+            }),
+            accPercent,
+            combo,
+            1,
+            new MapStats({
+                mods: mods,
+                ar: forceAR,
+                speedMultiplier: speedMultiplier,
+                isForceAR: !isNaN(forceAR!),
+            })
+        );
     }
 
     /**
@@ -162,7 +157,7 @@ export abstract class BeatmapDifficultyHelper<
     static async getCalculationParamsFromScore(
         score: Score,
         useReplay: boolean = true
-    ): Promise<ProcessedCalculationParameters> {
+    ): Promise<PerformanceCalculationParameters> {
         if (
             !score.replay &&
             useReplay &&
@@ -171,24 +166,19 @@ export abstract class BeatmapDifficultyHelper<
             await score.downloadReplay();
         }
 
-        return {
-            difficulty: new DifficultyCalculationParameters(
-                new MapStats({
-                    mods: score.mods,
-                    ar: score.forcedAR,
-                    speedMultiplier: score.speedMultiplier,
-                    isForceAR: !isNaN(score.forcedAR!),
-                    oldStatistics:
-                        (score.replay?.data?.replayVersion ?? 4) <= 3,
-                })
-            ),
-            performance: new PerformanceCalculationParameters(
-                score.accuracy,
-                score.accuracy.value() * 100,
-                score.combo,
-                1
-            ),
-        };
+        return new PerformanceCalculationParameters(
+            score.accuracy,
+            score.accuracy.value() * 100,
+            score.combo,
+            1,
+            new MapStats({
+                mods: score.mods,
+                ar: score.forcedAR,
+                speedMultiplier: score.speedMultiplier,
+                isForceAR: !isNaN(score.forcedAR!),
+                oldStatistics: (score.replay?.data?.replayVersion ?? 4) <= 3,
+            })
+        );
     }
 
     /**
@@ -202,7 +192,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateScorePerformance(
         score: Score,
         useReplay: boolean = true,
-        calcParams?: ProcessedCalculationParameters
+        calcParams?: PerformanceCalculationParameters
     ): Promise<PerformanceCalculationResult<DC, PC> | null> {
         const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
@@ -219,7 +209,7 @@ export abstract class BeatmapDifficultyHelper<
             );
 
         const result: DifficultyCalculationResult<DC> | null =
-            await this.calculateDifficulty(beatmap, calcParams.difficulty);
+            await this.calculateDifficulty(beatmap, calcParams);
 
         if (!result) {
             return null;
@@ -237,7 +227,7 @@ export abstract class BeatmapDifficultyHelper<
 
         return this.calculatePerformance(
             result,
-            calcParams.performance,
+            calcParams,
             useReplay ? score.replay : undefined
         );
     }
@@ -253,7 +243,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateScoreRebalancePerformance(
         score: Score,
         useReplay: boolean = true,
-        calcParams?: ProcessedCalculationParameters
+        calcParams?: PerformanceCalculationParameters
     ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null> {
         const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
@@ -270,10 +260,7 @@ export abstract class BeatmapDifficultyHelper<
             );
 
         const result: RebalanceDifficultyCalculationResult<RDC> | null =
-            await this.calculateRebalanceDifficulty(
-                beatmap,
-                calcParams.difficulty
-            );
+            await this.calculateRebalanceDifficulty(beatmap, calcParams);
 
         if (!result) {
             return null;
@@ -290,7 +277,7 @@ export abstract class BeatmapDifficultyHelper<
 
         return this.calculateRebalancePerformance(
             result,
-            calcParams.performance,
+            calcParams,
             useReplay ? score.replay : undefined
         );
     }
@@ -305,7 +292,7 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateBeatmapPerformance(
         beatmap: MapInfo,
-        calculationParams?: ProcessedCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<PerformanceCalculationResult<DC, PC> | null>;
 
@@ -333,7 +320,7 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateBeatmapPerformance(
         beatmapIdOrHash: number | string,
-        calculationParams?: ProcessedCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<PerformanceCalculationResult<DC, PC> | null>;
 
@@ -343,9 +330,7 @@ export abstract class BeatmapDifficultyHelper<
             | number
             | string
             | DifficultyCalculationResult<DC>,
-        calculationParams?:
-            | PerformanceCalculationParameters
-            | ProcessedCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<PerformanceCalculationResult<DC, PC> | null> {
         let beatmap: MapInfo<true> | null;
@@ -373,23 +358,13 @@ export abstract class BeatmapDifficultyHelper<
         const star: DifficultyCalculationResult<DC> | null =
             beatmapOrHashOrStar instanceof DifficultyCalculationResult
                 ? beatmapOrHashOrStar
-                : await this.calculateDifficulty(
-                      beatmap,
-                      (<ProcessedCalculationParameters>calculationParams)
-                          .difficulty
-                  );
+                : await this.calculateDifficulty(beatmap, calculationParams);
 
         if (!star) {
             return null;
         }
 
-        return this.calculatePerformance(
-            star,
-            calculationParams instanceof PerformanceCalculationParameters
-                ? calculationParams
-                : calculationParams.performance,
-            replay
-        );
+        return this.calculatePerformance(star, calculationParams, replay);
     }
 
     /**
@@ -402,7 +377,7 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateBeatmapRebalancePerformance(
         beatmap: MapInfo,
-        calculationParams?: ProcessedCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null>;
 
@@ -430,7 +405,7 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateBeatmapRebalancePerformance(
         beatmapIDorHash: number | string,
-        calculationParams?: ProcessedCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null>;
 
@@ -440,9 +415,7 @@ export abstract class BeatmapDifficultyHelper<
             | number
             | string
             | RebalanceDifficultyCalculationResult<RDC>,
-        calculationParams?:
-            | PerformanceCalculationParameters
-            | ProcessedCalculationParameters,
+        calculationParams?: PerformanceCalculationParameters,
         replay?: ReplayAnalyzer
     ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null> {
         let beatmap: MapInfo<true> | null;
@@ -474,8 +447,7 @@ export abstract class BeatmapDifficultyHelper<
                 ? beatmapOrHashOrStar
                 : await this.calculateRebalanceDifficulty(
                       beatmap,
-                      (<ProcessedCalculationParameters>calculationParams)
-                          .difficulty
+                      calculationParams
                   );
 
         if (!star) {
@@ -484,9 +456,7 @@ export abstract class BeatmapDifficultyHelper<
 
         return this.calculateRebalancePerformance(
             star,
-            calculationParams instanceof PerformanceCalculationParameters
-                ? calculationParams
-                : calculationParams.performance,
+            calculationParams,
             replay
         );
     }
@@ -512,12 +482,10 @@ export abstract class BeatmapDifficultyHelper<
 
         return this.calculateDifficulty(
             beatmap,
-            (
-                await BeatmapDifficultyHelper.getCalculationParamsFromScore(
-                    score,
-                    useReplay
-                )
-            ).difficulty
+            await BeatmapDifficultyHelper.getCalculationParamsFromScore(
+                score,
+                useReplay
+            )
         );
     }
 
@@ -542,12 +510,10 @@ export abstract class BeatmapDifficultyHelper<
 
         return this.calculateRebalanceDifficulty(
             beatmap,
-            (
-                await BeatmapDifficultyHelper.getCalculationParamsFromScore(
-                    score,
-                    useReplay
-                )
-            ).difficulty
+            await BeatmapDifficultyHelper.getCalculationParamsFromScore(
+                score,
+                useReplay
+            )
         );
     }
 

@@ -30,8 +30,6 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
-import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
-import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CalculateLocalization = new CalculateLocalization(
@@ -78,22 +76,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
           )
         : undefined;
 
-    const stats: MapStats = new MapStats({
-        mods: ModUtil.pcStringToMods(
-            interaction.options.getString("mods") ?? ""
-        ),
-        ar: forceAR,
-        speedMultiplier: NumberHelper.clamp(
-            interaction.options.getNumber("speedmultiplier") ?? 1,
-            0.5,
-            2
-        ),
-        isForceAR: !isNaN(<number>forceAR),
-    });
-
-    const calcParams: ProcessedCalculationParameters = {
-        difficulty: new DifficultyCalculationParameters(stats),
-        performance: new PerformanceCalculationParameters(
+    const calcParams: PerformanceCalculationParameters =
+        new PerformanceCalculationParameters(
             new Accuracy({
                 n100: Math.max(0, interaction.options.getInteger("x100") ?? 0),
                 n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
@@ -110,9 +94,20 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             interaction.options.getInteger("combo")
                 ? Math.max(0, interaction.options.getInteger("combo", true))
                 : undefined,
-            1
-        ),
-    };
+            1,
+            new MapStats({
+                mods: ModUtil.pcStringToMods(
+                    interaction.options.getString("mods") ?? ""
+                ),
+                ar: forceAR,
+                speedMultiplier: NumberHelper.clamp(
+                    interaction.options.getNumber("speedmultiplier") ?? 1,
+                    0.5,
+                    2
+                ),
+                isForceAR: !isNaN(<number>forceAR),
+            })
+        );
 
     let droidCalcResult:
         | PerformanceCalculationResult<
@@ -187,7 +182,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(
-            calcParams.difficulty,
+            calcParams,
             droidCalcResult,
             osuCalcResult,
             (<GuildMember | null>interaction.member)?.displayHexColor,

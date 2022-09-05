@@ -17,7 +17,7 @@ import {
 } from "@rian8337/osu-difficulty-calculator";
 import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -34,7 +34,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     const ytRegex: RegExp =
         /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]+).*/;
 
-    const calcParams: ProcessedCalculationParameters =
+    const calcParams: PerformanceCalculationParameters =
         BeatmapDifficultyHelper.getCalculationParamsFromMessage(
             message.content
         );
@@ -151,7 +151,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 );
 
                 const stats: MapStats =
-                    calcParams.difficulty.customStatistics ?? new MapStats();
+                    calcParams.customStatistics ?? new MapStats();
 
                 embed
                     .spliceFields(0, embed.data.fields!.length)
@@ -176,13 +176,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     const droidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> | null =
                         await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
-                            calcParams.difficulty
+                            calcParams
                         );
 
                     const osuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> | null =
                         await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
-                            calcParams.difficulty
+                            calcParams
                         );
 
                     if (!droidCalcResult || !osuCalcResult) {

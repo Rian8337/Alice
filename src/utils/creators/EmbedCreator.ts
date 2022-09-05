@@ -77,7 +77,6 @@ import { OldDifficultyCalculationResult } from "@alice-utils/dpp/OldDifficultyCa
 import { std_ppv2 } from "ojsamadroid";
 import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
-import { ProcessedCalculationParameters } from "@alice-utils/dpp/ProcessedCalculationParameters";
 
 /**
  * Utility to create message embeds.
@@ -488,6 +487,7 @@ export abstract class EmbedCreator {
                         )
                     )
                 )
+                .spliceFields(embed.data.fields!.length - 1, 1)
                 .addFields({
                     name: `**${localization.getTranslation("starRating")}**`,
                     value:
@@ -674,13 +674,13 @@ export abstract class EmbedCreator {
             score.accuracy.nmiss > 0 ||
             score.combo < osuCalcResult.map.maxCombo
         ) {
-            const calcParams: ProcessedCalculationParameters =
+            const calcParams: PerformanceCalculationParameters =
                 await BeatmapDifficultyHelper.getCalculationParamsFromScore(
                     score
                 );
 
-            calcParams.performance.combo = osuCalcResult.map.maxCombo;
-            calcParams.performance.accuracy = new Accuracy({
+            calcParams.combo = osuCalcResult.map.maxCombo;
+            calcParams.accuracy = new Accuracy({
                 n300: score.accuracy.n300 + score.accuracy.nmiss,
                 n100: score.accuracy.n100,
                 n50: score.accuracy.n50,
@@ -696,7 +696,7 @@ export abstract class EmbedCreator {
                     droidCalcResult.map,
                     droidCalcResult.result.difficultyCalculator
                 ),
-                calcParams.performance
+                calcParams
             ))!;
 
             // Safe to non-null since previous calculation works.
@@ -708,7 +708,7 @@ export abstract class EmbedCreator {
                     osuCalcResult.map,
                     osuCalcResult.result.difficultyCalculator
                 ),
-                calcParams.performance
+                calcParams
             ))!;
 
             beatmapInformation += `(${droidFcCalcResult.result.total.toFixed(
@@ -717,7 +717,7 @@ export abstract class EmbedCreator {
                 2
             )}PP ${StringHelper.formatString(
                 localization.getTranslation("forFC"),
-                (calcParams.performance.accuracy.value() * 100).toFixed(2) + "%"
+                (calcParams.accuracy.value() * 100).toFixed(2) + "%"
             )}) `;
         }
 
