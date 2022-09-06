@@ -23,73 +23,6 @@ export abstract class StringHelper {
     }
 
     /**
-     * Tidies a string, entering a new line on a whitespace if the specified
-     * length is exceeded.
-     *
-     * Note that this function will trim _any_ whitespace-related characters.
-     *
-     * @param string The string to tidy.
-     * @param maxLineLength The maximum amount of characters in a line.
-     * @returns The tidied string.
-     */
-    static tidyString(string: string, maxLineLength: number): string {
-        if (string.length <= maxLineLength) {
-            return string;
-        }
-
-        let finalString: string = "";
-        const words: string[] = string.split(/\s+/g);
-
-        // There may be a word longer than the specified max length.
-        // In that case, we use the longest word's length.
-        let currentLineLength: number = 0;
-
-        words.forEach((word) => {
-            currentLineLength += word.length + 1;
-
-            if (currentLineLength > maxLineLength) {
-                finalString += "\n";
-                currentLineLength = word.length + 1;
-            }
-
-            finalString += word + " ";
-        });
-
-        return finalString.trimRight();
-    }
-
-    /**
-     * Obtains a section of a string, sliced by whitespace.
-     *
-     * @param str The string to slice.
-     * @param wordIndexStart The word index to start slicing from.
-     * @param wordIndexEnd The word index to end slicing to.
-     * @returns The sliced string.
-     */
-    static getStringSection(
-        str: string,
-        wordIndexStart: number,
-        wordIndexEnd?: number
-    ): string {
-        if (wordIndexEnd && wordIndexStart > wordIndexEnd) {
-            throw new Error(
-                "Start word index must be less than or equal to end word index"
-            );
-        }
-
-        const split: string[] = str.split(/\s+/g);
-
-        if (wordIndexStart > split.length - 1) {
-            return "";
-        }
-
-        const index: number =
-            split.slice(wordIndexStart, wordIndexEnd).join(" ").length + 1;
-
-        return str.substring(index);
-    }
-
-    /**
      * Formats a string, replacing %s with placeholders.
      *
      * @param str The string to format.
@@ -209,5 +142,15 @@ export abstract class StringHelper {
      */
     static sortAlphabet(str: string): string {
         return [...str].sort((a, b) => a.localeCompare(b)).join("");
+    }
+
+    /**
+     * Escapes regex characters in a string.
+     * 
+     * @param str The string.
+     * @returns The string with regex characters escaped.
+     */
+    static escapeRegexCharacters(str: string): string {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 }
