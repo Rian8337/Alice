@@ -146,11 +146,11 @@ export abstract class StringHelper {
 
     /**
      * Escapes regex characters in a string.
-     * 
+     *
      * @param str The string.
      * @returns The string with regex characters escaped.
      */
     static escapeRegexCharacters(str: string): string {
-        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 }
