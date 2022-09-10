@@ -7,6 +7,9 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { Collection, Snowflake } from "discord.js";
 
+/**
+ * Represents an osu!droid player's old droid performance points (dpp) profile.
+ */
 export class OldPPProfile extends Manager {
     /**
      * The Discord ID of the user.
