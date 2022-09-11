@@ -7,7 +7,6 @@ import {
     Spinner,
     Vector2,
 } from "@rian8337/osu-base";
-import { CursorOccurrence } from "@rian8337/osu-droid-replay-analyzer";
 import { Canvas, CanvasRenderingContext2D } from "canvas";
 
 /**
@@ -50,14 +49,14 @@ export class MissInformation {
     readonly verdict: string;
 
     /**
-     * The cursor occurrence closest to the object.
+     * The cursor position at the closest hit to the object.
      */
-    readonly occurrence?: CursorOccurrence;
+    readonly cursorPosition?: Vector2;
 
     /**
-     * The closest distance of the cursor position to the object.
+     * The closest hit to the object.
      */
-    readonly closestDistance?: number;
+    readonly closestHit?: number;
 
     private canvas?: Canvas;
 
@@ -68,8 +67,8 @@ export class MissInformation {
      * @param missIndex The index of the miss in the score.
      * @param totalMisses The amount of misses in the score.
      * @param verdict The verdict for the miss.
-     * @param occurrence The cursor occurrence closest to the object.
-     * @param closestDistance The closest distance of the cursor position to the object.
+     * @param cursorPosition The cursor position at the closest hit to the object.
+     * @param closestHit The closest hit to the object.
      */
     constructor(
         metadata: BeatmapMetadata,
@@ -79,8 +78,8 @@ export class MissInformation {
         missIndex: number,
         totalMisses: number,
         verdict: string,
-        occurrence?: CursorOccurrence,
-        closestDistance?: number
+        cursorPosition?: Vector2,
+        closestHit?: number
     ) {
         this.metadata = metadata;
         this.object = object;
@@ -89,8 +88,8 @@ export class MissInformation {
         this.missIndex = missIndex;
         this.totalMisses = totalMisses;
         this.verdict = verdict;
-        this.occurrence = occurrence;
-        this.closestDistance = closestDistance;
+        this.cursorPosition = cursorPosition;
+        this.closestHit = closestHit;
     }
 
     /**
@@ -145,17 +144,28 @@ export class MissInformation {
         const verdictText: string = `Verdict: ${this.verdict}`;
         context.fillText(
             verdictText,
-            this.canvas.width - textPadding - context.measureText(verdictText).width,
-            (this.occurrence ? 460 : 480) - textPadding
+            this.canvas.width -
+                textPadding -
+                context.measureText(verdictText).width,
+            (this.closestHit !== undefined ? 460 : 480) - textPadding
         );
 
-        if (this.occurrence) {
-            const closestHit: number = this.object.startTime - this.occurrence.time;
-            const closestHitText: string = `Closest click: ${Math.abs(closestHit).toFixed(2)}ms ${closestHit >= 0 ? "late" : "early"}`;
+        if (this.closestHit !== undefined) {
+            const closestHitText: string = `Closest click: ${Math.abs(
+                this.closestHit
+            ).toFixed(2)}ms${
+                this.closestHit > 0
+                    ? " late"
+                    : this.closestHit < 0
+                    ? " early"
+                    : ""
+            }`;
 
             context.fillText(
                 closestHitText,
-                this.canvas.width - textPadding - context.measureText(closestHitText).width,
+                this.canvas.width -
+                    textPadding -
+                    context.measureText(closestHitText).width,
                 480 - textPadding
             );
         }
@@ -260,10 +270,9 @@ export class MissInformation {
             context.fill();
             context.closePath();
 
-            if (this.occurrence) {
-                // Draw the cursor instance closest to the hit object.
-                const drawPosition: Vector2 =
-                    this.occurrence.position.scale(scale);
+            if (this.cursorPosition) {
+                // Draw the cursor position.
+                const drawPosition: Vector2 = this.cursorPosition.scale(scale);
 
                 context.fillStyle = "#5676f5";
                 context.beginPath();

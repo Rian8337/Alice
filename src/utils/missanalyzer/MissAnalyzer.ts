@@ -99,8 +99,8 @@ export class MissAnalyzer {
         const createMissInformation = (
             objectIndex: number,
             verdict: string,
-            occurrence?: CursorOccurrence,
-            closestDistance?: number
+            cursorPosition?: Vector2,
+            closestHit?: number
         ): MissInformation => {
             return new MissInformation(
                 this.beatmap.metadata,
@@ -110,8 +110,8 @@ export class MissAnalyzer {
                 missIndex++,
                 this.data.accuracy.nmiss,
                 verdict,
-                occurrence,
-                closestDistance
+                cursorPosition,
+                closestHit
             );
         };
 
@@ -135,7 +135,8 @@ export class MissAnalyzer {
 
             // Find the cursor instance with the closest tap/drag occurrence to the object.
             let closestDistance: number = Number.POSITIVE_INFINITY;
-            let closestCursorOccurrence: CursorOccurrence | null = null;
+            let closestHit: number | undefined;
+            let closestCursorPosition: Vector2 | null = null;
 
             for (let j = 0; j < this.data.cursorMovement.length; ++j) {
                 const cursorOccurrenceInfo =
@@ -145,22 +146,20 @@ export class MissAnalyzer {
                     continue;
                 }
 
-                if (closestDistance > cursorOccurrenceInfo.closestDistance) {
-                    closestDistance = cursorOccurrenceInfo.closestDistance;
-                    closestCursorOccurrence =
-                        this.data.cursorMovement[j].occurrences[
-                            cursorOccurrenceInfo.index
-                        ];
-                }
+                const distanceToObject: number =
+                    cursorOccurrenceInfo.position.getDistance(
+                        object.stackedPosition
+                    );
 
-                closestDistance = Math.min(
-                    closestDistance,
-                    cursorOccurrenceInfo.closestDistance
-                );
+                if (closestDistance > distanceToObject) {
+                    closestDistance = distanceToObject;
+                    closestCursorPosition = cursorOccurrenceInfo.position;
+                    closestHit = cursorOccurrenceInfo.closestHit;
+                }
             }
 
             if (
-                closestCursorOccurrence === null ||
+                closestCursorPosition === null ||
                 closestDistance === Number.POSITIVE_INFINITY
             ) {
                 missInformations.push(
@@ -175,20 +174,30 @@ export class MissAnalyzer {
 
             if (distanceOutsideObject <= 0) {
                 missInformations.push(
-                    createMissInformation(i, "Notelock", closestCursorOccurrence, closestDistance)
+                    createMissInformation(
+                        i,
+                        "Notelock",
+                        closestCursorPosition,
+                        closestHit
+                    )
                 );
             } else if (distanceOutsideObject <= 50) {
                 missInformations.push(
                     createMissInformation(
                         i,
                         "Misaim",
-                        closestCursorOccurrence,
-                        distanceOutsideObject
+                        closestCursorPosition,
+                        closestHit
                     )
                 );
             } else {
                 missInformations.push(
-                    createMissInformation(i, "Misaim/didn't try to hit", closestCursorOccurrence, closestDistance)
+                    createMissInformation(
+                        i,
+                        "Misaim/didn't try to hit",
+                        closestCursorPosition,
+                        closestHit
+                    )
                 );
             }
         }
@@ -201,16 +210,17 @@ export class MissAnalyzer {
      *
      * @param object The object.
      * @param cursorIndex The index of the cursor instance.
-     * @returns The cursor occurrence index in the cursor instance at which
+     * @returns The cursor occurrence information from the cursor instance at which
      * the cursor is the closest to the object, `null` if not found.
      */
     private getCursorOccurrenceClosestToObject(
         object: HitObject,
         cursorIndex: number
-    ): { index: number; closestDistance: number } | null {
+    ): { position: Vector2; closestHit: number } | null {
         const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
         let closestDistance: number = Number.POSITIVE_INFINITY;
-        let closestOccurrenceIndex: number | null = null;
+        let closestCursorPosition: Vector2 | null = null;
+        let closestHit: number = 0;
 
         for (let i = 0; i < cursorData.occurrences.length; ++i) {
             const occurrence: CursorOccurrence = cursorData.occurrences[i];
@@ -290,28 +300,30 @@ export class MissAnalyzer {
 
                         if (closestDistance > distanceToObject) {
                             closestDistance = distanceToObject;
-                            closestOccurrenceIndex = i;
+                            closestCursorPosition = cursorPosition;
+                            closestHit = object.startTime - o.time;
                         }
                     }
                 }
             } else {
-                closestDistance = Math.min(
-                    closestDistance,
-                    object.stackedPosition.getDistance(occurrence.position)
-                );
+                const distanceToObject: number =
+                    object.stackedPosition.getDistance(occurrence.position);
+
+                if (closestDistance > distanceToObject) {
+                    closestDistance = distanceToObject;
+                    closestCursorPosition = occurrence.position;
+                    closestHit = object.startTime - occurrence.time;
+                }
             }
         }
 
-        if (
-            closestOccurrenceIndex === null ||
-            closestDistance === Number.POSITIVE_INFINITY
-        ) {
+        if (closestCursorPosition === null) {
             return null;
         }
 
         return {
-            index: closestOccurrenceIndex,
-            closestDistance: closestDistance,
+            position: closestCursorPosition,
+            closestHit: closestHit,
         };
     }
 }
