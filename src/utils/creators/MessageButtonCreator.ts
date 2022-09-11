@@ -18,8 +18,8 @@ import {
     ButtonComponent,
     APIActionRowComponent,
     APIMessageActionRowComponent,
-    JSONEncodable,
     APIEmbed,
+    isJSONEncodable,
 } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
 import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
@@ -300,11 +300,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                     let data: APIEmbed;
 
-                    // Check if the interface is implemented.
-                    if ((<JSONEncodable<APIEmbed>>embed).toJSON) {
-                        data = (<JSONEncodable<APIEmbed>>embed).toJSON();
+                    if (isJSONEncodable(embed)) {
+                        data = embed.toJSON();
                     } else {
-                        data = <APIEmbed>embed;
+                        data = embed;
                     }
 
                     if (data.fields) {
