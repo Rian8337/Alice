@@ -301,7 +301,7 @@ export class MissAnalyzer {
                         if (closestDistance > distanceToObject) {
                             closestDistance = distanceToObject;
                             closestCursorPosition = cursorPosition;
-                            closestHit = object.startTime - o.time;
+                            closestHit = o.time - object.startTime;
                         }
                     }
                 }
@@ -312,7 +312,7 @@ export class MissAnalyzer {
                 if (closestDistance > distanceToObject) {
                     closestDistance = distanceToObject;
                     closestCursorPosition = occurrence.position;
-                    closestHit = object.startTime - occurrence.time;
+                    closestHit = occurrence.time - object.startTime;
                 }
             }
         }
