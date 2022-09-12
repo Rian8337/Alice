@@ -55,6 +55,11 @@ export class MissInformation {
     readonly clockRate: number;
 
     /**
+     * Whether to flip objects vertically before drawing them.
+     */
+    readonly drawFlipped: boolean;
+
+    /**
      * The cursor position at the closest hit to the object.
      */
     readonly cursorPosition?: Vector2;
@@ -70,7 +75,7 @@ export class MissInformation {
     readonly previousObject?: HitObject;
 
     private canvas?: Canvas;
-    private readonly scale: number = 0.75;
+    private readonly playfieldScale: number = 0.75;
 
     /**
      * @param metadata The metadata of the beatmap.
@@ -93,6 +98,7 @@ export class MissInformation {
         totalMisses: number,
         verdict: string,
         clockRate: number,
+        drawFlipped: boolean,
         cursorPosition?: Vector2,
         closestHit?: number,
         previousObject?: HitObject
@@ -105,6 +111,7 @@ export class MissInformation {
         this.totalMisses = totalMisses;
         this.verdict = verdict;
         this.clockRate = clockRate;
+        this.drawFlipped = drawFlipped;
         this.cursorPosition = cursorPosition;
         this.closestHit = closestHit;
         this.previousObject = previousObject;
@@ -134,7 +141,7 @@ export class MissInformation {
         context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         context.restore();
 
-        context.font = "18px Exo";
+        context.font = "16px Exo";
         context.textBaseline = "middle";
         context.fillText(
             `${this.metadata.artist} - ${this.metadata.title} [${this.metadata.version}]`,
@@ -144,12 +151,12 @@ export class MissInformation {
         context.fillText(
             `Object ${this.objectIndex + 1} of ${this.totalObjects}`,
             5,
-            textPadding + 30
+            textPadding + 28
         );
         context.fillText(
             `Miss ${this.missIndex + 1} of ${this.totalMisses}`,
             5,
-            textPadding + 50
+            textPadding + 46
         );
 
         let startTime: number = Math.floor(
@@ -167,7 +174,7 @@ export class MissInformation {
                 .toString()
                 .padStart(2, "0")}.${startTime.toString().padStart(3, "0")}`,
             textPadding,
-            465 - textPadding
+            485 - textPadding
         );
 
         const verdictText: string = `Verdict: ${this.verdict}`;
@@ -216,8 +223,8 @@ export class MissInformation {
 
         // The playfield is 512x384. However, since we're drawing on a limited space,
         // we will have to scale the area and objects down.
-        const scaledPlayfieldX: number = 512 * this.scale;
-        const scaledPlayfieldY: number = 384 * this.scale;
+        const scaledPlayfieldX: number = 512 * this.playfieldScale;
+        const scaledPlayfieldY: number = 384 * this.playfieldScale;
 
         context.save();
         context.translate(
@@ -234,7 +241,9 @@ export class MissInformation {
 
         if (this.cursorPosition) {
             // Draw the cursor position.
-            const drawPosition: Vector2 = this.cursorPosition.scale(this.scale);
+            const drawPosition: Vector2 = this.flipVectorVertically(
+                this.cursorPosition.scale(this.playfieldScale)
+            );
 
             context.fillStyle = "#5676f5";
             context.beginPath();
@@ -274,21 +283,24 @@ export class MissInformation {
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
 
-        const objectDrawPosition: Vector2 = object
-            .getStackedPosition(modes.droid)
-            .scale(this.scale);
-        const scaledRadius: number = object.getRadius(modes.droid) * this.scale;
+        const objectDrawPosition: Vector2 = this.flipVectorVertically(
+            object.getStackedPosition(modes.droid).scale(this.playfieldScale)
+        );
+        const scaledRadius: number =
+            object.getRadius(modes.droid) * this.playfieldScale;
 
         if (object instanceof Slider) {
             // Draw the path first, then we can apply the slider head.
             const drawnDistance: number =
-                object.path.expectedDistance * this.scale;
+                object.path.expectedDistance * this.playfieldScale;
 
             for (let i = 0; i <= drawnDistance; i += 5) {
                 const pathPosition: Vector2 = object
                     .getStackedPosition(modes.droid)
                     .add(object.path.positionAt(i / drawnDistance));
-                const drawPosition: Vector2 = pathPosition.scale(this.scale);
+                const drawPosition: Vector2 = this.flipVectorVertically(
+                    pathPosition.scale(this.playfieldScale)
+                );
 
                 // Path circle
                 context.fillStyle = "#808080";
@@ -331,9 +343,11 @@ export class MissInformation {
                     continue;
                 }
 
-                const drawPosition: Vector2 = nestedObject
-                    .getStackedPosition(modes.droid)
-                    .scale(this.scale);
+                const drawPosition: Vector2 = this.flipVectorVertically(
+                    nestedObject
+                        .getStackedPosition(modes.droid)
+                        .scale(this.playfieldScale)
+                );
 
                 context.fillStyle = "#ad6140";
                 context.beginPath();
@@ -362,5 +376,18 @@ export class MissInformation {
         );
         context.fill();
         context.closePath();
+    }
+
+    /**
+     * Flips a vector vertically with respect to the osu! playfield size.
+     *
+     * @param vec The vector to flip.
+     * @returns The flipped vector.
+     */
+    private flipVectorVertically(vec: Vector2): Vector2 {
+        // TODO: move playfield-related logic to droid module
+        return this.drawFlipped
+            ? new Vector2(vec.x, 384 * this.playfieldScale - vec.y)
+            : vec;
     }
 }

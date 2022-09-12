@@ -5,6 +5,7 @@ import {
     Interpolation,
     MapStats,
     modes,
+    ModHardRock,
     ModPrecise,
     ModUtil,
     Spinner,
@@ -102,6 +103,9 @@ export class MissAnalyzer {
             speedMultiplier: this.data.speedModification,
             mods: this.data.convertedMods,
         }).calculate();
+        const flipObjects: boolean = this.data.convertedMods.some(
+            (m) => m instanceof ModHardRock
+        );
 
         const createMissInformation = (
             objectIndex: number,
@@ -118,6 +122,7 @@ export class MissAnalyzer {
                 this.data.accuracy.nmiss,
                 verdict,
                 stats.speedMultiplier,
+                flipObjects,
                 cursorPosition,
                 closestHit,
                 this.beatmap.hitObjects.objects[objectIndex - 1]
