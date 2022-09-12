@@ -86,9 +86,10 @@ export class MissAnalyzer {
     /**
      * Analyzes the replay for miss informations.
      *
+     * @param missLimit The amount of misses to analyze. Defaults to 5.
      * @returns Information about misses.
      */
-    analyze(): MissInformation[] {
+    analyze(missLimit: number = 5): MissInformation[] {
         if (this.data.accuracy.nmiss === 0) {
             return [];
         }
@@ -123,6 +124,10 @@ export class MissAnalyzer {
         };
 
         for (let i = 0; i < this.data.hitObjectData.length; ++i) {
+            if (missIndex === missLimit) {
+                break;
+            }
+
             const objectData: ReplayObjectData = this.data.hitObjectData[i];
 
             if (objectData.result !== hitResult.RESULT_0) {
