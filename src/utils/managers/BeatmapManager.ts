@@ -67,7 +67,6 @@ export abstract class BeatmapManager extends Manager {
         }
 
         const newCache: MapInfo | null = await MapInfo.getInformation(
-            //@ts-expect-error: string | number union
             beatmapIdOrHash,
             options?.checkFile
         );

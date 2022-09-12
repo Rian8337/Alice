@@ -66,7 +66,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
         const apiRequestBuilder: DroidAPIRequestBuilder =
             new DroidAPIRequestBuilder()
-                .setEndpoint("rename.php")
+                .setEndpoint("user_rename.php")
                 .addParameter("username", this.player.username)
                 .addParameter("newname", this.new_username!);
 

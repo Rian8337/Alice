@@ -906,10 +906,7 @@ export class UserBind extends Manager {
         const player: Player | null =
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
-                : await Player.getInformation(
-                      //@ts-expect-error: string | number union
-                      uidOrUsernameOrPlayer
-                  );
+                : await Player.getInformation(uidOrUsernameOrPlayer);
 
         const localization: UserBindLocalization =
             this.getLocalization(language);

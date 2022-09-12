@@ -1,6 +1,7 @@
 import {
     BeatmapMetadata,
     HitObject,
+    modes,
     Slider,
     SliderRepeat,
     SliderTick,
@@ -192,8 +193,8 @@ export class MissInformation {
             if (this.cursorPosition) {
                 const distanceToObject: number =
                     this.cursorPosition.getDistance(
-                        this.object.stackedPosition
-                    ) - this.object.radius;
+                        this.object.getStackedPosition(modes.droid)
+                    ) - this.object.getRadius(modes.droid);
 
                 if (distanceToObject > 0) {
                     closestHitText += `, ${distanceToObject.toFixed(
@@ -273,10 +274,10 @@ export class MissInformation {
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
 
-        const objectDrawPosition: Vector2 = object.stackedPosition.scale(
-            this.scale
-        );
-        const scaledRadius: number = object.radius * this.scale;
+        const objectDrawPosition: Vector2 = object
+            .getStackedPosition(modes.droid)
+            .scale(this.scale);
+        const scaledRadius: number = object.getRadius(modes.droid) * this.scale;
 
         if (object instanceof Slider) {
             // Draw the path first, then we can apply the slider head.
@@ -284,9 +285,9 @@ export class MissInformation {
                 object.path.expectedDistance * this.scale;
 
             for (let i = 0; i <= drawnDistance; i += 5) {
-                const pathPosition: Vector2 = object.stackedPosition.add(
-                    object.path.positionAt(i / drawnDistance)
-                );
+                const pathPosition: Vector2 = object
+                    .getStackedPosition(modes.droid)
+                    .add(object.path.positionAt(i / drawnDistance));
                 const drawPosition: Vector2 = pathPosition.scale(this.scale);
 
                 // Path circle
@@ -330,8 +331,9 @@ export class MissInformation {
                     continue;
                 }
 
-                const drawPosition: Vector2 =
-                    nestedObject.stackedPosition.scale(this.scale);
+                const drawPosition: Vector2 = nestedObject
+                    .getStackedPosition(modes.droid)
+                    .scale(this.scale);
 
                 context.fillStyle = "#ad6140";
                 context.beginPath();

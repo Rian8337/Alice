@@ -38,7 +38,7 @@ export class IllegalMap extends Manager implements DatabaseIllegalMap {
         ) {
             for (const score of scores) {
                 await new DroidAPIRequestBuilder()
-                    .setEndpoint("banscore.php")
+                    .setEndpoint("single_score_wipe.php")
                     .addParameter("scoreid", score.scoreID)
                     .sendRequest();
             }

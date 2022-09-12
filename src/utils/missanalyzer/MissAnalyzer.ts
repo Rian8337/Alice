@@ -4,6 +4,7 @@ import {
     HitObject,
     Interpolation,
     MapStats,
+    modes,
     ModPrecise,
     ModUtil,
     Spinner,
@@ -160,7 +161,7 @@ export class MissAnalyzer {
 
                 const distanceToObject: number =
                     cursorOccurrenceInfo.position.getDistance(
-                        object.stackedPosition
+                        object.getStackedPosition(modes.droid)
                     );
 
                 if (closestDistance > distanceToObject) {
@@ -182,7 +183,7 @@ export class MissAnalyzer {
             }
 
             const distanceOutsideObject: number =
-                closestDistance - object.radius;
+                closestDistance - object.getRadius(modes.droid);
 
             if (distanceOutsideObject <= 0) {
                 missInformations.push(
@@ -309,8 +310,9 @@ export class MissAnalyzer {
                             )
                         );
 
-                        const distanceToObject: number =
-                            object.stackedPosition.getDistance(cursorPosition);
+                        const distanceToObject: number = object
+                            .getStackedPosition(modes.droid)
+                            .getDistance(cursorPosition);
 
                         if (closestDistance > distanceToObject) {
                             closestDistance = distanceToObject;
@@ -320,8 +322,9 @@ export class MissAnalyzer {
                     }
                 }
             } else {
-                const distanceToObject: number =
-                    object.stackedPosition.getDistance(occurrence.position);
+                const distanceToObject: number = object
+                    .getStackedPosition(modes.droid)
+                    .getDistance(occurrence.position);
 
                 if (closestDistance > distanceToObject) {
                     closestDistance = distanceToObject;
