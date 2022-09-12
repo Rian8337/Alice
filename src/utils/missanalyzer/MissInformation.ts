@@ -49,6 +49,11 @@ export class MissInformation {
     readonly verdict: string;
 
     /**
+     * The rate at which the clock progress in the score.
+     */
+    readonly clockRate: number;
+
+    /**
      * The cursor position at the closest hit to the object.
      */
     readonly cursorPosition?: Vector2;
@@ -58,7 +63,13 @@ export class MissInformation {
      */
     readonly closestHit?: number;
 
+    /**
+     * The object prior to the current object.
+     */
+    readonly previousObject?: HitObject;
+
     private canvas?: Canvas;
+    private readonly scale: number = 0.75;
 
     /**
      * @param metadata The metadata of the beatmap.
@@ -67,8 +78,10 @@ export class MissInformation {
      * @param missIndex The index of the miss in the score.
      * @param totalMisses The amount of misses in the score.
      * @param verdict The verdict for the miss.
+     * @param clockRate The rate at which the clock progress in the score.
      * @param cursorPosition The cursor position at the closest hit to the object.
      * @param closestHit The closest hit to the object.
+     * @param previousObject The object prior to the current object.
      */
     constructor(
         metadata: BeatmapMetadata,
@@ -78,8 +91,10 @@ export class MissInformation {
         missIndex: number,
         totalMisses: number,
         verdict: string,
+        clockRate: number,
         cursorPosition?: Vector2,
-        closestHit?: number
+        closestHit?: number,
+        previousObject?: HitObject
     ) {
         this.metadata = metadata;
         this.object = object;
@@ -88,8 +103,14 @@ export class MissInformation {
         this.missIndex = missIndex;
         this.totalMisses = totalMisses;
         this.verdict = verdict;
+        this.clockRate = clockRate;
         this.cursorPosition = cursorPosition;
         this.closestHit = closestHit;
+        this.previousObject = previousObject;
+
+        if (this.closestHit) {
+            this.closestHit /= clockRate;
+        }
     }
 
     /**
@@ -108,24 +129,31 @@ export class MissInformation {
         const textPadding: number = 5;
 
         context.save();
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        context.restore();
+
         context.font = "18px Exo";
+        context.textBaseline = "middle";
         context.fillText(
             `${this.metadata.artist} - ${this.metadata.title} [${this.metadata.version}]`,
             textPadding,
-            textPadding
+            textPadding + 10
         );
         context.fillText(
             `Object ${this.objectIndex + 1} of ${this.totalObjects}`,
             5,
-            textPadding + 20
+            textPadding + 30
         );
         context.fillText(
             `Miss ${this.missIndex + 1} of ${this.totalMisses}`,
             5,
-            textPadding + 40
+            textPadding + 50
         );
 
-        let startTime: number = this.object.startTime;
+        let startTime: number = Math.floor(
+            this.object.startTime / this.clockRate
+        );
 
         const minutes: number = Math.floor(startTime / 60000);
         startTime -= minutes * 60000;
@@ -138,7 +166,7 @@ export class MissInformation {
                 .toString()
                 .padStart(2, "0")}.${startTime.toString().padStart(3, "0")}`,
             textPadding,
-            480 - textPadding
+            465 - textPadding
         );
 
         const verdictText: string = `Verdict: ${this.verdict}`;
@@ -147,11 +175,11 @@ export class MissInformation {
             this.canvas.width -
                 textPadding -
                 context.measureText(verdictText).width,
-            (this.closestHit !== undefined ? 460 : 480) - textPadding
+            (this.closestHit !== undefined ? 465 : 485) - textPadding
         );
 
         if (this.closestHit !== undefined) {
-            const closestHitText: string = `Closest click: ${Math.abs(
+            let closestHitText: string = `Closest tap: ${Math.abs(
                 this.closestHit
             ).toFixed(2)}ms${
                 this.closestHit > 0
@@ -161,137 +189,176 @@ export class MissInformation {
                     : ""
             }`;
 
+            if (this.cursorPosition) {
+                const distanceToObject: number =
+                    this.cursorPosition.getDistance(
+                        this.object.stackedPosition
+                    ) - this.object.radius;
+
+                if (distanceToObject > 0) {
+                    closestHitText += `, ${distanceToObject.toFixed(
+                        2
+                    )} units off`;
+                }
+            }
+
             context.fillText(
                 closestHitText,
                 this.canvas.width -
                     textPadding -
                     context.measureText(closestHitText).width,
-                480 - textPadding
+                485 - textPadding
             );
         }
 
         context.restore();
 
-        // Only draw the object if it's not a spinner.
-        if (!(this.object instanceof Spinner)) {
-            // The playfield is 512x384. However, since we're drawing on a limited space,
-            // we will have to scale the area and objects down.
-            const scale: number = 0.8;
+        // The playfield is 512x384. However, since we're drawing on a limited space,
+        // we will have to scale the area and objects down.
+        const scaledPlayfieldX: number = 512 * this.scale;
+        const scaledPlayfieldY: number = 384 * this.scale;
 
-            context.save();
-            context.translate(50, 50);
-            context.strokeRect(0, 0, 512 * scale, 384 * scale);
+        context.save();
+        context.translate(
+            // Center the playfield vertically.
+            (this.canvas.width - scaledPlayfieldX) / 2,
+            115
+        );
+        context.strokeRect(0, 0, scaledPlayfieldX, scaledPlayfieldY);
 
-            const objectDrawPosition: Vector2 =
-                this.object.stackedPosition.scale(scale);
-            const scaledRadius: number = this.object.radius * scale;
+        if (this.previousObject) {
+            this.drawObject(this.previousObject, "#606060");
+        }
+        this.drawObject(this.object, "#85501e");
 
-            if (this.object instanceof Slider) {
-                // Draw the path first, then we can apply the slider head.
-                const drawnDistance: number =
-                    this.object.path.expectedDistance * scale;
+        if (this.cursorPosition) {
+            // Draw the cursor position.
+            const drawPosition: Vector2 = this.cursorPosition.scale(this.scale);
 
-                for (let i = 0; i <= drawnDistance; i += 5) {
-                    const pathPosition: Vector2 =
-                        this.object.stackedPosition.add(
-                            this.object.path.positionAt(i / drawnDistance)
-                        );
-                    const drawPosition: Vector2 = pathPosition.scale(scale);
-
-                    // Path circle
-                    context.fillStyle = "#808080";
-                    context.beginPath();
-                    context.arc(
-                        drawPosition.x,
-                        drawPosition.y,
-                        scaledRadius,
-                        0,
-                        2 * Math.PI
-                    );
-                    context.fill();
-                    context.closePath();
-
-                    // Only draw path direction if the path is long enough.
-                    if (this.object.path.expectedDistance > 300) {
-                        context.fillStyle = "#707070";
-                        context.beginPath();
-                        context.arc(
-                            drawPosition.x,
-                            drawPosition.y,
-                            // Make path direction 15% the size of the slider path circle.
-                            scaledRadius * 0.15,
-                            0,
-                            2 * Math.PI
-                        );
-                        context.fill();
-                        context.closePath();
-                    }
-                }
-
-                // Draw slider ticks.
-                for (const nestedObject of this.object.nestedHitObjects) {
-                    // Only draw for one span index.
-                    if (nestedObject instanceof SliderRepeat) {
-                        break;
-                    }
-
-                    if (!(nestedObject instanceof SliderTick)) {
-                        continue;
-                    }
-
-                    const drawPosition: Vector2 =
-                        nestedObject.stackedPosition.scale(scale);
-
-                    context.fillStyle = "#ad6140";
-                    context.beginPath();
-                    context.arc(
-                        drawPosition.x,
-                        drawPosition.y,
-                        // Make slider ticks 25% the size of the slider path circle.
-                        scaledRadius * 0.25,
-                        0,
-                        2 * Math.PI
-                    );
-                    context.fill();
-                    context.closePath();
-                }
-            }
-
-            // Draw the circle or slider head.
-            context.fillStyle = "#85501e";
+            context.fillStyle = "#5676f5";
             context.beginPath();
-            context.arc(
-                objectDrawPosition.x,
-                objectDrawPosition.y,
-                scaledRadius,
-                0,
-                2 * Math.PI
-            );
+            context.arc(drawPosition.x, drawPosition.y, 10, 0, 2 * Math.PI);
             context.fill();
             context.closePath();
 
-            if (this.cursorPosition) {
-                // Draw the cursor position.
-                const drawPosition: Vector2 = this.cursorPosition.scale(scale);
+            // Make the middle part lighter.
+            context.globalCompositeOperation = "lighter";
+            context.fillStyle = "#ffffff";
+            context.beginPath();
+            context.arc(drawPosition.x, drawPosition.y, 5, 0, 2 * Math.PI);
+            context.fill();
+            context.closePath();
+        }
 
-                context.fillStyle = "#5676f5";
+        context.restore();
+
+        return this.canvas;
+    }
+
+    /**
+     * Draws an object to the canvas.
+     *
+     * @param object The object to draw.
+     * @param color The color to draw the object with.
+     */
+    private drawObject(object: HitObject, color: string): void {
+        if (!this.canvas) {
+            return;
+        }
+
+        // Only draw if the object is not a spinner.
+        if (object instanceof Spinner) {
+            return;
+        }
+
+        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+
+        const objectDrawPosition: Vector2 = object.stackedPosition.scale(
+            this.scale
+        );
+        const scaledRadius: number = object.radius * this.scale;
+
+        if (object instanceof Slider) {
+            // Draw the path first, then we can apply the slider head.
+            const drawnDistance: number =
+                object.path.expectedDistance * this.scale;
+
+            for (let i = 0; i <= drawnDistance; i += 5) {
+                const pathPosition: Vector2 = object.stackedPosition.add(
+                    object.path.positionAt(i / drawnDistance)
+                );
+                const drawPosition: Vector2 = pathPosition.scale(this.scale);
+
+                // Path circle
+                context.fillStyle = "#808080";
                 context.beginPath();
-                context.arc(drawPosition.x, drawPosition.y, 40, 0, 2 * Math.PI);
+                context.arc(
+                    drawPosition.x,
+                    drawPosition.y,
+                    scaledRadius,
+                    0,
+                    2 * Math.PI
+                );
                 context.fill();
                 context.closePath();
 
-                // Make the middle part lighter.
-                context.globalCompositeOperation = "lighter";
-                context.fillStyle = "#ffffff";
+                // Only draw path direction if the path is long enough.
+                if (object.path.expectedDistance > 300) {
+                    context.fillStyle = "#707070";
+                    context.beginPath();
+                    context.arc(
+                        drawPosition.x,
+                        drawPosition.y,
+                        // Make path direction 15% the size of the slider path circle.
+                        scaledRadius * 0.15,
+                        0,
+                        2 * Math.PI
+                    );
+                    context.fill();
+                    context.closePath();
+                }
+            }
+
+            // Draw slider ticks.
+            for (const nestedObject of object.nestedHitObjects) {
+                // Only draw for one span index.
+                if (nestedObject instanceof SliderRepeat) {
+                    break;
+                }
+
+                if (!(nestedObject instanceof SliderTick)) {
+                    continue;
+                }
+
+                const drawPosition: Vector2 =
+                    nestedObject.stackedPosition.scale(this.scale);
+
+                context.fillStyle = "#ad6140";
                 context.beginPath();
-                context.arc(drawPosition.x, drawPosition.y, 30, 0, 2 * Math.PI);
+                context.arc(
+                    drawPosition.x,
+                    drawPosition.y,
+                    // Make slider ticks 25% the size of the slider path circle.
+                    scaledRadius * 0.25,
+                    0,
+                    2 * Math.PI
+                );
                 context.fill();
                 context.closePath();
             }
-
-            context.restore();
         }
 
-        return this.canvas;
+        // Draw the circle or slider head.
+        context.fillStyle = color;
+        context.beginPath();
+        context.arc(
+            objectDrawPosition.x,
+            objectDrawPosition.y,
+            scaledRadius,
+            0,
+            2 * Math.PI
+        );
+        context.fill();
+        context.closePath();
     }
 }

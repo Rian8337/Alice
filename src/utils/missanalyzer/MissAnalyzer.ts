@@ -96,6 +96,11 @@ export class MissAnalyzer {
         let missIndex: number = 0;
         const missInformations: MissInformation[] = [];
 
+        const stats: MapStats = new MapStats({
+            speedMultiplier: this.data.speedModification,
+            mods: this.data.convertedMods,
+        }).calculate();
+
         const createMissInformation = (
             objectIndex: number,
             verdict: string,
@@ -110,8 +115,10 @@ export class MissAnalyzer {
                 missIndex++,
                 this.data.accuracy.nmiss,
                 verdict,
+                stats.speedMultiplier,
                 cursorPosition,
-                closestHit
+                closestHit,
+                this.beatmap.hitObjects.objects[objectIndex - 1]
             );
         };
 
@@ -231,12 +238,14 @@ export class MissAnalyzer {
 
             const timeDifference: number = occurrence.time - object.startTime;
 
-            // Only count cursor occurrences within an object's approach time.
+            // Only count cursor occurrences within an object's approach time or hit window.
             if (timeDifference < -this.approachRateTime) {
                 continue;
             }
 
-            if (timeDifference > this.approachRateTime) {
+            if (
+                timeDifference > this.hitWindow.hitWindowFor50(this.isPrecise)
+            ) {
                 break;
             }
 
