@@ -275,7 +275,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         // TODO: extract limited time button logic to a separate method
         const button: ButtonBuilder = new ButtonBuilder()
             .setCustomId("analyze-miss")
-            .setLabel("Analyze Misses")
+            .setLabel("Analyze Misses (Beta)")
             .setStyle(ButtonStyle.Primary)
             .setEmoji(Symbols.magnifyingGlassTiltedRight);
 
