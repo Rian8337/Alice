@@ -20,9 +20,15 @@ import {
     APIMessageActionRowComponent,
     APIEmbed,
     isJSONEncodable,
+    AttachmentBuilder,
 } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
 import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
+import { MissAnalyzer } from "@alice-utils/missanalyzer/MissAnalyzer";
+import { DroidDifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
+import { DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
+import { ReplayData } from "@rian8337/osu-droid-replay-analyzer";
+import { MissInformation } from "@alice-utils/missanalyzer/MissInformation";
 
 /**
  * A utility to create message buttons.
@@ -247,6 +253,129 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                 resolve(collected.first()?.customId === "yes");
             });
+        });
+    }
+
+    /**
+     * Creates a miss analyzer button.
+     *
+     * @param interaction The interaction that triggered the button.
+     * @param options Options of the message.
+     * @param difficultyCalculator The difficulty calculator instance.
+     * @param replayData The replay data.
+     */
+    static async createMissAnalyzerButton(
+        interaction: RepliableInteraction,
+        options: InteractionReplyOptions,
+        difficultyCalculator:
+            | DroidDifficultyCalculator
+            | RebalanceDroidDifficultyCalculator,
+        replayData: ReplayData
+    ): Promise<void> {
+        // TODO: extract limited time button logic to a separate method
+        const button: ButtonBuilder = new ButtonBuilder()
+            .setCustomId("analyze-miss")
+            .setLabel("Analyze Misses")
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji(Symbols.magnifyingGlassTiltedRight);
+
+        const component: ActionRowBuilder<ButtonBuilder> =
+            new ActionRowBuilder<ButtonBuilder>().addComponents(button);
+
+        options.components ??= [];
+        options.components.push(component);
+
+        const message: Message = interaction.isMessageComponent()
+            ? await InteractionHelper.update(interaction, options)
+            : await InteractionHelper.reply(interaction, options);
+
+        const collectorOptions = this.createButtonCollector(
+            message,
+            60,
+            (i) =>
+                (<APIButtonComponentWithCustomId>button.data).custom_id ===
+                    i.customId && interaction.user.id === i.user.id,
+            (m) => {
+                const row: ActionRow<MessageActionRowComponent> | undefined =
+                    m.components.find((c) => c.components.length === 1);
+
+                if (!row) {
+                    return false;
+                }
+
+                return (
+                    (<APIButtonComponentWithCustomId>button.data).custom_id ===
+                    row.components[0].customId
+                );
+            }
+        );
+
+        const { collector } = collectorOptions;
+
+        collector.once("collect", async (i) => {
+            await i.deferReply();
+
+            collector.stop();
+        });
+
+        collector.once("end", async (collected) => {
+            const pressed: ButtonInteraction | undefined = collected.first();
+
+            if (pressed) {
+                const missAnalyzer: MissAnalyzer = new MissAnalyzer(
+                    difficultyCalculator,
+                    replayData
+                );
+                const missInformations: MissInformation[] =
+                    missAnalyzer.analyze();
+
+                const onPageChange: OnButtonPageChange = async (o, page) => {
+                    const attachment: AttachmentBuilder = new AttachmentBuilder(
+                        missInformations[page - 1].draw().toBuffer(),
+                        { name: `miss-${page + 1}.png` }
+                    );
+
+                    o.files = [attachment];
+                };
+
+                this.createButtonBasedPaging(
+                    pressed,
+                    {},
+                    [interaction.user.id],
+                    1,
+                    60,
+                    onPageChange,
+                    missInformations.length
+                );
+            }
+
+            const index: number = (<
+                APIActionRowComponent<APIMessageActionRowComponent>[]
+            >options.components).findIndex((v) => {
+                if (v.components.length !== 1) {
+                    return;
+                }
+
+                return (
+                    v.components[0] instanceof ButtonBuilder &&
+                    (<APIButtonComponentWithCustomId>v.components[0].data)
+                        .custom_id ===
+                        (<APIButtonComponentWithCustomId>button.data).custom_id
+                );
+            });
+
+            if (index !== -1) {
+                options.components!.splice(index, 1);
+            }
+
+            if (!collectorOptions.componentIsDeleted) {
+                try {
+                    interaction.isMessageComponent()
+                        ? await InteractionHelper.update(interaction, options)
+                        : await InteractionHelper.reply(interaction, options);
+                    // eslint-disable-next-line no-empty
+                } catch {}
+            }
         });
     }
 

@@ -26,4 +26,5 @@ export enum Symbols {
     crown = "👑",
     personRunning = "🏃",
     inboxTray = "📥",
+    magnifyingGlassTiltedRight = "🔎",
 }

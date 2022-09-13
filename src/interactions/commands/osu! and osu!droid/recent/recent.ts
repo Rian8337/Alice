@@ -2,18 +2,29 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionReplyOptions,
+} from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember, EmbedBuilder, Snowflake } from "discord.js";
-import { Player } from "@rian8337/osu-droid-utilities";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { RecentLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/recent/RecentLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
+import {
+    DroidDifficultyCalculator,
+    DroidPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: RecentLocalization = new RecentLocalization(
@@ -104,7 +115,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const index: number = interaction.options.getInteger("index") ?? 1;
 
-    if (!player.recentPlays[index - 1]) {
+    const score: Score = player.recentPlays[index - 1];
+
+    if (!score) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playIndexOutOfBounds"),
@@ -113,25 +126,46 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    BeatmapManager.setChannelLatestBeatmap(
-        interaction.channelId,
-        player.recentPlays[index - 1].hash
+    BeatmapManager.setChannelLatestBeatmap(interaction.channelId, score.hash);
+
+    const droidCalcResult: PerformanceCalculationResult<
+        DroidDifficultyCalculator,
+        DroidPerformanceCalculator
+    > | null = await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+        score
     );
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
-        player.recentPlays[index - 1],
+        score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
+        droidCalcResult,
+        undefined,
         localization.language
     );
 
-    InteractionHelper.reply(interaction, {
+    const options: InteractionReplyOptions = {
         content: MessageCreator.createAccept(
             localization.getTranslation("recentPlayDisplay"),
             player.username
         ),
         embeds: [embed],
-    });
+    };
+
+    if (
+        droidCalcResult !== null &&
+        droidCalcResult.replay?.data &&
+        NumberHelper.isNumberInRange(score.accuracy.nmiss, 1, 3, true)
+    ) {
+        MessageButtonCreator.createMissAnalyzerButton(
+            interaction,
+            options,
+            droidCalcResult.result.difficultyCalculator,
+            droidCalcResult.replay.data
+        );
+    } else {
+        InteractionHelper.reply(interaction, options);
+    }
 };
 
 export const category: SlashCommand["category"] = CommandCategory.OSU;
@@ -214,5 +248,6 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: [],
+    cooldown: 5,
     scope: "ALL",
 };

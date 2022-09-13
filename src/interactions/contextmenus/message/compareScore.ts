@@ -11,7 +11,15 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { EmbedBuilder, GuildMember } from "discord.js";
+import { EmbedBuilder, GuildMember, InteractionReplyOptions } from "discord.js";
+import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import {
+    DroidDifficultyCalculator,
+    DroidPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     const localization: CompareScoreLocalization = new CompareScoreLocalization(
@@ -93,25 +101,49 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
-        score,
-        player.avatarURL,
-        (<GuildMember | null>interaction.member)?.displayColor,
-        localization.language
-    );
-
     BeatmapManager.setChannelLatestBeatmap(
         interaction.channelId,
         beatmapInfo.hash
     );
 
-    InteractionHelper.reply(interaction, {
+    const droidCalcResult: PerformanceCalculationResult<
+        DroidDifficultyCalculator,
+        DroidPerformanceCalculator
+    > | null = await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+        score
+    );
+
+    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
+        score,
+        player.avatarURL,
+        (<GuildMember | null>interaction.member)?.displayColor,
+        droidCalcResult,
+        undefined,
+        localization.language
+    );
+
+    const options: InteractionReplyOptions = {
         content: MessageCreator.createAccept(
             localization.getTranslation("comparePlayDisplay"),
             player.username
         ),
         embeds: [embed],
-    });
+    };
+
+    if (
+        droidCalcResult !== null &&
+        droidCalcResult.replay?.data &&
+        NumberHelper.isNumberInRange(score.accuracy.nmiss, 1, 3, true)
+    ) {
+        MessageButtonCreator.createMissAnalyzerButton(
+            interaction,
+            options,
+            droidCalcResult.result.difficultyCalculator,
+            droidCalcResult.replay.data
+        );
+    } else {
+        InteractionHelper.reply(interaction, options);
+    }
 };
 
 export const config: MessageContextMenuCommand["config"] = {

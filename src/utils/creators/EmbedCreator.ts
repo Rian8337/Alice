@@ -584,6 +584,8 @@ export abstract class EmbedCreator {
      * @param score The score to create recent play from.
      * @param playerAvatarURL The avatar URL of the player.
      * @param embedColor The color of the embed.
+     * @param droidCalcResult The osu!droid performance calculation result of the score. If unspecified, the score will be computed on fly.
+     * @param osuCalcResult The osu!standard performance calculation result of the score. If unspecified, the score will be computed on fly.
      * @param language The locale of the user who requested the recent play embed. Defaults to English.
      * @returns The embed.
      */
@@ -591,6 +593,14 @@ export abstract class EmbedCreator {
         score: Score,
         playerAvatarURL: string,
         embedColor?: ColorResolvable,
+        droidCalcResult?: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        > | null,
+        osuCalcResult?: PerformanceCalculationResult<
+            OsuDifficultyCalculator,
+            OsuPerformanceCalculator
+        > | null,
         language: Language = "en"
     ): Promise<EmbedBuilder> {
         const localization: EmbedCreatorLocalization =
@@ -613,19 +623,15 @@ export abstract class EmbedCreator {
             iconURL: playerAvatarURL,
         });
 
-        const droidCalcResult: PerformanceCalculationResult<
-            DroidDifficultyCalculator,
-            DroidPerformanceCalculator
-        > | null = await this.droidDiffCalcHelper.calculateScorePerformance(
-            score
-        );
+        if (droidCalcResult === undefined) {
+            droidCalcResult =
+                await this.droidDiffCalcHelper.calculateScorePerformance(score);
+        }
 
-        const osuCalcResult: PerformanceCalculationResult<
-            OsuDifficultyCalculator,
-            OsuPerformanceCalculator
-        > | null = await this.osuDiffCalcHelper.calculateScorePerformance(
-            score
-        );
+        if (osuCalcResult === undefined) {
+            osuCalcResult =
+                await this.osuDiffCalcHelper.calculateScorePerformance(score);
+        }
 
         let beatmapInformation: string = `${arrow} **${BeatmapManager.getRankEmote(
             <ScoreRank>score.rank

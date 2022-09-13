@@ -2,7 +2,10 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionReplyOptions,
+} from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -13,6 +16,14 @@ import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { CompareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/compare/CompareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
+import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import {
+    DroidDifficultyCalculator,
+    DroidPerformanceCalculator,
+} from "@rian8337/osu-difficulty-calculator";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CompareLocalization = new CompareLocalization(
@@ -119,20 +130,44 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
+    const droidCalcResult: PerformanceCalculationResult<
+        DroidDifficultyCalculator,
+        DroidPerformanceCalculator
+    > | null = await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+        score
+    );
+
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
+        droidCalcResult,
+        undefined,
         localization.language
     );
 
-    InteractionHelper.reply(interaction, {
+    const options: InteractionReplyOptions = {
         content: MessageCreator.createAccept(
             localization.getTranslation("comparePlayDisplay"),
             player.username
         ),
         embeds: [embed],
-    });
+    };
+
+    if (
+        droidCalcResult !== null &&
+        droidCalcResult.replay?.data &&
+        NumberHelper.isNumberInRange(score.accuracy.nmiss, 1, 3, true)
+    ) {
+        MessageButtonCreator.createMissAnalyzerButton(
+            interaction,
+            options,
+            droidCalcResult.result.difficultyCalculator,
+            droidCalcResult.replay.data
+        );
+    } else {
+        InteractionHelper.reply(interaction, options);
+    }
 };
 
 export const category: SlashCommand["category"] = CommandCategory.OSU;
@@ -200,5 +235,6 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: [],
+    cooldown: 5,
     scope: "ALL",
 };
