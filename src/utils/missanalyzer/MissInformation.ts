@@ -72,7 +72,7 @@ export class MissInformation {
     /**
      * The object prior to the current object.
      */
-    readonly previousObject?: HitObject;
+    readonly previousObjects: HitObject[];
 
     private canvas?: Canvas;
     private readonly playfieldScale: number = 0.75;
@@ -99,9 +99,9 @@ export class MissInformation {
         verdict: string,
         clockRate: number,
         drawFlipped: boolean,
+        previousObjects: HitObject[],
         cursorPosition?: Vector2,
-        closestHit?: number,
-        previousObject?: HitObject
+        closestHit?: number
     ) {
         this.metadata = metadata;
         this.object = object;
@@ -114,7 +114,7 @@ export class MissInformation {
         this.drawFlipped = drawFlipped;
         this.cursorPosition = cursorPosition;
         this.closestHit = closestHit;
-        this.previousObject = previousObject;
+        this.previousObjects = previousObjects;
 
         if (this.closestHit) {
             this.closestHit /= clockRate;
@@ -187,9 +187,11 @@ export class MissInformation {
         );
 
         if (this.closestHit !== undefined) {
-            let closestHitText: string = `Closest tap: ${Math.abs(
-                this.closestHit
-            ).toFixed(2)}ms${
+            let closestHitText: string = `Closest tap: ${
+                Number.isInteger(this.closestHit)
+                    ? Math.abs(this.closestHit)
+                    : Math.abs(this.closestHit).toFixed(2)
+            }ms${
                 this.closestHit > 0
                     ? " late"
                     : this.closestHit < 0
@@ -204,9 +206,11 @@ export class MissInformation {
                     ) - this.object.getRadius(modes.droid);
 
                 if (distanceToObject > 0) {
-                    closestHitText += `, ${distanceToObject.toFixed(
-                        2
-                    )} units off`;
+                    closestHitText += `, ${
+                        Number.isInteger(distanceToObject)
+                            ? distanceToObject
+                            : distanceToObject.toFixed(2)
+                    } units off`;
                 }
             }
 
@@ -234,10 +238,10 @@ export class MissInformation {
         );
         context.strokeRect(0, 0, scaledPlayfieldX, scaledPlayfieldY);
 
-        if (this.previousObject) {
-            this.drawObject(this.previousObject, "#606060");
+        for (const o of this.previousObjects) {
+            this.drawObject(o, "#606060", "#404040");
         }
-        this.drawObject(this.object, "#85501e");
+        this.drawObject(this.object, "#b32727", "#781a1a");
 
         if (this.cursorPosition) {
             // Draw the cursor position.
@@ -269,9 +273,14 @@ export class MissInformation {
      * Draws an object to the canvas.
      *
      * @param object The object to draw.
-     * @param color The color to draw the object with.
+     * @param fillColor The color to fill the object with.
+     * @param borderColor The color to fill the object border with.
      */
-    private drawObject(object: HitObject, color: string): void {
+    private drawObject(
+        object: HitObject,
+        fillColor: string,
+        borderColor: string
+    ): void {
         if (!this.canvas) {
             return;
         }
@@ -334,7 +343,7 @@ export class MissInformation {
 
             // Draw slider ticks.
             for (const nestedObject of object.nestedHitObjects) {
-                // Only draw for one span index.
+                // Only draw for one span.
                 if (nestedObject instanceof SliderRepeat) {
                     break;
                 }
@@ -364,13 +373,25 @@ export class MissInformation {
             }
         }
 
-        // Draw the circle or slider head.
-        context.fillStyle = color;
+        // Draw the border first, then fill with the circle color.
+        context.fillStyle = borderColor;
         context.beginPath();
         context.arc(
             objectDrawPosition.x,
             objectDrawPosition.y,
             scaledRadius,
+            0,
+            2 * Math.PI
+        );
+        context.fill();
+        context.closePath();
+
+        context.fillStyle = fillColor;
+        context.beginPath();
+        context.arc(
+            objectDrawPosition.x,
+            objectDrawPosition.y,
+            scaledRadius * 0.9,
             0,
             2 * Math.PI
         );

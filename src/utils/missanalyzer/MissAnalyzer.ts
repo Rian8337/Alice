@@ -52,6 +52,10 @@ export class MissAnalyzer {
      */
     private readonly isPrecise: boolean;
 
+    private get hitWindow50(): number {
+        return this.hitWindow.hitWindowFor50(this.isPrecise);
+    }
+
     /**
      * @param difficultyCalculator The difficulty calculator result of the replay.
      * @param data The data of the replay.
@@ -113,6 +117,22 @@ export class MissAnalyzer {
             cursorPosition?: Vector2,
             closestHit?: number
         ): MissInformation => {
+            const object: HitObject =
+                this.beatmap.hitObjects.objects[objectIndex];
+            const previousObjects: HitObject[] = [];
+
+            for (let i = objectIndex - 1; i >= 0; --i) {
+                const o: HitObject = this.beatmap.hitObjects.objects[i];
+                const timeDifference: number = object.startTime - o.startTime;
+
+                // An object's fade time is 400ms.
+                if (timeDifference >= this.approachRateTime + 400) {
+                    break;
+                }
+
+                previousObjects.push(o);
+            }
+
             return new MissInformation(
                 this.beatmap.metadata,
                 this.beatmap.hitObjects.objects[objectIndex],
@@ -123,9 +143,9 @@ export class MissAnalyzer {
                 verdict,
                 stats.speedMultiplier,
                 flipObjects,
+                previousObjects.reverse(),
                 cursorPosition,
-                closestHit,
-                this.beatmap.hitObjects.objects[objectIndex - 1]
+                closestHit
             );
         };
 
@@ -153,8 +173,9 @@ export class MissAnalyzer {
 
             // Find the cursor instance with the closest tap/drag occurrence to the object.
             let closestDistance: number = Number.POSITIVE_INFINITY;
-            let closestHit: number | undefined;
+            let closestHit: number = Number.POSITIVE_INFINITY;
             let closestCursorPosition: Vector2 | null = null;
+            let verdict: string | null = null;
 
             for (let j = 0; j < this.data.cursorMovement.length; ++j) {
                 const cursorOccurrenceInfo =
@@ -164,22 +185,19 @@ export class MissAnalyzer {
                     continue;
                 }
 
-                const distanceToObject: number =
-                    cursorOccurrenceInfo.position.getDistance(
-                        object.getStackedPosition(modes.droid)
-                    );
+                const distanceToObject: number = object
+                    .getStackedPosition(modes.droid)
+                    .getDistance(cursorOccurrenceInfo.position);
 
                 if (closestDistance > distanceToObject) {
                     closestDistance = distanceToObject;
                     closestCursorPosition = cursorOccurrenceInfo.position;
                     closestHit = cursorOccurrenceInfo.closestHit;
+                    verdict = cursorOccurrenceInfo.verdict;
                 }
             }
 
-            if (
-                closestCursorPosition === null ||
-                closestDistance === Number.POSITIVE_INFINITY
-            ) {
+            if (closestCursorPosition === null || verdict === null) {
                 missInformations.push(
                     createMissInformation(i, "Didn't try to hit")
                 );
@@ -187,37 +205,14 @@ export class MissAnalyzer {
                 continue;
             }
 
-            const distanceOutsideObject: number =
-                closestDistance - object.getRadius(modes.droid);
-
-            if (distanceOutsideObject <= 0) {
-                missInformations.push(
-                    createMissInformation(
-                        i,
-                        "Notelock",
-                        closestCursorPosition,
-                        closestHit
-                    )
-                );
-            } else if (distanceOutsideObject <= 50) {
-                missInformations.push(
-                    createMissInformation(
-                        i,
-                        "Misaim",
-                        closestCursorPosition,
-                        closestHit
-                    )
-                );
-            } else {
-                missInformations.push(
-                    createMissInformation(
-                        i,
-                        "Misaim/didn't try to hit",
-                        closestCursorPosition,
-                        closestHit
-                    )
-                );
-            }
+            missInformations.push(
+                createMissInformation(
+                    i,
+                    verdict,
+                    closestCursorPosition,
+                    closestHit
+                )
+            );
         }
 
         return missInformations;
@@ -234,11 +229,12 @@ export class MissAnalyzer {
     private getCursorOccurrenceClosestToObject(
         object: HitObject,
         cursorIndex: number
-    ): { position: Vector2; closestHit: number } | null {
+    ): { position: Vector2; closestHit: number; verdict: string } | null {
         const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
         let closestDistance: number = Number.POSITIVE_INFINITY;
+        let closestHit: number = Number.POSITIVE_INFINITY;
         let closestCursorPosition: Vector2 | null = null;
-        let closestHit: number = 0;
+        let verdict: string | null = null;
 
         for (let i = 0; i < cursorData.occurrences.length; ++i) {
             const occurrence: CursorOccurrence = cursorData.occurrences[i];
@@ -250,24 +246,20 @@ export class MissAnalyzer {
             const timeDifference: number = occurrence.time - object.startTime;
 
             // Only count cursor occurrences within an object's approach time or hit window.
-            if (timeDifference < -this.approachRateTime) {
+            // An object's fade time is 400ms.
+            if (timeDifference < -this.approachRateTime - 400) {
                 continue;
             }
 
-            if (
-                timeDifference > this.hitWindow.hitWindowFor50(this.isPrecise)
-            ) {
+            // Employ an additional 100ms window in case the player tapped too late.
+            if (timeDifference > this.hitWindow50 + 100) {
                 break;
             }
 
             const nextOccurrence: CursorOccurrence =
                 cursorData.occurrences[i + 1];
 
-            if (
-                occurrence.id === movementType.MOVE &&
-                // This is guaranteed to exist if the current occurrence is movementType.MOVE.
-                nextOccurrence.id === movementType.MOVE
-            ) {
+            if (nextOccurrence?.id === movementType.MOVE) {
                 // Check if other cursor instances have a tap occurrence within both occurrences' boundary.
                 for (let j = 0; j < this.data.cursorMovement.length; ++j) {
                     // Do not check the current cursor instance in loop.
@@ -280,22 +272,6 @@ export class MissAnalyzer {
                     for (const o of occurrences) {
                         if (o.id !== movementType.DOWN) {
                             continue;
-                        }
-
-                        if (
-                            o.time < occurrence.time ||
-                            o.time - object.startTime <
-                                -this.hitWindow.hitWindowFor50(this.isPrecise)
-                        ) {
-                            continue;
-                        }
-
-                        if (
-                            o.time > nextOccurrence.time ||
-                            o.time - object.startTime >
-                                this.hitWindow.hitWindowFor50(this.isPrecise)
-                        ) {
-                            break;
                         }
 
                         const t: number =
@@ -327,6 +303,8 @@ export class MissAnalyzer {
                     }
                 }
             } else {
+                // At this point, the next occurrence's move type is `movementType.UP`.
+                // This is because the current occurrence's move type will never be `movementType.UP`.
                 const distanceToObject: number = object
                     .getStackedPosition(modes.droid)
                     .getDistance(occurrence.position);
@@ -343,9 +321,26 @@ export class MissAnalyzer {
             return null;
         }
 
+        const distanceToObject: number = object
+            .getStackedPosition(modes.droid)
+            .getDistance(closestCursorPosition);
+
+        if (Math.abs(closestHit) < this.hitWindow50) {
+            if (distanceToObject <= object.getRadius(modes.droid)) {
+                verdict = "Notelock";
+            } else {
+                verdict = "Misaim";
+            }
+        } else if (closestHit < 0) {
+            verdict = "Tapped too early";
+        } else {
+            verdict = "Tapped too late";
+        }
+
         return {
             position: closestCursorPosition,
             closestHit: closestHit,
+            verdict: verdict,
         };
     }
 }
