@@ -11,6 +11,8 @@ export class RunContextMenuKRTranslation extends Translation<RunContextMenuStrin
         commandNotFound: "죄송해요, 그런 이름의 명령어를 찾지 못했어요.",
         maintenanceMode:
             "죄송해요, 전 다음 이유로 점검중이에요: `%s`. 나중에 다시 시도해 주세요!",
+        commandInCooldown:
+            "저기, 명령어를 천천히 사용해 주세요! 아시다시피, 저도 좀 쉬어야죠.",
         commandExecutionFailed: "명령어 실행 불가: %s",
     };
 }

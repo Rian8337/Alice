@@ -12,6 +12,8 @@ export class RunContextMenuESTranslation extends Translation<RunContextMenuStrin
             "Lo siento, no puedo encontrar el comando con ese nombre.",
         maintenanceMode:
             "Lo siento, me encuentro en mantenimiento con motivo de `%s`. Por favor, intenta de nuevo más tarde!",
+        commandInCooldown:
+            "Hey, tranquilo con los comandos! Necesito descansar no?",
         commandExecutionFailed: "No puedo ejecutar el comando: %s.",
     };
 }

@@ -11,6 +11,8 @@ export class RunContextMenuENTranslation extends Translation<RunContextMenuStrin
         commandNotFound: "I'm sorry, I cannot find the command with that name.",
         maintenanceMode:
             "I'm sorry, I'm currently under maintenance due to `%s`. Please try again later!",
+        commandInCooldown:
+            "Hey, calm down with the command! I need to rest too, you know.",
         commandExecutionFailed: "Unable to execute command: %s",
     };
 }

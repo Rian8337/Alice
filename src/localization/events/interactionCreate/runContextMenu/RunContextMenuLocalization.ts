@@ -8,6 +8,7 @@ export interface RunContextMenuStrings {
     readonly debugModeActive: string;
     readonly commandNotFound: string;
     readonly maintenanceMode: string;
+    readonly commandInCooldown: string;
     readonly commandExecutionFailed: string;
 }
 

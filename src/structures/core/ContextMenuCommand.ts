@@ -26,6 +26,11 @@ export interface ContextMenuCommand {
         readonly name: string;
 
         /**
+         * The cooldown of the command, in seconds.
+         */
+        readonly cooldown?: number;
+
+        /**
          * Whether to reply to this command execution in private (only the executor can see it).
          */
         readonly replyEphemeral?: boolean;

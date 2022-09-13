@@ -8,6 +8,8 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BaseInteraction } from "discord.js";
 import consola from "consola";
+import { GlobalCooldownKey } from "@alice-structures/core/CooldownKey";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (
     client,
@@ -63,6 +65,30 @@ export const run: EventUtil["run"] = async (
             ),
             ephemeral: true,
         });
+    }
+
+    // Command cooldown
+    if (!botOwnerExecution) {
+        const cooldownKey: GlobalCooldownKey = <GlobalCooldownKey>(
+            `${interaction.user.id}:${interaction.commandName}`
+        );
+
+        if (CommandHelper.isCooldownActive(cooldownKey)) {
+            return interaction.reply({
+                content: MessageCreator.createReject(
+                    localization.getTranslation("commandInCooldown")
+                ),
+                ephemeral: true,
+            });
+        }
+
+        CommandHelper.setCooldown(
+            cooldownKey,
+            Math.max(
+                command.config.cooldown ?? 0,
+                CommandUtilManager.globalCommandCooldown
+            )
+        );
     }
 
     // Log used command
