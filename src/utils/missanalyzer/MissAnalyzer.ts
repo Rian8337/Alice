@@ -120,6 +120,7 @@ export class MissAnalyzer {
             const object: HitObject =
                 this.beatmap.hitObjects.objects[objectIndex];
             const previousObjects: HitObject[] = [];
+            const previousHitResults: hitResult[] = [];
 
             for (let i = objectIndex - 1; i >= 0; --i) {
                 const o: HitObject = this.beatmap.hitObjects.objects[i];
@@ -131,6 +132,7 @@ export class MissAnalyzer {
                 }
 
                 previousObjects.push(o);
+                previousHitResults.push(this.data.hitObjectData[i].result);
             }
 
             return new MissInformation(
@@ -144,6 +146,7 @@ export class MissAnalyzer {
                 stats.speedMultiplier,
                 flipObjects,
                 previousObjects.reverse(),
+                previousHitResults.reverse(),
                 cursorPosition,
                 closestHit
             );

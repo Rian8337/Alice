@@ -8,7 +8,8 @@ import {
     Spinner,
     Vector2,
 } from "@rian8337/osu-base";
-import { Canvas, CanvasRenderingContext2D } from "canvas";
+import { hitResult } from "@rian8337/osu-droid-replay-analyzer";
+import { Canvas } from "canvas";
 
 /**
  * Represents an information about a miss.
@@ -70,9 +71,14 @@ export class MissInformation {
     readonly closestHit?: number;
 
     /**
-     * The object prior to the current object.
+     * The objects prior to the current object.
      */
     readonly previousObjects: HitObject[];
+
+    /**
+     * The hit results of past objects.
+     */
+    readonly previousHitResults: hitResult[];
 
     private canvas?: Canvas;
     private readonly playfieldScale: number = 0.75;
@@ -85,9 +91,11 @@ export class MissInformation {
      * @param totalMisses The amount of misses in the score.
      * @param verdict The verdict for the miss.
      * @param clockRate The rate at which the clock progress in the score.
+     * @param drawFlipped Whether to flip objects vertically before drawing them.
+     * @param previousObjects The objects prior to the current object.
+     * @param previousHitResults The hit results of past objects.
      * @param cursorPosition The cursor position at the closest hit to the object.
      * @param closestHit The closest hit to the object.
-     * @param previousObject The object prior to the current object.
      */
     constructor(
         metadata: BeatmapMetadata,
@@ -100,6 +108,7 @@ export class MissInformation {
         clockRate: number,
         drawFlipped: boolean,
         previousObjects: HitObject[],
+        previousHitResults: hitResult[],
         cursorPosition?: Vector2,
         closestHit?: number
     ) {
@@ -115,6 +124,7 @@ export class MissInformation {
         this.cursorPosition = cursorPosition;
         this.closestHit = closestHit;
         this.previousObjects = previousObjects;
+        this.previousHitResults = previousHitResults;
 
         if (this.closestHit) {
             this.closestHit /= clockRate;
@@ -236,12 +246,22 @@ export class MissInformation {
             (this.canvas.width - scaledPlayfieldX) / 2,
             115
         );
+        context.lineWidth = 3;
         context.strokeRect(0, 0, scaledPlayfieldX, scaledPlayfieldY);
+        context.lineWidth = 1;
 
-        for (const o of this.previousObjects) {
-            this.drawObject(o, "#606060", "#404040");
+        for (let i = 0; i < this.previousObjects.length; ++i) {
+            this.drawObject(
+                this.previousObjects[i],
+                this.previousHitResults[i],
+                i + 1
+            );
         }
-        this.drawObject(this.object, "#b32727", "#781a1a");
+        this.drawObject(
+            this.object,
+            hitResult.RESULT_0,
+            this.previousObjects.length + 1
+        );
 
         if (this.cursorPosition) {
             // Draw the cursor position.
@@ -249,17 +269,21 @@ export class MissInformation {
                 this.cursorPosition.scale(this.playfieldScale)
             );
 
-            context.fillStyle = "#5676f5";
+            const gradient: CanvasGradient = context.createRadialGradient(
+                drawPosition.x,
+                drawPosition.y,
+                0,
+                drawPosition.x,
+                drawPosition.y,
+                10
+            );
+
+            gradient.addColorStop(0, "#ffffff");
+            gradient.addColorStop(1, "#9e3fe8");
+
+            context.fillStyle = gradient;
             context.beginPath();
             context.arc(drawPosition.x, drawPosition.y, 10, 0, 2 * Math.PI);
-            context.fill();
-            context.closePath();
-
-            // Make the middle part lighter.
-            context.globalCompositeOperation = "lighter";
-            context.fillStyle = "#ffffff";
-            context.beginPath();
-            context.arc(drawPosition.x, drawPosition.y, 5, 0, 2 * Math.PI);
             context.fill();
             context.closePath();
         }
@@ -273,13 +297,13 @@ export class MissInformation {
      * Draws an object to the canvas.
      *
      * @param object The object to draw.
-     * @param fillColor The color to fill the object with.
-     * @param borderColor The color to fill the object border with.
+     * @param objectHitResult The hit result of the object. This will determine the color of the object.
+     * @param objectIndex The index of the object.
      */
     private drawObject(
         object: HitObject,
-        fillColor: string,
-        borderColor: string
+        objectHitResult: hitResult,
+        objectIndex: number
     ): void {
         if (!this.canvas) {
             return;
@@ -288,6 +312,34 @@ export class MissInformation {
         // Only draw if the object is not a spinner.
         if (object instanceof Spinner) {
             return;
+        }
+
+        // Determine colors from hit result.
+        let fillColor: string;
+        let borderColor: string;
+        let sliderPathColor: string;
+
+        switch (objectHitResult) {
+            case hitResult.RESULT_300:
+                fillColor = "#326ed9";
+                borderColor = "#2b59ab";
+                sliderPathColor = "#467ee0";
+                break;
+            case hitResult.RESULT_100:
+                fillColor = "#40bd48";
+                borderColor = "#38a83f";
+                sliderPathColor = "#4deb57";
+                break;
+            case hitResult.RESULT_50:
+                fillColor = "#c9913c";
+                borderColor = "#c98318";
+                sliderPathColor = "#de9f40";
+                break;
+            case hitResult.RESULT_0:
+                fillColor = "#e63c3c";
+                borderColor = "#bf2121";
+                sliderPathColor = "#eb4d4d";
+                break;
         }
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
@@ -312,7 +364,7 @@ export class MissInformation {
                 );
 
                 // Path circle
-                context.fillStyle = "#808080";
+                context.fillStyle = sliderPathColor;
                 context.beginPath();
                 context.arc(
                     drawPosition.x,
@@ -325,8 +377,8 @@ export class MissInformation {
                 context.closePath();
 
                 // Only draw path direction if the path is long enough.
-                if (object.path.expectedDistance > 300) {
-                    context.fillStyle = "#707070";
+                if (object.path.expectedDistance > 100) {
+                    context.fillStyle = "#606060";
                     context.beginPath();
                     context.arc(
                         drawPosition.x,
@@ -397,6 +449,17 @@ export class MissInformation {
         );
         context.fill();
         context.closePath();
+
+        // Finally, draw the index of the object.
+        context.fillStyle = "#000000";
+        context.font = `bold ${Math.ceil(scaledRadius)}px Exo`;
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(
+            objectIndex.toString(),
+            objectDrawPosition.x,
+            objectDrawPosition.y
+        );
     }
 
     /**
