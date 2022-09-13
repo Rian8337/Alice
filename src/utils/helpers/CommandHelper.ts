@@ -543,6 +543,10 @@ export abstract class CommandHelper extends Manager {
         key: ChannelCooldownKey | GlobalCooldownKey,
         cooldown: number
     ): void {
+        if (cooldown === 0) {
+            return;
+        }
+
         CacheManager.activeCommandCooldowns.add(key);
 
         setTimeout(() => {
