@@ -24,6 +24,7 @@ import {
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CompareLocalization = new CompareLocalization(
@@ -95,9 +96,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             if (!bindInfo) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        discordid
-                            ? Constants.userNotBindedReject
-                            : Constants.selfNotBindedReject
+                        new ConstantsLocalization(
+                            localization.language
+                        ).getTranslation(
+                            discordid
+                                ? Constants.userNotBindedReject
+                                : Constants.selfNotBindedReject
+                        )
                     ),
                 });
             }
