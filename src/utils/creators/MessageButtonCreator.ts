@@ -284,7 +284,11 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                     this.createButtonBasedPaging(
                         pressed,
-                        {},
+                        {
+                            content: MessageCreator.createWarn(
+                                "This feature is still beta. Expect wrong verdicts."
+                            ),
+                        },
                         [interaction.user.id],
                         1,
                         60,
