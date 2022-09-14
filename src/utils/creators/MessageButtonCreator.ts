@@ -273,16 +273,20 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     const missInformations: MissInformation[] =
                         missAnalyzer.analyze();
 
-                    const onPageChange: OnButtonPageChange = async (o, page) => {
-                        const attachment: AttachmentBuilder = new AttachmentBuilder(
-                            missInformations[page - 1].draw().toBuffer(),
-                            { name: `miss-${page + 1}.png` }
-                        );
+                    const onPageChange: OnButtonPageChange = async (
+                        o,
+                        page
+                    ) => {
+                        const attachment: AttachmentBuilder =
+                            new AttachmentBuilder(
+                                missInformations[page - 1].draw().toBuffer(),
+                                { name: `miss-${page + 1}.png` }
+                            );
 
                         o.files = [attachment];
                     };
 
-                    this.createButtonBasedPaging(
+                    this.createLimitedButtonBasedPaging(
                         pressed,
                         {
                             content: MessageCreator.createWarn(
@@ -291,9 +295,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         },
                         [interaction.user.id],
                         1,
+                        missInformations.length,
                         60,
-                        onPageChange,
-                        missInformations.length
+                        onPageChange
                     );
                 }
 
@@ -308,7 +312,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         v.components[0] instanceof ButtonBuilder &&
                         (<APIButtonComponentWithCustomId>v.components[0].data)
                             .custom_id ===
-                            (<APIButtonComponentWithCustomId>button.data).custom_id
+                            (<APIButtonComponentWithCustomId>button.data)
+                                .custom_id
                     );
                 });
 
@@ -319,8 +324,14 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 if (!c.componentIsDeleted) {
                     try {
                         interaction.isMessageComponent()
-                            ? await InteractionHelper.update(interaction, options)
-                            : await InteractionHelper.reply(interaction, options);
+                            ? await InteractionHelper.update(
+                                  interaction,
+                                  options
+                              )
+                            : await InteractionHelper.reply(
+                                  interaction,
+                                  options
+                              );
                         // eslint-disable-next-line no-empty
                     } catch {}
                 }
@@ -463,20 +474,12 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             maxPage
         );
 
-        const component: ActionRowBuilder<ButtonBuilder> =
-            new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
-
-        if (maxPage !== 1) {
-            options.components ??= [];
-            options.components.push(component);
-        }
-
         await onPageChange(options, startPage, ...onPageChangeArgs);
 
         return this.createLimitedTimeButtons(
             interaction,
             options,
-            maxPage > 1 ? this.createPagingButtons(currentPage, maxPage) : [],
+            maxPage > 1 ? buttons : [],
             users,
             duration,
             async (_, i) => {
@@ -507,9 +510,33 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         return;
                 }
 
-                component.setComponents(
-                    this.createPagingButtons(currentPage, maxPage)
-                );
+                const row:
+                    | APIActionRowComponent<APIMessageActionRowComponent>
+                    | undefined = <
+                    | APIActionRowComponent<APIMessageActionRowComponent>
+                    | undefined
+                >options.components?.find((c) => {
+                    c = <APIActionRowComponent<APIMessageActionRowComponent>>c;
+
+                    return (
+                        c.components.length === buttons.length &&
+                        c.components.every(
+                            (b, i) =>
+                                b instanceof ButtonComponent &&
+                                b.customId ===
+                                    (<APIButtonComponentWithCustomId>(
+                                        buttons[i].data
+                                    )).custom_id
+                        )
+                    );
+                });
+
+                if (row) {
+                    row.components = this.createPagingButtons(
+                        currentPage,
+                        maxPage
+                    ).map((v) => v.toJSON());
+                }
 
                 if (options.embeds) {
                     for (let i = 0; i < options.embeds.length; ++i) {
