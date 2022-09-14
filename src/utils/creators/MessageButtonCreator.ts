@@ -12,8 +12,6 @@ import {
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
-    ActionRow,
-    MessageActionRowComponent,
     APIButtonComponentWithCustomId,
     ButtonComponent,
     APIActionRowComponent,
@@ -29,6 +27,8 @@ import { DroidDifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
 import { DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { ReplayData } from "@rian8337/osu-droid-replay-analyzer";
 import { MissInformation } from "@alice-utils/missanalyzer/MissInformation";
+import { OnButtonPressed } from "@alice-structures/utils/OnButtonPressed";
+import { OnCollectorEndButtonRemover } from "@alice-structures/utils/OnCollectorEndButtonRemover";
 
 /**
  * A utility to create message buttons.
@@ -47,7 +47,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param duration The duration the button-based paging will be active, in seconds.
      * @param onPageChange The function to be executed when the page is changed.
      * @param onPageChangeArgs Arguments for `onPageChange` function.
-     * @returns The collector that collects the button-pressing event.
+     * @returns The message resulted from the interaction's reply.
      */
     static createLimitedButtonBasedPaging(
         interaction: RepliableInteraction,
@@ -81,7 +81,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param duration The duration the button-based paging will be active, in seconds.
      * @param onPageChange The function to be executed when the page is changed.
      * @param onPageChangeArgs Arguments for `onPageChange` function.
-     * @returns The collector that collects the button-pressing event.
+     * @returns The message resulted from the interaction's reply.
      */
     static createLimitlessButtonBasedPaging(
         interaction: RepliableInteraction,
@@ -114,7 +114,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param language The locale of the user who attempted to create the confirmation interaction. Defaults to English.
      * @returns A boolean determining whether the user confirmed.
      */
-    static async createConfirmation(
+    static createConfirmation(
         interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         users: Snowflake[],
@@ -126,15 +126,249 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
         const buttons: ButtonBuilder[] = this.createConfirmationButtons();
 
-        const component: ActionRowBuilder<ButtonBuilder> =
-            new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
+        return new Promise((resolve) =>
+            this.createLimitedTimeButtons(
+                interaction,
+                options,
+                buttons,
+                users,
+                duration,
+                async (c, i) => {
+                    await i.deferUpdate();
+
+                    c.stop();
+                },
+                async (c) => {
+                    const pressed: ButtonInteraction | undefined =
+                        c.collector.collected.first();
+
+                    if (pressed) {
+                        if (pressed.customId === "yes") {
+                            interaction.isMessageComponent()
+                                ? await InteractionHelper.update(interaction, {
+                                      content:
+                                          MessageCreator.createPrefixedMessage(
+                                              localization.getTranslation(
+                                                  "pleaseWait"
+                                              ),
+                                              Symbols.timer
+                                          ),
+                                  })
+                                : await InteractionHelper.reply(interaction, {
+                                      content:
+                                          MessageCreator.createPrefixedMessage(
+                                              localization.getTranslation(
+                                                  "pleaseWait"
+                                              ),
+                                              Symbols.timer
+                                          ),
+                                  });
+                        } else {
+                            interaction.isMessageComponent()
+                                ? await InteractionHelper.update(interaction, {
+                                      content: MessageCreator.createReject(
+                                          localization.getTranslation(
+                                              "actionCancelled"
+                                          )
+                                      ),
+                                  })
+                                : await InteractionHelper.reply(interaction, {
+                                      content: MessageCreator.createReject(
+                                          localization.getTranslation(
+                                              "actionCancelled"
+                                          )
+                                      ),
+                                  });
+
+                            if (!interaction.ephemeral) {
+                                setTimeout(() => {
+                                    interaction.deleteReply();
+                                }, 5 * 1000);
+                            }
+                        }
+
+                        const index: number = (<
+                            APIActionRowComponent<APIMessageActionRowComponent>[]
+                        >options.components).findIndex((v) => {
+                            return (
+                                v.components.length === buttons.length &&
+                                v.components.every(
+                                    (c, i) =>
+                                        c instanceof ButtonComponent &&
+                                        c.customId ===
+                                            (<APIButtonComponentWithCustomId>(
+                                                buttons[i].data
+                                            )).custom_id
+                                )
+                            );
+                        });
+
+                        if (index !== -1) {
+                            options.components!.splice(index, 1);
+                        }
+                    } else {
+                        await InteractionHelper.reply(interaction, {
+                            content: MessageCreator.createReject(
+                                localization.getTranslation("timedOut")
+                            ),
+                            components: [],
+                        });
+
+                        if (!interaction.ephemeral) {
+                            setTimeout(() => {
+                                interaction.deleteReply();
+                            }, 5 * 1000);
+                        }
+                    }
+
+                    resolve(pressed?.customId === "yes");
+                }
+            )
+        );
+    }
+
+    /**
+     * Creates a miss analyzer button.
+     *
+     * @param interaction The interaction that triggered the button.
+     * @param options Options of the message.
+     * @param difficultyCalculator The difficulty calculator instance.
+     * @param replayData The replay data.
+     * @returns The message resulted from the interaction's reply.
+     */
+    static createMissAnalyzerButton(
+        interaction: RepliableInteraction,
+        options: InteractionReplyOptions,
+        difficultyCalculator:
+            | DroidDifficultyCalculator
+            | RebalanceDroidDifficultyCalculator,
+        replayData: ReplayData
+    ): Promise<Message> {
+        const button: ButtonBuilder = new ButtonBuilder()
+            .setCustomId("analyze-miss")
+            .setLabel("Analyze Misses (Beta)")
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji(Symbols.magnifyingGlassTiltedRight);
+
+        return this.createLimitedTimeButtons(
+            interaction,
+            options,
+            [button],
+            [interaction.user.id],
+            60,
+            async (c, i) => {
+                await i.deferReply();
+
+                c.stop();
+            },
+            async (c) => {
+                const pressed: ButtonInteraction | undefined =
+                    c.collector.collected.first();
+
+                if (pressed) {
+                    const missAnalyzer: MissAnalyzer = new MissAnalyzer(
+                        difficultyCalculator,
+                        replayData
+                    );
+                    const missInformations: MissInformation[] =
+                        missAnalyzer.analyze();
+
+                    const onPageChange: OnButtonPageChange = async (o, page) => {
+                        const attachment: AttachmentBuilder = new AttachmentBuilder(
+                            missInformations[page - 1].draw().toBuffer(),
+                            { name: `miss-${page + 1}.png` }
+                        );
+
+                        o.files = [attachment];
+                    };
+
+                    this.createButtonBasedPaging(
+                        pressed,
+                        {},
+                        [interaction.user.id],
+                        1,
+                        60,
+                        onPageChange,
+                        missInformations.length
+                    );
+                }
+
+                const index: number = (<
+                    APIActionRowComponent<APIMessageActionRowComponent>[]
+                >options.components).findIndex((v) => {
+                    if (v.components.length !== 1) {
+                        return;
+                    }
+
+                    return (
+                        v.components[0] instanceof ButtonBuilder &&
+                        (<APIButtonComponentWithCustomId>v.components[0].data)
+                            .custom_id ===
+                            (<APIButtonComponentWithCustomId>button.data).custom_id
+                    );
+                });
+
+                if (index !== -1) {
+                    options.components!.splice(index, 1);
+                }
+
+                if (!c.componentIsDeleted) {
+                    try {
+                        interaction.isMessageComponent()
+                            ? await InteractionHelper.update(interaction, options)
+                            : await InteractionHelper.reply(interaction, options);
+                        // eslint-disable-next-line no-empty
+                    } catch {}
+                }
+            }
+        );
+    }
+
+    /**
+     * Creates a button collector that lasts for the specified duration.
+     *
+     * After the duration ends, it is recommended to remove or disable necessary components
+     * via {@link onCollectorEndButtonRemover}.
+     *
+     * @param interaction The interaction that triggered the button collector.
+     * @param options Options for the message.
+     * @param buttons The buttons to display.
+     * @param users The users who can interact with the buttons.
+     * @param duration The duration the collector will remain active, in seconds.
+     * @param onButtonPressedListener The function that will be run when a button is pressed.
+     * @param onCollectorEndButtonRemover The function that will be run when the collector ends.
+     * This function should remove or disable necessary components.
+     * @returns The message resulted from the interaction's reply.
+     */
+    static async createLimitedTimeButtons(
+        interaction: RepliableInteraction,
+        options: InteractionReplyOptions,
+        buttons: ButtonBuilder[],
+        users: Snowflake[],
+        duration: number,
+        onButtonPressedListener: OnButtonPressed,
+        onCollectorEndButtonRemover: OnCollectorEndButtonRemover
+    ): Promise<Message> {
+        const components: ActionRowBuilder<ButtonBuilder>[] = [];
+
+        for (let i = 0; i < buttons.length; ++i) {
+            if (i % 5 === 0) {
+                components.push(new ActionRowBuilder());
+            }
+
+            components[components.length - 1].addComponents(buttons[i]);
+        }
 
         options.components ??= [];
-        options.components.push(component);
+        options.components.push(...components);
 
         const message: Message = interaction.isMessageComponent()
             ? await InteractionHelper.update(interaction, options)
             : await InteractionHelper.reply(interaction, options);
+
+        if (buttons.length === 0) {
+            return message;
+        }
 
         const collectorOptions = this.createButtonCollector(
             message,
@@ -146,83 +380,19 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         i.customId
                 ) && users.includes(i.user.id),
             (m) => {
-                const row: ActionRow<MessageActionRowComponent> | undefined =
-                    m.components.find(
-                        (c) => c.components.length === buttons.length
-                    );
+                for (const component of components) {
+                    let isFulfilled: boolean = false;
 
-                if (!row) {
-                    return false;
-                }
-
-                return row.components.every(
-                    (c, i) =>
-                        c instanceof ButtonComponent &&
-                        c.customId ===
-                            (<APIButtonComponentWithCustomId>buttons[i].data)
-                                .custom_id
-                );
-            }
-        );
-
-        const { collector } = collectorOptions;
-
-        collector.once("collect", async (i) => {
-            await i.deferUpdate();
-
-            collector.stop();
-        });
-
-        return new Promise((resolve) => {
-            collector.once("end", async (collected) => {
-                const pressed: ButtonInteraction | undefined =
-                    collected.first();
-
-                if (pressed) {
-                    if (pressed.customId === "yes") {
-                        interaction.isMessageComponent()
-                            ? await InteractionHelper.update(interaction, {
-                                  content: MessageCreator.createPrefixedMessage(
-                                      localization.getTranslation("pleaseWait"),
-                                      Symbols.timer
-                                  ),
-                              })
-                            : await InteractionHelper.reply(interaction, {
-                                  content: MessageCreator.createPrefixedMessage(
-                                      localization.getTranslation("pleaseWait"),
-                                      Symbols.timer
-                                  ),
-                              });
-                    } else {
-                        interaction.isMessageComponent()
-                            ? await InteractionHelper.update(interaction, {
-                                  content: MessageCreator.createReject(
-                                      localization.getTranslation(
-                                          "actionCancelled"
-                                      )
-                                  ),
-                              })
-                            : await InteractionHelper.reply(interaction, {
-                                  content: MessageCreator.createReject(
-                                      localization.getTranslation(
-                                          "actionCancelled"
-                                      )
-                                  ),
-                              });
-
-                        if (!interaction.ephemeral) {
-                            setTimeout(() => {
-                                interaction.deleteReply();
-                            }, 5 * 1000);
+                    for (const row of m.components) {
+                        if (
+                            component.components.length !==
+                            row.components.length
+                        ) {
+                            continue;
                         }
-                    }
 
-                    const index: number = (<
-                        APIActionRowComponent<APIMessageActionRowComponent>[]
-                    >options.components).findIndex((v) => {
-                        return (
-                            v.components.length === buttons.length &&
-                            v.components.every(
+                        if (
+                            row.components.every(
                                 (c, i) =>
                                     c instanceof ButtonComponent &&
                                     c.customId ===
@@ -230,153 +400,31 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                                             buttons[i].data
                                         )).custom_id
                             )
-                        );
-                    });
-
-                    if (index !== -1) {
-                        options.components!.splice(index, 1);
+                        ) {
+                            isFulfilled = true;
+                            break;
+                        }
                     }
-                } else {
-                    await InteractionHelper.reply(interaction, {
-                        content: MessageCreator.createReject(
-                            localization.getTranslation("timedOut")
-                        ),
-                        components: [],
-                    });
 
-                    if (!interaction.ephemeral) {
-                        setTimeout(() => {
-                            interaction.deleteReply();
-                        }, 5 * 1000);
+                    if (!isFulfilled) {
+                        return false;
                     }
                 }
 
-                resolve(collected.first()?.customId === "yes");
-            });
-        });
-    }
-
-    /**
-     * Creates a miss analyzer button.
-     *
-     * @param interaction The interaction that triggered the button.
-     * @param options Options of the message.
-     * @param difficultyCalculator The difficulty calculator instance.
-     * @param replayData The replay data.
-     */
-    static async createMissAnalyzerButton(
-        interaction: RepliableInteraction,
-        options: InteractionReplyOptions,
-        difficultyCalculator:
-            | DroidDifficultyCalculator
-            | RebalanceDroidDifficultyCalculator,
-        replayData: ReplayData
-    ): Promise<void> {
-        // TODO: extract limited time button logic to a separate method
-        const button: ButtonBuilder = new ButtonBuilder()
-            .setCustomId("analyze-miss")
-            .setLabel("Analyze Misses (Beta)")
-            .setStyle(ButtonStyle.Primary)
-            .setEmoji(Symbols.magnifyingGlassTiltedRight);
-
-        const component: ActionRowBuilder<ButtonBuilder> =
-            new ActionRowBuilder<ButtonBuilder>().addComponents(button);
-
-        options.components ??= [];
-        options.components.push(component);
-
-        const message: Message = interaction.isMessageComponent()
-            ? await InteractionHelper.update(interaction, options)
-            : await InteractionHelper.reply(interaction, options);
-
-        const collectorOptions = this.createButtonCollector(
-            message,
-            60,
-            (i) =>
-                (<APIButtonComponentWithCustomId>button.data).custom_id ===
-                    i.customId && interaction.user.id === i.user.id,
-            (m) => {
-                const row: ActionRow<MessageActionRowComponent> | undefined =
-                    m.components.find((c) => c.components.length === 1);
-
-                if (!row) {
-                    return false;
-                }
-
-                return (
-                    (<APIButtonComponentWithCustomId>button.data).custom_id ===
-                    row.components[0].customId
-                );
+                return true;
             }
         );
 
         const { collector } = collectorOptions;
 
-        collector.once("collect", async (i) => {
-            await i.deferReply();
+        collector.on("collect", (i) =>
+            onButtonPressedListener(collector, i, options)
+        );
+        collector.once("end", () =>
+            onCollectorEndButtonRemover(collectorOptions, options)
+        );
 
-            collector.stop();
-        });
-
-        collector.once("end", async (collected) => {
-            const pressed: ButtonInteraction | undefined = collected.first();
-
-            if (pressed) {
-                const missAnalyzer: MissAnalyzer = new MissAnalyzer(
-                    difficultyCalculator,
-                    replayData
-                );
-                const missInformations: MissInformation[] =
-                    missAnalyzer.analyze();
-
-                const onPageChange: OnButtonPageChange = async (o, page) => {
-                    const attachment: AttachmentBuilder = new AttachmentBuilder(
-                        missInformations[page - 1].draw().toBuffer(),
-                        { name: `miss-${page + 1}.png` }
-                    );
-
-                    o.files = [attachment];
-                };
-
-                this.createButtonBasedPaging(
-                    pressed,
-                    {},
-                    [interaction.user.id],
-                    1,
-                    60,
-                    onPageChange,
-                    missInformations.length
-                );
-            }
-
-            const index: number = (<
-                APIActionRowComponent<APIMessageActionRowComponent>[]
-            >options.components).findIndex((v) => {
-                if (v.components.length !== 1) {
-                    return;
-                }
-
-                return (
-                    v.components[0] instanceof ButtonBuilder &&
-                    (<APIButtonComponentWithCustomId>v.components[0].data)
-                        .custom_id ===
-                        (<APIButtonComponentWithCustomId>button.data).custom_id
-                );
-            });
-
-            if (index !== -1) {
-                options.components!.splice(index, 1);
-            }
-
-            if (!collectorOptions.componentIsDeleted) {
-                try {
-                    interaction.isMessageComponent()
-                        ? await InteractionHelper.update(interaction, options)
-                        : await InteractionHelper.reply(interaction, options);
-                    // eslint-disable-next-line no-empty
-                } catch {}
-            }
-        });
+        return message;
     }
 
     /**
@@ -419,138 +467,105 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             options.components.push(component);
         }
 
-        /**
-         * Edits paging embed if the page button uses an embed to display contents to the user.
-         */
-        function onPageChangeEmbedEdit(): void {
-            if (options.embeds) {
-                for (let i = 0; i < options.embeds.length; ++i) {
-                    const embed = options.embeds[i];
-
-                    let data: APIEmbed;
-
-                    if (isJSONEncodable(embed)) {
-                        data = embed.toJSON();
-                    } else {
-                        data = embed;
-                    }
-
-                    if (data.fields) {
-                        data.fields.length = 0;
-                    }
-                }
-            }
-        }
-
         await onPageChange(options, startPage, ...onPageChangeArgs);
 
-        const message: Message = interaction.isMessageComponent()
-            ? await InteractionHelper.update(interaction, options)
-            : await InteractionHelper.reply(interaction, options);
-
-        if (maxPage === 1) {
-            return message;
-        }
-
-        const collectorOptions = this.createButtonCollector(
-            message,
+        return this.createLimitedTimeButtons(
+            interaction,
+            options,
+            maxPage > 1 ? this.createPagingButtons(currentPage, maxPage) : [],
+            users,
             duration,
-            (i) =>
-                buttons.some(
-                    (b) =>
-                        (<APIButtonComponentWithCustomId>b.data).custom_id ===
-                        i.customId
-                ) && users.includes(i.user.id),
-            (m) => {
-                const row: ActionRow<MessageActionRowComponent> | undefined =
-                    m.components.find(
-                        (c) => c.components.length === buttons.length
-                    );
+            async (_, i) => {
+                await i.deferUpdate();
 
-                if (!row) {
-                    return false;
+                switch (i.customId) {
+                    case "backward":
+                        currentPage = Math.max(1, currentPage - 10);
+                        break;
+                    case "back":
+                        if (currentPage === 1) {
+                            currentPage = maxPage;
+                        } else {
+                            --currentPage;
+                        }
+                        break;
+                    case "next":
+                        if (currentPage === maxPage) {
+                            currentPage = 1;
+                        } else {
+                            ++currentPage;
+                        }
+                        break;
+                    case "forward":
+                        currentPage = Math.min(currentPage + 10, maxPage);
+                        break;
+                    default:
+                        return;
                 }
 
-                return row.components.every(
-                    (c, i) =>
-                        c.customId ===
-                        (<APIButtonComponentWithCustomId>buttons[i].data)
-                            .custom_id
+                component.setComponents(
+                    this.createPagingButtons(currentPage, maxPage)
                 );
+
+                if (options.embeds) {
+                    for (let i = 0; i < options.embeds.length; ++i) {
+                        const embed = options.embeds[i];
+
+                        let data: APIEmbed;
+
+                        if (isJSONEncodable(embed)) {
+                            data = embed.toJSON();
+                        } else {
+                            data = embed;
+                        }
+
+                        if (data.fields) {
+                            data.fields.length = 0;
+                        }
+                    }
+                }
+
+                await onPageChange(options, currentPage, ...onPageChangeArgs);
+
+                await i.editReply(options);
+            },
+            async (c) => {
+                const index: number = (<
+                    APIActionRowComponent<APIMessageActionRowComponent>[]
+                >options.components).findIndex((v) => {
+                    return (
+                        v.components.length === buttons.length &&
+                        v.components.every(
+                            (c, i) =>
+                                c instanceof ButtonComponent &&
+                                c.customId ===
+                                    (<APIButtonComponentWithCustomId>(
+                                        buttons[i].data
+                                    )).custom_id
+                        )
+                    );
+                });
+
+                if (index !== -1) {
+                    options.components!.splice(index, 1);
+                }
+
+                if (!c.componentIsDeleted) {
+                    try {
+                        interaction.isMessageComponent()
+                            ? await InteractionHelper.update(
+                                  interaction,
+                                  options
+                              )
+                            : await InteractionHelper.reply(
+                                  interaction,
+                                  options
+                              );
+                        // eslint-disable-next-line no-empty
+                    } catch {}
+                }
             }
         );
-
-        collectorOptions.collector.on("collect", async (i) => {
-            await i.deferUpdate();
-
-            switch (i.customId) {
-                case "backward":
-                    currentPage = Math.max(1, currentPage - 10);
-                    break;
-                case "back":
-                    if (currentPage === 1) {
-                        currentPage = maxPage;
-                    } else {
-                        --currentPage;
-                    }
-                    break;
-                case "next":
-                    if (currentPage === maxPage) {
-                        currentPage = 1;
-                    } else {
-                        ++currentPage;
-                    }
-                    break;
-                case "forward":
-                    currentPage = Math.min(currentPage + 10, maxPage);
-                    break;
-                default:
-                    return;
-            }
-
-            component.setComponents(
-                this.createPagingButtons(currentPage, maxPage)
-            );
-
-            onPageChangeEmbedEdit();
-
-            await onPageChange(options, currentPage, ...onPageChangeArgs);
-
-            await i.editReply(options);
-        });
-
-        collectorOptions.collector.once("end", async () => {
-            const index: number = (<
-                APIActionRowComponent<APIMessageActionRowComponent>[]
-            >options.components).findIndex((v) => {
-                return (
-                    v.components.length === buttons.length &&
-                    v.components.every(
-                        (c, i) =>
-                            c instanceof ButtonComponent &&
-                            c.customId ===
-                                (<APIButtonComponentWithCustomId>(
-                                    buttons[i].data
-                                )).custom_id
-                    )
-                );
-            });
-
-            if (index !== -1) {
-                options.components!.splice(index, 1);
-            }
-
-            if (!collectorOptions.componentIsDeleted) {
-                try {
-                    interaction.isMessageComponent()
-                        ? await InteractionHelper.update(interaction, options)
-                        : await InteractionHelper.reply(interaction, options);
-                    // eslint-disable-next-line no-empty
-                } catch {}
-            }
-        });
-
-        return message;
     }
 
     /**

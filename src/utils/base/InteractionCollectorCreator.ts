@@ -1,6 +1,8 @@
+import { CollectorState } from "@alice-structures/utils/CollectorState";
 import {
     ButtonInteraction,
     CacheType,
+    CollectedInteraction,
     CollectorFilter,
     ComponentType,
     InteractionCollector,
@@ -28,10 +30,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         duration: number,
         filter?: CollectorFilter<[ButtonInteraction<CacheType>]>,
         componentAvailabilityListener?: (message: Message) => boolean
-    ): {
-        readonly collector: InteractionCollector<ButtonInteraction>;
-        readonly componentIsDeleted: boolean;
-    } {
+    ): CollectorState<ButtonInteraction> {
         const collector: InteractionCollector<ButtonInteraction> =
             message.createMessageComponentCollector({
                 filter: (i) => i.isButton() && (filter?.(i) ?? true),
@@ -72,10 +71,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         duration: number,
         filter?: CollectorFilter<[SelectMenuInteraction<CacheType>]>,
         componentAvailabilityListener?: (message: Message) => boolean
-    ): {
-        readonly collector: InteractionCollector<SelectMenuInteraction>;
-        readonly componentIsDeleted: boolean;
-    } {
+    ): CollectorState<SelectMenuInteraction> {
         const collector: InteractionCollector<SelectMenuInteraction> =
             message.createMessageComponentCollector({
                 filter: (i) => i.isSelectMenu() && (filter?.(i) ?? true),
@@ -105,13 +101,10 @@ export abstract class InteractionCollectorCreator extends Manager {
      * @param options Collector options.
      * @param listener The listener.
      */
-    private static attachComponentAvailabilityListener(
-        options: {
-            readonly collector:
-                | InteractionCollector<ButtonInteraction>
-                | InteractionCollector<SelectMenuInteraction>;
-            componentIsDeleted: boolean;
-        },
+    private static attachComponentAvailabilityListener<
+        T extends CollectedInteraction
+    >(
+        options: CollectorState<T>,
         listener: (message: Message) => boolean
     ): void {
         const { collector } = options;
