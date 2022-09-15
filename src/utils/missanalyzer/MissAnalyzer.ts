@@ -153,7 +153,10 @@ export class MissAnalyzer {
         };
 
         for (let i = 0; i < this.data.hitObjectData.length; ++i) {
-            if (missIndex === missLimit) {
+            if (
+                missIndex === missLimit ||
+                missIndex === this.data.accuracy.nmiss
+            ) {
                 break;
             }
 
