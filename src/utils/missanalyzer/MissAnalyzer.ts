@@ -239,83 +239,97 @@ export class MissAnalyzer {
         let closestCursorPosition: Vector2 | null = null;
         let verdict: string | null = null;
 
-        for (let i = 0; i < cursorData.occurrences.length; ++i) {
-            const occurrence: CursorOccurrence = cursorData.occurrences[i];
+        // Only count cursor occurrence groups within an object's approach time or hit window.
+        // An object's fade time is 400ms.
+        const objectTappableStartTime: number =
+            object.startTime - this.approachRateTime - 400;
+        // Employ an additional 100ms window in case the player tapped too late.
+        const maxAllowableTapTime: number =
+            object.startTime + this.hitWindow50 + 100;
 
-            if (occurrence.id === movementType.UP) {
+        for (const group of cursorData.occurrenceGroups) {
+            if (group.startTime < objectTappableStartTime) {
                 continue;
             }
 
-            const timeDifference: number = occurrence.time - object.startTime;
-
-            // Only count cursor occurrences within an object's approach time or hit window.
-            // An object's fade time is 400ms.
-            if (timeDifference < -this.approachRateTime - 400) {
-                continue;
-            }
-
-            // Employ an additional 100ms window in case the player tapped too late.
-            if (timeDifference > this.hitWindow50 + 100) {
+            if (group.startTime > maxAllowableTapTime) {
                 break;
             }
 
-            const nextOccurrence: CursorOccurrence =
-                cursorData.occurrences[i + 1];
+            const { allOccurrences } = group;
 
-            if (nextOccurrence?.id === movementType.MOVE) {
-                // Check if other cursor instances have a tap occurrence within both occurrences' boundary.
-                for (let j = 0; j < this.data.cursorMovement.length; ++j) {
-                    // Do not check the current cursor instance in loop.
-                    if (j === cursorIndex) {
-                        continue;
-                    }
+            for (let i = 0; i < allOccurrences.length; ++i) {
+                const occurrence: CursorOccurrence = allOccurrences[i];
 
-                    const { occurrences } = this.data.cursorMovement[j];
+                if (occurrence.time > maxAllowableTapTime) {
+                    break;
+                }
 
-                    for (const o of occurrences) {
-                        if (o.id !== movementType.DOWN) {
+                const nextOccurrence: CursorOccurrence = allOccurrences[i + 1];
+
+                if (nextOccurrence?.id === movementType.MOVE) {
+                    // Check if other cursor instances have a tap occurrence within both occurrences' boundary.
+                    for (let j = 0; j < this.data.cursorMovement.length; ++j) {
+                        // Do not check the current cursor instance in loop.
+                        if (j === cursorIndex) {
                             continue;
                         }
 
-                        const t: number =
-                            (o.time - occurrence.time) /
-                            (nextOccurrence.time - occurrence.time);
+                        const { occurrenceGroups } =
+                            this.data.cursorMovement[j];
 
-                        const cursorPosition: Vector2 = new Vector2(
-                            Interpolation.lerp(
-                                occurrence.position.x,
-                                nextOccurrence.position.x,
-                                t
-                            ),
-                            Interpolation.lerp(
-                                occurrence.position.y,
-                                nextOccurrence.position.y,
-                                t
-                            )
-                        );
+                        for (const cursorGroup of occurrenceGroups) {
+                            const cursorDownTime: number =
+                                cursorGroup.down.time;
 
-                        const distanceToObject: number = object
-                            .getStackedPosition(modes.droid)
-                            .getDistance(cursorPosition);
+                            if (cursorDownTime < objectTappableStartTime) {
+                                continue;
+                            }
 
-                        if (closestDistance > distanceToObject) {
-                            closestDistance = distanceToObject;
-                            closestCursorPosition = cursorPosition;
-                            closestHit = o.time - object.startTime;
+                            if (cursorDownTime > maxAllowableTapTime) {
+                                break;
+                            }
+
+                            const t: number =
+                                (cursorDownTime - occurrence.time) /
+                                (nextOccurrence.time - occurrence.time);
+
+                            const cursorPosition: Vector2 = new Vector2(
+                                Interpolation.lerp(
+                                    occurrence.position.x,
+                                    nextOccurrence.position.x,
+                                    t
+                                ),
+                                Interpolation.lerp(
+                                    occurrence.position.y,
+                                    nextOccurrence.position.y,
+                                    t
+                                )
+                            );
+
+                            const distanceToObject: number = object
+                                .getStackedPosition(modes.droid)
+                                .getDistance(cursorPosition);
+
+                            if (closestDistance > distanceToObject) {
+                                closestDistance = distanceToObject;
+                                closestCursorPosition = cursorPosition;
+                                closestHit = cursorDownTime - object.startTime;
+                            }
                         }
                     }
-                }
-            } else {
-                // At this point, the next occurrence's move type is `movementType.UP`.
-                // This is because the current occurrence's move type will never be `movementType.UP`.
-                const distanceToObject: number = object
-                    .getStackedPosition(modes.droid)
-                    .getDistance(occurrence.position);
+                } else {
+                    // At this point, the next occurrence's move type is `movementType.UP`.
+                    // This is because the current occurrence's move type will never be `movementType.UP`.
+                    const distanceToObject: number = object
+                        .getStackedPosition(modes.droid)
+                        .getDistance(occurrence.position);
 
-                if (closestDistance > distanceToObject) {
-                    closestDistance = distanceToObject;
-                    closestCursorPosition = occurrence.position;
-                    closestHit = occurrence.time - object.startTime;
+                    if (closestDistance > distanceToObject) {
+                        closestDistance = distanceToObject;
+                        closestCursorPosition = occurrence.position;
+                        closestHit = occurrence.time - object.startTime;
+                    }
                 }
             }
         }
