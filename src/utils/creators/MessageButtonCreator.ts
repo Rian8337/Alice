@@ -188,17 +188,17 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         }
 
                         const index: number = (<
-                            APIActionRowComponent<APIMessageActionRowComponent>[]
+                            ActionRowBuilder<ButtonBuilder>[]
                         >options.components).findIndex((v) => {
                             return (
                                 v.components.length === buttons.length &&
                                 v.components.every(
                                     (c, i) =>
-                                        c instanceof ButtonComponent &&
-                                        c.customId ===
-                                            (<APIButtonComponentWithCustomId>(
-                                                buttons[i].data
-                                            )).custom_id
+                                        (<APIButtonComponentWithCustomId>c.data)
+                                            .custom_id ===
+                                        (<APIButtonComponentWithCustomId>(
+                                            buttons[i].data
+                                        )).custom_id
                                 )
                             );
                         });
@@ -301,19 +301,17 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     );
                 }
 
-                const index: number = (<
-                    APIActionRowComponent<APIMessageActionRowComponent>[]
-                >options.components).findIndex((v) => {
+                const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
+                    options.components
+                )).findIndex((v) => {
                     if (v.components.length !== 1) {
                         return;
                     }
 
                     return (
-                        v.components[0] instanceof ButtonBuilder &&
                         (<APIButtonComponentWithCustomId>v.components[0].data)
                             .custom_id ===
-                            (<APIButtonComponentWithCustomId>button.data)
-                                .custom_id
+                        (<APIButtonComponentWithCustomId>button.data).custom_id
                     );
                 });
 
@@ -510,20 +508,16 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         return;
                 }
 
-                const row:
-                    | APIActionRowComponent<APIMessageActionRowComponent>
-                    | undefined = <
-                    | APIActionRowComponent<APIMessageActionRowComponent>
-                    | undefined
-                >options.components?.find((c) => {
+                const row = <ActionRowBuilder>options.components?.find((c) => {
                     c = <APIActionRowComponent<APIMessageActionRowComponent>>c;
 
                     return (
                         c.components.length === buttons.length &&
                         c.components.every(
                             (b, i) =>
-                                b instanceof ButtonComponent &&
-                                b.customId ===
+                                b instanceof ButtonBuilder &&
+                                (<APIButtonComponentWithCustomId>b.data)
+                                    .custom_id ===
                                     (<APIButtonComponentWithCustomId>(
                                         buttons[i].data
                                     )).custom_id
@@ -531,12 +525,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     );
                 });
 
-                if (row) {
-                    row.components = this.createPagingButtons(
-                        currentPage,
-                        maxPage
-                    ).map((v) => v.toJSON());
-                }
+                row?.setComponents(
+                    this.createPagingButtons(currentPage, maxPage)
+                );
 
                 if (options.embeds) {
                     for (let i = 0; i < options.embeds.length; ++i) {
@@ -561,18 +552,18 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 await i.editReply(options);
             },
             async (c) => {
-                const index: number = (<
-                    APIActionRowComponent<APIMessageActionRowComponent>[]
-                >options.components).findIndex((v) => {
+                const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
+                    options.components
+                )).findIndex((v) => {
                     return (
                         v.components.length === buttons.length &&
                         v.components.every(
                             (c, i) =>
-                                c instanceof ButtonComponent &&
-                                c.customId ===
-                                    (<APIButtonComponentWithCustomId>(
-                                        buttons[i].data
-                                    )).custom_id
+                                (<APIButtonComponentWithCustomId>c.data)
+                                    .custom_id ===
+                                (<APIButtonComponentWithCustomId>(
+                                    buttons[i].data
+                                )).custom_id
                         )
                     );
                 });
