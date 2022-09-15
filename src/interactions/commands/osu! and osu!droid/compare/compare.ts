@@ -162,7 +162,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (
         droidCalcResult !== null &&
         droidCalcResult.replay?.data &&
-        NumberHelper.isNumberInRange(score.accuracy.nmiss, 1, 3, true)
+        (NumberHelper.isNumberInRange(score.accuracy.nmiss, 1, 3, true) ||
+            (score.accuracy.nmiss > 0 &&
+                CommandHelper.isExecutedByBotOwner(interaction)))
     ) {
         MessageButtonCreator.createMissAnalyzerButton(
             interaction,
