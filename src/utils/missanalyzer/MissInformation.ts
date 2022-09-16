@@ -86,7 +86,7 @@ export class MissInformation {
 
     /**
      * @param metadata The metadata of the beatmap.
-     * @param object The objec that was mised.
+     * @param object The object that was missed.
      * @param objectIndex The index of the object.
      * @param missIndex The index of the miss in the score.
      * @param totalMisses The amount of misses in the score.
