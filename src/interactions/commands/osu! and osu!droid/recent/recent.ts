@@ -23,7 +23,6 @@ import {
     DroidPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
@@ -155,9 +154,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (
         droidCalcResult !== null &&
         droidCalcResult.replay?.data &&
-        (NumberHelper.isNumberInRange(score.accuracy.nmiss, 1, 5, true) ||
-            (score.accuracy.nmiss > 0 &&
-                CommandHelper.isExecutedByBotOwner(interaction)))
+        score.accuracy.nmiss > 0
     ) {
         MessageButtonCreator.createMissAnalyzerButton(
             interaction,

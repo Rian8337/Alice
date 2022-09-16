@@ -15,7 +15,6 @@ import { EmbedBuilder, GuildMember, InteractionReplyOptions } from "discord.js";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import {
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
@@ -133,9 +132,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     if (
         droidCalcResult !== null &&
         droidCalcResult.replay?.data &&
-        (NumberHelper.isNumberInRange(score.accuracy.nmiss, 1, 5, true) ||
-            (score.accuracy.nmiss > 0 &&
-                CommandHelper.isExecutedByBotOwner(interaction)))
+        score.accuracy.nmiss > 0
     ) {
         MessageButtonCreator.createMissAnalyzerButton(
             interaction,

@@ -95,7 +95,7 @@ export class MissAnalyzer {
      * @param missLimit The amount of misses to analyze. Defaults to 5.
      * @returns Information about misses.
      */
-    analyze(missLimit: number = 5): MissInformation[] {
+    analyze(missLimit: number = 10): MissInformation[] {
         if (this.data.accuracy.nmiss === 0) {
             return [];
         }

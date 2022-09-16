@@ -246,7 +246,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     ): Promise<Message> {
         const button: ButtonBuilder = new ButtonBuilder()
             .setCustomId("analyze-miss")
-            .setLabel("Analyze Misses (Beta)")
+            .setLabel("Analyze First 10 Misses (Beta)")
             .setStyle(ButtonStyle.Primary)
             .setEmoji(Symbols.magnifyingGlassTiltedRight);
 
@@ -296,7 +296,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         [interaction.user.id],
                         1,
                         missInformations.length,
-                        60,
+                        90,
                         onPageChange
                     );
                 }
