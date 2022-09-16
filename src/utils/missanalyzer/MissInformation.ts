@@ -2,6 +2,7 @@ import {
     BeatmapMetadata,
     HitObject,
     modes,
+    Playfield,
     Slider,
     SliderRepeat,
     SliderTick,
@@ -237,8 +238,10 @@ export class MissInformation {
 
         // The playfield is 512x384. However, since we're drawing on a limited space,
         // we will have to scale the area and objects down.
-        const scaledPlayfieldX: number = 512 * this.playfieldScale;
-        const scaledPlayfieldY: number = 384 * this.playfieldScale;
+        const scaledPlayfieldX: number =
+            Playfield.baseSize.x * this.playfieldScale;
+        const scaledPlayfieldY: number =
+            Playfield.baseSize.y * this.playfieldScale;
 
         context.save();
         context.translate(
@@ -469,9 +472,11 @@ export class MissInformation {
      * @returns The flipped vector.
      */
     private flipVectorVertically(vec: Vector2): Vector2 {
-        // TODO: move playfield-related logic to droid module
         return this.drawFlipped
-            ? new Vector2(vec.x, 384 * this.playfieldScale - vec.y)
+            ? new Vector2(
+                  vec.x,
+                  Playfield.baseSize.y * this.playfieldScale - vec.y
+              )
             : vec;
     }
 }
