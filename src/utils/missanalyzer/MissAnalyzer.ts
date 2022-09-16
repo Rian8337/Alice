@@ -239,7 +239,6 @@ export class MissAnalyzer {
         const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
         let closestHit: number = Number.POSITIVE_INFINITY;
         let closestCursorPosition: Vector2 | null = null;
-        let verdict: string = "Misaim";
 
         // Only count cursor occurrence groups within an object's approach time or hit window.
         // An object's fade time is 400ms.
@@ -347,6 +346,7 @@ export class MissAnalyzer {
             return null;
         }
 
+        let verdict: string = "Misaim";
         const distanceToObject: number = object
             .getStackedPosition(modes.droid)
             .getDistance(closestCursorPosition);
