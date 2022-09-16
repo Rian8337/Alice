@@ -142,7 +142,7 @@ export class MissInformation {
             return this.canvas;
         }
 
-        this.canvas = new Canvas(500, 500);
+        this.canvas = new Canvas(600, 500);
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
         const textPadding: number = 5;
