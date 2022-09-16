@@ -8,6 +8,7 @@ export class ActivityENTranslation extends Translation<ActivityStrings> {
     override readonly translations: ActivityStrings = {
         serverBoostTierTooLow:
             "I'm sorry, you need level 1 server boost to use this activity!",
-        inviteLinkResponse: "<[Click to open %s in %s. This invite link will expire in 5 minutes.](%s)>",
+        inviteLinkResponse:
+            "<[Click to open %s in %s. This invite link will expire in 5 minutes.](%s)>",
     };
 }

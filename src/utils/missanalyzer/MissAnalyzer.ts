@@ -237,10 +237,9 @@ export class MissAnalyzer {
         cursorIndex: number
     ): { position: Vector2; closestHit: number; verdict: string } | null {
         const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
-        let closestDistance: number = Number.POSITIVE_INFINITY;
         let closestHit: number = Number.POSITIVE_INFINITY;
         let closestCursorPosition: Vector2 | null = null;
-        let verdict: string | null = null;
+        let verdict: string = "Misaim";
 
         // Only count cursor occurrence groups within an object's approach time or hit window.
         // An object's fade time is 400ms.
@@ -261,11 +260,29 @@ export class MissAnalyzer {
 
             const { allOccurrences } = group;
 
+            // Don't include the cursor up occurrence.
+            if (group.up) {
+                allOccurrences.pop();
+            }
+
             for (let i = 0; i < allOccurrences.length; ++i) {
                 const occurrence: CursorOccurrence = allOccurrences[i];
 
                 if (occurrence.time > maxAllowableTapTime) {
                     break;
+                }
+
+                if (occurrence.id === movementType.DOWN) {
+                    const timeDifference: number =
+                        occurrence.time - object.startTime;
+
+                    if (
+                        Math.abs(timeDifference) < this.hitWindow50 &&
+                        Math.abs(timeDifference) < Math.abs(closestHit)
+                    ) {
+                        closestCursorPosition = occurrence.position;
+                        closestHit = timeDifference;
+                    }
                 }
 
                 const nextOccurrence: CursorOccurrence = allOccurrences[i + 1];
@@ -310,28 +327,17 @@ export class MissAnalyzer {
                                 )
                             );
 
-                            const distanceToObject: number = object
-                                .getStackedPosition(modes.droid)
-                                .getDistance(cursorPosition);
+                            const timeDifference: number =
+                                cursorDownTime - object.startTime;
 
-                            if (closestDistance > distanceToObject) {
-                                closestDistance = distanceToObject;
+                            if (
+                                Math.abs(timeDifference) < this.hitWindow50 &&
+                                Math.abs(timeDifference) < Math.abs(closestHit)
+                            ) {
                                 closestCursorPosition = cursorPosition;
-                                closestHit = cursorDownTime - object.startTime;
+                                closestHit = timeDifference;
                             }
                         }
-                    }
-                } else {
-                    // At this point, the next occurrence's move type is `movementType.UP`.
-                    // This is because the current occurrence's move type will never be `movementType.UP`.
-                    const distanceToObject: number = object
-                        .getStackedPosition(modes.droid)
-                        .getDistance(occurrence.position);
-
-                    if (closestDistance > distanceToObject) {
-                        closestDistance = distanceToObject;
-                        closestCursorPosition = occurrence.position;
-                        closestHit = occurrence.time - object.startTime;
                     }
                 }
             }
@@ -345,16 +351,8 @@ export class MissAnalyzer {
             .getStackedPosition(modes.droid)
             .getDistance(closestCursorPosition);
 
-        if (Math.abs(closestHit) < this.hitWindow50) {
-            if (distanceToObject <= object.getRadius(modes.droid)) {
-                verdict = "Notelock";
-            } else {
-                verdict = "Misaim";
-            }
-        } else if (closestHit < 0) {
-            verdict = "Tapped too early";
-        } else {
-            verdict = "Tapped too late";
+        if (distanceToObject <= object.getRadius(modes.droid)) {
+            verdict = "Notelock";
         }
 
         return {
