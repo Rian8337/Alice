@@ -47,11 +47,6 @@ export class MissInformation {
     readonly totalObjects: number;
 
     /**
-     * The verdict for the miss.
-     */
-    readonly verdict: string;
-
-    /**
      * The rate at which the clock progress in the score.
      */
     readonly clockRate: number;
@@ -60,6 +55,11 @@ export class MissInformation {
      * Whether to flip objects vertically before drawing them.
      */
     readonly drawFlipped: boolean;
+
+    /**
+     * The verdict for the miss.
+     */
+    readonly verdict?: string;
 
     /**
      * The cursor position at the closest hit to the object.
@@ -105,11 +105,11 @@ export class MissInformation {
         totalObjects: number,
         missIndex: number,
         totalMisses: number,
-        verdict: string,
         clockRate: number,
         drawFlipped: boolean,
         previousObjects: HitObject[],
         previousHitResults: hitResult[],
+        verdict?: string,
         cursorPosition?: Vector2,
         closestHit?: number
     ) {
@@ -188,14 +188,16 @@ export class MissInformation {
             485 - textPadding
         );
 
-        const verdictText: string = `Verdict: ${this.verdict}`;
-        context.fillText(
-            verdictText,
-            this.canvas.width -
-                textPadding -
-                context.measureText(verdictText).width,
-            (this.closestHit !== undefined ? 465 : 485) - textPadding
-        );
+        if (this.verdict) {
+            const verdictText: string = `Verdict: ${this.verdict}`;
+            context.fillText(
+                verdictText,
+                this.canvas.width -
+                    textPadding -
+                    context.measureText(verdictText).width,
+                (this.closestHit !== undefined ? 465 : 485) - textPadding
+            );
+        }
 
         if (this.closestHit !== undefined) {
             let closestHitText: string = `Closest tap: ${

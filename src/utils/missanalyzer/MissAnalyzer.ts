@@ -113,7 +113,7 @@ export class MissAnalyzer {
 
         const createMissInformation = (
             objectIndex: number,
-            verdict: string,
+            verdict?: string,
             cursorPosition?: Vector2,
             closestHit?: number
         ): MissInformation => {
@@ -142,11 +142,11 @@ export class MissAnalyzer {
                 this.beatmap.hitObjects.objects.length,
                 missIndex++,
                 this.data.accuracy.nmiss,
-                verdict,
                 stats.speedMultiplier,
                 flipObjects,
                 previousObjects.reverse(),
                 previousHitResults.reverse(),
+                verdict,
                 cursorPosition,
                 closestHit
             );
@@ -178,7 +178,6 @@ export class MissAnalyzer {
             }
 
             // Find the cursor instance with the closest tap/drag occurrence to the object.
-            let closestDistance: number = Number.POSITIVE_INFINITY;
             let closestHit: number = Number.POSITIVE_INFINITY;
             let closestCursorPosition: Vector2 | null = null;
             let verdict: string | null = null;
@@ -191,34 +190,30 @@ export class MissAnalyzer {
                     continue;
                 }
 
-                const distanceToObject: number = object
-                    .getStackedPosition(modes.droid)
-                    .getDistance(cursorOccurrenceInfo.position);
-
-                if (closestDistance > distanceToObject) {
-                    closestDistance = distanceToObject;
+                if (
+                    Math.abs(cursorOccurrenceInfo.closestHit) <
+                        this.hitWindow50 &&
+                    Math.abs(cursorOccurrenceInfo.closestHit) <
+                        Math.abs(closestHit)
+                ) {
                     closestCursorPosition = cursorOccurrenceInfo.position;
                     closestHit = cursorOccurrenceInfo.closestHit;
                     verdict = cursorOccurrenceInfo.verdict;
                 }
             }
 
-            if (closestCursorPosition === null || verdict === null) {
+            if (closestCursorPosition && verdict !== null) {
                 missInformations.push(
-                    createMissInformation(i, "Didn't try to hit")
+                    createMissInformation(
+                        i,
+                        verdict,
+                        closestCursorPosition,
+                        closestHit
+                    )
                 );
-
-                continue;
+            } else {
+                missInformations.push(createMissInformation(i));
             }
-
-            missInformations.push(
-                createMissInformation(
-                    i,
-                    verdict,
-                    closestCursorPosition,
-                    closestHit
-                )
-            );
         }
 
         return missInformations;
