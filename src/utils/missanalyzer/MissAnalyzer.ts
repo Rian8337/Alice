@@ -92,7 +92,7 @@ export class MissAnalyzer {
     /**
      * Analyzes the replay for miss informations.
      *
-     * @param missLimit The amount of misses to analyze. Defaults to 5.
+     * @param missLimit The amount of misses to analyze. Defaults to 10.
      * @returns Information about misses.
      */
     analyze(missLimit: number = 10): MissInformation[] {

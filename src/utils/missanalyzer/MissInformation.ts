@@ -380,10 +380,20 @@ export class MissInformation {
                 );
                 context.fill();
                 context.closePath();
+            }
 
-                // Only draw path direction if the path is long enough.
-                if (object.path.expectedDistance > 100) {
-                    context.fillStyle = "#606060";
+            // Only draw path direction if the path is long enough.
+            if (object.path.expectedDistance > 200) {
+                context.fillStyle = "#606060";
+
+                for (let i = 0; i <= drawnDistance; i += 5) {
+                    const pathPosition: Vector2 = object
+                        .getStackedPosition(modes.droid)
+                        .add(object.path.positionAt(i / drawnDistance));
+                    const drawPosition: Vector2 = this.flipVectorVertically(
+                        pathPosition.scale(this.playfieldScale)
+                    );
+
                     context.beginPath();
                     context.arc(
                         drawPosition.x,
