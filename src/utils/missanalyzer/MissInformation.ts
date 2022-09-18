@@ -288,6 +288,7 @@ export class MissInformation {
             gradient.addColorStop(1, "#9e3fe8");
 
             context.fillStyle = gradient;
+            context.globalAlpha = 1;
             context.beginPath();
             context.arc(drawPosition.x, drawPosition.y, 10, 0, 2 * Math.PI);
             context.fill();
@@ -442,7 +443,7 @@ export class MissInformation {
 
         // Draw the border first, then fill with the circle color.
         context.fillStyle = borderColor;
-        context.globalAlpha = 0.8;
+        context.globalAlpha = 0.9;
         context.beginPath();
         context.arc(
             objectDrawPosition.x,
@@ -462,6 +463,7 @@ export class MissInformation {
         context.closePath();
 
         context.fillStyle = fillColor;
+        context.globalAlpha = 0.85;
         context.beginPath();
         context.arc(
             objectDrawPosition.x,
