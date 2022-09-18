@@ -255,18 +255,19 @@ export class MissInformation {
         context.strokeRect(0, 0, scaledPlayfieldX, scaledPlayfieldY);
         context.lineWidth = 1;
 
-        for (let i = 0; i < this.previousObjects.length; ++i) {
-            this.drawObject(
-                this.previousObjects[i],
-                this.previousHitResults[i],
-                i + 1
-            );
-        }
         this.drawObject(
             this.object,
             hitResult.RESULT_0,
             this.previousObjects.length + 1
         );
+
+        for (let i = 0; i < this.previousObjects.length; ++i) {
+            this.drawObject(
+                this.previousObjects[i],
+                this.previousHitResults[i],
+                this.previousObjects.length - i
+            );
+        }
 
         if (this.cursorPosition) {
             // Draw the cursor position.
@@ -360,6 +361,10 @@ export class MissInformation {
             const drawnDistance: number =
                 object.path.expectedDistance * this.playfieldScale;
 
+            context.fillStyle = sliderPathColor;
+            context.globalAlpha = 0.8;
+            context.beginPath();
+
             for (let i = 0; i <= drawnDistance; i += 5) {
                 const pathPosition: Vector2 = object
                     .getStackedPosition(modes.droid)
@@ -368,9 +373,6 @@ export class MissInformation {
                     pathPosition.scale(this.playfieldScale)
                 );
 
-                // Path circle
-                context.fillStyle = sliderPathColor;
-                context.beginPath();
                 context.arc(
                     drawPosition.x,
                     drawPosition.y,
@@ -378,13 +380,16 @@ export class MissInformation {
                     0,
                     2 * Math.PI
                 );
-                context.fill();
-                context.closePath();
             }
 
+            context.fill();
+            context.closePath();
+
             // Only draw path direction if the path is long enough.
-            if (object.path.expectedDistance > 200) {
+            if (object.path.expectedDistance > 50) {
                 context.fillStyle = "#606060";
+                context.globalAlpha = 0.75;
+                context.beginPath();
 
                 for (let i = 0; i <= drawnDistance; i += 5) {
                     const pathPosition: Vector2 = object
@@ -394,19 +399,14 @@ export class MissInformation {
                         pathPosition.scale(this.playfieldScale)
                     );
 
-                    context.beginPath();
-                    context.arc(
-                        drawPosition.x,
-                        drawPosition.y,
-                        // Make path direction 15% the size of the slider path circle.
-                        scaledRadius * 0.15,
-                        0,
-                        2 * Math.PI
-                    );
-                    context.fill();
-                    context.closePath();
+                    context.lineTo(drawPosition.x, drawPosition.y);
                 }
+
+                context.fill();
+                context.closePath();
             }
+
+            context.globalAlpha = 0.8;
 
             // Draw slider ticks.
             for (const nestedObject of object.nestedHitObjects) {
@@ -442,6 +442,7 @@ export class MissInformation {
 
         // Draw the border first, then fill with the circle color.
         context.fillStyle = borderColor;
+        context.globalAlpha = 0.8;
         context.beginPath();
         context.arc(
             objectDrawPosition.x,
@@ -450,7 +451,14 @@ export class MissInformation {
             0,
             2 * Math.PI
         );
-        context.fill();
+        context.arc(
+            objectDrawPosition.x,
+            objectDrawPosition.y,
+            scaledRadius * 0.9,
+            0,
+            2 * Math.PI
+        );
+        context.fill("evenodd");
         context.closePath();
 
         context.fillStyle = fillColor;

@@ -144,8 +144,8 @@ export class MissAnalyzer {
                 this.data.accuracy.nmiss,
                 stats.speedMultiplier,
                 flipObjects,
-                previousObjects.reverse(),
-                previousHitResults.reverse(),
+                previousObjects,
+                previousHitResults,
                 verdict,
                 cursorPosition,
                 closestHit
