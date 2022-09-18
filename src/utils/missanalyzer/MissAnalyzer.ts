@@ -232,19 +232,16 @@ export class MissAnalyzer {
         cursorIndex: number
     ): { position: Vector2; closestHit: number; verdict: string } | null {
         const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
+        let closestDistance: number = Number.POSITIVE_INFINITY;
         let closestHit: number = Number.POSITIVE_INFINITY;
         let closestCursorPosition: Vector2 | null = null;
 
-        // Only count cursor occurrence groups within an object's approach time or hit window.
-        // An object's fade time is 400ms.
-        const objectTappableStartTime: number =
-            object.startTime - this.approachRateTime - 400;
-        // Employ an additional 100ms window in case the player tapped too late.
-        const maxAllowableTapTime: number =
-            object.startTime + this.hitWindow50 + 100;
+        const delta: number = 20;
+        const minAllowableTapTime: number = object.startTime - delta;
+        const maxAllowableTapTime: number = object.startTime + delta;
 
         for (const group of cursorData.occurrenceGroups) {
-            if (group.startTime < objectTappableStartTime) {
+            if (group.startTime < minAllowableTapTime) {
                 continue;
             }
 
@@ -267,15 +264,14 @@ export class MissAnalyzer {
                 }
 
                 if (occurrence.id === movementType.DOWN) {
-                    const timeDifference: number =
-                        occurrence.time - object.startTime;
+                    const distanceToObject: number = object
+                        .getStackedPosition(modes.droid)
+                        .getDistance(occurrence.position);
 
-                    if (
-                        Math.abs(timeDifference) < this.hitWindow50 &&
-                        Math.abs(timeDifference) < Math.abs(closestHit)
-                    ) {
+                    if (distanceToObject < closestDistance) {
+                        closestDistance = distanceToObject;
                         closestCursorPosition = occurrence.position;
-                        closestHit = timeDifference;
+                        closestHit = occurrence.time - object.startTime;
                     }
                 }
 
@@ -296,7 +292,7 @@ export class MissAnalyzer {
                             const cursorDownTime: number =
                                 cursorGroup.down.time;
 
-                            if (cursorDownTime < objectTappableStartTime) {
+                            if (cursorDownTime < minAllowableTapTime) {
                                 continue;
                             }
 
@@ -321,15 +317,14 @@ export class MissAnalyzer {
                                 )
                             );
 
-                            const timeDifference: number =
-                                cursorDownTime - object.startTime;
+                            const distanceToObject: number = object
+                                .getStackedPosition(modes.droid)
+                                .getDistance(cursorPosition);
 
-                            if (
-                                Math.abs(timeDifference) < this.hitWindow50 &&
-                                Math.abs(timeDifference) < Math.abs(closestHit)
-                            ) {
+                            if (distanceToObject < closestDistance) {
+                                closestDistance = distanceToObject;
                                 closestCursorPosition = cursorPosition;
-                                closestHit = timeDifference;
+                                closestHit = cursorDownTime - object.startTime;
                             }
                         }
                     }
@@ -342,11 +337,7 @@ export class MissAnalyzer {
         }
 
         let verdict: string = "Misaim";
-        const distanceToObject: number = object
-            .getStackedPosition(modes.droid)
-            .getDistance(closestCursorPosition);
-
-        if (distanceToObject <= object.getRadius(modes.droid)) {
+        if (closestDistance <= object.getRadius(modes.droid)) {
             verdict = "Notelock";
         }
 
