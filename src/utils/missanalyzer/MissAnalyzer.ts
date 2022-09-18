@@ -144,8 +144,8 @@ export class MissAnalyzer {
                 this.data.accuracy.nmiss,
                 stats.speedMultiplier,
                 flipObjects,
-                previousObjects,
-                previousHitResults,
+                previousObjects.reverse(),
+                previousHitResults.reverse(),
                 verdict,
                 cursorPosition,
                 closestHit
@@ -232,13 +232,15 @@ export class MissAnalyzer {
         cursorIndex: number
     ): { position: Vector2; closestHit: number; verdict: string } | null {
         const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
-        let closestDistance: number = Number.POSITIVE_INFINITY;
+
+        // Limit to cursor occurrences within this distance.
+        // Add a cap to better assess smaller objects.
+        let closestDistance: number = Math.max(2 * object.getRadius(modes.droid), 75);
         let closestHit: number = Number.POSITIVE_INFINITY;
         let closestCursorPosition: Vector2 | null = null;
 
-        const delta: number = 20;
-        const minAllowableTapTime: number = object.startTime - delta;
-        const maxAllowableTapTime: number = object.startTime + delta;
+        const minAllowableTapTime: number = object.startTime - this.hitWindow50;
+        const maxAllowableTapTime: number = object.startTime + this.hitWindow50;
 
         for (const group of cursorData.occurrenceGroups) {
             if (group.startTime < minAllowableTapTime) {

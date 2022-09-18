@@ -255,19 +255,19 @@ export class MissInformation {
         context.strokeRect(0, 0, scaledPlayfieldX, scaledPlayfieldY);
         context.lineWidth = 1;
 
+        for (let i = 0; i < this.previousObjects.length; ++i) {
+            this.drawObject(
+                this.previousObjects[i],
+                this.previousHitResults[i],
+                i + 1
+            );
+        }
+
         this.drawObject(
             this.object,
             hitResult.RESULT_0,
             this.previousObjects.length + 1
         );
-
-        for (let i = 0; i < this.previousObjects.length; ++i) {
-            this.drawObject(
-                this.previousObjects[i],
-                this.previousHitResults[i],
-                this.previousObjects.length - i
-            );
-        }
 
         if (this.cursorPosition) {
             // Draw the cursor position.
