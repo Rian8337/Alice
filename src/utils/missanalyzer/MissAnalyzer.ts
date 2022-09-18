@@ -184,7 +184,14 @@ export class MissAnalyzer {
 
             for (let j = 0; j < this.data.cursorMovement.length; ++j) {
                 const cursorOccurrenceInfo =
-                    this.getCursorOccurrenceClosestToObject(object, j);
+                    this.getCursorOccurrenceClosestToObject(
+                        object,
+                        j,
+                        i > 0
+                            ? this.data.hitObjectData[i - 1].result ===
+                                  hitResult.RESULT_0
+                            : false
+                    );
 
                 if (cursorOccurrenceInfo === null) {
                     continue;
@@ -224,23 +231,40 @@ export class MissAnalyzer {
      *
      * @param object The object.
      * @param cursorIndex The index of the cursor instance.
+     * @param includeNotelockVerdict Whether to allow the notelock verdict.
      * @returns The cursor occurrence information from the cursor instance at which
      * the cursor is the closest to the object, `null` if not found.
      */
     private getCursorOccurrenceClosestToObject(
         object: HitObject,
-        cursorIndex: number
+        cursorIndex: number,
+        includeNotelockVerdict: boolean
     ): { position: Vector2; closestHit: number; verdict: string } | null {
         const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
 
         // Limit to cursor occurrences within this distance.
         // Add a cap to better assess smaller objects.
-        let closestDistance: number = Math.max(2 * object.getRadius(modes.droid), 75);
+        let closestDistance: number = Math.max(
+            2 * object.getRadius(modes.droid),
+            80
+        );
         let closestHit: number = Number.POSITIVE_INFINITY;
         let closestCursorPosition: Vector2 | null = null;
 
         const minAllowableTapTime: number = object.startTime - this.hitWindow50;
         const maxAllowableTapTime: number = object.startTime + this.hitWindow50;
+
+        const acceptDistance = (distance: number): boolean => {
+            if (distance > closestDistance) {
+                return false;
+            }
+
+            if (!includeNotelockVerdict) {
+                return distance > object.getRadius(modes.droid);
+            }
+
+            return true;
+        };
 
         for (const group of cursorData.occurrenceGroups) {
             if (group.startTime < minAllowableTapTime) {
@@ -270,7 +294,7 @@ export class MissAnalyzer {
                         .getStackedPosition(modes.droid)
                         .getDistance(occurrence.position);
 
-                    if (distanceToObject < closestDistance) {
+                    if (acceptDistance(distanceToObject)) {
                         closestDistance = distanceToObject;
                         closestCursorPosition = occurrence.position;
                         closestHit = occurrence.time - object.startTime;
@@ -323,7 +347,7 @@ export class MissAnalyzer {
                                 .getStackedPosition(modes.droid)
                                 .getDistance(cursorPosition);
 
-                            if (distanceToObject < closestDistance) {
+                            if (acceptDistance(distanceToObject)) {
                                 closestDistance = distanceToObject;
                                 closestCursorPosition = cursorPosition;
                                 closestHit = cursorDownTime - object.startTime;
