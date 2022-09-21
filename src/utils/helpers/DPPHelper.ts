@@ -191,7 +191,7 @@ export abstract class DPPHelper {
 
             if (
                 (dppList.get(entry.hash)?.pp ?? 0) >= entry.pp ||
-                (dppList.size === 75 && dppList.at(-1)!.pp >= entry.pp)
+                (dppList.size === 75 && dppList.last()!.pp >= entry.pp)
             ) {
                 continue;
             }
@@ -210,6 +210,31 @@ export abstract class DPPHelper {
         while (dppList.size > 75) {
             dppList.delete(dppList.lastKey()!);
         }
+    }
+
+    /**
+     * Checks whether a PP entry will be kept once it's entered to the list.
+     *
+     * @param dppList The list of dpp plays.
+     * @param entry The entry to check.
+     * @returns Whether the PP entry will be kept.
+     */
+    static checkScoreInsertion<T extends OldPPEntry>(
+        dppList: Collection<string, T>,
+        entry: T
+    ): boolean {
+        if (dppList.size < 75) {
+            return true;
+        }
+
+        if (
+            dppList.has(entry.hash) &&
+            dppList.get(entry.hash)!.pp >= entry.pp
+        ) {
+            return false;
+        }
+
+        return (dppList.last()?.pp ?? 0) < entry.pp;
     }
 
     /**

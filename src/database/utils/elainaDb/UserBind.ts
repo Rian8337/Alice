@@ -615,15 +615,23 @@ export class UserBind extends Manager {
                         );
 
                         if (calcResult) {
-                            await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                            ++this.playc;
+
+                            const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
                                 score,
                                 calcResult
                             );
-                            ++this.playc;
 
-                            DPPHelper.insertScore(newList, [
-                                DPPHelper.scoreToPPEntry(score, calcResult),
-                            ]);
+                            if (
+                                DPPHelper.checkScoreInsertion(newList, ppEntry)
+                            ) {
+                                await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                                    score,
+                                    calcResult
+                                );
+
+                                DPPHelper.insertScore(newList, [ppEntry]);
+                            }
 
                             const oldCalcResult: OldPerformanceCalculationResult =
                                 (await BeatmapOldDifficultyHelper.calculateScorePerformance(

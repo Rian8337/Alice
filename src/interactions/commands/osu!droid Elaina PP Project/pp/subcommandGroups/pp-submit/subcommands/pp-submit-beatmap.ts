@@ -27,6 +27,7 @@ import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDiffi
 import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { OldPPProfileCollectionManager } from "@alice-database/managers/aliceDb/OldPPProfileCollectionManager";
 import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
+import { PPEntry } from "@alice-structures/dpp/PPEntry";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -174,16 +175,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const currentTotalPP: number = bindInfo.pptotal;
 
     if (droidCalcResult) {
-        await DroidBeatmapDifficultyHelper.applyTapPenalty(
+        const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
             score,
             droidCalcResult
         );
 
-        DPPHelper.insertScore(bindInfo.pp, [
-            DPPHelper.scoreToPPEntry(score, droidCalcResult),
-        ]);
+        if (DPPHelper.checkScoreInsertion(bindInfo.pp, ppEntry)) {
+            await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                score,
+                droidCalcResult
+            );
 
-        await bindInfo.setNewDPPValue(bindInfo.pp, 1);
+            DPPHelper.insertScore(bindInfo.pp, [ppEntry]);
+
+            await bindInfo.setNewDPPValue(bindInfo.pp, 1);
+        }
 
         const oldCalcResult: OldPerformanceCalculationResult =
             (await BeatmapOldDifficultyHelper.calculateScorePerformance(
