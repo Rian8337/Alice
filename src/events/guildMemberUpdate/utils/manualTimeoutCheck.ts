@@ -10,10 +10,10 @@ import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 import {
     GuildAuditLogs,
     GuildAuditLogsEntry,
-    GuildChannel,
     GuildMember,
     EmbedBuilder,
     AuditLogEvent,
+    GuildBasedChannel,
 } from "discord.js";
 
 export const run: EventUtil["run"] = async (
@@ -68,7 +68,7 @@ export const run: EventUtil["run"] = async (
             return;
         }
 
-        const logChannel: GuildChannel | null =
+        const logChannel: GuildBasedChannel | null =
             await guildConfig.getGuildLogChannel(newMember.guild);
 
         if (!logChannel?.isTextBased()) {
@@ -194,7 +194,7 @@ export const run: EventUtil["run"] = async (
             return;
         }
 
-        const logChannel: GuildChannel | null =
+        const logChannel: GuildBasedChannel | null =
             await guildConfig.getGuildLogChannel(newMember.guild);
 
         if (!logChannel?.isTextBased()) {

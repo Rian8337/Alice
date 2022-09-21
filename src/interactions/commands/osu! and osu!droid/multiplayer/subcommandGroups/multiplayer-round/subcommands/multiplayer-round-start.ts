@@ -14,7 +14,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MapStats, ModUtil, RequestResponse } from "@rian8337/osu-base";
-import { EmbedBuilder, MessageOptions } from "discord.js";
+import { EmbedBuilder, BaseMessageOptions } from "discord.js";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Config } from "@alice-core/Config";
 
@@ -226,20 +226,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     });
                 }
 
-                const options: MessageOptions = EmbedCreator.createBeatmapEmbed(
-                    (await BeatmapManager.getBeatmap(
-                        room.settings.beatmap!.id,
-                        { checkFile: false }
-                    ))!,
-                    new DifficultyCalculationParameters(
-                        new MapStats({
-                            mods: ModUtil.pcStringToMods(
-                                room.settings.requiredMods
-                            ),
-                            speedMultiplier: room.settings.speedMultiplier,
-                        })
-                    )
-                );
+                const options: BaseMessageOptions =
+                    EmbedCreator.createBeatmapEmbed(
+                        (await BeatmapManager.getBeatmap(
+                            room.settings.beatmap!.id,
+                            { checkFile: false }
+                        ))!,
+                        new DifficultyCalculationParameters(
+                            new MapStats({
+                                mods: ModUtil.pcStringToMods(
+                                    room.settings.requiredMods
+                                ),
+                                speedMultiplier: room.settings.speedMultiplier,
+                            })
+                        )
+                    );
 
                 options.embeds!.unshift(embed);
 

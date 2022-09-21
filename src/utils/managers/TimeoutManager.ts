@@ -1,4 +1,9 @@
-import { GuildChannel, GuildMember, EmbedBuilder, Snowflake } from "discord.js";
+import {
+    GuildBasedChannel,
+    GuildMember,
+    EmbedBuilder,
+    Snowflake,
+} from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -116,7 +121,7 @@ export abstract class TimeoutManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildChannel | null =
+        const logChannel: GuildBasedChannel | null =
             await guildConfig.getGuildLogChannel(member.guild);
 
         if (!logChannel?.isTextBased()) {
@@ -278,7 +283,7 @@ export abstract class TimeoutManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildChannel | null =
+        const logChannel: GuildBasedChannel | null =
             await guildConfig.getGuildLogChannel(member.guild);
 
         if (!logChannel?.isTextBased()) {

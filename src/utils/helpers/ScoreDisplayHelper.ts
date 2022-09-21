@@ -8,7 +8,7 @@ import {
     GuildMember,
     Message,
     EmbedBuilder,
-    MessageOptions,
+    BaseMessageOptions,
     Snowflake,
 } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
@@ -321,7 +321,7 @@ export abstract class ScoreDisplayHelper {
                       )
                     : null;
 
-            const embedOptions: MessageOptions = beatmapInfo
+            const embedOptions: BaseMessageOptions = beatmapInfo
                 ? EmbedCreator.createBeatmapEmbed(
                       beatmapInfo,
                       undefined,

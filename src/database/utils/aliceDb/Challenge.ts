@@ -17,7 +17,7 @@ import {
     ApplicationCommandOptionChoiceData,
     Collection,
     GuildEmoji,
-    MessageOptions,
+    BaseMessageOptions,
     Snowflake,
     TextChannel,
 } from "discord.js";
@@ -301,7 +301,7 @@ export class Challenge extends Manager {
             await this.client.channels.fetch(this.challengeChannelID)
         );
 
-        const challengeEmbedOptions: MessageOptions =
+        const challengeEmbedOptions: BaseMessageOptions =
             await EmbedCreator.createChallengeEmbed(
                 this,
                 this.isWeekly ? "#af46db" : "#e3b32d",
@@ -360,7 +360,7 @@ export class Challenge extends Manager {
             await this.client.channels.fetch(this.challengeChannelID)
         );
 
-        const challengeEmbedOptions: MessageOptions =
+        const challengeEmbedOptions: BaseMessageOptions =
             await EmbedCreator.createChallengeEmbed(
                 this,
                 this.isWeekly ? "#af46db" : "#e3b32d",

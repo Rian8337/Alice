@@ -5,7 +5,7 @@ import { RoleTimeoutPermission } from "structures/moderation/RoleTimeoutPermissi
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
-import { Collection, Guild, GuildChannel, Snowflake } from "discord.js";
+import { Collection, Guild, GuildBasedChannel, Snowflake } from "discord.js";
 
 /**
  * Represents a guild's punishment configuration.
@@ -58,7 +58,7 @@ export class GuildPunishmentConfig extends Manager {
      * @param guild The guild instance.
      * @returns The guild's log channel, `null` if not found.
      */
-    getGuildLogChannel(guild: Guild): Promise<GuildChannel | null> {
+    getGuildLogChannel(guild: Guild): Promise<GuildBasedChannel | null> {
         return guild.channels.fetch(this.logChannel);
     }
 

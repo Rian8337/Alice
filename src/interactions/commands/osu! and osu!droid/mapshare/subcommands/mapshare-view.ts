@@ -5,7 +5,7 @@ import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MessageOptions } from "discord.js";
+import { BaseMessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
@@ -73,7 +73,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embedOptions: MessageOptions =
+    const embedOptions: BaseMessageOptions =
         (await EmbedCreator.createMapShareEmbed(
             submission,
             localization.language

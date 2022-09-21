@@ -2,7 +2,7 @@ import AdmZip from "adm-zip";
 import {
     GuildMember,
     EmbedBuilder,
-    MessageOptions,
+    BaseMessageOptions,
     AttachmentBuilder,
 } from "discord.js";
 import { Constants } from "@alice-core/Constants";
@@ -201,7 +201,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         score
     ))!;
 
-    const calcEmbedOptions: MessageOptions =
+    const calcEmbedOptions: BaseMessageOptions =
         await EmbedCreator.createCalculationEmbed(
             BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
             droidCalcResult,

@@ -8,7 +8,7 @@ import {
     Guild,
     GuildEmoji,
     GuildMember,
-    MessageOptions,
+    BaseMessageOptions,
     User,
 } from "discord.js";
 import { Config } from "@alice-core/Config";
@@ -161,7 +161,7 @@ export abstract class EmbedCreator {
         beatmapInfo: MapInfo,
         calculationParams?: DifficultyCalculationParameters,
         language: Language = "en"
-    ): MessageOptions {
+    ): BaseMessageOptions {
         const localization: EmbedCreatorLocalization =
             new EmbedCreatorLocalization(language);
 
@@ -384,11 +384,11 @@ export abstract class EmbedCreator {
               >,
         graphColor?: string,
         language: Language = "en"
-    ): Promise<MessageOptions> {
+    ): Promise<BaseMessageOptions> {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
-        const embedOptions: MessageOptions = this.createBeatmapEmbed(
+        const embedOptions: BaseMessageOptions = this.createBeatmapEmbed(
             osuCalculationResult.map,
             calculationParams,
             language
@@ -396,7 +396,8 @@ export abstract class EmbedCreator {
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
         const map: MapInfo = osuCalculationResult.map;
-        const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
+        const files: NonNullable<BaseMessageOptions["files"]> =
+            embedOptions.files!;
 
         if (
             calculationParams instanceof PerformanceCalculationParameters &&
@@ -823,7 +824,7 @@ export abstract class EmbedCreator {
         challenge: Challenge,
         graphColor?: string,
         language: Language = "en"
-    ): Promise<MessageOptions> {
+    ): Promise<BaseMessageOptions> {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
@@ -846,13 +847,14 @@ export abstract class EmbedCreator {
                 calcParams
             ))!;
 
-        const embedOptions: MessageOptions = await this.createCalculationEmbed(
-            calcParams,
-            droidCalcResult,
-            osuCalcResult,
-            undefined,
-            language
-        );
+        const embedOptions: BaseMessageOptions =
+            await this.createCalculationEmbed(
+                calcParams,
+                droidCalcResult,
+                osuCalcResult,
+                undefined,
+                language
+            );
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
 
@@ -928,7 +930,8 @@ export abstract class EmbedCreator {
             graphColor
         );
 
-        const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
+        const files: NonNullable<BaseMessageOptions["files"]> =
+            embedOptions.files!;
 
         if (chart) {
             embed.setImage("attachment://chart.png");
@@ -1107,7 +1110,7 @@ export abstract class EmbedCreator {
     static async createMapShareEmbed(
         submission: MapShare,
         language: Language = "en"
-    ): Promise<MessageOptions> {
+    ): Promise<BaseMessageOptions> {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
@@ -1126,13 +1129,14 @@ export abstract class EmbedCreator {
                 calcParams
             ))!;
 
-        const embedOptions: MessageOptions = await this.createCalculationEmbed(
-            calcParams,
-            droidCalcResult,
-            osuCalcResult,
-            "#28ebda",
-            language
-        );
+        const embedOptions: BaseMessageOptions =
+            await this.createCalculationEmbed(
+                calcParams,
+                droidCalcResult,
+                osuCalcResult,
+                "#28ebda",
+                language
+            );
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
 

@@ -2,10 +2,10 @@ import {
     GuildAuditLogs,
     GuildAuditLogsEntry,
     GuildBan,
-    GuildChannel,
     EmbedBuilder,
     User,
     AuditLogEvent,
+    GuildBasedChannel,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -42,7 +42,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const logChannel: GuildChannel | null =
+    const logChannel: GuildBasedChannel | null =
         await guildConfig.getGuildLogChannel(guildBan.guild);
 
     if (!logChannel?.isTextBased()) {

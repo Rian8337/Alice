@@ -61,6 +61,7 @@ export abstract class InteractionHelper {
         } else {
             message = await interaction.reply({
                 ...reply,
+                content: reply.content ?? undefined,
                 fetchReply: true,
                 ephemeral: interaction.ephemeral ?? false,
             });

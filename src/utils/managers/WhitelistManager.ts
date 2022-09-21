@@ -1,4 +1,4 @@
-import { MessageOptions, Snowflake, TextChannel } from "discord.js";
+import { BaseMessageOptions, Snowflake, TextChannel } from "discord.js";
 import { MapInfo, rankedStatus } from "@rian8337/osu-base";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
@@ -69,11 +69,8 @@ export abstract class WhitelistManager extends Manager {
 
         await DPPHelper.deletePlays(beatmap.hash);
 
-        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
-            beatmap,
-            undefined,
-            language
-        );
+        const embedOptions: BaseMessageOptions =
+            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -110,11 +107,8 @@ export abstract class WhitelistManager extends Manager {
             beatmapID: beatmap.beatmapID,
         });
 
-        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
-            beatmap,
-            undefined,
-            language
-        );
+        const embedOptions: BaseMessageOptions =
+            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -168,11 +162,8 @@ export abstract class WhitelistManager extends Manager {
             { upsert: true }
         );
 
-        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
-            beatmap,
-            undefined,
-            language
-        );
+        const embedOptions: BaseMessageOptions =
+            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
@@ -211,11 +202,8 @@ export abstract class WhitelistManager extends Manager {
 
         await DPPHelper.deletePlays(beatmap.hash);
 
-        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(
-            beatmap,
-            undefined,
-            language
-        );
+        const embedOptions: BaseMessageOptions =
+            EmbedCreator.createBeatmapEmbed(beatmap, undefined, language);
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(

@@ -21,7 +21,7 @@ import {
     GuildEmoji,
     GuildMember,
     EmbedBuilder,
-    MessageOptions,
+    BaseMessageOptions,
     AttachmentBuilder,
 } from "discord.js";
 
@@ -108,7 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         embed.setDescription(clan.description);
     }
 
-    const options: MessageOptions = {
+    const options: BaseMessageOptions = {
         embeds: [embed],
     };
 

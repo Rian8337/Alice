@@ -6,7 +6,7 @@ import { MapShareSubmissionStatus } from "structures/utils/MapShareSubmissionSta
 import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { ObjectId } from "bson";
-import { MessageOptions, Snowflake, TextChannel } from "discord.js";
+import { BaseMessageOptions, Snowflake, TextChannel } from "discord.js";
 import { UserBind } from "../elainaDb/UserBind";
 import { PlayerInfo } from "./PlayerInfo";
 import { Language } from "@alice-localization/base/Language";
@@ -107,7 +107,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
             );
         }
 
-        const embedOptions: MessageOptions | null =
+        const embedOptions: BaseMessageOptions | null =
             await EmbedCreator.createMapShareEmbed(this);
 
         if (!embedOptions) {

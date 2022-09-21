@@ -1,6 +1,6 @@
 import {
     Guild,
-    GuildChannel,
+    GuildBasedChannel,
     EmbedBuilder,
     Snowflake,
     TextChannel,
@@ -88,7 +88,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildChannel | null =
+        const logChannel: GuildBasedChannel | null =
             await guildConfig.getGuildLogChannel(this.mainServer);
 
         if (!logChannel?.isTextBased()) {
@@ -191,7 +191,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildChannel | null =
+        const logChannel: GuildBasedChannel | null =
             await guildConfig.getGuildLogChannel(this.mainServer);
 
         if (!logChannel) {

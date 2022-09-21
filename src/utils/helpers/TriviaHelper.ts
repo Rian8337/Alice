@@ -8,7 +8,7 @@ import {
     GuildMember,
     Message,
     EmbedBuilder,
-    MessageOptions,
+    BaseMessageOptions,
     Snowflake,
     ActionRowBuilder,
     ButtonBuilder,
@@ -178,7 +178,7 @@ export abstract class TriviaHelper {
         const component: ActionRowBuilder<ButtonBuilder> =
             new ActionRowBuilder();
 
-        const options: MessageOptions = {
+        const options: BaseMessageOptions = {
             content: MessageCreator.createWarn(
                 localization.getTranslation("triviaQuestion")
             ),

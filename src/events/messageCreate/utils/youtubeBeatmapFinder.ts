@@ -1,4 +1,9 @@
-import { Message, EmbedBuilder, MessageOptions, ChannelType } from "discord.js";
+import {
+    Message,
+    EmbedBuilder,
+    BaseMessageOptions,
+    ChannelType,
+} from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -94,7 +99,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     beatmapInfo.hash
                 );
 
-                const embedOptions: MessageOptions =
+                const embedOptions: BaseMessageOptions =
                     EmbedCreator.createBeatmapEmbed(
                         beatmapInfo,
                         undefined,
@@ -132,7 +137,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
                 const firstBeatmap: MapInfo = beatmapInformations[0];
 
-                const embedOptions: MessageOptions =
+                const embedOptions: BaseMessageOptions =
                     EmbedCreator.createBeatmapEmbed(
                         firstBeatmap,
                         undefined,

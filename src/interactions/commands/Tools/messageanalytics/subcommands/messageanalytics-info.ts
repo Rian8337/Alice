@@ -1,9 +1,9 @@
 import {
     Collection,
     Guild,
-    GuildChannel,
     EmbedBuilder,
     Snowflake,
+    GuildBasedChannel,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ActivityCategory } from "structures/interactions/commands/Tools/ActivityCategory";
@@ -156,7 +156,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     let languageDescription: string = "";
 
     for (const [id, count] of sortedChannelData) {
-        const channel: GuildChannel | null = await guild.channels
+        const channel: GuildBasedChannel | null = await guild.channels
             .fetch(id)
             .catch(() => null);
 

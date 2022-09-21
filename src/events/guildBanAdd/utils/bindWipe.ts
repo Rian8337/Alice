@@ -1,4 +1,4 @@
-import { GuildBan, GuildChannel } from "discord.js";
+import { GuildBan, GuildBasedChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
@@ -20,7 +20,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    const logChannel: GuildChannel | null =
+    const logChannel: GuildBasedChannel | null =
         await guildConfig.getGuildLogChannel(guildBan.guild);
 
     if (!logChannel?.isTextBased()) {

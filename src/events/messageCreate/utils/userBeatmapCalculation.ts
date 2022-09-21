@@ -7,7 +7,12 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { Message, EmbedBuilder, MessageOptions, ChannelType } from "discord.js";
+import {
+    Message,
+    EmbedBuilder,
+    BaseMessageOptions,
+    ChannelType,
+} from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapInfo, MapStats } from "@rian8337/osu-base";
@@ -87,7 +92,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 continue;
             }
 
-            const calcEmbedOptions: MessageOptions =
+            const calcEmbedOptions: BaseMessageOptions =
                 await EmbedCreator.createCalculationEmbed(
                     calcParams,
                     droidCalcResult,
@@ -143,7 +148,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
             const firstBeatmap: MapInfo = beatmapInformations[0];
 
-            const embedOptions: MessageOptions =
+            const embedOptions: BaseMessageOptions =
                 EmbedCreator.createBeatmapEmbed(
                     firstBeatmap,
                     undefined,

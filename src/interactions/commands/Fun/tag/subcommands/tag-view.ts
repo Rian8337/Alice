@@ -5,7 +5,7 @@ import { TagLocalization } from "@alice-localization/interactions/commands/Fun/t
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageOptions } from "discord.js";
+import { BaseMessageOptions } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -42,7 +42,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const options: MessageOptions = {
+    const options: BaseMessageOptions = {
         allowedMentions: {
             parse: [],
         },

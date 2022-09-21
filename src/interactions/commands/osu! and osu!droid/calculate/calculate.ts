@@ -1,4 +1,4 @@
-import { GuildMember, MessageOptions } from "discord.js";
+import { GuildMember, BaseMessageOptions } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -180,7 +180,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const calcEmbedOptions: MessageOptions =
+    const calcEmbedOptions: BaseMessageOptions =
         await EmbedCreator.createCalculationEmbed(
             calcParams,
             droidCalcResult,
