@@ -62,31 +62,31 @@ export abstract class DPPHelper {
                   });
 
         if (!beatmapInfo) {
-            return DPPSubmissionValidity.BEATMAP_NOT_FOUND;
+            return DPPSubmissionValidity.beatmapNotFound;
         }
 
         switch (true) {
             case beatmapOrScore instanceof Score &&
                 beatmapOrScore.forcedAR !== undefined:
-                return DPPSubmissionValidity.SCORE_USES_FORCE_AR;
+                return DPPSubmissionValidity.scoreUsesForceAR;
             case beatmapOrScore instanceof Score &&
                 beatmapOrScore.speedMultiplier !== 1:
-                return DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED;
+                return DPPSubmissionValidity.scoreUsesCustomSpeed;
             case beatmapInfo.approved === rankedStatus.LOVED &&
                 (beatmapInfo.hitLength < 30 ||
                     beatmapInfo.hitLength / beatmapInfo.totalLength < 0.6):
-                return DPPSubmissionValidity.BEATMAP_TOO_SHORT;
+                return DPPSubmissionValidity.beatmapTooShort;
             case await WhitelistManager.isBlacklisted(beatmapInfo.beatmapID):
-                return DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED;
+                return DPPSubmissionValidity.beatmapIsBlacklisted;
             case WhitelistManager.beatmapNeedsWhitelisting(
                 beatmapInfo.approved
             ) &&
                 (await WhitelistManager.getBeatmapWhitelistStatus(
                     beatmapInfo.hash
                 )) !== "updated":
-                return DPPSubmissionValidity.BEATMAP_NOT_WHITELISTED;
+                return DPPSubmissionValidity.beatmapNotWhitelisted;
             default:
-                return DPPSubmissionValidity.VALID;
+                return DPPSubmissionValidity.valid;
         }
     }
 

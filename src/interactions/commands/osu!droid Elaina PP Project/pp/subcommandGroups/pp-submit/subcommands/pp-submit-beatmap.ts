@@ -121,31 +121,31 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         await DPPHelper.checkSubmissionValidity(score);
 
     switch (submissionValidity) {
-        case DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED:
+        case DPPSubmissionValidity.beatmapIsBlacklisted:
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("beatmapIsBlacklisted")
                 ),
             });
-        case DPPSubmissionValidity.BEATMAP_NOT_WHITELISTED:
+        case DPPSubmissionValidity.beatmapNotWhitelisted:
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("beatmapNotWhitelisted")
                 ),
             });
-        case DPPSubmissionValidity.BEATMAP_TOO_SHORT:
+        case DPPSubmissionValidity.beatmapTooShort:
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("beatmapTooShort")
                 ),
             });
-        case DPPSubmissionValidity.SCORE_USES_FORCE_AR:
+        case DPPSubmissionValidity.scoreUsesForceAR:
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("scoreUsesForceAR")
                 ),
             });
-        case DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED:
+        case DPPSubmissionValidity.scoreUsesCustomSpeed:
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation(

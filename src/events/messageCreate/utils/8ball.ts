@@ -25,22 +25,22 @@ function getResponseType(
         );
     }
 
-    let returnValue: EightBallResponseType = EightBallResponseType.UNDECIDED;
+    let returnValue: EightBallResponseType = EightBallResponseType.undecided;
 
     if (Config.botOwners.includes(message.author.id)) {
         switch (true) {
             case containsWord(filter.like):
-                returnValue = EightBallResponseType.LIKE;
+                returnValue = EightBallResponseType.like;
                 break;
             case containsWord(filter.hate):
-                returnValue = EightBallResponseType.HATE;
+                returnValue = EightBallResponseType.hate;
                 break;
             case containsWord(filter.badwords):
-                returnValue = EightBallResponseType.NEUTRAL;
+                returnValue = EightBallResponseType.neutral;
                 break;
         }
     } else if (containsWord(filter.badwords)) {
-        returnValue = EightBallResponseType.NO_ANSWER;
+        returnValue = EightBallResponseType.noAnswer;
     }
 
     return returnValue;
@@ -74,16 +74,16 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
     let answer: string = "";
     switch (responseType) {
-        case EightBallResponseType.LIKE:
+        case EightBallResponseType.like:
             answer = "Yes, absolutely.";
             break;
-        case EightBallResponseType.HATE:
+        case EightBallResponseType.hate:
             answer = "N... No! I would never think of that...";
             break;
-        case EightBallResponseType.NEUTRAL:
+        case EightBallResponseType.neutral:
             answer = "Um... Uh...";
             break;
-        case EightBallResponseType.NO_ANSWER:
+        case EightBallResponseType.noAnswer:
             answer = "Uh, I don't think I want to answer that.";
             break;
         default:

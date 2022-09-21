@@ -40,13 +40,13 @@ export const run: SlashSubcommand<true>["run"] = async (
             const validity: WhitelistValidity = await entry.checkValidity();
 
             switch (validity) {
-                case WhitelistValidity.BEATMAP_NOT_FOUND:
-                case WhitelistValidity.DOESNT_NEED_WHITELISTING:
+                case WhitelistValidity.beatmapNotFound:
+                case WhitelistValidity.doesntNeedWhitelisting:
                     await DPPHelper.deletePlays(entry.hashid);
 
                     await whitelistDb.deleteOne({ mapid: entry.mapid });
                     break;
-                case WhitelistValidity.OUTDATED_HASH: {
+                case WhitelistValidity.outdatedHash: {
                     await DPPHelper.deletePlays(entry.hashid);
 
                     const beatmapInfo: MapInfo<false> =
@@ -57,7 +57,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                     entry.hashid = beatmapInfo.hash;
                 }
                 // eslint-disable-next-line no-fallthrough
-                case WhitelistValidity.VALID:
+                case WhitelistValidity.valid:
                     consola.info(++scannedCount);
 
                     await HelperFunctions.sleep(0.05);

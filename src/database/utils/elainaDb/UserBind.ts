@@ -222,7 +222,7 @@ export class UserBind extends Manager {
             if (
                 !beatmapInfo ||
                 (await DPPHelper.checkSubmissionValidity(beatmapInfo)) !==
-                    DPPSubmissionValidity.VALID
+                    DPPSubmissionValidity.valid
             ) {
                 hashesToDelete.push(ppEntry.hash);
                 this.pp.delete(ppEntry.hash);
@@ -333,7 +333,7 @@ export class UserBind extends Manager {
 
             if (
                 (await DPPHelper.checkSubmissionValidity(score)) !==
-                DPPSubmissionValidity.VALID
+                DPPSubmissionValidity.valid
             ) {
                 continue;
             }
@@ -422,7 +422,7 @@ export class UserBind extends Manager {
 
             if (
                 (await DPPHelper.checkSubmissionValidity(score)) !==
-                DPPSubmissionValidity.VALID
+                DPPSubmissionValidity.valid
             ) {
                 continue;
             }
@@ -605,7 +605,7 @@ export class UserBind extends Manager {
 
                     if (
                         (await DPPHelper.checkSubmissionValidity(score)) ===
-                        DPPSubmissionValidity.VALID
+                        DPPSubmissionValidity.valid
                     ) {
                         const calcResult: PerformanceCalculationResult<
                             DroidDifficultyCalculator,

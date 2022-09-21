@@ -150,23 +150,23 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             await DPPHelper.checkSubmissionValidity(score);
 
         switch (submissionValidity) {
-            case DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED:
+            case DPPSubmissionValidity.beatmapIsBlacklisted:
                 fieldContent += localization.getTranslation(
                     "blacklistedBeatmapReject"
                 );
                 break;
-            case DPPSubmissionValidity.BEATMAP_NOT_WHITELISTED:
+            case DPPSubmissionValidity.beatmapNotWhitelisted:
                 fieldContent += localization.getTranslation(
                     "unrankedBeatmapReject"
                 );
                 break;
-            case DPPSubmissionValidity.BEATMAP_TOO_SHORT:
+            case DPPSubmissionValidity.beatmapTooShort:
                 fieldContent += localization.getTranslation(
                     "beatmapTooShortReject"
                 );
                 break;
-            case DPPSubmissionValidity.SCORE_USES_FORCE_AR:
-            case DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED:
+            case DPPSubmissionValidity.scoreUsesForceAR:
+            case DPPSubmissionValidity.scoreUsesCustomSpeed:
                 fieldContent += localization.getTranslation(
                     "unrankedFeaturesReject"
                 );

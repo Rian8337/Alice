@@ -43,20 +43,20 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
             });
 
         if (!beatmapInfo) {
-            return WhitelistValidity.BEATMAP_NOT_FOUND;
+            return WhitelistValidity.beatmapNotFound;
         }
 
         if (this.hashid !== beatmapInfo.hash) {
             await this.updateDiffstat();
 
-            return WhitelistValidity.OUTDATED_HASH;
+            return WhitelistValidity.outdatedHash;
         }
 
         if (!WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved)) {
-            return WhitelistValidity.DOESNT_NEED_WHITELISTING;
+            return WhitelistValidity.doesntNeedWhitelisting;
         }
 
-        return WhitelistValidity.VALID;
+        return WhitelistValidity.valid;
     }
 
     /**
