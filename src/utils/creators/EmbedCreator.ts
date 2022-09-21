@@ -650,6 +650,11 @@ export abstract class EmbedCreator {
             return embed;
         }
 
+        await DroidBeatmapDifficultyHelper.applyTapPenalty(
+            score,
+            droidCalcResult
+        );
+
         embed
             .setAuthor({
                 name: `${
@@ -671,7 +676,7 @@ export abstract class EmbedCreator {
         beatmapInformation += `**${droidCalcResult.result.total.toFixed(
             2
         )}DPP**${
-            (droidCalcResult.replay?.tapPenalty ?? 1) !== 1
+            droidCalcResult.result.tapPenalty !== 1
                 ? ` (*${localization.getTranslation("penalized")}*)`
                 : ""
         } | **${osuCalcResult.result.total.toFixed(2)}PP** `;
@@ -681,9 +686,7 @@ export abstract class EmbedCreator {
             score.combo < osuCalcResult.map.maxCombo
         ) {
             const calcParams: PerformanceCalculationParameters =
-                await BeatmapDifficultyHelper.getCalculationParamsFromScore(
-                    score
-                );
+                BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
 
             calcParams.combo = osuCalcResult.map.maxCombo;
             calcParams.accuracy = new Accuracy({

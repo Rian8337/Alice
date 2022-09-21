@@ -153,14 +153,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     if (
         droidCalcResult !== null &&
-        droidCalcResult.replay?.data &&
+        score.replay?.data &&
         score.accuracy.nmiss > 0
     ) {
         MessageButtonCreator.createMissAnalyzerButton(
             interaction,
             options,
             droidCalcResult.result.difficultyCalculator,
-            droidCalcResult.replay.data
+            score.replay.data
         );
     } else {
         InteractionHelper.reply(interaction, options);

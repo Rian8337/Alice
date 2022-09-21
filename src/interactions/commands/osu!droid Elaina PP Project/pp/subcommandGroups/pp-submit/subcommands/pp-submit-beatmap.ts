@@ -174,6 +174,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const currentTotalPP: number = bindInfo.pptotal;
 
     if (droidCalcResult) {
+        await DroidBeatmapDifficultyHelper.applyTapPenalty(
+            score,
+            droidCalcResult
+        );
+
         DPPHelper.insertScore(bindInfo.pp, [
             DPPHelper.scoreToPPEntry(score, droidCalcResult),
         ]);

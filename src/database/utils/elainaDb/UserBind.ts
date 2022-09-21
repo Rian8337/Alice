@@ -351,6 +351,11 @@ export class UserBind extends Manager {
                 continue;
             }
 
+            await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                score,
+                calcResult
+            );
+
             const oldCalcResult: OldPerformanceCalculationResult =
                 (await BeatmapOldDifficultyHelper.calculateScorePerformance(
                     score
@@ -432,6 +437,11 @@ export class UserBind extends Manager {
             if (!calcResult) {
                 continue;
             }
+
+            await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                score,
+                calcResult
+            );
 
             const indexes: number[] = Utils.initializeArray(10, 0);
 
@@ -605,6 +615,10 @@ export class UserBind extends Manager {
                         );
 
                         if (calcResult) {
+                            await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                                score,
+                                calcResult
+                            );
                             ++this.playc;
 
                             DPPHelper.insertScore(newList, [

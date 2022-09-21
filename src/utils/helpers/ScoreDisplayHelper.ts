@@ -230,10 +230,7 @@ export abstract class ScoreDisplayHelper {
                 DroidPerformanceCalculator
             > | null = beatmapInfo
                 ? droidCalculationCache.get(score.scoreID) ??
-                  (await droidDiffCalcHelper.calculateScorePerformance(
-                      score,
-                      false
-                  ))
+                  (await droidDiffCalcHelper.calculateScorePerformance(score))
                 : null;
 
             const osuCalcResult: PerformanceCalculationResult<

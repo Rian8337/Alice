@@ -186,6 +186,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     break;
                 }
 
+                await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                    score,
+                    droidCalcResult
+                );
+
                 ppEntries.push(
                     DPPHelper.scoreToPPEntry(score, droidCalcResult)
                 );

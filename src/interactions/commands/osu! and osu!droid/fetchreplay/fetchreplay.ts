@@ -203,7 +203,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const calcEmbedOptions: MessageOptions =
         await EmbedCreator.createCalculationEmbed(
-            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+            BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
             droidCalcResult,
             osuCalcResult,
             (<GuildMember | null>interaction.member)?.displayHexColor,

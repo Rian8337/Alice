@@ -1,9 +1,9 @@
 import { MapInfo } from "@rian8337/osu-base";
-import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 import {
     DifficultyCalculator as RebalanceDifficultyCalculator,
     PerformanceCalculator as RebalancePerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
+import { PerformanceCalculationParameters } from "./PerformanceCalculationParameters";
 
 /**
  * Represents a beatmap's performance calculation result.
@@ -18,18 +18,22 @@ export class RebalancePerformanceCalculationResult<
     readonly map: MapInfo<true>;
 
     /**
-     * The replay of the score, if one is used during calculation.
+     * The calculation parameters.
      */
-    readonly replay?: ReplayAnalyzer;
+    readonly params: PerformanceCalculationParameters;
 
     /**
      * The performance of the beatmap.
      */
     readonly result: P;
 
-    constructor(map: MapInfo, result: P, replay?: ReplayAnalyzer) {
+    constructor(
+        map: MapInfo<true>,
+        params: PerformanceCalculationParameters,
+        result: P
+    ) {
         this.map = map;
+        this.params = params;
         this.result = result;
-        this.replay = replay;
     }
 }

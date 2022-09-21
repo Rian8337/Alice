@@ -486,8 +486,7 @@ export class Challenge extends Manager {
             DroidPerformanceCalculator
         > | null = await this.droidDiffCalcHelper.calculateBeatmapPerformance(
             this.beatmapid,
-            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
-            score.replay
+            BeatmapDifficultyHelper.getCalculationParamsFromScore(score)
         );
 
         this.osuDiffCalcHelper ??= new OsuBeatmapDifficultyHelper();
@@ -497,7 +496,7 @@ export class Challenge extends Manager {
             OsuPerformanceCalculator
         > | null = await this.osuDiffCalcHelper.calculateBeatmapPerformance(
             this.beatmapid,
-            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score)
+            BeatmapDifficultyHelper.getCalculationParamsFromScore(score)
         );
 
         if (!droidCalcResult || !osuCalcResult) {
@@ -645,14 +644,14 @@ export class Challenge extends Manager {
             droidCalcResult =
                 await this.droidDiffCalcHelper.calculateBeatmapPerformance(
                     this.beatmapid,
-                    await DroidBeatmapDifficultyHelper.getCalculationParamsFromScore(
+                    BeatmapDifficultyHelper.getCalculationParamsFromScore(
                         scoreOrReplay
                     )
                 );
             osuCalcResult =
                 await this.osuDiffCalcHelper.calculateBeatmapPerformance(
                     this.beatmapid,
-                    await OsuBeatmapDifficultyHelper.getCalculationParamsFromScore(
+                    BeatmapDifficultyHelper.getCalculationParamsFromScore(
                         scoreOrReplay
                     )
                 );
@@ -1312,8 +1311,7 @@ export class Challenge extends Manager {
                 data.maxCombo,
                 1,
                 stats
-            ),
-            replay
+            )
         ))!;
 
         this.osuDiffCalcHelper ??= new OsuBeatmapDifficultyHelper();
