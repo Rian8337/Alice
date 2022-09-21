@@ -128,7 +128,7 @@ export abstract class EmbedCreator {
         if (embedOptions.author) {
             embed.setAuthor({
                 name: embedOptions.author.tag,
-                iconURL: embedOptions.author.avatarURL({ extension: "gif" })!,
+                iconURL: embedOptions.author.avatarURL()!,
             });
         }
 
@@ -1063,7 +1063,7 @@ export abstract class EmbedCreator {
         embed
             .setAuthor({
                 name: localization.getTranslation("broadcast"),
-                iconURL: guild.iconURL({ extension: "gif" })!,
+                iconURL: guild.iconURL()!,
             })
             .setDescription(
                 `${localization.getTranslation(

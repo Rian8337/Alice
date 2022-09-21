@@ -74,7 +74,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     });
 
     embed
-        .setThumbnail(toReport.user.avatarURL({ extension: "gif" })!)
+        .setThumbnail(toReport.user.avatarURL()!)
         .setDescription(
             `**${localization.getTranslation("offender")}**: ${toReport} (${
                 toReport.id

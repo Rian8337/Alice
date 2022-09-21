@@ -38,7 +38,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     };
 
     embed
-        .setThumbnail(client.user.avatarURL({ extension: "gif" })!)
+        .setThumbnail(client.user.avatarURL()!)
         .setDescription(
             StringHelper.formatString(
                 localization.getTranslation("aboutBot"),

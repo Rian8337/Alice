@@ -16,10 +16,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         .setAuthor({
             name: user.tag,
         })
-        .setDescription(
-            `[Avatar Link](${user.avatarURL({ extension: "gif", size: 1024 })})`
-        )
-        .setImage(user.avatarURL({ extension: "gif", size: 1024 })!);
+        .setDescription(`[Avatar Link](${user.avatarURL()})`)
+        .setImage(user.avatarURL()!);
 
     const embeds: EmbedBuilder[] = [avatarEmbed];
 
@@ -32,13 +30,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             .setAuthor({
                 name: user.tag,
             })
-            .setDescription(
-                `[Banner Link](${user.bannerURL({
-                    extension: "gif",
-                    size: 1024,
-                })})`
-            )
-            .setImage(user.bannerURL({ extension: "gif", size: 1024 })!);
+            .setDescription(`[Banner Link](${user.bannerURL()})`)
+            .setImage(user.bannerURL()!);
 
         embeds.push(bannerEmbed);
     }

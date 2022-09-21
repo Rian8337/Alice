@@ -55,7 +55,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     embed
         .setTitle("Unban Executed")
-        .setThumbnail(guildBan.user.avatarURL({ extension: "gif" })!)
+        .setThumbnail(guildBan.user.avatarURL()!)
         .addFields({
             name: `Unbanned user: ${guildBan.user.tag}`,
             value: `User ID: ${guildBan.user.id}`,
@@ -64,7 +64,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
     if (unbanLog.executor) {
         embed.setAuthor({
             name: unbanLog.executor.tag,
-            iconURL: unbanLog.executor.avatarURL({ extension: "gif" })!,
+            iconURL: unbanLog.executor.avatarURL()!,
         });
     }
 

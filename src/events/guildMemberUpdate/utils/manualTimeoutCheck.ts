@@ -84,7 +84,7 @@ export const run: EventUtil["run"] = async (
         const timeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
-                iconURL: auditLog.executor.avatarURL({ extension: "gif" })!,
+                iconURL: auditLog.executor.avatarURL()!,
             })
             .setTitle(localization.getTranslation("timeoutExecuted"))
             .setFooter({
@@ -107,7 +107,7 @@ export const run: EventUtil["run"] = async (
         const userTimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: newMember.user.tag,
-                iconURL: newMember.user.avatarURL({ extension: "gif" })!,
+                iconURL: newMember.user.avatarURL()!,
             })
             .setTitle(userLocalization.getTranslation("timeoutExecuted"))
             .setFooter({
@@ -204,7 +204,7 @@ export const run: EventUtil["run"] = async (
         const untimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
-                iconURL: auditLog.executor.avatarURL({ extension: "gif" })!,
+                iconURL: auditLog.executor.avatarURL()!,
             })
             .setTitle(localization.getTranslation("untimeoutExecuted"))
             .setFooter({
@@ -222,7 +222,7 @@ export const run: EventUtil["run"] = async (
         const userUntimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
-                iconURL: auditLog.executor.avatarURL({ extension: "gif" })!,
+                iconURL: auditLog.executor.avatarURL()!,
             })
             .setTitle(userLocalization.getTranslation("untimeoutExecuted"))
             .setFooter({

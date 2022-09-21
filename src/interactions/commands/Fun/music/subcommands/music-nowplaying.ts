@@ -32,7 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed
         .setAuthor({
             name: interaction.user.tag,
-            iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+            iconURL: interaction.user.avatarURL()!,
         })
         .setColor((<GuildMember>interaction.member).displayColor);
 

@@ -94,7 +94,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation("emojiStatisticsForServer"),
                 interaction.guild!.name
             ),
-            iconURL: interaction.guild!.iconURL({ extension: "gif" })!,
+            iconURL: interaction.guild!.iconURL()!,
         })
         .setDescription(
             `**${localization.getTranslation(

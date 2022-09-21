@@ -102,7 +102,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("playerBindInfo"),
                 player.username
             ),
-            iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+            iconURL: interaction.user.avatarURL()!,
             url: ProfileManager.getProfileLink(player.uid).toString(),
         })
         .setThumbnail(player.avatarURL)

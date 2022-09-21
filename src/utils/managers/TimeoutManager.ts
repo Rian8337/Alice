@@ -141,7 +141,7 @@ export abstract class TimeoutManager extends PunishmentManager {
         const timeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(logLocalization.getTranslation("timeoutExecuted"))
             .setFooter({
@@ -173,7 +173,7 @@ export abstract class TimeoutManager extends PunishmentManager {
         const userTimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(userLocalization.getTranslation("timeoutExecuted"))
             .setFooter({
@@ -301,7 +301,7 @@ export abstract class TimeoutManager extends PunishmentManager {
         const untimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(logLocalization.getTranslation("untimeoutExecuted"))
             .setFooter({
@@ -330,7 +330,7 @@ export abstract class TimeoutManager extends PunishmentManager {
         const userUntimeoutEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(userLocalization.getTranslation("untimeoutExecuted"))
             .setFooter({

@@ -62,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 user.tag
             )
         )
-        .setThumbnail(user.avatarURL({ extension: "gif" })!)
+        .setThumbnail(user.avatarURL()!)
         .setDescription(
             `**${localization.getTranslation("totalActivePoints")}**: ${warnings
                 .filter((v) => v.isActive)

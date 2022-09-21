@@ -133,7 +133,7 @@ export abstract class WarningManager extends PunishmentManager {
         const warningEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(logLocalization.getTranslation("warningIssued"))
             .setFooter({
@@ -170,7 +170,7 @@ export abstract class WarningManager extends PunishmentManager {
         const userWarningEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(userLocalization.getTranslation("warningIssued"))
             .setFooter({
@@ -310,7 +310,7 @@ export abstract class WarningManager extends PunishmentManager {
         const warningEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(localization.getTranslation("warningUnissued"))
             .setFooter({
@@ -352,7 +352,7 @@ export abstract class WarningManager extends PunishmentManager {
         const userWarningEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(userLocalization.getTranslation("warningUnissued"))
             .setFooter({
@@ -457,7 +457,7 @@ export abstract class WarningManager extends PunishmentManager {
         const logEmbed: EmbedBuilder = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
-                iconURL: interaction.user.avatarURL({ extension: "gif" })!,
+                iconURL: interaction.user.avatarURL()!,
             })
             .setTitle(localization.getTranslation("warningTransferred"))
             .setDescription(
