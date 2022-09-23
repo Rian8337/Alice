@@ -149,7 +149,7 @@ export abstract class TimeoutManager extends PunishmentManager {
                     member.id
                 } | ${logLocalization.getTranslation(
                     "channelId"
-                )}: <#${channelId}>`,
+                )}: ${channelId}`,
             })
             .setTimestamp(new Date())
             .setDescription(
@@ -181,7 +181,7 @@ export abstract class TimeoutManager extends PunishmentManager {
                     member.id
                 } | ${userLocalization.getTranslation(
                     "channelId"
-                )}: <#${channelId}>`,
+                )}: ${channelId}`,
             })
             .setTimestamp(new Date())
             .setDescription(

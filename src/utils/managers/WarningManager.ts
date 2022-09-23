@@ -143,7 +143,7 @@ export abstract class WarningManager extends PunishmentManager {
                     member.id
                 } | ${logLocalization.getTranslation(
                     "channelId"
-                )}: <#${channelId}>`,
+                )}: ${channelId}`,
             })
             .setTimestamp(new Date())
             .setDescription(
@@ -180,7 +180,7 @@ export abstract class WarningManager extends PunishmentManager {
                     member.id
                 } | ${userLocalization.getTranslation(
                     "channelId"
-                )}: <#${channelId}>`,
+                )}: ${channelId}`,
             })
             .setTimestamp(new Date())
             .setDescription(
@@ -368,7 +368,7 @@ export abstract class WarningManager extends PunishmentManager {
             .setDescription(
                 `**${StringHelper.formatString(
                     userLocalization.getTranslation("warningIssueInChannel"),
-                    `<#${warning.channelId}>`
+                    warning.channelId
                 )}**\n\n` +
                     `**${userLocalization.getTranslation("points")}**: ${
                         warning.points
