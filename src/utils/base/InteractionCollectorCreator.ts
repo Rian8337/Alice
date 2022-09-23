@@ -125,10 +125,22 @@ export abstract class InteractionCollectorCreator extends Manager {
             }
         };
 
+        const messageDeleteListener = (
+            message: Message | PartialMessage
+        ): void => {
+            if (collector.messageId === message.id) {
+                options.componentIsDeleted = true;
+
+                collector.stop("Message deleted");
+            }
+        };
+
         this.client.on("messageUpdate", messageEditListener);
+        this.client.once("messageDelete", messageDeleteListener);
 
         collector.once("end", () => {
             this.client.removeListener("messageUpdate", messageEditListener);
+            this.client.removeListener("messageDelete", messageDeleteListener);
         });
     }
 }
