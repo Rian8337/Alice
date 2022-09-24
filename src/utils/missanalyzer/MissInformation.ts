@@ -1,6 +1,7 @@
 import {
     BeatmapMetadata,
     HitObject,
+    Interpolation,
     modes,
     Playfield,
     Slider,
@@ -12,8 +13,8 @@ import {
 import {
     CursorOccurrence,
     CursorOccurrenceGroup,
-    hitResult,
-    movementType,
+    HitResult,
+    MovementType,
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Canvas } from "canvas";
 
@@ -84,7 +85,7 @@ export class MissInformation {
     /**
      * The hit results of past objects.
      */
-    readonly previousHitResults: hitResult[];
+    readonly previousHitResults: HitResult[];
 
     /**
      * The AR of the beatmap, in milliseconds.
@@ -125,7 +126,7 @@ export class MissInformation {
         clockRate: number,
         drawFlipped: boolean,
         previousObjects: HitObject[],
-        previousHitResults: hitResult[],
+        previousHitResults: HitResult[],
         cursorGroups: CursorOccurrenceGroup[][],
         approachRateTime: number,
         verdict?: string,
@@ -164,6 +165,24 @@ export class MissInformation {
         }
 
         this.canvas = new Canvas(1200, 1000);
+        this.writeTexts();
+        this.initPlayfield();
+        this.drawObjects();
+        this.drawCursorGroups();
+        this.drawClosestCursorPosition();
+
+        this.canvas.getContext("2d").restore();
+
+        return this.canvas;
+    }
+
+    /**
+     * Writes necessary texts in the canvas.
+     */
+    private writeTexts(): void {
+        if (!this.canvas) {
+            return;
+        }
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
         const textPadding: number = 5;
@@ -258,6 +277,16 @@ export class MissInformation {
         }
 
         context.restore();
+    }
+
+    /**
+     * Initializes the playfield and translates the context
+     * into the (0, 0) coordinate of the playfield.
+     */
+    private initPlayfield(): void {
+        if (!this.canvas) {
+            return;
+        }
 
         // The playfield is 512x384. However, since we're drawing on a limited space,
         // we will have to scale the area and objects down.
@@ -266,6 +295,7 @@ export class MissInformation {
         const scaledPlayfieldY: number =
             Playfield.baseSize.y * this.playfieldScale;
 
+        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
         context.save();
         context.translate(
             // Center the playfield.
@@ -275,7 +305,12 @@ export class MissInformation {
         context.lineWidth = 3;
         context.strokeRect(0, 0, scaledPlayfieldX, scaledPlayfieldY);
         context.lineWidth = 1;
+    }
 
+    /**
+     * Draws all objects to the canvas.
+     */
+    private drawObjects(): void {
         for (let i = 0; i < this.previousObjects.length; ++i) {
             this.drawObject(
                 this.previousObjects[i],
@@ -286,41 +321,9 @@ export class MissInformation {
 
         this.drawObject(
             this.object,
-            hitResult.RESULT_0,
+            HitResult.miss,
             this.previousObjects.length + 1
         );
-
-        this.drawCursorGroups();
-
-        if (this.closestCursorPosition) {
-            // Draw the closest cursor position.
-            const drawPosition: Vector2 = this.flipVectorVertically(
-                this.closestCursorPosition.scale(this.playfieldScale)
-            );
-
-            const gradient: CanvasGradient = context.createRadialGradient(
-                drawPosition.x,
-                drawPosition.y,
-                0,
-                drawPosition.x,
-                drawPosition.y,
-                10
-            );
-
-            gradient.addColorStop(0, "#ffffff");
-            gradient.addColorStop(1, "#9e3fe8");
-
-            context.fillStyle = gradient;
-            context.globalAlpha = 1;
-            context.beginPath();
-            context.arc(drawPosition.x, drawPosition.y, 10, 0, 2 * Math.PI);
-            context.fill();
-            context.closePath();
-        }
-
-        context.restore();
-
-        return this.canvas;
     }
 
     /**
@@ -332,7 +335,7 @@ export class MissInformation {
      */
     private drawObject(
         object: HitObject,
-        objectHitResult: hitResult,
+        objectHitResult: HitResult,
         objectIndex: number
     ): void {
         if (!this.canvas) {
@@ -350,22 +353,22 @@ export class MissInformation {
         let sliderPathColor: string;
 
         switch (objectHitResult) {
-            case hitResult.RESULT_300:
+            case HitResult.great:
                 fillColor = "#326ed9";
                 borderColor = "#2b59ab";
                 sliderPathColor = "#467ee0";
                 break;
-            case hitResult.RESULT_100:
+            case HitResult.good:
                 fillColor = "#40bd48";
                 borderColor = "#38a83f";
                 sliderPathColor = "#4deb57";
                 break;
-            case hitResult.RESULT_50:
+            case HitResult.meh:
                 fillColor = "#c9913c";
                 borderColor = "#c98318";
                 sliderPathColor = "#de9f40";
                 break;
-            case hitResult.RESULT_0:
+            case HitResult.miss:
                 fillColor = "#e63c3c";
                 borderColor = "#bf2121";
                 sliderPathColor = "#eb4d4d";
@@ -410,9 +413,11 @@ export class MissInformation {
             context.closePath();
 
             // Only draw path direction if the path is long enough.
-            if (object.path.expectedDistance > 50) {
-                context.fillStyle = "#606060";
-                context.globalAlpha = 0.75;
+            if (object.path.expectedDistance > 150) {
+                context.strokeStyle = "#606060";
+                context.globalAlpha = 0.5;
+                context.lineWidth = scaledRadius * 0.15;
+                context.lineCap = "round";
                 context.beginPath();
 
                 for (let i = 0; i <= drawnDistance; i += 5) {
@@ -426,13 +431,14 @@ export class MissInformation {
                     context.lineTo(drawPosition.x, drawPosition.y);
                 }
 
-                context.fill();
+                context.stroke();
                 context.closePath();
             }
 
-            context.globalAlpha = 0.8;
-
             // Draw slider ticks.
+            context.globalAlpha = 0.8;
+            context.fillStyle = "#ad6140";
+
             for (const nestedObject of object.nestedHitObjects) {
                 // Only draw for one span.
                 if (nestedObject instanceof SliderRepeat) {
@@ -449,7 +455,6 @@ export class MissInformation {
                         .scale(this.playfieldScale)
                 );
 
-                context.fillStyle = "#ad6140";
                 context.beginPath();
                 context.arc(
                     drawPosition.x,
@@ -524,91 +529,35 @@ export class MissInformation {
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
 
-        const cursorStyle: string = "#800080";
-        const pathStyle: string = "#00ff80";
-
         const minTime: number = this.object.startTime - this.approachRateTime;
-        const maxTime: number = this.object.endTime + 250;
+        const maxTime: number = this.object.endTime + 200;
 
-        context.fillStyle = cursorStyle;
+        const color: string = "#800080";
+        context.fillStyle = color;
+        context.strokeStyle = color;
         context.lineWidth = 2.5;
+        context.lineCap = "round";
+        context.globalAlpha = 1;
 
-        for (const groups of this.cursorGroups) {
-            for (let i = 0; i < groups.length; ++i) {
-                const group: CursorOccurrenceGroup = groups[i];
-                context.strokeStyle = cursorStyle;
+        for (let i = 0; i < this.cursorGroups.length; ++i) {
+            const groups: CursorOccurrenceGroup[] = this.cursorGroups[i];
+
+            for (let j = 0; j < groups.length; ++j) {
+                const group: CursorOccurrenceGroup = groups[j];
 
                 const { allOccurrences } = group;
 
-                for (let j = 0; j < allOccurrences.length; ++j) {
-                    const occurrence: CursorOccurrence = allOccurrences[j];
+                for (let k = 0; k < allOccurrences.length; ++k) {
+                    const occurrence: CursorOccurrence = allOccurrences[k];
 
                     if (occurrence.time < minTime) {
                         continue;
                     }
 
-                    if (occurrence.time > maxTime) {
-                        break;
-                    }
-
-                    if (occurrence.id === movementType.UP) {
-                        const nextGroup: CursorOccurrenceGroup = groups[i + 1];
-
-                        // If there is a next group, draw a path to it.
-                        if (nextGroup) {
-                            context.strokeStyle = pathStyle;
-                            context.beginPath();
-
-                            const currentPosition: Vector2 =
-                                allOccurrences[j - 1].position;
-                            const nextPosition: Vector2 =
-                                nextGroup.down.position;
-
-                            const dx: number =
-                                nextPosition.x - currentPosition.x;
-                            const dy: number =
-                                nextPosition.y - currentPosition.y;
-                            const angle: number = Math.atan2(dy, dx);
-
-                            const currentDrawPosition: Vector2 =
-                                this.flipVectorVertically(
-                                    currentPosition.scale(this.playfieldScale)
-                                );
-                            const nextDrawPosition: Vector2 =
-                                this.flipVectorVertically(
-                                    nextPosition.scale(this.playfieldScale)
-                                );
-
-                            const headLength: number = 15;
-
-                            context.moveTo(
-                                currentDrawPosition.x,
-                                currentDrawPosition.y
-                            );
-                            context.lineTo(
-                                nextDrawPosition.x,
-                                nextDrawPosition.y
-                            );
-                            context.lineTo(
-                                nextDrawPosition.x -
-                                    headLength * Math.cos(angle - Math.PI / 6),
-                                nextDrawPosition.y -
-                                    headLength * Math.sin(angle - Math.PI / 6)
-                            );
-                            context.moveTo(
-                                nextDrawPosition.x,
-                                nextDrawPosition.y
-                            );
-                            context.lineTo(
-                                nextDrawPosition.x -
-                                    headLength * Math.cos(angle + Math.PI / 6),
-                                nextDrawPosition.y -
-                                    headLength * Math.sin(angle + Math.PI / 6)
-                            );
-                            context.stroke();
-                            context.closePath();
-                        }
-
+                    if (
+                        occurrence.time > maxTime ||
+                        occurrence.id === MovementType.up
+                    ) {
                         break;
                     }
 
@@ -618,33 +567,89 @@ export class MissInformation {
                         occurrence.position.scale(this.playfieldScale)
                     );
 
-                    switch (occurrence.id) {
-                        case movementType.DOWN:
-                            context.moveTo(drawPosition.x, drawPosition.y);
-                            context.arc(
-                                drawPosition.x,
-                                drawPosition.y,
-                                5,
-                                0,
-                                2 * Math.PI
+                    if (occurrence.id === MovementType.down) {
+                        context.moveTo(drawPosition.x, drawPosition.y);
+                        context.arc(
+                            drawPosition.x,
+                            drawPosition.y,
+                            5,
+                            0,
+                            2 * Math.PI
+                        );
+                        context.fill();
+                    } else {
+                        const prevOccurrence: CursorOccurrence =
+                            allOccurrences[k - 1];
+                        const previousDrawPosition: Vector2 =
+                            this.flipVectorVertically(
+                                prevOccurrence.position.scale(
+                                    this.playfieldScale
+                                )
                             );
-                            context.fill();
-                            break;
-                        case movementType.MOVE: {
-                            const previousDrawPosition: Vector2 =
-                                this.flipVectorVertically(
-                                    allOccurrences[j - 1].position.scale(
-                                        this.playfieldScale
+
+                        context.moveTo(
+                            previousDrawPosition.x,
+                            previousDrawPosition.y
+                        );
+                        context.lineTo(drawPosition.x, drawPosition.y);
+                        context.stroke();
+
+                        // Check for presses between both occurrences.
+                        for (let l = 0; l < this.cursorGroups.length; ++l) {
+                            // Do not check the current cursor instance in loop.
+                            if (l === i) {
+                                continue;
+                            }
+
+                            for (const cursorGroup of this.cursorGroups[l]) {
+                                const cursorDownTime: number =
+                                    cursorGroup.down.time;
+
+                                if (cursorDownTime < prevOccurrence.time) {
+                                    continue;
+                                }
+
+                                if (cursorDownTime > occurrence.time) {
+                                    break;
+                                }
+
+                                const t: number =
+                                    (cursorDownTime - prevOccurrence.time) /
+                                    (occurrence.time - prevOccurrence.time);
+
+                                const cursorPosition: Vector2 = new Vector2(
+                                    Interpolation.lerp(
+                                        prevOccurrence.position.x,
+                                        occurrence.position.x,
+                                        t
+                                    ),
+                                    Interpolation.lerp(
+                                        prevOccurrence.position.y,
+                                        occurrence.position.y,
+                                        t
                                     )
                                 );
 
-                            context.moveTo(
-                                previousDrawPosition.x,
-                                previousDrawPosition.y
-                            );
-                            context.lineTo(drawPosition.x, drawPosition.y);
-                            context.stroke();
-                            break;
+                                const cursorDrawPosition: Vector2 =
+                                    this.flipVectorVertically(
+                                        cursorPosition.scale(
+                                            this.playfieldScale
+                                        )
+                                    );
+
+                                context.beginPath();
+                                context.lineWidth = 2;
+                                context.arc(
+                                    cursorDrawPosition.x,
+                                    cursorDrawPosition.y,
+                                    5,
+                                    0,
+                                    2 * Math.PI
+                                );
+                                context.stroke();
+                                context.closePath();
+                                context.lineWidth = 2.5;
+                            }
                         }
                     }
 
@@ -652,6 +657,40 @@ export class MissInformation {
                 }
             }
         }
+    }
+
+    /**
+     * Draws the closest cursor position to the object.
+     */
+    private drawClosestCursorPosition(): void {
+        if (!this.canvas || !this.closestCursorPosition) {
+            return;
+        }
+
+        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+
+        const drawPosition: Vector2 = this.flipVectorVertically(
+            this.closestCursorPosition.scale(this.playfieldScale)
+        );
+
+        const gradient: CanvasGradient = context.createRadialGradient(
+            drawPosition.x,
+            drawPosition.y,
+            0,
+            drawPosition.x,
+            drawPosition.y,
+            10
+        );
+
+        gradient.addColorStop(0, "#ffffff");
+        gradient.addColorStop(1, "#9e3fe8");
+
+        context.fillStyle = gradient;
+        context.globalAlpha = 1;
+        context.beginPath();
+        context.arc(drawPosition.x, drawPosition.y, 10, 0, 2 * Math.PI);
+        context.fill();
+        context.closePath();
     }
 
     /**
