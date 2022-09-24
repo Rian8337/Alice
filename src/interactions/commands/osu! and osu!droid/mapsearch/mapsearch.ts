@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, GuildMember, EmbedBuilder } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    GuildMember,
+    EmbedBuilder,
+} from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { SlashCommand } from "structures/core/SlashCommand";

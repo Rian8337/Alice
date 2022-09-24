@@ -41,7 +41,10 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
      * @returns An object containing information about the database operation.
      */
     async extend(duration: number, reason?: string): Promise<OperationResult> {
-        this.expiration = Math.max(this.expiration + duration, Date.now() + duration);
+        this.expiration = Math.max(
+            this.expiration + duration,
+            Date.now() + duration
+        );
         this.reason = reason;
 
         return DatabaseManager.aliceDb.collections.loungeLock.updateOne(
