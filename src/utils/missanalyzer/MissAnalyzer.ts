@@ -17,8 +17,8 @@ import {
     CursorData,
     CursorOccurrence,
     CursorOccurrenceGroup,
-    hitResult,
-    movementType,
+    HitResult,
+    MovementType,
     ReplayData,
     ReplayObjectData,
 } from "@rian8337/osu-droid-replay-analyzer";
@@ -121,7 +121,7 @@ export class MissAnalyzer {
             const object: HitObject =
                 this.beatmap.hitObjects.objects[objectIndex];
             const previousObjects: HitObject[] = [];
-            const previousHitResults: hitResult[] = [];
+            const previousHitResults: HitResult[] = [];
 
             for (let i = objectIndex - 1; i >= 0; --i) {
                 const o: HitObject = this.beatmap.hitObjects.objects[i];
@@ -187,7 +187,7 @@ export class MissAnalyzer {
 
             const objectData: ReplayObjectData = this.data.hitObjectData[i];
 
-            if (objectData.result !== hitResult.RESULT_0) {
+            if (objectData.result !== HitResult.miss) {
                 continue;
             }
 
@@ -214,7 +214,7 @@ export class MissAnalyzer {
                         j,
                         i > 0
                             ? this.data.hitObjectData[i - 1].result ===
-                                  hitResult.RESULT_0
+                                  HitResult.miss
                             : false
                     );
 
@@ -314,7 +314,7 @@ export class MissAnalyzer {
                     break;
                 }
 
-                if (occurrence.id === movementType.DOWN) {
+                if (occurrence.id === MovementType.down) {
                     const distanceToObject: number = object
                         .getStackedPosition(modes.droid)
                         .getDistance(occurrence.position);
@@ -328,7 +328,7 @@ export class MissAnalyzer {
 
                 const nextOccurrence: CursorOccurrence = allOccurrences[i + 1];
 
-                if (nextOccurrence?.id === movementType.MOVE) {
+                if (nextOccurrence?.id === MovementType.move) {
                     // Check if other cursor instances have a tap occurrence within both occurrences' boundary.
                     for (let j = 0; j < this.data.cursorMovement.length; ++j) {
                         // Do not check the current cursor instance in loop.

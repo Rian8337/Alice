@@ -60,7 +60,7 @@ import {
 import {
     ReplayData,
     ReplayObjectData,
-    hitResult,
+    HitResult,
     HitErrorInformation,
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
@@ -764,7 +764,7 @@ export abstract class EmbedCreator {
                     replayData.hitObjectData[i];
 
                 if (
-                    objectData.result === hitResult.RESULT_0 ||
+                    objectData.result === HitResult.miss ||
                     !(object instanceof Slider)
                 ) {
                     continue;
