@@ -271,9 +271,9 @@ export abstract class ScoreDisplayHelper {
                     calcResult[0] && calcResult[1]
                         ? `${arrow} **${calcResult[0].result.total.toFixed(
                               2
-                          )}DPP | ${calcResult[1].result.total.toFixed(2)}PP**`
-                        : ""
-                } ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
+                          )}DPP | ${calcResult[1].result.total.toFixed(2)}PP** `
+                        : " "
+                }${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
                 `${arrow} ${score.score.toLocaleString(
                     LocaleHelper.convertToBCP47(localization.language)
                 )} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${
