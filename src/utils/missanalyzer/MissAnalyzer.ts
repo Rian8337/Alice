@@ -16,6 +16,7 @@ import { DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator } from 
 import {
     CursorData,
     CursorOccurrence,
+    CursorOccurrenceGroup,
     hitResult,
     movementType,
     ReplayData,
@@ -126,13 +127,35 @@ export class MissAnalyzer {
                 const o: HitObject = this.beatmap.hitObjects.objects[i];
                 const timeDifference: number = object.startTime - o.startTime;
 
-                // An object's fade time is 400ms.
-                if (timeDifference >= this.approachRateTime + 400) {
+                if (timeDifference >= this.approachRateTime) {
                     break;
                 }
 
                 previousObjects.push(o);
                 previousHitResults.push(this.data.hitObjectData[i].result);
+            }
+
+            const cursorGroups: CursorOccurrenceGroup[][] = [];
+            const minCursorGroupAllowableTime: number =
+                object.startTime - this.approachRateTime;
+            const maxCursorGroupAllowableTime: number = object.endTime + 250;
+
+            for (const cursorData of this.data.cursorMovement) {
+                const c: CursorOccurrenceGroup[] = [];
+
+                for (const group of cursorData.occurrenceGroups) {
+                    if (group.endTime < minCursorGroupAllowableTime) {
+                        continue;
+                    }
+
+                    if (group.startTime > maxCursorGroupAllowableTime) {
+                        break;
+                    }
+
+                    c.push(group);
+                }
+
+                cursorGroups.push(c);
             }
 
             return new MissInformation(
@@ -146,6 +169,8 @@ export class MissAnalyzer {
                 flipObjects,
                 previousObjects.reverse(),
                 previousHitResults.reverse(),
+                cursorGroups,
+                this.approachRateTime,
                 verdict,
                 cursorPosition,
                 closestHit
@@ -245,7 +270,7 @@ export class MissAnalyzer {
         // Limit to cursor occurrences within this distance.
         // Add a cap to better assess smaller objects.
         let closestDistance: number = Math.max(
-            2 * object.getRadius(modes.droid),
+            2.5 * object.getRadius(modes.droid),
             80
         );
         let closestHit: number = Number.POSITIVE_INFINITY;

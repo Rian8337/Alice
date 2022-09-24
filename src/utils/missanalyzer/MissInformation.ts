@@ -9,7 +9,12 @@ import {
     Spinner,
     Vector2,
 } from "@rian8337/osu-base";
-import { hitResult } from "@rian8337/osu-droid-replay-analyzer";
+import {
+    CursorOccurrence,
+    CursorOccurrenceGroup,
+    hitResult,
+    movementType,
+} from "@rian8337/osu-droid-replay-analyzer";
 import { Canvas } from "canvas";
 
 /**
@@ -64,7 +69,7 @@ export class MissInformation {
     /**
      * The cursor position at the closest hit to the object.
      */
-    readonly cursorPosition?: Vector2;
+    readonly closestCursorPosition?: Vector2;
 
     /**
      * The closest hit to the object.
@@ -81,8 +86,18 @@ export class MissInformation {
      */
     readonly previousHitResults: hitResult[];
 
+    /**
+     * The AR of the beatmap, in milliseconds.
+     */
+    readonly approachRateTime: number;
+
+    /**
+     * The cursor groups to draw for each cursor instance.
+     */
+    readonly cursorGroups: CursorOccurrenceGroup[][];
+
     private canvas?: Canvas;
-    private readonly playfieldScale: number = 0.75;
+    private readonly playfieldScale: number = 1.75;
 
     /**
      * @param metadata The metadata of the beatmap.
@@ -95,7 +110,9 @@ export class MissInformation {
      * @param drawFlipped Whether to flip objects vertically before drawing them.
      * @param previousObjects The objects prior to the current object.
      * @param previousHitResults The hit results of past objects.
-     * @param cursorPosition The cursor position at the closest hit to the object.
+     * @param cursorGroups The cursor groups to draw.
+     * @param approachRateTime The AR of the beatmap, in milliseconds.
+     * @param closestCursorPosition The cursor position at the closest hit to the object.
      * @param closestHit The closest hit to the object.
      */
     constructor(
@@ -109,8 +126,10 @@ export class MissInformation {
         drawFlipped: boolean,
         previousObjects: HitObject[],
         previousHitResults: hitResult[],
+        cursorGroups: CursorOccurrenceGroup[][],
+        approachRateTime: number,
         verdict?: string,
-        cursorPosition?: Vector2,
+        closestCursorPosition?: Vector2,
         closestHit?: number
     ) {
         this.metadata = metadata;
@@ -122,10 +141,12 @@ export class MissInformation {
         this.verdict = verdict;
         this.clockRate = clockRate;
         this.drawFlipped = drawFlipped;
-        this.cursorPosition = cursorPosition;
+        this.closestCursorPosition = closestCursorPosition;
         this.closestHit = closestHit;
         this.previousObjects = previousObjects;
         this.previousHitResults = previousHitResults;
+        this.cursorGroups = cursorGroups;
+        this.approachRateTime = approachRateTime;
 
         if (this.closestHit) {
             this.closestHit /= clockRate;
@@ -142,7 +163,7 @@ export class MissInformation {
             return this.canvas;
         }
 
-        this.canvas = new Canvas(600, 500);
+        this.canvas = new Canvas(1200, 1000);
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
         const textPadding: number = 5;
@@ -152,7 +173,7 @@ export class MissInformation {
         context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         context.restore();
 
-        context.font = "16px Exo";
+        context.font = "28px Exo";
         context.textBaseline = "middle";
         context.fillText(
             `${this.metadata.artist} - ${this.metadata.title} [${this.metadata.version}]`,
@@ -162,12 +183,12 @@ export class MissInformation {
         context.fillText(
             `Object ${this.objectIndex + 1} of ${this.totalObjects}`,
             5,
-            textPadding + 28
+            textPadding + 40
         );
         context.fillText(
             `Miss ${this.missIndex + 1} of ${this.totalMisses}`,
             5,
-            textPadding + 46
+            textPadding + 70
         );
 
         let startTime: number = Math.floor(
@@ -185,7 +206,7 @@ export class MissInformation {
                 .toString()
                 .padStart(2, "0")}.${startTime.toString().padStart(3, "0")}`,
             textPadding,
-            485 - textPadding
+            985 - textPadding
         );
 
         if (this.verdict) {
@@ -195,7 +216,7 @@ export class MissInformation {
                 this.canvas.width -
                     textPadding -
                     context.measureText(verdictText).width,
-                (this.closestHit !== undefined ? 465 : 485) - textPadding
+                (this.closestHit !== undefined ? 955 : 985) - textPadding
             );
         }
 
@@ -212,9 +233,9 @@ export class MissInformation {
                     : ""
             }`;
 
-            if (this.cursorPosition) {
+            if (this.closestCursorPosition) {
                 const distanceToObject: number =
-                    this.cursorPosition.getDistance(
+                    this.closestCursorPosition.getDistance(
                         this.object.getStackedPosition(modes.droid)
                     ) - this.object.getRadius(modes.droid);
 
@@ -232,7 +253,7 @@ export class MissInformation {
                 this.canvas.width -
                     textPadding -
                     context.measureText(closestHitText).width,
-                485 - textPadding
+                985 - textPadding
             );
         }
 
@@ -247,9 +268,9 @@ export class MissInformation {
 
         context.save();
         context.translate(
-            // Center the playfield vertically.
+            // Center the playfield.
             (this.canvas.width - scaledPlayfieldX) / 2,
-            115
+            (this.canvas.height - scaledPlayfieldY) / 2
         );
         context.lineWidth = 3;
         context.strokeRect(0, 0, scaledPlayfieldX, scaledPlayfieldY);
@@ -269,10 +290,12 @@ export class MissInformation {
             this.previousObjects.length + 1
         );
 
-        if (this.cursorPosition) {
-            // Draw the cursor position.
+        this.drawCursorGroups();
+
+        if (this.closestCursorPosition) {
+            // Draw the closest cursor position.
             const drawPosition: Vector2 = this.flipVectorVertically(
-                this.cursorPosition.scale(this.playfieldScale)
+                this.closestCursorPosition.scale(this.playfieldScale)
             );
 
             const gradient: CanvasGradient = context.createRadialGradient(
@@ -485,6 +508,150 @@ export class MissInformation {
             objectDrawPosition.x,
             objectDrawPosition.y
         );
+    }
+
+    /**
+     * Draws cursor groups.
+     */
+    private drawCursorGroups(): void {
+        if (
+            !this.canvas ||
+            this.cursorGroups.length === 0 ||
+            this.object instanceof Spinner
+        ) {
+            return;
+        }
+
+        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+
+        const cursorStyle: string = "#800080";
+        const pathStyle: string = "#00ff80";
+
+        const minTime: number = this.object.startTime - this.approachRateTime;
+        const maxTime: number = this.object.endTime + 250;
+
+        context.fillStyle = cursorStyle;
+        context.lineWidth = 2.5;
+
+        for (const groups of this.cursorGroups) {
+            for (let i = 0; i < groups.length; ++i) {
+                const group: CursorOccurrenceGroup = groups[i];
+                context.strokeStyle = cursorStyle;
+
+                const { allOccurrences } = group;
+
+                for (let j = 0; j < allOccurrences.length; ++j) {
+                    const occurrence: CursorOccurrence = allOccurrences[j];
+
+                    if (occurrence.time < minTime) {
+                        continue;
+                    }
+
+                    if (occurrence.time > maxTime) {
+                        break;
+                    }
+
+                    if (occurrence.id === movementType.UP) {
+                        const nextGroup: CursorOccurrenceGroup = groups[i + 1];
+
+                        // If there is a next group, draw a path to it.
+                        if (nextGroup) {
+                            context.strokeStyle = pathStyle;
+                            context.beginPath();
+
+                            const currentPosition: Vector2 =
+                                allOccurrences[j - 1].position;
+                            const nextPosition: Vector2 =
+                                nextGroup.down.position;
+
+                            const dx: number =
+                                nextPosition.x - currentPosition.x;
+                            const dy: number =
+                                nextPosition.y - currentPosition.y;
+                            const angle: number = Math.atan2(dy, dx);
+
+                            const currentDrawPosition: Vector2 =
+                                this.flipVectorVertically(
+                                    currentPosition.scale(this.playfieldScale)
+                                );
+                            const nextDrawPosition: Vector2 =
+                                this.flipVectorVertically(
+                                    nextPosition.scale(this.playfieldScale)
+                                );
+
+                            const headLength: number = 15;
+
+                            context.moveTo(
+                                currentDrawPosition.x,
+                                currentDrawPosition.y
+                            );
+                            context.lineTo(
+                                nextDrawPosition.x,
+                                nextDrawPosition.y
+                            );
+                            context.lineTo(
+                                nextDrawPosition.x -
+                                    headLength * Math.cos(angle - Math.PI / 6),
+                                nextDrawPosition.y -
+                                    headLength * Math.sin(angle - Math.PI / 6)
+                            );
+                            context.moveTo(
+                                nextDrawPosition.x,
+                                nextDrawPosition.y
+                            );
+                            context.lineTo(
+                                nextDrawPosition.x -
+                                    headLength * Math.cos(angle + Math.PI / 6),
+                                nextDrawPosition.y -
+                                    headLength * Math.sin(angle + Math.PI / 6)
+                            );
+                            context.stroke();
+                            context.closePath();
+                        }
+
+                        break;
+                    }
+
+                    context.beginPath();
+
+                    const drawPosition: Vector2 = this.flipVectorVertically(
+                        occurrence.position.scale(this.playfieldScale)
+                    );
+
+                    switch (occurrence.id) {
+                        case movementType.DOWN:
+                            context.moveTo(drawPosition.x, drawPosition.y);
+                            context.arc(
+                                drawPosition.x,
+                                drawPosition.y,
+                                5,
+                                0,
+                                2 * Math.PI
+                            );
+                            context.fill();
+                            break;
+                        case movementType.MOVE: {
+                            const previousDrawPosition: Vector2 =
+                                this.flipVectorVertically(
+                                    allOccurrences[j - 1].position.scale(
+                                        this.playfieldScale
+                                    )
+                                );
+
+                            context.moveTo(
+                                previousDrawPosition.x,
+                                previousDrawPosition.y
+                            );
+                            context.lineTo(drawPosition.x, drawPosition.y);
+                            context.stroke();
+                            break;
+                        }
+                    }
+
+                    context.closePath();
+                }
+            }
+        }
     }
 
     /**
