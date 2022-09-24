@@ -196,6 +196,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         score,
                         droidCalcResult
                     );
+
+                    ppEntry.pp = NumberHelper.round(
+                        droidCalcResult.result.total,
+                        2
+                    );
                 }
 
                 ppEntries.push(ppEntry);

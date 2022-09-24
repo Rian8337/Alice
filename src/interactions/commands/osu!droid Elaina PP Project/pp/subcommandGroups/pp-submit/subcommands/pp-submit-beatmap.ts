@@ -28,6 +28,7 @@ import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { OldPPProfileCollectionManager } from "@alice-database/managers/aliceDb/OldPPProfileCollectionManager";
 import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
 import { PPEntry } from "@alice-structures/dpp/PPEntry";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -185,6 +186,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 score,
                 droidCalcResult
             );
+
+            ppEntry.pp = NumberHelper.round(droidCalcResult.result.total, 2);
 
             DPPHelper.insertScore(bindInfo.pp, [ppEntry]);
 

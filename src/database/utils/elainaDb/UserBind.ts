@@ -40,6 +40,7 @@ import { Language } from "@alice-localization/base/Language";
 import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
 import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -628,6 +629,11 @@ export class UserBind extends Manager {
                                 await DroidBeatmapDifficultyHelper.applyTapPenalty(
                                     score,
                                     calcResult
+                                );
+
+                                ppEntry.pp = NumberHelper.round(
+                                    calcResult.result.total,
+                                    2
                                 );
 
                                 DPPHelper.insertScore(newList, [ppEntry]);

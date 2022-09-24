@@ -21,6 +21,7 @@ import {
 import { Score } from "@rian8337/osu-droid-utilities";
 import { Collection, EmbedBuilder, Snowflake } from "discord.js";
 import { CommandHelper } from "./CommandHelper";
+import { NumberHelper } from "./NumberHelper";
 
 /**
  * A helper for droid performance points related things.
@@ -254,9 +255,9 @@ export abstract class DPPHelper {
         return {
             hash: calculationResult.map.hash,
             title: calculationResult.map.fullTitle,
-            pp: parseFloat(calculationResult.result.total.toFixed(2)),
+            pp: NumberHelper.round(calculationResult.result.total, 2),
             mods: score.mods.reduce((a, v) => a + v.acronym, ""),
-            accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
+            accuracy: NumberHelper.round(score.accuracy.value() * 100, 2),
             combo: score.combo,
             miss: score.accuracy.nmiss,
             scoreID: score.scoreID,
