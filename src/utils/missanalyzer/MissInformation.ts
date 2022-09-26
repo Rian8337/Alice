@@ -532,7 +532,11 @@ export class MissInformation {
         const minTime: number = this.object.startTime - this.approachRateTime;
         const maxTime: number = this.object.endTime + 200;
 
-        const color: string = "#800080";
+        const color: string = "#cc00cc";
+        const arrowColor: string = "#990099";
+        // Draw direction arrow every 50 pixels the cursor has travelled.
+        const arrowDistanceRate: number = 50;
+
         context.fillStyle = color;
         context.strokeStyle = color;
         context.lineWidth = 2.5;
@@ -540,15 +544,11 @@ export class MissInformation {
         context.globalAlpha = 1;
 
         for (let i = 0; i < this.cursorGroups.length; ++i) {
-            const groups: CursorOccurrenceGroup[] = this.cursorGroups[i];
+            for (const { allOccurrences } of this.cursorGroups[i]) {
+                let travelDistance: number = 0;
 
-            for (let j = 0; j < groups.length; ++j) {
-                const group: CursorOccurrenceGroup = groups[j];
-
-                const { allOccurrences } = group;
-
-                for (let k = 0; k < allOccurrences.length; ++k) {
-                    const occurrence: CursorOccurrence = allOccurrences[k];
+                for (let j = 0; j < allOccurrences.length; ++j) {
+                    const occurrence: CursorOccurrence = allOccurrences[j];
 
                     if (occurrence.time < minTime) {
                         continue;
@@ -561,13 +561,12 @@ export class MissInformation {
                         break;
                     }
 
-                    context.beginPath();
-
                     const drawPosition: Vector2 = this.flipVectorVertically(
                         occurrence.position.scale(this.playfieldScale)
                     );
 
                     if (occurrence.id === MovementType.down) {
+                        context.beginPath();
                         context.moveTo(drawPosition.x, drawPosition.y);
                         context.arc(
                             drawPosition.x,
@@ -577,9 +576,10 @@ export class MissInformation {
                             2 * Math.PI
                         );
                         context.fill();
+                        context.closePath();
                     } else {
                         const prevOccurrence: CursorOccurrence =
-                            allOccurrences[k - 1];
+                            allOccurrences[j - 1];
                         const previousDrawPosition: Vector2 =
                             this.flipVectorVertically(
                                 prevOccurrence.position.scale(
@@ -587,21 +587,27 @@ export class MissInformation {
                                 )
                             );
 
+                        travelDistance += occurrence.position.getDistance(
+                            prevOccurrence.position
+                        );
+
+                        context.beginPath();
                         context.moveTo(
                             previousDrawPosition.x,
                             previousDrawPosition.y
                         );
                         context.lineTo(drawPosition.x, drawPosition.y);
                         context.stroke();
+                        context.closePath();
 
                         // Check for presses between both occurrences.
-                        for (let l = 0; l < this.cursorGroups.length; ++l) {
+                        for (let k = 0; k < this.cursorGroups.length; ++k) {
                             // Do not check the current cursor instance in loop.
-                            if (l === i) {
+                            if (k === i) {
                                 continue;
                             }
 
-                            for (const cursorGroup of this.cursorGroups[l]) {
+                            for (const cursorGroup of this.cursorGroups[k]) {
                                 const cursorDownTime: number =
                                     cursorGroup.down.time;
 
@@ -651,9 +657,75 @@ export class MissInformation {
                                 context.lineWidth = 2.5;
                             }
                         }
-                    }
 
-                    context.closePath();
+                        for (
+                            let distance = arrowDistanceRate;
+                            distance <= travelDistance;
+                            distance += arrowDistanceRate
+                        ) {
+                            const displacement: Vector2 =
+                                occurrence.position.subtract(
+                                    prevOccurrence.position
+                                );
+                            const drawDisplacement: Vector2 =
+                                drawPosition.subtract(previousDrawPosition);
+                            const angle: number = Math.atan2(
+                                drawDisplacement.y,
+                                drawDisplacement.x
+                            );
+
+                            const prevDistanceTravelled: number =
+                                travelDistance - displacement.length;
+
+                            const t: number =
+                                (distance - prevDistanceTravelled) /
+                                (travelDistance - prevDistanceTravelled);
+                            const cursorDrawPosition: Vector2 =
+                                this.flipVectorVertically(
+                                    new Vector2(
+                                        Interpolation.lerp(
+                                            prevOccurrence.position.x,
+                                            occurrence.position.x,
+                                            t
+                                        ),
+                                        Interpolation.lerp(
+                                            prevOccurrence.position.y,
+                                            occurrence.position.y,
+                                            t
+                                        )
+                                    ).scale(this.playfieldScale)
+                                );
+                            const headLength: number = 10;
+
+                            context.strokeStyle = arrowColor;
+                            context.beginPath();
+                            context.moveTo(
+                                cursorDrawPosition.x,
+                                cursorDrawPosition.y
+                            );
+                            context.lineTo(
+                                cursorDrawPosition.x -
+                                    headLength * Math.cos(angle - Math.PI / 6),
+                                cursorDrawPosition.y -
+                                    headLength * Math.sin(angle - Math.PI / 6)
+                            );
+                            context.moveTo(
+                                cursorDrawPosition.x,
+                                cursorDrawPosition.y
+                            );
+                            context.lineTo(
+                                cursorDrawPosition.x -
+                                    headLength * Math.cos(angle + Math.PI / 6),
+                                cursorDrawPosition.y -
+                                    headLength * Math.sin(angle + Math.PI / 6)
+                            );
+                            context.stroke();
+                            context.closePath();
+                            context.strokeStyle = color;
+                        }
+
+                        travelDistance %= arrowDistanceRate;
+                    }
                 }
             }
         }
