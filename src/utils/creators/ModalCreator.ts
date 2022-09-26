@@ -1,8 +1,8 @@
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import {
     ActionRowBuilder,
     ModalBuilder,
     ModalSubmitInteraction,
+    RepliableInteraction,
     TextInputBuilder,
 } from "discord.js";
 

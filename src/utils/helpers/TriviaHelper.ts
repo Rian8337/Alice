@@ -16,6 +16,7 @@ import {
     APIButtonComponentWithCustomId,
     TextInputBuilder,
     TextInputStyle,
+    RepliableInteraction,
     SelectMenuComponentOptionData,
 } from "discord.js";
 import { ArrayHelper } from "./ArrayHelper";
@@ -29,7 +30,6 @@ import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { TriviaQuestionCachedAnswer } from "@alice-structures/trivia/TriviaQuestionCachedAnswer";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * Helper methods for trivia-related features.

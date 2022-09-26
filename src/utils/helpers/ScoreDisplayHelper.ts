@@ -9,6 +9,7 @@ import {
     Message,
     EmbedBuilder,
     BaseMessageOptions,
+    RepliableInteraction,
     Snowflake,
 } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
@@ -35,7 +36,6 @@ import { InteractionHelper } from "./InteractionHelper";
 import { OsuBeatmapDifficultyHelper } from "./OsuBeatmapDifficultyHelper";
 import { ScoreHelper } from "./ScoreHelper";
 import { CommandHelper } from "./CommandHelper";
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A helper for displaying scores to a user.

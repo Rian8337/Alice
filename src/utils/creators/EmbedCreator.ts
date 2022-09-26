@@ -9,6 +9,7 @@ import {
     GuildEmoji,
     GuildMember,
     BaseMessageOptions,
+    RepliableInteraction,
     User,
 } from "discord.js";
 import { Config } from "@alice-core/Config";
@@ -76,7 +77,6 @@ import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformance
 import { OldDifficultyCalculationResult } from "@alice-utils/dpp/OldDifficultyCalculationResult";
 import { std_ppv2 } from "ojsamadroid";
 import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * Utility to create message embeds.

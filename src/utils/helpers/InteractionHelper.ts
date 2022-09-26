@@ -1,8 +1,8 @@
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import {
     InteractionResponse,
     Message,
     MessageComponentInteraction,
+    RepliableInteraction,
     WebhookEditMessageOptions,
 } from "discord.js";
 

@@ -19,9 +19,9 @@ import {
     APIEmbed,
     isJSONEncodable,
     AttachmentBuilder,
+    RepliableInteraction,
 } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import { MissAnalyzer } from "@alice-utils/missanalyzer/MissAnalyzer";
 import { DroidDifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
 import { DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";

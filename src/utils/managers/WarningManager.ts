@@ -15,10 +15,10 @@ import {
     GuildBasedChannel,
     GuildMember,
     EmbedBuilder,
+    RepliableInteraction,
     Snowflake,
 } from "discord.js";
 import { PunishmentManager } from "./PunishmentManager";
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A manager for warnings.

@@ -12,6 +12,7 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import {
     Collection,
+    ForumChannel,
     GuildTextBasedChannel,
     NewsChannel,
     Snowflake,
@@ -131,7 +132,7 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about database operation.
      */
     static async disableUtilityInChannel(
-        channel: GuildTextBasedChannel,
+        channel: GuildTextBasedChannel | ForumChannel,
         event: string,
         utility: string
     ): Promise<OperationResult> {
@@ -311,7 +312,7 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about the operation.
      */
     static async enableUtilityInChannel(
-        channel: GuildTextBasedChannel,
+        channel: GuildTextBasedChannel | ForumChannel,
         event: string,
         utility: string
     ): Promise<OperationResult> {
@@ -438,7 +439,7 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about the operation.
      */
     static async setCommandCooldownInChannel(
-        channel: TextChannel | NewsChannel | VoiceChannel,
+        channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel,
         commandName: string,
         cooldown: number,
         language: Language = "en"

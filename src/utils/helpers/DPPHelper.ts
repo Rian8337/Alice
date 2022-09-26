@@ -3,7 +3,6 @@ import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
 import { PPEntry } from "@alice-structures/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
@@ -19,7 +18,12 @@ import {
     DroidPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { Collection, EmbedBuilder, Snowflake } from "discord.js";
+import {
+    Collection,
+    EmbedBuilder,
+    RepliableInteraction,
+    Snowflake,
+} from "discord.js";
 import { CommandHelper } from "./CommandHelper";
 import { NumberHelper } from "./NumberHelper";
 

@@ -2,6 +2,7 @@ import {
     GuildBasedChannel,
     GuildMember,
     EmbedBuilder,
+    RepliableInteraction,
     Snowflake,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -18,7 +19,6 @@ import { TimeoutManagerLocalization } from "@alice-localization/utils/managers/T
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A manager for timeouts.

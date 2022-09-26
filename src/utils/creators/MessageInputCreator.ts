@@ -1,9 +1,9 @@
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
     InteractionReplyOptions,
     Message,
     MessageCollector,
+    RepliableInteraction,
     Snowflake,
 } from "discord.js";
 import { MessageCreator } from "./MessageCreator";

@@ -6,6 +6,7 @@ import {
     InteractionReplyOptions,
     Message,
     MessageActionRowComponent,
+    RepliableInteraction,
     SelectMenuBuilder,
     SelectMenuComponent,
     SelectMenuComponentOptionData,
@@ -20,7 +21,6 @@ import { Language } from "@alice-localization/base/Language";
 import { SelectMenuCreatorLocalization } from "@alice-localization/utils/creators/SelectMenuCreator/SelectMenuCreatorLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { RepliableInteraction } from "@alice-structures/core/RepliableInteraction";
 
 /**
  * A utility to create message select menus.
