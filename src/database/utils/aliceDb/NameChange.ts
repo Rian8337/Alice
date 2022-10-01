@@ -107,7 +107,6 @@ export class NameChange extends Manager implements DatabaseNameChange {
                 { uid: this.uid },
                 {
                     $set: {
-                        current_username: this.new_username!,
                         new_username: null,
                         isProcessed: true,
                     },

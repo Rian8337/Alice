@@ -113,7 +113,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             case MultiplayerTeamMode.teamVS:
                 // Have to do this so that TypeScript doesn't complain
                 query.$set ??= {};
-                query.$set["players.$[].team"] = MultiplayerTeam.red;
+                Object.defineProperty(query.$set, "players.$[].team", {
+                    value: MultiplayerTeam.red,
+                    configurable: true,
+                    enumerable: true,
+                    writable: true,
+                });
         }
 
         const result: OperationResult =

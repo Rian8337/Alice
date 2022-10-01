@@ -89,7 +89,6 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
                 },
                 $setOnInsert: {
                     discordid: discordId,
-                    current_username: currentUsername,
                     previous_usernames: [],
                 },
             },
