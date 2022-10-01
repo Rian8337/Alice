@@ -368,7 +368,9 @@ export abstract class DPPHelper {
                         playc: Math.max(0, toUpdate.playc - 1),
                     },
                     $pull: {
-                        "pp.hash": hash,
+                        pp: {
+                            hash: hash,
+                        },
                     },
                 }
             );
