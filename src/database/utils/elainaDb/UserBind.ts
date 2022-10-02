@@ -444,12 +444,6 @@ export class UserBind extends Manager {
                 calcResult
             );
 
-            const indexes: number[] = Utils.initializeArray(10, 0);
-
-            for (const index of score.replay!.twoHandCursorIndexes) {
-                ++indexes[index];
-            }
-
             const entry: PrototypePPEntry = {
                 hash: calcResult.map.hash,
                 title: calcResult.map.fullTitle,
@@ -460,7 +454,6 @@ export class UserBind extends Manager {
                 combo: score.combo,
                 miss: score.accuracy.nmiss,
                 scoreID: score.scoreID,
-                cursorIndexes: indexes,
             };
 
             consola.info(
