@@ -126,8 +126,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.nameChange.requestNameChange(
         interaction.user.id,
         bindInfo.uid,
-        player.username,
-        newUsername
+        player.username
     );
 
     InteractionHelper.reply(interaction, {
