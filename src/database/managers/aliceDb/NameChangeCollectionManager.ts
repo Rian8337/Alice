@@ -69,14 +69,12 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
      *
      * @param discordId The Discord ID of the player.
      * @param uid The uid of the player.
-     * @param currentUsername The current username of the player.
      * @param newUsername The new username that is requested by the player.
      * @returns An object containing information about the operation.
      */
     requestNameChange(
         discordId: Snowflake,
         uid: number,
-        currentUsername: string,
         newUsername: string
     ): Promise<OperationResult> {
         return this.updateOne(
