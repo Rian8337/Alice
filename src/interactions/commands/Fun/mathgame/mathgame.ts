@@ -59,9 +59,7 @@ function endGame(
     endMessage: string,
     localization: MathgameLocalization
 ): void {
-    gameStats.sort((a, b) => {
-        return b - a;
-    });
+    gameStats.sort((a, b) => b - a);
 
     const answerString: string = ArrayHelper.collectionToArray(gameStats)
         .map(

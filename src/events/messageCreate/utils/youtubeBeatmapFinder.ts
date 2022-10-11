@@ -122,9 +122,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     return;
                 }
 
-                beatmapInformations.sort((a, b) => {
-                    return b.totalDifficulty - a.totalDifficulty;
-                });
+                beatmapInformations.sort(
+                    (a, b) => b.totalDifficulty - a.totalDifficulty
+                );
 
                 let string: string = "";
 

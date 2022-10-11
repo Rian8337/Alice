@@ -675,9 +675,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     CacheManager.mapTriviaAnswers.delete(interaction.channelId);
 
-    statistics.sort((a, b) => {
-        return b.score - a.score;
-    });
+    statistics.sort((a, b) => b.score - a.score);
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: "#037ffc",

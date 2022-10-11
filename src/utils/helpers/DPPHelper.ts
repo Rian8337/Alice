@@ -207,9 +207,7 @@ export abstract class DPPHelper {
         }
 
         if (needsSorting) {
-            dppList.sort((a, b) => {
-                return b.pp - a.pp;
-            });
+            dppList.sort((a, b) => b.pp - a.pp);
         }
 
         while (dppList.size > 75) {
@@ -325,9 +323,7 @@ export abstract class DPPHelper {
     static calculateFinalPerformancePoints<T extends OldPPEntry>(
         list: Collection<string, T>
     ): number {
-        list.sort((a, b) => {
-            return b.pp - a.pp;
-        });
+        list.sort((a, b) => b.pp - a.pp);
 
         return [...list.values()].reduce(
             (a, v, i) => a + v.pp * Math.pow(0.95, i),

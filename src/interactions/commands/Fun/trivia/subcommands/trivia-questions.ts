@@ -82,9 +82,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         embed.setDescription(
             `${localization.getTranslation("correctAnswerGotten")}\n\n` +
                 result.results
-                    .sort((a, b) => {
-                        return a.timeTaken - b.timeTaken;
-                    })
+                    .sort((a, b) => a.timeTaken - b.timeTaken)
                     .map((v) => `${v.user.username} - ${v.timeTaken / 1000} s`)
                     .join("\n") +
                 "\n\n" +

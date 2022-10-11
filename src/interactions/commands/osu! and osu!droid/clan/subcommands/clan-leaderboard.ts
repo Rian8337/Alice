@@ -32,9 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    clans.sort((a, b) => {
-        return b.power - a.power;
-    });
+    clans.sort((a, b) => b.power - a.power);
 
     const page: number = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,

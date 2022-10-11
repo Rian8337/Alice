@@ -28,9 +28,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         Math.ceil(players.size / 20)
     );
 
-    players.sort((a, b) => {
-        return b.points - a.points;
-    });
+    players.sort((a, b) => b.points - a.points);
 
     const onPageChange: OnButtonPageChange = async (options, page) => {
         const usernameLengths: number[] = [];

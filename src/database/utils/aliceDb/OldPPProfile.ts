@@ -83,9 +83,7 @@ export class OldPPProfile extends Manager {
     ): Promise<OperationResult> {
         this.pp = list;
 
-        this.pp.sort((a, b) => {
-            return b.pp - a.pp;
-        });
+        this.pp.sort((a, b) => b.pp - a.pp);
 
         this.playc += Math.max(0, playCountIncrement);
 

@@ -36,9 +36,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    finalBadgeList.sort((a, b) => {
-        return Number(b.isOwned) - Number(a.isOwned);
-    });
+    finalBadgeList.sort((a, b) => Number(b.isOwned) - Number(a.isOwned));
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,

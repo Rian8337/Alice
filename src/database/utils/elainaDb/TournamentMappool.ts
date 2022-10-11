@@ -196,9 +196,7 @@ export class TournamentMappool extends Manager {
             );
         }
 
-        scores.sort((a, b) => {
-            return b.scoreV2 - a.scoreV2;
-        });
+        scores.sort((a, b) => b.scoreV2 - a.scoreV2);
 
         return scores;
     }

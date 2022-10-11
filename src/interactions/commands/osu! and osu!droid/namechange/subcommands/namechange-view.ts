@@ -27,9 +27,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    nameChanges.sort((a, b) => {
-        return a.cooldown - b.cooldown;
-    });
+    nameChanges.sort((a, b) => a.cooldown - b.cooldown);
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,

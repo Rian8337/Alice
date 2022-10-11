@@ -22,7 +22,6 @@ import {
     MapInfo,
     DroidAPIRequestBuilder,
     RequestResponse,
-    Utils,
     Precision,
 } from "@rian8337/osu-base";
 import {
@@ -288,9 +287,7 @@ export class UserBind extends Manager {
     ): Promise<OperationResult> {
         this.pp = list;
 
-        this.pp.sort((a, b) => {
-            return b.pp - a.pp;
-        });
+        this.pp.sort((a, b) => b.pp - a.pp);
 
         this.playc += Math.max(0, playCountIncrement);
 

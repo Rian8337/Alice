@@ -78,11 +78,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const sortOption: string =
         interaction.options.getString("sortoption") ?? "overall";
 
-    validEmojis.sort((a, b) => {
-        return sortOption === "overall"
+    validEmojis.sort((a, b) =>
+        sortOption === "overall"
             ? b.count - a.count
-            : b.averagePerMonth - a.averagePerMonth;
-    });
+            : b.averagePerMonth - a.averagePerMonth
+    );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         color: (<GuildMember>interaction.member).displayColor,

@@ -147,9 +147,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         }
     }
 
-    sortedChannelData.sort((a, b) => {
-        return b - a;
-    });
+    sortedChannelData.sort((a, b) => b - a);
 
     let generalDescription: string = "";
     let clansDescription: string = "";

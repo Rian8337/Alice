@@ -92,9 +92,7 @@ export class ClanAuction extends Manager {
             amount: (this.bids.get(clan.name)?.amount ?? 0) + amount,
         });
 
-        this.bids.sort((a, b) => {
-            return b.amount - a.amount;
-        });
+        this.bids.sort((a, b) => b.amount - a.amount);
 
         return this.createOperationResult(true);
     }
