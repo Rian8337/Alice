@@ -274,11 +274,16 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
         searchQuery: string | RegExp,
         amount: number = 25
     ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
+        let regExp: RegExp;
+
+        try {
+            regExp = new RegExp(searchQuery, "i");
+        } catch {
+            return [];
+        }
+
         const result: DatabaseUserBind[] = await this.collection
-            .find(
-                { username: new RegExp(searchQuery, "i") },
-                { projection: { _id: 0, username: 1 } }
-            )
+            .find({ username: regExp }, { projection: { _id: 0, username: 1 } })
             .limit(amount)
             .toArray();
 
