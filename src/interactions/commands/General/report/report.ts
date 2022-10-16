@@ -25,6 +25,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         !interaction.inCachedGuild() ||
         interaction.guildId !== Constants.mainServer
     ) {
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(

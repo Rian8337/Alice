@@ -22,6 +22,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ...Config.verifyPerm
         )
     ) {
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(

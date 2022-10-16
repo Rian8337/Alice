@@ -63,6 +63,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                     "ManageChannels",
                 ])
             ) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
@@ -86,6 +88,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                     "ManageGuild",
                 ])
             ) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
@@ -104,6 +108,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         case "global":
             // Only allow bot owners to globally set a command's cooldown
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(

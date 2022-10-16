@@ -17,6 +17,8 @@ export const run: SlashSubcommandGroup["run"] = async (client, interaction) => {
         ) &&
         !staffMembers.has(interaction.user.id)
     ) {
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(

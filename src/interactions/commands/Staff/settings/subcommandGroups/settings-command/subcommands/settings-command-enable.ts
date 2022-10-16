@@ -50,6 +50,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                     "ManageChannels",
                 ])
             ) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
@@ -73,6 +75,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                     "ManageGuild",
                 ])
             ) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
@@ -91,6 +95,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         case "global":
             // Only allow bot owners to globally enable a command
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(

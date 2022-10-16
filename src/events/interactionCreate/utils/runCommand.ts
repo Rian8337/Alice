@@ -103,6 +103,7 @@ export const run: EventUtil["run"] = async (
                 )} ${localization.getTranslation("requiredPermissions")}`,
                 PermissionHelper.getPermissionString(command.config.permissions)
             ),
+            ephemeral: true,
         });
     }
 

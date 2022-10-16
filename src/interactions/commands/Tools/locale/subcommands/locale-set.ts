@@ -67,6 +67,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     "ManageGuild",
                 ])
             ) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.update(selectMenuInteraction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
@@ -90,6 +92,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     "ManageChannels",
                 ])
             ) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.update(selectMenuInteraction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(

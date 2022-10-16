@@ -16,6 +16,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(

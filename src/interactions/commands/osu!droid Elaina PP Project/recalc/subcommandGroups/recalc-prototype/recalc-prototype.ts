@@ -14,6 +14,8 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
             DPPHelper.ppModeratorRole
         )
     ) {
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(

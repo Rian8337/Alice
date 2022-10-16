@@ -30,6 +30,8 @@ export const run: SlashSubcommand<true>["run"] = async (
             await PermissionHelper.getMainGuildStaffMembers(client);
 
         if (!staffMembers.has(interaction.user.id)) {
+            interaction.ephemeral = true;
+
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     new ConstantsLocalization(

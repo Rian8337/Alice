@@ -21,6 +21,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const constantsLocalization: ConstantsLocalization =
             new ConstantsLocalization(localization.language);
 
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 constantsLocalization.getTranslation(

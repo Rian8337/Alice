@@ -28,6 +28,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         ) ||
         !staffMembers.get(interaction.user.id)
     ) {
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(

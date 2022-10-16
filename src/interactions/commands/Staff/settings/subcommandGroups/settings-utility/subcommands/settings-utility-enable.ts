@@ -56,6 +56,8 @@ export const run: SlashSubcommand<true>["run"] = async (
             util.config.togglePermissions
         )
     ) {
+        interaction.ephemeral = true;
+
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
@@ -85,6 +87,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         case "global":
             // Only allow bot owners to globally enable an event utility
             if (!CommandHelper.isExecutedByBotOwner(interaction)) {
+                interaction.ephemeral = true;
+
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(

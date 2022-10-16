@@ -326,6 +326,8 @@ export abstract class CommandHelper extends Manager {
                 subcommand.config.permissions
             )
         ) {
+            interaction.ephemeral = true;
+
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     `${new ConstantsLocalization(language).getTranslation(
