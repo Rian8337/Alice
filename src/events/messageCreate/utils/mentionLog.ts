@@ -62,7 +62,7 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
     if (message.content) {
         embed.addFields({
             name: "Content",
-            value: message.content.substring(0, 1025),
+            value: message.content.substring(0, 1024),
         });
     }
 
