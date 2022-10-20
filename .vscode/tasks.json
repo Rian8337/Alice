@@ -3,14 +3,14 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "compile-windows",
+			"script": "compile-linux",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
 			"problemMatcher": [],
-			"label": "npm: compile-windows",
-			"detail": "rmdir dist /s /q & npm run compile-build && npm run build-osu-droid"
+			"label": "npm: compile-linux",
+			"detail": "rm -rf dist & npm run compile-build"
 		}
 	]
 }
