@@ -62,7 +62,7 @@ import {
 } from "@alice-localization/database/utils/aliceDb/Challenge/ChallengeLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { MD5 } from "crypto-js";
+import { createHash } from "crypto";
 
 /**
  * Represents a daily or weekly challenge.
@@ -930,7 +930,7 @@ export class Challenge extends Manager {
         const finalFile: string = lines.join("\n");
 
         if (this.isScheduled) {
-            const hash: string = MD5(finalFile).toString();
+            const hash: string = createHash("md5").update(finalFile).digest("hex");
 
             if (this.hash !== hash) {
                 await DatabaseManager.aliceDb.collections.challenge.updateOne(
