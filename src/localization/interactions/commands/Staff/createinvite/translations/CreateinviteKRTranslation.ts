@@ -11,7 +11,7 @@ export class CreateinviteKRTranslation extends Translation<CreateinviteStrings> 
         maximumUsageInvalid:
             "저기, 초대 링크의 최대 사용 횟수를 입력해 주세요!",
         inviteLinkCreated: "초대 링크 생성됨",
-        createdInChannel: "%s에서 생성",
+        createdInChannel: "에서 생성",
         maxUsage: "최대 사용 횟수",
         infinite: "무한",
         expirationTime: "만료 시간",

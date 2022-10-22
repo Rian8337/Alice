@@ -11,7 +11,7 @@ export class CreateinviteESTranslation extends Translation<CreateinviteStrings> 
         maximumUsageInvalid:
             "Hey, por favor ingresa una cantidad máxima válida para la invitacion!",
         inviteLinkCreated: "Invitación creada",
-        createdInChannel: "Creada en %s",
+        createdInChannel: "Creada en",
         maxUsage: "Uso Máximo",
         infinite: "Infinito",
         expirationTime: "Fecha de expiración",
