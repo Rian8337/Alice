@@ -55,7 +55,7 @@
     "bufferutil": "^4.0.3",
     "canvas": "^2.8.0",
     "consola": "^2.15.3",
-    "d3": "^6.7.0",
+    "d3": "^7.6.1",
     "discord.js": "^14.1.1",
     "dotenv": "^16.0.3",
     "erlpack": "github:discord/erlpack",
