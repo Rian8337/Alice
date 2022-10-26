@@ -4,7 +4,7 @@ import {
     HitObject,
     Interpolation,
     MapStats,
-    modes,
+    Modes,
     ModHardRock,
     ModPrecise,
     ModUtil,
@@ -270,7 +270,7 @@ export class MissAnalyzer {
         // Limit to cursor occurrences within this distance.
         // Add a cap to better assess smaller objects.
         let closestDistance: number = Math.max(
-            2.5 * object.getRadius(modes.droid),
+            2.5 * object.getRadius(Modes.droid),
             80
         );
         let closestHit: number = Number.POSITIVE_INFINITY;
@@ -285,7 +285,7 @@ export class MissAnalyzer {
             }
 
             if (!includeNotelockVerdict) {
-                return distance > object.getRadius(modes.droid);
+                return distance > object.getRadius(Modes.droid);
             }
 
             return true;
@@ -316,7 +316,7 @@ export class MissAnalyzer {
 
                 if (occurrence.id === MovementType.down) {
                     const distanceToObject: number = object
-                        .getStackedPosition(modes.droid)
+                        .getStackedPosition(Modes.droid)
                         .getDistance(occurrence.position);
 
                     if (acceptDistance(distanceToObject)) {
@@ -369,7 +369,7 @@ export class MissAnalyzer {
                             );
 
                             const distanceToObject: number = object
-                                .getStackedPosition(modes.droid)
+                                .getStackedPosition(Modes.droid)
                                 .getDistance(cursorPosition);
 
                             if (acceptDistance(distanceToObject)) {
@@ -388,7 +388,7 @@ export class MissAnalyzer {
         }
 
         let verdict: string = "Misaim";
-        if (closestDistance <= object.getRadius(modes.droid)) {
+        if (closestDistance <= object.getRadius(Modes.droid)) {
             verdict = "Notelock";
         }
 

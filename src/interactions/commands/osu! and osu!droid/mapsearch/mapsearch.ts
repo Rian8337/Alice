@@ -15,7 +15,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { rankedStatus, RequestResponse } from "@rian8337/osu-base";
+import { RankedStatus, RequestResponse } from "@rian8337/osu-base";
 import { MapsearchLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapsearch/MapsearchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
@@ -112,15 +112,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             let status: string = "Unknown";
 
-            for (const stat in rankedStatus) {
+            for (const stat in RankedStatus) {
                 if (parseInt(stat) === d.approved) {
                     status =
-                        rankedStatus[stat] !== "WIP"
+                        RankedStatus[stat] !== "WIP"
                             ? StringHelper.capitalizeString(
-                                  rankedStatus[stat],
+                                  RankedStatus[stat],
                                   true
                               )
-                            : rankedStatus[stat];
+                            : RankedStatus[stat];
                     break;
                 }
             }
@@ -142,8 +142,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 }) - [Beatconnect](https://beatconnect.io/b/${
                     d.sid
                 }/) - [Nerina](https://nerina.pw/d/${d.sid})${
-                    d.approved >= rankedStatus.RANKED &&
-                    d.approved !== rankedStatus.QUALIFIED
+                    d.approved >= RankedStatus.ranked &&
+                    d.approved !== RankedStatus.qualified
                         ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})`
                         : ""
                 }\n**${localization.getTranslation(

@@ -13,7 +13,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MapInfo, rankedStatus } from "@rian8337/osu-base";
+import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const localization: MapshareSubmissionLocalization =
@@ -105,8 +105,8 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     }
 
     if (
-        beatmapInfo.approved === rankedStatus.WIP ||
-        beatmapInfo.approved === rankedStatus.QUALIFIED
+        beatmapInfo.approved === RankedStatus.wip ||
+        beatmapInfo.approved === RankedStatus.qualified
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -115,7 +115,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (beatmapInfo.approved !== rankedStatus.RANKED) {
+    if (beatmapInfo.approved !== RankedStatus.ranked) {
         if (
             DateTimeFormatHelper.getTimeDifference(beatmapInfo.submitDate) >
             -86400 * 1000 * 7

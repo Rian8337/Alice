@@ -930,7 +930,9 @@ export class Challenge extends Manager {
         const finalFile: string = lines.join("\n");
 
         if (this.isScheduled) {
-            const hash: string = createHash("md5").update(finalFile).digest("hex");
+            const hash: string = createHash("md5")
+                .update(finalFile)
+                .digest("hex");
 
             if (this.hash !== hash) {
                 await DatabaseManager.aliceDb.collections.challenge.updateOne(

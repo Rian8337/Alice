@@ -1,5 +1,5 @@
 import { BaseMessageOptions, Snowflake, TextChannel } from "discord.js";
-import { MapInfo, rankedStatus } from "@rian8337/osu-base";
+import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
 import { OperationResult } from "structures/core/OperationResult";
@@ -246,9 +246,9 @@ export abstract class WhitelistManager extends Manager {
      * to be submitted into the droid pp system.
      * @param status
      */
-    static beatmapNeedsWhitelisting(status: rankedStatus): boolean {
+    static beatmapNeedsWhitelisting(status: RankedStatus): boolean {
         return (
-            status === rankedStatus.QUALIFIED || status <= rankedStatus.PENDING
+            status === RankedStatus.qualified || status <= RankedStatus.pending
         );
     }
 
@@ -271,7 +271,7 @@ export abstract class WhitelistManager extends Manager {
      * @returns Whether the beatmap is eligible.
      */
     private static isEligibleForWhitelist(beatmap: MapInfo): boolean {
-        return beatmap.approved === rankedStatus.GRAVEYARD;
+        return beatmap.approved === RankedStatus.graveyard;
     }
 
     /**

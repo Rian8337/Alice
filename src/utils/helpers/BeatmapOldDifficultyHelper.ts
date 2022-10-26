@@ -5,7 +5,7 @@ import {
     MapInfo,
     MapStats,
     Mod,
-    modes,
+    Modes,
     ModTouchDevice,
     ModUtil,
     Slider,
@@ -344,7 +344,7 @@ export abstract class BeatmapOldDifficultyHelper {
                 : oldBeatmap.ar,
             od: oldBeatmap.od,
             hp: oldBeatmap.hp,
-        }).calculate({ mode: modes.droid });
+        }).calculate({ mode: Modes.droid });
 
         oldBeatmap.cs = stats.cs!;
         oldBeatmap.ar = stats.ar!;

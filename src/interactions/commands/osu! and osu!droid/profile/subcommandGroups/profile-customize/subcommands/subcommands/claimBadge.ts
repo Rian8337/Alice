@@ -16,7 +16,7 @@ import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
-import { MapInfo, rankedStatus } from "@rian8337/osu-base";
+import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 import { OsuDifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
@@ -184,8 +184,8 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             }
 
             if (
-                beatmapInfo.approved !== rankedStatus.RANKED &&
-                beatmapInfo.approved !== rankedStatus.APPROVED
+                beatmapInfo.approved !== RankedStatus.ranked &&
+                beatmapInfo.approved !== RankedStatus.approved
             ) {
                 return InteractionHelper.update(interaction, {
                     content: MessageCreator.createReject(

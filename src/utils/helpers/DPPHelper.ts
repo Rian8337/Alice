@@ -12,7 +12,7 @@ import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformance
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { MapInfo, rankedStatus } from "@rian8337/osu-base";
+import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 import {
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
@@ -77,7 +77,7 @@ export abstract class DPPHelper {
             case beatmapOrScore instanceof Score &&
                 beatmapOrScore.speedMultiplier !== 1:
                 return DPPSubmissionValidity.scoreUsesCustomSpeed;
-            case beatmapInfo.approved === rankedStatus.LOVED &&
+            case beatmapInfo.approved === RankedStatus.loved &&
                 (beatmapInfo.hitLength < 30 ||
                     beatmapInfo.hitLength / beatmapInfo.totalLength < 0.6):
                 return DPPSubmissionValidity.beatmapTooShort;

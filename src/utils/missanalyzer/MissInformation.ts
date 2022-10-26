@@ -2,7 +2,7 @@ import {
     BeatmapMetadata,
     HitObject,
     Interpolation,
-    modes,
+    Modes,
     Playfield,
     Slider,
     SliderRepeat,
@@ -255,8 +255,8 @@ export class MissInformation {
             if (this.closestCursorPosition) {
                 const distanceToObject: number =
                     this.closestCursorPosition.getDistance(
-                        this.object.getStackedPosition(modes.droid)
-                    ) - this.object.getRadius(modes.droid);
+                        this.object.getStackedPosition(Modes.droid)
+                    ) - this.object.getRadius(Modes.droid);
 
                 if (distanceToObject > 0) {
                     closestHitText += `, ${
@@ -378,10 +378,10 @@ export class MissInformation {
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
 
         const objectDrawPosition: Vector2 = this.flipVectorVertically(
-            object.getStackedPosition(modes.droid).scale(this.playfieldScale)
+            object.getStackedPosition(Modes.droid).scale(this.playfieldScale)
         );
         const scaledRadius: number =
-            object.getRadius(modes.droid) * this.playfieldScale;
+            object.getRadius(Modes.droid) * this.playfieldScale;
 
         if (object instanceof Slider) {
             // Draw the path first, then we can apply the slider head.
@@ -394,7 +394,7 @@ export class MissInformation {
 
             for (let i = 0; i <= drawnDistance; i += 5) {
                 const pathPosition: Vector2 = object
-                    .getStackedPosition(modes.droid)
+                    .getStackedPosition(Modes.droid)
                     .add(object.path.positionAt(i / drawnDistance));
                 const drawPosition: Vector2 = this.flipVectorVertically(
                     pathPosition.scale(this.playfieldScale)
@@ -422,7 +422,7 @@ export class MissInformation {
 
                 for (let i = 0; i <= drawnDistance; i += 5) {
                     const pathPosition: Vector2 = object
-                        .getStackedPosition(modes.droid)
+                        .getStackedPosition(Modes.droid)
                         .add(object.path.positionAt(i / drawnDistance));
                     const drawPosition: Vector2 = this.flipVectorVertically(
                         pathPosition.scale(this.playfieldScale)
@@ -451,7 +451,7 @@ export class MissInformation {
 
                 const drawPosition: Vector2 = this.flipVectorVertically(
                     nestedObject
-                        .getStackedPosition(modes.droid)
+                        .getStackedPosition(Modes.droid)
                         .scale(this.playfieldScale)
                 );
 
