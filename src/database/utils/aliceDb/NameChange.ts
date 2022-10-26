@@ -24,7 +24,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
     isProcessed: boolean;
     previous_usernames: string[];
     readonly _id?: ObjectId;
-    private player?: Player | null = null;
+    private player: Player | null = null;
 
     constructor(
         data: DatabaseNameChange = DatabaseManager.aliceDb?.collections
