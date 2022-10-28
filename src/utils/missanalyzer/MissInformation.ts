@@ -388,7 +388,9 @@ export class MissInformation {
             const drawnDistance: number =
                 object.path.expectedDistance * this.playfieldScale;
 
-            context.fillStyle = sliderPathColor;
+            context.strokeStyle = sliderPathColor;
+            context.lineWidth = scaledRadius * 2;
+            context.lineCap = "round";
             context.globalAlpha = 0.8;
             context.beginPath();
 
@@ -400,16 +402,10 @@ export class MissInformation {
                     pathPosition.scale(this.playfieldScale)
                 );
 
-                context.arc(
-                    drawPosition.x,
-                    drawPosition.y,
-                    scaledRadius,
-                    0,
-                    2 * Math.PI
-                );
+                context.lineTo(drawPosition.x, drawPosition.y);
             }
 
-            context.fill();
+            context.stroke();
             context.closePath();
 
             // Only draw path direction if the path is long enough.
@@ -417,7 +413,6 @@ export class MissInformation {
                 context.strokeStyle = "#606060";
                 context.globalAlpha = 0.5;
                 context.lineWidth = scaledRadius * 0.15;
-                context.lineCap = "round";
                 context.beginPath();
 
                 for (let i = 0; i <= drawnDistance; i += 5) {
