@@ -13,7 +13,6 @@ import {
     ModAutopilot,
     ModPerfect,
     ModRelax,
-    ModScoreV2,
     ModSuddenDeath,
     ModUtil,
 } from "@rian8337/osu-base";
@@ -72,7 +71,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             (m) =>
                 m instanceof ModSuddenDeath ||
                 m instanceof ModPerfect ||
-                m instanceof ModScoreV2 ||
                 m instanceof ModRelax ||
                 m instanceof ModAuto ||
                 m instanceof ModAutopilot
