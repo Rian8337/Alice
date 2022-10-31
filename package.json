@@ -1,6 +1,6 @@
 {
   "name": "alice",
-  "version": "2022.1028.1",
+  "version": "2022.1031.0",
   "description": "A Discord bot for osu!droid",
   "main": "dist/main.js",
   "scripts": {
