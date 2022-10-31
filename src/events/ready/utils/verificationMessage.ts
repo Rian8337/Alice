@@ -21,6 +21,7 @@ import {
     ThreadChannel,
     GuildPremiumTier,
     ChannelType,
+    ComponentType,
 } from "discord.js";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
@@ -142,7 +143,9 @@ export const run: EventUtil["run"] = async (client) => {
     };
 
     arrivalMessage
-        .createMessageComponentCollector()
+        .createMessageComponentCollector({
+            componentType: ComponentType.StringSelect,
+        })
         .on("collect", async (i) => {
             i.ephemeral = true;
 
@@ -300,7 +303,9 @@ export const run: EventUtil["run"] = async (client) => {
         });
 
     verificationTranslationMessage
-        .createMessageComponentCollector()
+        .createMessageComponentCollector({
+            componentType: ComponentType.StringSelect,
+        })
         .on("collect", async (i) => {
             i.ephemeral = true;
 
