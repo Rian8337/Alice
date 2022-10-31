@@ -7,6 +7,7 @@ export interface BotinfoStrings {
     readonly botInfo: string;
     readonly botVersion: string;
     readonly botUptime: string;
+    readonly nodeVersion: string;
     readonly coreLibraries: string;
     readonly discordJs: string;
     readonly typescript: string;

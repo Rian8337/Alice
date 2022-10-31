@@ -64,6 +64,10 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                     )}`,
             },
             {
+                name: localization.getTranslation("nodeVersion"),
+                value: process.versions.node,
+            },
+            {
                 name: localization.getTranslation("coreLibraries"),
                 value:
                     `${localization.getTranslation("discordJs")}: [${

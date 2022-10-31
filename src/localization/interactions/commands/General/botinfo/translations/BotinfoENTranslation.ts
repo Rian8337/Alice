@@ -11,6 +11,7 @@ export class BotinfoENTranslation extends Translation<BotinfoStrings> {
         botInfo: "Bot Information",
         botVersion: "Version",
         botUptime: "Uptime",
+        nodeVersion: "Node.js Version",
         coreLibraries: "Core Libraries",
         discordJs: "Discord.js",
         typescript: "TypeScript",
