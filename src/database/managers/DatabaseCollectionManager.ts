@@ -4,11 +4,14 @@ import { Manager } from "@alice-utils/base/Manager";
 import { Collection as DiscordCollection } from "discord.js";
 import {
     Collection as MongoDBCollection,
+    DeleteResult,
     Filter,
     FindOptions,
+    InsertManyResult,
     OptionalUnlessRequiredId,
     UpdateFilter,
     UpdateOptions,
+    UpdateResult,
 } from "mongodb";
 
 /**
@@ -81,20 +84,14 @@ export abstract class DatabaseCollectionManager<
      * @param options Options for the update operation.
      * @returns An object containing information about the operation.
      */
-    updateOne(
+    async updateOne(
         filter: Filter<T>,
         query: UpdateFilter<T> | Partial<T>,
         options: UpdateOptions = {}
     ): Promise<OperationResult> {
-        return new Promise((resolve, reject) => {
-            this.collection.updateOne(filter, query, options, (err) => {
-                if (err) {
-                    return reject(err);
-                }
+        const result: UpdateResult = await this.collection.updateOne(filter, query, options);
 
-                resolve(this.createOperationResult(true));
-            });
-        });
+        return this.createOperationResult(result.acknowledged);
     }
 
     /**
@@ -163,16 +160,10 @@ export abstract class DatabaseCollectionManager<
      * @param filter The filter used to select the documents to remove.
      * @returns An object containing information about the operation.
      */
-    deleteMany(filter: Filter<T>): Promise<OperationResult> {
-        return new Promise((resolve, reject) => {
-            this.collection.deleteMany(filter, (err) => {
-                if (err) {
-                    return reject(err);
-                }
+    async deleteMany(filter: Filter<T>): Promise<OperationResult> {
+        const result: DeleteResult = await this.collection.deleteMany(filter);
 
-                resolve(this.createOperationResult(true));
-            });
-        });
+        return this.createOperationResult(result.acknowledged);
     }
 
     /**
@@ -181,16 +172,10 @@ export abstract class DatabaseCollectionManager<
      * @param filter The filter used to select the document to remove.
      * @returns An object containing information about the operation.
      */
-    deleteOne(filter: Filter<T>): Promise<OperationResult> {
-        return new Promise((resolve, reject) => {
-            this.collection.deleteOne(filter, (err) => {
-                if (err) {
-                    return reject(err);
-                }
+    async deleteOne(filter: Filter<T>): Promise<OperationResult> {
+        const result: DeleteResult = await this.collection.deleteOne(filter);
 
-                resolve(this.createOperationResult(true));
-            });
-        });
+        return this.createOperationResult(result.acknowledged);
     }
 
     /**
@@ -198,24 +183,17 @@ export abstract class DatabaseCollectionManager<
      *
      * @param docs The part of documents to insert. Each document will be assigned to the default document with `Object.assign()`.
      */
-    insert(...docs: Partial<T>[]): Promise<OperationResult> {
-        return new Promise((resolve, reject) => {
-            this.collection.insertMany(
-                docs.map(
-                    (v) =>
-                        <OptionalUnlessRequiredId<T>>(
-                            Object.assign(this.defaultDocument, v)
-                        )
-                ),
-                (err) => {
-                    if (err) {
-                        return reject(err.message);
-                    }
+    async insert(...docs: Partial<T>[]): Promise<OperationResult> {
+        const result: InsertManyResult<T> = await this.collection.insertMany(
+            docs.map(
+                (v) =>
+                    <OptionalUnlessRequiredId<T>>(
+                        Object.assign(this.defaultDocument, v)
+                    )
+            )
+        );
 
-                    resolve(this.createOperationResult(true));
-                }
-            );
-        });
+        return this.createOperationResult(result.acknowledged);
     }
 
     /**
