@@ -17,7 +17,7 @@
     "use-local-osu-module": "npm i ..\\osu-droid-module\\packages\\osu-base ..\\osu-droid-module\\packages\\osu-difficulty-calculator ..\\osu-droid-module\\packages\\osu-droid-replay-analyzer ..\\osu-droid-module\\packages\\osu-droid-utilities ..\\osu-droid-module\\packages\\osu-rebalance-difficulty-calculator ..\\osu-droid-module\\packages\\osu-strain-graph-generator"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "keywords": [
     "discordjs",
