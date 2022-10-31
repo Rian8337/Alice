@@ -65,7 +65,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             },
             {
                 name: localization.getTranslation("nodeVersion"),
-                value: process.versions.node,
+                value: `[${process.versions.node}](https://nodejs.org)`,
             },
             {
                 name: localization.getTranslation("coreLibraries"),
