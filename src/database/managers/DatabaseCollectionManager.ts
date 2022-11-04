@@ -89,7 +89,11 @@ export abstract class DatabaseCollectionManager<
         query: UpdateFilter<T> | Partial<T>,
         options: UpdateOptions = {}
     ): Promise<OperationResult> {
-        const result: UpdateResult = await this.collection.updateOne(filter, query, options);
+        const result: UpdateResult = await this.collection.updateOne(
+            filter,
+            query,
+            options
+        );
 
         return this.createOperationResult(result.acknowledged);
     }

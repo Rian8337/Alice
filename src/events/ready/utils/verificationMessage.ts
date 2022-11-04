@@ -144,7 +144,7 @@ export const run: EventUtil["run"] = async (client) => {
 
     arrivalMessage
         .createMessageComponentCollector({
-            componentType: ComponentType.StringSelect,
+            componentType: ComponentType.Button,
         })
         .on("collect", async (i) => {
             i.ephemeral = true;
@@ -304,7 +304,7 @@ export const run: EventUtil["run"] = async (client) => {
 
     verificationTranslationMessage
         .createMessageComponentCollector({
-            componentType: ComponentType.StringSelect,
+            componentType: ComponentType.Button,
         })
         .on("collect", async (i) => {
             i.ephemeral = true;
