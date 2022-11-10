@@ -75,7 +75,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         const collector: InteractionCollector<SelectMenuInteraction> =
             message.createMessageComponentCollector({
                 filter: (i) => i.isSelectMenu() && (filter?.(i) ?? true),
-                componentType: ComponentType.SelectMenu,
+                componentType: ComponentType.StringSelect,
                 dispose: true,
                 time: duration * 1000,
             });
@@ -136,6 +136,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         };
 
         this.client.on("messageUpdate", messageEditListener);
+        // Collector will end internally, so we don't need to end it here.
         this.client.once("messageDelete", messageDeleteListener);
 
         collector.once("end", () => {
