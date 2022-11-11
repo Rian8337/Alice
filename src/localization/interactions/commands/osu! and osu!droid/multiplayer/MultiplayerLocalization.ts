@@ -89,6 +89,8 @@ export interface MultiplayerStrings {
     readonly setScorePortionSuccess: string;
     readonly setBeatmapFailed: string;
     readonly setBeatmapSuccess: string;
+    readonly setSpectatorEnabledFailed: string;
+    readonly setSpectatorEnabledSuccess: string;
     readonly roundStartFailed: string;
     readonly roundStartSuccess: string;
     readonly matchStatusUpdateFailed: string;

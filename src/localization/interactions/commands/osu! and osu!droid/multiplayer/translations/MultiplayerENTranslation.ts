@@ -140,6 +140,10 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         setScorePortionSuccess: "Successfully set score portion to `%s`.",
         setBeatmapFailed: "I'm sorry, I couldn't set the beatmap: %s.",
         setBeatmapSuccess: "Successfully set current beatmap to `%s`.",
+        setSpectatorEnabledFailed:
+            "I'm sorry, I couldn't set the spectator enabled rule: %s.",
+        setSpectatorEnabledSuccess:
+            "Successfully set the spectator enabled rule to `%s`.",
         roundStartFailed: "I'm sorry, I couldn't start the round: %s.",
         roundStartSuccess:
             "The round will start in %s seconds! Good luck and have fun!",
