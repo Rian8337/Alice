@@ -91,7 +91,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             )} pp**\n` +
             `[${localization.getTranslation(
                 "ppProfile"
-            )}](https://droidppboard.herokuapp.com/prototype/profile/${
+            )}](https://droidpp.osudroid.moe/prototype/profile/${
                 ppInfo.uid
             })\n` +
             `${localization.getTranslation(

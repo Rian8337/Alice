@@ -312,7 +312,7 @@ export abstract class EmbedCreator {
                 ).toFixed(2)}${Symbols.star}**\n` +
                 `[${localization.getTranslation(
                     "ppProfile"
-                )}](https://droidppboard.herokuapp.com/${
+                )}](https://droidpp.osudroid.moe/${
                     playerInfo instanceof OldPPProfile ? "old/" : ""
                 }profile/${playerInfo.uid})`
         );

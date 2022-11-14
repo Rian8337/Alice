@@ -57,7 +57,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const response: RequestResponse = await RESTManager.request(
-        "https://droidppboard.herokuapp.com/api/droid/stopPlaying",
+        "https://localhost:3001/api/droid/stopPlaying",
         {
             method: "POST",
             body: {
