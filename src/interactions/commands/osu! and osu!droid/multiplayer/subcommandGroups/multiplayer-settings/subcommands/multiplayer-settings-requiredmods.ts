@@ -16,6 +16,7 @@ import {
     ModSuddenDeath,
     ModUtil,
 } from "@rian8337/osu-base";
+import { RESTManager } from "@alice-utils/managers/RESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -125,6 +126,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             room.settings.allowedMods || localization.getTranslation("none")
         ),
     });
+
+    RESTManager.request(
+        "https://localhost:3001/api/droid/events/requiredModsChange",
+        {
+            method: "POST",
+            body: {
+                key: process.env.DROID_SERVER_INTERNAL_KEY,
+                roomId: room.roomId,
+                mods: room.settings.requiredMods,
+            },
+            headers: {
+                "Content-Type": "application/json",
+            },
+            json: true,
+        }
+    );
 };
 
 export const config: SlashSubcommand["config"] = {

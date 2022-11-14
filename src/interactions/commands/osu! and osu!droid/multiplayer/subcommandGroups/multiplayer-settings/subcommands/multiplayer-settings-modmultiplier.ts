@@ -18,6 +18,7 @@ import {
     ModSuddenDeath,
     ModUtil,
 } from "@rian8337/osu-base";
+import { RESTManager } from "@alice-utils/managers/RESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -63,9 +64,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const mods: Mod[] = ModUtil.pcStringToMods(
-        interaction.options.getString("mods", true)
-    );
+    const modString: string = interaction.options.getString("mods", true);
+
+    const mods: Mod[] = ModUtil.pcStringToMods(modString);
 
     if (mods.length === 0) {
         return InteractionHelper.reply(interaction, {
@@ -150,6 +151,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ) ?? localization.getTranslation("default")
         ),
     });
+
+    RESTManager.request(
+        "https://localhost:3001/api/droid/events/modMultiplierChange",
+        {
+            method: "POST",
+            body: {
+                key: process.env.DROID_SERVER_INTERNAL_KEY,
+                roomId: room.roomId,
+                mods: modString,
+            },
+            headers: {
+                "Content-Type": "application/json",
+            },
+            json: true,
+        }
+    );
 };
 
 export const config: SlashSubcommand["config"] = {
