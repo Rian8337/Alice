@@ -113,12 +113,14 @@ export class TournamentMappool extends Manager {
      * @param pick The pick to calculate for.
      * @param accuracy The accuracy achieved, from 0 to 1.
      * @param misses The amount of misses achieved.
+     * @param mods The mods that were used.
      * @returns The accuracy portion of ScoreV2 for the pick, 0 if the pick is not found.
      */
     calculateAccuracyPortionScoreV2(
         pick: string,
         accuracy: number,
-        misses: number
+        misses: number,
+        mods: Mod[]
     ): number {
         const pickData: TournamentBeatmap | undefined = this.maps.get(
             pick.toUpperCase()
@@ -131,6 +133,7 @@ export class TournamentMappool extends Manager {
         return ScoreHelper.calculateAccuracyPortionScoreV2(
             accuracy,
             misses,
+            mods,
             1 - pickData.scorePortion
         );
     }

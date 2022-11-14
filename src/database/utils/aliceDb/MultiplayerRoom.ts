@@ -74,6 +74,22 @@ export class MultiplayerRoom
     private convertedRequiredMods?: Mod[];
     private currentBeatmapMaxScore?: number;
 
+    private get speedScoreMultiplier(): number {
+        let speedScoreMultiplier: number = 1;
+
+        if (this.settings.speedMultiplier >= 1) {
+            speedScoreMultiplier *=
+                1 + (this.settings.speedMultiplier - 1) * 0.24;
+        } else {
+            speedScoreMultiplier *= Math.pow(
+                0.3,
+                (1 - this.settings.speedMultiplier) * 4
+            );
+        }
+
+        return speedScoreMultiplier;
+    }
+
     constructor(
         data: DatabaseMultiplayerRoom = DatabaseManager.aliceDb?.collections
             .multiplayerRoom.defaultDocument ?? {}
@@ -337,7 +353,7 @@ export class MultiplayerRoom
      */
     applyCustomModMultiplier(score: number, mods: Mod[]): number {
         if (Object.keys(this.settings.modMultipliers).length === 0) {
-            return score;
+            return Math.round(score);
         }
 
         for (const mod of mods) {
@@ -352,6 +368,26 @@ export class MultiplayerRoom
         }
 
         return Math.round(score);
+    }
+
+    /**
+     * Removes speed multiplier score bonus from a score value, making it equal to NoMod in-game.
+     *
+     * @param score The score value.
+     * @returns The NoMod score.
+     */
+    applySpeedMulBonus(score: number): number {
+        return Math.round(score * this.speedScoreMultiplier);
+    }
+
+    /**
+     * Removes speed multiplier score bonus from a score value, making it equal to NoMod in-game.
+     *
+     * @param score The score value.
+     * @returns The NoMod score.
+     */
+    removeSpeedMulBonus(score: number): number {
+        return Math.round(score / this.speedScoreMultiplier);
     }
 
     /**
@@ -677,30 +713,23 @@ export class MultiplayerRoom
                         this.settings.beatmap!.hash
                     ))!;
 
-                this.currentBeatmapMaxScore ??= this.applyCustomModMultiplier(
-                    beatmapInfo.beatmap.maxDroidScore(
-                        new MapStats({
-                            mods: this.convertedRequiredMods,
-                            speedMultiplier: this.settings.speedMultiplier,
-                        })
-                    ),
-                    this.convertedRequiredMods
-                );
+                this.currentBeatmapMaxScore ??=
+                    beatmapInfo.beatmap.maxDroidScore(new MapStats());
 
-                const { mods } = this.convertModString(score.modstring);
-
-                return ScoreHelper.calculateScoreV2(
-                    this.applyCustomModMultiplier(score.score, mods),
-                    new Accuracy({
-                        n300: score.perfect,
-                        n100: score.good,
-                        n50: score.bad,
-                        nmiss: score.miss,
-                    }).value(),
-                    score.miss,
-                    this.currentBeatmapMaxScore,
-                    this.convertedRequiredMods,
-                    this.settings.scorePortion
+                return this.applySpeedMulBonus(
+                    ScoreHelper.calculateScoreV2(
+                        this.removeSpeedMulBonus(score.score),
+                        new Accuracy({
+                            n300: score.perfect,
+                            n100: score.good,
+                            n50: score.bad,
+                            nmiss: score.miss,
+                        }).value(),
+                        score.miss,
+                        this.currentBeatmapMaxScore,
+                        this.convertedRequiredMods,
+                        this.settings.scorePortion
+                    )
                 );
             }
             case MultiplayerWinCondition.most300:

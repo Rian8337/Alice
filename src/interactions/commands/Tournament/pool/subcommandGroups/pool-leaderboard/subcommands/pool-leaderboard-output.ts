@@ -67,7 +67,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         )},${pool.calculateAccuracyPortionScoreV2(
             pick,
             score.score.accuracy.value(),
-            score.score.accuracy.nmiss
+            score.score.accuracy.nmiss,
+            score.score.mods
         )},${score.score.score},${score.score.mods.reduce(
             (a, v) => a + v.acronym,
             ""

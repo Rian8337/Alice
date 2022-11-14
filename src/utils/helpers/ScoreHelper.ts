@@ -2,6 +2,7 @@ import {
     DroidAPIRequestBuilder,
     Mod,
     ModDoubleTime,
+    ModHardRock,
     ModHidden,
     ModNoFail,
     RequestResponse,
@@ -74,6 +75,7 @@ export abstract class ScoreHelper {
             this.calculateAccuracyPortionScoreV2(
                 accuracy,
                 misses,
+                mods,
                 accuracyPortion
             )
         );
@@ -96,26 +98,20 @@ export abstract class ScoreHelper {
         mods: Mod[],
         scorePortion: number
     ): number {
-        const applyHiddenPenalty: boolean =
-            mods.filter(
-                (m) => m instanceof ModHidden || m instanceof ModDoubleTime
-            ).length === 2;
-
         const tempScoreV2: number =
             Math.sqrt(
-                (score * (mods.some((m) => m instanceof ModNoFail) ? 2 : 1)) /
-                    (maxScore *
-                        (applyHiddenPenalty
-                            ? new ModHidden().droidScoreMultiplier
-                            : 1))
+                (this.removeScoreMultiplier(score, mods) *
+                    (mods.some((m) => m instanceof ModNoFail) ? 2 : 1)) /
+                    maxScore
             ) *
             1e6 *
             scorePortion;
 
         return Math.max(
             0,
-            Math.round(
-                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses)
+            this.applyScoreMultiplier(
+                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses),
+                mods
             )
         );
     }
@@ -125,12 +121,14 @@ export abstract class ScoreHelper {
      *
      * @param accuracy The accuracy achieved, from 0 to 1.
      * @param misses The amount of misses achieved.
+     * @param mods The mods that were used.
      * @param accuracyPortion The portion of which accuracy will contribute to ScoreV2.
      * @returns The accuracy portion of ScoreV2.
      */
     static calculateAccuracyPortionScoreV2(
         accuracy: number,
         misses: number,
+        mods: Mod[],
         accuracyPortion: number
     ): number {
         const tempScoreV2: number =
@@ -138,8 +136,9 @@ export abstract class ScoreHelper {
 
         return Math.max(
             0,
-            Math.round(
-                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses)
+            this.applyScoreMultiplier(
+                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses),
+                mods
             )
         );
     }
@@ -190,5 +189,50 @@ export abstract class ScoreHelper {
         misses: number
     ): number {
         return misses * 5e-3 * tempScoreV2;
+    }
+
+    /**
+     * Applies score multiplier to a score value.
+     *
+     * @param score The score value.
+     * @param mods The mods to apply.
+     */
+    private static applyScoreMultiplier(score: number, mods: Mod[]): number {
+        for (const mod of mods) {
+            if (mod instanceof ModHardRock) {
+                score *= 1.1;
+                continue;
+            }
+
+            if (mod.isApplicableToDroid()) {
+                score *= mod.droidScoreMultiplier;
+            }
+        }
+
+        if (
+            mods.filter(
+                (m) => m instanceof ModHidden || m instanceof ModDoubleTime
+            ).length === 2
+        ) {
+            score /= new ModHidden().droidScoreMultiplier;
+        }
+
+        return Math.round(score);
+    }
+
+    /**
+     * Removes score multiplier from a score value.
+     *
+     * @param score The score value.
+     * @param mods The mods to remove.
+     */
+    private static removeScoreMultiplier(score: number, mods: Mod[]): number {
+        for (const mod of mods) {
+            if (mod.isApplicableToDroid() && mod.droidScoreMultiplier > 0) {
+                score /= mod.droidScoreMultiplier;
+            }
+        }
+
+        return Math.round(score);
     }
 }

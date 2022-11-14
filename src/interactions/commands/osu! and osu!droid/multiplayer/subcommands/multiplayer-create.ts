@@ -141,7 +141,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 speedMultiplier: 1,
                 teamMode: MultiplayerTeamMode.headToHead,
                 winCondition: MultiplayerWinCondition.scoreV1,
-                spectatorEnabled: false,
             },
         });
 

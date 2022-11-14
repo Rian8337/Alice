@@ -23,7 +23,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     "settings.beatmap": 1,
                     "settings.modMultipliers": 1,
-                    "settings.requiredMods": 1,
                     "settings.scorePortion": 1,
                 },
             }
@@ -64,35 +63,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const mods: Mod[] = ModUtil.pcStringToMods(
         interaction.options.getString("mods") ?? ""
     );
-    const requiredMods: Mod[] = ModUtil.pcStringToMods(
-        room.settings.requiredMods
-    );
 
-    const scorePortionScoreV2: number =
+    const scorePortionScoreV2: number = room.applySpeedMulBonus(
         ScoreHelper.calculateScorePortionScoreV2(
-            room.applyCustomModMultiplier(
-                interaction.options.getInteger("score", true),
-                mods
-            ),
+            interaction.options.getInteger("score", true),
             misses,
-            room.applyCustomModMultiplier(
-                beatmap.beatmap.maxDroidScore(
-                    new MapStats({
-                        mods: requiredMods,
-                    })
-                ),
-                requiredMods
-            ),
+            beatmap.beatmap.maxDroidScore(new MapStats()),
             mods,
             room.settings.scorePortion
-        );
+        )
+    );
 
-    const accuracyPortionScoreV2: number =
+    const accuracyPortionScoreV2: number = room.applySpeedMulBonus(
         ScoreHelper.calculateAccuracyPortionScoreV2(
             interaction.options.getNumber("accuracy", true) / 100,
             misses,
+            mods,
             1 - room.settings.scorePortion
-        );
+        )
+    );
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
