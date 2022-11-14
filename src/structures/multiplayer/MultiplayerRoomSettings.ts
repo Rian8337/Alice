@@ -93,9 +93,4 @@ export interface MultiplayerRoomSettings {
          */
         maxValue: number;
     };
-
-    /**
-     * Whether this room has spectating enabled.
-     */
-    spectatorEnabled: boolean;
 }

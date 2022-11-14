@@ -45,7 +45,6 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
                     minValue: 0,
                     maxValue: 12.5,
                 },
-                spectatorEnabled: false,
             },
         };
     }

@@ -414,21 +414,6 @@ export const config: SlashCommand["config"] = {
                     ],
                 },
                 {
-                    name: "spectator",
-                    type: ApplicationCommandOptionType.Subcommand,
-                    description:
-                        "Sets whether spectator mode will be enabled for the next match.",
-                    options: [
-                        {
-                            name: "value",
-                            type: ApplicationCommandOptionType.Boolean,
-                            required: true,
-                            description:
-                                "Whether spectator mode will be enabled for the next match.",
-                        },
-                    ],
-                },
-                {
                     name: "speedmultiplier",
                     type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the custom speed multiplier to use.",
