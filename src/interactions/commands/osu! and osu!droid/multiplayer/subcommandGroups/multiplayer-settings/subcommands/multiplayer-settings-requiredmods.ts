@@ -18,6 +18,7 @@ import {
     ModUtil,
 } from "@rian8337/osu-base";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { Config } from "@alice-core/Config";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -130,7 +131,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     });
 
     RESTManager.request(
-        "https://localhost:3001/api/droid/events/requiredModsChange",
+        Config.isDebug
+            ? "https://droidpp.osudroid.moe/api/droid/events/requiredModsChange"
+            : "https://localhost:3001/api/droid/events/requiredModsChange",
         {
             method: "POST",
             body: {

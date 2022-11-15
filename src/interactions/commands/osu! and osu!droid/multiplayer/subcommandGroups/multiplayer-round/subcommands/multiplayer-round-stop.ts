@@ -10,6 +10,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { RequestResponse } from "@rian8337/osu-base";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { Config } from "@alice-core/Config";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -57,7 +58,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const response: RequestResponse = await RESTManager.request(
-        "https://localhost:3001/api/droid/stopPlaying",
+        Config.isDebug
+            ? "https://droidpp.osudroid.moe/api/droid/stopPlaying"
+            : "https://localhost:3001/api/droid/stopPlaying",
         {
             method: "POST",
             body: {

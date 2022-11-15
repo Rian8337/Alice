@@ -9,6 +9,8 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { MathUtils, Precision } from "@rian8337/osu-base";
+import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { Config } from "@alice-core/Config";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -99,6 +101,24 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             )
         ),
     });
+
+    RESTManager.request(
+        Config.isDebug
+            ? "https://droidpp.osudroid.moe/api/droid/events/speedMultiplierChange"
+            : "https://localhost:3001/api/droid/events/speedMultiplierChange",
+        {
+            method: "POST",
+            body: {
+                key: process.env.DROID_SERVER_INTERNAL_KEY,
+                roomId: room.roomId,
+                value: value,
+            },
+            headers: {
+                "Content-Type": "application/json",
+            },
+            json: true,
+        }
+    )
 };
 
 export const config: SlashSubcommand["config"] = {

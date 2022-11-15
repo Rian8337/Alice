@@ -134,7 +134,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const response: RequestResponse = await RESTManager.request(
-        "https://localhost:3001/api/droid/startPlaying",
+        Config.isDebug
+            ? "https://droidpp.osudroid.moe/api/droid/startPlaying"
+            : "https://localhost:3001/api/droid/startPlaying",
         {
             method: "POST",
             body: {
