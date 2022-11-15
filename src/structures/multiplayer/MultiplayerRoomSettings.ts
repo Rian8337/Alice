@@ -68,6 +68,11 @@ export interface MultiplayerRoomSettings {
     allowSliderLock: boolean;
 
     /**
+     * Whether to force slider accuracy.
+     */
+    useSliderAccuracy: boolean;
+
+    /**
      * Custom mod multipliers that overrides the client's default mod multiplier.
      *
      * Each mod is mapped to their own mod multiplier.

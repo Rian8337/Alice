@@ -131,6 +131,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 beatmap: null,
                 scorePortion: 0.4,
                 allowSliderLock: false,
+                useSliderAccuracy: false,
                 modMultipliers: {},
                 forcedAR: {
                     allowed: false,

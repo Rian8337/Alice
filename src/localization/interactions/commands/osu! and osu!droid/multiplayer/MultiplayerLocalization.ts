@@ -89,8 +89,6 @@ export interface MultiplayerStrings {
     readonly setScorePortionSuccess: string;
     readonly setBeatmapFailed: string;
     readonly setBeatmapSuccess: string;
-    readonly setSpectatorEnabledFailed: string;
-    readonly setSpectatorEnabledSuccess: string;
     readonly roundStartFailed: string;
     readonly roundStartSuccess: string;
     readonly matchStatusUpdateFailed: string;
@@ -99,6 +97,8 @@ export interface MultiplayerStrings {
     readonly setMaxPlayerSlotSuccess: string;
     readonly setAllowSliderLockFailed: string;
     readonly setAllowSliderLockSuccess: string;
+    readonly setUseSliderAccuracyFailed: string;
+    readonly setUseSliderAccuracySuccess: string;
     readonly setModMultiplierFailed: string;
     readonly setModMultiplierSuccess: string;
     readonly teamSelectFailed: string;

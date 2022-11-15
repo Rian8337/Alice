@@ -39,6 +39,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
                 winCondition: MultiplayerWinCondition.scoreV1,
                 speedMultiplier: 1,
                 allowSliderLock: false,
+                useSliderAccuracy: false,
                 modMultipliers: {},
                 forcedAR: {
                     allowed: false,

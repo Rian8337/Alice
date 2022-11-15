@@ -399,6 +399,19 @@ export const config: SlashCommand["config"] = {
                     ],
                 },
                 {
+                    name: "slideraccuracy",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description: "Sets the usage rule of slider accuracy.",
+                    options: [
+                        {
+                            name: "force",
+                            type: ApplicationCommandOptionType.Boolean,
+                            required: true,
+                            description: "Whether to force slider accuracy.",
+                        },
+                    ],
+                },
+                {
                     name: "sliderlock",
                     type: ApplicationCommandOptionType.Subcommand,
                     description:

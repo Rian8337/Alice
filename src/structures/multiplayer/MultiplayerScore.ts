@@ -83,6 +83,11 @@ export interface MultiplayerScore {
     readonly isSliderLock: boolean;
 
     /**
+     * Whether this player uses slider accuracy.
+     */
+    readonly useSliderAccuracy: boolean;
+
+    /**
      * The skipped time when using the skip button, in seconds. This is 0 if the player didn't use the skip button.
      *
      * Keep in mind that this value is not affected by speed multiplier.

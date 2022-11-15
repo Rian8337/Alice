@@ -28,6 +28,7 @@ export interface MultiplayerRoomStrings {
     readonly teamMode: string;
     readonly winCondition: string;
     readonly allowSliderLock: string;
+    readonly useSliderAccuracy: string;
     readonly allowedMods: string;
     readonly requiredMods: string;
     readonly roomResults: string;
@@ -42,6 +43,7 @@ export interface MultiplayerRoomStrings {
     readonly scoreNotFound: string;
     readonly incorrectBeatmapPlayed: string;
     readonly sliderLockEnabled: string;
+    readonly useSliderAccuracySettingDoesntMatch: string;
     readonly submissionTooEarly: string;
     readonly submissionTooLate: string;
     readonly requiredModsMissing: string;

@@ -35,6 +35,7 @@ export class MultiplayerRoomENTranslation extends Translation<MultiplayerRoomStr
         teamMode: "Team Mode",
         winCondition: "Win Condition",
         allowSliderLock: "Allow Slider Lock",
+        useSliderAccuracy: "Use Slider Accuracy",
         allowedMods: "Allowed Mods",
         requiredMods: "Required Mods",
         totalScore: "Total",
@@ -45,6 +46,8 @@ export class MultiplayerRoomENTranslation extends Translation<MultiplayerRoomStr
         scoreNotFound: "Score not submitted",
         incorrectBeatmapPlayed: "Incorrect beatmap played",
         sliderLockEnabled: "2B slider lock is enabled",
+        useSliderAccuracySettingDoesntMatch:
+            "Slider accuracy setting doesn't match",
         submissionTooEarly: "Score submitted too early by %s second(s)",
         submissionTooLate: "Score submitted too late by %s second(s)",
         requiredModsMissing: "Missing required mods: %s",

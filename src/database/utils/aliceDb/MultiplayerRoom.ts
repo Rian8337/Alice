@@ -225,6 +225,13 @@ export class MultiplayerRoom
                                 ? Symbols.checkmark
                                 : Symbols.cross
                         }\n` +
+                        `**${localization.getTranslation(
+                            "useSliderAccuracy"
+                        )}**: ${
+                            this.settings.useSliderAccuracy
+                                ? Symbols.checkmark
+                                : Symbols.cross
+                        }\n` +
                         `**${localization.getTranslation("requiredMods")}**: ${
                             this.settings.requiredMods ||
                             localization.getTranslation("none")
@@ -435,6 +442,7 @@ export class MultiplayerRoom
                     date: 0,
                     unstableRate: 0,
                     isSliderLock: false,
+                    useSliderAccuracy: false,
                     skippedTime: 0,
                 });
 
@@ -561,6 +569,7 @@ export class MultiplayerRoom
                     date: 0,
                     unstableRate: 0,
                     isSliderLock: false,
+                    useSliderAccuracy: false,
                     skippedTime: 0,
                 });
 
@@ -865,6 +874,15 @@ export class MultiplayerRoom
             return this.createOperationResult(
                 false,
                 localization.getTranslation("sliderLockEnabled")
+            );
+        }
+
+        if (score.useSliderAccuracy !== this.settings.useSliderAccuracy) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation(
+                    "useSliderAccuracySettingDoesntMatch"
+                )
             );
         }
 
