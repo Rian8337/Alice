@@ -17,8 +17,7 @@ import {
     ModSuddenDeath,
     ModUtil,
 } from "@rian8337/osu-base";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { Config } from "@alice-core/Config";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -130,22 +129,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ),
     });
 
-    RESTManager.request(
-        Config.isDebug
-            ? "https://droidpp.osudroid.moe/api/droid/events/requiredModsChange"
-            : "https://localhost:3001/api/droid/events/requiredModsChange",
-        {
-            method: "POST",
-            body: {
-                key: process.env.DROID_SERVER_INTERNAL_KEY,
-                roomId: room.roomId,
-                mods: room.settings.requiredMods,
-            },
-            headers: {
-                "Content-Type": "application/json",
-            },
-            json: true,
-        }
+    MultiplayerRESTManager.broadcastRequiredModsChange(
+        room.roomId,
+        room.settings.requiredMods
     );
 };
 

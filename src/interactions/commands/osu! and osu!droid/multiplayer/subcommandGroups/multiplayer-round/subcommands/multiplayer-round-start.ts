@@ -15,8 +15,8 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MapStats, ModUtil, RequestResponse } from "@rian8337/osu-base";
 import { EmbedBuilder, BaseMessageOptions } from "discord.js";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Config } from "@alice-core/Config";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -113,6 +113,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     room.status.isPlaying = true;
     room.status.playingSince = Date.now() + duration * 1000;
 
+    // server: 1668516497466
+    // bot: 1668516418466
+
+    // Date.now()
+    // server: 1668518791406
+    // bot: 1668516408466
+
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
             { roomId: room.roomId },
@@ -133,21 +140,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const response: RequestResponse = await RESTManager.request(
-        Config.isDebug
-            ? "https://droidpp.osudroid.moe/api/droid/startPlaying"
-            : "https://localhost:3001/api/droid/startPlaying",
-        {
-            method: "POST",
-            body: {
-                key: process.env.DROID_SERVER_INTERNAL_KEY,
-                roomId: room.roomId,
-            },
-            headers: {
-                "Content-Type": "application/json",
-            },
-            json: true,
-        }
+    const response: RequestResponse = await MultiplayerRESTManager.startPlaying(
+        room.roomId,
+        duration * 1000
     );
 
     if (response.statusCode !== 200) {

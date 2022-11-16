@@ -17,6 +17,7 @@ import {
     ModSuddenDeath,
     ModUtil,
 } from "@rian8337/osu-base";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -100,6 +101,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     // Filter required mods with respect to allowed mods
     const requiredMods: Mod[] = [];
+    const oldMods: string = room.settings.requiredMods;
 
     for (const mod of ModUtil.pcStringToMods(room.settings.requiredMods)) {
         if (!mods.some((m) => m.acronym === mod.acronym)) {
@@ -141,6 +143,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             room.settings.allowedMods || localization.getTranslation("none")
         ),
     });
+
+    if (room.settings.requiredMods !== oldMods) {
+        MultiplayerRESTManager.broadcastRequiredModsChange(
+            room.roomId,
+            room.settings.requiredMods
+        );
+    }
 };
 
 export const config: SlashSubcommand["config"] = {

@@ -18,8 +18,7 @@ import {
     ModSuddenDeath,
     ModUtil,
 } from "@rian8337/osu-base";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { Config } from "@alice-core/Config";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -141,10 +140,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ),
             });
         }
+
+        MultiplayerRESTManager.broadcastModMultiplierChange(
+            room.roomId,
+            room.settings.modMultipliers
+        );
     }
 
     InteractionHelper.reply(interaction, {
-        content: MessageCreator.createReject(
+        content: MessageCreator.createAccept(
             localization.getTranslation("setModMultiplierSuccess"),
             mods.map((m) => m.acronym).join(", "),
             multiplier?.toLocaleString(
@@ -152,24 +156,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ) ?? localization.getTranslation("default")
         ),
     });
-
-    RESTManager.request(
-        Config.isDebug
-            ? "https://droidpp.osudroid.moe/api/droid/events/modMultiplierChange"
-            : "https://localhost:3001/api/droid/events/modMultiplierChange",
-        {
-            method: "POST",
-            body: {
-                key: process.env.DROID_SERVER_INTERNAL_KEY,
-                roomId: room.roomId,
-                mods: modString,
-            },
-            headers: {
-                "Content-Type": "application/json",
-            },
-            json: true,
-        }
-    );
 };
 
 export const config: SlashSubcommand["config"] = {

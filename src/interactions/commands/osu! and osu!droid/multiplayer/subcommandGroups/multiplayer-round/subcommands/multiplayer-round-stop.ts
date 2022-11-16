@@ -9,8 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { RequestResponse } from "@rian8337/osu-base";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { Config } from "@alice-core/Config";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -57,21 +56,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const response: RequestResponse = await RESTManager.request(
-        Config.isDebug
-            ? "https://droidpp.osudroid.moe/api/droid/stopPlaying"
-            : "https://localhost:3001/api/droid/stopPlaying",
-        {
-            method: "POST",
-            body: {
-                key: process.env.DROID_SERVER_INTERNAL_KEY,
-                roomId: room.roomId,
-            },
-            headers: {
-                "Content-Type": "application/json",
-            },
-            json: true,
-        }
+    const response: RequestResponse = await MultiplayerRESTManager.stopPlaying(
+        room.roomId
     );
 
     if (response.statusCode !== 200) {

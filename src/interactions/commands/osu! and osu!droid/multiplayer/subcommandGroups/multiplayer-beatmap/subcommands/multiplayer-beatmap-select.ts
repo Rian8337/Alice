@@ -12,8 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { MapInfo, MapStats, ModUtil } from "@rian8337/osu-base";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { Config } from "@alice-core/Config";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -89,29 +88,36 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    room.settings.beatmap = {
-        id: beatmapId,
-        hash: beatmap.hash,
-        name: beatmap.fullTitle,
-        duration: beatmap.totalLength,
-    };
+    if (room.settings.beatmap?.hash !== beatmap.hash) {
+        room.settings.beatmap = {
+            id: beatmapId,
+            hash: beatmap.hash,
+            name: beatmap.fullTitle,
+            duration: beatmap.totalLength,
+        };
 
-    const result: OperationResult =
-        await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
-            { roomId: room.roomId },
-            {
-                $set: {
-                    "settings.beatmap": room.settings.beatmap,
-                },
-            }
+        const result: OperationResult =
+            await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
+                { roomId: room.roomId },
+                {
+                    $set: {
+                        "settings.beatmap": room.settings.beatmap,
+                    },
+                }
+            );
+
+        if (!result.success) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("setBeatmapFailed")
+                ),
+            });
+        }
+
+        MultiplayerRESTManager.broadcastBeatmapChanged(
+            room.roomId,
+            room.settings.beatmap
         );
-
-    if (!result.success) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("setBeatmapFailed")
-            ),
-        });
     }
 
     InteractionHelper.reply(interaction, {
@@ -130,24 +136,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             localization.language
         ),
     });
-
-    RESTManager.request(
-        Config.isDebug
-            ? "https://droidpp.osudroid.moe/api/droid/events/beatmapChange"
-            : "https://localhost:3001/api/droid/events/beatmapChange",
-        {
-            method: "POST",
-            body: {
-                key: process.env.DROID_SERVER_INTERNAL_KEY,
-                roomId: room.roomId,
-                beatmap: room.settings.beatmap,
-            },
-            headers: {
-                "Content-Type": "application/json",
-            },
-            json: true,
-        }
-    );
 };
 
 export const config: SlashSubcommand["config"] = {

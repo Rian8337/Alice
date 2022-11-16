@@ -46,8 +46,7 @@ import {
 } from "@rian8337/osu-difficulty-calculator";
 import { APIEmbedField, Channel, EmbedBuilder, Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { Config } from "@alice-core/Config";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 /**
  * Represents a multiplayer room.
@@ -137,22 +136,7 @@ export class MultiplayerRoom
             await channel.setLocked(true, "Multiplayer room closed");
         }
 
-        RESTManager.request(
-            Config.isDebug
-                ? "https://droidpp.osudroid.moe/api/droid/events/roomClosed"
-                : "https://localhost:3001/api/droid/events/roomClosed",
-            {
-                method: "POST",
-                body: {
-                    key: process.env.DROID_SERVER_INTERNAL_KEY,
-                    roomId: this.roomId,
-                },
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                json: true,
-            }
-        );
+        MultiplayerRESTManager.broadcastRoomClosed(this.roomId);
 
         return DatabaseManager.aliceDb.collections.multiplayerRoom.deleteOne({
             roomId: this.roomId,

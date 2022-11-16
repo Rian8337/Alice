@@ -13,6 +13,7 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ThreadChannel } from "discord.js";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -169,6 +170,8 @@ export const run: SlashSubcommand<true>["run"] = async (
             room.roomId
         ),
     });
+
+    MultiplayerRESTManager.broadcastPlayerJoined(room.roomId, player);
 };
 
 export const config: SlashSubcommand["config"] = {

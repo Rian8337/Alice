@@ -8,6 +8,7 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -40,10 +41,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    room.players.splice(
-        room.players.findIndex((v) => v.discordId === interaction.user.id),
-        1
+    const playerIndex: number = room.players.findIndex(
+        (v) => v.discordId === interaction.user.id
     );
+    const uid = room.players[playerIndex].uid;
+
+    room.players.splice(playerIndex, 1);
 
     if (room.players.length > 0) {
         const changeHost: boolean =
@@ -93,6 +96,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 }`
             ),
         });
+
+        MultiplayerRESTManager.broadcastPlayerLeft(room.roomId, uid);
     } else {
         await InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
