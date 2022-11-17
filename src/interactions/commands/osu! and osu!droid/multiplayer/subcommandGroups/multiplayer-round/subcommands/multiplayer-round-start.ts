@@ -113,13 +113,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     room.status.isPlaying = true;
     room.status.playingSince = Date.now() + duration * 1000;
 
-    // server: 1668516497466
-    // bot: 1668516418466
-
-    // Date.now()
-    // server: 1668518791406
-    // bot: 1668516408466
-
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
             { roomId: room.roomId },
