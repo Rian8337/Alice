@@ -653,6 +653,12 @@ export class MultiplayerRoom
                 name: "=================================",
                 value: "=================================",
             })
+            .addFields({
+                name: localization.getTranslation("blueTeam"),
+                value: `**${localization.getTranslation(
+                    "totalScore"
+                )}: ${blueTotalScore.toLocaleString(BCP47)}**`,
+            })
             .addFields(
                 validBlueTeamScores.map((v, i, a) =>
                     this.getScoreEmbedDescription(v, i + 1, language, a[i + 1])
