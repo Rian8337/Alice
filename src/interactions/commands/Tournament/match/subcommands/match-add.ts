@@ -65,11 +65,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const splitRegex: RegExp = /\b[\w']+(?:[^\w\n]+[\w']+){0,1}\b/g;
 
-    const team1PlayersInformation: RegExpMatchArray =
-        team1Players.match(splitRegex) ?? [];
+    const team1PlayersInformation: RegExpMatchArray | null =
+        team1Players.match(splitRegex);
 
-    const team2PlayersInformation: RegExpMatchArray =
-        team2Players.match(splitRegex) ?? [];
+    const team2PlayersInformation: RegExpMatchArray | null =
+        team2Players.match(splitRegex);
+
+    if (!team1PlayersInformation || !team2PlayersInformation) {
+        return;
+    }
 
     // Ensure the player difference between both teams don't exceed 1
     if (

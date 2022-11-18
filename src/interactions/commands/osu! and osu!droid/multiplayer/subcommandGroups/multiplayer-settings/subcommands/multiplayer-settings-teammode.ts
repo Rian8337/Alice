@@ -13,6 +13,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { SelectMenuInteraction } from "discord.js";
 import { DatabaseMultiplayerRoom } from "structures/database/aliceDb/DatabaseMultiplayerRoom";
 import { UpdateFilter } from "mongodb";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -135,6 +136,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ),
             });
         }
+
+        MultiplayerRESTManager.broadcastTeamModeChange(
+            room.roomId,
+            pickedTeamMode
+        );
     }
 
     InteractionHelper.update(selectMenuInteraction, {

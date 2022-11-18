@@ -9,8 +9,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const emojiMessages: RegExpMatchArray =
-        message.content.match(/<a:.+?:\d+>|<:.+?:\d+>/g) ?? [];
+    const emojiMessages: RegExpMatchArray | null = message.content.match(
+        /<a:.+?:\d+>|<:.+?:\d+>/g
+    );
+
+    if (!emojiMessages) {
+        return;
+    }
 
     const guildEmojiData: EmojiStatistics | null =
         await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(

@@ -9,6 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -95,6 +96,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             )
         ),
     });
+
+    MultiplayerRESTManager;
 };
 
 export const config: SlashSubcommand["config"] = {

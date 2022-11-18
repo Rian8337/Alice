@@ -8,6 +8,8 @@ import { MultiplayerLocalization } from "@alice-localization/interactions/comman
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MultiplayerPlayer } from "@alice-structures/multiplayer/MultiplayerPlayer";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -20,6 +22,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 projection: {
                     "settings.teamMode": 1,
+                    "players.discordId": 1,
+                    "players.uid": 1,
+                    "players.team": 1,
                 },
             }
         );
@@ -28,6 +33,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("roomDoesntExistInChannel")
+            ),
+        });
+    }
+
+    if (room.status.isPlaying) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("roomIsInPlayingStatus")
             ),
         });
     }
@@ -74,6 +87,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             room.teamToString(team, localization.language)
         ),
     });
+
+    const player: MultiplayerPlayer | undefined = room.players.find(
+        (p) => p.discordId === interaction.user.id
+    );
+
+    if (player) {
+        MultiplayerRESTManager.broadcastPlayerTeamChange(
+            room.roomId,
+            player.uid,
+            team
+        );
+    }
 };
 
 export const config: SlashSubcommand["config"] = {

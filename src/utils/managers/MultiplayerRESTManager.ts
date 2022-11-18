@@ -1,4 +1,6 @@
 import { Config } from "@alice-core/Config";
+import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
+import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
 import { MultiplayerPlayer } from "@alice-structures/multiplayer/MultiplayerPlayer";
 import { PickedBeatmap } from "@alice-structures/multiplayer/PickedBeatmap";
 import { RequestResponse } from "@rian8337/osu-base";
@@ -167,6 +169,64 @@ export abstract class MultiplayerRESTManager extends RESTManager {
         options.body.uid = uid;
 
         return this.request(`${this.endpoint}events/playerLeft`, options);
+    }
+
+    /**
+     * Broadcasts a player team changed state.
+     *
+     * @param roomId The ID of the room.
+     * @param uid The uid of the player.
+     * @param team The team of the player.
+     */
+    static broadcastPlayerTeamChange(
+        roomId: string,
+        uid: number,
+        team: MultiplayerTeam
+    ): Promise<RequestResponse> {
+        const options: CoreOptions = this.createRequestOptions(roomId);
+
+        options.body.uid = uid;
+        options.body.team = team;
+
+        return this.request(`${this.endpoint}events/playerTeamChange`, options);
+    }
+
+    /**
+     * Broadcasts a score portion changed state.
+     *
+     * @param roomId The ID of the room.
+     * @param value The new score portion value.
+     */
+    static broadcastScorePortionChange(
+        roomId: string,
+        value: number
+    ): Promise<RequestResponse> {
+        const options: CoreOptions = this.createRequestOptions(roomId);
+
+        options.body.value = value;
+
+        return this.request(
+            `${this.endpoint}events/scorePortionChange`,
+            options
+        );
+    }
+
+    /**
+     * Broadcasts a team mode changed state.
+     *
+     * @param roomId The ID of the room.
+     * @param mode The team mode.
+     * @param playerTeams The new player teams, if any.
+     */
+    static broadcastTeamModeChange(
+        roomId: string,
+        mode: MultiplayerTeamMode
+    ): Promise<RequestResponse> {
+        const options: CoreOptions = this.createRequestOptions(roomId);
+
+        options.body.mode = mode;
+
+        return this.request(`${this.endpoint}events/teamModeChange`, options);
     }
 
     /**
