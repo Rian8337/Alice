@@ -21,6 +21,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             interaction.user,
             {
                 projection: {
+                    "status.isPlaying": 1,
                     "settings.teamMode": 1,
                     "players.discordId": 1,
                     "players.uid": 1,
