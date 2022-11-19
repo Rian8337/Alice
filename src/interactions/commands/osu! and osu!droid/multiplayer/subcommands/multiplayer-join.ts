@@ -12,7 +12,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ThreadChannel } from "discord.js";
+import { TextChannel, ThreadChannel } from "discord.js";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (
@@ -49,7 +49,8 @@ export const run: SlashSubcommand<true>["run"] = async (
             {
                 projection: {
                     _id: 0,
-                    channelId: 1,
+                    textChannelId: 1,
+                    threadChannelId: 1,
                     "status.isPlaying": 1,
                     "settings.maxPlayers": 1,
                     "settings.password": 1,
@@ -152,9 +153,11 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const thread: ThreadChannel = <ThreadChannel>(
-        await client.channels.fetch(room.threadChannelId)
+    const text: TextChannel = <TextChannel>(
+        await client.channels.fetch(room.textChannelId)
     );
+
+    const thread: ThreadChannel = (await text.threads.fetch(room.threadChannelId))!;
 
     thread.send({
         content: MessageCreator.createAccept(
