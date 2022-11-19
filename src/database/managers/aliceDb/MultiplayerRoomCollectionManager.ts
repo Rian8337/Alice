@@ -138,7 +138,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
         channelId: Snowflake,
         options?: FindOptions<DatabaseMultiplayerRoom>
     ): Promise<MultiplayerRoom | null> {
-        return this.getOne({ channelId: channelId }, options);
+        return this.getOne({ textChannelId: channelId }, options);
     }
 
     /**
