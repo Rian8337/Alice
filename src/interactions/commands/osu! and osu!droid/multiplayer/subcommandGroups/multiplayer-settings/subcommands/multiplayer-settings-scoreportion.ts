@@ -97,7 +97,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ),
     });
 
-    MultiplayerRESTManager;
+    MultiplayerRESTManager.broadcastScorePortionChange(
+        room.roomId,
+        scorePortion
+    );
 };
 
 export const config: SlashSubcommand["config"] = {
