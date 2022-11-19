@@ -30,6 +30,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     threadChannelId: 1,
                     "settings.roomHost": 1,
                     "players.discordId": 1,
+                    "players.uid": 1,
                 },
             }
         );
