@@ -91,6 +91,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (room.settings.beatmap?.hash !== beatmap.hash) {
         room.settings.beatmap = {
             id: beatmapId,
+            setId: beatmap.beatmapsetID,
             hash: beatmap.hash,
             name: beatmap.fullTitle,
             duration: beatmap.totalLength,

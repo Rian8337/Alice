@@ -8,6 +8,11 @@ export interface PickedBeatmap {
     id: number;
 
     /**
+     * The beatmapset ID of the beatmap.
+     */
+    setId: number;
+
+    /**
      * The MD5 hash of the beatmap.
      */
     hash: string;
