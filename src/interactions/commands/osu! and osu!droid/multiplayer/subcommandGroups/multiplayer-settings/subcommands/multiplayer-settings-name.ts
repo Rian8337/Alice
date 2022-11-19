@@ -88,11 +88,12 @@ export const run: SlashSubcommand<true>["run"] = async (
             });
         }
 
-        const text: TextChannel = <TextChannel>// TODO: store thread ID
-        await client.channels.fetch(room.channelId);
+        const text: TextChannel = <TextChannel>(
+            await client.channels.fetch(room.textChannelId)
+        );
 
         const thread: ThreadChannel = <ThreadChannel>(
-            await text.threads.fetch(room.channelId)
+            await text.threads.fetch(room.threadChannelId)
         );
 
         await thread.setName(

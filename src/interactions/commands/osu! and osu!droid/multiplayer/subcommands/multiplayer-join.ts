@@ -153,7 +153,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     }
 
     const thread: ThreadChannel = <ThreadChannel>(
-        await client.channels.fetch(room.channelId)
+        await client.channels.fetch(room.threadChannelId)
     );
 
     thread.send({

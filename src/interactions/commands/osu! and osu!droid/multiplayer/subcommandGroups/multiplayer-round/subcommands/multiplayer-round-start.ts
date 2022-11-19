@@ -81,7 +81,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    if (CacheManager.multiplayerTimers.has(room.channelId)) {
+    if (CacheManager.multiplayerTimers.has(room.threadChannelId)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("timerIsSet")
@@ -164,7 +164,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embeds: [embed],
         });
 
-        CacheManager.multiplayerTimers.delete(room.channelId);
+        CacheManager.multiplayerTimers.delete(room.threadChannelId);
 
         setTimeout(() => {
             setTimeout(async () => {
@@ -273,7 +273,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         );
     }
 
-    CacheManager.multiplayerTimers.set(room.channelId, timeouts);
+    CacheManager.multiplayerTimers.set(room.threadChannelId, timeouts);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

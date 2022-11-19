@@ -1,9 +1,9 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
 import { EventUtil } from "structures/core/EventUtil";
-import { Channel, Collection } from "discord.js";
+import { Collection } from "discord.js";
 
-export const run: EventUtil["run"] = async (client) => {
+export const run: EventUtil["run"] = async () => {
     setInterval(async () => {
         const inactiveRooms: Collection<string, MultiplayerRoom> =
             await DatabaseManager.aliceDb.collections.multiplayerRoom.get(
@@ -17,13 +17,7 @@ export const run: EventUtil["run"] = async (client) => {
             );
 
         for (const inactiveRoom of inactiveRooms.values()) {
-            const channel: Channel | null = await client.channels
-                .fetch(inactiveRoom.channelId)
-                .catch(() => null);
-
-            if (!channel?.isThread() || channel.archived) {
-                await inactiveRoom.deleteRoom();
-            }
+            await inactiveRoom.deleteRoom();
         }
     }, 5 * 60 * 1000);
 };

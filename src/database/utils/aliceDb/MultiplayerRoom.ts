@@ -44,7 +44,13 @@ import {
     OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
-import { APIEmbedField, Channel, EmbedBuilder, Snowflake } from "discord.js";
+import {
+    APIEmbedField,
+    EmbedBuilder,
+    Snowflake,
+    TextChannel,
+    ThreadChannel,
+} from "discord.js";
 import { ObjectId } from "mongodb";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
@@ -56,7 +62,8 @@ export class MultiplayerRoom
     implements DatabaseMultiplayerRoom
 {
     readonly roomId: string;
-    channelId: Snowflake;
+    textChannelId: Snowflake;
+    threadChannelId: Snowflake;
     players: MultiplayerPlayer[];
     status: MultiplayerRoomStatus;
     currentScores: MultiplayerScore[];
@@ -98,7 +105,8 @@ export class MultiplayerRoom
         super();
 
         this.roomId = data.roomId;
-        this.channelId = data.channelId;
+        this.textChannelId = data.textChannelId;
+        this.threadChannelId = data.threadChannelId;
         this.players = data.players;
         this.status = data.status;
         this.currentScores = data.currentScores;
@@ -128,12 +136,19 @@ export class MultiplayerRoom
      * Deletes this room from the database.
      */
     async deleteRoom(): Promise<OperationResult> {
-        const channel: Channel | null = await this.client.channels
-            .fetch(this.channelId)
-            .catch(() => null);
+        const text: TextChannel | null = <TextChannel | null>(
+            await this.client.channels
+                .fetch(this.textChannelId)
+                .catch(() => null)
+        );
 
-        if (channel?.isThread() && !channel.archived) {
-            await channel.setLocked(true, "Multiplayer room closed");
+        const thread: ThreadChannel | null =
+            (await text?.threads
+                .fetch(this.threadChannelId)
+                .catch(() => null)) ?? null;
+
+        if (thread && !thread.archived) {
+            await thread.setLocked(true, "Multiplayer room closed");
         }
 
         MultiplayerRESTManager.broadcastRoomClosed(this.roomId);
@@ -615,6 +630,7 @@ export class MultiplayerRoom
             0
         );
 
+        const diff: number = Math.abs(redTotalScore - blueTotalScore);
         const BCP47: string = LocaleHelper.convertToBCP47(language);
 
         embed
@@ -629,7 +645,11 @@ export class MultiplayerRoom
                 name: localization.getTranslation("redTeam"),
                 value: `**${localization.getTranslation(
                     "totalScore"
-                )}: ${redTotalScore.toLocaleString(BCP47)}**`,
+                )}: ${redTotalScore.toLocaleString(BCP47)}**${
+                    redTotalScore > blueTotalScore
+                        ? ` (+${diff.toLocaleString(BCP47)})`
+                        : ""
+                }`,
             })
             .addFields(
                 validRedTeamScores.map((v, i, a) =>
@@ -657,7 +677,11 @@ export class MultiplayerRoom
                 name: localization.getTranslation("blueTeam"),
                 value: `**${localization.getTranslation(
                     "totalScore"
-                )}: ${blueTotalScore.toLocaleString(BCP47)}**`,
+                )}: ${blueTotalScore.toLocaleString(BCP47)}**${
+                    blueTotalScore > redTotalScore
+                        ? ` (+${diff.toLocaleString(BCP47)})`
+                        : ""
+                }`,
             })
             .addFields(
                 validBlueTeamScores.map((v, i, a) =>
@@ -1029,7 +1053,7 @@ export class MultiplayerRoom
      * Gets the description of a score.
      *
      * @param score The score.
-     * @param grade The grade of the score.
+     * @param index The index of the score.
      * @param language The language to localize.
      * @param afterScore The score that comes after the passed score, if any.
      * @returns The score's description.

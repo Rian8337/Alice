@@ -112,7 +112,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.insert({
             roomId: id,
-            channelId: thread.id,
+            textChannelId: interaction.channelId,
+            threadChannelId: thread.id,
             players: [
                 {
                     uid: bindInfo.uid,

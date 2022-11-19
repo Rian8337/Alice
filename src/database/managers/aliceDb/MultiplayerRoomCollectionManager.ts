@@ -20,7 +20,8 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
     get defaultDocument(): DatabaseMultiplayerRoom {
         return {
             roomId: "",
-            channelId: "",
+            textChannelId: "",
+            threadChannelId: "",
             players: [],
             status: {
                 isPlaying: false,
