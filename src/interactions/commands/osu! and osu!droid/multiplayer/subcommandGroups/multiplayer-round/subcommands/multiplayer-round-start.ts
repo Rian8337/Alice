@@ -28,7 +28,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             interaction.user,
             {
                 projection: {
-                    channelId: 1,
+                    threadChannelId: 1,
                     settings: 1,
                     "status.isPlaying": 1,
                     "players.isReady": 1,

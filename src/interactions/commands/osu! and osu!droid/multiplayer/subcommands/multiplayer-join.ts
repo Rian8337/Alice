@@ -157,7 +157,9 @@ export const run: SlashSubcommand<true>["run"] = async (
         await client.channels.fetch(room.textChannelId)
     );
 
-    const thread: ThreadChannel = (await text.threads.fetch(room.threadChannelId))!;
+    const thread: ThreadChannel = (await text.threads.fetch(
+        room.threadChannelId
+    ))!;
 
     thread.send({
         content: MessageCreator.createAccept(

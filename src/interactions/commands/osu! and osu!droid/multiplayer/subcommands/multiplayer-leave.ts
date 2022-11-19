@@ -20,13 +20,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 $and: [
                     { "players.discordId": interaction.user.id },
-                    { channelId: interaction.channelId },
+                    { threadChannelId: interaction.channelId },
                 ],
             },
             {
                 projection: {
                     _id: 0,
-                    channelId: 1,
+                    textChannelId: 1,
+                    threadChannelId: 1,
                     "settings.roomHost": 1,
                     "players.discordId": 1,
                 },
