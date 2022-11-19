@@ -55,6 +55,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const blueTeam: MultiplayerPlayer[] = [];
 
     for (const player of room.players) {
+        if (player.isSpectating) {
+            continue;
+        }
+
         switch (player.team) {
             case MultiplayerTeam.red:
                 redTeam.push(player);
