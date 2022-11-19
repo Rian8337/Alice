@@ -8,6 +8,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -97,6 +98,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             `${player.isSpectating}`
         ),
     });
+
+    if (player.isSpectating) {
+        MultiplayerRESTManager.broadcastPlayerLeft(room.roomId, player.uid);
+    } else {
+        MultiplayerRESTManager.broadcastPlayerJoined(room.roomId, player);
+    }
 };
 
 export const config: SlashSubcommand["config"] = {
