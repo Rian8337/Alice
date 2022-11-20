@@ -15,7 +15,6 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { MapStats, ModUtil, RequestResponse } from "@rian8337/osu-base";
 import { EmbedBuilder, BaseMessageOptions } from "discord.js";
-import { Config } from "@alice-core/Config";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -64,8 +63,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    // Allow solo play in debug mode for testing.
-    if (!Config.isDebug && room.players.length <= 1) {
+    // Allow solo play for owners for testing.
+    if (
+        CommandHelper.isExecutedByBotOwner(interaction) &&
+        room.players.length <= 1
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("tooFewPlayers")
