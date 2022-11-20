@@ -147,7 +147,7 @@ export class MultiplayerRoom
                 .fetch(this.threadChannelId)
                 .catch(() => null)) ?? null;
 
-        if (thread && !thread.archived) {
+        if (thread && !thread.locked) {
             await thread.setLocked(true, "Multiplayer room closed");
         }
 
