@@ -65,7 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     // Allow solo play for owners for testing.
     if (
-        CommandHelper.isExecutedByBotOwner(interaction) &&
+        !CommandHelper.isExecutedByBotOwner(interaction) &&
         room.players.length <= 1
     ) {
         return InteractionHelper.reply(interaction, {
