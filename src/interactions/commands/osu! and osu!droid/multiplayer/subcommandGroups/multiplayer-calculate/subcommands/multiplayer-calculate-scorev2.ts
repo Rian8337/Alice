@@ -24,6 +24,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     "settings.beatmap": 1,
                     "settings.modMultipliers": 1,
                     "settings.scorePortion": 1,
+                    "settings.speedMultiplier": 1,
                 },
             }
         );
