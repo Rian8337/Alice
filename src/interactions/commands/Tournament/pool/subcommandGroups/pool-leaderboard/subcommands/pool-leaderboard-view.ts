@@ -92,8 +92,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 .calculateAccuracyPortionScoreV2(
                     pick,
                     score.score.accuracy.value(),
-                    score.score.accuracy.nmiss,
-                    score.score.mods
+                    score.score.accuracy.nmiss
                 )
                 .toLocaleString(BCP47)}** accuracy)\n` +
             `${arrow} ${score.score.score.toLocaleString(

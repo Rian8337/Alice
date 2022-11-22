@@ -64,7 +64,7 @@ export abstract class ScoreHelper {
         scorePortion: number,
         accuracyPortion: number = 1 - scorePortion
     ): number {
-        return (
+        return this.applyScoreMultiplier(
             this.calculateScorePortionScoreV2(
                 score,
                 misses,
@@ -75,9 +75,9 @@ export abstract class ScoreHelper {
             this.calculateAccuracyPortionScoreV2(
                 accuracy,
                 misses,
-                mods,
                 accuracyPortion
-            )
+            ),
+            mods
         );
     }
 
@@ -109,10 +109,7 @@ export abstract class ScoreHelper {
 
         return Math.max(
             0,
-            this.applyScoreMultiplier(
-                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses),
-                mods
-            )
+            tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses)
         );
     }
 
@@ -121,14 +118,12 @@ export abstract class ScoreHelper {
      *
      * @param accuracy The accuracy achieved, from 0 to 1.
      * @param misses The amount of misses achieved.
-     * @param mods The mods that were used.
      * @param accuracyPortion The portion of which accuracy will contribute to ScoreV2.
      * @returns The accuracy portion of ScoreV2.
      */
     static calculateAccuracyPortionScoreV2(
         accuracy: number,
         misses: number,
-        mods: Mod[],
         accuracyPortion: number
     ): number {
         const tempScoreV2: number =
@@ -136,10 +131,7 @@ export abstract class ScoreHelper {
 
         return Math.max(
             0,
-            this.applyScoreMultiplier(
-                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses),
-                mods
-            )
+            tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses)
         );
     }
 
