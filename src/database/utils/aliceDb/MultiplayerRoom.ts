@@ -37,6 +37,7 @@ import {
     Mod,
     MapInfo,
     Precision,
+    IModApplicableToDroid,
 } from "@rian8337/osu-base";
 import {
     DroidDifficultyCalculator,
@@ -79,7 +80,6 @@ export class MultiplayerRoom
         DifficultyCalculationResult<OsuDifficultyCalculator>
     > = {};
 
-    private convertedRequiredMods?: Mod[];
     private currentBeatmapMaxScore?: number;
 
     private get speedScoreMultiplier(): number {
@@ -746,10 +746,6 @@ export class MultiplayerRoom
             case MultiplayerWinCondition.maxCombo:
                 return score.maxCombo;
             case MultiplayerWinCondition.scoreV2: {
-                this.convertedRequiredMods ??= ModUtil.pcStringToMods(
-                    this.settings.requiredMods
-                );
-
                 const beatmapInfo: MapInfo<true> =
                     (await BeatmapManager.getBeatmap(
                         this.settings.beatmap!.hash
@@ -769,7 +765,7 @@ export class MultiplayerRoom
                         }).value(),
                         score.miss,
                         this.currentBeatmapMaxScore,
-                        this.convertedRequiredMods,
+                        this.convertModString(score.modstring).mods,
                         this.settings.scorePortion
                     )
                 );
@@ -1141,7 +1137,7 @@ export class MultiplayerRoom
      * @param modstring The mod string.
      */
     private convertModString(modstring: string): {
-        mods: Mod[];
+        mods: (Mod & IModApplicableToDroid)[];
         speedMultiplier: number;
         forcedAR?: number;
     } {

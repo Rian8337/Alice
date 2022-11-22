@@ -72,11 +72,11 @@ export abstract class ScoreHelper {
                 mods,
                 scorePortion
             ) +
-            this.calculateAccuracyPortionScoreV2(
-                accuracy,
-                misses,
-                accuracyPortion
-            ),
+                this.calculateAccuracyPortionScoreV2(
+                    accuracy,
+                    misses,
+                    accuracyPortion
+                ),
             mods
         );
     }
