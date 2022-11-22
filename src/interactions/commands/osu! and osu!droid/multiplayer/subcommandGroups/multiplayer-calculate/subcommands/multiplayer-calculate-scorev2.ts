@@ -65,32 +65,33 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction.options.getString("mods") ?? ""
     );
 
-    const scorePortionScoreV2: number = room.applySpeedMulBonus(
+    const scorePortionScoreV2: number =
         ScoreHelper.calculateScorePortionScoreV2(
             interaction.options.getInteger("score", true),
             misses,
             beatmap.beatmap.maxDroidScore(new MapStats()),
             mods,
             room.settings.scorePortion
-        )
-    );
+        );
 
-    const accuracyPortionScoreV2: number = room.applySpeedMulBonus(
+    const accuracyPortionScoreV2: number =
         ScoreHelper.calculateAccuracyPortionScoreV2(
             interaction.options.getNumber("accuracy", true) / 100,
             misses,
+            mods,
             1 - room.settings.scorePortion
-        )
-    );
+        );
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("scorev2Value"),
-            (scorePortionScoreV2 + accuracyPortionScoreV2).toLocaleString(
-                BCP47
-            ),
+            room
+                .applySpeedMulBonus(
+                    scorePortionScoreV2 + accuracyPortionScoreV2
+                )
+                .toLocaleString(BCP47),
             scorePortionScoreV2.toLocaleString(BCP47),
             accuracyPortionScoreV2.toLocaleString(BCP47)
         ),

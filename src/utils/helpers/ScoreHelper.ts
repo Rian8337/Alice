@@ -64,7 +64,7 @@ export abstract class ScoreHelper {
         scorePortion: number,
         accuracyPortion: number = 1 - scorePortion
     ): number {
-        return this.applyScoreMultiplier(
+        return (
             this.calculateScorePortionScoreV2(
                 score,
                 misses,
@@ -72,12 +72,12 @@ export abstract class ScoreHelper {
                 mods,
                 scorePortion
             ) +
-                this.calculateAccuracyPortionScoreV2(
-                    accuracy,
-                    misses,
-                    accuracyPortion
-                ),
-            mods
+            this.calculateAccuracyPortionScoreV2(
+                accuracy,
+                misses,
+                mods,
+                accuracyPortion
+            )
         );
     }
 
@@ -109,7 +109,10 @@ export abstract class ScoreHelper {
 
         return Math.max(
             0,
-            tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses)
+            this.applyScoreMultiplier(
+                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses),
+                mods
+            )
         );
     }
 
@@ -118,12 +121,14 @@ export abstract class ScoreHelper {
      *
      * @param accuracy The accuracy achieved, from 0 to 1.
      * @param misses The amount of misses achieved.
+     * @param mods The mods that were used.
      * @param accuracyPortion The portion of which accuracy will contribute to ScoreV2.
      * @returns The accuracy portion of ScoreV2.
      */
     static calculateAccuracyPortionScoreV2(
         accuracy: number,
         misses: number,
+        mods: Mod[],
         accuracyPortion: number
     ): number {
         const tempScoreV2: number =
@@ -131,7 +136,10 @@ export abstract class ScoreHelper {
 
         return Math.max(
             0,
-            tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses)
+            this.applyScoreMultiplier(
+                tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses),
+                mods
+            )
         );
     }
 
@@ -189,7 +197,7 @@ export abstract class ScoreHelper {
      * @param score The score value.
      * @param mods The mods to apply.
      */
-    private static applyScoreMultiplier(score: number, mods: Mod[]): number {
+    static applyScoreMultiplier(score: number, mods: Mod[]): number {
         for (const mod of mods) {
             if (mod instanceof ModHardRock) {
                 score *= 1.1;
@@ -218,7 +226,7 @@ export abstract class ScoreHelper {
      * @param score The score value.
      * @param mods The mods to remove.
      */
-    private static removeScoreMultiplier(score: number, mods: Mod[]): number {
+    static removeScoreMultiplier(score: number, mods: Mod[]): number {
         for (const mod of mods) {
             if (mod.isApplicableToDroid() && mod.droidScoreMultiplier > 0) {
                 score /= mod.droidScoreMultiplier;
