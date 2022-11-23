@@ -119,6 +119,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     uid: bindInfo.uid,
                     username: bindInfo.username,
                     discordId: interaction.user.id,
+                    mods: "",
                     isReady: false,
                     isSpectating: false,
                 },
