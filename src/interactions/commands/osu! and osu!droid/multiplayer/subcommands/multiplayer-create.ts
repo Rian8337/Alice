@@ -10,7 +10,11 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { TextChannel, ThreadChannel } from "discord.js";
+import {
+    TextChannel,
+    ThreadAutoArchiveDuration,
+    ThreadChannel,
+} from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -105,7 +109,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         name: `${localization.getTranslation(
             "multiplayerRoomPrefix"
         )} — ${id} - ${name}`,
-        autoArchiveDuration: 60,
+        autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
         reason: "User created multiplayer room",
     });
 
