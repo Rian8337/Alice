@@ -226,6 +226,13 @@ export abstract class BeatmapManager extends Manager {
         const strArray: string[] = str.split(/\s+/g);
 
         for (const s of strArray) {
+            let id: number = parseInt(s);
+
+            if (NumberHelper.isNumeric(s)) {
+                IDs.push(id);
+                continue;
+            }
+
             if (
                 !s.startsWith("https://osu.ppy.sh/") &&
                 !s.startsWith("https://dev.ppy.sh/")
@@ -246,7 +253,7 @@ export abstract class BeatmapManager extends Manager {
             const index: number =
                 split.indexOf("beatmapsets") + 1 || split.indexOf("s") + 1;
 
-            const id: number = parseInt(split[index]);
+            id = parseInt(split[index]);
 
             if (!isNaN(id)) {
                 IDs.push(id);
