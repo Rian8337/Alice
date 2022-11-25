@@ -428,9 +428,10 @@ export class UserBind extends Manager {
             const calcResult: RebalancePerformanceCalculationResult<
                 RebalanceDroidDifficultyCalculator,
                 RebalanceDroidPerformanceCalculator
-            > | null = await this.diffCalcHelper.calculateScoreRebalancePerformance(
-                score
-            );
+            > | null =
+                await this.diffCalcHelper.calculateScoreRebalancePerformance(
+                    score
+                );
 
             if (!calcResult) {
                 continue;
@@ -601,9 +602,10 @@ export class UserBind extends Manager {
                         const calcResult: PerformanceCalculationResult<
                             DroidDifficultyCalculator,
                             DroidPerformanceCalculator
-                        > | null = await this.diffCalcHelper.calculateScorePerformance(
-                            score
-                        );
+                        > | null =
+                            await this.diffCalcHelper.calculateScorePerformance(
+                                score
+                            );
 
                         if (calcResult) {
                             ++this.playc;

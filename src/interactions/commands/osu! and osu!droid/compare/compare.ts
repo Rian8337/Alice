@@ -137,9 +137,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const droidCalcResult: PerformanceCalculationResult<
         DroidDifficultyCalculator,
         DroidPerformanceCalculator
-    > | null = await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
-        score
-    );
+    > | null =
+        await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
+            score
+        );
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
         score,
@@ -166,7 +167,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         MessageButtonCreator.createMissAnalyzerButton(
             interaction,
             options,
-            droidCalcResult.result.difficultyCalculator,
+            droidCalcResult.difficultyCalculator,
             score.replay.data
         );
     } else {

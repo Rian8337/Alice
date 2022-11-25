@@ -628,6 +628,7 @@ export class MultiplayerRoom
             0
         );
 
+        // TODO: this is wrong if the lower value is used (i.e. UR win condition)
         const diff: number = Math.abs(redTotalScore - blueTotalScore);
         const BCP47: string = LocaleHelper.convertToBCP47(language);
 
@@ -809,20 +810,21 @@ export class MultiplayerRoom
                 const performance: PerformanceCalculationResult<
                     DroidDifficultyCalculator,
                     DroidPerformanceCalculator
-                > = (await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                    starRating,
-                    new PerformanceCalculationParameters(
-                        new Accuracy({
-                            n300: score.perfect,
-                            n100: score.good,
-                            n50: score.bad,
-                            nmiss: score.miss,
-                        }),
-                        undefined,
-                        score.maxCombo,
-                        1
-                    )
-                ))!;
+                > =
+                    (await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                        starRating,
+                        new PerformanceCalculationParameters(
+                            new Accuracy({
+                                n300: score.perfect,
+                                n100: score.good,
+                                n50: score.bad,
+                                nmiss: score.miss,
+                            }),
+                            undefined,
+                            score.maxCombo,
+                            1
+                        )
+                    ))!;
 
                 return MathUtils.round(performance.result.total, 2);
             }
@@ -857,20 +859,21 @@ export class MultiplayerRoom
                 const performance: PerformanceCalculationResult<
                     OsuDifficultyCalculator,
                     OsuPerformanceCalculator
-                > = (await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                    starRating,
-                    new PerformanceCalculationParameters(
-                        new Accuracy({
-                            n300: score.perfect,
-                            n100: score.good,
-                            n50: score.bad,
-                            nmiss: score.miss,
-                        }),
-                        undefined,
-                        score.maxCombo,
-                        1
-                    )
-                ))!;
+                > =
+                    (await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                        starRating,
+                        new PerformanceCalculationParameters(
+                            new Accuracy({
+                                n300: score.perfect,
+                                n100: score.good,
+                                n50: score.bad,
+                                nmiss: score.miss,
+                            }),
+                            undefined,
+                            score.maxCombo,
+                            1
+                        )
+                    ))!;
 
                 return MathUtils.round(performance.result.total, 2);
             }

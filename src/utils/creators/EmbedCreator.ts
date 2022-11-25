@@ -428,7 +428,7 @@ export abstract class EmbedCreator {
                 .setColor(
                     <ColorResolvable>(
                         BeatmapManager.getBeatmapDifficultyColor(
-                            pcPP.difficultyCalculator.total
+                            pcPP.difficultyAttributes.starRating
                         )
                     )
                 )
@@ -462,7 +462,7 @@ export abstract class EmbedCreator {
                                 ? droidCalculationResult.difficultyCalculationResult.total.toFixed(
                                       2
                                   )
-                                : droidCalculationResult.result.difficultyCalculator.total.toFixed(
+                                : droidCalculationResult.result.difficultyAttributes.starRating.toFixed(
                                       2
                                   )
                         }${Symbols.star}`,
@@ -474,7 +474,7 @@ export abstract class EmbedCreator {
                                       "estimated"
                                   )})`
                                 : ""
-                        } - ${pcPP.difficultyCalculator.total.toFixed(2)}${
+                        } - ${pcPP.difficultyAttributes.starRating.toFixed(2)}${
                             Symbols.star
                         }`,
                     }
@@ -537,7 +537,7 @@ export abstract class EmbedCreator {
             osuCalculationResult instanceof PerformanceCalculationResult ||
             osuCalculationResult instanceof
                 RebalancePerformanceCalculationResult
-                ? osuCalculationResult.result.difficultyCalculator
+                ? osuCalculationResult.difficultyCalculator
                 : osuCalculationResult.result;
 
         if (
@@ -660,11 +660,11 @@ export abstract class EmbedCreator {
             .setAuthor({
                 name: `${
                     osuCalcResult.map.fullTitle
-                } ${score.getCompleteModString()} [${droidCalcResult.result.difficultyCalculator.total.toFixed(
+                } ${score.getCompleteModString()} [${droidCalcResult.difficultyCalculator.total.toFixed(
                     2
                 )}${
                     Symbols.star
-                } | ${osuCalcResult.result.difficultyCalculator.total.toFixed(
+                } | ${osuCalcResult.difficultyCalculator.total.toFixed(
                     2
                 )}${Symbols.star}]`,
                 iconURL: playerAvatarURL,
@@ -704,7 +704,7 @@ export abstract class EmbedCreator {
             > = (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
                 new DifficultyCalculationResult(
                     droidCalcResult.map,
-                    droidCalcResult.result.difficultyCalculator
+                    droidCalcResult.difficultyCalculator
                 ),
                 calcParams
             ))!;
@@ -716,7 +716,7 @@ export abstract class EmbedCreator {
             > = (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
                 new DifficultyCalculationResult(
                     osuCalcResult.map,
-                    osuCalcResult.result.difficultyCalculator
+                    osuCalcResult.difficultyCalculator
                 ),
                 calcParams
             ))!;
@@ -748,7 +748,7 @@ export abstract class EmbedCreator {
         const replayData: ReplayData | undefined | null = score.replay?.data;
 
         if (replayData) {
-            const { difficultyCalculator } = droidCalcResult.result;
+            const { difficultyCalculator } = droidCalcResult;
 
             score.replay!.beatmap ??= difficultyCalculator;
 

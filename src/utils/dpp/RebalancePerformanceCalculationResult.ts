@@ -10,12 +10,17 @@ import { PerformanceCalculationParameters } from "./PerformanceCalculationParame
  */
 export class RebalancePerformanceCalculationResult<
     D extends RebalanceDifficultyCalculator,
-    P extends RebalancePerformanceCalculator<D>
+    P extends RebalancePerformanceCalculator
 > {
     /**
      * The beatmap being calculated.
      */
     readonly map: MapInfo<true>;
+
+    /**
+     * The difficulty of the beatmap.
+     */
+    readonly difficultyCalculator: D;
 
     /**
      * The calculation parameters.
@@ -30,10 +35,12 @@ export class RebalancePerformanceCalculationResult<
     constructor(
         map: MapInfo<true>,
         params: PerformanceCalculationParameters,
-        result: P
+        difficultyCalculator: D,
+        result: P,
     ) {
         this.map = map;
         this.params = params;
+        this.difficultyCalculator = difficultyCalculator;
         this.result = result;
     }
 }

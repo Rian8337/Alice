@@ -40,15 +40,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    /**
-     * 0|Bot      | SyntaxError: Unexpected token  in JSON at position 581
-     * 0|Bot      |     at JSON.parse (<anonymous>)
-     * 0|Bot      |     at Player.fillInformation (/home/rian/Projects/Alice/node_modules/@rian8337/osu-droid-utilities/src/Player.ts:132:44)
-     * 0|Bot      |     at Function.getInformation (/home/rian/Projects/Alice/node_modules/@rian8337/osu-droid-utilities/src/Player.ts:114:16)
-     * 0|Bot      |     at processTicksAndRejections (node:internal/process/task_queues:95:5)
-     * 0|Bot      |     at Object.run (/home/rian/Projects/Alice/src/interactions/commands/osu!droid Elaina PP Project/pp/subcommandGroups/pp-submit/subcommands/pp-submit-recent.ts:77:35)
-     */
-
     await InteractionHelper.deferReply(interaction);
 
     const bindDbManager: UserBindCollectionManager =

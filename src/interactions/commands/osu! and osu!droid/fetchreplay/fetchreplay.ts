@@ -210,7 +210,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             localization.language
         );
 
-    score.replay.beatmap ??= droidCalcResult.result.difficultyCalculator;
+    score.replay.beatmap ??= droidCalcResult.difficultyCalculator;
 
     const hitErrorInformation: HitErrorInformation =
         score.replay.calculateHitError()!;

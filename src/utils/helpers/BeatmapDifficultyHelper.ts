@@ -9,10 +9,12 @@ import {
 import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import {
+    DifficultyAttributes,
     DifficultyCalculator,
     PerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
+    DifficultyAttributes as RebalanceDifficultyAttributes,
     DifficultyCalculator as RebalanceDifficultyCalculator,
     PerformanceCalculator as RebalancePerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
@@ -28,9 +30,11 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
  */
 export abstract class BeatmapDifficultyHelper<
     DC extends DifficultyCalculator,
-    PC extends PerformanceCalculator<DC>,
+    PC extends PerformanceCalculator,
     RDC extends RebalanceDifficultyCalculator,
-    RPC extends RebalancePerformanceCalculator<RDC>
+    RPC extends RebalancePerformanceCalculator,
+    DA extends DifficultyAttributes,
+    RDA extends RebalanceDifficultyAttributes
 > {
     /**
      * The difficulty calculator to use.
@@ -50,14 +54,14 @@ export abstract class BeatmapDifficultyHelper<
      * The performance calculator to use.
      */
     protected abstract readonly performanceCalculator: new (
-        difficultyCalculator: DC
+        difficultyAttributes: DA
     ) => PC;
 
     /**
      * The rebalance performance calculator to use.
      */
     protected abstract readonly rebalancePerformanceCalculator: new (
-        difficultyCalculator: RDC
+        difficultyAttributes: RDA
     ) => RPC;
 
     /**
@@ -592,7 +596,9 @@ export abstract class BeatmapDifficultyHelper<
 
         calculationParams.applyFromBeatmap(star.map);
 
-        const pp: PC = new this.performanceCalculator(star.result).calculate({
+        const pp: PC = new this.performanceCalculator(
+            <DA>star.result.attributes
+        ).calculate({
             combo: calculationParams.combo,
             accPercent: calculationParams.accuracy,
             tapPenalty: calculationParams.tapPenalty,
@@ -601,6 +607,7 @@ export abstract class BeatmapDifficultyHelper<
         return new PerformanceCalculationResult(
             star.map,
             calculationParams,
+            star.result,
             pp
         );
     }
@@ -623,7 +630,7 @@ export abstract class BeatmapDifficultyHelper<
         calculationParams.applyFromBeatmap(star.map);
 
         const pp: RPC = new this.rebalancePerformanceCalculator(
-            star.result
+            <RDA>star.result.attributes
         ).calculate({
             combo: calculationParams.combo,
             accPercent: calculationParams.accuracy,
@@ -633,6 +640,7 @@ export abstract class BeatmapDifficultyHelper<
         return new RebalancePerformanceCalculationResult(
             star.map,
             calculationParams,
+            star.result,
             pp
         );
     }

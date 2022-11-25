@@ -1,9 +1,11 @@
 import { BeatmapDifficultyHelper } from "./BeatmapDifficultyHelper";
 import {
+    DroidDifficultyAttributes,
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
+    DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes,
     DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
@@ -19,7 +21,9 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
     RebalanceDroidDifficultyCalculator,
-    RebalanceDroidPerformanceCalculator
+    RebalanceDroidPerformanceCalculator,
+    DroidDifficultyAttributes,
+    RebalanceDroidDifficultyAttributes
 > {
     protected override readonly difficultyCalculator =
         DroidDifficultyCalculator;
@@ -48,9 +52,13 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
                   RebalanceDroidPerformanceCalculator
               >
     ): Promise<void> {
+        if (!calcResult.difficultyCalculator) {
+            return;
+        }
+
         if (
             !ThreeFingerChecker.isEligibleToDetect(
-                calcResult.result.difficultyCalculator
+                calcResult.difficultyCalculator
             )
         ) {
             return;
@@ -63,7 +71,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         }
 
         if (!score.replay.hasBeenCheckedFor3Finger) {
-            score.replay.beatmap = calcResult.result.difficultyCalculator;
+            score.replay.beatmap = calcResult.difficultyCalculator;
             score.replay.checkFor3Finger();
             calcResult.params.tapPenalty = score.replay.tapPenalty;
         }

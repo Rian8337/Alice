@@ -197,7 +197,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         if (droidCalcResult instanceof OldPerformanceCalculationResult) {
             string += droidCalcResult.difficultyCalculationResult.toString();
         } else {
-            string += droidCalcResult.result.difficultyCalculator.toString();
+            string += droidCalcResult.difficultyCalculator.toString();
         }
 
         string += `\n${localization.getTranslation(
@@ -208,7 +208,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (interaction.options.getBoolean("showosudetail")) {
         string += `${localization.getTranslation(
             "rawPcSr"
-        )}: ${osuCalcResult.result.difficultyCalculator.toString()}\n${localization.getTranslation(
+        )}: ${osuCalcResult.difficultyCalculator.toString()}\n${localization.getTranslation(
             "rawPcPp"
         )}: ${osuCalcResult.result.toString()}`;
     }

@@ -75,18 +75,20 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             const droidCalcResult: PerformanceCalculationResult<
                 DroidDifficultyCalculator,
                 DroidPerformanceCalculator
-            > | null = await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                beatmapID,
-                calcParams
-            );
+            > | null =
+                await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                    beatmapID,
+                    calcParams
+                );
 
             const osuCalcResult: PerformanceCalculationResult<
                 OsuDifficultyCalculator,
                 OsuPerformanceCalculator
-            > | null = await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                beatmapID,
-                calcParams
-            );
+            > | null =
+                await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                    beatmapID,
+                    calcParams
+                );
 
             if (!droidCalcResult || !osuCalcResult) {
                 continue;
@@ -106,7 +108,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             if (message.content.includes("-d")) {
                 string += `${localization.getTranslation(
                     "droidStars"
-                )}: ${droidCalcResult.result.difficultyCalculator.toString()}\n${localization.getTranslation(
+                )}: ${droidCalcResult.difficultyCalculator.toString()}\n${localization.getTranslation(
                     "droidPP"
                 )}: ${droidCalcResult.result.toString()}\n`;
             }
@@ -114,7 +116,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             if (message.content.includes("-p")) {
                 string += `${localization.getTranslation(
                     "pcStars"
-                )}: ${osuCalcResult.result.difficultyCalculator.toString()}\n${localization.getTranslation(
+                )}: ${osuCalcResult.difficultyCalculator.toString()}\n${localization.getTranslation(
                     "pcPP"
                 )}: ${osuCalcResult.result.toString()}`;
             }
@@ -192,18 +194,20 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 const droidCalcResult: PerformanceCalculationResult<
                     DroidDifficultyCalculator,
                     DroidPerformanceCalculator
-                > | null = await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                    beatmapInfo,
-                    calcParams
-                );
+                > | null =
+                    await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                        beatmapInfo,
+                        calcParams
+                    );
 
                 const osuCalcResult: PerformanceCalculationResult<
                     OsuDifficultyCalculator,
                     OsuPerformanceCalculator
-                > | null = await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                    beatmapInfo,
-                    calcParams
-                );
+                > | null =
+                    await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                        beatmapInfo,
+                        calcParams
+                    );
 
                 if (!droidCalcResult || !osuCalcResult) {
                     continue;
@@ -212,11 +216,11 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 embed.addFields({
                     name: `__${
                         beatmapInfo.version
-                    }__ (${droidCalcResult.result.difficultyCalculator.total.toFixed(
+                    }__ (${droidCalcResult.difficultyCalculator.total.toFixed(
                         2
                     )} ${
                         Symbols.star
-                    } | ${osuCalcResult.result.difficultyCalculator.total.toFixed(
+                    } | ${osuCalcResult.difficultyCalculator.total.toFixed(
                         2
                     )} ${Symbols.star})`,
                     value:
