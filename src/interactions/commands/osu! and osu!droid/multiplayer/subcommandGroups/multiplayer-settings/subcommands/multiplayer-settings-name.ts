@@ -23,6 +23,8 @@ export const run: SlashSubcommand<true>["run"] = async (
             {
                 projection: {
                     _id: 0,
+                    textChannelId: 1,
+                    threadChannelId: 1,
                     "status.isPlaying": 1,
                     "settings.roomHost": 1,
                     "settings.roomName": 1,
