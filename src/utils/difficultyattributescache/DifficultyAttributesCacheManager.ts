@@ -76,7 +76,7 @@ export abstract class DifficultyAttributesCacheManager<
 
     constructor() {
         setImmediate(() => this.readCacheFromDisk());
-        setInterval(async () => await this.saveToDisk(), 30 * 1000);
+        setInterval(async () => await this.saveToDisk(), 60 * 5 * 1000);
     }
 
     /**
