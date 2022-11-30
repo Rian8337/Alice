@@ -130,7 +130,6 @@ export abstract class DifficultyAttributesCacheManager<
      *
      * @param beatmapInfo The information about the beatmap.
      * @param difficultyAttributes The difficulty attributes to add.
-     * @param strainGraphImage The image of the strain graph.
      * @param oldStatistics Whether the difficulty attributes uses old statistics (pre-1.6.8 pre-release).
      * @param customSpeedMultiplier The custom speed multiplier that was used to generate the attributes.
      * @param customForceAR The custom force AR that was used to generate the attributes.
@@ -207,15 +206,15 @@ export abstract class DifficultyAttributesCacheManager<
         }
 
         if (customSpeedMultiplier !== 1) {
-            attributeName += ` - ${customSpeedMultiplier.toFixed(2)}x`;
+            attributeName += `|${customSpeedMultiplier.toFixed(2)}x`;
         }
 
         if (customForceAR) {
-            attributeName += ` - AR${customForceAR}`;
+            attributeName += `|AR${customForceAR}`;
         }
 
         if (oldStatistics) {
-            attributeName += " - oldStatistics";
+            attributeName += "|oldStats";
         }
 
         return attributeName;
