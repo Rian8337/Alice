@@ -1,4 +1,4 @@
-import { GuildMember, BaseMessageOptions } from "discord.js";
+import { BaseMessageOptions, GuildMember } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -11,25 +11,30 @@ import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCa
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
-import { MapStats, ModUtil, Accuracy } from "@rian8337/osu-base";
+import { MapStats, ModUtil, Accuracy, MapInfo } from "@rian8337/osu-base";
 import {
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    OsuDifficultyAttributes,
     OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+    OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
     OsuDifficultyCalculator as RebalanceOsuDifficultyCalculator,
     OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
+import getStrainChart from "@rian8337/osu-strain-graph-generator";
 import { CalculateLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/calculate/CalculateLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
+import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
+import { RebalanceDifficultyCalculationResult } from "@alice-utils/dpp/RebalanceDifficultyCalculationResult";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CalculateLocalization = new CalculateLocalization(
@@ -64,6 +69,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     await InteractionHelper.deferReply(interaction);
+
+    const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+        beatmapID ?? hash,
+        { checkFile: false }
+    );
+
+    if (!beatmap) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("beatmapNotFound")
+            ),
+        });
+    }
 
     // Get calculation parameters
     const forceAR: number | undefined = interaction.options.getNumber(
@@ -130,7 +148,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
               RebalanceOsuDifficultyCalculator,
               RebalanceOsuPerformanceCalculator
           >
-        | null;
+        | null = null;
+
+    let strainGraphImage: Buffer | undefined;
+    const strainGraphColor: string | undefined = (<GuildMember | null>(
+        interaction.member
+    ))?.displayHexColor;
+    const showStrainGraph: boolean | null =
+        interaction.options.getBoolean("showstraingraph");
 
     const droidCalcHelper: DroidBeatmapDifficultyHelper =
         new DroidBeatmapDifficultyHelper();
@@ -141,35 +166,136 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         case PPCalculationMethod.rebalance:
             droidCalcResult =
                 await droidCalcHelper.calculateBeatmapRebalancePerformance(
-                    beatmapID ?? hash,
+                    beatmap,
                     calcParams
                 );
             osuCalcResult =
                 await osuCalcHelper.calculateBeatmapRebalancePerformance(
-                    beatmapID ?? hash,
+                    beatmap,
                     calcParams
                 );
+
+            if (!droidCalcResult || !osuCalcResult) {
+                break;
+            }
+
+            if (showStrainGraph) {
+                let difficultyCalculator:
+                    | RebalanceOsuDifficultyCalculator
+                    | undefined;
+
+                if (osuCalcResult.requestedDifficultyCalculation()) {
+                    difficultyCalculator = osuCalcResult.difficultyCalculator;
+                } else {
+                    const diffCalcResult: RebalanceDifficultyCalculationResult<
+                        RebalanceOsuDifficultyAttributes,
+                        RebalanceOsuDifficultyCalculator
+                    > | null =
+                        await osuCalcHelper.calculateBeatmapRebalanceDifficulty(
+                            beatmap,
+                            calcParams
+                        );
+
+                    if (diffCalcResult) {
+                        difficultyCalculator = diffCalcResult.result;
+                    }
+                }
+
+                if (difficultyCalculator) {
+                    strainGraphImage = (await getStrainChart(
+                        difficultyCalculator,
+                        beatmap.beatmapsetID,
+                        strainGraphColor
+                    ))!;
+                }
+            }
+
             break;
         case PPCalculationMethod.old:
             droidCalcResult =
                 await BeatmapOldDifficultyHelper.calculateBeatmapPerformance(
-                    beatmapID ?? hash,
+                    beatmap,
                     calcParams
                 );
             osuCalcResult = await osuCalcHelper.calculateBeatmapPerformance(
-                beatmapID ?? hash,
+                beatmap,
                 calcParams
             );
+
+            if (!droidCalcResult || !osuCalcResult) {
+                break;
+            }
+
+            if (showStrainGraph) {
+                let difficultyCalculator: OsuDifficultyCalculator | undefined;
+
+                if (osuCalcResult.requestedDifficultyCalculation()) {
+                    difficultyCalculator = osuCalcResult.difficultyCalculator;
+                } else {
+                    const diffCalcResult: DifficultyCalculationResult<
+                        OsuDifficultyAttributes,
+                        OsuDifficultyCalculator
+                    > | null = await osuCalcHelper.calculateBeatmapDifficulty(
+                        beatmap,
+                        calcParams
+                    );
+
+                    if (diffCalcResult) {
+                        difficultyCalculator = diffCalcResult.result;
+                    }
+                }
+
+                if (difficultyCalculator) {
+                    strainGraphImage = (await getStrainChart(
+                        difficultyCalculator,
+                        beatmap.beatmapsetID,
+                        strainGraphColor
+                    ))!;
+                }
+            }
+
             break;
         default:
             droidCalcResult = await droidCalcHelper.calculateBeatmapPerformance(
-                beatmapID ?? hash,
+                beatmap,
                 calcParams
             );
             osuCalcResult = await osuCalcHelper.calculateBeatmapPerformance(
-                beatmapID ?? hash,
+                beatmap,
                 calcParams
             );
+
+            if (!droidCalcResult || !osuCalcResult) {
+                break;
+            }
+
+            if (showStrainGraph) {
+                let difficultyCalculator: OsuDifficultyCalculator | undefined;
+
+                if (osuCalcResult.requestedDifficultyCalculation()) {
+                    difficultyCalculator = osuCalcResult.difficultyCalculator;
+                } else {
+                    const diffCalcResult: DifficultyCalculationResult<
+                        OsuDifficultyAttributes,
+                        OsuDifficultyCalculator
+                    > | null = await osuCalcHelper.calculateBeatmapDifficulty(
+                        beatmap,
+                        calcParams
+                    );
+
+                    if (diffCalcResult) {
+                        difficultyCalculator = diffCalcResult.result;
+                    }
+                }
+
+                if (difficultyCalculator) {
+                    strainGraphImage = (await getStrainChart(
+                        difficultyCalculator,
+                        beatmap.beatmapsetID,
+                        strainGraphColor
+                    ))!;
+                }
+            }
     }
 
     if (!droidCalcResult || !osuCalcResult) {
@@ -181,34 +307,34 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     const calcEmbedOptions: BaseMessageOptions =
-        await EmbedCreator.createCalculationEmbed(
+        EmbedCreator.createCalculationEmbed(
+            beatmap,
             calcParams,
+            droidCalcResult instanceof OldPerformanceCalculationResult
+                ? droidCalcResult.difficultyAttributes
+                : droidCalcResult.result.difficultyAttributes,
+            osuCalcResult.result.difficultyAttributes,
             droidCalcResult,
             osuCalcResult,
-            (<GuildMember | null>interaction.member)?.displayHexColor,
+            strainGraphImage,
             localization.language
         );
 
     let string: string = "";
 
     if (interaction.options.getBoolean("showdroiddetail")) {
-        string += `${localization.getTranslation("rawDroidSr")}: `;
-
-        if (droidCalcResult instanceof OldPerformanceCalculationResult) {
-            string += droidCalcResult.difficultyCalculationResult.toString();
-        } else {
-            string += droidCalcResult.difficultyCalculator.toString();
-        }
-
+        string += `${localization.getTranslation("rawDroidSr")}: ${
+            droidCalcResult.starRatingInfo
+        }`;
         string += `\n${localization.getTranslation(
             "rawDroidPp"
         )}: ${droidCalcResult.result.toString()}\n`;
     }
 
     if (interaction.options.getBoolean("showosudetail")) {
-        string += `${localization.getTranslation(
-            "rawPcSr"
-        )}: ${osuCalcResult.difficultyCalculator.toString()}\n${localization.getTranslation(
+        string += `${localization.getTranslation("rawPcSr")}: ${
+            osuCalcResult.starRatingInfo
+        }\n${localization.getTranslation(
             "rawPcPp"
         )}: ${osuCalcResult.result.toString()}`;
     }
@@ -217,10 +343,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         calcEmbedOptions.content = string;
     }
 
-    BeatmapManager.setChannelLatestBeatmap(
-        interaction.channelId,
-        osuCalcResult.map.hash
-    );
+    BeatmapManager.setChannelLatestBeatmap(interaction.channelId, beatmap.hash);
 
     InteractionHelper.reply(interaction, calcEmbedOptions);
 };
@@ -322,6 +445,11 @@ export const config: SlashCommand["config"] = {
                     value: PPCalculationMethod.old,
                 },
             ],
+        },
+        {
+            name: "showstraingraph",
+            type: ApplicationCommandOptionType.Boolean,
+            description: "Whether to show the beatmap's strain graph.",
         },
     ],
     example: [

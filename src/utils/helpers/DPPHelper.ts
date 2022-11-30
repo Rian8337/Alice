@@ -243,11 +243,13 @@ export abstract class DPPHelper {
     /**
      * Converts a score to PP entry.
      *
+     * @param beatmapTitle The title of the beatmap.
      * @param score The score to convert.
      * @param calculationResult The dpp calculation result of the score.
      * @returns A PP entry from the score and calculation result.
      */
     static scoreToPPEntry(
+        beatmapTitle: string,
         score: Score,
         calculationResult: PerformanceCalculationResult<
             DroidDifficultyCalculator,
@@ -255,8 +257,8 @@ export abstract class DPPHelper {
         >
     ): PPEntry {
         return {
-            hash: calculationResult.map.hash,
-            title: calculationResult.map.fullTitle,
+            hash: score.hash,
+            title: beatmapTitle,
             pp: NumberHelper.round(calculationResult.result.total, 2),
             mods: score.mods.reduce((a, v) => a + v.acronym, ""),
             accuracy: NumberHelper.round(score.accuracy.value() * 100, 2),
@@ -269,17 +271,19 @@ export abstract class DPPHelper {
     /**
      * Converts a score to an old PP entry.
      *
+     * @param beatmapTitle The title of the beatmap.
      * @param score The score to convert.
      * @param calculationResult The dpp calculation result of the score.
      * @returns An old PP entry from the score and calculation result.
      */
     static scoreToOldPPEntry(
+        beatmapTitle: string,
         score: Score,
         calculationResult: OldPerformanceCalculationResult
     ): OldPPEntry {
         return {
-            hash: calculationResult.map.hash,
-            title: calculationResult.map.fullTitle,
+            hash: score.hash,
+            title: beatmapTitle,
             pp: parseFloat(calculationResult.result.total.toFixed(2)),
             mods: score.mods.reduce((a, v) => a + v.acronym, ""),
             accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),

@@ -24,6 +24,8 @@ import { RebalanceDifficultyCalculationResult } from "@alice-utils/dpp/Rebalance
 import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { DifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/DifficultyAttributesCacheManager";
+import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 
 /**
  * A helper class for calculating difficulty and performance of beatmaps or scores.
@@ -63,6 +65,16 @@ export abstract class BeatmapDifficultyHelper<
     protected abstract readonly rebalancePerformanceCalculator: new (
         difficultyAttributes: RDA
     ) => RPC;
+
+    /**
+     * The cache manager responsible for storing live calculation difficulty attributes.
+     */
+    protected abstract readonly liveDifficultyAttributesCache: DifficultyAttributesCacheManager<DA>;
+
+    /**
+     * The cache manager responsible for storing rebalance calculation difficulty attributes.
+     */
+    protected abstract readonly rebalanceDifficultyAttributesCache: DifficultyAttributesCacheManager<RDA>;
 
     /**
      * Gets calculation parameters from a user's message.
@@ -179,8 +191,9 @@ export abstract class BeatmapDifficultyHelper<
         score: Score,
         calcParams?: PerformanceCalculationParameters
     ): Promise<PerformanceCalculationResult<DC, PC> | null> {
-        const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
-            score.hash
+        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+            score.hash,
+            { checkFile: false }
         );
 
         if (!beatmap) {
@@ -190,14 +203,46 @@ export abstract class BeatmapDifficultyHelper<
         calcParams ??=
             BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
 
-        const result: DifficultyCalculationResult<DC> | null =
-            await this.calculateDifficulty(beatmap, calcParams);
+        const attributeName: string =
+            this.liveDifficultyAttributesCache.getAttributeName(
+                score.mods,
+                score.oldStatistics,
+                score.speedMultiplier,
+                score.forcedAR
+            );
 
-        if (!result) {
+        let cachedAttributes: CacheableDifficultyAttributes<DA> | null =
+            this.liveDifficultyAttributesCache.getDifficultyAttributes(
+                beatmap,
+                attributeName
+            );
+
+        let difficultyCalculator: DC | undefined;
+
+        if (!cachedAttributes) {
+            const result: DifficultyCalculationResult<DA, DC> | null =
+                await this.calculateDifficulty(beatmap, calcParams);
+
+            if (result) {
+                difficultyCalculator = result.result;
+                cachedAttributes = result.cachedAttributes;
+            }
+        }
+
+        if (!cachedAttributes) {
             return null;
         }
 
-        return this.calculatePerformance(result, calcParams);
+        const difficultyAttributes: DA = <DA>{
+            ...cachedAttributes,
+            mods: <Mod[]>score.mods,
+        };
+
+        return this.calculatePerformance(
+            difficultyAttributes,
+            calcParams,
+            difficultyCalculator
+        );
     }
 
     /**
@@ -211,8 +256,9 @@ export abstract class BeatmapDifficultyHelper<
         score: Score,
         calcParams?: PerformanceCalculationParameters
     ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null> {
-        const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
-            score.hash
+        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+            score.hash,
+            { checkFile: false }
         );
 
         if (!beatmap) {
@@ -222,14 +268,51 @@ export abstract class BeatmapDifficultyHelper<
         calcParams ??=
             BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
 
-        const result: RebalanceDifficultyCalculationResult<RDC> | null =
-            await this.calculateRebalanceDifficulty(beatmap, calcParams);
+        const attributeName: string =
+            this.rebalanceDifficultyAttributesCache.getAttributeName(
+                score.mods,
+                score.oldStatistics,
+                score.speedMultiplier,
+                score.forcedAR
+            );
 
-        if (!result) {
+        let cachedAttributes: CacheableDifficultyAttributes<RDA> | null =
+            this.rebalanceDifficultyAttributesCache.getDifficultyAttributes(
+                beatmap,
+                attributeName
+            );
+
+        let difficultyCalculator: RDC | undefined;
+
+        if (!cachedAttributes) {
+            const result: RebalanceDifficultyCalculationResult<
+                RDA,
+                RDC
+            > | null = await this.calculateRebalanceDifficulty(
+                beatmap,
+                calcParams
+            );
+
+            if (result) {
+                difficultyCalculator = result.result;
+                cachedAttributes = result.cachedAttributes;
+            }
+        }
+
+        if (!cachedAttributes) {
             return null;
         }
 
-        return this.calculateRebalancePerformance(result, calcParams);
+        const difficultyAttributes: RDA = <RDA>{
+            ...cachedAttributes,
+            mods: <Mod[]>score.mods,
+        };
+
+        return this.calculateRebalancePerformance(
+            difficultyAttributes,
+            calcParams,
+            difficultyCalculator
+        );
     }
 
     /**
@@ -247,14 +330,14 @@ export abstract class BeatmapDifficultyHelper<
     /**
      * Calculates the difficulty and/or performance value of a beatmap.
      *
-     * @param star The result of difficulty calculation.
+     * @param attributes The difficulty attributes of the beatmap.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
     async calculateBeatmapPerformance(
-        star: DifficultyCalculationResult<DC>,
+        attributes: DA,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<PerformanceCalculationResult<DC, PC> | null>;
+    ): Promise<PerformanceCalculationResult<DC, PC>>;
 
     /**
      * Calculates the difficulty and/or performance value of a beatmap.
@@ -269,21 +352,34 @@ export abstract class BeatmapDifficultyHelper<
     ): Promise<PerformanceCalculationResult<DC, PC> | null>;
 
     async calculateBeatmapPerformance(
-        beatmapOrHashOrStar:
-            | MapInfo
-            | number
-            | string
-            | DifficultyCalculationResult<DC>,
+        beatmapOrHashOrDA: MapInfo | number | string | DA,
         calculationParams?: PerformanceCalculationParameters
     ): Promise<PerformanceCalculationResult<DC, PC> | null> {
-        let beatmap: MapInfo<true> | null;
+        let beatmap: MapInfo | null;
 
-        if (beatmapOrHashOrStar instanceof MapInfo) {
-            beatmap = beatmapOrHashOrStar;
-        } else if (beatmapOrHashOrStar instanceof DifficultyCalculationResult) {
-            beatmap = beatmapOrHashOrStar.map;
+        if (beatmapOrHashOrDA instanceof MapInfo) {
+            beatmap = beatmapOrHashOrDA;
+        } else if (
+            typeof beatmapOrHashOrDA === "number" ||
+            typeof beatmapOrHashOrDA === "string"
+        ) {
+            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrDA, {
+                checkFile: false,
+            });
         } else {
-            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrStar);
+            return this.calculatePerformance(
+                beatmapOrHashOrDA,
+                new PerformanceCalculationParameters(
+                    new Accuracy({
+                        n300:
+                            beatmapOrHashOrDA.hitCircleCount +
+                            beatmapOrHashOrDA.sliderCount +
+                            beatmapOrHashOrDA.spinnerCount,
+                    }),
+                    100,
+                    beatmapOrHashOrDA.maxCombo
+                )
+            );
         }
 
         if (!beatmap) {
@@ -298,16 +394,48 @@ export abstract class BeatmapDifficultyHelper<
             beatmap.maxCombo
         );
 
-        const star: DifficultyCalculationResult<DC> | null =
-            beatmapOrHashOrStar instanceof DifficultyCalculationResult
-                ? beatmapOrHashOrStar
-                : await this.calculateDifficulty(beatmap, calculationParams);
+        const { customStatistics } = calculationParams;
 
-        if (!star) {
+        const attributeName: string =
+            this.liveDifficultyAttributesCache.getAttributeName(
+                customStatistics?.mods,
+                customStatistics?.oldStatistics,
+                customStatistics?.speedMultiplier,
+                customStatistics?.isForceAR ? customStatistics.ar : undefined
+            );
+
+        let cachedAttributes: CacheableDifficultyAttributes<DA> | null =
+            this.liveDifficultyAttributesCache.getDifficultyAttributes(
+                beatmap,
+                attributeName
+            );
+
+        let difficultyCalculator: DC | undefined;
+
+        if (!cachedAttributes) {
+            const star: DifficultyCalculationResult<DA, DC> | null =
+                await this.calculateDifficulty(beatmap, calculationParams);
+
+            if (star) {
+                difficultyCalculator = star.result;
+                cachedAttributes = star.cachedAttributes;
+            }
+        }
+
+        if (!cachedAttributes) {
             return null;
         }
 
-        return this.calculatePerformance(star, calculationParams);
+        const difficultyAttributes: DA = <DA>{
+            ...cachedAttributes,
+            mods: <Mod[]>customStatistics?.mods ?? [],
+        };
+
+        return this.calculatePerformance(
+            difficultyAttributes,
+            calculationParams,
+            difficultyCalculator
+        );
     }
 
     /**
@@ -325,14 +453,14 @@ export abstract class BeatmapDifficultyHelper<
     /**
      * Calculates the rebalance difficulty and/or performance value of a beatmap.
      *
-     * @param star The result of difficulty calculation.
+     * @param attributes The difficulty attributes of the beatmap.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
     async calculateBeatmapRebalancePerformance(
-        star: RebalanceDifficultyCalculationResult<RDC>,
+        attributes: RDA,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null>;
+    ): Promise<RebalancePerformanceCalculationResult<RDC, RPC>>;
 
     /**
      * Calculates the rebalance difficulty and/or performance value of a beatmap.
@@ -347,23 +475,34 @@ export abstract class BeatmapDifficultyHelper<
     ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null>;
 
     async calculateBeatmapRebalancePerformance(
-        beatmapOrHashOrStar:
-            | MapInfo
-            | number
-            | string
-            | RebalanceDifficultyCalculationResult<RDC>,
+        beatmapOrHashOrDA: MapInfo | number | string | RDA,
         calculationParams?: PerformanceCalculationParameters
     ): Promise<RebalancePerformanceCalculationResult<RDC, RPC> | null> {
-        let beatmap: MapInfo<true> | null;
+        let beatmap: MapInfo | null;
 
-        if (beatmapOrHashOrStar instanceof MapInfo) {
-            beatmap = beatmapOrHashOrStar;
+        if (beatmapOrHashOrDA instanceof MapInfo) {
+            beatmap = beatmapOrHashOrDA;
         } else if (
-            beatmapOrHashOrStar instanceof RebalanceDifficultyCalculationResult
+            typeof beatmapOrHashOrDA === "number" ||
+            typeof beatmapOrHashOrDA === "string"
         ) {
-            beatmap = beatmapOrHashOrStar.map;
+            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrDA, {
+                checkFile: false,
+            });
         } else {
-            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrStar);
+            return this.calculateRebalancePerformance(
+                beatmapOrHashOrDA,
+                new PerformanceCalculationParameters(
+                    new Accuracy({
+                        n300:
+                            beatmapOrHashOrDA.hitCircleCount +
+                            beatmapOrHashOrDA.sliderCount +
+                            beatmapOrHashOrDA.spinnerCount,
+                    }),
+                    100,
+                    beatmapOrHashOrDA.maxCombo
+                )
+            );
         }
 
         if (!beatmap) {
@@ -378,19 +517,51 @@ export abstract class BeatmapDifficultyHelper<
             beatmap.maxCombo
         );
 
-        const star: RebalanceDifficultyCalculationResult<RDC> | null =
-            beatmapOrHashOrStar instanceof RebalanceDifficultyCalculationResult
-                ? beatmapOrHashOrStar
-                : await this.calculateRebalanceDifficulty(
-                      beatmap,
-                      calculationParams
-                  );
+        const { customStatistics } = calculationParams;
 
-        if (!star) {
+        const attributeName: string =
+            this.rebalanceDifficultyAttributesCache.getAttributeName(
+                customStatistics?.mods,
+                customStatistics?.oldStatistics,
+                customStatistics?.speedMultiplier,
+                customStatistics?.isForceAR ? customStatistics.ar : undefined
+            );
+
+        let cachedAttributes: CacheableDifficultyAttributes<RDA> | null =
+            this.rebalanceDifficultyAttributesCache.getDifficultyAttributes(
+                beatmap,
+                attributeName
+            );
+
+        let difficultyCalculator: RDC | undefined;
+
+        if (!cachedAttributes) {
+            const star: RebalanceDifficultyCalculationResult<RDA, RDC> | null =
+                await this.calculateRebalanceDifficulty(
+                    beatmap,
+                    calculationParams
+                );
+
+            if (star) {
+                difficultyCalculator = star.result;
+                cachedAttributes = star.cachedAttributes;
+            }
+        }
+
+        if (!cachedAttributes) {
             return null;
         }
 
-        return this.calculateRebalancePerformance(star, calculationParams);
+        const difficultyAttributes: RDA = <RDA>{
+            ...cachedAttributes,
+            mods: <Mod[]>customStatistics?.mods ?? [],
+        };
+
+        return this.calculateRebalancePerformance(
+            difficultyAttributes,
+            calculationParams,
+            difficultyCalculator
+        );
     }
 
     /**
@@ -401,7 +572,7 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateScoreDifficulty(
         score: Score
-    ): Promise<DifficultyCalculationResult<DC> | null> {
+    ): Promise<DifficultyCalculationResult<DA, DC> | null> {
         const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
         );
@@ -424,7 +595,7 @@ export abstract class BeatmapDifficultyHelper<
      */
     async calculateScoreRebalanceDifficulty(
         score: Score
-    ): Promise<RebalanceDifficultyCalculationResult<RebalanceDifficultyCalculator> | null> {
+    ): Promise<RebalanceDifficultyCalculationResult<RDA, RDC> | null> {
         const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
             score.hash
         );
@@ -449,7 +620,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapDifficulty(
         beatmap: MapInfo,
         calculationParams: DifficultyCalculationParameters
-    ): Promise<DifficultyCalculationResult<DC> | null>;
+    ): Promise<DifficultyCalculationResult<DA, DC> | null>;
 
     /**
      * Calculates the difficulty of a beatmap.
@@ -461,12 +632,12 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapDifficulty(
         beatmapIdOrHash: number | string,
         calculationParams: DifficultyCalculationParameters
-    ): Promise<DifficultyCalculationResult<DC> | null>;
+    ): Promise<DifficultyCalculationResult<DA, DC> | null>;
 
     async calculateBeatmapDifficulty(
         beatmapOrIdOrHash: MapInfo | number | string,
         calculationParams: DifficultyCalculationParameters
-    ): Promise<DifficultyCalculationResult<DC> | null> {
+    ): Promise<DifficultyCalculationResult<DA, DC> | null> {
         const beatmap: MapInfo | null =
             beatmapOrIdOrHash instanceof MapInfo
                 ? beatmapOrIdOrHash
@@ -489,7 +660,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapRebalanceDifficulty(
         beatmap: MapInfo,
         calculationParams: DifficultyCalculationParameters
-    ): Promise<RebalanceDifficultyCalculationResult<RDC> | null>;
+    ): Promise<RebalanceDifficultyCalculationResult<RDA, RDC> | null>;
 
     /**
      * Calculates the rebalance difficulty of a beatmap.
@@ -501,12 +672,12 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapRebalanceDifficulty(
         beatmapIdorHash: number | string,
         calculationParams: DifficultyCalculationParameters
-    ): Promise<RebalanceDifficultyCalculationResult<RDC> | null>;
+    ): Promise<RebalanceDifficultyCalculationResult<RDA, RDC> | null>;
 
     async calculateBeatmapRebalanceDifficulty(
         beatmapOrIdOrHash: MapInfo | number | string,
         calculationParams: DifficultyCalculationParameters
-    ): Promise<RebalanceDifficultyCalculationResult<RDC> | null> {
+    ): Promise<RebalanceDifficultyCalculationResult<RDA, RDC> | null> {
         const beatmap: MapInfo | null =
             beatmapOrIdOrHash instanceof MapInfo
                 ? beatmapOrIdOrHash
@@ -529,7 +700,7 @@ export abstract class BeatmapDifficultyHelper<
     private async calculateDifficulty(
         beatmap: MapInfo,
         calculationParams: DifficultyCalculationParameters
-    ): Promise<DifficultyCalculationResult<DC> | null> {
+    ): Promise<DifficultyCalculationResult<DA, DC> | null> {
         await this.initBeatmap(beatmap);
 
         if (
@@ -546,7 +717,19 @@ export abstract class BeatmapDifficultyHelper<
             stats: calculationParams.customStatistics,
         });
 
-        return new DifficultyCalculationResult(beatmap, star);
+        const { customStatistics } = calculationParams;
+
+        return new DifficultyCalculationResult(
+            beatmap,
+            star,
+            this.liveDifficultyAttributesCache.addAttribute(
+                beatmap,
+                <DA>star.attributes,
+                customStatistics?.oldStatistics,
+                customStatistics?.speedMultiplier,
+                customStatistics?.isForceAR ? customStatistics.ar : undefined
+            )
+        );
     }
 
     /**
@@ -557,9 +740,9 @@ export abstract class BeatmapDifficultyHelper<
      * @returns The calculation result.
      */
     private async calculateRebalanceDifficulty(
-        beatmap: MapInfo<true>,
+        beatmap: MapInfo,
         calculationParams: DifficultyCalculationParameters
-    ): Promise<RebalanceDifficultyCalculationResult<RDC> | null> {
+    ): Promise<RebalanceDifficultyCalculationResult<RDA, RDC> | null> {
         await this.initBeatmap(beatmap);
 
         if (
@@ -576,28 +759,39 @@ export abstract class BeatmapDifficultyHelper<
             stats: calculationParams.customStatistics,
         });
 
-        return new RebalanceDifficultyCalculationResult(beatmap, star);
+        const { customStatistics } = calculationParams;
+
+        return new RebalanceDifficultyCalculationResult(
+            beatmap,
+            star,
+            this.rebalanceDifficultyAttributesCache.addAttribute(
+                beatmap,
+                <RDA>star.attributes,
+                customStatistics?.oldStatistics,
+                customStatistics?.speedMultiplier,
+                customStatistics?.isForceAR ? customStatistics.ar : undefined
+            )
+        );
     }
 
     /**
      * Calculates the performance value of a beatmap.
      *
-     * @param star The result of difficulty calculation.
+     * @param difficultyAttributes The difficulty attributes to calculate the performance value for.
      * @param calculationParams Calculation parameters.
-     * @returns The result of the calculation, `null` if the beatmap is not found.
+     * @param difficultyCalculator The difficulty calculator that was used to calculate the beatmap.
+     * @param strainGraphImage The strain graph image generated by the difficulty calculator.
+     * @returns The result of the calculation.
      */
     private calculatePerformance(
-        star: DifficultyCalculationResult<DC>,
-        calculationParams: PerformanceCalculationParameters
+        difficultyAttributes: DA,
+        calculationParams: PerformanceCalculationParameters,
+        difficultyCalculator?: DC
     ): PerformanceCalculationResult<DC, PC> | null {
-        if (star.result.beatmap.hitObjects.objects.length === 0) {
-            return null;
-        }
-
-        calculationParams.applyFromBeatmap(star.map);
+        calculationParams.applyFromAttributes(difficultyAttributes);
 
         const pp: PC = new this.performanceCalculator(
-            <DA>star.result.attributes
+            difficultyAttributes
         ).calculate({
             combo: calculationParams.combo,
             accPercent: calculationParams.accuracy,
@@ -605,32 +799,30 @@ export abstract class BeatmapDifficultyHelper<
         });
 
         return new PerformanceCalculationResult(
-            star.map,
             calculationParams,
-            star.result,
-            pp
+            pp,
+            difficultyCalculator
         );
     }
 
     /**
      * Calculates the performance value of a beatmap.
      *
-     * @param star The result of difficulty calculation.
+     * @param difficultyAttributes The difficulty attributes to calculate the performance value for.
      * @param calculationParams Calculation parameters.
-     * @returns The result of the calculation, `null` if the beatmap is not found.
+     * @param difficultyCalculator The difficulty calculator that was used to calculate the beatmap.
+     * @param strainGraphImage The strain graph image generated by the difficulty calculator.
+     * @returns The result of the calculation.
      */
     private calculateRebalancePerformance(
-        star: RebalanceDifficultyCalculationResult<RDC>,
-        calculationParams: PerformanceCalculationParameters
+        difficultyAttributes: RDA,
+        calculationParams: PerformanceCalculationParameters,
+        difficultyCalculator?: RDC
     ): RebalancePerformanceCalculationResult<RDC, RPC> | null {
-        if (star.result.beatmap.hitObjects.objects.length === 0) {
-            return null;
-        }
-
-        calculationParams.applyFromBeatmap(star.map);
+        calculationParams.applyFromAttributes(difficultyAttributes);
 
         const pp: RPC = new this.rebalancePerformanceCalculator(
-            <RDA>star.result.attributes
+            difficultyAttributes
         ).calculate({
             combo: calculationParams.combo,
             accPercent: calculationParams.accuracy,
@@ -638,10 +830,9 @@ export abstract class BeatmapDifficultyHelper<
         });
 
         return new RebalancePerformanceCalculationResult(
-            star.map,
             calculationParams,
-            star.result,
-            pp
+            pp,
+            difficultyCalculator
         );
     }
 

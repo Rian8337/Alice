@@ -174,9 +174,11 @@ export declare class std_diff {
     aim: number;
     aim_difficulty: number;
     aim_length_bonus: number;
+    aim_strain_peaks: number[];
     speed: number;
     speed_difficulty: number;
     speed_length_bonus: number;
+    speed_strain_peaks: number[];
     nsingles: number;
     nsingles_threshold: number;
 

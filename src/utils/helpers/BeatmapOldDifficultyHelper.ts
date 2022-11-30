@@ -29,6 +29,9 @@ import {
     std_ppv2,
     timing,
 } from "ojsamadroid";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { OldDroidDifficultyAttributes } from "@alice-structures/difficultyattributes/OldDroidDifficultyAttributes";
+import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 
 /**
  * A helper class for calculating old difficulty and performance of beatmaps or scores.
@@ -149,8 +152,9 @@ export abstract class BeatmapOldDifficultyHelper {
         score: Score,
         calcParams?: PerformanceCalculationParameters
     ): Promise<OldPerformanceCalculationResult | null> {
-        const beatmap: MapInfo<true> | null = await BeatmapManager.getBeatmap(
-            score.hash
+        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
+            score.hash,
+            { checkFile: false }
         );
 
         if (!beatmap) {
@@ -160,14 +164,43 @@ export abstract class BeatmapOldDifficultyHelper {
         calcParams ??=
             BeatmapOldDifficultyHelper.getCalculationParamsFromScore(score);
 
-        const result: OldDifficultyCalculationResult | null =
-            await this.calculateDifficulty(beatmap, calcParams);
+        let cachedAttributes: CacheableDifficultyAttributes<OldDroidDifficultyAttributes> | null =
+            await CacheManager.difficultyAttributesCache.old.droid.getDifficultyAttributes(
+                beatmap,
+                CacheManager.difficultyAttributesCache.old.droid.getAttributeName(
+                    score.mods,
+                    score.oldStatistics,
+                    score.speedMultiplier,
+                    score.forcedAR
+                )
+            );
 
-        if (!result) {
+        let difficultyCalculator: std_diff | undefined;
+
+        if (!cachedAttributes) {
+            const result: OldDifficultyCalculationResult | null =
+                await this.calculateDifficulty(beatmap, calcParams);
+
+            if (result) {
+                difficultyCalculator = result.result;
+                cachedAttributes = result.cachedAttributes;
+            }
+        }
+
+        if (!cachedAttributes) {
             return null;
         }
 
-        return this.calculatePerformance(result, calcParams);
+        const difficultyAttributes: OldDroidDifficultyAttributes = {
+            ...cachedAttributes,
+            mods: score.mods,
+        };
+
+        return this.calculatePerformance(
+            difficultyAttributes,
+            calcParams,
+            difficultyCalculator
+        );
     }
 
     /**
@@ -185,14 +218,14 @@ export abstract class BeatmapOldDifficultyHelper {
     /**
      * Calculates the difficulty and/or performance value of a beatmap.
      *
-     * @param star The result of difficulty calculation.
+     * @param difficultyAttributes The difficulty attributes to calculate.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
-     * @returns The result of the calculation, `null` if the beatmap is not found.
+     * @returns The result of the calculation.
      */
     static async calculateBeatmapPerformance(
-        star: OldDifficultyCalculationResult,
+        difficultyAttributes: OldDroidDifficultyAttributes,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<OldPerformanceCalculationResult | null>;
+    ): Promise<OldPerformanceCalculationResult>;
 
     /**
      * Calculates the difficulty and/or performance value of a beatmap.
@@ -207,23 +240,40 @@ export abstract class BeatmapOldDifficultyHelper {
     ): Promise<OldPerformanceCalculationResult | null>;
 
     static async calculateBeatmapPerformance(
-        beatmapOrHashOrStar:
+        beatmapOrHashOrDA:
             | MapInfo
             | number
             | string
-            | OldDifficultyCalculationResult,
+            | OldDroidDifficultyAttributes,
         calculationParams?: PerformanceCalculationParameters
     ): Promise<OldPerformanceCalculationResult | null> {
-        let beatmap: MapInfo<true> | null;
+        let beatmap: MapInfo | null;
 
-        if (beatmapOrHashOrStar instanceof MapInfo) {
-            beatmap = beatmapOrHashOrStar;
+        if (beatmapOrHashOrDA instanceof MapInfo) {
+            beatmap = beatmapOrHashOrDA;
         } else if (
-            beatmapOrHashOrStar instanceof OldDifficultyCalculationResult
+            typeof beatmapOrHashOrDA === "number" ||
+            typeof beatmapOrHashOrDA === "string"
         ) {
-            beatmap = beatmapOrHashOrStar.map;
+            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrDA, {
+                checkFile: false,
+            });
         } else {
-            beatmap = await BeatmapManager.getBeatmap(beatmapOrHashOrStar);
+            calculationParams ??= new PerformanceCalculationParameters(
+                new Accuracy({
+                    n300:
+                        beatmapOrHashOrDA.hitCircleCount +
+                        beatmapOrHashOrDA.sliderCount +
+                        beatmapOrHashOrDA.spinnerCount,
+                }),
+                100,
+                beatmapOrHashOrDA.maxCombo
+            );
+
+            return this.calculatePerformance(
+                beatmapOrHashOrDA,
+                calculationParams
+            );
         }
 
         if (!beatmap) {
@@ -238,16 +288,47 @@ export abstract class BeatmapOldDifficultyHelper {
             beatmap.maxCombo
         );
 
-        const star: OldDifficultyCalculationResult | null =
-            beatmapOrHashOrStar instanceof OldDifficultyCalculationResult
-                ? beatmapOrHashOrStar
-                : await this.calculateDifficulty(beatmap, calculationParams);
+        const { customStatistics } = calculationParams;
 
-        if (!star) {
+        let cachedAttributes: CacheableDifficultyAttributes<OldDroidDifficultyAttributes> | null =
+            await CacheManager.difficultyAttributesCache.old.droid.getDifficultyAttributes(
+                beatmap,
+                CacheManager.difficultyAttributesCache.old.droid.getAttributeName(
+                    customStatistics?.mods,
+                    customStatistics?.oldStatistics,
+                    customStatistics?.speedMultiplier,
+                    customStatistics?.isForceAR
+                        ? customStatistics.ar
+                        : undefined
+                )
+            );
+
+        let difficultyCalculator: std_diff | undefined;
+
+        if (!cachedAttributes) {
+            const star: OldDifficultyCalculationResult | null =
+                await this.calculateDifficulty(beatmap, calculationParams);
+
+            if (star) {
+                difficultyCalculator = star.result;
+                cachedAttributes = star.cachedAttributes;
+            }
+        }
+
+        if (!cachedAttributes) {
             return null;
         }
 
-        return this.calculatePerformance(star, calculationParams);
+        const difficultyAttributes: OldDroidDifficultyAttributes = {
+            ...cachedAttributes,
+            mods: customStatistics?.mods ?? [],
+        };
+
+        return this.calculatePerformance(
+            difficultyAttributes,
+            calculationParams,
+            difficultyCalculator
+        );
     }
 
     /**
@@ -357,37 +438,78 @@ export abstract class BeatmapOldDifficultyHelper {
             speed_mul: stats.speedMultiplier,
         });
 
-        return new OldDifficultyCalculationResult(beatmap, star);
+        const attributes: OldDroidDifficultyAttributes = {
+            tapDifficulty: star.speed,
+            rhythmDifficulty: 0,
+            visualDifficulty: 0,
+            mods: [],
+            starRating: star.total,
+            maxCombo: beatmap.maxCombo,
+            aimDifficulty: star.aim,
+            flashlightDifficulty: 0,
+            speedNoteCount: 0,
+            sliderFactor: 0,
+            approachRate: stats.ar!,
+            overallDifficulty: stats.od!,
+            hitCircleCount: beatmap.circles,
+            sliderCount: beatmap.sliders,
+            spinnerCount: beatmap.spinners,
+        };
+
+        return new OldDifficultyCalculationResult(
+            beatmap,
+            calculationParams,
+            star,
+            attributes,
+            CacheManager.difficultyAttributesCache.old.droid.addAttribute(
+                beatmap,
+                attributes
+            )
+        );
     }
 
     /**
      * Calculates the performance value of a beatmap.
      *
-     * @param star The result of difficulty calculation.
+     * @param difficultyAttributes The difficulty attributes to calculate.
      * @param calculationParams Calculation parameters.
-     * @returns The result of the calculation, `null` if the beatmap is not found.
+     * @param difficultyCalculator The difficulty calculator that was used to calculate the difficulty attributes.
+     * @returns The result of the calculation.
      */
     private static calculatePerformance(
-        star: OldDifficultyCalculationResult,
-        calculationParams: PerformanceCalculationParameters
-    ): OldPerformanceCalculationResult | null {
-        if (star.map.objects === 0) {
-            return null;
-        }
-
-        calculationParams.applyFromBeatmap(star.map);
+        difficultyAttributes: OldDroidDifficultyAttributes,
+        calculationParams: PerformanceCalculationParameters,
+        difficultyCalculator?: std_diff
+    ): OldPerformanceCalculationResult {
+        calculationParams.applyFromAttributes(difficultyAttributes);
 
         const pp: std_ppv2 = ppv2({
-            stars: star.result,
+            aim_stars: difficultyAttributes.aimDifficulty,
+            speed_stars: difficultyAttributes.tapDifficulty,
+            mods: modbits.from_string(
+                [new ModTouchDevice(), ...difficultyAttributes.mods].join("")
+            ),
             combo: calculationParams.combo,
-            max_combo: star.map.maxCombo,
+            max_combo: difficultyAttributes.maxCombo,
             n300: calculationParams.accuracy.n300,
             n100: calculationParams.accuracy.n100,
             n50: calculationParams.accuracy.n50,
             nmiss: calculationParams.accuracy.nmiss,
+            ncircles: difficultyAttributes.hitCircleCount,
+            nsliders: difficultyAttributes.sliderCount,
+            nobjects:
+                difficultyAttributes.hitCircleCount +
+                difficultyAttributes.sliderCount +
+                difficultyAttributes.spinnerCount,
+            base_ar: difficultyAttributes.approachRate,
+            base_od: difficultyAttributes.overallDifficulty,
         });
 
-        return new OldPerformanceCalculationResult(star.map, star.result, pp);
+        return new OldPerformanceCalculationResult(
+            difficultyAttributes,
+            pp,
+            difficultyCalculator
+        );
     }
 
     /**

@@ -1,4 +1,6 @@
-import { Accuracy, MapInfo, MapStats, Precision } from "@rian8337/osu-base";
+import { Accuracy, MapStats, Precision } from "@rian8337/osu-base";
+import { DifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
+import { DifficultyAttributes as RebalanceDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { DifficultyCalculationParameters } from "./DifficultyCalculationParameters";
 
 /**
@@ -59,15 +61,22 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
     }
 
     /**
-     * Applies a beatmap to alter this parameter.
+     * Applies difficulty attributes to alter this parameter.
      *
-     * @param beatmap The beatmap.
+     * @param attributes The difficulty attributes.
      */
-    applyFromBeatmap(beatmap: MapInfo): void {
+    applyFromAttributes(
+        attributes: DifficultyAttributes | RebalanceDifficultyAttributes
+    ): void {
+        const objectCount: number =
+            attributes.hitCircleCount +
+            attributes.sliderCount +
+            attributes.spinnerCount;
+
         if (this.accuracy.n50 || this.accuracy.n100) {
             this.accuracy = new Accuracy({
                 n300:
-                    beatmap.objects -
+                    objectCount -
                     this.accuracy.n100 -
                     this.accuracy.n50 -
                     this.accuracy.nmiss,
@@ -79,7 +88,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
             this.accuracy = new Accuracy({
                 percent: this.inputAccuracy,
                 nmiss: this.accuracy.nmiss,
-                nobjects: beatmap.objects,
+                nobjects: objectCount,
             });
         }
     }

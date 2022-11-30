@@ -1302,18 +1302,21 @@ export class Challenge extends Manager {
             oldStatistics: data.replayVersion <= 3,
         });
 
-        const droidCalcResult: PerformanceCalculationResult<
-            DroidDifficultyCalculator,
-            DroidPerformanceCalculator
-        > = (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
-            this.beatmapid,
+        const calcParams: PerformanceCalculationParameters =
             new PerformanceCalculationParameters(
                 data.accuracy,
                 data.accuracy.value() * 100,
                 data.maxCombo,
                 1,
                 stats
-            )
+            );
+
+        const droidCalcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        > = (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
+            this.beatmapid,
+            calcParams
         ))!;
 
         this.osuDiffCalcHelper ??= new OsuBeatmapDifficultyHelper();
@@ -1323,13 +1326,7 @@ export class Challenge extends Manager {
             OsuPerformanceCalculator
         > = (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
             this.beatmapid,
-            new PerformanceCalculationParameters(
-                data.accuracy,
-                data.accuracy.value() * 100,
-                data.maxCombo,
-                1,
-                stats
-            )
+            calcParams
         ))!;
 
         return [droidCalcResult, osuCalcResult];

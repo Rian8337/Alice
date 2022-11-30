@@ -134,19 +134,33 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const droidCalcResult: PerformanceCalculationResult<
+    const diffCalcHelper: DroidBeatmapDifficultyHelper =
+        new DroidBeatmapDifficultyHelper();
+
+    const perfCalcResult: PerformanceCalculationResult<
         DroidDifficultyCalculator,
         DroidPerformanceCalculator
-    > | null =
-        await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
-            score
+    > | null = await diffCalcHelper.calculateScorePerformance(score);
+
+    let diffCalculator: DroidDifficultyCalculator | undefined;
+
+    if (perfCalcResult) {
+        diffCalculator = perfCalcResult.requestedDifficultyCalculation()
+            ? perfCalcResult.difficultyCalculator
+            : (await diffCalcHelper.calculateScoreDifficulty(score))!.result;
+
+        await DroidBeatmapDifficultyHelper.applyTapPenalty(
+            score,
+            diffCalculator,
+            perfCalcResult
         );
+    }
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
-        droidCalcResult,
+        perfCalcResult?.result,
         undefined,
         localization.language
     );
@@ -159,15 +173,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (
-        droidCalcResult !== null &&
-        score.replay?.data &&
-        score.accuracy.nmiss > 0
-    ) {
+    if (diffCalculator && score.replay?.data && score.accuracy.nmiss > 0) {
         MessageButtonCreator.createMissAnalyzerButton(
             interaction,
             options,
-            droidCalcResult.difficultyCalculator,
+            diffCalculator,
             score.replay.data
         );
     } else {

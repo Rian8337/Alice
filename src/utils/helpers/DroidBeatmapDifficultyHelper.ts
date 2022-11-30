@@ -13,6 +13,7 @@ import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { ThreeFingerChecker } from "@rian8337/osu-droid-replay-analyzer";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 /**
  * A helper class for calculating osu!droid difficulty and performance of beatmaps or scores.
@@ -33,15 +34,23 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         DroidPerformanceCalculator;
     protected override readonly rebalancePerformanceCalculator =
         RebalanceDroidPerformanceCalculator;
+    protected override readonly liveDifficultyAttributesCache =
+        CacheManager.difficultyAttributesCache.live.droid;
+    protected override readonly rebalanceDifficultyAttributesCache =
+        CacheManager.difficultyAttributesCache.rebalance.droid;
 
     /**
-     * Applies tap penalty to a calculation result.
+     * Applies a tap penalty to a calculation result.
      *
      * @param score The score associated to the calculation result.
-     * @param calcResult The calculation result to apply tap penalty to.
+     * @param difficultyCalculator The difficulty calculator to calculate the tap penalty from.
+     * @param calcResult The calculation result to apply the tap penalty to.
      */
     static async applyTapPenalty(
         score: Score,
+        difficultyCalculator:
+            | DroidDifficultyCalculator
+            | RebalanceDroidDifficultyCalculator,
         calcResult:
             | PerformanceCalculationResult<
                   DroidDifficultyCalculator,
@@ -52,15 +61,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
                   RebalanceDroidPerformanceCalculator
               >
     ): Promise<void> {
-        if (!calcResult.difficultyCalculator) {
-            return;
-        }
-
-        if (
-            !ThreeFingerChecker.isEligibleToDetect(
-                calcResult.difficultyCalculator
-            )
-        ) {
+        if (!ThreeFingerChecker.isEligibleToDetect(difficultyCalculator)) {
             return;
         }
 
@@ -71,7 +72,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         }
 
         if (!score.replay.hasBeenCheckedFor3Finger) {
-            score.replay.beatmap = calcResult.difficultyCalculator;
+            score.replay.beatmap = difficultyCalculator;
             score.replay.checkFor3Finger();
             calcResult.params.tapPenalty = score.replay.tapPenalty;
         }

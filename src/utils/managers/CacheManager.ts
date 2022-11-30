@@ -8,6 +8,11 @@ import { MapInfo } from "@rian8337/osu-base";
 import { Language } from "@alice-localization/base/Language";
 import { TriviaQuestionCachedAnswer } from "@alice-structures/trivia/TriviaQuestionCachedAnswer";
 import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
+import { LiveDroidDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/LiveDroidDifficultyAttributesCacheManager";
+import { LiveOsuDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/LiveOsuDifficultyAttributesCacheManager";
+import { RebalanceDroidDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/RebalanceDroidDifficultyAttributesCacheManager";
+import { RebalanceOsuDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/RebalanceOsuDifficultyAttributesCacheManager";
+import { OldDroidDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/OldDroidDifficultyAttributesCacheManager";
 
 /**
  * A manager that holds anything that is cached.
@@ -90,4 +95,21 @@ export abstract class CacheManager {
      */
     static readonly multiplayerTimers: Collection<Snowflake, NodeJS.Timeout[]> =
         new Collection();
+
+    /**
+     * Cache for difficulty attributes.
+     */
+    static readonly difficultyAttributesCache = {
+        live: {
+            droid: new LiveDroidDifficultyAttributesCacheManager(),
+            osu: new LiveOsuDifficultyAttributesCacheManager(),
+        },
+        rebalance: {
+            droid: new RebalanceDroidDifficultyAttributesCacheManager(),
+            osu: new RebalanceOsuDifficultyAttributesCacheManager(),
+        },
+        old: {
+            droid: new OldDroidDifficultyAttributesCacheManager(),
+        },
+    };
 }

@@ -21,14 +21,12 @@ import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
 import { LocaleHelper } from "./LocaleHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
-import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { MapInfo } from "@rian8337/osu-base";
 import {
-    DroidDifficultyCalculator,
+    DroidDifficultyAttributes,
     DroidPerformanceCalculator,
-    OsuDifficultyCalculator,
+    OsuDifficultyAttributes,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { DroidBeatmapDifficultyHelper } from "./DroidBeatmapDifficultyHelper";
@@ -36,6 +34,8 @@ import { InteractionHelper } from "./InteractionHelper";
 import { OsuBeatmapDifficultyHelper } from "./OsuBeatmapDifficultyHelper";
 import { ScoreHelper } from "./ScoreHelper";
 import { CommandHelper } from "./CommandHelper";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 
 /**
  * A helper for displaying scores to a user.
@@ -175,17 +175,11 @@ export abstract class ScoreDisplayHelper {
         // Calculation cache, mapped by score ID
         const droidCalculationCache: Collection<
             number,
-            PerformanceCalculationResult<
-                DroidDifficultyCalculator,
-                DroidPerformanceCalculator
-            > | null
+            DroidPerformanceCalculator | null
         > = new Collection();
         const osuCalculationCache: Collection<
             number,
-            PerformanceCalculationResult<
-                OsuDifficultyCalculator,
-                OsuPerformanceCalculator
-            > | null
+            OsuPerformanceCalculator | null
         > = new Collection();
 
         // Check first page first for score availability
@@ -214,31 +208,24 @@ export abstract class ScoreDisplayHelper {
         const getCalculationResult = async (
             score: Score
         ): Promise<
-            [
-                PerformanceCalculationResult<
-                    DroidDifficultyCalculator,
-                    DroidPerformanceCalculator
-                > | null,
-                PerformanceCalculationResult<
-                    OsuDifficultyCalculator,
-                    OsuPerformanceCalculator
-                > | null
-            ]
+            [DroidPerformanceCalculator | null, OsuPerformanceCalculator | null]
         > => {
-            const droidCalcResult: PerformanceCalculationResult<
-                DroidDifficultyCalculator,
-                DroidPerformanceCalculator
-            > | null = beatmapInfo
-                ? droidCalculationCache.get(score.scoreID) ??
-                  (await droidDiffCalcHelper.calculateScorePerformance(score))
-                : null;
+            const droidCalcResult: DroidPerformanceCalculator | null =
+                beatmapInfo
+                    ? droidCalculationCache.get(score.scoreID) ??
+                      (
+                          await droidDiffCalcHelper.calculateScorePerformance(
+                              score
+                          )
+                      )?.result ??
+                      null
+                    : null;
 
-            const osuCalcResult: PerformanceCalculationResult<
-                OsuDifficultyCalculator,
-                OsuPerformanceCalculator
-            > | null = beatmapInfo
+            const osuCalcResult: OsuPerformanceCalculator | null = beatmapInfo
                 ? osuCalculationCache.get(score.scoreID) ??
                   (await osuDiffCalcHelper.calculateScorePerformance(score))
+                      ?.result ??
+                  null
                 : null;
 
             if (!droidCalculationCache.has(score.scoreID)) {
@@ -254,14 +241,8 @@ export abstract class ScoreDisplayHelper {
 
         const getScoreDescription = async (score: Score): Promise<string> => {
             const calcResult: [
-                PerformanceCalculationResult<
-                    DroidDifficultyCalculator,
-                    DroidPerformanceCalculator
-                > | null,
-                PerformanceCalculationResult<
-                    OsuDifficultyCalculator,
-                    OsuPerformanceCalculator
-                > | null
+                DroidPerformanceCalculator | null,
+                OsuPerformanceCalculator | null
             ] = await getCalculationResult(score);
 
             return (
@@ -269,9 +250,9 @@ export abstract class ScoreDisplayHelper {
                     <ScoreRank>score.rank
                 )}** ${
                     calcResult[0] && calcResult[1]
-                        ? `${arrow} **${calcResult[0].result.total.toFixed(
+                        ? `${arrow} **${calcResult[0].total.toFixed(
                               2
-                          )}DPP | ${calcResult[1].result.total.toFixed(2)}PP** `
+                          )}DPP | ${calcResult[1].total.toFixed(2)}PP** `
                         : " "
                 }${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
                 `${arrow} ${score.score.toLocaleString(
@@ -305,20 +286,36 @@ export abstract class ScoreDisplayHelper {
             const noModCalcParams: DifficultyCalculationParameters =
                 new DifficultyCalculationParameters();
 
-            const noModDroidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> | null =
+            const { live: liveCache } = CacheManager.difficultyAttributesCache;
+
+            const noModDroidAttributes: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
                 beatmapInfo
-                    ? await droidDiffCalcHelper.calculateBeatmapDifficulty(
-                          beatmapInfo.hash,
-                          noModCalcParams
-                      )
+                    ? (await liveCache.droid.getDifficultyAttributes(
+                          beatmapInfo,
+                          liveCache.droid.getAttributeName()
+                      )) ??
+                      (
+                          await droidDiffCalcHelper.calculateBeatmapDifficulty(
+                              beatmapInfo,
+                              noModCalcParams
+                          )
+                      )?.cachedAttributes ??
+                      null
                     : null;
 
-            const noModOsuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> | null =
+            const noModOsuAttributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
                 beatmapInfo
-                    ? await osuDiffCalcHelper.calculateBeatmapDifficulty(
-                          beatmapInfo.hash,
-                          noModCalcParams
-                      )
+                    ? (await liveCache.osu.getDifficultyAttributes(
+                          beatmapInfo,
+                          liveCache.osu.getAttributeName()
+                      )) ??
+                      (
+                          await osuDiffCalcHelper.calculateBeatmapDifficulty(
+                              beatmapInfo.hash,
+                              noModCalcParams
+                          )
+                      )?.cachedAttributes ??
+                      null
                     : null;
 
             const embedOptions: BaseMessageOptions = beatmapInfo
@@ -337,12 +334,12 @@ export abstract class ScoreDisplayHelper {
 
             if (!embed.data.title) {
                 embed.setTitle(topScore.title);
-            } else if (noModDroidCalcResult && noModOsuCalcResult) {
+            } else if (noModDroidAttributes && noModOsuAttributes) {
                 embed.setTitle(
                     embed.data.title +
-                        ` [${noModDroidCalcResult.result.total.toFixed(2)}${
+                        ` [${noModDroidAttributes.starRating.toFixed(2)}${
                             Symbols.star
-                        } | ${noModOsuCalcResult.result.total.toFixed(2)}${
+                        } | ${noModOsuAttributes.starRating.toFixed(2)}${
                             Symbols.star
                         }]`
                 );

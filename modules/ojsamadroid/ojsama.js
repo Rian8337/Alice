@@ -1046,9 +1046,11 @@ if (typeof exports !== "undefined") {
         this.aim = 0.0;
         this.aim_difficulty = 0.0;
         this.aim_length_bonus = 0.0;
+        this.aim_strain_peaks = [];
         this.speed = 0.0;
         this.speed_difficulty = 0.0;
         this.speed_length_bonus = 0.0;
+        this.speed_strain_peaks = [];
 
         // number of notes that are seen as singletaps by the
         // difficulty calculator
@@ -1101,6 +1103,7 @@ if (typeof exports !== "undefined") {
         );
         this.speed = speed.difficulty;
         this.speed_difficulty = speed.total;
+        this.speed_strain_peaks = speed.strains;
 
         var aim = this._calc_individual(
             DIFF_AIM,
@@ -1109,6 +1112,7 @@ if (typeof exports !== "undefined") {
         );
         this.aim = aim.difficulty;
         this.aim_difficulty = aim.total;
+        this.aim_strain_peaks = aim.strains;
 
         this.aim_length_bonus = this._length_bonus(
             this.aim,
@@ -1367,21 +1371,21 @@ if (typeof exports !== "undefined") {
         var total = 0.0;
         var difficulty = 0.0;
 
-        strains.sort(function (a, b) {
+        var sortedStrains = strains.slice().sort(function (a, b) {
             return b - a;
         });
 
-        for (i = 0; i < strains.length; ++i) {
-            total += Math.pow(strains[i], 1.2);
-            var added = strains[i] * weight;
+        for (i = 0; i < sortedStrains.length; ++i) {
+            total += Math.pow(sortedStrains[i], 1.2);
+            var added = sortedStrains[i] * weight;
             if (difficulty + added === difficulty) {
                 break;
             }
-            difficulty += strains[i] * weight;
+            difficulty += sortedStrains[i] * weight;
             weight *= DECAY_WEIGHT;
         }
 
-        return { difficulty: difficulty, total: total };
+        return { difficulty: difficulty, total: total, strains: strains };
     };
 
     // _(internal)_

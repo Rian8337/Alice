@@ -30,7 +30,6 @@ import { ScoreRank } from "structures/utils/ScoreRank";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { RebalanceDifficultyCalculationResult } from "@alice-utils/dpp/RebalanceDifficultyCalculationResult";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
@@ -47,14 +46,18 @@ import {
     ModUtil,
 } from "@rian8337/osu-base";
 import {
+    DroidDifficultyAttributes,
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    OsuDifficultyAttributes,
     OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
+    DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes,
     DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+    OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
     OsuDifficultyCalculator as RebalanceOsuDifficultyCalculator,
     OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
@@ -74,9 +77,10 @@ import {
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
-import { OldDifficultyCalculationResult } from "@alice-utils/dpp/OldDifficultyCalculationResult";
 import { std_ppv2 } from "ojsamadroid";
 import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
+import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
+import { OldDroidDifficultyAttributes } from "@alice-structures/difficultyattributes/OldDroidDifficultyAttributes";
 
 /**
  * Utility to create message embeds.
@@ -349,77 +353,76 @@ export abstract class EmbedCreator {
     /**
      * Creates an embed with beatmap calculation result.
      *
-     * @param calculationParams The parameters of the calculation. If `PerformanceCalculationParameters` is specified and `droidCalculationResult` and `osuCalculationResult` is specified as a `PerformanceCalculationResult`, the beatmap's performance values will be shown.
-     * @param droidCalculationResult The osu!droid calculation result. If a `PerformanceCalculationResult` is specified and `calculationParams` is specified as `PerformanceCalculationParameters`, the beatmap's performance values will be shown.
-     * @param osuCalculationResult The osu!standard calculation result. If a `PerformanceCalculationResult` is specified and `calculationParams` is specified as `PerformanceCalculationParameters`, the beatmap's performance values will be shown.
-     * @param graphColor The color of the strain graph.
+     * @param beatmap The beatmap being calculated.
+     * @param calculationParams The parameters of the calculation. If `PerformanceCalculationParameters` is specified and `droidPerfCalcResult` and `osuPerfCalcResult` are specified, the beatmap's performance values will be shown.
+     * @param droidDifficultyAttributes The osu!droid difficulty attributes.
+     * @param osuDifficultyAttributes The osu!standard difficulty attributes.
+     * @param droidPerfCalcResult The osu!droid performance calculation result.
+     * @param osuPerfCalcResult The osu!standard performance calculation result.
+     * @param strainGraphImage The strain graph to display.
      * @param language The locale of the user who attempted to create the embed. Defaults to English.
      * @returns The message options that contains the embed.
      */
-    static async createCalculationEmbed(
+    static createCalculationEmbed(
+        beatmap: MapInfo,
         calculationParams: DifficultyCalculationParameters,
-        droidCalculationResult:
-            | OldDifficultyCalculationResult
-            | DifficultyCalculationResult<DroidDifficultyCalculator>
+        droidDifficultyAttributes: CacheableDifficultyAttributes<
+            | DroidDifficultyAttributes
+            | RebalanceDroidDifficultyAttributes
+            | OldDroidDifficultyAttributes
+        >,
+        osuDifficultyAttributes: CacheableDifficultyAttributes<
+            OsuDifficultyAttributes | RebalanceOsuDifficultyAttributes
+        >,
+        droidPerfCalcResult?:
             | OldPerformanceCalculationResult
             | PerformanceCalculationResult<
                   DroidDifficultyCalculator,
                   DroidPerformanceCalculator
               >
-            | RebalanceDifficultyCalculationResult<RebalanceDroidDifficultyCalculator>
             | RebalancePerformanceCalculationResult<
                   RebalanceDroidDifficultyCalculator,
                   RebalanceDroidPerformanceCalculator
               >,
-        osuCalculationResult:
-            | DifficultyCalculationResult<OsuDifficultyCalculator>
+        osuPerfCalcResult?:
             | PerformanceCalculationResult<
                   OsuDifficultyCalculator,
                   OsuPerformanceCalculator
               >
-            | RebalanceDifficultyCalculationResult<RebalanceOsuDifficultyCalculator>
             | RebalancePerformanceCalculationResult<
                   RebalanceOsuDifficultyCalculator,
                   RebalanceOsuPerformanceCalculator
               >,
-        graphColor?: string,
+        strainGraphImage?: Buffer,
         language: Language = "en"
-    ): Promise<BaseMessageOptions> {
+    ): BaseMessageOptions {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
         const embedOptions: BaseMessageOptions = this.createBeatmapEmbed(
-            osuCalculationResult.map,
+            beatmap,
             calculationParams,
             language
         );
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
-        const map: MapInfo = osuCalculationResult.map;
         const files: NonNullable<BaseMessageOptions["files"]> =
             embedOptions.files!;
 
         if (
             calculationParams instanceof PerformanceCalculationParameters &&
-            (droidCalculationResult instanceof PerformanceCalculationResult ||
-                droidCalculationResult instanceof
-                    RebalancePerformanceCalculationResult ||
-                droidCalculationResult instanceof
-                    OldPerformanceCalculationResult) &&
-            (osuCalculationResult instanceof PerformanceCalculationResult ||
-                osuCalculationResult instanceof
-                    RebalancePerformanceCalculationResult)
+            droidPerfCalcResult &&
+            osuPerfCalcResult
         ) {
             const droidPP:
                 | DroidPerformanceCalculator
                 | RebalanceDroidPerformanceCalculator
-                | std_ppv2 = droidCalculationResult.result;
+                | std_ppv2 = droidPerfCalcResult.result;
             const pcPP:
                 | OsuPerformanceCalculator
-                | RebalanceOsuPerformanceCalculator =
-                osuCalculationResult.result;
+                | RebalanceOsuPerformanceCalculator = osuPerfCalcResult.result;
 
-            const combo: number = calculationParams.combo ?? map.maxCombo;
+            const combo: number = calculationParams.combo ?? beatmap.maxCombo;
             const accuracy: Accuracy = calculationParams.accuracy;
             const customStatistics: MapStats | undefined =
                 calculationParams.customStatistics;
@@ -435,13 +438,13 @@ export abstract class EmbedCreator {
                 .spliceFields(embed.data.fields!.length - 2, 2)
                 .addFields(
                     {
-                        name: map.showStatistics(6, customStatistics),
-                        value: `${map.showStatistics(
+                        name: beatmap.showStatistics(6, customStatistics),
+                        value: `${beatmap.showStatistics(
                             7,
                             customStatistics
                         )}\n**${localization.getTranslation(
                             "result"
-                        )}**: ${combo}/${map.maxCombo}x | ${(
+                        )}**: ${combo}/${beatmap.maxCombo}x | ${(
                             accuracy.value() * 100
                         ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${
                             accuracy.n50
@@ -457,12 +460,12 @@ export abstract class EmbedCreator {
                                   )})`
                                 : ""
                         } - ${
-                            droidCalculationResult instanceof
+                            droidPerfCalcResult instanceof
                             OldPerformanceCalculationResult
-                                ? droidCalculationResult.difficultyCalculationResult.total.toFixed(
+                                ? droidPerfCalcResult.difficultyAttributes.starRating.toFixed(
                                       2
                                   )
-                                : droidCalculationResult.result.difficultyAttributes.starRating.toFixed(
+                                : droidDifficultyAttributes.starRating.toFixed(
                                       2
                                   )
                         }${Symbols.star}`,
@@ -474,7 +477,7 @@ export abstract class EmbedCreator {
                                       "estimated"
                                   )})`
                                 : ""
-                        } - ${pcPP.difficultyAttributes.starRating.toFixed(2)}${
+                        } - ${osuDifficultyAttributes.starRating.toFixed(2)}${
                             Symbols.star
                         }`,
                     }
@@ -484,7 +487,7 @@ export abstract class EmbedCreator {
                 .setColor(
                     <ColorResolvable>(
                         BeatmapManager.getBeatmapDifficultyColor(
-                            droidCalculationResult.result.total
+                            osuDifficultyAttributes.starRating
                         )
                     )
                 )
@@ -495,55 +498,33 @@ export abstract class EmbedCreator {
                         `${Symbols.star.repeat(
                             Math.min(
                                 10,
-                                Math.floor(droidCalculationResult.result.total)
+                                Math.floor(droidDifficultyAttributes.starRating)
                             )
-                        )} ${droidCalculationResult.result.total.toFixed(
+                        )} ${droidDifficultyAttributes.starRating.toFixed(
                             2
                         )} ${localization.getTranslation("droidStars")}\n` +
                         `${Symbols.star.repeat(
                             Math.min(
                                 10,
-                                Math.floor(osuCalculationResult.result.total)
+                                Math.floor(osuDifficultyAttributes.starRating)
                             )
-                        )} ${osuCalculationResult.result.total.toFixed(
+                        )} ${osuDifficultyAttributes.starRating.toFixed(
                             2
                         )} ${localization.getTranslation("pcStars")}`,
                 });
         }
 
-        if (
-            droidCalculationResult instanceof
-                RebalancePerformanceCalculationResult &&
-            osuCalculationResult instanceof
-                RebalancePerformanceCalculationResult
-        ) {
-            embed.setDescription(
-                `**${localization.getTranslation(
-                    "rebalanceCalculationNote"
-                )}**\n` + embed.data.description
-            );
-        }
-
-        if (droidCalculationResult instanceof OldPerformanceCalculationResult) {
+        if (droidPerfCalcResult instanceof OldPerformanceCalculationResult) {
             embed.setDescription(
                 `**${localization.getTranslation("oldCalculationNote")}**\n` +
                     embed.data.description
             );
         }
 
-        const newRating:
-            | OsuDifficultyCalculator
-            | RebalanceOsuDifficultyCalculator =
-            osuCalculationResult instanceof PerformanceCalculationResult ||
-            osuCalculationResult instanceof
-                RebalancePerformanceCalculationResult
-                ? osuCalculationResult.difficultyCalculator
-                : osuCalculationResult.result;
-
         if (
             !Precision.almostEqualsNumber(
-                osuCalculationResult.map.totalDifficulty,
-                newRating.total
+                osuDifficultyAttributes.starRating,
+                beatmap.totalDifficulty
             )
         ) {
             // Recreate difficulty icon if difficulty is different.
@@ -551,26 +532,24 @@ export abstract class EmbedCreator {
 
             files.push(
                 BeatmapManager.getBeatmapDifficultyIconAttachment(
-                    parseFloat(newRating.total.toFixed(2))
+                    osuDifficultyAttributes.starRating
                 )
             );
 
             embed.setAuthor({
                 name: localization.getTranslation("beatmapInfo"),
-                iconURL: `attachment://osu-${newRating.total.toFixed(2)}.png`,
+                iconURL: `attachment://osu-${osuDifficultyAttributes.starRating.toFixed(
+                    2
+                )}.png`,
             });
         }
 
-        const chart: Buffer | null = await getStrainChart(
-            newRating,
-            map.beatmapsetID,
-            graphColor
-        );
-
-        if (chart) {
+        if (strainGraphImage) {
             embed.setImage("attachment://chart.png");
 
-            files.push(new AttachmentBuilder(chart, { name: "chart.png" }));
+            files.push(
+                new AttachmentBuilder(strainGraphImage, { name: "chart.png" })
+            );
         }
 
         return {
@@ -594,14 +573,8 @@ export abstract class EmbedCreator {
         score: Score,
         playerAvatarURL: string,
         embedColor?: ColorResolvable,
-        droidCalcResult?: PerformanceCalculationResult<
-            DroidDifficultyCalculator,
-            DroidPerformanceCalculator
-        > | null,
-        osuCalcResult?: PerformanceCalculationResult<
-            OsuDifficultyCalculator,
-            OsuPerformanceCalculator
-        > | null,
+        droidCalcResult?: DroidPerformanceCalculator,
+        osuCalcResult?: OsuPerformanceCalculator,
         language: Language = "en"
     ): Promise<EmbedBuilder> {
         const localization: EmbedCreatorLocalization =
@@ -625,13 +598,15 @@ export abstract class EmbedCreator {
         });
 
         if (droidCalcResult === undefined) {
-            droidCalcResult =
-                await this.droidDiffCalcHelper.calculateScorePerformance(score);
+            droidCalcResult = (
+                await this.droidDiffCalcHelper.calculateScorePerformance(score)
+            )?.result;
         }
 
         if (osuCalcResult === undefined) {
-            osuCalcResult =
-                await this.osuDiffCalcHelper.calculateScorePerformance(score);
+            osuCalcResult = (
+                await this.osuDiffCalcHelper.calculateScorePerformance(score)
+            )?.result;
         }
 
         let beatmapInformation: string = `${arrow} **${BeatmapManager.getRankEmote(
@@ -651,45 +626,37 @@ export abstract class EmbedCreator {
             return embed;
         }
 
-        await DroidBeatmapDifficultyHelper.applyTapPenalty(
-            score,
-            droidCalcResult
-        );
+        const beatmap: MapInfo = (await BeatmapManager.getBeatmap(score.hash))!;
 
         embed
             .setAuthor({
                 name: `${
-                    osuCalcResult.map.fullTitle
-                } ${score.getCompleteModString()} [${droidCalcResult.difficultyCalculator.total.toFixed(
+                    beatmap.fullTitle
+                } ${score.getCompleteModString()} [${droidCalcResult.difficultyAttributes.starRating.toFixed(
                     2
                 )}${
                     Symbols.star
-                } | ${osuCalcResult.difficultyCalculator.total.toFixed(
+                } | ${osuCalcResult.difficultyAttributes.starRating.toFixed(
                     2
                 )}${Symbols.star}]`,
                 iconURL: playerAvatarURL,
-                url: `https://osu.ppy.sh/b/${osuCalcResult.map.beatmapID}`,
+                url: `https://osu.ppy.sh/b/${beatmap.beatmapID}`,
             })
             .setThumbnail(
-                `https://b.ppy.sh/thumb/${osuCalcResult.map.beatmapsetID}l.jpg`
+                `https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`
             );
 
-        beatmapInformation += `**${droidCalcResult.result.total.toFixed(
-            2
-        )}DPP**${
-            droidCalcResult.result.tapPenalty !== 1
+        beatmapInformation += `**${droidCalcResult.total.toFixed(2)}DPP**${
+            droidCalcResult.tapPenalty !== 1
                 ? ` (*${localization.getTranslation("penalized")}*)`
                 : ""
-        } | **${osuCalcResult.result.total.toFixed(2)}PP** `;
+        } | **${osuCalcResult.total.toFixed(2)}PP** `;
 
-        if (
-            score.accuracy.nmiss > 0 ||
-            score.combo < osuCalcResult.map.maxCombo
-        ) {
+        if (score.accuracy.nmiss > 0 || score.combo < beatmap.maxCombo) {
             const calcParams: PerformanceCalculationParameters =
                 BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
 
-            calcParams.combo = osuCalcResult.map.maxCombo;
+            calcParams.combo = beatmap.maxCombo;
             calcParams.accuracy = new Accuracy({
                 n300: score.accuracy.n300 + score.accuracy.nmiss,
                 n100: score.accuracy.n100,
@@ -697,29 +664,21 @@ export abstract class EmbedCreator {
                 nmiss: 0,
             });
 
-            // Safe to non-null since previous calculation works.
             const droidFcCalcResult: PerformanceCalculationResult<
                 DroidDifficultyCalculator,
                 DroidPerformanceCalculator
-            > = (await this.droidDiffCalcHelper.calculateBeatmapPerformance(
-                new DifficultyCalculationResult(
-                    droidCalcResult.map,
-                    droidCalcResult.difficultyCalculator
-                ),
+            > = await this.droidDiffCalcHelper.calculateBeatmapPerformance(
+                droidCalcResult.difficultyAttributes,
                 calcParams
-            ))!;
+            );
 
-            // Safe to non-null since previous calculation works.
             const osuFcCalcResult: PerformanceCalculationResult<
                 OsuDifficultyCalculator,
                 OsuPerformanceCalculator
-            > = (await this.osuDiffCalcHelper.calculateBeatmapPerformance(
-                new DifficultyCalculationResult(
-                    osuCalcResult.map,
-                    osuCalcResult.difficultyCalculator
-                ),
+            > = await this.osuDiffCalcHelper.calculateBeatmapPerformance(
+                osuCalcResult.difficultyAttributes,
                 calcParams
-            ))!;
+            );
 
             beatmapInformation += `(${droidFcCalcResult.result.total.toFixed(
                 2
@@ -735,11 +694,9 @@ export abstract class EmbedCreator {
             `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
             `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${
                 score.combo
-            }x/${osuCalcResult.map.maxCombo}x ${arrow} [${
-                score.accuracy.n300
-            }/${score.accuracy.n100}/${score.accuracy.n50}/${
-                score.accuracy.nmiss
-            }]`;
+            }x/${beatmap.maxCombo}x ${arrow} [${score.accuracy.n300}/${
+                score.accuracy.n100
+            }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
 
         if (!score.replay) {
             await score.downloadReplay();
@@ -747,10 +704,8 @@ export abstract class EmbedCreator {
 
         const replayData: ReplayData | undefined | null = score.replay?.data;
 
-        if (replayData) {
-            const { difficultyCalculator } = droidCalcResult;
-
-            score.replay!.beatmap ??= difficultyCalculator;
+        if (replayData && beatmap.hasDownloadedBeatmap()) {
+            score.replay!.beatmap ??= beatmap.beatmap;
 
             // Get amount of slider ticks and ends hit
             let collectedSliderTicks: number = 0;
@@ -758,8 +713,7 @@ export abstract class EmbedCreator {
 
             for (let i = 0; i < replayData.hitObjectData.length; ++i) {
                 // Using droid star rating as legacy slider tail doesn't exist.
-                const object: HitObject =
-                    difficultyCalculator.beatmap.hitObjects.objects[i];
+                const object: HitObject = beatmap.beatmap.hitObjects.objects[i];
                 const objectData: ReplayObjectData =
                     replayData.hitObjectData[i];
 
@@ -787,11 +741,11 @@ export abstract class EmbedCreator {
             }
 
             beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${
-                difficultyCalculator.beatmap.hitObjects.sliderTicks
+                beatmap.beatmap.hitObjects.sliderTicks
             } ${localization.getTranslation(
                 "sliderTicks"
             )} ${arrow} ${collectedSliderEnds}/${
-                difficultyCalculator.beatmap.hitObjects.sliderEnds
+                beatmap.beatmap.hitObjects.sliderEnds
             } ${localization.getTranslation("sliderEnds")}`;
 
             // Get hit error average and UR
@@ -835,26 +789,32 @@ export abstract class EmbedCreator {
                 })
             );
 
-        const droidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> =
-            (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
-                challenge.beatmapid,
-                calcParams
-            ))!;
+        const droidCalcResult: DifficultyCalculationResult<
+            DroidDifficultyAttributes,
+            DroidDifficultyCalculator
+        > = (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
+            challenge.beatmapid,
+            calcParams
+        ))!;
 
-        const osuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> =
-            (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
-                challenge.beatmapid,
-                calcParams
-            ))!;
+        const osuCalcResult: DifficultyCalculationResult<
+            OsuDifficultyAttributes,
+            OsuDifficultyCalculator
+        > = (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
+            challenge.beatmapid,
+            calcParams
+        ))!;
 
-        const embedOptions: BaseMessageOptions =
-            await this.createCalculationEmbed(
-                calcParams,
-                droidCalcResult,
-                osuCalcResult,
-                undefined,
-                language
-            );
+        const embedOptions: BaseMessageOptions = this.createCalculationEmbed(
+            droidCalcResult.map,
+            calcParams,
+            droidCalcResult.result.attributes,
+            osuCalcResult.result.attributes,
+            undefined,
+            undefined,
+            undefined,
+            language
+        );
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
 
@@ -1117,26 +1077,32 @@ export abstract class EmbedCreator {
         const calcParams: DifficultyCalculationParameters =
             new DifficultyCalculationParameters();
 
-        const droidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> =
-            (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
-                submission.beatmap_id,
-                calcParams
-            ))!;
+        const droidCalcResult: DifficultyCalculationResult<
+            DroidDifficultyAttributes,
+            DroidDifficultyCalculator
+        > = (await this.droidDiffCalcHelper.calculateBeatmapDifficulty(
+            submission.beatmap_id,
+            calcParams
+        ))!;
 
-        const osuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> =
-            (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
-                submission.beatmap_id,
-                calcParams
-            ))!;
+        const osuCalcResult: DifficultyCalculationResult<
+            OsuDifficultyAttributes,
+            OsuDifficultyCalculator
+        > = (await this.osuDiffCalcHelper.calculateBeatmapDifficulty(
+            submission.beatmap_id,
+            calcParams
+        ))!;
 
-        const embedOptions: BaseMessageOptions =
-            await this.createCalculationEmbed(
-                calcParams,
-                droidCalcResult,
-                osuCalcResult,
-                "#28ebda",
-                language
-            );
+        const embedOptions: BaseMessageOptions = this.createCalculationEmbed(
+            droidCalcResult.map,
+            calcParams,
+            droidCalcResult.result.attributes,
+            osuCalcResult.result.attributes,
+            undefined,
+            undefined,
+            undefined,
+            language
+        );
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
 

@@ -1,5 +1,7 @@
-import { MapInfo } from "@rian8337/osu-base";
+import { IPerformanceCalculationResult } from "@alice-structures/utils/IPerformanceCalculationResult";
 import {
+    DroidDifficultyAttributes,
+    OsuDifficultyAttributes,
     DifficultyCalculator as RebalanceDifficultyCalculator,
     PerformanceCalculator as RebalancePerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
@@ -11,36 +13,71 @@ import { PerformanceCalculationParameters } from "./PerformanceCalculationParame
 export class RebalancePerformanceCalculationResult<
     D extends RebalanceDifficultyCalculator,
     P extends RebalancePerformanceCalculator
-> {
-    /**
-     * The beatmap being calculated.
-     */
-    readonly map: MapInfo<true>;
-
-    /**
-     * The difficulty of the beatmap.
-     */
-    readonly difficultyCalculator: D;
-
-    /**
-     * The calculation parameters.
-     */
+> implements IPerformanceCalculationResult<D, P>
+{
     readonly params: PerformanceCalculationParameters;
-
-    /**
-     * The performance of the beatmap.
-     */
     readonly result: P;
+    readonly difficultyCalculator?: D;
+
+    get starRatingInfo(): string {
+        if (this.difficultyCalculator) {
+            return this.difficultyCalculator.toString();
+        }
+
+        const { difficultyAttributes } = this.result;
+        let string: string = `${difficultyAttributes.starRating.toFixed(
+            2
+        )} stars (`;
+        const starRatingDetails: string[] = [];
+
+        const addDetail = (num: number, suffix: string) =>
+            starRatingDetails.push(`${num.toFixed(2)} ${suffix}`);
+
+        if ("tapDifficulty" in difficultyAttributes) {
+            const droidDifficultyAttributes = <DroidDifficultyAttributes>(
+                difficultyAttributes
+            );
+
+            addDetail(droidDifficultyAttributes.aimDifficulty, "aim");
+            addDetail(droidDifficultyAttributes.tapDifficulty, "tap");
+            addDetail(droidDifficultyAttributes.rhythmDifficulty, "rhythm");
+            addDetail(
+                droidDifficultyAttributes.flashlightDifficulty,
+                "flashlight"
+            );
+            addDetail(droidDifficultyAttributes.visualDifficulty, "visual");
+        } else {
+            const osuDifficultyAttributes = <OsuDifficultyAttributes>(
+                difficultyAttributes
+            );
+
+            addDetail(osuDifficultyAttributes.aimDifficulty, "aim");
+            addDetail(osuDifficultyAttributes.speedDifficulty, "speed");
+            addDetail(
+                osuDifficultyAttributes.flashlightDifficulty,
+                "flashlight"
+            );
+        }
+
+        string += starRatingDetails.join(", ") + ")";
+
+        return string;
+    }
 
     constructor(
-        map: MapInfo<true>,
         params: PerformanceCalculationParameters,
-        difficultyCalculator: D,
         result: P,
+        difficultyCalculator?: D
     ) {
-        this.map = map;
         this.params = params;
-        this.difficultyCalculator = difficultyCalculator;
         this.result = result;
+        this.difficultyCalculator = difficultyCalculator;
+    }
+
+    requestedDifficultyCalculation(): this is this & {
+        readonly difficultyCalculator: D;
+        readonly strainGraphImage: Buffer;
+    } {
+        return this.difficultyCalculator !== undefined;
     }
 }

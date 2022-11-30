@@ -40,8 +40,10 @@ import {
     IModApplicableToDroid,
 } from "@rian8337/osu-base";
 import {
+    DroidDifficultyAttributes,
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    OsuDifficultyAttributes,
     OsuDifficultyCalculator,
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
@@ -73,11 +75,17 @@ export class MultiplayerRoom
 
     private readonly droidStarRatingCalculationCache: Record<
         string,
-        DifficultyCalculationResult<DroidDifficultyCalculator>
+        DifficultyCalculationResult<
+            DroidDifficultyAttributes,
+            DroidDifficultyCalculator
+        >
     > = {};
     private readonly pcStarRatingCalculationCache: Record<
         string,
-        DifficultyCalculationResult<OsuDifficultyCalculator>
+        DifficultyCalculationResult<
+            OsuDifficultyAttributes,
+            OsuDifficultyCalculator
+        >
     > = {};
 
     private currentBeatmapMaxScore?: number;
@@ -783,10 +791,6 @@ export class MultiplayerRoom
                 const { mods, forcedAR, speedMultiplier } =
                     this.convertModString(score.modstring);
 
-                const sortedMod: string = StringHelper.sortAlphabet(
-                    mods.reduce((a, m) => a + m.acronym, "")
-                );
-
                 const customStats: MapStats = new MapStats({
                     ar: forcedAR,
                     mods: mods,
@@ -795,24 +799,16 @@ export class MultiplayerRoom
                 });
 
                 const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-                    this.settings.beatmap!.hash
+                    this.settings.beatmap!.hash,
+                    { checkFile: false }
                 ))!;
-
-                const starRating: DifficultyCalculationResult<DroidDifficultyCalculator> =
-                    this.droidStarRatingCalculationCache[sortedMod] ??
-                    (await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
-                        beatmapInfo,
-                        new DifficultyCalculationParameters(customStats)
-                    ))!;
-
-                this.droidStarRatingCalculationCache[sortedMod] ??= starRating;
 
                 const performance: PerformanceCalculationResult<
                     DroidDifficultyCalculator,
                     DroidPerformanceCalculator
-                > =
-                    (await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                        starRating,
+                > | null =
+                    await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                        beatmapInfo,
                         new PerformanceCalculationParameters(
                             new Accuracy({
                                 n300: score.perfect,
@@ -822,11 +818,12 @@ export class MultiplayerRoom
                             }),
                             undefined,
                             score.maxCombo,
-                            1
+                            1,
+                            customStats
                         )
-                    ))!;
+                    );
 
-                return MathUtils.round(performance.result.total, 2);
+                return MathUtils.round(performance?.result.total ?? 0, 2);
             }
             case MultiplayerWinCondition.mostPcPp: {
                 const { mods, forcedAR, speedMultiplier } =
@@ -844,15 +841,19 @@ export class MultiplayerRoom
                 });
 
                 const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-                    this.settings.beatmap!.hash
+                    this.settings.beatmap!.hash,
+                    { checkFile: false }
                 ))!;
 
-                const starRating: DifficultyCalculationResult<OsuDifficultyCalculator> =
+                const starRating: DifficultyCalculationResult<
+                    OsuDifficultyAttributes,
+                    OsuDifficultyCalculator
+                > =
                     this.pcStarRatingCalculationCache[sortedMod] ??
                     (await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                         beatmapInfo,
                         new DifficultyCalculationParameters(customStats)
-                    ))!;
+                    ));
 
                 this.pcStarRatingCalculationCache[sortedMod] ??= starRating;
 
@@ -860,8 +861,8 @@ export class MultiplayerRoom
                     OsuDifficultyCalculator,
                     OsuPerformanceCalculator
                 > =
-                    (await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                        starRating,
+                    await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
+                        starRating.result.attributes,
                         new PerformanceCalculationParameters(
                             new Accuracy({
                                 n300: score.perfect,
@@ -873,7 +874,7 @@ export class MultiplayerRoom
                             score.maxCombo,
                             1
                         )
-                    ))!;
+                    );
 
                 return MathUtils.round(performance.result.total, 2);
             }
@@ -1187,7 +1188,8 @@ export class MultiplayerRoom
         });
 
         const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-            this.settings.beatmap!.hash
+            this.settings.beatmap!.hash,
+            { checkFile: false }
         ))!;
 
         const customModMultipliersDescription: string[] = [];

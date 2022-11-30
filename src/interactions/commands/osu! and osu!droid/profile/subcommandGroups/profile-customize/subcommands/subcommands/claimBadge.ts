@@ -13,17 +13,17 @@ import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
-import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 import { MapInfo, RankedStatus } from "@rian8337/osu-base";
-import { OsuDifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
+import { OsuDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -206,13 +206,21 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     continue;
                 }
 
-                const star: DifficultyCalculationResult<OsuDifficultyCalculator> =
-                    (await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
+                const attributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> =
+                    (await CacheManager.difficultyAttributesCache.live.osu.getDifficultyAttributes(
                         beatmapInfo,
-                        new DifficultyCalculationParameters()
-                    ))!;
+                        CacheManager.difficultyAttributesCache.live.osu.getAttributeName(
+                            score.mods,
+                            score.oldStatistics,
+                            score.speedMultiplier,
+                            score.forcedAR
+                        )
+                    )) ??
+                    (await new OsuBeatmapDifficultyHelper().calculateScoreDifficulty(
+                        score
+                    ))!.cachedAttributes;
 
-                if (star.result.total >= badge.requirement) {
+                if (attributes.starRating >= badge.requirement) {
                     canUserClaimBadge = true;
                     break;
                 }

@@ -12,17 +12,18 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
 import { YouTubeVideoInformation } from "@alice-structures/youtube/YouTubeVideoInformation";
-import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { MapInfo, MapStats } from "@rian8337/osu-base";
 import {
-    DroidDifficultyCalculator,
-    OsuDifficultyCalculator,
+    DroidDifficultyAttributes,
+    OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -178,39 +179,67 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         break;
                     }
 
-                    const droidCalcResult: DifficultyCalculationResult<DroidDifficultyCalculator> | null =
-                        await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
-                            beatmapInfo.hash,
-                            calcParams
-                        );
+                    const { customStatistics } = calcParams;
 
-                    const osuCalcResult: DifficultyCalculationResult<OsuDifficultyCalculator> | null =
-                        await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
-                            beatmapInfo.hash,
-                            calcParams
-                        );
+                    const droidAttributes: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
+                        (await CacheManager.difficultyAttributesCache.live.droid.getDifficultyAttributes(
+                            beatmapInfo,
+                            CacheManager.difficultyAttributesCache.live.droid.getAttributeName(
+                                customStatistics?.mods,
+                                customStatistics?.oldStatistics,
+                                customStatistics?.speedMultiplier,
+                                customStatistics?.isForceAR
+                                    ? customStatistics.ar
+                                    : undefined
+                            )
+                        )) ??
+                        (
+                            await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
+                                beatmapInfo.hash,
+                                calcParams
+                            )
+                        )?.cachedAttributes ??
+                        null;
 
-                    if (!droidCalcResult || !osuCalcResult) {
+                    const osuAttributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
+                        (await CacheManager.difficultyAttributesCache.live.osu.getDifficultyAttributes(
+                            beatmapInfo,
+                            CacheManager.difficultyAttributesCache.live.osu.getAttributeName(
+                                customStatistics?.mods,
+                                customStatistics?.oldStatistics,
+                                customStatistics?.speedMultiplier,
+                                customStatistics?.isForceAR
+                                    ? customStatistics.ar
+                                    : undefined
+                            )
+                        )) ??
+                        (
+                            await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
+                                beatmapInfo.hash,
+                                calcParams
+                            )
+                        )?.cachedAttributes ??
+                        null;
+
+                    if (!droidAttributes || !osuAttributes) {
                         continue;
                     }
 
                     embed.addFields({
                         name: `__${
                             beatmapInfo.version
-                        }__ (${droidCalcResult.result.total.toFixed(2)} ${
+                        }__ (${droidAttributes.starRating.toFixed(2)} ${
                             Symbols.star
-                        } | ${osuCalcResult.result.total.toFixed(2)} ${
+                        } | ${osuAttributes.starRating.toFixed(2)} ${
                             Symbols.star
                         })`,
                         value:
                             `${beatmapInfo.showStatistics(2, stats)}\n` +
                             `${beatmapInfo.showStatistics(3, stats)}\n` +
                             `${beatmapInfo.showStatistics(4, stats)}\n` +
-                            `**${droidCalcResult.result.total.toFixed(
+                            `**${droidAttributes.starRating.toFixed(
                                 2
-                            )}**dpp - ${osuCalcResult.result.total.toFixed(
-                                2
-                            )}pp`,
+                            )}**dpp - ${osuAttributes.starRating.toFixed(2)}pp`,
                     });
                 }
 

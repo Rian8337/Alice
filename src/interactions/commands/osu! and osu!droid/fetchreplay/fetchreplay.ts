@@ -1,6 +1,5 @@
 import AdmZip from "adm-zip";
 import {
-    GuildMember,
     EmbedBuilder,
     BaseMessageOptions,
     AttachmentBuilder,
@@ -12,7 +11,6 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
@@ -86,7 +84,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-        hash ? hash : beatmapID
+        hash ? hash : beatmapID,
+        { checkFile: false }
     );
 
     if (beatmapInfo) {
@@ -202,15 +201,18 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     ))!;
 
     const calcEmbedOptions: BaseMessageOptions =
-        await EmbedCreator.createCalculationEmbed(
-            BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+        EmbedCreator.createCalculationEmbed(
+            beatmapInfo,
+            osuCalcResult.params,
+            droidCalcResult.result.difficultyAttributes,
+            osuCalcResult.result.difficultyAttributes,
             droidCalcResult,
             osuCalcResult,
-            (<GuildMember | null>interaction.member)?.displayHexColor,
+            undefined,
             localization.language
         );
 
-    score.replay.beatmap ??= droidCalcResult.difficultyCalculator;
+    score.replay.beatmap ??= beatmapInfo.beatmap!;
 
     const hitErrorInformation: HitErrorInformation =
         score.replay.calculateHitError()!;

@@ -172,14 +172,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 );
                 break;
             default: {
-                const droidCalcResult: PerformanceCalculationResult<
+                const perfCalcResult: PerformanceCalculationResult<
                     DroidDifficultyCalculator,
                     DroidPerformanceCalculator
                 > | null = await droidDiffHelper.calculateScorePerformance(
                     score
                 );
 
-                if (!droidCalcResult) {
+                if (!perfCalcResult) {
                     fieldContent += localization.getTranslation(
                         "beatmapNotFoundReject"
                     );
@@ -187,18 +187,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 }
 
                 const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
+                    beatmapInfo.fullTitle,
                     score,
-                    droidCalcResult
+                    perfCalcResult
                 );
 
                 if (DPPHelper.checkScoreInsertion(bindInfo.pp, ppEntry)) {
+                    const diffCalculator: DroidDifficultyCalculator =
+                        perfCalcResult.requestedDifficultyCalculation()
+                            ? perfCalcResult.difficultyCalculator
+                            : (await droidDiffHelper.calculateScoreDifficulty(
+                                  score
+                              ))!.result;
+
                     await DroidBeatmapDifficultyHelper.applyTapPenalty(
                         score,
-                        droidCalcResult
+                        diffCalculator,
+                        perfCalcResult
                     );
 
                     ppEntry.pp = NumberHelper.round(
-                        droidCalcResult.result.total,
+                        perfCalcResult.result.total,
                         2
                     );
                 }
@@ -211,11 +220,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     ))!;
 
                 oldPPEntries.push(
-                    DPPHelper.scoreToOldPPEntry(score, oldCalcResult)
+                    DPPHelper.scoreToOldPPEntry(
+                        beatmapInfo.fullTitle,
+                        score,
+                        oldCalcResult
+                    )
                 );
 
                 const dpp: number = parseFloat(
-                    droidCalcResult.result.total.toFixed(2)
+                    perfCalcResult.result.total.toFixed(2)
                 );
 
                 fieldContent += `${dpp}pp`;

@@ -157,13 +157,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
     }
 
-    const droidCalcResult: PerformanceCalculationResult<
+    const droidCalcHelper: DroidBeatmapDifficultyHelper =
+        new DroidBeatmapDifficultyHelper();
+
+    const perfCalcResult: PerformanceCalculationResult<
         DroidDifficultyCalculator,
         DroidPerformanceCalculator
-    > | null =
-        await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
-            score
-        );
+    > | null = await droidCalcHelper.calculateScorePerformance(score);
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
@@ -176,19 +176,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const currentTotalPP: number = bindInfo.pptotal;
 
-    if (droidCalcResult) {
+    if (perfCalcResult) {
         const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
+            beatmapInfo.fullTitle,
             score,
-            droidCalcResult
+            perfCalcResult
         );
 
         if (DPPHelper.checkScoreInsertion(bindInfo.pp, ppEntry)) {
+            const diffCalculator: DroidDifficultyCalculator =
+                perfCalcResult.requestedDifficultyCalculation()
+                    ? perfCalcResult.difficultyCalculator
+                    : (await droidCalcHelper.calculateScoreDifficulty(score))!
+                          .result;
+
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                droidCalcResult
+                diffCalculator,
+                perfCalcResult
             );
 
-            ppEntry.pp = NumberHelper.round(droidCalcResult.result.total, 2);
+            ppEntry.pp = NumberHelper.round(perfCalcResult.result.total, 2);
 
             DPPHelper.insertScore(bindInfo.pp, [ppEntry]);
 
@@ -201,6 +209,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ))!;
 
         const oldPPEntry: OldPPEntry = DPPHelper.scoreToOldPPEntry(
+            beatmapInfo.fullTitle,
             score,
             oldCalcResult
         );
@@ -226,7 +235,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
         }
 
-        const dpp: number = parseFloat(droidCalcResult.result.total.toFixed(2));
+        const dpp: number = parseFloat(perfCalcResult.result.total.toFixed(2));
 
         fieldContent += `${dpp}pp`;
     }
