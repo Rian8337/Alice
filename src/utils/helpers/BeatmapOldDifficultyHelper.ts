@@ -164,10 +164,12 @@ export abstract class BeatmapOldDifficultyHelper {
         calcParams ??=
             BeatmapOldDifficultyHelper.getCalculationParamsFromScore(score);
 
+        const cacheManager = CacheManager.difficultyAttributesCache.old.droid;
+
         let cachedAttributes: CacheableDifficultyAttributes<OldDroidDifficultyAttributes> | null =
-            await CacheManager.difficultyAttributesCache.old.droid.getDifficultyAttributes(
+            cacheManager.getDifficultyAttributes(
                 beatmap,
-                CacheManager.difficultyAttributesCache.old.droid.getAttributeName(
+                cacheManager.getAttributeName(
                     score.mods,
                     score.oldStatistics,
                     score.speedMultiplier,
@@ -291,7 +293,7 @@ export abstract class BeatmapOldDifficultyHelper {
         const { customStatistics } = calculationParams;
 
         let cachedAttributes: CacheableDifficultyAttributes<OldDroidDifficultyAttributes> | null =
-            await CacheManager.difficultyAttributesCache.old.droid.getDifficultyAttributes(
+            CacheManager.difficultyAttributesCache.old.droid.getDifficultyAttributes(
                 beatmap,
                 CacheManager.difficultyAttributesCache.old.droid.getAttributeName(
                     customStatistics?.mods,

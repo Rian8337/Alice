@@ -206,16 +206,19 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     continue;
                 }
 
+                const cacheManager =
+                    CacheManager.difficultyAttributesCache.live.osu;
+
                 const attributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> =
-                    (await CacheManager.difficultyAttributesCache.live.osu.getDifficultyAttributes(
+                    cacheManager.getDifficultyAttributes(
                         beatmapInfo,
-                        CacheManager.difficultyAttributesCache.live.osu.getAttributeName(
+                        cacheManager.getAttributeName(
                             score.mods,
                             score.oldStatistics,
                             score.speedMultiplier,
                             score.forcedAR
                         )
-                    )) ??
+                    ) ??
                     (await new OsuBeatmapDifficultyHelper().calculateScoreDifficulty(
                         score
                     ))!.cachedAttributes;

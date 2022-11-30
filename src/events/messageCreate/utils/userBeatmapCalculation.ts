@@ -199,11 +199,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 }
 
                 const { customStatistics } = calcParams;
+                const { droid: droidCacheManager, osu: osuCacheManager } =
+                    CacheManager.difficultyAttributesCache.live;
 
                 const droidAttributes: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
-                    (await CacheManager.difficultyAttributesCache.live.droid.getDifficultyAttributes(
+                    droidCacheManager.getDifficultyAttributes(
                         beatmapInfo,
-                        CacheManager.difficultyAttributesCache.live.droid.getAttributeName(
+                        droidCacheManager.getAttributeName(
                             customStatistics?.mods,
                             customStatistics?.oldStatistics,
                             customStatistics?.speedMultiplier,
@@ -211,7 +213,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                                 ? customStatistics.ar
                                 : undefined
                         )
-                    )) ??
+                    ) ??
                     (
                         await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
@@ -221,9 +223,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     null;
 
                 const osuAttributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
-                    (await CacheManager.difficultyAttributesCache.live.osu.getDifficultyAttributes(
+                    osuCacheManager.getDifficultyAttributes(
                         beatmapInfo,
-                        CacheManager.difficultyAttributesCache.live.osu.getAttributeName(
+                        osuCacheManager.getAttributeName(
                             customStatistics?.mods,
                             customStatistics?.oldStatistics,
                             customStatistics?.speedMultiplier,
@@ -231,7 +233,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                                 ? customStatistics.ar
                                 : undefined
                         )
-                    )) ??
+                    ) ??
                     (
                         await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
                             beatmapInfo.hash,
