@@ -95,7 +95,7 @@ export abstract class DifficultyAttributesCacheManager<
             // It will be created later when we want to save the cache to disk, so we can ignore the error.
         }
 
-        setInterval(async () => await this.saveToDisk(), 30 * 1000);
+        setInterval(async () => await this.saveToDisk(), 60 * 5 * 1000);
     }
 
     /**
