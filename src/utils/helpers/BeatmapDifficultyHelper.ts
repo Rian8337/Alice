@@ -369,16 +369,17 @@ export abstract class BeatmapDifficultyHelper<
         } else {
             return this.calculatePerformance(
                 beatmapOrHashOrDA,
-                new PerformanceCalculationParameters(
-                    new Accuracy({
-                        n300:
-                            beatmapOrHashOrDA.hitCircleCount +
-                            beatmapOrHashOrDA.sliderCount +
-                            beatmapOrHashOrDA.spinnerCount,
-                    }),
-                    100,
-                    beatmapOrHashOrDA.maxCombo
-                )
+                calculationParams ??
+                    new PerformanceCalculationParameters(
+                        new Accuracy({
+                            n300:
+                                beatmapOrHashOrDA.hitCircleCount +
+                                beatmapOrHashOrDA.sliderCount +
+                                beatmapOrHashOrDA.spinnerCount,
+                        }),
+                        100,
+                        beatmapOrHashOrDA.maxCombo
+                    )
             );
         }
 
@@ -492,16 +493,17 @@ export abstract class BeatmapDifficultyHelper<
         } else {
             return this.calculateRebalancePerformance(
                 beatmapOrHashOrDA,
-                new PerformanceCalculationParameters(
-                    new Accuracy({
-                        n300:
-                            beatmapOrHashOrDA.hitCircleCount +
-                            beatmapOrHashOrDA.sliderCount +
-                            beatmapOrHashOrDA.spinnerCount,
-                    }),
-                    100,
-                    beatmapOrHashOrDA.maxCombo
-                )
+                calculationParams ??
+                    new PerformanceCalculationParameters(
+                        new Accuracy({
+                            n300:
+                                beatmapOrHashOrDA.hitCircleCount +
+                                beatmapOrHashOrDA.sliderCount +
+                                beatmapOrHashOrDA.spinnerCount,
+                        }),
+                        100,
+                        beatmapOrHashOrDA.maxCombo
+                    )
             );
         }
 
