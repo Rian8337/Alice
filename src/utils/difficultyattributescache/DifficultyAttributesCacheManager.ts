@@ -1,8 +1,7 @@
 import { CachedDifficultyAttributes } from "@alice-structures/difficultyattributes/CachedDifficultyAttributes";
 import { DifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { DifficultyAttributes as RebalanceDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
-import { writeFile } from "fs/promises";
-import { readdirSync, readFileSync, mkdirSync } from "fs";
+import { mkdir, readdir, readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import { Collection } from "discord.js";
 import { MapInfo, Mod, Modes } from "@rian8337/osu-base";
@@ -75,8 +74,9 @@ export abstract class DifficultyAttributesCacheManager<
     }
 
     constructor() {
-        setImmediate(() => this.readCacheFromDisk());
-        setInterval(async () => await this.saveToDisk(), 60 * 5 * 1000);
+        setImmediate(async () => await this.readCacheFromDisk());
+        setInterval(async () => await this.readCacheFromDisk(), 60 * 60 * 1000);
+        setInterval(async () => await this.syncWithDisk(), 60 * 5 * 1000);
     }
 
     /**
@@ -204,15 +204,20 @@ export abstract class DifficultyAttributesCacheManager<
     /**
      * Reads the existing cache from the disk.
      */
-    private readCacheFromDisk(): void {
+    private async readCacheFromDisk(): Promise<void> {
         try {
-            for (const fileName of readdirSync(this.folderPath)) {
+            for (const fileName of await readdir(this.folderPath)) {
+                const beatmapId = parseInt(fileName);
+
+                if (this.cache.has(beatmapId)) {
+                    continue;
+                }
+
                 const cache: CachedDifficultyAttributes<T> = JSON.parse(
-                    readFileSync(join(this.folderPath, fileName), {
+                    await readFile(join(this.folderPath, fileName), {
                         encoding: "utf-8",
                     })
                 );
-                const beatmapId = parseInt(fileName);
 
                 this.cache.set(beatmapId, cache);
             }
@@ -220,7 +225,7 @@ export abstract class DifficultyAttributesCacheManager<
             // If it falls into here, the directory may not have been created.
             // Try to create it.
             try {
-                mkdirSync(this.folderPath);
+                await mkdir(this.folderPath);
             } catch {
                 // Ignore mkdir error.
             }
@@ -228,9 +233,9 @@ export abstract class DifficultyAttributesCacheManager<
     }
 
     /**
-     * Saves the cache that needs to be saved to the disk.
+     * Synchronizes the in-memory cache with the cache in the disk.
      */
-    private async saveToDisk(): Promise<void> {
+    private async syncWithDisk(): Promise<void> {
         for (const [beatmapId, cache] of this.cacheToSave) {
             await writeFile(
                 join(this.folderPath, `${beatmapId}.json`),
