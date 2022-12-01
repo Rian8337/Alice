@@ -7,7 +7,7 @@ import {
     Message,
     MessageActionRowComponent,
     RepliableInteraction,
-    SelectMenuBuilder,
+    StringSelectMenuBuilder,
     SelectMenuComponent,
     SelectMenuComponentOptionData,
     SelectMenuInteraction,
@@ -46,12 +46,15 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         const localization: SelectMenuCreatorLocalization =
             this.getLocalization(await CommandHelper.getLocale(interaction));
 
-        const selectMenu: SelectMenuBuilder = new SelectMenuBuilder()
-            .setCustomId(interaction.user.id + "selectMenu")
-            .addOptions(choices.slice(0, 25));
+        const selectMenu: StringSelectMenuBuilder =
+            new StringSelectMenuBuilder()
+                .setCustomId(interaction.user.id + "selectMenu")
+                .addOptions(choices.slice(0, 25));
 
-        const component: ActionRowBuilder<SelectMenuBuilder> =
-            new ActionRowBuilder<SelectMenuBuilder>().addComponents(selectMenu);
+        const component: ActionRowBuilder<StringSelectMenuBuilder> =
+            new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+                selectMenu
+            );
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             selectMenu.setOptions(
