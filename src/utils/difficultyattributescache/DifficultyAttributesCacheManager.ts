@@ -67,8 +67,8 @@ export abstract class DifficultyAttributesCacheManager<
 
         return join(
             process.cwd(),
-            "..",
-            "osu-difficulty-cache",
+            "files",
+            "difficultyattributescache",
             attributeTypeFolder,
             gamemodeFolder
         );
