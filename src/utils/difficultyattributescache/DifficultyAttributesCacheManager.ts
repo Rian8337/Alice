@@ -76,7 +76,7 @@ export abstract class DifficultyAttributesCacheManager<
     constructor() {
         setImmediate(async () => await this.readCacheFromDisk());
         setInterval(async () => await this.readCacheFromDisk(), 60 * 60 * 1000);
-        setInterval(async () => await this.syncWithDisk(), 60 * 5 * 1000);
+        setInterval(async () => await this.saveToDisk(), 60 * 5 * 1000);
     }
 
     /**
@@ -225,7 +225,7 @@ export abstract class DifficultyAttributesCacheManager<
             // If it falls into here, the directory may not have been created.
             // Try to create it.
             try {
-                await mkdir(this.folderPath);
+                await mkdir(this.folderPath, { recursive: true });
             } catch {
                 // Ignore mkdir error.
             }
@@ -233,9 +233,9 @@ export abstract class DifficultyAttributesCacheManager<
     }
 
     /**
-     * Synchronizes the in-memory cache with the cache in the disk.
+     * Saves the in-memory cache to the disk.
      */
-    private async syncWithDisk(): Promise<void> {
+    private async saveToDisk(): Promise<void> {
         for (const [beatmapId, cache] of this.cacheToSave) {
             await writeFile(
                 join(this.folderPath, `${beatmapId}.json`),
