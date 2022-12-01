@@ -79,3 +79,6 @@ jspm_packages
 
 # Heroku Env
 .env
+
+# Difficulty attributes cache
+files/difficultyattributescache
