@@ -74,7 +74,7 @@ export abstract class InteractionCollectorCreator extends Manager {
     ): CollectorState<SelectMenuInteraction> {
         const collector: InteractionCollector<SelectMenuInteraction> =
             message.createMessageComponentCollector({
-                filter: (i) => i.isSelectMenu() && (filter?.(i) ?? true),
+                filter: (i) => i.isStringSelectMenu() && (filter?.(i) ?? true),
                 componentType: ComponentType.StringSelect,
                 dispose: true,
                 time: duration * 1000,
