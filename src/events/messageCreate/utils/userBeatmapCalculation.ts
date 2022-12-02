@@ -66,7 +66,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 { checkFile: false }
             );
 
-            if (!beatmapInfo?.hasDownloadedBeatmap()) {
+            if (!beatmapInfo) {
                 continue;
             }
 
