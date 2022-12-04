@@ -212,10 +212,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             localization.language
         );
 
-    score.replay.beatmap ??= beatmapInfo.beatmap!;
+    score.replay.beatmap ??= beatmapInfo.beatmap ?? undefined;
 
-    const hitErrorInformation: HitErrorInformation =
-        score.replay.calculateHitError()!;
+    const hitErrorInformation: HitErrorInformation | null =
+        score.replay.calculateHitError();
 
     const embed: EmbedBuilder = EmbedBuilder.from(calcEmbedOptions.embeds![0]);
 
@@ -227,7 +227,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             ),
             iconURL: embed.data.author?.icon_url,
         })
-        .addFields({
+
+    if (hitErrorInformation) {
+        embed.addFields({
             name: localization.getTranslation("hitErrorInfo"),
             value: `${hitErrorInformation.negativeAvg.toFixed(
                 2
@@ -237,6 +239,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 "hitErrorAvg"
             )} | ${hitErrorInformation.unstableRate.toFixed(2)} UR`,
         });
+    }
 
     calcEmbedOptions.files ??= [];
     calcEmbedOptions.files.push(replayAttachment);
