@@ -289,15 +289,3 @@ export abstract class LocalBeatmapDifficultyHelper {
         }
     }
 }
-
-/*
-        const pp: std_ppv2 = ppv2({
-            stars: star.result,
-            combo: calculationParams.combo,
-            max_combo: star.map.maxCombo,
-            n300: calculationParams.accuracy.n300,
-            n100: calculationParams.accuracy.n100,
-            n50: calculationParams.accuracy.n50,
-            nmiss: calculationParams.accuracy.nmiss,
-        });
-*/
