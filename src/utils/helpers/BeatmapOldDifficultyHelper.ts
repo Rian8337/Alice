@@ -532,7 +532,7 @@ export abstract class BeatmapOldDifficultyHelper {
      * @param beatmap The beatmap to convert.
      * @returns The converted beatmap.
      */
-    private static convertBeatmap(beatmap: Beatmap): OldBeatmap {
+    static convertBeatmap(beatmap: Beatmap): OldBeatmap {
         const oldBeatmap: OldBeatmap = new OldBeatmap();
 
         oldBeatmap.format_version = beatmap.formatVersion;
