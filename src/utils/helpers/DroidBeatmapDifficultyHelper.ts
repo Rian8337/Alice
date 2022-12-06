@@ -14,6 +14,7 @@ import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalcul
 import { ThreeFingerChecker } from "@rian8337/osu-droid-replay-analyzer";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { ReplayHelper } from "./ReplayHelper";
 
 /**
  * A helper class for calculating osu!droid difficulty and performance of beatmaps or scores.
@@ -65,7 +66,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             return;
         }
 
-        await score.downloadReplay();
+        await ReplayHelper.analyzeReplay(score);
 
         if (!score.replay?.data) {
             return;

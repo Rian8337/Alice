@@ -24,7 +24,6 @@ import {
     OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
-    ReplayData,
     ExportedReplayJSON,
     HitErrorInformation,
 } from "@rian8337/osu-droid-replay-analyzer";
@@ -34,6 +33,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: FetchreplayLocalization = new FetchreplayLocalization(
@@ -106,7 +106,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await score.downloadReplay();
+    await ReplayHelper.analyzeReplay(score);
 
     if (!score.replay?.data) {
         return InteractionHelper.reply(interaction, {
@@ -116,7 +116,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const data: ReplayData = score.replay.data;
+    const { data } = score.replay;
 
     const zip: AdmZip = new AdmZip();
 
@@ -219,14 +219,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const embed: EmbedBuilder = EmbedBuilder.from(calcEmbedOptions.embeds![0]);
 
-    embed
-        .setAuthor({
-            name: StringHelper.formatString(
-                localization.getTranslation("playInfo"),
-                score.username
-            ),
-            iconURL: embed.data.author?.icon_url,
-        })
+    embed.setAuthor({
+        name: StringHelper.formatString(
+            localization.getTranslation("playInfo"),
+            score.username
+        ),
+        iconURL: embed.data.author?.icon_url,
+    });
 
     if (hitErrorInformation) {
         embed.addFields({

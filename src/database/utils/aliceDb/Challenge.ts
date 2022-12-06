@@ -63,6 +63,7 @@ import {
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { createHash } from "crypto";
+import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 
 /**
  * Represents a daily or weekly challenge.
@@ -458,20 +459,19 @@ export class Challenge extends Manager {
             );
         }
 
-        if (!score.replay) {
-            await score.downloadReplay();
+        score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
+        await ReplayHelper.analyzeReplay(score.replay);
 
-            if (!score.replay) {
-                return this.createOperationResult(
-                    false,
-                    localization.getTranslation("replayNotFound")
-                );
-            }
+        if (!score.replay.data) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("replayNotFound")
+            );
         }
 
         if (
-            score.replay.data?.forcedAR ||
-            (score.replay.data?.speedModification ?? 1) !== 1
+            score.replay.data.forcedAR ||
+            (score.replay.data.speedModification ?? 1) !== 1
         ) {
             return this.createOperationResult(
                 false,
@@ -610,22 +610,15 @@ export class Challenge extends Manager {
     async calculateBonusLevel(
         scoreOrReplay: Score | ReplayAnalyzer
     ): Promise<number> {
-        if (scoreOrReplay instanceof ReplayAnalyzer) {
-            if (!scoreOrReplay.data) {
-                await scoreOrReplay.analyze();
-            }
+        await ReplayHelper.analyzeReplay(scoreOrReplay);
 
-            if (!scoreOrReplay.data) {
-                return 0;
-            }
-        } else {
-            if (!scoreOrReplay.replay) {
-                await scoreOrReplay.downloadReplay();
-            }
-
-            if (!scoreOrReplay.replay) {
-                return 0;
-            }
+        if (scoreOrReplay instanceof ReplayAnalyzer && !scoreOrReplay.data) {
+            return 0;
+        } else if (
+            scoreOrReplay instanceof Score &&
+            !scoreOrReplay.replay?.data
+        ) {
+            return 0;
         }
 
         let droidCalcResult: PerformanceCalculationResult<

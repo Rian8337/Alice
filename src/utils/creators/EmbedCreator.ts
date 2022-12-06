@@ -81,6 +81,7 @@ import { std_ppv2 } from "ojsamadroid";
 import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { OldDroidDifficultyAttributes } from "@alice-structures/difficultyattributes/OldDroidDifficultyAttributes";
+import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 
 /**
  * Utility to create message embeds.
@@ -698,9 +699,7 @@ export abstract class EmbedCreator {
                 score.accuracy.n100
             }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
 
-        if (!score.replay) {
-            await score.downloadReplay();
-        }
+        await ReplayHelper.analyzeReplay(score);
 
         const replayData: ReplayData | undefined | null = score.replay?.data;
 
