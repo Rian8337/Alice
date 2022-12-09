@@ -27,6 +27,9 @@ import { WarningCollectionManager } from "./managers/aliceDb/WarningCollectionMa
 import { MultiplayerRoomCollectionManager } from "./managers/aliceDb/MultiplayerRoomCollectionManager";
 import { RestoredPlayerCredentialsCollectionManager } from "./managers/aliceDb/RestoredPlayerCredentialsCollectionManager";
 import { OldPPProfileCollectionManager } from "./managers/aliceDb/OldPPProfileCollectionManager";
+import { DanCourseBeatmapCollectionManager } from "./managers/aliceDb/DanCourseBeatmapCollectionManager";
+import { DanCourseLeaderboardScoreCollectionManager } from "./managers/aliceDb/DanCourseLeaderboardScoreCollectionManager";
+import { DanCourseScoreCollectionManager } from "./managers/aliceDb/DanCourseScoreCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -176,6 +179,21 @@ export class AliceDBCollection {
     readonly playerOldPPProfile: OldPPProfileCollectionManager;
 
     /**
+     * The database collection for dan course beatmaps.
+     */
+    readonly danCourseBeatmaps: DanCourseBeatmapCollectionManager;
+
+    /**
+     * The database collection for dan course high scores.
+     */
+    readonly danCourseLeaderboardScores: DanCourseLeaderboardScoreCollectionManager;
+
+    /**
+     * The database collection for all dan course scores that are not in the leaderboard score collection.
+     */
+    readonly danCourseScores: DanCourseScoreCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -261,6 +279,16 @@ export class AliceDBCollection {
             );
         this.playerOldPPProfile = new OldPPProfileCollectionManager(
             aliceDb.collection("playeroldpp")
+        );
+        this.danCourseBeatmaps = new DanCourseBeatmapCollectionManager(
+            aliceDb.collection("dancoursemaps")
+        );
+        this.danCourseLeaderboardScores =
+            new DanCourseLeaderboardScoreCollectionManager(
+                aliceDb.collection("dancourseleaderboard")
+            );
+        this.danCourseScores = new DanCourseScoreCollectionManager(
+            aliceDb.collection("dancoursescore")
         );
     }
 }
