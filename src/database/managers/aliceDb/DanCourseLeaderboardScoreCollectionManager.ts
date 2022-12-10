@@ -42,6 +42,30 @@ export class DanCourseLeaderboardScoreCollectionManager extends DatabaseCollecti
     }
 
     /**
+     * Gets the leaderboard of a beatmap.
+     *
+     * @param hash The MD5 hash of the beatmap.
+     * @param page The page to view. Each page consists of 50 scores.
+     * @returns The leaderboard of the beatmap at the page.
+     */
+    async getLeaderboard(
+        hash: string,
+        page: number
+    ): Promise<DanCourseLeaderboardScore[]> {
+        const amountPerPage: number = 50;
+
+        const scores: DatabaseDanCourseLeaderboardScore[] =
+            await this.collection
+                .find({ hash: hash })
+                .sort({ score: -1, date: -1, grade: -1 })
+                .skip(amountPerPage * (page - 1))
+                .limit(amountPerPage)
+                .toArray();
+
+        return scores.map((v) => new DanCourseLeaderboardScore(v));
+    }
+
+    /**
      * Gets a score from a player.
      *
      * @param uid The uid of the player.

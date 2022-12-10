@@ -27,7 +27,7 @@ import { WarningCollectionManager } from "./managers/aliceDb/WarningCollectionMa
 import { MultiplayerRoomCollectionManager } from "./managers/aliceDb/MultiplayerRoomCollectionManager";
 import { RestoredPlayerCredentialsCollectionManager } from "./managers/aliceDb/RestoredPlayerCredentialsCollectionManager";
 import { OldPPProfileCollectionManager } from "./managers/aliceDb/OldPPProfileCollectionManager";
-import { DanCourseBeatmapCollectionManager } from "./managers/aliceDb/DanCourseBeatmapCollectionManager";
+import { DanCourseCollectionManager } from "./managers/aliceDb/DanCourseCollectionManager";
 import { DanCourseLeaderboardScoreCollectionManager } from "./managers/aliceDb/DanCourseLeaderboardScoreCollectionManager";
 import { DanCourseScoreCollectionManager } from "./managers/aliceDb/DanCourseScoreCollectionManager";
 
@@ -179,9 +179,9 @@ export class AliceDBCollection {
     readonly playerOldPPProfile: OldPPProfileCollectionManager;
 
     /**
-     * The database collection for dan course beatmaps.
+     * The database collection for dan courses.
      */
-    readonly danCourseBeatmaps: DanCourseBeatmapCollectionManager;
+    readonly danCourses: DanCourseCollectionManager;
 
     /**
      * The database collection for dan course high scores.
@@ -280,7 +280,7 @@ export class AliceDBCollection {
         this.playerOldPPProfile = new OldPPProfileCollectionManager(
             aliceDb.collection("playeroldpp")
         );
-        this.danCourseBeatmaps = new DanCourseBeatmapCollectionManager(
+        this.danCourses = new DanCourseCollectionManager(
             aliceDb.collection("dancoursemaps")
         );
         this.danCourseLeaderboardScores =

@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
  */
 export class DanCourseScore extends Manager implements DatabaseDanCourseScore {
     grade: number;
-    replayFileName: string;
+    readonly replayFileName: string;
     uid: number;
     username: string;
     hash: string;

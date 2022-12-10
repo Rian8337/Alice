@@ -8,7 +8,7 @@ export class DanCourseLeaderboardScore
     implements DatabaseDanCourseLeaderboardScore
 {
     grade: number;
-    replayFileName: string;
+    readonly replayFileName: string;
     uid: number;
     username: string;
     hash: string;

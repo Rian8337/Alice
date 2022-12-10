@@ -38,4 +38,23 @@ export class DanCourseScoreCollectionManager extends DatabaseCollectionManager<
             grade: 0,
         };
     }
+
+    /**
+     * Checks if a player has at least one score in a beatmap.
+     *
+     * Keep in mind that this does not include leaderboard scores.
+     *
+     * @param uid The uid of the player.
+     * @param hash The MD5 hash of the beatmap.
+     * @returns Whether the player has any score in the beatmap.
+     */
+    async checkExistingScore(uid: number, hash: string): Promise<boolean> {
+        const score: DatabaseDanCourseScore | null =
+            await this.collection.findOne(
+                { uid: uid, hash: hash },
+                { projection: { _id: 0, uid: 1 } }
+            );
+
+        return score !== null;
+    }
 }
