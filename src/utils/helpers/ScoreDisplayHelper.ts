@@ -246,9 +246,9 @@ export abstract class ScoreDisplayHelper {
             ] = await getCalculationResult(score);
 
             return (
-                `${arrow} **${BeatmapManager.getRankEmote(
+                `${arrow} ${BeatmapManager.getRankEmote(
                     <ScoreRank>score.rank
-                )}** ${
+                )} ${
                     calcResult[0] && calcResult[1]
                         ? `${arrow} **${calcResult[0].total.toFixed(
                               2
@@ -290,7 +290,7 @@ export abstract class ScoreDisplayHelper {
 
             const noModDroidAttributes: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
                 beatmapInfo
-                    ? (await liveCache.droid.getDifficultyAttributes(
+                    ? (liveCache.droid.getDifficultyAttributes(
                           beatmapInfo,
                           liveCache.droid.getAttributeName()
                       )) ??
@@ -305,7 +305,7 @@ export abstract class ScoreDisplayHelper {
 
             const noModOsuAttributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
                 beatmapInfo
-                    ? (await liveCache.osu.getDifficultyAttributes(
+                    ? (liveCache.osu.getDifficultyAttributes(
                           beatmapInfo,
                           liveCache.osu.getAttributeName()
                       )) ??
