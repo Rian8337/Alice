@@ -290,10 +290,10 @@ export abstract class ScoreDisplayHelper {
 
             const noModDroidAttributes: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
                 beatmapInfo
-                    ? (liveCache.droid.getDifficultyAttributes(
+                    ? liveCache.droid.getDifficultyAttributes(
                           beatmapInfo,
                           liveCache.droid.getAttributeName()
-                      )) ??
+                      ) ??
                       (
                           await droidDiffCalcHelper.calculateBeatmapDifficulty(
                               beatmapInfo,
@@ -305,10 +305,10 @@ export abstract class ScoreDisplayHelper {
 
             const noModOsuAttributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
                 beatmapInfo
-                    ? (liveCache.osu.getDifficultyAttributes(
+                    ? liveCache.osu.getDifficultyAttributes(
                           beatmapInfo,
                           liveCache.osu.getAttributeName()
-                      )) ??
+                      ) ??
                       (
                           await osuDiffCalcHelper.calculateBeatmapDifficulty(
                               beatmapInfo.hash,
