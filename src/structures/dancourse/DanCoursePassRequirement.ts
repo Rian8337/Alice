@@ -25,6 +25,16 @@ export interface DanCoursePassRequirement {
     readonly speedMultiplier?: number;
 
     /**
+     * Whether to allow slider lock to be used.
+     */
+    readonly allowSliderLock?: boolean;
+
+    /**
+     * Whether to force slider accuracy to be used.
+     */
+    readonly forceSliderAccuracy?: boolean;
+
+    /**
      * Settings for forced AR.
      */
     readonly forcedAR?: {
