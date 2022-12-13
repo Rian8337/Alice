@@ -58,7 +58,7 @@ export class DanCourseLeaderboardScoreCollectionManager extends DatabaseCollecti
             await this.collection
                 .find({ hash: hash })
                 .sort({ score: -1, date: -1, grade: -1 })
-                .skip(amountPerPage * (page - 1))
+                .skip(amountPerPage * Math.max(0, page - 1))
                 .limit(amountPerPage)
                 .toArray();
 
