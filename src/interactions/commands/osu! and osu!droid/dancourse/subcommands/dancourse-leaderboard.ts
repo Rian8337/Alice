@@ -142,7 +142,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             scoreCache.get(actualPage) ??
             (await DatabaseManager.aliceDb.collections.danCourseLeaderboardScores.getLeaderboard(
                 course.hash,
-                pageRemainder
+                page
             ));
 
         if (!scoreCache.has(actualPage)) {
