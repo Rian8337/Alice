@@ -18,6 +18,10 @@ import { EmbedBuilder, BaseMessageOptions } from "discord.js";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
+
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
         await CommandHelper.getLocale(interaction)
     );
@@ -66,6 +70,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Allow solo play for owners for testing.
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
+        interaction.member.roles.cache.has("1051755734276247635") &&
         room.players.length <= 1
     ) {
         return InteractionHelper.reply(interaction, {
