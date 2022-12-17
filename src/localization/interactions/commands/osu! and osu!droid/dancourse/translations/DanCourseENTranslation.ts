@@ -12,6 +12,7 @@ export class DanCourseENTranslation extends Translation<DanCourseStrings> {
         noScoresSubmitted: "I'm sorry, you do not have any scores submitted!",
         threeFingerOrNonPassScoresSubmitted:
             "I'm sorry, you have already submitted at least one score, but they were either flagged for three finger or did not fulfill the course's pass requirement!",
+        userPassedDanCourseFailed: "I'm sorry, you didn't pass `%s`: %s.",
         userPassedDanCourseSuccess: "Congratulations, you passed `%s`!",
     };
 }

@@ -5,6 +5,7 @@ import { DanCourseLeaderboardScore } from "@alice-database/utils/aliceDb/DanCour
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { DanCourseLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/dancourse/DanCourseLocalization";
+import { OperationResult } from "@alice-structures/core/OperationResult";
 import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -70,6 +71,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         ? "threeFingerOrNonPassScoresSubmitted"
                         : "noScoresSubmitted"
                 )
+            ),
+        });
+    }
+
+    const passStatus: OperationResult = course.isScorePassed(score);
+
+    if (!passStatus.success) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("userPassedDanCourseFailed"),
+                course.courseName,
+                passStatus.reason!
             ),
         });
     }

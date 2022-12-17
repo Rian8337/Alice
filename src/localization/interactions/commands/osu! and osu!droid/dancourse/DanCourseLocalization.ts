@@ -8,6 +8,7 @@ export interface DanCourseStrings {
     readonly topScore: string;
     readonly noScoresSubmitted: string;
     readonly threeFingerOrNonPassScoresSubmitted: string;
+    readonly userPassedDanCourseFailed: string;
     readonly userPassedDanCourseSuccess: string;
 }
 
