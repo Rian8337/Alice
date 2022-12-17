@@ -125,11 +125,15 @@ export class DanCourse extends Manager implements DatabaseDanCourse {
         switch (this.requirement.id) {
             case "score":
             case "combo":
-            case "acc":
             case "m300":
             case "rank":
                 return this.createOperationResult(
                     score.grade >= this.requirement.value,
+                    "Pass requirement was not met"
+                );
+            case "acc":
+                return this.createOperationResult(
+                    score.grade * 100 >= this.requirement.value,
                     "Pass requirement was not met"
                 );
             default:
