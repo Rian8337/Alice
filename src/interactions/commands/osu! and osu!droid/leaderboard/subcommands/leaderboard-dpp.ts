@@ -18,6 +18,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const clan: string | null = interaction.options.getString("clan");
 
+    await InteractionHelper.deferReply(interaction);
+
     const res: Collection<string, UserBind> =
         await DatabaseManager.elainaDb.collections.userBind.getDPPLeaderboard(
             clan ?? undefined
