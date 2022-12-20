@@ -41,12 +41,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
-        beatmapID ?? hash,
-        { checkFile: false }
-    );
+    if (beatmapID) {
+        const beatmapInfo: MapInfo<false> | null =
+            await BeatmapManager.getBeatmap(beatmapID ?? hash, {
+                checkFile: false,
+            });
 
-    hash ??= beatmapInfo?.hash;
+        hash = beatmapInfo?.hash;
+    }
 
     if (!hash) {
         return InteractionHelper.reply(interaction, {
