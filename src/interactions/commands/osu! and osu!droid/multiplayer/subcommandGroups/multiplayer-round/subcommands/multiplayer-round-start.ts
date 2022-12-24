@@ -194,6 +194,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         );
                     }
 
+                    if (!interaction.channel.archived) {
+                        await interaction.channel.setArchived(
+                            true,
+                            "Multiplayer room closed"
+                        );
+                    }
+
                     return;
                 }
 
