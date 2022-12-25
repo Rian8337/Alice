@@ -3,6 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DanCourse } from "@alice-database/utils/aliceDb/DanCourse";
 import { DanCourseLeaderboardScore } from "@alice-database/utils/aliceDb/DanCourseLeaderboardScore";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Language } from "@alice-localization/base/Language";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { DanCourseLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/dancourse/DanCourseLocalization";
 import { OperationResult } from "@alice-structures/core/OperationResult";
@@ -17,8 +18,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return;
     }
 
+    const language: Language = await CommandHelper.getLocale(interaction);
+
+    if (interaction.channelId !== "1054373588871958558") {
+        interaction.ephemeral = true;
+
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(language).getTranslation(
+                    Constants.notAvailableInChannelReject
+                )
+            ),
+        });
+    }
+
     const localization: DanCourseLocalization = new DanCourseLocalization(
-        await CommandHelper.getLocale(interaction)
+        language
     );
 
     const course: DanCourse | null =
