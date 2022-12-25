@@ -623,7 +623,6 @@ export class UserBind extends Manager {
                     const beatmapInfo: MapInfo | null =
                         await BeatmapManager.getBeatmap(score.hash, {
                             checkFile: false,
-                            cacheBeatmap: false,
                         }).catch(() => null);
 
                     if (!beatmapInfo) {
