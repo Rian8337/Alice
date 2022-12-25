@@ -155,12 +155,12 @@ export const run: SlashSubcommand<true>["run"] = async (
         position: position,
         permissionOverwrites: [
             {
-                id: clanRole.id,
+                id: clanRole,
                 allow: [PermissionsBitField.Flags.ViewChannel],
                 type: OverwriteType.Role,
             },
             {
-                id: "353397345636974593",
+                id: guild.roles.everyone,
                 deny: [PermissionsBitField.Flags.ViewChannel],
                 type: OverwriteType.Role,
             },
