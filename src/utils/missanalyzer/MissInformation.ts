@@ -16,7 +16,7 @@ import {
     HitResult,
     MovementType,
 } from "@rian8337/osu-droid-replay-analyzer";
-import { Canvas } from "canvas";
+import { Canvas, CanvasRenderingContext2D } from "canvas";
 
 /**
  * Represents an information about a miss.
