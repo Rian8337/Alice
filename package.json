@@ -1,6 +1,6 @@
 {
   "name": "alice",
-  "version": "2022.1225.0",
+  "version": "2022.1228.0",
   "description": "A Discord bot for osu!droid",
   "main": "dist/main.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "startRecalculation": "node --trace-warnings dist/recalculation.js",
     "update-osu-libraries-beta": "npm i @rian8337/osu-base@beta @rian8337/osu-difficulty-calculator@beta @rian8337/osu-droid-replay-analyzer@beta @rian8337/osu-droid-utilities@beta @rian8337/osu-rebalance-difficulty-calculator@beta @rian8337/osu-strain-graph-generator@beta",
     "update-osu-libraries-release": "npm i @rian8337/osu-base @rian8337/osu-difficulty-calculator @rian8337/osu-droid-replay-analyzer @rian8337/osu-droid-utilities @rian8337/osu-rebalance-difficulty-calculator @rian8337/osu-strain-graph-generator",
-    "use-local-osu-module": "npm i ..\\osu-droid-module\\packages\\osu-base ..\\osu-droid-module\\packages\\osu-difficulty-calculator ..\\osu-droid-module\\packages\\osu-droid-replay-analyzer ..\\osu-droid-module\\packages\\osu-droid-utilities ..\\osu-droid-module\\packages\\osu-rebalance-difficulty-calculator ..\\osu-droid-module\\packages\\osu-strain-graph-generator"
+    "use-local-osu-module": "npm i ../osu-droid-module/packages/osu-base ../osu-droid-module/packages/osu-difficulty-calculator ../osu-droid-module/packages/osu-droid-replay-analyzer ../osu-droid-module/packages/osu-droid-utilities ../osu-droid-module/packages/osu-rebalance-difficulty-calculator ../osu-droid-module/packages/osu-strain-graph-generator"
   },
   "engines": {
     "node": "18.x"
@@ -45,12 +45,12 @@
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
-    "@rian8337/osu-base": "^3.0.0-beta.12",
-    "@rian8337/osu-difficulty-calculator": "^3.0.0-beta.14",
-    "@rian8337/osu-droid-replay-analyzer": "^3.0.0-beta.15",
-    "@rian8337/osu-droid-utilities": "^3.0.0-beta.15",
-    "@rian8337/osu-rebalance-difficulty-calculator": "^3.0.0-beta.15",
-    "@rian8337/osu-strain-graph-generator": "^3.0.0-beta.15",
+    "@rian8337/osu-base": "^3.0.0-beta.26",
+    "@rian8337/osu-difficulty-calculator": "^3.0.0-beta.26",
+    "@rian8337/osu-droid-replay-analyzer": "^3.0.0-beta.26",
+    "@rian8337/osu-droid-utilities": "^3.0.0-beta.27",
+    "@rian8337/osu-rebalance-difficulty-calculator": "^3.0.0-beta.26",
+    "@rian8337/osu-strain-graph-generator": "^3.0.0-beta.26",
     "adm-zip": "^0.5.5",
     "bufferutil": "^4.0.3",
     "canvas": "^2.8.0",
