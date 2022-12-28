@@ -674,18 +674,20 @@ export class UserBind extends Manager {
                                 DPPHelper.insertScore(newList, [ppEntry]);
                             }
 
-                            const oldCalcResult: OldPerformanceCalculationResult =
-                                (await BeatmapOldDifficultyHelper.calculateScorePerformance(
+                            const oldCalcResult: OldPerformanceCalculationResult | null =
+                                await BeatmapOldDifficultyHelper.calculateScorePerformance(
                                     score
-                                ))!;
+                                );
 
-                            DPPHelper.insertScore(oldPPNewList, [
-                                DPPHelper.scoreToOldPPEntry(
-                                    beatmapInfo.fullTitle,
-                                    score,
-                                    oldCalcResult
-                                ),
-                            ]);
+                            if (oldCalcResult) {
+                                DPPHelper.insertScore(oldPPNewList, [
+                                    DPPHelper.scoreToOldPPEntry(
+                                        beatmapInfo.fullTitle,
+                                        score,
+                                        oldCalcResult
+                                    ),
+                                ]);
+                            }
                         }
                     }
                 }
