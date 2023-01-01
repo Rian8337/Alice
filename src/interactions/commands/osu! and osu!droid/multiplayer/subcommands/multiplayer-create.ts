@@ -31,6 +31,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.deferReply(interaction);
+
     const room: MultiplayerRoom | null =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.getFromUser(
             interaction.user,
