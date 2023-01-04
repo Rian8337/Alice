@@ -452,7 +452,7 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const perfCalcResult: RebalancePerformanceCalculationResult<
+            let perfCalcResult: RebalancePerformanceCalculationResult<
                 RebalanceDroidDifficultyCalculator,
                 RebalanceDroidPerformanceCalculator
             > | null =
@@ -475,6 +475,12 @@ export class UserBind extends Manager {
                 score,
                 diffCalculator,
                 perfCalcResult
+            );
+
+            perfCalcResult = await DroidBeatmapDifficultyHelper.applyAimPenalty(
+                score,
+                diffCalculator,
+                score.replay?.tapPenalty ?? 1
             );
 
             const entry: PrototypePPEntry = {

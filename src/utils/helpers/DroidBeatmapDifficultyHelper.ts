@@ -15,6 +15,7 @@ import { ThreeFingerChecker } from "@rian8337/osu-droid-replay-analyzer";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { ReplayHelper } from "./ReplayHelper";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 /**
  * A helper class for calculating osu!droid difficulty and performance of beatmaps or scores.
@@ -79,5 +80,85 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         }
 
         calcResult.result.applyTapPenalty(score.replay.tapPenalty);
+    }
+
+    /**
+     * Applies aim penalty to a score.
+     *
+     * @param score The score.
+     * @param difficultyCalculator The difficulty calculator of the score.
+     * @param tapPenalty The tap penalty to preemptively apply.
+     * @returns The performance calculation result.
+     */
+    static async applyAimPenalty(
+        score: Score,
+        difficultyCalculator: DroidDifficultyCalculator,
+        tapPenalty?: number
+    ): Promise<
+        PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        >
+    >;
+
+    /**
+     * Applies aim penalty to a score.
+     *
+     * @param score The score.
+     * @param difficultyCalculator The difficulty calculator of the score.
+     * @param tapPenalty The tap penalty to preemptively apply.
+     * @returns The performance calculation result.
+     */
+    static async applyAimPenalty(
+        score: Score,
+        difficultyCalculator: RebalanceDroidDifficultyCalculator,
+        tapPenalty?: number
+    ): Promise<
+        RebalancePerformanceCalculationResult<
+            RebalanceDroidDifficultyCalculator,
+            RebalanceDroidPerformanceCalculator
+        >
+    >;
+
+    static async applyAimPenalty(
+        score: Score,
+        difficultyCalculator:
+            | DroidDifficultyCalculator
+            | RebalanceDroidDifficultyCalculator,
+        tapPenalty: number = 1
+    ): Promise<
+        | PerformanceCalculationResult<
+              DroidDifficultyCalculator,
+              DroidPerformanceCalculator
+          >
+        | RebalancePerformanceCalculationResult<
+              RebalanceDroidDifficultyCalculator,
+              RebalanceDroidPerformanceCalculator
+          >
+    > {
+        await ReplayHelper.analyzeReplay(score);
+
+        if (score.replay && !score.replay.hasBeenCheckedFor2Hand) {
+            score.replay.beatmap = difficultyCalculator;
+            score.replay.checkFor2Hand();
+        }
+
+        const diffCalcHelper: DroidBeatmapDifficultyHelper =
+            new DroidBeatmapDifficultyHelper();
+        const calculationParams: PerformanceCalculationParameters =
+            this.getCalculationParamsFromScore(score);
+        calculationParams.tapPenalty = tapPenalty;
+
+        if (difficultyCalculator instanceof DroidDifficultyCalculator) {
+            return diffCalcHelper.calculateBeatmapPerformance(
+                difficultyCalculator.attributes,
+                calculationParams
+            );
+        } else {
+            return diffCalcHelper.calculateBeatmapRebalancePerformance(
+                difficultyCalculator.attributes,
+                calculationParams
+            );
+        }
     }
 }
