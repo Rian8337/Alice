@@ -127,7 +127,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("viewingProfile"),
-            player.username,
+            `${player.username} (${player.uid})`,
             ProfileManager.getProfileLink(player.uid).toString()
         ),
         files: [profileImage],

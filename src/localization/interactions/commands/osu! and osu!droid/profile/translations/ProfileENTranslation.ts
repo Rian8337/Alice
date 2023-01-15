@@ -10,7 +10,7 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
             "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
         selfProfileNotFound: "I'm sorry, I cannot find your profile!",
         userProfileNotFound: "I'm sorry, I cannot find the player's profile!",
-        viewingProfile: "osu!droid profile for %s:\n<%s>",
+        viewingProfile: "osu!droid profile for [%s](<%s>):",
         invalidRGBAformat: "I'm sorry, that's an invalid RGBA color format!",
         invalidHexCode: "I'm sorry, that's an invalid hex code!",
         changeInfoTextColorConfirmation:

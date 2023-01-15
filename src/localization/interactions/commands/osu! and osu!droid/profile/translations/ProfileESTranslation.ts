@@ -11,7 +11,7 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
         selfProfileNotFound: "Lo siento, no puede encontrar tu perfil!",
         userProfileNotFound:
             "Lo siento, no puede encontrar el perfil de ese jugador!",
-        viewingProfile: "Perfil de osu!droid de %s:\n<%s>",
+        viewingProfile: "Perfil de osu!droid de [%s](%s):",
         invalidRGBAformat: "Lo siento, ese es un formato RGBA inválido!",
         invalidHexCode: "Lo siento, es es un codigo HEX inválido!",
         changeInfoTextColorConfirmation:
