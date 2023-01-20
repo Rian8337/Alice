@@ -15,8 +15,6 @@ export class MessageanalyticsESTranslation extends Translation<MessageanalyticsS
             "Lo siento, no hay información de actividad en esta fecha!",
         channelIsFiltered:
             "Lo siento, este canal esta fuera del analisis de mensajes!",
-        wrongServer:
-            "Lo siento, esta busqueda solo puede ser realizada en el servidor principal!",
         notATextChannel:
             "Lo siento, solo puede utilizar ese comando en un canal de texto!",
         messageFetchStarted: "Analisis de mensajes iniciado correctamente.",

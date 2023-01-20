@@ -10,7 +10,6 @@ export interface MessageanalyticsStrings {
     readonly dateHasntPassed: string;
     readonly noActivityDataOnDate: string;
     readonly channelIsFiltered: string;
-    readonly wrongServer: string;
     readonly notATextChannel: string;
     readonly messageFetchStarted: string;
     readonly messageFetchDone: string;

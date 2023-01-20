@@ -14,7 +14,6 @@ export class MessageanalyticsENTranslation extends Translation<MessageanalyticsS
             "I'm sorry, there is no activity data on this date!",
         channelIsFiltered:
             "I'm sorry, this channel is filtered from message analytics!",
-        wrongServer: "I'm sorry, this scope can only be used in main server!",
         notATextChannel:
             "I'm sorry, you can only execute this command in a text channel!",
         messageFetchStarted: "Successfully started message data fetching.",

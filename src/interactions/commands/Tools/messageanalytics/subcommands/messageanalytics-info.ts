@@ -24,6 +24,7 @@ import {
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
 
 /**
  * Converts days to milliseconds.
@@ -135,19 +136,22 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const sortedChannelData: Collection<Snowflake, ChannelActivity> =
+    const sortedChannelData: Collection<Snowflake, ChannelActivityData> =
         new Collection();
 
     // Map to each channel.
-    for (const data of activityData.values()) {
-        const existingData: ChannelActivity =
-            sortedChannelData.get(data.channelId) ?? data;
-        if (sortedChannelData.has(data.channelId)) {
-            existingData.messageCount += data.messageCount;
-            existingData.wordsCount += data.wordsCount;
-        }
+    for (const activity of activityData.values()) {
+        for (const data of activity.channels.values()) {
+            const existingData: ChannelActivityData =
+                sortedChannelData.get(data.channelId) ?? data;
 
-        sortedChannelData.set(data.channelId, existingData);
+            if (sortedChannelData.has(data.channelId)) {
+                existingData.messageCount += data.messageCount;
+                existingData.wordsCount += data.wordsCount;
+            }
+
+            sortedChannelData.set(data.channelId, existingData);
+        }
     }
 
     // Sort by words count as it is the preferred way to measure activity.
@@ -157,7 +161,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     let clansDescription: string = "";
     let languageDescription: string = "";
 
-    for (const [id, count] of sortedChannelData) {
+    for (const [id, data] of sortedChannelData) {
         const channel: GuildBasedChannel | null = await guild.channels
             .fetch(id)
             .catch(() => null);
@@ -169,11 +173,11 @@ export const run: SlashSubcommand<true>["run"] = async (
         const BCP47: string = LocaleHelper.convertToBCP47(
             localization.language
         );
-        const msg: string = `${channel}: ${count.messageCount.toLocaleString(
+        const msg: string = `${channel}: ${data.messageCount.toLocaleString(
             BCP47
         )} ${localization.getTranslation(
             "messageCount"
-        )}, ${count.wordsCount.toLocaleString(
+        )}, ${data.wordsCount.toLocaleString(
             BCP47
         )} ${localization.getTranslation("wordsCount")}\n`;
 
@@ -227,7 +231,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         [interaction.user.id],
         1,
         activityCategories.length,
-        10,
+        30,
         onPageChange
     );
 };

@@ -1,20 +1,28 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
+import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
 import { Manager } from "@alice-utils/base/Manager";
+import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
-import { Snowflake } from "discord.js";
+import { Collection, Snowflake } from "discord.js";
 
 /**
- * Represents a channel's activity in a day.
+ * Represents channels' activity in a day.
  */
-export class ChannelActivity
-    extends Manager
-    implements DatabaseChannelActivity
-{
-    channelId: Snowflake;
+export class ChannelActivity extends Manager {
+    /**
+     * The epoch time of the data, in milliseconds.
+     *
+     * Since channels' activity are stored in a per day basis, this timestamp
+     * will always be at 00:00 UTC of a day.
+     */
     timestamp: number;
-    messageCount: number;
-    wordsCount: number;
+
+    /**
+     * The activity data of channels within the timestamp, mapped by channel ID.
+     */
+    channels: Collection<Snowflake, ChannelActivityData>;
+
     readonly _id?: ObjectId;
 
     constructor(
@@ -24,9 +32,10 @@ export class ChannelActivity
         super();
 
         this._id = data._id;
-        this.channelId = data.channelId;
         this.timestamp = data.timestamp;
-        this.messageCount = data.messageCount;
-        this.wordsCount = data.wordsCount;
+        this.channels = ArrayHelper.arrayToCollection(
+            data.channels,
+            "channelId"
+        );
     }
 }

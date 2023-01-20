@@ -1,7 +1,7 @@
 import {
     ChatInputCommandInteraction,
     If,
-    SelectMenuInteraction,
+    StringSelectMenuInteraction,
 } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { Permission } from "structures/core/Permission";
@@ -22,7 +22,7 @@ export interface SlashSubcommand<FromInteraction extends boolean = boolean> {
         interaction: If<
             FromInteraction,
             ChatInputCommandInteraction,
-            SelectMenuInteraction
+            StringSelectMenuInteraction
         >,
         ...args: unknown[]
     ): Promise<unknown>;

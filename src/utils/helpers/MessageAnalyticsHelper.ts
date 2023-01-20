@@ -1,7 +1,6 @@
 import wordsCount from "words-count";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
 import { Manager } from "@alice-utils/base/Manager";
 import {
     Collection,
@@ -16,6 +15,7 @@ import {
     ThreadChannel,
 } from "discord.js";
 import { HelperFunctions } from "./HelperFunctions";
+import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
 
 /**
  * A helper for the bot's message analytics.
@@ -53,6 +53,9 @@ export abstract class MessageAnalyticsHelper extends Manager {
         "696663321633357844",
         "803160572345712640",
         "652902812354609162",
+        "1006369245577347082",
+        "988135588060364931",
+        "350668556624723968",
     ];
 
     /**
@@ -67,6 +70,8 @@ export abstract class MessageAnalyticsHelper extends Manager {
             Constants.mainServer
         );
         const previousDay: number = newDailyTime - 86400 * 1000;
+        const channelData: Collection<Snowflake, ChannelActivityData> =
+            new Collection();
 
         for (const channel of guild.channels.cache.values()) {
             if (this.isChannelFiltered(channel)) {
@@ -77,23 +82,40 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 continue;
             }
 
-            const finalActivity: Collection<number, DatabaseChannelActivity> =
+            const finalActivity: Collection<number, ChannelActivityData> =
                 await this.getChannelActivity(
                     channel,
                     previousDay,
                     newDailyTime
                 );
 
-            for (const [timestamp, activity] of finalActivity) {
-                await DatabaseManager.aliceDb.collections.channelActivity.updateOne(
-                    { timestamp: timestamp, channelId: channel.id },
-                    {
-                        $set: activity,
-                    },
-                    { upsert: true }
-                );
+            const existingData: ChannelActivityData = channelData.get(
+                channel.id
+            ) ?? {
+                channelId: channel.id,
+                messageCount: 0,
+                wordsCount: 0,
+            };
+
+            if (existingData) {
+                for (const activity of finalActivity.values()) {
+                    existingData.messageCount += activity.messageCount;
+                    existingData.wordsCount += activity.wordsCount;
+                }
             }
+
+            channelData.set(channel.id, existingData);
         }
+
+        await DatabaseManager.aliceDb.collections.channelActivity.updateOne(
+            { timestamp: previousDay },
+            {
+                $set: {
+                    channels: [...channelData.values()],
+                },
+            },
+            { upsert: true }
+        );
     }
 
     /**
@@ -109,11 +131,11 @@ export abstract class MessageAnalyticsHelper extends Manager {
         channel: GuildTextBasedChannel,
         fetchStartTime: number,
         fetchEndTime: number
-    ): Promise<Collection<number, DatabaseChannelActivity>> {
-        const finalCollection: Collection<number, DatabaseChannelActivity> =
+    ): Promise<Collection<number, ChannelActivityData>> {
+        const finalCollection: Collection<number, ChannelActivityData> =
             new Collection();
 
-        const channelCollection: Collection<number, DatabaseChannelActivity> =
+        const channelCollection: Collection<number, ChannelActivityData> =
             await this.fetchChannelActivity(
                 channel,
                 fetchStartTime,
@@ -131,7 +153,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 for (const thread of fetchedThreads.threads.values()) {
                     const threadCollection: Collection<
                         number,
-                        DatabaseChannelActivity
+                        ChannelActivityData
                     > = await this.fetchChannelActivity(
                         thread,
                         fetchStartTime,
@@ -139,13 +161,14 @@ export abstract class MessageAnalyticsHelper extends Manager {
                     );
 
                     for (const [date, threadData] of threadCollection) {
-                        const data: DatabaseChannelActivity =
-                            finalCollection.get(date) ??
-                            DatabaseManager.aliceDb.collections.channelActivity
-                                .defaultDocument;
+                        const data: ChannelActivityData = finalCollection.get(
+                            date
+                        ) ?? {
+                            channelId: channel.id,
+                            messageCount: 0,
+                            wordsCount: 0,
+                        };
 
-                        data.channelId = channel.id;
-                        data.timestamp = date;
                         data.messageCount += threadData.messageCount;
                         data.wordsCount += threadData.wordsCount;
 
@@ -193,8 +216,8 @@ export abstract class MessageAnalyticsHelper extends Manager {
         channel: GuildTextBasedChannel,
         fetchStartTime: number,
         fetchEndTime: number
-    ): Promise<Collection<number, DatabaseChannelActivity>> {
-        const collection: Collection<number, DatabaseChannelActivity> =
+    ): Promise<Collection<number, ChannelActivityData>> {
+        const collection: Collection<number, ChannelActivityData> =
             new Collection();
 
         if (this.isChannelFiltered(channel)) {
@@ -216,10 +239,11 @@ export abstract class MessageAnalyticsHelper extends Manager {
         const currentDate: Date = new Date(fetchEndTime);
         currentDate.setUTCHours(0, 0, 0, 0);
 
-        let channelActivityData: DatabaseChannelActivity =
-            DatabaseManager.aliceDb.collections.channelActivity.defaultDocument;
-        channelActivityData.channelId = channel.id;
-        channelActivityData.timestamp = currentDate.getTime();
+        let channelActivityData: ChannelActivityData = {
+            channelId: channel.id,
+            messageCount: 0,
+            wordsCount: 0,
+        };
 
         while (currentDate.getTime() >= fetchStartTime && lastMessageID) {
             const messages: Collection<string, Message> | null =
@@ -246,11 +270,11 @@ export abstract class MessageAnalyticsHelper extends Manager {
                     collection.set(currentDate.getTime(), channelActivityData);
                     currentDate.setUTCDate(currentDate.getUTCDate() - 1);
 
-                    channelActivityData =
-                        DatabaseManager.aliceDb.collections.channelActivity
-                            .defaultDocument;
-                    channelActivityData.channelId = channel.id;
-                    channelActivityData.timestamp = currentDate.getTime();
+                    channelActivityData = {
+                        channelId: channel.id,
+                        messageCount: 0,
+                        wordsCount: 0,
+                    };
                 }
 
                 if (message.createdTimestamp < fetchStartTime) {

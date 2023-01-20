@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
 import { Collection, Guild, GuildTextBasedChannel } from "discord.js";
 import consola from "consola";
-import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
+import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -18,6 +18,8 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!interaction.inGuild()) {
         return;
     }
+
+    interaction.ephemeral = true;
 
     const localization: MessageanalyticsLocalization =
         new MessageanalyticsLocalization(
@@ -48,7 +50,6 @@ export const run: SlashSubcommand<true>["run"] = async (
     );
 
     const toDate: Date = new Date();
-
     toDate.setUTCHours(0, 0, 0, 0);
 
     if (interaction.options.getString("untildate")) {
@@ -76,14 +77,6 @@ export const run: SlashSubcommand<true>["run"] = async (
     const channelsToFetch: GuildTextBasedChannel[] = [];
 
     if ((interaction.options.getString("scope") ?? "channel") === "channel") {
-        if (interaction.guildId !== guild.id) {
-            return InteractionHelper.reply(interaction, {
-                content: MessageCreator.createReject(
-                    localization.getTranslation("wrongServer")
-                ),
-            });
-        }
-
         if (!interaction.channel?.isTextBased()) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
@@ -103,7 +96,11 @@ export const run: SlashSubcommand<true>["run"] = async (
         channelsToFetch.push(interaction.channel);
     } else {
         for (const channel of guild.channels.cache.values()) {
-            if (channel.isTextBased()) {
+            if (
+                channel.isTextBased() &&
+                !channel.isThread() &&
+                !MessageAnalyticsHelper.isChannelFiltered(channel)
+            ) {
                 channelsToFetch.push(channel);
             }
         }
@@ -128,7 +125,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
         consola.info(`Fetching messages in #${channel.name}`);
 
-        const messageData: Collection<number, DatabaseChannelActivity> =
+        const messageData: Collection<number, ChannelActivityData> =
             await MessageAnalyticsHelper.getChannelActivity(
                 channel,
                 fromDate.getTime(),
@@ -146,24 +143,29 @@ export const run: SlashSubcommand<true>["run"] = async (
         );
 
         for (const [date, activity] of messageData) {
-            const channelData: ChannelActivity =
+            const channelActivity: ChannelActivity =
                 guildMessageAnalyticsData.get(date) ??
                 DatabaseManager.aliceDb.collections.channelActivity
                     .defaultInstance;
 
-            channelData.channelId = channel.id;
-            channelData.timestamp = date;
+            channelActivity.timestamp = date;
+            const channelData: ChannelActivityData =
+                channelActivity.channels.get(channel.id) ?? {
+                    channelId: channel.id,
+                    messageCount: 0,
+                    wordsCount: 0,
+                };
             channelData.messageCount += activity.messageCount;
             channelData.wordsCount += activity.wordsCount;
 
-            guildMessageAnalyticsData.set(date, channelData);
+            channelActivity.channels.set(channel.id, channelData);
+            guildMessageAnalyticsData.set(date, channelActivity);
 
             await DatabaseManager.aliceDb.collections.channelActivity.updateOne(
-                { timestamp: date, channelId: channel.id },
+                { timestamp: date },
                 {
                     $set: {
-                        messageCount: channelData.messageCount,
-                        wordsCount: channelData.wordsCount,
+                        channels: [...channelActivity.channels.values()],
                     },
                 },
                 { upsert: true }

@@ -2,7 +2,6 @@ import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseColl
 import { ChannelActivity } from "@alice-database/utils/aliceDb/ChannelActivity";
 import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
 import { Collection as DiscordCollection } from "discord.js";
-import { Filter, WithId } from "mongodb";
 
 /**
  * A manager for the `channelactivity` collection.
@@ -20,10 +19,8 @@ export class ChannelActivityCollectionManager extends DatabaseCollectionManager<
         date.setUTCHours(0, 0, 0, 0);
 
         return {
-            channelId: "",
             timestamp: date.getTime(),
-            messageCount: 0,
-            wordsCount: 0,
+            channels: [],
         };
     }
 
@@ -38,13 +35,11 @@ export class ChannelActivityCollectionManager extends DatabaseCollectionManager<
         from: number,
         to: number
     ): Promise<DiscordCollection<number, ChannelActivity>> {
-        const query: Filter<WithId<DatabaseChannelActivity>> = {
+        return this.get("timestamp", {
             timestamp: {
                 $gte: from,
                 $lte: to,
             },
-        };
-
-        return this.get("timestamp", query);
+        });
     }
 }
