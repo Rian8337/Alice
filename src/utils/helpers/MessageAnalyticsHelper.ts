@@ -1,16 +1,17 @@
+import wordsCount from "words-count";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
 import { Manager } from "@alice-utils/base/Manager";
 import {
     Collection,
     FetchedThreads,
     Guild,
-    GuildBasedChannel,
     GuildChannel,
+    GuildTextBasedChannel,
     Message,
     MessageManager,
     Snowflake,
-    TextBasedChannel,
     TextChannel,
     ThreadChannel,
 } from "discord.js";
@@ -30,6 +31,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
         "360715303149240321",
         "360715871187894273",
         "360715992621514752",
+        "836625830142017557",
     ];
 
     /**
@@ -64,8 +66,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
         const guild: Guild = await this.client.guilds.fetch(
             Constants.mainServer
         );
-
-        const channelData: Collection<Snowflake, number> = new Collection();
+        const previousDay: number = newDailyTime - 86400 * 1000;
 
         for (const channel of guild.channels.cache.values()) {
             if (this.isChannelFiltered(channel)) {
@@ -76,28 +77,23 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 continue;
             }
 
-            const finalCounts: Collection<number, number> =
-                await this.getChannelMessageCount(
+            const finalActivity: Collection<number, DatabaseChannelActivity> =
+                await this.getChannelActivity(
                     channel,
-                    newDailyTime - 86400 * 1000,
+                    previousDay,
                     newDailyTime
                 );
 
-            channelData.set(
-                channel.id,
-                finalCounts.reduce((a, v) => a + v, 0)
-            );
+            for (const [timestamp, activity] of finalActivity) {
+                await DatabaseManager.aliceDb.collections.channelActivity.updateOne(
+                    { timestamp: timestamp, channelId: channel.id },
+                    {
+                        $set: activity,
+                    },
+                    { upsert: true }
+                );
+            }
         }
-
-        await DatabaseManager.aliceDb.collections.channelData.updateOne(
-            { timestamp: newDailyTime - 86400 * 1000 },
-            {
-                $set: {
-                    channels: channelData.map((value, key) => [key, value]),
-                },
-            },
-            { upsert: true }
-        );
     }
 
     /**
@@ -107,72 +103,82 @@ export abstract class MessageAnalyticsHelper extends Manager {
      * @param channel The channel.
      * @param fetchStartTime The time at which messages will start being counted, in milliseconds.
      * @param fetchEndTime The time at which messages will stop being counted, in milliseconds.
-     * @returns A collection of amount of messages per day, mapped by the epoch time of the day, in milliseconds.
+     * @returns A collection of channel activity data for each day, mapped by the epoch time of the day, in milliseconds.
      */
-    static async getChannelMessageCount(
-        channel: GuildBasedChannel & TextBasedChannel,
+    static async getChannelActivity(
+        channel: GuildTextBasedChannel,
         fetchStartTime: number,
         fetchEndTime: number
-    ): Promise<Collection<number, number>> {
-        const finalCollection: Collection<number, number> = new Collection();
+    ): Promise<Collection<number, DatabaseChannelActivity>> {
+        const finalCollection: Collection<number, DatabaseChannelActivity> =
+            new Collection();
 
-        const channelCollection: Collection<number, number> =
-            await this.getUserMessagesCount(
+        const channelCollection: Collection<number, DatabaseChannelActivity> =
+            await this.fetchChannelActivity(
                 channel,
                 fetchStartTime,
                 fetchEndTime
             );
 
-        for (const [date, amount] of channelCollection.entries()) {
-            finalCollection.set(date, amount);
+        for (const [date, data] of channelCollection) {
+            finalCollection.set(date, data);
         }
 
         if (channel instanceof TextChannel) {
-            // Count threads for text channels
-            const activeThreads: FetchedThreads =
-                await channel.threads.fetchActive();
-
-            for (const activeThread of activeThreads.threads.values()) {
-                const threadCollection: Collection<number, number> =
-                    await this.getUserMessagesCount(
-                        activeThread,
+            const fetchThreadActivity = async (
+                fetchedThreads: FetchedThreads
+            ) => {
+                for (const thread of fetchedThreads.threads.values()) {
+                    const threadCollection: Collection<
+                        number,
+                        DatabaseChannelActivity
+                    > = await this.fetchChannelActivity(
+                        thread,
                         fetchStartTime,
                         fetchEndTime
                     );
 
-                for (const [date, amount] of threadCollection) {
-                    finalCollection.set(
-                        date,
-                        (finalCollection.get(date) ?? 0) + amount
-                    );
+                    for (const [date, threadData] of threadCollection) {
+                        const data: DatabaseChannelActivity =
+                            finalCollection.get(date) ??
+                            DatabaseManager.aliceDb.collections.channelActivity
+                                .defaultDocument;
+
+                        data.channelId = channel.id;
+                        data.timestamp = date;
+                        data.messageCount += threadData.messageCount;
+                        data.wordsCount += threadData.wordsCount;
+
+                        finalCollection.set(date, data);
+                    }
                 }
-            }
+            };
 
-            const archivedThreads: FetchedThreads =
-                await channel.threads.fetchArchived({ fetchAll: true });
-
-            for (const archivedThread of archivedThreads.threads.values()) {
-                const threadCollection: Collection<number, number> =
-                    await this.getUserMessagesCount(
-                        archivedThread,
-                        fetchStartTime,
-                        fetchEndTime
-                    );
-
-                for (const [date, amount] of threadCollection) {
-                    finalCollection.set(
-                        date,
-                        (finalCollection.get(date) ?? 0) + amount
-                    );
-                }
-            }
+            // Count threads for text channels.
+            await fetchThreadActivity(await channel.threads.fetchActive());
+            await fetchThreadActivity(
+                await channel.threads.fetchArchived({ fetchAll: true })
+            );
         }
 
         return finalCollection;
     }
 
     /**
-     * Gets the amount of messages sent by users in a channel within the specified period of time.
+     * Checks whether a channel is filtered.
+     *
+     * @param channel The channel to check.
+     * @returns Whether the channel is filtered.
+     */
+    static isChannelFiltered(channel: GuildChannel | ThreadChannel): boolean {
+        return (
+            this.filteredCategories.includes(<Snowflake>channel.parentId) ||
+            this.filteredChannels.includes(channel.id)
+        );
+    }
+
+    /**
+     * Gets the channel activity of a channel within the specified period of time.
      *
      * IMPORTANT: The bot will start searching from the most recent message instead of
      * from the specified time, therefore this operation is quite expensive. Make sure that
@@ -181,23 +187,22 @@ export abstract class MessageAnalyticsHelper extends Manager {
      * @param channel The channel.
      * @param fetchStartTime The time at which user messages will start being counted, in milliseconds.
      * @param fetchEndTime The time at which user messages will stop being counted, in milliseconds.
-     * @returns The amount of messages sent by users in the channel.
+     * @returns A collection of channel activity data for each day, mapped by the epoch time of the day, in milliseconds.
      */
-    private static async getUserMessagesCount(
-        channel: GuildBasedChannel & TextBasedChannel,
+    private static async fetchChannelActivity(
+        channel: GuildTextBasedChannel,
         fetchStartTime: number,
         fetchEndTime: number
-    ): Promise<Collection<number, number>> {
-        const collection: Collection<number, number> = new Collection();
+    ): Promise<Collection<number, DatabaseChannelActivity>> {
+        const collection: Collection<number, DatabaseChannelActivity> =
+            new Collection();
 
         if (this.isChannelFiltered(channel)) {
             return collection;
         }
 
         const fetchCount: number = 100;
-
         const messageManager: MessageManager = channel.messages;
-
         const lastMessage: Message | undefined = (
             await messageManager.fetch({ limit: 1 })
         ).first();
@@ -208,11 +213,13 @@ export abstract class MessageAnalyticsHelper extends Manager {
             return collection;
         }
 
-        let validCount: number = 0;
-
         const currentDate: Date = new Date(fetchEndTime);
-
         currentDate.setUTCHours(0, 0, 0, 0);
+
+        let channelActivityData: DatabaseChannelActivity =
+            DatabaseManager.aliceDb.collections.channelActivity.defaultDocument;
+        channelActivityData.channelId = channel.id;
+        channelActivityData.timestamp = currentDate.getTime();
 
         while (currentDate.getTime() >= fetchStartTime && lastMessageID) {
             const messages: Collection<string, Message> | null =
@@ -235,11 +242,15 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 }
 
                 if (message.createdTimestamp < currentDate.getTime()) {
-                    collection.set(currentDate.getTime(), validCount);
-
+                    // The day is over, save current data.
+                    collection.set(currentDate.getTime(), channelActivityData);
                     currentDate.setUTCDate(currentDate.getUTCDate() - 1);
 
-                    validCount = 0;
+                    channelActivityData =
+                        DatabaseManager.aliceDb.collections.channelActivity
+                            .defaultDocument;
+                    channelActivityData.channelId = channel.id;
+                    channelActivityData.timestamp = currentDate.getTime();
                 }
 
                 if (message.createdTimestamp < fetchStartTime) {
@@ -247,28 +258,18 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 }
 
                 if (!message.author.bot) {
-                    ++validCount;
+                    ++channelActivityData.messageCount;
+                    channelActivityData.wordsCount += wordsCount(
+                        message.content
+                    );
                 }
             }
 
             lastMessageID = messages.last()?.id;
 
-            collection.set(currentDate.getTime(), validCount);
+            collection.set(currentDate.getTime(), channelActivityData);
         }
 
         return collection;
-    }
-
-    /**
-     * Checks whether a channel is filtered.
-     *
-     * @param channel The channel to check.
-     * @returns Whether the channel is filtered.
-     */
-    static isChannelFiltered(channel: GuildChannel | ThreadChannel): boolean {
-        return (
-            this.filteredCategories.includes(<Snowflake>channel.parentId) ||
-            this.filteredChannels.includes(channel.id)
-        );
     }
 }

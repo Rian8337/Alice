@@ -2,7 +2,7 @@ import { Db } from "mongodb";
 import { AskCountCollectionManager } from "./managers/aliceDb/AskCountCollectionManager";
 import { BirthdayCollectionManager } from "./managers/aliceDb/BirthdayCollectionManager";
 import { ChallengeCollectionManager } from "./managers/aliceDb/ChallengeCollectionManager";
-import { ChannelDataCollectionManager } from "./managers/aliceDb/ChannelDataCollectionManager";
+import { ChannelActivityCollectionManager } from "./managers/aliceDb/ChannelDataCollectionManager";
 import { GuildSettingsCollectionManager } from "./managers/aliceDb/GuildSettingsCollectionManager";
 import { ClanAuctionCollectionManager } from "./managers/aliceDb/ClanAuctionCollectionManager";
 import { EightBallFilterCollectionManager } from "./managers/aliceDb/EightBallFilterCollectionManager";
@@ -51,9 +51,9 @@ export class AliceDBCollection {
     readonly birthday: BirthdayCollectionManager;
 
     /**
-     * The database collection for data about channel activities in specific times.
+     * The database collection for channel activities in specific days.
      */
-    readonly channelData: ChannelDataCollectionManager;
+    readonly channelActivity: ChannelActivityCollectionManager;
 
     /**
      * The database collection for guilds' settings.
@@ -206,8 +206,8 @@ export class AliceDBCollection {
         this.birthday = new BirthdayCollectionManager(
             aliceDb.collection("birthday")
         );
-        this.channelData = new ChannelDataCollectionManager(
-            aliceDb.collection("channeldata")
+        this.channelActivity = new ChannelActivityCollectionManager(
+            aliceDb.collection("channelactivity")
         );
         this.challenge = new ChallengeCollectionManager(
             aliceDb.collection("challenge")

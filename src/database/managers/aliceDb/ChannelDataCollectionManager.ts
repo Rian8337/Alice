@@ -1,28 +1,29 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
-import { DatabaseChannelData } from "structures/database/aliceDb/DatabaseChannelData";
+import { ChannelActivity } from "@alice-database/utils/aliceDb/ChannelActivity";
+import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
 import { Collection as DiscordCollection } from "discord.js";
 import { Filter, WithId } from "mongodb";
 
 /**
- * A manager for the `channeldata` collection.
+ * A manager for the `channelactivity` collection.
  */
-export class ChannelDataCollectionManager extends DatabaseCollectionManager<
-    DatabaseChannelData,
-    ChannelData
+export class ChannelActivityCollectionManager extends DatabaseCollectionManager<
+    DatabaseChannelActivity,
+    ChannelActivity
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseChannelData
-    ) => ChannelData = ChannelData;
+        data: DatabaseChannelActivity
+    ) => ChannelActivity = ChannelActivity;
 
-    override get defaultDocument(): DatabaseChannelData {
+    override get defaultDocument(): DatabaseChannelActivity {
         const date: Date = new Date();
-
         date.setUTCHours(0, 0, 0, 0);
 
         return {
+            channelId: "",
             timestamp: date.getTime(),
-            channels: [],
+            messageCount: 0,
+            wordsCount: 0,
         };
     }
 
@@ -36,8 +37,8 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<
     getFromTimestampRange(
         from: number,
         to: number
-    ): Promise<DiscordCollection<number, ChannelData>> {
-        const query: Filter<WithId<DatabaseChannelData>> = {
+    ): Promise<DiscordCollection<number, ChannelActivity>> {
+        const query: Filter<WithId<DatabaseChannelActivity>> = {
             timestamp: {
                 $gte: from,
                 $lte: to,

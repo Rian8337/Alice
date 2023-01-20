@@ -20,6 +20,7 @@ export class MessageanalyticsENTranslation extends Translation<MessageanalyticsS
         messageFetchStarted: "Successfully started message data fetching.",
         messageFetchDone: "%s, message data fetch done!",
         messageCount: "messages",
+        wordsCount: "words",
         generalChannels: "General Channels",
         languageChannels: "Language Channels",
         clanChannels: "Clan Channels",

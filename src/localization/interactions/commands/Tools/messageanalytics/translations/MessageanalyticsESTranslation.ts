@@ -22,6 +22,7 @@ export class MessageanalyticsESTranslation extends Translation<MessageanalyticsS
         messageFetchStarted: "Analisis de mensajes iniciado correctamente.",
         messageFetchDone: "%s, analisis finalizado!",
         messageCount: "mensajes",
+        wordsCount: "",
         generalChannels: "Canales Generales",
         languageChannels: "Canales por Lenguaje",
         clanChannels: "Canales de Clan",

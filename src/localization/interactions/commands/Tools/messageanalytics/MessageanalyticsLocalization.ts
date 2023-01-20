@@ -15,6 +15,7 @@ export interface MessageanalyticsStrings {
     readonly messageFetchStarted: string;
     readonly messageFetchDone: string;
     readonly messageCount: string;
+    readonly wordsCount: string;
     readonly generalChannels: string;
     readonly languageChannels: string;
     readonly clanChannels: string;

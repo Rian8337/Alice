@@ -1,19 +1,15 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
+import { ChannelActivity } from "@alice-database/utils/aliceDb/ChannelActivity";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MessageanalyticsLocalization } from "@alice-localization/interactions/commands/Tools/messageanalytics/MessageanalyticsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
-import {
-    Collection,
-    Guild,
-    GuildBasedChannel,
-    TextBasedChannel,
-} from "discord.js";
+import { Collection, Guild, GuildTextBasedChannel } from "discord.js";
 import consola from "consola";
+import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -77,8 +73,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     }
 
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
-
-    const channelsToFetch: (GuildBasedChannel & TextBasedChannel)[] = [];
+    const channelsToFetch: GuildTextBasedChannel[] = [];
 
     if ((interaction.options.getString("scope") ?? "channel") === "channel") {
         if (interaction.guildId !== guild.id) {
@@ -120,8 +115,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         ),
     });
 
-    const guildMessageAnalyticsData: Collection<number, ChannelData> =
-        await DatabaseManager.aliceDb.collections.channelData.getFromTimestampRange(
+    const guildMessageAnalyticsData: Collection<number, ChannelActivity> =
+        await DatabaseManager.aliceDb.collections.channelActivity.getFromTimestampRange(
             fromDate.getTime(),
             toDate.getTime()
         );
@@ -133,8 +128,8 @@ export const run: SlashSubcommand<true>["run"] = async (
 
         consola.info(`Fetching messages in #${channel.name}`);
 
-        const messageData: Collection<number, number> =
-            await MessageAnalyticsHelper.getChannelMessageCount(
+        const messageData: Collection<number, DatabaseChannelActivity> =
+            await MessageAnalyticsHelper.getChannelActivity(
                 channel,
                 fromDate.getTime(),
                 toDate.getTime()
@@ -142,30 +137,33 @@ export const run: SlashSubcommand<true>["run"] = async (
 
         consola.info(
             `Channel #${channel.name} has ${messageData.reduce(
-                (a, v) => a + v,
+                (a, v) => a + v.messageCount,
                 0
-            )} messages`
+            )} messages and ${messageData.reduce(
+                (a, v) => a + v.wordsCount,
+                0
+            )} words`
         );
 
-        for (const [date, count] of messageData) {
-            const channelData: ChannelData =
+        for (const [date, activity] of messageData) {
+            const channelData: ChannelActivity =
                 guildMessageAnalyticsData.get(date) ??
-                DatabaseManager.aliceDb.collections.channelData.defaultInstance;
+                DatabaseManager.aliceDb.collections.channelActivity
+                    .defaultInstance;
 
+            channelData.channelId = channel.id;
             channelData.timestamp = date;
-
-            channelData.channels.set(channel.id, count);
+            channelData.messageCount += activity.messageCount;
+            channelData.wordsCount += activity.wordsCount;
 
             guildMessageAnalyticsData.set(date, channelData);
 
-            await DatabaseManager.aliceDb.collections.channelData.updateOne(
-                { timestamp: date },
+            await DatabaseManager.aliceDb.collections.channelActivity.updateOne(
+                { timestamp: date, channelId: channel.id },
                 {
                     $set: {
-                        channels: channelData.channels.map((value, key) => [
-                            key,
-                            value,
-                        ]),
+                        messageCount: channelData.messageCount,
+                        wordsCount: channelData.wordsCount,
                     },
                 },
                 { upsert: true }

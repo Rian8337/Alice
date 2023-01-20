@@ -19,6 +19,7 @@ export class MessageanalyticsKRTranslation extends Translation<MessageanalyticsS
         messageFetchStarted: "성공적으로 메시지 데이터 가져오기를 시작했어요.",
         messageFetchDone: "%s, 메시지 데이터 가져오기가 완료됐어요!",
         messageCount: "메시지 개수",
+        wordsCount: "",
         generalChannels: "일반 채널",
         languageChannels: "언어 채널",
         clanChannels: "클랜 채널",

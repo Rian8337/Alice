@@ -14,8 +14,8 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
-import { ChannelDataCollectionManager } from "@alice-database/managers/aliceDb/ChannelDataCollectionManager";
+import { ChannelActivity } from "@alice-database/utils/aliceDb/ChannelActivity";
+import { ChannelActivityCollectionManager } from "@alice-database/managers/aliceDb/ChannelDataCollectionManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import {
     MessageanalyticsLocalization,
@@ -45,8 +45,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         );
 
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
-    const dbManager: ChannelDataCollectionManager =
-        DatabaseManager.aliceDb.collections.channelData;
+    const dbManager: ChannelActivityCollectionManager =
+        DatabaseManager.aliceDb.collections.channelActivity;
 
     const date: Date = new Date();
 
@@ -90,7 +90,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     const clansParent: Snowflake = "696646649128288346";
     const languageParent: Snowflake = "440045164422103050";
 
-    let activityData: Collection<number, ChannelData>;
+    let activityData: Collection<number, ChannelActivity>;
 
     const type: string = interaction.options.getString("type") ?? "overall";
 
@@ -135,19 +135,23 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const sortedChannelData: Collection<Snowflake, number> = new Collection();
+    const sortedChannelData: Collection<Snowflake, ChannelActivity> =
+        new Collection();
 
-    // Map to each channel
+    // Map to each channel.
     for (const data of activityData.values()) {
-        for (const [channelId, count] of data.channels) {
-            sortedChannelData.set(
-                channelId,
-                (sortedChannelData.get(channelId) ?? 0) + count
-            );
+        const existingData: ChannelActivity =
+            sortedChannelData.get(data.channelId) ?? data;
+        if (sortedChannelData.has(data.channelId)) {
+            existingData.messageCount += data.messageCount;
+            existingData.wordsCount += data.wordsCount;
         }
+
+        sortedChannelData.set(data.channelId, existingData);
     }
 
-    sortedChannelData.sort((a, b) => b - a);
+    // Sort by words count as it is the preferred way to measure activity.
+    sortedChannelData.sort((a, b) => b.wordsCount - a.wordsCount);
 
     let generalDescription: string = "";
     let clansDescription: string = "";
@@ -162,13 +166,18 @@ export const run: SlashSubcommand<true>["run"] = async (
             continue;
         }
 
-        const msg: string = `${channel}: ${count.toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )} ${localization.getTranslation("messageCount")}\n`;
+        const BCP47: string = LocaleHelper.convertToBCP47(
+            localization.language
+        );
+        const msg: string = `${channel}: ${count.messageCount.toLocaleString(
+            BCP47
+        )} ${localization.getTranslation(
+            "messageCount"
+        )}, ${count.wordsCount.toLocaleString(
+            BCP47
+        )} ${localization.getTranslation("wordsCount")}\n`;
 
-        if (
-            [generalParent, droidParent].includes(<Snowflake>channel.parentId)
-        ) {
+        if ([generalParent, droidParent].includes(channel.parentId!)) {
             generalDescription += msg;
         } else if (channel.parentId === clansParent) {
             clansDescription += msg;
