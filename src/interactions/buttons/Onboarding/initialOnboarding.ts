@@ -1,0 +1,80 @@
+import { Config } from "@alice-core/Config";
+import { Symbols } from "@alice-enums/utils/Symbols";
+import { InitialOnboardingLocalization } from "@alice-localization/interactions/buttons/Onboarding/initialOnboarding/InitialOnboardingLocalization";
+import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
+import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import {
+    ActionRowBuilder,
+    bold,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+    userMention,
+} from "discord.js";
+
+export const run: ButtonCommand["run"] = async (client, interaction) => {
+    const localization: InitialOnboardingLocalization =
+        new InitialOnboardingLocalization(
+            await CommandHelper.getLocale(interaction)
+        );
+
+    if (!interaction.message.mentions.has(interaction.user)) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("onboardingFeatureNotForUser")
+            ),
+        });
+    }
+
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: "#1cb845",
+    });
+
+    embed
+        .setTitle(localization.getTranslation("welcomeToServer"))
+        .setDescription(
+            bold(localization.getTranslation("accidentalDismissPrompt")) +
+                "\n\n" +
+                StringHelper.formatString(
+                    localization.getTranslation("botIntroduction"),
+                    client.user.toString(),
+                    userMention(Config.botOwners[0]),
+                    userMention(Config.botOwners[1])
+                ) +
+                "\n\n" +
+                localization.getTranslation("onboardingPurpose") +
+                "\n\n" +
+                localization.getTranslation("beginOnboarding")
+        );
+
+    const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder();
+
+    // TODO: recent plays and pp introduction
+    row.addComponents(
+        new ButtonBuilder()
+            .setCustomId("bindAccount")
+            .setEmoji(Symbols.lockWithKey)
+            .setStyle(ButtonStyle.Primary)
+            .setLabel(localization.getTranslation("bindAccount"))
+        // new ButtonBuilder()
+        //     .setCustomId("recentPlays")
+        //     .setEmoji(Symbols.bookmarkTabs)
+        //     .setStyle(ButtonStyle.Secondary)
+        //     .setLabel(localization.getTranslation("recentPlays"))
+    );
+
+    InteractionHelper.reply(interaction, {
+        embeds: [embed],
+        components: [row],
+    });
+};
+
+export const config: ButtonCommand["config"] = {
+    name: "initialOnboarding",
+    replyEphemeral: true,
+};

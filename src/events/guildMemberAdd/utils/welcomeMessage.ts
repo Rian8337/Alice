@@ -1,7 +1,15 @@
-import { GuildBasedChannel, GuildMember } from "discord.js";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    GuildBasedChannel,
+    GuildMember,
+    MessageCreateOptions,
+} from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     if (member.guild.id !== Constants.mainServer) {
@@ -12,18 +20,37 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
         Constants.mainServer
     );
 
-    if (general?.isTextBased()) {
-        general.send({
-            content: `Welcome ${
-                (await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
-                    member.id
-                ))
-                    ? "back "
-                    : ""
-            }to ${member.guild.name}, ${member}!`,
-            files: [Constants.welcomeImageLink],
-        });
+    if (!general?.isTextBased()) {
+        return;
     }
+
+    const isBinded: boolean =
+        await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
+            member.id
+        );
+
+    const options: MessageCreateOptions = {
+        content: `Welcome ${isBinded ? "back " : ""}to ${
+            member.guild.name
+        }, ${member}!`,
+        files: [Constants.welcomeImageLink],
+    };
+
+    if (!isBinded) {
+        const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder();
+
+        row.addComponents(
+            new ButtonBuilder()
+                .setCustomId("initialOnboarding")
+                .setEmoji(Symbols.wavingHand)
+                .setStyle(ButtonStyle.Primary)
+                .setLabel("Bot Introduction")
+        );
+
+        options.components = [row];
+    }
+
+    general.send(options);
 };
 
 export const config: EventUtil["config"] = {

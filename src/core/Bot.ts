@@ -28,6 +28,7 @@ import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
 import { Config } from "./Config";
 import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler";
 import { AutocompleteSubhandler } from "@alice-structures/core/AutocompleteSubhandler";
+import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 
 /**
  * The starting point of the bot.
@@ -40,6 +41,7 @@ export class Bot extends Client<true> {
      */
     readonly interactions: BotInteractions = {
         autocomplete: new Collection(),
+        button: new Collection(),
         chatInput: new Collection(),
         contextMenu: {
             message: new Collection(),
@@ -102,6 +104,7 @@ export class Bot extends Client<true> {
         await this.loadContextMenuCommands();
         await this.loadModalCommands();
         await this.loadAutocompleteHandlers();
+        await this.loadButtonCommands();
         await this.loadEvents();
         await DatabaseManager.init();
 
@@ -215,7 +218,6 @@ export class Bot extends Client<true> {
         commandDirectory: string
     ): Promise<void> {
         const subcommandPath: string = join(commandDirectory, "subcommands");
-
         let subcommands: string[];
 
         try {
@@ -282,7 +284,6 @@ export class Bot extends Client<true> {
         };
 
         await loadCommands(this.interactions.contextMenu.message, "message");
-
         await loadCommands(this.interactions.contextMenu.user, "user");
     }
 
@@ -437,7 +438,6 @@ export class Bot extends Client<true> {
             handlerDirectory,
             "subcommands"
         );
-
         let subcommandHandlers: string[];
 
         try {
@@ -461,6 +461,47 @@ export class Bot extends Client<true> {
             const file: AutocompleteSubhandler = await import(filePath);
 
             collection.set(s.substring(0, s.length - 3), file);
+        }
+    }
+
+    /**
+     * Loads button commands from the `interactions/buttons` directory.
+     */
+    private async loadButtonCommands(): Promise<void> {
+        consola.info("Loading button commands");
+
+        const commandPath: string = join(
+            __dirname,
+            "..",
+            "interactions",
+            "buttons"
+        );
+        const folders: string[] = await readdir(commandPath);
+
+        let i = 0;
+
+        for (const folder of folders) {
+            consola.info("%d. Loading folder %s", ++i, folder);
+            const commands: string[] = await readdir(join(commandPath, folder));
+            let j = 0;
+
+            for (const command of commands.filter((v) => v.endsWith(".js"))) {
+                consola.success(
+                    "%d.%d. %s loaded",
+                    i,
+                    ++j,
+                    command.substring(0, command.length - 3)
+                );
+
+                const file: ButtonCommand = await import(
+                    join(commandPath, folder, command)
+                );
+
+                this.interactions.button.set(
+                    command.substring(0, command.length - 3),
+                    file
+                );
+            }
         }
     }
 

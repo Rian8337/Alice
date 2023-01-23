@@ -27,4 +27,6 @@ export enum Symbols {
     personRunning = "🏃",
     inboxTray = "📥",
     magnifyingGlassTiltedRight = "🔎",
+    wavingHand = "👋",
+    lockWithKey = "🔐",
 }

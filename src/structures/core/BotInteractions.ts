@@ -1,4 +1,5 @@
 import { Collection } from "discord.js";
+import { ButtonCommand } from "./ButtonCommand";
 import { CachedAutocompleteHandler } from "./CachedAutocompleteHandler";
 import { CachedSlashCommand } from "./CachedSlashCommand";
 import { ContextMenuInteractions } from "./ContextMenuInteractions";
@@ -13,6 +14,11 @@ export interface BotInteractions {
      * by the name of the command each handler handles.
      */
     readonly autocomplete: Collection<string, CachedAutocompleteHandler>;
+
+    /**
+     * The button commands that this bot has, mapped by the name of the command.
+     */
+    readonly button: Collection<string, ButtonCommand>;
 
     /**
      * The chat input (slash) commands that this bot has, mapped by the name of the command.
