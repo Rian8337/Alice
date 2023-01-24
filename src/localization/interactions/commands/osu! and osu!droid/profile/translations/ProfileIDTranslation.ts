@@ -11,7 +11,7 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
         selfProfileNotFound: "Maaf, aku tidak dapat menemukan profilmu!",
         userProfileNotFound:
             "Maaf, aku tidak dapat menemukan profile pemain tersebut!",
-        viewingProfile: "Profil osu!droid untuk [%s](%s):",
+        viewingProfile: "Profil osu!droid untuk [%s](<%s>):",
         invalidRGBAformat: "Maaf, format warna RGBA tersebut tidak benar!",
         invalidHexCode: "Maaf, format warna hex tersebut tidak benar!",
         changeInfoTextColorConfirmation:

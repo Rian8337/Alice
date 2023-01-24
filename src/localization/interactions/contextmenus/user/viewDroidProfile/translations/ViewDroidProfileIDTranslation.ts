@@ -9,6 +9,6 @@ export class ViewDroidProfileIDTranslation extends Translation<ViewDroidProfileS
         selfProfileNotFound: "Maaf, aku tidak dapat menemukan profilmu!",
         userProfileNotFound:
             "Maaf, aku tidak dapat menemukan profile pemain tersebut!",
-        viewingProfile: "Profil osu!droid untuk %s:\n<%s>",
+        viewingProfile: "Profil osu!droid untuk [%s](<%s>):",
     };
 }

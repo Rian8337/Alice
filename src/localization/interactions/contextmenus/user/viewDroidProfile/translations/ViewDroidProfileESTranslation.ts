@@ -9,6 +9,6 @@ export class ViewDroidProfileESTranslation extends Translation<ViewDroidProfileS
         selfProfileNotFound: "Lo siento, no puede encontrar tu perfil!",
         userProfileNotFound:
             "Lo siento, no puede encontrar el perfil de ese jugador!",
-        viewingProfile: "Perfil de osu!droid de %s:\n<%s>",
+        viewingProfile: "Perfil de osu!droid de [%s](<%s>):",
     };
 }
