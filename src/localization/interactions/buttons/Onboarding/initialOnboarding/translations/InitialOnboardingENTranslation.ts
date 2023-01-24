@@ -19,5 +19,6 @@ export class InitialOnboardingENTranslation extends Translation<InitialOnboardin
             "Begin by pressing any of the buttons below. They are ordered based on importance.",
         bindAccount: "Bind osu!droid account",
         recentPlays: "Show recent play(s)",
+        scoreComparison: "Compare scores",
     };
 }

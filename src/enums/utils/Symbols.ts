@@ -30,4 +30,5 @@ export enum Symbols {
     wavingHand = "👋",
     lockWithKey = "🔐",
     bookmarkTabs = "📑",
+    barChart = "📊",
 }

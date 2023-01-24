@@ -11,6 +11,7 @@ export interface InitialOnboardingStrings {
     readonly beginOnboarding: string;
     readonly bindAccount: string;
     readonly recentPlays: string;
+    readonly scoreComparison: string;
 }
 
 /**

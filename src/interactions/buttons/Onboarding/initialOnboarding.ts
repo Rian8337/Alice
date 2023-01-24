@@ -65,7 +65,12 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
             .setCustomId("onboardingRecentPlays")
             .setEmoji(Symbols.bookmarkTabs)
             .setStyle(ButtonStyle.Secondary)
-            .setLabel(localization.getTranslation("recentPlays"))
+            .setLabel(localization.getTranslation("recentPlays")),
+        new ButtonBuilder()
+            .setCustomId("onboardingScoreComparison")
+            .setEmoji(Symbols.barChart)
+            .setStyle(ButtonStyle.Secondary)
+            .setLabel(localization.getTranslation("scoreComparison"))
     );
 
     InteractionHelper.reply(interaction, {
