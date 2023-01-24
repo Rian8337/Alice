@@ -79,7 +79,7 @@ export const run: EventUtil["run"] = async (
         CommandHelper.setCooldown(
             cooldownKey,
             Math.max(
-                command.config.cooldown ?? 0,
+                command.config?.cooldown ?? 0,
                 CommandUtilManager.globalCommandCooldown
             )
         );

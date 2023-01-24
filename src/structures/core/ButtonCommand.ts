@@ -16,12 +16,7 @@ export interface ButtonCommand {
     /**
      * Configurations for the command.
      */
-    readonly config: {
-        /**
-         * The name of the command.
-         */
-        readonly name: string;
-
+    readonly config?: {
         /**
          * The cooldown of the command, in seconds.
          */
