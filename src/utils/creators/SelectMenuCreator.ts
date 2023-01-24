@@ -12,6 +12,7 @@ import {
     StringSelectMenuComponent,
     StringSelectMenuInteraction,
     Snowflake,
+    ComponentType,
 } from "discord.js";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import { MessageCreator } from "./MessageCreator";
@@ -27,7 +28,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
  */
 export abstract class SelectMenuCreator extends InteractionCollectorCreator {
     /**
-     * Creates a select menu.
+     * Creates a string select menu.
      *
      * @param interaction The interaction that triggered the select menu.
      * @param options Message options to ask the user to choose.
@@ -36,7 +37,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * @param duration The duration the select menu will be active for.
      * @returns The interaction with the user.
      */
-    static async createSelectMenu(
+    static async createStringSelectMenu(
         interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         choices: SelectMenuComponentOptionData[],
@@ -78,26 +79,32 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 onPageChange
             );
 
-        const collectorOptions = this.createSelectMenuCollector(
-            message,
-            duration,
-            (i) =>
-                selectMenu.data.custom_id === i.customId &&
-                users.includes(i.user.id),
-            (m) => {
-                const row: ActionRow<MessageActionRowComponent> | undefined =
-                    m.components.find((c) => c.components.length === 1);
+        const collectorOptions =
+            this.createSelectMenuCollector<ComponentType.StringSelect>(
+                message,
+                duration,
+                (i) =>
+                    i.isStringSelectMenu() &&
+                    selectMenu.data.custom_id === i.customId &&
+                    users.includes(i.user.id),
+                (m) => {
+                    const row:
+                        | ActionRow<MessageActionRowComponent>
+                        | undefined = m.components.find(
+                        (c) => c.components.length === 1
+                    );
 
-                if (!row) {
-                    return false;
+                    if (!row) {
+                        return false;
+                    }
+
+                    return (
+                        row.components[0] instanceof
+                            StringSelectMenuComponent &&
+                        row.components[0].customId === selectMenu.data.custom_id
+                    );
                 }
-
-                return (
-                    row.components[0] instanceof StringSelectMenuComponent &&
-                    row.components[0].customId === selectMenu.data.custom_id
-                );
-            }
-        );
+            );
 
         const { collector } = collectorOptions;
 

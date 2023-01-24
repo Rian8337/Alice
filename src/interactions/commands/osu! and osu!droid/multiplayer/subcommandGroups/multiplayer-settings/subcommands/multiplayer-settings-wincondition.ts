@@ -59,7 +59,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         room.settings.winCondition;
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createSelectMenu(
+        await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(

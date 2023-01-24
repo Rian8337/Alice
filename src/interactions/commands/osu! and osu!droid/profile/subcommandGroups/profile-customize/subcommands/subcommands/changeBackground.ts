@@ -59,7 +59,7 @@ export const run: SlashSubcommand<false>["run"] = async (
     const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createSelectMenu(
+        await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(

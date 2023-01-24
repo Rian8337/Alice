@@ -60,7 +60,7 @@ export abstract class CommandHelper extends Manager {
         placeholder: string
     ): Promise<unknown> {
         const selectMenuInteraction: StringSelectMenuInteraction | null =
-            await SelectMenuCreator.createSelectMenu(
+            await SelectMenuCreator.createStringSelectMenu(
                 interaction,
                 {
                     content: MessageCreator.createWarn(placeholder),

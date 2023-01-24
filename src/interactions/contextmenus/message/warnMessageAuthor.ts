@@ -31,7 +31,7 @@ export const run: MessageContextMenuCommand["run"] = async (
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     let selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createSelectMenu(
+        await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(
@@ -58,7 +58,7 @@ export const run: MessageContextMenuCommand["run"] = async (
 
     const points: number = parseInt(selectMenuInteraction.values[0]);
 
-    selectMenuInteraction = await SelectMenuCreator.createSelectMenu(
+    selectMenuInteraction = await SelectMenuCreator.createStringSelectMenu(
         interaction,
         {
             content: MessageCreator.createWarn(

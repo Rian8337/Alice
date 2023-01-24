@@ -34,7 +34,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (interaction.options.getBoolean("forcecategory")) {
         const selectMenuInteraction: StringSelectMenuInteraction | null =
-            await SelectMenuCreator.createSelectMenu(
+            await SelectMenuCreator.createStringSelectMenu(
                 interaction,
                 {
                     content: MessageCreator.createWarn(

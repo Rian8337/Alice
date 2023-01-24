@@ -35,7 +35,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const reason: string = interaction.options.getString("reason", true);
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createSelectMenu(
+        await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(

@@ -6,9 +6,10 @@ import {
     CollectorFilter,
     ComponentType,
     InteractionCollector,
+    MappedInteractionTypes,
     Message,
+    MessageComponentType,
     PartialMessage,
-    StringSelectMenuInteraction,
 } from "discord.js";
 import { Manager } from "./Manager";
 
@@ -66,16 +67,17 @@ export abstract class InteractionCollectorCreator extends Manager {
      * If this function returns `false`, the collector will be stopped.
      * @returns An object containing the collector and a boolean state indicating whether the component was deleted.
      */
-    static createSelectMenuCollector(
+    static createSelectMenuCollector<
+        T extends Exclude<MessageComponentType, ComponentType.Button>
+    >(
         message: Message,
         duration: number,
-        filter?: CollectorFilter<[StringSelectMenuInteraction<CacheType>]>,
+        filter?: CollectorFilter<[MappedInteractionTypes[T]]>,
         componentAvailabilityListener?: (message: Message) => boolean
-    ): CollectorState<StringSelectMenuInteraction> {
-        const collector: InteractionCollector<StringSelectMenuInteraction> =
+    ): CollectorState<MappedInteractionTypes[T]> {
+        const collector: InteractionCollector<MappedInteractionTypes[T]> =
             message.createMessageComponentCollector({
-                filter: (i) => i.isStringSelectMenu() && (filter?.(i) ?? true),
-                componentType: ComponentType.StringSelect,
+                filter: (i) => filter?.(i) ?? true,
                 dispose: true,
                 time: duration * 1000,
             });

@@ -27,7 +27,7 @@ export const run: MessageContextMenuCommand["run"] = async (
         );
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createSelectMenu(
+        await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(

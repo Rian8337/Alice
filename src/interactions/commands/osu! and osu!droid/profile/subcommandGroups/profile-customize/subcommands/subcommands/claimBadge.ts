@@ -61,7 +61,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         await DatabaseManager.aliceDb.collections.profileBadges.get("id");
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createSelectMenu(
+        await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(

@@ -72,7 +72,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     }
 
     let selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createSelectMenu(
+        await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(
@@ -99,7 +99,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         (v) => v.id === badgeID
     )!;
 
-    selectMenuInteraction = await SelectMenuCreator.createSelectMenu(
+    selectMenuInteraction = await SelectMenuCreator.createStringSelectMenu(
         interaction,
         {
             content: MessageCreator.createWarn(

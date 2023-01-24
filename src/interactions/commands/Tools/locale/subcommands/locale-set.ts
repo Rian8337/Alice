@@ -22,7 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const scope: string = interaction.options.getString("scope", true);
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createSelectMenu(
+        await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(
