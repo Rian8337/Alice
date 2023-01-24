@@ -29,4 +29,5 @@ export enum Symbols {
     magnifyingGlassTiltedRight = "🔎",
     wavingHand = "👋",
     lockWithKey = "🔐",
+    bookmarkTabs = "📑",
 }

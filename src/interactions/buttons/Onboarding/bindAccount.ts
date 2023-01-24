@@ -9,6 +9,7 @@ import {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
+    quote,
 } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
@@ -28,7 +29,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 "\n\n" +
                 localization.getTranslation("bindingRequirement") +
                 "\n\n" +
-                `> ${localization.getTranslation("accountRegistrationQuote")}` +
+                quote(localization.getTranslation("accountRegistrationQuote")) +
                 "\n\n" +
                 localization.getTranslation("bindingConstraints") +
                 "\n\n" +

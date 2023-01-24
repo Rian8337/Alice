@@ -60,12 +60,12 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
             .setCustomId("bindAccount")
             .setEmoji(Symbols.lockWithKey)
             .setStyle(ButtonStyle.Primary)
-            .setLabel(localization.getTranslation("bindAccount"))
-        // new ButtonBuilder()
-        //     .setCustomId("recentPlays")
-        //     .setEmoji(Symbols.bookmarkTabs)
-        //     .setStyle(ButtonStyle.Secondary)
-        //     .setLabel(localization.getTranslation("recentPlays"))
+            .setLabel(localization.getTranslation("bindAccount")),
+        new ButtonBuilder()
+            .setCustomId("onboardingRecentPlays")
+            .setEmoji(Symbols.bookmarkTabs)
+            .setStyle(ButtonStyle.Secondary)
+            .setLabel(localization.getTranslation("recentPlays"))
     );
 
     InteractionHelper.reply(interaction, {

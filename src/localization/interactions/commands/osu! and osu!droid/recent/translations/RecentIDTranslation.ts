@@ -14,6 +14,6 @@ export class RecentIDTranslation extends Translation<RecentStrings> {
             "Maaf, pemain ini belum pernah mengirimkan skor!",
         playIndexOutOfBounds:
             "Maaf, pemain ini tidak memiliki skor terbaru ke-%s!",
-        recentPlayDisplay: "Skor terbaru untuk %s:",
+        recentPlayDisplay: "Skor terbaru dari %s:",
     };
 }
