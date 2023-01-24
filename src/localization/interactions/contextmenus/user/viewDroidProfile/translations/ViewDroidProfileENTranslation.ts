@@ -8,6 +8,6 @@ export class ViewDroidProfileENTranslation extends Translation<ViewDroidProfileS
     override readonly translations: ViewDroidProfileStrings = {
         selfProfileNotFound: "I'm sorry, I cannot find your profile!",
         userProfileNotFound: "I'm sorry, I cannot find the player's profile!",
-        viewingProfile: "osu!droid profile for %s:\n<%s>",
+        viewingProfile: "osu!droid profile for [%s](<%s>):",
     };
 }
