@@ -1,12 +1,12 @@
-import { BindAccountActionLocalization } from "@alice-localization/interactions/buttons/Onboarding/bindAccountAction/BindAccountActionLocalization";
+import { OnboardingBindAccountActionLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingBindAccountAction/OnboardingBindAccountActionLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: BindAccountActionLocalization =
-        new BindAccountActionLocalization(
+    const localization: OnboardingBindAccountActionLocalization =
+        new OnboardingBindAccountActionLocalization(
             await CommandHelper.getLocale(interaction)
         );
 
@@ -36,6 +36,5 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 };
 
 export const config: ButtonCommand["config"] = {
-    name: "bindAccountAction",
     instantDeferInDebug: false,
 };

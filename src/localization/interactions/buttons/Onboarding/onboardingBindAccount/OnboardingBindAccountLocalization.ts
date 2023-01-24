@@ -1,8 +1,8 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
-import { BindAccountENTranslation } from "./translations/BindAccountENTranslation";
+import { OnboardingBindAccountENTranslation } from "./translations/OnboardingBindAccountENTranslation";
 
-export interface BindAccountStrings {
+export interface OnboardingBindAccountStrings {
     readonly bindAccountEmbedTitle: string;
     readonly bindingDefinition: string;
     readonly bindingConstraints: string;
@@ -13,12 +13,12 @@ export interface BindAccountStrings {
 }
 
 /**
- * Localizations for the `bindAccount` button command.
+ * Localizations for the `onboardingBindAccount` button command.
  */
-export class BindAccountLocalization extends Localization<BindAccountStrings> {
+export class OnboardingBindAccountLocalization extends Localization<OnboardingBindAccountStrings> {
     protected override readonly localizations: Readonly<
-        Translations<BindAccountStrings>
+        Translations<OnboardingBindAccountStrings>
     > = {
-        en: new BindAccountENTranslation(),
+        en: new OnboardingBindAccountENTranslation(),
     };
 }

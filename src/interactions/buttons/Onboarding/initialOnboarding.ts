@@ -57,7 +57,7 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
     // TODO: recent plays and pp introduction
     row.addComponents(
         new ButtonBuilder()
-            .setCustomId("bindAccount")
+            .setCustomId("onBoardingBindAccount")
             .setEmoji(Symbols.lockWithKey)
             .setStyle(ButtonStyle.Primary)
             .setLabel(localization.getTranslation("bindAccount")),
@@ -75,6 +75,5 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
 };
 
 export const config: ButtonCommand["config"] = {
-    name: "initialOnboarding",
     replyEphemeral: true,
 };

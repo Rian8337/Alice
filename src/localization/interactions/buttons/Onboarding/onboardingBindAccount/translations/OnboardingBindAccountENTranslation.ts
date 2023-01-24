@@ -1,11 +1,11 @@
 import { Translation } from "@alice-localization/base/Translation";
-import { BindAccountStrings } from "../BindAccountLocalization";
+import { OnboardingBindAccountStrings } from "../OnboardingBindAccountLocalization";
 
 /**
- * The English translation for the `bindAccount` button command.
+ * The English translation for the `onboardingBindAccount` button command.
  */
-export class BindAccountENTranslation extends Translation<BindAccountStrings> {
-    override readonly translations: BindAccountStrings = {
+export class OnboardingBindAccountENTranslation extends Translation<OnboardingBindAccountStrings> {
+    override readonly translations: OnboardingBindAccountStrings = {
         bindAccountEmbedTitle: "Bind an osu!droid account",
         bindingDefinition:
             "Bind your osu!droid account to your Discord account to use most of the features that I offer.",

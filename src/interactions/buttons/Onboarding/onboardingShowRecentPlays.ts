@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ShowRecentPlaysLocalization } from "@alice-localization/interactions/buttons/Onboarding/showRecentPlays/ShowRecentPlaysLocalization";
+import { OnboardingShowRecentPlaysLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingShowRecentPlays/OnboardingShowRecentPlaysLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -9,8 +9,8 @@ import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: ShowRecentPlaysLocalization =
-        new ShowRecentPlaysLocalization(
+    const localization: OnboardingShowRecentPlaysLocalization =
+        new OnboardingShowRecentPlaysLocalization(
             await CommandHelper.getLocale(interaction)
         );
 
@@ -49,6 +49,5 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 };
 
 export const config: ButtonCommand["config"] = {
-    name: "showRecentPlays",
     replyEphemeral: true,
 };

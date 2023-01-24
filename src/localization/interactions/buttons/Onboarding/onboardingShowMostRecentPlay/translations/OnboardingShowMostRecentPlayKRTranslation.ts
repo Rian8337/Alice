@@ -1,11 +1,11 @@
 import { Translation } from "@alice-localization/base/Translation";
-import { ShowMostRecentPlayStrings } from "../ShowMostRecentPlayLocalization";
+import { OnboardingShowMostRecentPlayStrings } from "../OnboardingShowMostRecentPlayLocalization";
 
 /**
  * The Korean translation for the `showMostRecentPlay` button command.
  */
-export class ShowMostRecentPlayKRTranslation extends Translation<ShowMostRecentPlayStrings> {
-    override readonly translations: ShowMostRecentPlayStrings = {
+export class OnboardingShowMostRecentPlayKRTranslation extends Translation<OnboardingShowMostRecentPlayStrings> {
+    override readonly translations: OnboardingShowMostRecentPlayStrings = {
         userNotBinded: "",
         profileNotFound: "죄송해요, 당신의 프로필을 찾을 수 없었어요!",
         playerHasNoRecentPlays:

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ShowMostRecentPlayLocalization } from "@alice-localization/interactions/buttons/Onboarding/showMostRecentPlay/ShowMostRecentPlayLocalization";
+import { OnboardingShowMostRecentPlayLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingShowMostRecentPlay/OnboardingShowMostRecentPlayLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -17,8 +17,8 @@ import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { EmbedBuilder, GuildMember, InteractionReplyOptions } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: ShowMostRecentPlayLocalization =
-        new ShowMostRecentPlayLocalization(
+    const localization: OnboardingShowMostRecentPlayLocalization =
+        new OnboardingShowMostRecentPlayLocalization(
             await CommandHelper.getLocale(interaction)
         );
 
@@ -114,6 +114,5 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 };
 
 export const config: ButtonCommand["config"] = {
-    name: "showMostRecentPlay",
     replyEphemeral: true,
 };

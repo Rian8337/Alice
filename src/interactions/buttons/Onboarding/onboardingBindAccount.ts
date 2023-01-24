@@ -1,5 +1,5 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { BindAccountLocalization } from "@alice-localization/interactions/buttons/Onboarding/bindAccount/BindAccountLocalization";
+import { OnboardingBindAccountLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingBindAccount/OnboardingBindAccountLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -13,9 +13,10 @@ import {
 } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: BindAccountLocalization = new BindAccountLocalization(
-        await CommandHelper.getLocale(interaction)
-    );
+    const localization: OnboardingBindAccountLocalization =
+        new OnboardingBindAccountLocalization(
+            await CommandHelper.getLocale(interaction)
+        );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,
@@ -42,7 +43,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 
     row.addComponents(
         new ButtonBuilder()
-            .setCustomId("bindAccountAction")
+            .setCustomId("onboardingBindAccountAction")
             .setEmoji(Symbols.lockWithKey)
             .setStyle(ButtonStyle.Primary)
             .setLabel(localization.getTranslation("bindAccountEmbedTitle"))
@@ -55,6 +56,5 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 };
 
 export const config: ButtonCommand["config"] = {
-    name: "bindAccount",
     replyEphemeral: true,
 };
