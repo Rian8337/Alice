@@ -13,6 +13,7 @@ export interface InitialOnboardingStrings {
     readonly playerProfile: string;
     readonly recentPlays: string;
     readonly scoreComparison: string;
+    readonly droidPerformancePoints: string;
 }
 
 /**

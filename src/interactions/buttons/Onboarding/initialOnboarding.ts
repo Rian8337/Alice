@@ -54,7 +54,6 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
 
     const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder();
 
-    // TODO: recent plays and pp introduction
     row.addComponents(
         new ButtonBuilder()
             .setCustomId("onBoardingBindAccount")
@@ -75,7 +74,12 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
             .setCustomId("onboardingScoreComparison")
             .setEmoji(Symbols.barChart)
             .setStyle(ButtonStyle.Secondary)
-            .setLabel(localization.getTranslation("scoreComparison"))
+            .setLabel(localization.getTranslation("scoreComparison")),
+        new ButtonBuilder()
+            .setCustomId("onboardingPerformancePoints")
+            .setEmoji(Symbols.crown)
+            .setStyle(ButtonStyle.Secondary)
+            .setLabel(localization.getTranslation("droidPerformancePoints"))
     );
 
     InteractionHelper.reply(interaction, {

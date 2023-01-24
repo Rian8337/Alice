@@ -21,5 +21,6 @@ export class InitialOnboardingENTranslation extends Translation<InitialOnboardin
         playerProfile: "Show player profile",
         recentPlays: "Show recent play(s)",
         scoreComparison: "Compare scores",
+        droidPerformancePoints: "Droid performance points (dpp)",
     };
 }
