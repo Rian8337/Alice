@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { GuildMember, SelectMenuInteraction } from "discord.js";
+import { GuildMember, StringSelectMenuInteraction } from "discord.js";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -34,7 +34,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const selectMenuInteraction: SelectMenuInteraction | null =
+    const selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {

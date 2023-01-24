@@ -14,7 +14,7 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { SelectMenuInteraction } from "discord.js";
+import { StringSelectMenuInteraction } from "discord.js";
 import { UpdateFilter } from "mongodb";
 import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerInfo";
 
@@ -71,7 +71,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    let selectMenuInteraction: SelectMenuInteraction | null =
+    let selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {

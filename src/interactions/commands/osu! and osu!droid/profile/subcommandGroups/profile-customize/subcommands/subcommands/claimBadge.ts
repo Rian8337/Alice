@@ -8,7 +8,7 @@ import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { Collection, SelectMenuInteraction } from "discord.js";
+import { Collection, StringSelectMenuInteraction } from "discord.js";
 import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
@@ -60,7 +60,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const badgeList: Collection<string, ProfileBadge> =
         await DatabaseManager.aliceDb.collections.profileBadges.get("id");
 
-    const selectMenuInteraction: SelectMenuInteraction | null =
+    const selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {

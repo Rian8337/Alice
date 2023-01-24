@@ -9,7 +9,11 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { TriviaHelper } from "@alice-utils/helpers/TriviaHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { GuildMember, EmbedBuilder, SelectMenuInteraction } from "discord.js";
+import {
+    GuildMember,
+    EmbedBuilder,
+    StringSelectMenuInteraction,
+} from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: TriviaLocalization = new TriviaLocalization(
@@ -29,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     let category: TriviaQuestionCategory | undefined;
 
     if (interaction.options.getBoolean("forcecategory")) {
-        const selectMenuInteraction: SelectMenuInteraction | null =
+        const selectMenuInteraction: StringSelectMenuInteraction | null =
             await SelectMenuCreator.createSelectMenu(
                 interaction,
                 {

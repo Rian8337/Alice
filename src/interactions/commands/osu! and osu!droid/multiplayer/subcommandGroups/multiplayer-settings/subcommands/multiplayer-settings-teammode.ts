@@ -10,7 +10,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { SelectMenuInteraction } from "discord.js";
+import { StringSelectMenuInteraction } from "discord.js";
 import { DatabaseMultiplayerRoom } from "structures/database/aliceDb/DatabaseMultiplayerRoom";
 import { UpdateFilter } from "mongodb";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
@@ -61,7 +61,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const originalTeamMode: MultiplayerTeamMode = room.settings.teamMode;
 
-    const selectMenuInteraction: SelectMenuInteraction | null =
+    const selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {

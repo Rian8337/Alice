@@ -8,7 +8,7 @@ import {
     GuildMember,
     PermissionResolvable,
     SelectMenuComponentOptionData,
-    SelectMenuInteraction,
+    StringSelectMenuInteraction,
     Snowflake,
     ThreadChannel,
     User,
@@ -59,7 +59,7 @@ export abstract class CommandHelper extends Manager {
         subcommandChoices: SelectMenuComponentOptionData[],
         placeholder: string
     ): Promise<unknown> {
-        const selectMenuInteraction: SelectMenuInteraction | null =
+        const selectMenuInteraction: StringSelectMenuInteraction | null =
             await SelectMenuCreator.createSelectMenu(
                 interaction,
                 {
@@ -305,7 +305,7 @@ export abstract class CommandHelper extends Manager {
      * @param subcommand The subcommand to run.
      */
     private static runSlashSubOrGroup(
-        interaction: ChatInputCommandInteraction | SelectMenuInteraction,
+        interaction: ChatInputCommandInteraction | StringSelectMenuInteraction,
         subcommand?: SlashSubcommand,
         language: Language = "en"
     ): Promise<unknown> {

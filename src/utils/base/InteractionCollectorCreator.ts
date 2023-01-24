@@ -8,7 +8,7 @@ import {
     InteractionCollector,
     Message,
     PartialMessage,
-    SelectMenuInteraction,
+    StringSelectMenuInteraction,
 } from "discord.js";
 import { Manager } from "./Manager";
 
@@ -69,10 +69,10 @@ export abstract class InteractionCollectorCreator extends Manager {
     static createSelectMenuCollector(
         message: Message,
         duration: number,
-        filter?: CollectorFilter<[SelectMenuInteraction<CacheType>]>,
+        filter?: CollectorFilter<[StringSelectMenuInteraction<CacheType>]>,
         componentAvailabilityListener?: (message: Message) => boolean
-    ): CollectorState<SelectMenuInteraction> {
-        const collector: InteractionCollector<SelectMenuInteraction> =
+    ): CollectorState<StringSelectMenuInteraction> {
+        const collector: InteractionCollector<StringSelectMenuInteraction> =
             message.createMessageComponentCollector({
                 filter: (i) => i.isStringSelectMenu() && (filter?.(i) ?? true),
                 componentType: ComponentType.StringSelect,

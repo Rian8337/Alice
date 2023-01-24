@@ -12,7 +12,12 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
 import { Utils } from "@rian8337/osu-base";
-import { Embed, Guild, GuildMember, SelectMenuInteraction } from "discord.js";
+import {
+    Embed,
+    Guild,
+    GuildMember,
+    StringSelectMenuInteraction,
+} from "discord.js";
 
 export const run: MessageContextMenuCommand["run"] = async (
     client,
@@ -25,7 +30,7 @@ export const run: MessageContextMenuCommand["run"] = async (
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    let selectMenuInteraction: SelectMenuInteraction | null =
+    let selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {

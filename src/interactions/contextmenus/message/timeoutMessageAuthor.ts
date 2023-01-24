@@ -10,7 +10,12 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
-import { Embed, Guild, GuildMember, SelectMenuInteraction } from "discord.js";
+import {
+    Embed,
+    Guild,
+    GuildMember,
+    StringSelectMenuInteraction,
+} from "discord.js";
 
 export const run: MessageContextMenuCommand["run"] = async (
     client,
@@ -21,7 +26,7 @@ export const run: MessageContextMenuCommand["run"] = async (
             await CommandHelper.getLocale(interaction)
         );
 
-    const selectMenuInteraction: SelectMenuInteraction | null =
+    const selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {

@@ -1,4 +1,8 @@
-import { Collection, GuildEmoji, SelectMenuInteraction } from "discord.js";
+import {
+    Collection,
+    GuildEmoji,
+    StringSelectMenuInteraction,
+} from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
@@ -54,7 +58,7 @@ export const run: SlashSubcommand<false>["run"] = async (
 
     const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
 
-    const selectMenuInteraction: SelectMenuInteraction | null =
+    const selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {

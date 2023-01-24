@@ -8,9 +8,9 @@ import {
     MessageActionRowComponent,
     RepliableInteraction,
     StringSelectMenuBuilder,
-    SelectMenuComponent,
     SelectMenuComponentOptionData,
-    SelectMenuInteraction,
+    StringSelectMenuComponent,
+    StringSelectMenuInteraction,
     Snowflake,
 } from "discord.js";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
@@ -42,7 +42,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         choices: SelectMenuComponentOptionData[],
         users: Snowflake[],
         duration: number
-    ): Promise<SelectMenuInteraction | null> {
+    ): Promise<StringSelectMenuInteraction | null> {
         const localization: SelectMenuCreatorLocalization =
             this.getLocalization(await CommandHelper.getLocale(interaction));
 
@@ -93,7 +93,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 }
 
                 return (
-                    row.components[0] instanceof SelectMenuComponent &&
+                    row.components[0] instanceof StringSelectMenuComponent &&
                     row.components[0].customId === selectMenu.data.custom_id
                 );
             }
@@ -107,7 +107,8 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
 
         return new Promise((resolve) => {
             collector.once("end", async (collected) => {
-                const i: SelectMenuInteraction | undefined = collected.first();
+                const i: StringSelectMenuInteraction | undefined =
+                    collected.first();
 
                 if (i) {
                     const index: number = (<
@@ -115,7 +116,8 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     >options.components).findIndex((v) => {
                         return (
                             v.components.length === 1 &&
-                            v.components[0] instanceof SelectMenuComponent &&
+                            v.components[0] instanceof
+                                StringSelectMenuComponent &&
                             v.components[0].customId ===
                                 selectMenu.data.custom_id
                         );

@@ -12,7 +12,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
     ApplicationCommandOptionType,
-    SelectMenuInteraction,
+    StringSelectMenuInteraction,
 } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
@@ -34,7 +34,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason", true);
 
-    const selectMenuInteraction: SelectMenuInteraction | null =
+    const selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createSelectMenu(
             interaction,
             {
