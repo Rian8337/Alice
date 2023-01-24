@@ -62,6 +62,11 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
             .setStyle(ButtonStyle.Primary)
             .setLabel(localization.getTranslation("bindAccount")),
         new ButtonBuilder()
+            .setCustomId("onboardingPlayerProfile")
+            .setEmoji(Symbols.framedPicture)
+            .setStyle(ButtonStyle.Primary)
+            .setLabel(localization.getTranslation("playerProfile")),
+        new ButtonBuilder()
             .setCustomId("onboardingRecentPlays")
             .setEmoji(Symbols.bookmarkTabs)
             .setStyle(ButtonStyle.Secondary)

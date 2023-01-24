@@ -16,8 +16,9 @@ export class InitialOnboardingENTranslation extends Translation<InitialOnboardin
         onboardingPurpose:
             "This introduction feature is designed to allow you to grasp the core and most commonly used features that I offer.",
         beginOnboarding:
-            "Begin by pressing any of the buttons below. They are ordered based on importance.",
+            "Begin by pressing any of the buttons below. They are ordered based on priority.",
         bindAccount: "Bind osu!droid account",
+        playerProfile: "Show player profile",
         recentPlays: "Show recent play(s)",
         scoreComparison: "Compare scores",
     };

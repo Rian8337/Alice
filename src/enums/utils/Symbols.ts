@@ -31,4 +31,5 @@ export enum Symbols {
     lockWithKey = "🔐",
     bookmarkTabs = "📑",
     barChart = "📊",
+    framedPicture = "🖼️",
 }

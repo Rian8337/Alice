@@ -10,6 +10,7 @@ export interface InitialOnboardingStrings {
     readonly onboardingPurpose: string;
     readonly beginOnboarding: string;
     readonly bindAccount: string;
+    readonly playerProfile: string;
     readonly recentPlays: string;
     readonly scoreComparison: string;
 }
