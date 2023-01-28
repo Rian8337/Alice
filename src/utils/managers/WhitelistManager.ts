@@ -134,7 +134,7 @@ export abstract class WhitelistManager extends Manager {
         const localization: WhitelistManagerLocalization =
             this.getLocalization(language);
 
-        if (!this.isEligibleForWhitelist(beatmap)) {
+        if (!this.isEligibleForWhitelist(beatmap.approved)) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("beatmapIsNotGraveyarded")
@@ -189,7 +189,7 @@ export abstract class WhitelistManager extends Manager {
         const localization: WhitelistManagerLocalization =
             this.getLocalization(language);
 
-        if (!this.isEligibleForWhitelist(beatmap)) {
+        if (!this.isEligibleForWhitelist(beatmap.approved)) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("beatmapIsNotGraveyarded")
@@ -265,13 +265,13 @@ export abstract class WhitelistManager extends Manager {
     }
 
     /**
-     * Checks if a beatmap is eligible to be whitelisted.
+     * Checks if a beatmap's ranked status is eligible to be whitelisted.
      *
-     * @param beatmap The beatmap.
-     * @returns Whether the beatmap is eligible.
+     * @param status The ranked status.
+     * @returns Whether the beatmap with the ranked status is eligible.
      */
-    private static isEligibleForWhitelist(beatmap: MapInfo): boolean {
-        return beatmap.approved === RankedStatus.graveyard;
+    private static isEligibleForWhitelist(status: RankedStatus): boolean {
+        return status === RankedStatus.graveyard;
     }
 
     /**
