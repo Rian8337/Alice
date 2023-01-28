@@ -43,6 +43,7 @@ export const run: EventUtil["run"] = async (
             content: MessageCreator.createReject(
                 localization.getTranslation("commandNotFound")
             ),
+            ephemeral: true,
         });
     }
 
