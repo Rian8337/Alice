@@ -452,7 +452,7 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            let perfCalcResult: RebalancePerformanceCalculationResult<
+            const perfCalcResult: RebalancePerformanceCalculationResult<
                 RebalanceDroidDifficultyCalculator,
                 RebalanceDroidPerformanceCalculator
             > | null =
@@ -477,11 +477,11 @@ export class UserBind extends Manager {
                 perfCalcResult
             );
 
-            perfCalcResult = await DroidBeatmapDifficultyHelper.applyAimPenalty(
-                score,
-                diffCalculator,
-                score.replay?.tapPenalty ?? 1
-            );
+            // perfCalcResult = await DroidBeatmapDifficultyHelper.applyAimPenalty(
+            //     score,
+            //     diffCalculator,
+            //     score.replay?.tapPenalty ?? 1
+            // );
 
             const entry: PrototypePPEntry = {
                 hash: beatmapInfo.hash,
