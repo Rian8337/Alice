@@ -56,7 +56,7 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
 
     row.addComponents(
         new ButtonBuilder()
-            .setCustomId("onBoardingBindAccount")
+            .setCustomId("onboardingBindAccount")
             .setEmoji(Symbols.lockWithKey)
             .setStyle(ButtonStyle.Primary)
             .setLabel(localization.getTranslation("bindAccount")),
