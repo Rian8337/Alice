@@ -112,4 +112,9 @@ export abstract class CacheManager {
             droid: new OldDroidDifficultyAttributesCacheManager(),
         },
     };
+
+    /**
+     * IDs of buttons that will not be listened by the `runButton` event utility.
+     */
+    static readonly exemptedButtonCustomIds: Set<string> = new Set();
 }

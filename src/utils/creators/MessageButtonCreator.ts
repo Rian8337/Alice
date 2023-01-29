@@ -29,6 +29,7 @@ import { ReplayData } from "@rian8337/osu-droid-replay-analyzer";
 import { MissInformation } from "@alice-utils/missanalyzer/MissInformation";
 import { OnButtonPressed } from "@alice-structures/utils/OnButtonPressed";
 import { OnCollectorEndButtonRemover } from "@alice-structures/utils/OnCollectorEndButtonRemover";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 /**
  * A utility to create message buttons.
@@ -602,6 +603,12 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         currentPage: number,
         maxPage: number
     ): ButtonBuilder[] {
+        CacheManager.exemptedButtonCustomIds.add("backward");
+        CacheManager.exemptedButtonCustomIds.add("back");
+        CacheManager.exemptedButtonCustomIds.add("none");
+        CacheManager.exemptedButtonCustomIds.add("next");
+        CacheManager.exemptedButtonCustomIds.add("forward");
+
         return [
             new ButtonBuilder()
                 .setCustomId("backward")
@@ -645,6 +652,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * ID order: `[yes, no]`
      */
     private static createConfirmationButtons(): ButtonBuilder[] {
+        CacheManager.exemptedButtonCustomIds.add("yes");
+        CacheManager.exemptedButtonCustomIds.add("no");
+
         return [
             new ButtonBuilder()
                 .setCustomId("yes")

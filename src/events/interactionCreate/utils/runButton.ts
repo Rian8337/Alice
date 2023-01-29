@@ -6,6 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import consola from "consola";
 import { BaseInteraction } from "discord.js";
@@ -16,6 +17,10 @@ export const run: EventUtil["run"] = async (
     interaction: BaseInteraction
 ) => {
     if (!interaction.isButton()) {
+        return;
+    }
+
+    if (CacheManager.exemptedButtonCustomIds.has(interaction.customId)) {
         return;
     }
 

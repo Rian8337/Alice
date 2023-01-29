@@ -193,6 +193,9 @@ export abstract class TriviaHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setLabel(String.fromCharCode(65 + i));
 
+                CacheManager.exemptedButtonCustomIds.add(
+                    String.fromCharCode(65 + i)
+                );
                 component.addComponents(button);
             }
         } else {
@@ -207,6 +210,8 @@ export abstract class TriviaHelper {
                     )
                     .setEmoji(Symbols.memo)
             );
+
+            CacheManager.exemptedButtonCustomIds.add("answerQuestionTrivia");
         }
 
         const questionMessage: Message = await InteractionHelper.reply(
