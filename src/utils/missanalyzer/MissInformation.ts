@@ -362,7 +362,7 @@ export class MissInformation {
             case HitResult.good:
                 fillColor = "#63ba68";
                 borderColor = "#59a85e";
-                sliderPathColor = "#8aeb91";
+                sliderPathColor = "#81eb89";
                 break;
             case HitResult.meh:
                 fillColor = "#d9ad6a";
@@ -372,7 +372,7 @@ export class MissInformation {
             case HitResult.miss:
                 fillColor = "#de6464";
                 borderColor = "#cc5c5c";
-                sliderPathColor = "#eb8686";
+                sliderPathColor = "#eb7c7c";
                 break;
         }
 
