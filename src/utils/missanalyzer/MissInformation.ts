@@ -296,15 +296,16 @@ export class MissInformation {
             Playfield.baseSize.y * this.playfieldScale;
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
-        context.save();
         context.translate(
             // Center the playfield.
             (this.canvas.width - scaledPlayfieldX) / 2,
             (this.canvas.height - scaledPlayfieldY) / 2
         );
+        context.scale(this.playfieldScale, this.playfieldScale);
         context.lineWidth = 3;
-        context.strokeRect(0, 0, scaledPlayfieldX, scaledPlayfieldY);
+        context.strokeRect(0, 0, Playfield.baseSize.x, Playfield.baseSize.y);
         context.lineWidth = 1;
+        context.save();
     }
 
     /**
@@ -354,87 +355,80 @@ export class MissInformation {
 
         switch (objectHitResult) {
             case HitResult.great:
-                fillColor = "#326ed9";
-                borderColor = "#2b59ab";
-                sliderPathColor = "#467ee0";
+                fillColor = "#5b88d9";
+                borderColor = "#5473ab";
+                sliderPathColor = "#90ade0";
                 break;
             case HitResult.good:
-                fillColor = "#40bd48";
-                borderColor = "#38a83f";
-                sliderPathColor = "#4deb57";
+                fillColor = "#63ba68";
+                borderColor = "#59a85e";
+                sliderPathColor = "#8aeb91";
                 break;
             case HitResult.meh:
-                fillColor = "#c9913c";
-                borderColor = "#c98318";
-                sliderPathColor = "#de9f40";
+                fillColor = "#d9ad6a";
+                borderColor = "#cc9d56";
+                sliderPathColor = "#d9a75d";
                 break;
             case HitResult.miss:
-                fillColor = "#e63c3c";
-                borderColor = "#bf2121";
-                sliderPathColor = "#eb4d4d";
+                fillColor = "#de6464";
+                borderColor = "#cc5c5c";
+                sliderPathColor = "#eb8686";
                 break;
         }
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
 
-        const objectDrawPosition: Vector2 = this.flipVectorVertically(
-            object.getStackedPosition(Modes.droid).scale(this.playfieldScale)
-        );
-        const scaledRadius: number =
-            object.getRadius(Modes.droid) * this.playfieldScale;
+        const stackOffset: Vector2 = object.getStackOffset(Modes.droid);
+        const startPosition: Vector2 = this.flipVectorVertically(
+            object.position
+        ).add(stackOffset);
+        const radius: number = object.getRadius(Modes.droid);
+        const circleBorder: number = radius / 8;
+        const shadowBlur: number = radius / 16;
 
         if (object instanceof Slider) {
             // Draw the path first, then we can apply the slider head.
-            const drawnDistance: number =
-                object.path.expectedDistance * this.playfieldScale;
-
+            context.shadowBlur = 0;
             context.strokeStyle = sliderPathColor;
-            context.lineWidth = scaledRadius * 2;
+            context.lineWidth = (radius - circleBorder) * 2;
             context.lineCap = "round";
             context.globalAlpha = 0.8;
             context.beginPath();
 
-            for (let i = 0; i <= drawnDistance; i += 5) {
-                const pathPosition: Vector2 = object
-                    .getStackedPosition(Modes.droid)
-                    .add(object.path.positionAt(i / drawnDistance));
-                const drawPosition: Vector2 = this.flipVectorVertically(
-                    pathPosition.scale(this.playfieldScale)
+            for (let i = 0; i <= object.path.expectedDistance; i += 5) {
+                const drawPosition: Vector2 = startPosition.add(
+                    this.flipVectorVertically(
+                        object.path.positionAt(i / object.path.expectedDistance)
+                    )
                 );
 
                 context.lineTo(drawPosition.x, drawPosition.y);
             }
 
             context.stroke();
-            context.closePath();
 
             // Only draw path direction if the path is long enough.
             if (object.path.expectedDistance > 150) {
                 context.strokeStyle = "#606060";
                 context.globalAlpha = 0.5;
-                context.lineWidth = scaledRadius * 0.15;
-                context.beginPath();
-
-                for (let i = 0; i <= drawnDistance; i += 5) {
-                    const pathPosition: Vector2 = object
-                        .getStackedPosition(Modes.droid)
-                        .add(object.path.positionAt(i / drawnDistance));
-                    const drawPosition: Vector2 = this.flipVectorVertically(
-                        pathPosition.scale(this.playfieldScale)
-                    );
-
-                    context.lineTo(drawPosition.x, drawPosition.y);
-                }
-
+                context.lineWidth = radius * 0.15;
                 context.stroke();
-                context.closePath();
             }
+
+            // Draw slider border.
+            context.globalCompositeOperation = "source-over";
+            context.shadowBlur = 0;
+            context.strokeStyle = "#fff";
+            context.lineWidth = radius * 2;
+            context.stroke();
+            context.closePath();
 
             // Draw slider ticks.
             context.globalAlpha = 0.8;
             context.fillStyle = "#ad6140";
+            context.lineWidth = radius / 32;
 
-            for (const nestedObject of object.nestedHitObjects) {
+            for (const nestedObject of object.nestedHitObjects.slice(1)) {
                 // Only draw for one span.
                 if (nestedObject instanceof SliderRepeat) {
                     break;
@@ -445,17 +439,14 @@ export class MissInformation {
                 }
 
                 const drawPosition: Vector2 = this.flipVectorVertically(
-                    nestedObject
-                        .getStackedPosition(Modes.droid)
-                        .scale(this.playfieldScale)
-                );
+                    nestedObject.position
+                ).add(stackOffset);
 
                 context.beginPath();
                 context.arc(
                     drawPosition.x,
                     drawPosition.y,
-                    // Make slider ticks 25% the size of the slider path circle.
-                    scaledRadius * 0.25,
+                    radius / 16,
                     0,
                     2 * Math.PI
                 );
@@ -464,49 +455,35 @@ export class MissInformation {
             }
         }
 
-        // Draw the border first, then fill with the circle color.
-        context.fillStyle = borderColor;
+        // Draw the circle first, then border.
+
+        context.fillStyle = fillColor;
         context.globalAlpha = 0.9;
         context.beginPath();
         context.arc(
-            objectDrawPosition.x,
-            objectDrawPosition.y,
-            scaledRadius,
-            0,
-            2 * Math.PI
-        );
-        context.arc(
-            objectDrawPosition.x,
-            objectDrawPosition.y,
-            scaledRadius * 0.9,
-            0,
-            2 * Math.PI
-        );
-        context.fill("evenodd");
-        context.closePath();
-
-        context.fillStyle = fillColor;
-        context.globalAlpha = 0.85;
-        context.beginPath();
-        context.arc(
-            objectDrawPosition.x,
-            objectDrawPosition.y,
-            scaledRadius * 0.9,
+            startPosition.x,
+            startPosition.y,
+            radius - circleBorder / 2,
             0,
             2 * Math.PI
         );
         context.fill();
+
+        context.strokeStyle = borderColor;
+        context.shadowBlur = shadowBlur;
+        context.lineWidth = circleBorder;
+        context.stroke();
         context.closePath();
 
         // Finally, draw the index of the object.
         context.fillStyle = "#000000";
-        context.font = `bold ${Math.ceil(scaledRadius)}px Exo`;
+        context.font = `bold ${Math.ceil(radius / 1.25)}px Exo`;
         context.textAlign = "center";
         context.textBaseline = "middle";
         context.fillText(
             objectIndex.toString(),
-            objectDrawPosition.x,
-            objectDrawPosition.y
+            startPosition.x,
+            startPosition.y
         );
     }
 
@@ -557,7 +534,7 @@ export class MissInformation {
                     }
 
                     const drawPosition: Vector2 = this.flipVectorVertically(
-                        occurrence.position.scale(this.playfieldScale)
+                        occurrence.position
                     );
 
                     if (occurrence.id === MovementType.down) {
@@ -576,11 +553,7 @@ export class MissInformation {
                         const prevOccurrence: CursorOccurrence =
                             allOccurrences[j - 1];
                         const previousDrawPosition: Vector2 =
-                            this.flipVectorVertically(
-                                prevOccurrence.position.scale(
-                                    this.playfieldScale
-                                )
-                            );
+                            this.flipVectorVertically(prevOccurrence.position);
 
                         travelDistance += occurrence.position.getDistance(
                             prevOccurrence.position
@@ -632,11 +605,7 @@ export class MissInformation {
                                 );
 
                                 const cursorDrawPosition: Vector2 =
-                                    this.flipVectorVertically(
-                                        cursorPosition.scale(
-                                            this.playfieldScale
-                                        )
-                                    );
+                                    this.flipVectorVertically(cursorPosition);
 
                                 context.beginPath();
                                 context.lineWidth = 2;
@@ -688,7 +657,7 @@ export class MissInformation {
                                             occurrence.position.y,
                                             t
                                         )
-                                    ).scale(this.playfieldScale)
+                                    )
                                 );
                             const headLength: number = 10;
 
@@ -737,7 +706,7 @@ export class MissInformation {
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
 
         const drawPosition: Vector2 = this.flipVectorVertically(
-            this.closestCursorPosition.scale(this.playfieldScale)
+            this.closestCursorPosition
         );
 
         const gradient: CanvasGradient = context.createRadialGradient(
@@ -768,10 +737,7 @@ export class MissInformation {
      */
     private flipVectorVertically(vec: Vector2): Vector2 {
         return this.drawFlipped
-            ? new Vector2(
-                  vec.x,
-                  Playfield.baseSize.y * this.playfieldScale - vec.y
-              )
+            ? new Vector2(vec.x, Playfield.baseSize.y - vec.y)
             : vec;
     }
 }
