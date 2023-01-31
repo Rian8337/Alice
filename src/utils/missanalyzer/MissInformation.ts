@@ -418,7 +418,8 @@ export class MissInformation {
             // Draw slider border.
             context.globalCompositeOperation = "source-over";
             context.shadowBlur = 0;
-            context.strokeStyle = "#fff";
+            context.strokeStyle = "#606060";
+            context.globalAlpha = 0.4;
             context.lineWidth = radius * 2;
             context.stroke();
             context.closePath();
