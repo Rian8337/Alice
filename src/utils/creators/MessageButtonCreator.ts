@@ -251,6 +251,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             .setStyle(ButtonStyle.Primary)
             .setEmoji(Symbols.magnifyingGlassTiltedRight);
 
+        CacheManager.exemptedButtonCustomIds.add("analyze-miss");
+
         return this.createLimitedTimeButtons(
             interaction,
             options,
