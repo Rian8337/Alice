@@ -357,7 +357,7 @@ export class MissInformation {
             case HitResult.great:
                 fillColor = "#5b88d9";
                 borderColor = "#5473ab";
-                sliderPathColor = "#90ade0";
+                sliderPathColor = "#779de0";
                 break;
             case HitResult.good:
                 fillColor = "#63ba68";
