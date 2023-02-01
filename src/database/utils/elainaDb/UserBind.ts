@@ -23,6 +23,7 @@ import {
     DroidAPIRequestBuilder,
     RequestResponse,
     Precision,
+    MapStats,
 } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
@@ -42,6 +43,7 @@ import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformance
 import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
+import { HitErrorInformation } from "@rian8337/osu-droid-replay-analyzer";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -452,7 +454,18 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const perfCalcResult: RebalancePerformanceCalculationResult<
+            const perfCalcResult: PerformanceCalculationResult<
+                DroidDifficultyCalculator,
+                DroidPerformanceCalculator
+            > | null = await this.diffCalcHelper.calculateScorePerformance(
+                score
+            );
+
+            if (!perfCalcResult) {
+                continue;
+            }
+
+            const rebalPerfCalcResult: RebalancePerformanceCalculationResult<
                 RebalanceDroidDifficultyCalculator,
                 RebalanceDroidPerformanceCalculator
             > | null =
@@ -460,14 +473,14 @@ export class UserBind extends Manager {
                     score
                 );
 
-            if (!perfCalcResult) {
+            if (!rebalPerfCalcResult) {
                 continue;
             }
 
-            const diffCalculator: RebalanceDroidDifficultyCalculator =
+            const diffCalculator: DroidDifficultyCalculator =
                 perfCalcResult.requestedDifficultyCalculation()
                     ? perfCalcResult.difficultyCalculator
-                    : (await this.diffCalcHelper.calculateScoreRebalanceDifficulty(
+                    : (await this.diffCalcHelper.calculateScoreDifficulty(
                           score
                       ))!.result;
 
@@ -477,22 +490,69 @@ export class UserBind extends Manager {
                 perfCalcResult
             );
 
+            const rebalDiffCalculator: RebalanceDroidDifficultyCalculator =
+                rebalPerfCalcResult.requestedDifficultyCalculation()
+                    ? rebalPerfCalcResult.difficultyCalculator
+                    : (await this.diffCalcHelper.calculateScoreRebalanceDifficulty(
+                          score
+                      ))!.result;
+
+            await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                score,
+                rebalDiffCalculator,
+                rebalPerfCalcResult
+            );
+
             // perfCalcResult = await DroidBeatmapDifficultyHelper.applyAimPenalty(
             //     score,
             //     diffCalculator,
             //     score.replay?.tapPenalty ?? 1
             // );
 
+            if (score.replay) {
+                score.replay.beatmap ??= rebalDiffCalculator;
+            }
+
+            const hitError: HitErrorInformation | undefined | null =
+                score.replay?.calculateHitError();
+
+            const { result: perfResult } = perfCalcResult;
+            const { result: rebalPerfResult } = rebalPerfCalcResult;
+
             const entry: PrototypePPEntry = {
                 hash: beatmapInfo.hash,
                 title: beatmapInfo.fullTitle,
-                pp: parseFloat(perfCalcResult.result.total.toFixed(2)),
+                pp: NumberHelper.round(rebalPerfResult.total, 2),
+                newAim: NumberHelper.round(rebalPerfResult.aim, 2),
+                newTap: NumberHelper.round(rebalPerfResult.tap, 2),
+                newAccuracy: NumberHelper.round(rebalPerfResult.accuracy, 2),
+                newVisual: NumberHelper.round(rebalPerfResult.visual, 2),
                 prevPP: ppEntry.pp,
+                prevAim: NumberHelper.round(perfResult.aim, 2),
+                prevTap: NumberHelper.round(perfResult.tap, 2),
+                prevAccuracy: NumberHelper.round(perfResult.accuracy, 2),
+                prevVisual: NumberHelper.round(perfResult.visual, 2),
                 mods: score.mods.reduce((a, v) => a + v.acronym, ""),
-                accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
+                accuracy: NumberHelper.round(score.accuracy.value() * 100, 2),
                 combo: score.combo,
                 miss: score.accuracy.nmiss,
                 scoreID: score.scoreID,
+                calculatedUnstableRate: hitError
+                    ? hitError.unstableRate /
+                      new MapStats({
+                          mods: score.mods,
+                          speedMultiplier: score.speedMultiplier,
+                          oldStatistics: score.oldStatistics,
+                      }).calculate().speedMultiplier
+                    : null,
+                estimatedUnstableRate: NumberHelper.round(
+                    rebalPerfResult.deviation * 10,
+                    2
+                ),
+                estimatedSpeedUnstableRate: NumberHelper.round(
+                    rebalPerfResult.tapDeviation * 10,
+                    2
+                ),
             };
 
             consola.info(
