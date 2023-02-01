@@ -395,11 +395,9 @@ export class MissInformation {
             context.globalAlpha = 0.8;
             context.beginPath();
 
-            for (let i = 0; i <= object.path.expectedDistance; i += 5) {
+            for (const path of object.path.calculatedPath.slice(1)) {
                 const drawPosition: Vector2 = startPosition.add(
-                    this.flipVectorVertically(
-                        object.path.positionAt(i / object.path.expectedDistance)
-                    )
+                    this.flipVectorVertically(path)
                 );
 
                 context.lineTo(drawPosition.x, drawPosition.y);
@@ -426,7 +424,7 @@ export class MissInformation {
 
             // Draw slider ticks.
             context.globalAlpha = 0.8;
-            context.fillStyle = "#ad6140";
+            context.strokeStyle = "#fff";
             context.lineWidth = radius / 32;
 
             for (const nestedObject of object.nestedHitObjects.slice(1)) {
@@ -451,13 +449,13 @@ export class MissInformation {
                     0,
                     2 * Math.PI
                 );
-                context.fill();
+                context.stroke();
                 context.closePath();
             }
         }
 
         // Draw the circle first, then border.
-
+        context.shadowBlur = 0;
         context.fillStyle = fillColor;
         context.globalAlpha = 0.9;
         context.beginPath();
