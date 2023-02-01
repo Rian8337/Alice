@@ -31,8 +31,13 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             | "osu-droid-utilities"
             | "osu-strain-graph-generator"
     ): string => {
-        const version: string = dependencies[`@rian8337/${moduleName}`].version;
+        let version: string = dependencies[`@rian8337/${moduleName}`].version;
         const source: string = `https://github.com/Rian8337/osu-droid-module/tree/master/packages/${moduleName}`;
+
+        // Local version.
+        if (version.startsWith("file")) {
+            version = "Local version";
+        }
 
         return `[${version}](${source})`;
     };
