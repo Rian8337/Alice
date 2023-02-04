@@ -1112,9 +1112,9 @@ export class MultiplayerRoom
                 BCP47
             )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
                 score.maxCombo
-            }x - ${accuracy.toFixed(2)}% - ${score.miss} ${
-                Symbols.missIcon
-            } - ${score.unstableRate.toFixed(2)} UR`,
+            }x - [${score.perfect}/${score.good}/${score.bad}/${
+                score.miss
+            }] (${accuracy.toFixed(2)}%) - ${score.unstableRate.toFixed(2)} UR`,
         };
     }
 
