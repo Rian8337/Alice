@@ -427,7 +427,7 @@ export class MissInformation {
             context.strokeStyle = "#fff";
             context.lineWidth = radius / 32;
 
-            for (const nestedObject of object.nestedHitObjects.slice(1)) {
+            for (const nestedObject of object.nestedHitObjects) {
                 // Only draw for one span.
                 if (nestedObject instanceof SliderRepeat) {
                     break;
