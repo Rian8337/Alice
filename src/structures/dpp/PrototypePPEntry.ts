@@ -77,4 +77,29 @@ export interface PrototypePPEntry extends PPEntry {
      * Whether this score is assumed to be two-handed.
      */
     assumedTwoHand: boolean;
+
+    /**
+     * The evaluated overall difficulty of the score.
+     */
+    overallDifficulty: number;
+
+    /**
+     * The amount of great hits achieved in the score.
+     */
+    hit300: number;
+
+    /**
+     * The amount of good hits achieved in the score.
+     */
+    hit100: number;
+
+    /**
+     * The amount of meh hits achieved in the score.
+     */
+    hit50: number;
+
+    /**
+     * Whether this score is penalized from cheesing sliders.
+     */
+    sliderCheesePenalized: boolean;
 }

@@ -564,6 +564,13 @@ export class UserBind extends Manager {
                 aimNoteCount: rebalPerfResult.difficultyAttributes.aimNoteCount,
                 twoHandedNoteCount: score.replay?.twoHandedNoteCount ?? 0,
                 assumedTwoHand: score.replay?.is2Hand ?? false,
+                overallDifficulty:
+                    rebalDiffCalculator.attributes.overallDifficulty,
+                hit300: score.accuracy.n300,
+                hit100: score.accuracy.n100,
+                hit50: score.accuracy.n50,
+                sliderCheesePenalized:
+                    (score.replay?.sliderCheesePenalty.aimPenalty ?? 1) > 1,
             };
 
             consola.info(
