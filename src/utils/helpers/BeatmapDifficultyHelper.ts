@@ -147,7 +147,6 @@ export abstract class BeatmapDifficultyHelper<
             accPercent,
             combo,
             undefined,
-            undefined,
             new MapStats({
                 mods: mods,
                 ar: forceAR,
@@ -170,7 +169,6 @@ export abstract class BeatmapDifficultyHelper<
             score.accuracy,
             score.accuracy.value() * 100,
             score.combo,
-            undefined,
             undefined,
             new MapStats({
                 mods: score.mods,
@@ -829,6 +827,12 @@ export abstract class BeatmapDifficultyHelper<
             combo: calculationParams.combo,
             accPercent: calculationParams.accuracy,
             tapPenalty: calculationParams.tapPenalty,
+            aimSliderCheesePenalty:
+                calculationParams.sliderCheesePenalty?.aimPenalty,
+            flashlightSliderCheesePenalty:
+                calculationParams.sliderCheesePenalty?.flashlightPenalty,
+            visualSliderCheesePenalty:
+                calculationParams.sliderCheesePenalty?.visualPenalty,
         });
 
         return new RebalancePerformanceCalculationResult(

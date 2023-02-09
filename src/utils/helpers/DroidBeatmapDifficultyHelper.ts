@@ -11,7 +11,10 @@ import {
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { ThreeFingerChecker } from "@rian8337/osu-droid-replay-analyzer";
+import {
+    SliderCheeseInformation,
+    ThreeFingerChecker,
+} from "@rian8337/osu-droid-replay-analyzer";
 import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { ReplayHelper } from "./ReplayHelper";
@@ -120,7 +123,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         score: Score,
         difficultyCalculator: DroidDifficultyCalculator,
         tapPenalty?: number,
-        sliderCheesePenalty?: number
+        sliderCheesePenalty?: SliderCheeseInformation
     ): Promise<
         PerformanceCalculationResult<
             DroidDifficultyCalculator,
@@ -141,7 +144,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         score: Score,
         difficultyCalculator: RebalanceDroidDifficultyCalculator,
         tapPenalty?: number,
-        sliderCheesePenalty?: number
+        sliderCheesePenalty?: SliderCheeseInformation
     ): Promise<
         RebalancePerformanceCalculationResult<
             RebalanceDroidDifficultyCalculator,
@@ -155,7 +158,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             | DroidDifficultyCalculator
             | RebalanceDroidDifficultyCalculator,
         tapPenalty: number = 1,
-        sliderCheesePenalty: number = 1
+        sliderCheesePenalty?: SliderCheeseInformation
     ): Promise<
         | PerformanceCalculationResult<
               DroidDifficultyCalculator,
@@ -255,8 +258,14 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
                 score.replay.sliderCheesePenalty;
         }
 
-        calcResult.result.applySliderCheesePenalty(
-            score.replay.sliderCheesePenalty
+        calcResult.result.applyAimSliderCheesePenalty(
+            score.replay.sliderCheesePenalty.aimPenalty
+        );
+        calcResult.result.applyFlashlightSliderCheesePenalty(
+            score.replay.sliderCheesePenalty.flashlightPenalty
+        );
+        calcResult.result.applyVisualSliderCheesePenalty(
+            score.replay.sliderCheesePenalty.visualPenalty
         );
     }
 }

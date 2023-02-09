@@ -1,5 +1,6 @@
 import { Accuracy, MapStats, Precision } from "@rian8337/osu-base";
 import { DifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
+import { SliderCheeseInformation } from "@rian8337/osu-droid-replay-analyzer";
 import { DifficultyAttributes as RebalanceDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { DifficultyCalculationParameters } from "./DifficultyCalculationParameters";
 
@@ -23,9 +24,9 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
     tapPenalty: number;
 
     /**
-     * The slider cheese penalty to apply for penalized scores.
+     * The slider cheese penalties to apply for penalized scores.
      */
-    sliderCheesePenalty: number;
+    sliderCheesePenalty?: SliderCheeseInformation;
 
     /**
      * The accuracy that a user inputs, if any. Defaults to 100.
@@ -49,14 +50,15 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
      * @param combo The combo achieved.
      * @param tapPenalty The tap penalty to apply for penalized scores.
      * @param customStatistics The custom statistics that was used in difficulty calculation.
+     * @param sliderCheesePenalty The slider cheese penalties to apply for penalized scores.
      */
     constructor(
         accuracy: Accuracy,
         inputAccuracy: number = 100,
         combo?: number,
         tapPenalty: number = 1,
-        sliderCheesePenalty: number = 1,
-        customStatistics?: MapStats
+        customStatistics?: MapStats,
+        sliderCheesePenalty?: SliderCheeseInformation
     ) {
         super(customStatistics);
 

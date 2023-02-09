@@ -825,7 +825,6 @@ export class MultiplayerRoom
                             undefined,
                             score.maxCombo,
                             undefined,
-                            undefined,
                             customStats
                         )
                     );
