@@ -465,7 +465,7 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const rebalPerfCalcResult: RebalancePerformanceCalculationResult<
+            let rebalPerfCalcResult: RebalancePerformanceCalculationResult<
                 RebalanceDroidDifficultyCalculator,
                 RebalanceDroidPerformanceCalculator
             > | null =
@@ -503,11 +503,19 @@ export class UserBind extends Manager {
                 rebalPerfCalcResult
             );
 
-            // perfCalcResult = await DroidBeatmapDifficultyHelper.applyAimPenalty(
-            //     score,
-            //     diffCalculator,
-            //     score.replay?.tapPenalty ?? 1
-            // );
+            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
+                score,
+                rebalDiffCalculator,
+                rebalPerfCalcResult
+            );
+
+            rebalPerfCalcResult =
+                await DroidBeatmapDifficultyHelper.applyAimPenalty(
+                    score,
+                    rebalDiffCalculator,
+                    score.replay?.tapPenalty,
+                    score.replay?.sliderCheesePenalty
+                );
 
             if (score.replay) {
                 score.replay.beatmap ??= rebalDiffCalculator;
@@ -553,6 +561,9 @@ export class UserBind extends Manager {
                     rebalPerfResult.tapDeviation * 10,
                     2
                 ),
+                aimNoteCount: rebalPerfResult.difficultyAttributes.aimNoteCount,
+                twoHandedNoteCount: score.replay?.twoHandedNoteCount ?? 0,
+                assumedTwoHand: score.replay?.is2Hand ?? false,
             };
 
             consola.info(

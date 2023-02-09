@@ -50,6 +50,31 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      */
     static async applyTapPenalty(
         score: Score,
+        difficultyCalculator: DroidDifficultyCalculator,
+        calcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        >
+    ): Promise<void>;
+
+    /**
+     * Applies a tap penalty to a calculation result.
+     *
+     * @param score The score associated to the calculation result.
+     * @param difficultyCalculator The difficulty calculator to calculate the tap penalty from.
+     * @param calcResult The calculation result to apply the tap penalty to.
+     */
+    static async applyTapPenalty(
+        score: Score,
+        difficultyCalculator: RebalanceDroidDifficultyCalculator,
+        calcResult: RebalancePerformanceCalculationResult<
+            RebalanceDroidDifficultyCalculator,
+            RebalanceDroidPerformanceCalculator
+        >
+    ): Promise<void>;
+
+    static async applyTapPenalty(
+        score: Score,
         difficultyCalculator:
             | DroidDifficultyCalculator
             | RebalanceDroidDifficultyCalculator,
@@ -88,12 +113,14 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * @param score The score.
      * @param difficultyCalculator The difficulty calculator of the score.
      * @param tapPenalty The tap penalty to preemptively apply.
+     * @param sliderCheesePenalty The slider cheese penalty to preemptively apply.
      * @returns The performance calculation result.
      */
     static async applyAimPenalty(
         score: Score,
         difficultyCalculator: DroidDifficultyCalculator,
-        tapPenalty?: number
+        tapPenalty?: number,
+        sliderCheesePenalty?: number
     ): Promise<
         PerformanceCalculationResult<
             DroidDifficultyCalculator,
@@ -107,12 +134,14 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * @param score The score.
      * @param difficultyCalculator The difficulty calculator of the score.
      * @param tapPenalty The tap penalty to preemptively apply.
+     * @param sliderCheesePenalty The slider cheese penalty to preemptively apply.
      * @returns The performance calculation result.
      */
     static async applyAimPenalty(
         score: Score,
         difficultyCalculator: RebalanceDroidDifficultyCalculator,
-        tapPenalty?: number
+        tapPenalty?: number,
+        sliderCheesePenalty?: number
     ): Promise<
         RebalancePerformanceCalculationResult<
             RebalanceDroidDifficultyCalculator,
@@ -125,7 +154,8 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         difficultyCalculator:
             | DroidDifficultyCalculator
             | RebalanceDroidDifficultyCalculator,
-        tapPenalty: number = 1
+        tapPenalty: number = 1,
+        sliderCheesePenalty: number = 1
     ): Promise<
         | PerformanceCalculationResult<
               DroidDifficultyCalculator,
@@ -148,6 +178,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         const calculationParams: PerformanceCalculationParameters =
             this.getCalculationParamsFromScore(score);
         calculationParams.tapPenalty = tapPenalty;
+        calculationParams.sliderCheesePenalty = sliderCheesePenalty;
 
         if (difficultyCalculator instanceof DroidDifficultyCalculator) {
             return diffCalcHelper.calculateBeatmapPerformance(
@@ -160,5 +191,72 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
                 calculationParams
             );
         }
+    }
+
+    /**
+     * Applies a slider cheese penalty to a calculation result.
+     *
+     * @param score The score associated to the calculation result.
+     * @param difficultyCalculator The difficulty calculator to calculate the slider cheese penalty from.
+     * @param calcResult The calculation result to apply the slider cheese penalty to.
+     */
+    // static async applySliderCheesePenalty(
+    //     score: Score,
+    //     difficultyCalculator: DroidDifficultyCalculator,
+    //     calcResult: PerformanceCalculationResult<
+    //         DroidDifficultyCalculator,
+    //         DroidPerformanceCalculator
+    //     >
+    // ): Promise<void>;
+
+    /**
+     * Applies a slider cheese penalty to a calculation result.
+     *
+     * @param score The score associated to the calculation result.
+     * @param difficultyCalculator The difficulty calculator to calculate the slider cheese penalty from.
+     * @param calcResult The calculation result to apply the slider cheese penalty to.
+     */
+    static async applySliderCheesePenalty(
+        score: Score,
+        difficultyCalculator: RebalanceDroidDifficultyCalculator,
+        calcResult: RebalancePerformanceCalculationResult<
+            RebalanceDroidDifficultyCalculator,
+            RebalanceDroidPerformanceCalculator
+        >
+    ): Promise<void>;
+
+    static async applySliderCheesePenalty(
+        score: Score,
+        difficultyCalculator: // | DroidDifficultyCalculator
+        RebalanceDroidDifficultyCalculator,
+        calcResult: // | PerformanceCalculationResult<
+        //       DroidDifficultyCalculator,
+        //       DroidPerformanceCalculator
+        //   >
+        RebalancePerformanceCalculationResult<
+            RebalanceDroidDifficultyCalculator,
+            RebalanceDroidPerformanceCalculator
+        >
+    ): Promise<void> {
+        if (difficultyCalculator.attributes.sliderCount === 0) {
+            return;
+        }
+
+        await ReplayHelper.analyzeReplay(score);
+
+        if (!score.replay?.data) {
+            return;
+        }
+
+        if (!score.replay.hasBeenCheckedForSliderCheesing) {
+            score.replay.beatmap = difficultyCalculator;
+            score.replay.checkForSliderCheesing();
+            calcResult.params.sliderCheesePenalty =
+                score.replay.sliderCheesePenalty;
+        }
+
+        calcResult.result.applySliderCheesePenalty(
+            score.replay.sliderCheesePenalty
+        );
     }
 }

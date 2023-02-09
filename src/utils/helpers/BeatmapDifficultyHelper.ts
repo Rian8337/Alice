@@ -146,7 +146,8 @@ export abstract class BeatmapDifficultyHelper<
             }),
             accPercent,
             combo,
-            1,
+            undefined,
+            undefined,
             new MapStats({
                 mods: mods,
                 ar: forceAR,
@@ -169,7 +170,8 @@ export abstract class BeatmapDifficultyHelper<
             score.accuracy,
             score.accuracy.value() * 100,
             score.combo,
-            1,
+            undefined,
+            undefined,
             new MapStats({
                 mods: score.mods,
                 ar: score.forcedAR,

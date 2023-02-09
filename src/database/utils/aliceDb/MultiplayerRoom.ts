@@ -824,7 +824,8 @@ export class MultiplayerRoom
                             }),
                             undefined,
                             score.maxCombo,
-                            1,
+                            undefined,
+                            undefined,
                             customStats
                         )
                     );

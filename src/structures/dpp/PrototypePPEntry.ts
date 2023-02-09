@@ -60,4 +60,21 @@ export interface PrototypePPEntry extends PPEntry {
      * The estimated speed unstable rate of the score.
      */
     estimatedSpeedUnstableRate: number;
+
+    /**
+     * The number of clickable objects weighted by difficulty.
+     *
+     * Related to aim difficulty.
+     */
+    aimNoteCount: number;
+
+    /**
+     * The amount of two-handed objects.
+     */
+    twoHandedNoteCount: number;
+
+    /**
+     * Whether this score is assumed to be two-handed.
+     */
+    assumedTwoHand: boolean;
 }

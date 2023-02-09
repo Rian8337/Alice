@@ -23,6 +23,11 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
     tapPenalty: number;
 
     /**
+     * The slider cheese penalty to apply for penalized scores.
+     */
+    sliderCheesePenalty: number;
+
+    /**
      * The accuracy that a user inputs, if any. Defaults to 100.
      */
     inputAccuracy: number;
@@ -50,6 +55,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
         inputAccuracy: number = 100,
         combo?: number,
         tapPenalty: number = 1,
+        sliderCheesePenalty: number = 1,
         customStatistics?: MapStats
     ) {
         super(customStatistics);
@@ -57,6 +63,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
         this.accuracy = accuracy;
         this.combo = combo;
         this.tapPenalty = tapPenalty;
+        this.sliderCheesePenalty = sliderCheesePenalty;
         this.inputAccuracy = inputAccuracy;
     }
 

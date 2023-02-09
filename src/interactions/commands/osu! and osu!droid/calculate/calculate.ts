@@ -112,7 +112,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             interaction.options.getInteger("combo")
                 ? Math.max(0, interaction.options.getInteger("combo", true))
                 : undefined,
-            1,
+            undefined,
+            undefined,
             new MapStats({
                 mods: ModUtil.pcStringToMods(
                     interaction.options.getString("mods") ?? ""

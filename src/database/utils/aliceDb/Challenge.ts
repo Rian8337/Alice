@@ -1300,7 +1300,8 @@ export class Challenge extends Manager {
                 data.accuracy,
                 data.accuracy.value() * 100,
                 data.maxCombo,
-                1,
+                undefined,
+                undefined,
                 stats
             );
 
