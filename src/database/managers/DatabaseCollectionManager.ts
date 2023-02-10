@@ -60,20 +60,18 @@ export abstract class DatabaseCollectionManager<
      * @param options Options for the update operation.
      * @returns An object containing information about the operation.
      */
-    updateMany(
+    async updateMany(
         filter: Filter<T>,
         query: UpdateFilter<T> | Partial<T>,
         options: UpdateOptions = {}
     ): Promise<OperationResult> {
-        return new Promise((resolve, reject) => {
-            this.collection.updateMany(filter, query, options, (err) => {
-                if (err) {
-                    return reject(err);
-                }
+        const result: UpdateResult = await this.collection.updateMany(
+            filter,
+            query,
+            options
+        );
 
-                resolve(this.createOperationResult(true));
-            });
-        });
+        return this.createOperationResult(result.acknowledged);
     }
 
     /**
