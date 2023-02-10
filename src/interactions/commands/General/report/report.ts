@@ -3,6 +3,7 @@ import {
     EmbedBuilder,
     TextChannel,
     PermissionsBitField,
+    roleMention,
 } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { ApplicationCommandOptionType } from "discord.js";
@@ -96,7 +97,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     reportChannel.send({
         content: MessageCreator.createWarn(
             `${Config.verifyPerm
-                .map((v) => `<@${v}>`)
+                .map((v) => roleMention(v))
                 .join(" ")} user report in ${interaction.channel}`
         ),
         embeds: [embed],
