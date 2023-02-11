@@ -4,7 +4,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { Collection, EmbedBuilder, GuildMember } from "discord.js";
+import { bold, Collection, EmbedBuilder, GuildMember } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
@@ -249,12 +249,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const totalPP: number = bindInfo.pptotal;
 
     embed.setDescription(
-        `${localization.getTranslation("totalPP")}: **${totalPP.toFixed(
-            2
-        )}pp**\n` +
-            `${localization.getTranslation("ppGained")}: **${(
-                totalPP - currentTotalPP
-            ).toFixed(2)}pp**`
+        `${localization.getTranslation("totalPP")}: ${bold(
+            totalPP.toFixed(2)
+        )}pp\n` +
+            `${localization.getTranslation("ppGained")}: ${bold(
+                (totalPP - currentTotalPP).toFixed(2)
+            )}pp`
     );
 
     // Finalization

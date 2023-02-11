@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { hideLinkEmbed, hyperlink } from "discord.js";
 import { ProfileStrings } from "../ProfileLocalization";
 
 /**
@@ -11,7 +12,10 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
         selfProfileNotFound: "Lo siento, no puede encontrar tu perfil!",
         userProfileNotFound:
             "Lo siento, no puede encontrar el perfil de ese jugador!",
-        viewingProfile: "Perfil de osu!droid de [%s](<%s>):",
+        viewingProfile: `Perfil de osu!droid de ${hyperlink(
+            "%s",
+            hideLinkEmbed("%s")
+        )}:`,
         invalidRGBAformat: "Lo siento, ese es un formato RGBA inválido!",
         invalidHexCode: "Lo siento, es es un codigo HEX inválido!",
         changeInfoTextColorConfirmation:

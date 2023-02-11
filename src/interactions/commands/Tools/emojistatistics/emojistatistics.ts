@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, bold } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
@@ -97,9 +97,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             iconURL: interaction.guild!.iconURL()!,
         })
         .setDescription(
-            `**${localization.getTranslation(
-                "sortMode"
-            )}**: ${localization.getTranslation(
+            `${bold(
+                localization.getTranslation("sortMode")
+            )}: ${localization.getTranslation(
                 sortOption === "overall" ? "overall" : "averagePerMonth"
             )}`
         );
@@ -117,21 +117,21 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             embed.addFields({
                 name: `${i + 1}.${emoji.emoji.name}`,
                 value:
-                    `**${localization.getTranslation("emoji")}**: ${
+                    `${bold(localization.getTranslation("emoji"))}: ${
                         emoji.emoji
                     } \n` +
-                    `**${localization.getTranslation(
-                        "dateCreation"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    `${bold(
+                        localization.getTranslation("dateCreation")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         emoji.emoji.createdAt,
                         localization.language
                     )} \n` +
-                    `**${localization.getTranslation(
-                        "overallUsage"
-                    )}**: ${emoji.count.toLocaleString(BCP47)} \n` +
-                    `**${localization.getTranslation(
-                        "averagePerMonthUsage"
-                    )}**: ${emoji.averagePerMonth.toLocaleString(BCP47)} `,
+                    `${bold(
+                        localization.getTranslation("overallUsage")
+                    )}: ${emoji.count.toLocaleString(BCP47)} \n` +
+                    `${bold(
+                        localization.getTranslation("averagePerMonthUsage")
+                    )}: ${emoji.averagePerMonth.toLocaleString(BCP47)} `,
             });
         }
     };

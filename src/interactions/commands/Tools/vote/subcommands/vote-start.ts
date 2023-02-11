@@ -7,6 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
@@ -64,9 +65,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         choices: choices,
     });
 
-    let string: string = `**${localization.getTranslation(
-        "topic"
-    )}: ${topic}**\n\n`;
+    let string: string = `${bold(
+        `${localization.getTranslation("topic")}: ${topic}`
+    )}\n\n`;
 
     for (let i = 0; i < choices.length; ++i) {
         const choice: VoteChoice = choices[i];

@@ -23,6 +23,7 @@ import {
     EmbedBuilder,
     BaseMessageOptions,
     AttachmentBuilder,
+    userMention,
 } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
@@ -70,7 +71,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     embed.setTitle(clan.name).addFields(
         {
             name: localization.getTranslation("clanLeader"),
-            value: `<@${clan.leader}> (${clan.leader})`,
+            value: `${userMention(clan.leader)} (${clan.leader})`,
             inline: true,
         },
         {

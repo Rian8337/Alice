@@ -6,7 +6,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Role } from "discord.js";
+import { Role, userMention } from "discord.js";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const localization: ClanAnnounceLocalization = new ClanAnnounceLocalization(
@@ -62,7 +62,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     if (clanRole) {
         finalMessage += clanRole.toString();
     } else {
-        finalMessage += clan.member_list.map((v) => `<@${v.id}>`).join("");
+        finalMessage += clan.member_list.map((v) => userMention(v.id)).join("");
     }
 
     finalMessage += `\n\n${announcementMessage}\n\n- ${interaction.user}`;

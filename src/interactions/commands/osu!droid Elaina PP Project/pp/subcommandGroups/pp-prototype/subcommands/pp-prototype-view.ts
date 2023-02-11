@@ -6,7 +6,13 @@ import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { EmbedBuilder, GuildMember, Snowflake } from "discord.js";
+import {
+    bold,
+    EmbedBuilder,
+    GuildMember,
+    Snowflake,
+    userMention,
+} from "discord.js";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
@@ -72,34 +78,36 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     });
 
     embed.setDescription(
-        `**${StringHelper.formatString(
-            localization.getTranslation("ppProfileTitle"),
-            `<@${ppInfo.discordid}>`
-        )} (${ppInfo.username})**\n` +
-            `${localization.getTranslation(
-                "totalPP"
-            )}: **${ppInfo.pptotal.toFixed(2)} pp (#${(
-                await dbManager.getUserDPPRank(ppInfo.pptotal)
-            ).toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )})**\n` +
-            `${localization.getTranslation(
-                "prevTotalPP"
-            )}: **${ppInfo.prevpptotal.toFixed(2)} pp**\n` +
-            `Difference: **${(ppInfo.pptotal - ppInfo.prevpptotal).toFixed(
-                2
-            )} pp**\n` +
+        `${bold(
+            `${StringHelper.formatString(
+                localization.getTranslation("ppProfileTitle"),
+                userMention(ppInfo.discordid)
+            )} (${ppInfo.username})`
+        )}\n` +
+            `${localization.getTranslation("totalPP")}: ${bold(
+                `${ppInfo.pptotal.toFixed(2)} pp (#${(
+                    await dbManager.getUserDPPRank(ppInfo.pptotal)
+                ).toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                )})`
+            )}\n` +
+            `${localization.getTranslation("prevTotalPP")}: ${bold(
+                `${ppInfo.prevpptotal.toFixed(2)} pp`
+            )}\n` +
+            `Difference: ${bold(
+                `${(ppInfo.pptotal - ppInfo.prevpptotal).toFixed(2)} pp`
+            )}\n` +
             `[${localization.getTranslation(
                 "ppProfile"
             )}](https://droidpp.osudroid.moe/prototype/profile/${
                 ppInfo.uid
             })\n` +
-            `${localization.getTranslation(
-                "lastUpdate"
-            )}: **${DateTimeFormatHelper.dateToLocaleString(
-                new Date(ppInfo.lastUpdate),
-                localization.language
-            )}**`
+            `${localization.getTranslation("lastUpdate")}: ${bold(
+                `${DateTimeFormatHelper.dateToLocaleString(
+                    new Date(ppInfo.lastUpdate),
+                    localization.language
+                )}`
+            )}`
     );
 
     const entries: PrototypePPEntry[] = [...ppInfo.pp.values()];
@@ -139,9 +147,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     name: `${i + 1}. ${pp.title} ${modstring}`,
                     value: `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
                         pp.miss
-                    } ❌ | **${pp.prevPP}** ⮕ **${pp.pp}** pp (${(
-                        pp.pp - pp.prevPP
-                    ).toFixed(2)} pp)`,
+                    } ❌ | ${bold(pp.prevPP.toString())} ⮕ ${bold(
+                        pp.pp.toString()
+                    )} pp (${(pp.pp - pp.prevPP).toFixed(2)} pp)`,
                 });
             } else {
                 embed.addFields({ name: `${i + 1}. -`, value: "-" });

@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { EmbedBuilder } from "discord.js";
+import { bold, EmbedBuilder, userMention } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
@@ -42,17 +42,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed
         .setTitle(localization.getTranslation("tagInfo"))
         .setDescription(
-            `**${localization.getTranslation("tagName")}**: ${tag.name}\n` +
-                `**${localization.getTranslation("tagName")}**: <@${
+            `${bold(localization.getTranslation("tagName"))}: ${tag.name}\n` +
+                `${bold(localization.getTranslation("tagName"))}: ${userMention(
                     tag.author
-                }>\n` +
-                `**${localization.getTranslation(
-                    "tagCreationDate"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                )}\n` +
+                `${bold(
+                    localization.getTranslation("tagCreationDate")
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(tag.date),
                     localization.language
                 )}\n` +
-                `**${localization.getTranslation("tagAttachmentAmount")}**: ${
+                `${bold(localization.getTranslation("tagAttachmentAmount"))}: ${
                     tag.attachments.length
                 }`
         );

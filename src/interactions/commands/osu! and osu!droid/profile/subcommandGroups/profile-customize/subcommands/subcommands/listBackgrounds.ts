@@ -55,11 +55,11 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             const bg: ProfileBackground = backgroundsArray[i];
             embed.addFields({
                 name: `${i + 1}. ${bg.name}`,
-                value: `${localization.getTranslation("owned")}: **${
+                value: `${localization.getTranslation("owned")}: ${
                     ownedBackgrounds.find((v) => v.id === bg.id)
                         ? Symbols.checkmark
                         : Symbols.cross
-                }**`,
+                }`,
             });
         }
     };

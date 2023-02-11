@@ -9,7 +9,12 @@ import {
 import { Manager } from "@alice-utils/base/Manager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Collection, Snowflake, CommandInteraction } from "discord.js";
+import {
+    Collection,
+    Snowflake,
+    CommandInteraction,
+    userMention,
+} from "discord.js";
 
 /**
  * A manager for dpp recalculations.
@@ -79,7 +84,7 @@ export abstract class RecalculationManager extends Manager {
         while (this.recalculationQueue.size > 0) {
             const calculatedUser: Snowflake =
                 this.recalculationQueue.firstKey()!;
-            const calculatedUserMention: string = `<@${calculatedUser}>`;
+            const calculatedUserMention: string = userMention(calculatedUser);
             const interaction: CommandInteraction =
                 this.recalculationQueue.first()!;
             const localization: RecalculationManagerLocalization =

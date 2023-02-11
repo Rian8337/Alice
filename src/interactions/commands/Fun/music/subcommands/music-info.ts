@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, userMention } from "discord.js";
 import { VideoSearchResult } from "yt-search";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -56,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     "duration"
                 )}: ${information.duration.toString()}\n\n${StringHelper.formatString(
                     localization.getTranslation("requestedBy"),
-                    `<@${musicInformation.currentlyPlaying!.queuer}>`
+                    userMention(musicInformation.currentlyPlaying!.queuer)
                 )}`,
             })
             .setThumbnail(information.thumbnail);

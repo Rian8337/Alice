@@ -18,6 +18,8 @@ import {
     MessageActionRowComponent,
     TextInputBuilder,
     TextInputStyle,
+    bold,
+    userMention,
 } from "discord.js";
 import {
     MapInfo,
@@ -150,15 +152,15 @@ function createEmbed(
         })
         .setTitle(`${localization.getTranslation("level")} ${level}`)
         .setDescription(
-            `**${localization.getTranslation(
-                "beatmapArtist"
-            )}:** ${artist}\n**${localization.getTranslation(
-                "beatmapTitle"
-            )}**: ${title}${
+            `${bold(
+                localization.getTranslation("beatmapArtist")
+            )}: ${artist}\n${bold(
+                localization.getTranslation("beatmapTitle")
+            )}: ${title}${
                 beatmapInfo.source
-                    ? `\n**${localization.getTranslation("beatmapSource")}**: ${
-                          beatmapInfo.source
-                      }`
+                    ? `\n${bold(
+                          localization.getTranslation("beatmapSource")
+                      )}: ${beatmapInfo.source}`
                     : ""
             }`
         )
@@ -684,24 +686,24 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed
         .setTitle(localization.getTranslation("gameInfo"))
         .setDescription(
-            `**${localization.getTranslation("starter")}**: ${
+            `${bold(localization.getTranslation("starter"))}: ${
                 interaction.user
             }\n` +
-                `**${localization.getTranslation(
-                    "timeStarted"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                `${bold(
+                    localization.getTranslation("timeStarted")
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
                     interaction.createdAt,
                     localization.language
                 )}\n` +
-                `**${localization.getTranslation(
-                    "duration"
-                )}**: ${DateTimeFormatHelper.secondsToDHMS(
+                `${bold(
+                    localization.getTranslation("duration")
+                )}: ${DateTimeFormatHelper.secondsToDHMS(
                     Math.floor(
                         (Date.now() - interaction.createdTimestamp) / 1000
                     ),
                     localization.language
                 )}\n` +
-                `**${localization.getTranslation("level")}**: ${level}`
+                `${bold(localization.getTranslation("level"))}: ${level}`
         )
         .addFields({
             name: localization.getTranslation("leaderboard"),
@@ -710,7 +712,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     .slice(0, 10)
                     .map(
                         (v, i) =>
-                            `**#${i + 1}**: <@${v.id}>: ${v.score.toFixed(2)}`
+                            `${bold(`#${i + 1}`)}: ${userMention(
+                                v.id
+                            )}: ${v.score.toFixed(2)}`
                     )
                     .join("\n") || localization.getTranslation("none"),
         });

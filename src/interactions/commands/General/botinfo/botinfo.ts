@@ -3,7 +3,7 @@ import { SlashCommand } from "structures/core/SlashCommand";
 import { BotinfoLocalization } from "@alice-localization/interactions/commands/General/botinfo/BotinfoLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, hyperlink } from "discord.js";
 //@ts-expect-error: package.json will be included in distribution folder otherwise
 import { version } from "../../../../../package.json";
 //@ts-expect-error: package-lock.json will be included in distribution folder otherwise
@@ -39,7 +39,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             version = "Local version";
         }
 
-        return `[${version}](${source})`;
+        return hyperlink(version, source);
     };
 
     embed
@@ -70,17 +70,19 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             },
             {
                 name: localization.getTranslation("nodeVersion"),
-                value: `[${process.versions.node}](https://nodejs.org)`,
+                value: hyperlink(process.versions.node, "https://nodejs.org"),
             },
             {
                 name: localization.getTranslation("coreLibraries"),
                 value:
-                    `${localization.getTranslation("discordJs")}: [${
-                        dependencies["discord.js"].version
-                    }](https://discord.js.org)\n` +
-                    `${localization.getTranslation("typescript")}: [${
-                        dependencies["typescript"].version
-                    }](https://typescriptlang.org)`,
+                    `${localization.getTranslation("discordJs")}: ${hyperlink(
+                        dependencies["discord.js"].version,
+                        "https://discord.js.org"
+                    )}\n` +
+                    `${localization.getTranslation("typescript")}: ${hyperlink(
+                        dependencies["typescript"].version,
+                        "https://typescriptlang.org"
+                    )}`,
             },
             {
                 name: localization.getTranslation("osuLibraries"),

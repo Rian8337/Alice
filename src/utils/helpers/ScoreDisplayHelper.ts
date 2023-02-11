@@ -11,6 +11,7 @@ import {
     BaseMessageOptions,
     RepliableInteraction,
     Snowflake,
+    bold,
 } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { NumberHelper } from "./NumberHelper";
@@ -70,7 +71,7 @@ export abstract class ScoreDisplayHelper {
         embed.setDescription(
             StringHelper.formatString(
                 localization.getTranslation("recentPlays"),
-                `**${player.username}**`
+                bold(player.username)
             )
         );
 
@@ -83,7 +84,7 @@ export abstract class ScoreDisplayHelper {
                 const score: Score = player.recentPlays[i];
 
                 embed.addFields({
-                    name: `${i + 1}. **${BeatmapManager.getRankEmote(
+                    name: `${i + 1}. ${BeatmapManager.getRankEmote(
                         <ScoreRank>score.rank
                     )}** | ${score.title} ${score.completeModString}`,
                     value:
@@ -250,9 +251,11 @@ export abstract class ScoreDisplayHelper {
                     <ScoreRank>score.rank
                 )} ${
                     calcResult[0] && calcResult[1]
-                        ? `${arrow} **${calcResult[0].total.toFixed(
-                              2
-                          )}DPP | ${calcResult[1].total.toFixed(2)}PP** `
+                        ? `${arrow} ${bold(
+                              `${calcResult[0].total.toFixed(
+                                  2
+                              )}DPP | ${calcResult[1].total.toFixed(2)}PP`
+                          )} `
                         : " "
                 }${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
                 `${arrow} ${score.score.toLocaleString(
@@ -346,13 +349,15 @@ export abstract class ScoreDisplayHelper {
             }
 
             embed.addFields({
-                name: `**${localization.getTranslation("topScore")}**`,
+                name: bold(localization.getTranslation("topScore")),
                 value:
-                    `**${topScore.username}${
-                        topScore.mods.length > 0
-                            ? ` (${topScore.completeModString})`
-                            : ""
-                    }**\n` + (await getScoreDescription(topScore)),
+                    `${bold(
+                        `${topScore.username}${
+                            topScore.mods.length > 0
+                                ? ` (${topScore.completeModString})`
+                                : ""
+                        }`
+                    )}\n` + (await getScoreDescription(topScore)),
             });
 
             const displayedScores: Score[] = scores.slice(
@@ -364,11 +369,13 @@ export abstract class ScoreDisplayHelper {
 
             for (const score of displayedScores) {
                 embed.addFields({
-                    name: `**#${++i} ${score.username}${
-                        score.mods.length > 0
-                            ? ` (${score.completeModString})`
-                            : ""
-                    }**`,
+                    name: `${bold(
+                        `#${++i} ${score.username}${
+                            score.mods.length > 0
+                                ? ` (${score.completeModString})`
+                                : ""
+                        }`
+                    )}`,
                     value: await getScoreDescription(score),
                 });
             }

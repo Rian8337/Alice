@@ -4,6 +4,7 @@ import {
     EmbedBuilder,
     Snowflake,
     GuildBasedChannel,
+    bold,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ActivityCategory } from "structures/interactions/commands/Tools/ActivityCategory";
@@ -222,7 +223,9 @@ export const run: SlashSubcommand<true>["run"] = async (
     const onPageChange: OnButtonPageChange = async (_, page) => {
         const content: ActivityCategory = activityCategories[page - 1];
 
-        embed.setDescription(`**${content.category}**\n` + content.description);
+        embed.setDescription(
+            `${bold(content.category)}\n` + content.description
+        );
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

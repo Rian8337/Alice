@@ -15,7 +15,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
@@ -74,28 +74,30 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const arrow: Symbols = Symbols.rightArrowSmall;
 
         return (
-            `${arrow} **${BeatmapManager.getRankEmote(
+            `${arrow} ${BeatmapManager.getRankEmote(
                 <ScoreRank>score.score.rank
-            )}** ${arrow} ${(score.score.accuracy.value() * 100).toFixed(
-                2
-            )}%\n` +
-            `${arrow} **${score.scoreV2.toLocaleString(
-                BCP47
-            )}** ScoreV2 (**${pool
-                .calculateScorePortionScoreV2(
-                    pick,
-                    score.score.score,
-                    score.score.accuracy.nmiss,
-                    score.score.mods
-                )
-                .toLocaleString(BCP47)}** score, **${pool
-                .calculateAccuracyPortionScoreV2(
-                    pick,
-                    score.score.accuracy.value(),
-                    score.score.accuracy.nmiss,
-                    score.score.mods
-                )
-                .toLocaleString(BCP47)}** accuracy)\n` +
+            )} ${arrow} ${(score.score.accuracy.value() * 100).toFixed(2)}%\n` +
+            `${arrow} ${bold(
+                score.scoreV2.toLocaleString(BCP47)
+            )} ScoreV2 (${bold(
+                pool
+                    .calculateScorePortionScoreV2(
+                        pick,
+                        score.score.score,
+                        score.score.accuracy.nmiss,
+                        score.score.mods
+                    )
+                    .toLocaleString(BCP47)
+            )} score, ${bold(
+                pool
+                    .calculateAccuracyPortionScoreV2(
+                        pick,
+                        score.score.accuracy.value(),
+                        score.score.accuracy.nmiss,
+                        score.score.mods
+                    )
+                    .toLocaleString(BCP47)
+            )} accuracy)\n` +
             `${arrow} ${score.score.score.toLocaleString(
                 BCP47
             )} ScoreV1 ${arrow} ${score.score.combo}x ${arrow} [${
@@ -112,13 +114,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.addFields({
-            name: `**${localization.getTranslation("topScore")}**`,
+            name: bold(localization.getTranslation("topScore")),
             value:
-                `**${topScore.score.username}${
-                    topScore.score.mods.length > 0
-                        ? ` (${topScore.score.completeModString})`
-                        : ""
-                }**\n` + getScoreDescription(topScore),
+                `${bold(
+                    `${topScore.score.username}${
+                        topScore.score.mods.length > 0
+                            ? ` (${topScore.score.completeModString})`
+                            : ""
+                    }`
+                )}\n` + getScoreDescription(topScore),
         });
 
         const actualPage: number = Math.floor((page - 1) / 20);

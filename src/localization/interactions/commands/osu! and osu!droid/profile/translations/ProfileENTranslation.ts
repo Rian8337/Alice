@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { hideLinkEmbed, hyperlink, userMention } from "discord.js";
 import { ProfileStrings } from "../ProfileLocalization";
 
 /**
@@ -10,7 +11,10 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
             "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
         selfProfileNotFound: "I'm sorry, I cannot find your profile!",
         userProfileNotFound: "I'm sorry, I cannot find the player's profile!",
-        viewingProfile: "osu!droid profile for [%s](<%s>):",
+        viewingProfile: `osu!droid profile for ${hyperlink(
+            "%s",
+            hideLinkEmbed("%s")
+        )}:`,
         invalidRGBAformat: "I'm sorry, that's an invalid RGBA color format!",
         invalidHexCode: "I'm sorry, that's an invalid hex code!",
         changeInfoTextColorConfirmation:
@@ -115,14 +119,16 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         playCount: "Play Count",
         country: "Country",
         bindInformation: "Bind Information",
-        binded: "Binded to <@%s> (user ID: %s)",
+        binded: `Binded to ${userMention("%s")} (user ID: %s)`,
         notBinded: "Not binded",
         playerCredentialsInfo: "Player Credentials",
         username: "Username",
         password: "Password",
         doNotShareCredentialsWarning:
             "Do not share these credentials with everyone else until you have changed your password.",
-        changeCredentialsDirection:
-            "Please login to [this](%s) site using these credentials and change your email and password.",
+        changeCredentialsDirection: `Please login to ${hyperlink(
+            "this",
+            "%s"
+        )} site using these credentials and change your email and password.`,
     };
 }

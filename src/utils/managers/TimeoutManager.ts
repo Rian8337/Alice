@@ -4,6 +4,8 @@ import {
     EmbedBuilder,
     RepliableInteraction,
     Snowflake,
+    bold,
+    channelMention,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
@@ -153,15 +155,17 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(
-                    logLocalization.getTranslation("inChannel"),
-                    `<#${channelId}>`
-                )}: ${DateTimeFormatHelper.secondsToDHMS(
-                    duration,
-                    language
-                )}**\n\n` +
+                `${bold(
+                    `${member} ${StringHelper.formatString(
+                        logLocalization.getTranslation("inChannel"),
+                        channelMention(channelId)
+                    )}: ${DateTimeFormatHelper.secondsToDHMS(
+                        duration,
+                        language
+                    )}`
+                )}\n\n` +
                     `=========================\n\n` +
-                    `**${logLocalization.getTranslation("reason")}**:\n` +
+                    `${bold(logLocalization.getTranslation("reason"))}:\n` +
                     reason
             );
 
@@ -185,15 +189,17 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(
-                    userLocalization.getTranslation("inChannel"),
-                    `<#${channelId}>`
-                )}: ${DateTimeFormatHelper.secondsToDHMS(
-                    duration,
-                    userLocalization.language
-                )}**\n\n` +
+                `${bold(
+                    `${member} ${StringHelper.formatString(
+                        userLocalization.getTranslation("inChannel"),
+                        channelMention(channelId)
+                    )}: ${DateTimeFormatHelper.secondsToDHMS(
+                        duration,
+                        userLocalization.language
+                    )}`
+                )}\n\n` +
                     `=========================\n\n` +
-                    `**${userLocalization.getTranslation("reason")}**:\n` +
+                    `${bold(userLocalization.getTranslation("reason"))}:\n` +
                     reason
             );
 
@@ -313,12 +319,14 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(
-                    logLocalization.getTranslation("inChannel"),
-                    interaction.channel!.toString()
-                )}**\n\n` +
+                `${bold(
+                    `${member} ${StringHelper.formatString(
+                        logLocalization.getTranslation("inChannel"),
+                        interaction.channel!.toString()
+                    )}`
+                )}\n\n` +
                     `=========================\n\n` +
-                    `**${logLocalization.getTranslation("reason")}**:\n` +
+                    `${bold(logLocalization.getTranslation("reason"))}:\n` +
                     reason
             );
 
@@ -342,12 +350,14 @@ export abstract class TimeoutManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(
-                    userLocalization.getTranslation("inChannel"),
-                    interaction.channel!.toString()
-                )}**\n\n` +
+                `${bold(
+                    `${member} ${StringHelper.formatString(
+                        userLocalization.getTranslation("inChannel"),
+                        interaction.channel!.toString()
+                    )}`
+                )}\n\n` +
                     `=========================\n\n` +
-                    `**${userLocalization.getTranslation("reason")}**:\n` +
+                    `${bold(userLocalization.getTranslation("reason"))}:\n` +
                     reason
             );
 

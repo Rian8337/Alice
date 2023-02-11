@@ -5,6 +5,8 @@ import {
     MessageCollector,
     EmbedBuilder,
     Snowflake,
+    bold,
+    userMention,
 } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -64,7 +66,7 @@ function endGame(
     const answerString: string = ArrayHelper.collectionToArray(gameStats)
         .map(
             (v, i) =>
-                `#${i + 1}: <@${v.key}> - ${
+                `#${i + 1}: ${userMention(v.key)} - ${
                     v.value
                 } ${localization.getTranslation("answers")}`
         )
@@ -83,33 +85,33 @@ function endGame(
     embed
         .setTitle(localization.getTranslation("gameStatistics"))
         .setDescription(
-            `**${localization.getTranslation("gameStarter")}**: ${
+            `${bold(localization.getTranslation("gameStarter"))}: ${
                 interaction.user
             }\n` +
-                `**${localization.getTranslation(
-                    "timeStarted"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                `${bold(
+                    localization.getTranslation("timeStarted")
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
                     interaction.createdAt,
                     localization.language
                 )}\n` +
-                `**${localization.getTranslation(
-                    "duration"
-                )}**: ${DateTimeFormatHelper.secondsToDHMS(
+                `${bold(
+                    localization.getTranslation("duration")
+                )}: ${DateTimeFormatHelper.secondsToDHMS(
                     Math.floor(
                         (Date.now() - interaction.createdTimestamp) / 1000
                     ),
                     localization.language
                 )}\n` +
-                `**${localization.getTranslation(
-                    "levelReached"
-                )}**: ${localization.getTranslation(
+                `${bold(
+                    localization.getTranslation("levelReached")
+                )}: ${localization.getTranslation(
                     "operatorCount"
                 )} ${operatorCount}, ${localization.getTranslation(
                     "level"
                 )} ${level}\n\n` +
-                `**${localization.getTranslation(
-                    "totalCorrectAnswers"
-                )}**: ${totalAnswers} ${localization.getTranslation(
+                `${bold(
+                    localization.getTranslation("totalCorrectAnswers")
+                )}: ${totalAnswers} ${localization.getTranslation(
                     "answers"
                 )}}\n` +
                 answerString

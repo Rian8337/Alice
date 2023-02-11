@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -39,7 +39,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     let desc: string = "";
 
     for (let i = 0; i < clan.active_powerups.length; ++i) {
-        desc += `**${i + 1}**. ${StringHelper.capitalizeString(
+        desc += `${bold((i + 1).toString())}. ${StringHelper.capitalizeString(
             clan.active_powerups[i]
         )}\n`;
     }

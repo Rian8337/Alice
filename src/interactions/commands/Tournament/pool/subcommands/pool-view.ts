@@ -10,7 +10,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { EmbedBuilder, GuildMember } from "discord.js";
+import { bold, EmbedBuilder, GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
@@ -47,9 +47,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             embed.addFields({
                 name: map.name,
-                value: `**${localization.getTranslation(
-                    "length"
-                )}**: ${DateTimeFormatHelper.secondsToDHMS(
+                value: `${bold(
+                    localization.getTranslation("length")
+                )}: ${DateTimeFormatHelper.secondsToDHMS(
                     map.duration,
                     localization.language
                 )}`,

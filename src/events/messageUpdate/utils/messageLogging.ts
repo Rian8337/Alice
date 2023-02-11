@@ -1,4 +1,10 @@
-import { GuildChannel, Message, EmbedBuilder, ThreadChannel } from "discord.js";
+import {
+    GuildChannel,
+    Message,
+    EmbedBuilder,
+    ThreadChannel,
+    hyperlink,
+} from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 
@@ -37,7 +43,10 @@ export const run: EventUtil["run"] = async (
 
     embed.setTitle("Message edited").addFields({
         name: "Channel",
-        value: `${oldMessage.channel} | [Go to Message](${oldMessage.url})`,
+        value: `${oldMessage.channel} | ${hyperlink(
+            "Go to Message",
+            oldMessage.url
+        )}`,
     });
 
     if (oldMessage.content) {

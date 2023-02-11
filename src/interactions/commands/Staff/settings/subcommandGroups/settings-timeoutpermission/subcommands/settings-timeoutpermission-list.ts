@@ -10,7 +10,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Collection, EmbedBuilder } from "discord.js";
+import { Collection, EmbedBuilder, roleMention } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
@@ -56,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 allowedTimeoutRoles.at(i)!;
 
             list.push(
-                `- <@&${timeoutRole.id}> (${
+                `- ${roleMention(timeoutRole.id)} (${
                     timeoutRole.maxTime === -1
                         ? localization.getTranslation("indefinite")
                         : DateTimeFormatHelper.secondsToDHMS(

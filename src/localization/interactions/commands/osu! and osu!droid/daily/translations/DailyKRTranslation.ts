@@ -1,4 +1,9 @@
 import { Translation } from "@alice-localization/base/Translation";
+import {
+    bold,
+    chatInputApplicationCommandMention,
+    userMention,
+} from "discord.js";
 import { DailyStrings } from "../DailyLocalization";
 
 /**
@@ -40,17 +45,26 @@ export class DailyKRTranslation extends Translation<DailyStrings> {
         aboutAnswer1:
             "매일 새로운 데일리 챌린지가 나와요. 각각의 챌린지는 난이도를 기반으로 다른 양의 포인트가 부여돼요. 챌린지를 통과함으로써 포인트와 %s앨리스 코인을 얻을 수 있어요. 각 챌린지에는 몇몇 보너스 미션도 있는데, 완료하면 더 많은 포인트와 %s앨리스 코인을 받을 수 있어요! 각각의 챌린지 보너스 레벨은 2 챌린지 포인트로 변환되며, 이것도 역시 %s`4`앨리스 코인으로 변환돼요.\n\n위클리 챌린지는 일주일에 한번만 가능한데, 데일리 챌린지들보다 상당히 어렵기 때문에 더 많은 포인트와 %s앨리스 코인을 줘요. 이는 일주일의 기간을 주는 이유이기도 하죠!",
         aboutQuestion2: "어떻게 챌린지 기록을 제출하나요?",
-        aboutAnswer2:
-            "기존 맵을 이미 플레이 했을 경우를 고려해서, 다운로드 받을 수 있는 별개의 비트맵이 제공돼요. 사실, 챌린지 달성을 인정받을 수 있는 기록을 제출하려면 **반드시** 이 비트맵을 다운로드해서 플레이해야 해요.\n\n챌린지를 완료하면, 기록을 제출하기 위해 </daily submit:889506666498895942> 명령어를 사용 해 주세요.",
+        aboutAnswer2: `기존 맵을 이미 플레이 했을 경우를 고려해서, 다운로드 받을 수 있는 별개의 비트맵이 제공돼요. 사실, 챌린지 달성을 인정받을 수 있는 기록을 제출하려면 ${bold(
+            "반드시"
+        )} 이 비트맵을 다운로드해서 플레이해야 해요.\n\n챌린지를 완료하면, 기록을 제출하기 위해 ${chatInputApplicationCommandMention(
+            "daily",
+            "submit",
+            "889506666498895942"
+        )} 명령어를 사용 해 주세요.`,
         aboutQuestion3: "포인트와 앨리스 코인은 어디에 쓰나요?",
         aboutAnswer3:
             "현재로서는, 포인트는 사용처가 없어요. 하지만, %s앨리스 코인은 클랜과 치장을 위해 사용할 수 있어요.",
         aboutQuestion4: "포인트와 앨리스 코인의 리더보드가 있나요?",
-        aboutAnswer4:
-            "%s앨리스 코인 리더보드는 없지만, 포인트 리더보드는 있어요. </daily leaderboard:889506666498895942>를 사용하시면 리더보드를 볼 수 있어요.",
+        aboutAnswer4: `%s앨리스 코인 리더보드는 없지만, 포인트 리더보드는 있어요. ${chatInputApplicationCommandMention(
+            "daily",
+            "leaderboard",
+            "889506666498895942"
+        )}를 사용하시면 리더보드를 볼 수 있어요.`,
         aboutQuestion5: "여기서 언급되지 않은 질문이 더 있어요!",
-        aboutAnswer5:
-            "<@386742340968120321>에게 데일리, 위클리 챌린지에 관한 더 많은 정보를 물어보실 수 있어요.",
+        aboutAnswer5: `${userMention(
+            "386742340968120321"
+        )}에게 데일리, 위클리 챌린지에 관한 더 많은 정보를 물어보실 수 있어요.`,
         username: "유저네임",
         uid: "UID",
         points: "포인트",

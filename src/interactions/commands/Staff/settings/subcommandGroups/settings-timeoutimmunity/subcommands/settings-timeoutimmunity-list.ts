@@ -8,7 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { EmbedBuilder, Snowflake } from "discord.js";
+import { EmbedBuilder, roleMention, Snowflake } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {
@@ -45,7 +45,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         embed.setDescription(
             immuneTimeoutRoles
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
-                .map((v) => `- <@&${v}>`)
+                .map((v) => `- ${roleMention(v)}`)
                 .join("\n")
         );
     };

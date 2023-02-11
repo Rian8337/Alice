@@ -1,4 +1,4 @@
-import { Collection, EmbedBuilder } from "discord.js";
+import { bold, Collection, EmbedBuilder, userMention } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
@@ -48,19 +48,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             if (content) {
                 embed.addFields({
-                    name: `**${i + 1}**. **Uid ${content.uid}**`,
+                    name: `${bold((i + 1).toString())}. ${bold(
+                        `Uid ${content.uid}`
+                    )}`,
                     value:
-                        `**${localization.getTranslation(
-                            "discordAccount"
-                        )}**: <@${content.discordid}> (${
+                        `${bold(
+                            localization.getTranslation("discordAccount")
+                        )}: ${userMention(content.discordid)} (${
                             content.discordid
                         })\n` +
-                        `**${localization.getTranslation(
-                            "usernameRequested"
-                        )}**: ${content.new_username}\n` +
-                        `**${localization.getTranslation(
-                            "creationDate"
-                        )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        `${bold(
+                            localization.getTranslation("usernameRequested")
+                        )}: ${content.new_username}\n` +
+                        `${bold(
+                            localization.getTranslation("creationDate")
+                        )}: ${DateTimeFormatHelper.dateToLocaleString(
                             new Date((content.cooldown - 86400 * 30) * 1000),
                             localization.language
                         )}`,

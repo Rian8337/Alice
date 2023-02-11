@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { hideLinkEmbed, hyperlink } from "discord.js";
 import { OnboardingPlayerProfileActionStrings } from "../OnboardingPlayerProfileActionLocalization";
 
 /**
@@ -9,6 +10,9 @@ export class OnboardingPlayerProfileActionENTranslation extends Translation<Onbo
         userNotBinded:
             "I'm sorry, you have not binded an osu!droid account! Please follow the procedure outlined above to bind your osu!droid account.",
         profileNotFound: "I'm sorry, I cannot find your profile!",
-        viewingProfile: "osu!droid profile for [%s](<%s>):",
+        viewingProfile: `osu!droid profile for ${hyperlink(
+            "%s",
+            hideLinkEmbed("%s")
+        )}:`,
     };
 }

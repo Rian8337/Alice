@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { userMention } from "discord.js";
 import { HelpStrings } from "../HelpLocalization";
 
 /**
@@ -8,7 +9,9 @@ export class HelpENTranslation extends Translation<HelpStrings> {
     override readonly translations: HelpStrings = {
         noCommandFound: "I'm sorry, I cannot find the command!",
         aliceHelp: "Alice Synthesis Thirty Help",
-        creator: "Made by <@132783516176875520> and <@386742340968120321>.",
+        creator: `Made by ${userMention(
+            "132783516176875520"
+        )} and ${userMention("386742340968120321")}.`,
         useHelpCommand:
             "For detailed information about a command, use `/help [command name]`.",
         issuesContact:

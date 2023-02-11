@@ -5,6 +5,7 @@ import {
     Collection,
     GuildMember,
     EmbedBuilder,
+    bold,
 } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
@@ -180,7 +181,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                             argsString ? ` ${argsString}` : ""
                         }\``,
                     value:
-                        `**${localization.getTranslation("details")}**\n` +
+                        `${bold(localization.getTranslation("details"))}\n` +
                             cmd.config.options
                                 .map(
                                     (v) =>
@@ -215,9 +216,9 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             embed.addFields({
-                name: `**${localization.getTranslation(
-                    "category"
-                )}**: ${commandList.keyAt(page - 1)}`,
+                name: `${bold(
+                    localization.getTranslation("category")
+                )}: ${commandList.keyAt(page - 1)}`,
                 value: commandList
                     .at(page - 1)!
                     .map((v) => `\`${v}\``)

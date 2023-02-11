@@ -49,10 +49,14 @@ import {
 } from "@rian8337/osu-difficulty-calculator";
 import {
     APIEmbedField,
+    bold,
     EmbedBuilder,
+    hyperlink,
     Snowflake,
     TextChannel,
     ThreadChannel,
+    underscore,
+    userMention,
 } from "discord.js";
 import { ObjectId } from "mongodb";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
@@ -190,26 +194,28 @@ export class MultiplayerRoom
                 name: this.settings.roomName,
             })
             .setDescription(
-                `**${localization.getTranslation("roomId")}**: ${
+                `${bold(localization.getTranslation("roomId"))}: ${
                     this.roomId
                 }\n` +
-                    `**${localization.getTranslation(
-                        "creationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    `${bold(
+                        localization.getTranslation("creationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         this._id!.getTimestamp(),
                         localization.language
                     )}\n` +
-                    `**${localization.getTranslation("host")}**: <@${
+                    `${bold(
+                        localization.getTranslation("host")
+                    )}: ${userMention(this.settings.roomHost)} (${
                         this.settings.roomHost
-                    }> (${this.settings.roomHost})\n` +
-                    `**${localization.getTranslation("password")}**: ${
+                    })\n` +
+                    `${bold(localization.getTranslation("password"))}: ${
                         this.settings.password
                             ? Symbols.checkmark
                             : Symbols.cross
                     }\n` +
-                    `**${localization.getTranslation(
-                        "playerCount"
-                    )}**: ${this.players.length.toLocaleString(
+                    `${bold(
+                        localization.getTranslation("playerCount")
+                    )}: ${this.players.length.toLocaleString(
                         BCP47
                     )}/${this.settings.maxPlayers.toLocaleString(BCP47)}`
             )
@@ -217,24 +223,27 @@ export class MultiplayerRoom
                 {
                     name: localization.getTranslation("currentBeatmap"),
                     value: this.settings.beatmap
-                        ? `[${this.settings.beatmap.name}](https://osu.ppy.sh/b/${this.settings.beatmap.id})`
+                        ? hyperlink(
+                              this.settings.beatmap.name,
+                              `https://osu.ppy.sh/b/${this.settings.beatmap.id}`
+                          )
                         : localization.getTranslation("none"),
                 },
                 {
                     name: localization.getTranslation("settings"),
                     value:
-                        `**${localization.getTranslation(
-                            "teamMode"
-                        )}**: ${this.teamModeToString(language)}\n` +
-                        `**${localization.getTranslation(
-                            "winCondition"
-                        )}**: ${this.winConditionToString(language)}\n` +
-                        `**${localization.getTranslation("scorePortion")}**: ${(
-                            this.settings.scorePortion * 100
-                        )
+                        `${bold(
+                            localization.getTranslation("teamMode")
+                        )}: ${this.teamModeToString(language)}\n` +
+                        `${bold(
+                            localization.getTranslation("winCondition")
+                        )}: ${this.winConditionToString(language)}\n` +
+                        `${bold(
+                            localization.getTranslation("scorePortion")
+                        )}: ${(this.settings.scorePortion * 100)
                             .toFixed(2)
                             .toLocaleUpperCase(BCP47)}%\n` +
-                        `**${localization.getTranslation("forceAR")}**: ${
+                        `${bold(localization.getTranslation("forceAR"))}: ${
                             this.settings.forcedAR.allowed
                                 ? Symbols.checkmark
                                 : Symbols.cross
@@ -243,36 +252,38 @@ export class MultiplayerRoom
                         )} min, ${this.settings.forcedAR.maxValue.toLocaleString(
                             BCP47
                         )} max)\n` +
-                        `**${localization.getTranslation(
-                            "speedMultiplier"
-                        )}**: ${this.settings.speedMultiplier.toLocaleString(
+                        `${bold(
+                            localization.getTranslation("speedMultiplier")
+                        )}: ${this.settings.speedMultiplier.toLocaleString(
                             BCP47
                         )}\n` +
-                        `**${localization.getTranslation(
-                            "allowSliderLock"
-                        )}**: ${
+                        `${bold(
+                            localization.getTranslation("allowSliderLock")
+                        )}: ${
                             this.settings.allowSliderLock
                                 ? Symbols.checkmark
                                 : Symbols.cross
                         }\n` +
-                        `**${localization.getTranslation(
-                            "useSliderAccuracy"
-                        )}**: ${
+                        `${bold(
+                            localization.getTranslation("useSliderAccuracy")
+                        )}: ${
                             this.settings.useSliderAccuracy
                                 ? Symbols.checkmark
                                 : Symbols.cross
                         }\n` +
-                        `**${localization.getTranslation("requiredMods")}**: ${
+                        `${bold(
+                            localization.getTranslation("requiredMods")
+                        )}: ${
                             this.settings.requiredMods ||
                             localization.getTranslation("none")
                         }\n` +
-                        `**${localization.getTranslation("allowedMods")}**: ${
+                        `${bold(localization.getTranslation("allowedMods"))}: ${
                             this.settings.allowedMods ||
                             localization.getTranslation("none")
                         }\n` +
-                        `**${localization.getTranslation(
-                            "customModMultipliers"
-                        )}**: ${this.getCustomModMultipliersDescription(
+                        `${bold(
+                            localization.getTranslation("customModMultipliers")
+                        )}: ${this.getCustomModMultipliersDescription(
                             language
                         )}`,
                 }
@@ -526,14 +537,14 @@ export class MultiplayerRoom
                         language
                     );
 
-                    field.value += ` - **${v.reason}**`;
+                    field.value += ` - ${bold(v.reason!)}`;
 
                     return field;
                 })
             )
             .addFields({
                 name: "=================================",
-                value: `**${
+                value: bold(
                     winners.length === this.players.length
                         ? localization.getTranslation("draw")
                         : StringHelper.formatString(
@@ -541,7 +552,7 @@ export class MultiplayerRoom
                               winners.join(", ") ||
                                   localization.getTranslation("none")
                           )
-                }**`,
+                ),
             });
 
         return embed;
@@ -656,9 +667,11 @@ export class MultiplayerRoom
             )
             .addFields({
                 name: localization.getTranslation("redTeam"),
-                value: `**${localization.getTranslation(
-                    "totalScore"
-                )}: ${redTotalScore.toLocaleString(BCP47)}**${
+                value: `${bold(
+                    `${localization.getTranslation(
+                        "totalScore"
+                    )}: ${redTotalScore.toLocaleString(BCP47)}`
+                )}${
                     redTotalScore > blueTotalScore
                         ? ` (+${diff.toLocaleString(BCP47)})`
                         : ""
@@ -677,7 +690,7 @@ export class MultiplayerRoom
                         language
                     );
 
-                    field.value += ` - **${v.reason}**`;
+                    field.value += ` - ${bold(v.reason!)}`;
 
                     return field;
                 })
@@ -688,9 +701,11 @@ export class MultiplayerRoom
             })
             .addFields({
                 name: localization.getTranslation("blueTeam"),
-                value: `**${localization.getTranslation(
-                    "totalScore"
-                )}: ${blueTotalScore.toLocaleString(BCP47)}**${
+                value: `${bold(
+                    `${localization.getTranslation(
+                        "totalScore"
+                    )}: ${blueTotalScore.toLocaleString(BCP47)}`
+                )}${
                     blueTotalScore > redTotalScore
                         ? ` (+${diff.toLocaleString(BCP47)})`
                         : ""
@@ -709,14 +724,14 @@ export class MultiplayerRoom
                         language
                     );
 
-                    field.value += ` - **${v.reason}**`;
+                    field.value += ` - ${bold(v.reason!)}`;
 
                     return field;
                 })
             )
             .addFields({
                 name: "=================================",
-                value: `**${
+                value: bold(
                     redTotalScore === blueTotalScore
                         ? localization.getTranslation("draw")
                         : StringHelper.formatString(
@@ -727,7 +742,7 @@ export class MultiplayerRoom
                                       : "blueTeam"
                               )
                           )
-                }**`,
+                ),
             });
 
         return embed;
@@ -1101,9 +1116,11 @@ export class MultiplayerRoom
         const diff: number = afterScore ? score.grade - afterScore.grade : 0;
 
         return {
-            name: `**#${index} ${
-                score.username
-            } - ${modstring}: __${score.grade.toLocaleString(BCP47)}__**${
+            name: `${bold(
+                `#${index} ${score.username} - ${modstring}: ${underscore(
+                    score.grade.toLocaleString(BCP47)
+                )}`
+            )}${
                 afterScore
                     ? ` (${diff >= 0 ? `+` : ""}${diff.toLocaleString(BCP47)})`
                     : ""
@@ -1220,15 +1237,15 @@ export class MultiplayerRoom
             )
             .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
             .setDescription(
-                `**${localization.getTranslation(
-                    "teamMode"
-                )}**: ${this.teamModeToString(language)}\n` +
-                    `**${localization.getTranslation(
-                        "winCondition"
-                    )}**: ${this.winConditionToString(language)}\n` +
-                    `**${localization.getTranslation(
-                        "customModMultipliers"
-                    )}**: ${this.getCustomModMultipliersDescription(language)}`
+                `${bold(
+                    localization.getTranslation("teamMode")
+                )}: ${this.teamModeToString(language)}\n` +
+                    `${bold(
+                        localization.getTranslation("winCondition")
+                    )}: ${this.winConditionToString(language)}\n` +
+                    `${bold(
+                        localization.getTranslation("customModMultipliers")
+                    )}: ${this.getCustomModMultipliersDescription(language)}`
             );
 
         return embed;

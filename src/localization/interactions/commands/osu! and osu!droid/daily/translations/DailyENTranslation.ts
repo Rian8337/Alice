@@ -1,4 +1,9 @@
 import { Translation } from "@alice-localization/base/Translation";
+import {
+    bold,
+    chatInputApplicationCommandMention,
+    userMention,
+} from "discord.js";
 import { DailyStrings } from "../DailyLocalization";
 
 /**
@@ -85,17 +90,26 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         aboutAnswer1:
             "Every day, there will be a new daily challenge to complete. Each challenges grant a different amount of points depending on how hard the challenge is. You can get points and %sAlice coins by passing the challenge. There will be a few bonuses that allows you to gain more points and %sAlice coins, too! Each challenge bonus level converts to 2 challenge points, which also converts to %s`4` Alice coins.\n\nThe weekly bounty challenge, which is only available once per week, grants more points and %sAlice coins as this challenge is considerably harder than any daily challenges. That's also why you have a week to complete it, too!",
         aboutQuestion2: "How can I submit challenges?",
-        aboutAnswer2:
-            "There will be a separate beatmap set for you to download in case you have played the original map. In fact, you **must** download the set in order to submit your play.\n\nOnce you complete a challenge, use the </daily submit:889506666498895942> command to submit your play.",
+        aboutAnswer2: `There will be a separate beatmap set for you to download in case you have played the original map. In fact, you ${bold(
+            "must"
+        )} download the set in order to submit your play.\n\nOnce you complete a challenge, use the ${chatInputApplicationCommandMention(
+            "daily",
+            "submit",
+            "889506666498895942"
+        )} command to submit your play.`,
         aboutQuestion3: "How can I use my points and Alice coins?",
         aboutAnswer3:
             "As of now, there is no use for points. However, %sAlice coins can be used for clans and cosmetics.",
         aboutQuestion4: "Is there a leaderboard for points and Alice coins?",
-        aboutAnswer4:
-            "There is no leaderboard for %sAlice coins, however there is a leaderboard for points. You can use </daily leaderboard:889506666498895942> to view the leaderboard.",
+        aboutAnswer4: `There is no leaderboard for %sAlice coins, however there is a leaderboard for points. You can use ${chatInputApplicationCommandMention(
+            "daily",
+            "leaderboard",
+            "889506666498895942"
+        )} to view the leaderboard.`,
         aboutQuestion5: "I have more questions that are not mentioned in here!",
-        aboutAnswer5:
-            "You can ask <@386742340968120321> for more information about daily and weekly challenges.",
+        aboutAnswer5: `You can ask ${userMention(
+            "386742340968120321"
+        )} for more information about daily and weekly challenges.`,
         username: "Username",
         uid: "UID",
         points: "Points",

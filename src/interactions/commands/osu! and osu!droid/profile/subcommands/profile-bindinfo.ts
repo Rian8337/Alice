@@ -1,4 +1,4 @@
-import { EmbedBuilder, GuildMember, Snowflake } from "discord.js";
+import { bold, EmbedBuilder, GuildMember, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -110,17 +110,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             `[${localization.getTranslation("avatarLink")}](${
                 player.avatarURL
             })\n\n` +
-                `**${localization.getTranslation("uid")}**: ${player.uid}\n` +
-                `**${localization.getTranslation(
-                    "rank"
-                )}**: ${player.rank.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation(
-                    "playCount"
-                )}**: ${player.playCount.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation("country")}**: ${
+                `${bold(localization.getTranslation("uid"))}: ${player.uid}\n` +
+                `${bold(
+                    localization.getTranslation("rank")
+                )}: ${player.rank.toLocaleString(BCP47)}\n` +
+                `${bold(
+                    localization.getTranslation("playCount")
+                )}: ${player.playCount.toLocaleString(BCP47)}\n` +
+                `${bold(localization.getTranslation("country"))}: ${
                     player.location
                 }\n\n` +
-                `**${localization.getTranslation("bindInformation")}**: ${
+                `${bold(localization.getTranslation("bindInformation"))}: ${
                     bindInfo
                         ? StringHelper.formatString(
                               localization.getTranslation("binded"),

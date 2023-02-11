@@ -31,6 +31,7 @@ import {
     EmbedBuilder,
     Snowflake,
     Attachment,
+    bold,
 } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
@@ -180,39 +181,39 @@ export const run: SlashSubcommand<true>["run"] = async (
     embed
         .setTitle(localization.getTranslation("scoreStatistics"))
         .setDescription(
-            `**${localization.getTranslation("totalScore")}**: ${
+            `${bold(localization.getTranslation("totalScore"))}: ${
                 data.score
             }\n` +
-                `**${localization.getTranslation("maxCombo")}**: ${
+                `${bold(localization.getTranslation("maxCombo"))}: ${
                     data.maxCombo
                 }x\n` +
-                `**${localization.getTranslation("accuracy")}**: ${(
+                `${bold(localization.getTranslation("accuracy"))}: ${(
                     data.accuracy.value() * 100
                 ).toFixed(2)}%\n` +
-                `**${localization.getTranslation("rank")}**: ${data.rank}\n` +
-                `**${localization.getTranslation(
-                    "time"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                `${bold(localization.getTranslation("rank"))}: ${data.rank}\n` +
+                `${bold(
+                    localization.getTranslation("time")
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
                     data.time,
                     localization.language
                 )}\n\n` +
-                `**${localization.getTranslation("hitGreat")}**: ${
+                `${bold(localization.getTranslation("hitGreat"))}: ${
                     data.accuracy.n300
                 } (${data.hit300k} ${localization.getTranslation(
                     "geki"
                 )} + ${localization.getTranslation("katu")})\n` +
-                `**${localization.getTranslation("hitGood")}**: ${
+                `${bold(localization.getTranslation("hitGood"))}: ${
                     data.accuracy.n100
                 } (${data.hit100k} ${localization.getTranslation("katu")})\n` +
-                `**${localization.getTranslation("hitMeh")}**: ${
+                `${bold(localization.getTranslation("hitMeh"))}: ${
                     data.accuracy.n50
                 }\n` +
-                `**${localization.getTranslation("misses")}**: ${
+                `${bold(localization.getTranslation("misses"))}: ${
                     data.accuracy.nmiss
                 }\n\n` +
-                `**${localization.getTranslation(
-                    "bonusLevelReached"
-                )}**: ${bonusLevel}`
+                `${bold(
+                    localization.getTranslation("bonusLevelReached")
+                )}: ${bonusLevel}`
         );
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(

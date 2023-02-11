@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, TextChannel } from "discord.js";
+import { Message, EmbedBuilder, TextChannel, hyperlink } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -34,7 +34,10 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
 
         embed.addFields({
             name: "Channel",
-            value: `${message.channel} | [Go to Message](${message.url})`,
+            value: `${message.channel} | ${hyperlink(
+                "Go to Message",
+                message.url
+            )}`,
         });
 
         if (message.content) {

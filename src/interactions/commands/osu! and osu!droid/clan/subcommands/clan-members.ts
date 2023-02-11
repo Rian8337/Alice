@@ -10,7 +10,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, bold, userMention } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -62,14 +62,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             const member: ClanMember = clan.member_list.at(i)!;
 
             clanMemberDescriptions.push(
-                `**${5 * (page - 1) + i + 1}. <@${member.id}> (#${
-                    member.rank
-                })**\n` +
-                    `**${localization.getTranslation("discordId")}**: ${
+                `${bold(
+                    `${5 * (page - 1) + i + 1}. ${userMention(member.id)} (#${
+                        member.rank
+                    })`
+                )}\n` +
+                    `${bold(localization.getTranslation("discordId"))}: ${
                         member.id
                     }\n` +
-                    `**Uid**: ${member.uid}\n` +
-                    `**${localization.getTranslation("clanMemberRole")}**: ${
+                    `${bold("Uid")}: ${member.uid}\n` +
+                    `${bold(localization.getTranslation("clanMemberRole"))}: ${
                         member.hasPermission
                             ? `${localization.getTranslation(
                                   member.id === clan.leader
@@ -80,9 +82,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                   "clanMemberRoleMember"
                               )
                     }\n` +
-                    `**${localization.getTranslation(
-                        "clanMemberUpkeepValue"
-                    )}**: ${clan.calculateUpkeep(member.id)} Alice coins`
+                    `${bold(
+                        localization.getTranslation("clanMemberUpkeepValue")
+                    )}: ${clan.calculateUpkeep(member.id)} Alice coins`
             );
         }
 

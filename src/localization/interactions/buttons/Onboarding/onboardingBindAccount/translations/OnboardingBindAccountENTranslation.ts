@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { chatInputApplicationCommandMention, hyperlink } from "discord.js";
 import { OnboardingBindAccountStrings } from "../OnboardingBindAccountLocalization";
 
 /**
@@ -13,11 +14,20 @@ export class OnboardingBindAccountENTranslation extends Translation<OnboardingBi
             "An osu!droid account can only binded to a Discord account. Additionally, a Discord account can only bind up to 2 osu!droid accounts.",
         bindingRequirement:
             "To use this feature, you must have a registered osu!droid account.",
-        accountRegistrationQuote:
-            "Don't have a registered osu!droid account yet? Register one [here](https://osudroid.moe/user/?action=register).",
+        accountRegistrationQuote: `Don't have a registered osu!droid account yet? Register one ${hyperlink(
+            "here",
+            "https://osudroid.moe/user/?action=register"
+        )}.`,
         bindingProcedure:
             "To bind your osu!droid account, press the button below. You will be prompted to enter the email and username of your osu!droid account to verify your ownership of the account.",
-        furtherBindQuote:
-            "Should you want to bind an osu!droid account in the future, feel free to use the </userbind uid:881019231863468083> or </userbind username:881019231863468083> command.",
+        furtherBindQuote: `Should you want to bind an osu!droid account in the future, feel free to use the ${chatInputApplicationCommandMention(
+            "userbind",
+            "uid",
+            "881019231863468083"
+        )} or ${chatInputApplicationCommandMention(
+            "userbind",
+            "username",
+            "881019231863468083"
+        )} command.`,
     };
 }

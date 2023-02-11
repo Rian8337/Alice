@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { hideLinkEmbed, hyperlink } from "discord.js";
 import { ViewDroidProfileStrings } from "../ViewDroidProfileLocalization";
 
 /**
@@ -9,6 +10,9 @@ export class ViewDroidProfileIDTranslation extends Translation<ViewDroidProfileS
         selfProfileNotFound: "Maaf, aku tidak dapat menemukan profilmu!",
         userProfileNotFound:
             "Maaf, aku tidak dapat menemukan profil pemain tersebut!",
-        viewingProfile: "Profil osu!droid untuk [%s](<%s>):",
+        viewingProfile: `Profil osu!droid untuk ${hyperlink(
+            "%s",
+            hideLinkEmbed("%s")
+        )}:`,
     };
 }

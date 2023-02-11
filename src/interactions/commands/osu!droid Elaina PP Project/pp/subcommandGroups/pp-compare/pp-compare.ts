@@ -17,7 +17,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { User, Collection, GuildMember, EmbedBuilder } from "discord.js";
+import { User, Collection, GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -211,37 +211,43 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     if (firstBindInfo.pptotal < secondBindInfo.pptotal) {
-        ppDescription = `**${firstBindInfo.pptotal.toFixed(
-            2
-        )}pp (#${firstPlayerPPRank.toLocaleString(BCP47)})** vs **${
-            Symbols.crown
-        } ${secondBindInfo.pptotal.toFixed(
-            2
-        )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})**`;
+        ppDescription = `${bold(
+            `${firstBindInfo.pptotal.toFixed(
+                2
+            )}pp (#${firstPlayerPPRank.toLocaleString(BCP47)})`
+        )} vs ${bold(
+            `${Symbols.crown} ${secondBindInfo.pptotal.toFixed(
+                2
+            )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})`
+        )}`;
     } else if (firstBindInfo.pptotal > secondBindInfo.pptotal) {
-        ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(
-            2
-        )}pp (#${firstPlayerPPRank.toLocaleString(
-            BCP47
-        )})** vs **${secondBindInfo.pptotal.toFixed(
-            2
-        )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})**`;
+        ppDescription = `${bold(
+            `${Symbols.crown} ${firstBindInfo.pptotal.toFixed(
+                2
+            )}pp (#${firstPlayerPPRank.toLocaleString(BCP47)})`
+        )} vs ${bold(
+            `${secondBindInfo.pptotal.toFixed(
+                2
+            )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})`
+        )}`;
     } else {
-        ppDescription = `**${firstBindInfo.pptotal.toFixed(
-            2
-        )}pp (#${firstPlayerPPRank.toLocaleString(
-            BCP47
-        )})** vs **${secondBindInfo.pptotal.toFixed(
-            2
-        )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})**`;
+        ppDescription = `${bold(
+            `${firstBindInfo.pptotal.toFixed(
+                2
+            )}pp (#${firstPlayerPPRank.toLocaleString(BCP47)})`
+        )} vs ${bold(
+            `${secondBindInfo.pptotal.toFixed(
+                2
+            )}pp (#${secondPlayerPPRank.toLocaleString(BCP47)})`
+        )}`;
     }
 
     embed
         .setTitle(localization.getTranslation("topPlaysComparison"))
         .setDescription(
-            `${localization.getTranslation("player")}: **${
+            `${localization.getTranslation("player")}: ${bold(
                 firstBindInfo.username
-            }** vs **${secondBindInfo.username}**\n` +
+            )} vs ${bold(secondBindInfo.username)}\n` +
                 `${localization.getTranslation("totalPP")}: ${ppDescription}`
         );
 
@@ -296,20 +302,24 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
             } | ${secondPP.pp}pp (${getModString(secondPP)})`;
 
             if (firstPP.pp < secondPP.pp) {
-                secondPlayerDescription = `**${secondPlayerDescription}** ${Symbols.crown}`;
+                secondPlayerDescription = `${bold(secondPlayerDescription)} ${
+                    Symbols.crown
+                }`;
             } else if (firstPP.pp > secondPP.pp) {
-                firstPlayerDescription = `**${firstPlayerDescription}** ${Symbols.crown}`;
+                firstPlayerDescription = `${bold(firstPlayerDescription)} ${
+                    Symbols.crown
+                }`;
             }
 
             embed.addFields({
                 name: `${i + 1}. ${firstPP.title}`,
                 value:
-                    `**${
+                    `${bold(
                         firstBindInfo!.username
-                    }**: ${firstPlayerDescription}\n` +
-                    `**${
+                    )}: ${firstPlayerDescription}\n` +
+                    `${bold(
                         secondBindInfo!.username
-                    }**: ${secondPlayerDescription}`,
+                    )}: ${secondPlayerDescription}`,
             });
         }
     };

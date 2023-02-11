@@ -16,7 +16,7 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Accuracy, ModUtil } from "@rian8337/osu-base";
-import { BaseMessageOptions, Collection, EmbedBuilder } from "discord.js";
+import { BaseMessageOptions, bold, Collection, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DanCourseLocalization = new DanCourseLocalization(
@@ -119,10 +119,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 }).value() * 100,
                 2
             )}%\n` +
-            `${arrow} **${NumberHelper.round(
-                score.grade,
-                2
-            )}** ${arrow} ${score.score.toLocaleString(
+            `${arrow} ${bold(
+                NumberHelper.round(score.grade, 2).toString()
+            )} ${arrow} ${score.score.toLocaleString(
                 LocaleHelper.convertToBCP47(localization.language)
             )} ${arrow} ${score.maxCombo}x ${arrow} [${score.perfect}/${
                 score.good
@@ -158,10 +157,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const topScore: DanCourseLeaderboardScore = scoreCache.get(1)![0];
 
         embed.setTitle(course.courseName).addFields({
-            name: `**${localization.getTranslation("topScore")}**`,
-            value: `**${topScore.username}${getModString(
-                topScore
-            )}**\n${getScoreDescription(topScore)}`,
+            name: `${bold(localization.getTranslation("topScore"))}`,
+            value: `${bold(
+                `${topScore.username}${getModString(topScore)}`
+            )}\n${getScoreDescription(topScore)}`,
         });
 
         const displayedScores: DanCourseLeaderboardScore[] = scores.slice(

@@ -1,4 +1,4 @@
-import { GuildMember, EmbedBuilder, User } from "discord.js";
+import { GuildMember, EmbedBuilder, User, hyperlink } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -16,7 +16,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         .setAuthor({
             name: user.tag,
         })
-        .setDescription(`[Avatar Link](${user.avatarURL()})`)
+        .setDescription(hyperlink("Avatar Link", user.avatarURL()!))
         .setImage(user.avatarURL()!);
 
     const embeds: EmbedBuilder[] = [avatarEmbed];
@@ -30,7 +30,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             .setAuthor({
                 name: user.tag,
             })
-            .setDescription(`[Banner Link](${user.bannerURL()})`)
+            .setDescription(hyperlink("Banner Link", user.bannerURL()!))
             .setImage(user.bannerURL()!);
 
         embeds.push(bannerEmbed);

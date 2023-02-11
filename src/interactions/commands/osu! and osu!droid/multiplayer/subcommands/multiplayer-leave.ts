@@ -9,6 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
+import { userMention } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -92,7 +93,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                               localization.getTranslation(
                                   "roomHostChangeNotification"
                               ),
-                              `<@${room.settings.roomHost}>`
+                              userMention(room.settings.roomHost)
                           )}`
                         : ""
                 }`

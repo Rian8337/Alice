@@ -20,6 +20,9 @@ import {
     BaseMessageOptions,
     Snowflake,
     TextChannel,
+    bold,
+    roleMention,
+    userMention,
 } from "discord.js";
 import { ObjectId } from "mongodb";
 import { Manager } from "@alice-utils/base/Manager";
@@ -311,7 +314,9 @@ export class Challenge extends Manager {
 
         await notificationChannel.send({
             content: MessageCreator.createAccept(
-                `Successfully started challenge \`${this.challengeid}\`.\n<@&674918022116278282>`
+                `Successfully started challenge \`${
+                    this.challengeid
+                }\`.\n${roleMention("674918022116278282")}`
             ),
             ...challengeEmbedOptions,
         });
@@ -414,9 +419,9 @@ export class Challenge extends Manager {
 
                 await notificationChannel.send({
                     content: MessageCreator.createAccept(
-                        `Congratulations to <@${
+                        `Congratulations to ${userMention(
                             winnerBindInfo.discordid
-                        }> for achieving first place in challenge \`${
+                        )} for achieving first place in challenge \`${
                             this.challengeid
                         }\`, earning them \`${
                             this.isWeekly ? "50" : "25"
@@ -845,9 +850,11 @@ export class Challenge extends Manager {
                 description: v.list
                     .map(
                         (b) =>
-                            `**${localization.getTranslation("level")} ${
-                                b.level
-                            }**: ${this.getPassOrBonusDescription(
+                            `${bold(
+                                `${localization.getTranslation("level")} ${
+                                    b.level
+                                }`
+                            )}: ${this.getPassOrBonusDescription(
                                 v.id,
                                 b.value,
                                 language
@@ -1162,69 +1169,69 @@ export class Challenge extends Manager {
             case "score":
                 return StringHelper.formatString(
                     localization.getTranslation("scoreV1Description"),
-                    `**${value.toLocaleString(BCP47)}**`
+                    bold(value.toLocaleString(BCP47))
                 );
             case "acc":
                 return StringHelper.formatString(
                     localization.getTranslation("accuracyDescription"),
-                    `**${value}**`
+                    bold(value.toString())
                 );
             case "scorev2":
                 return StringHelper.formatString(
                     localization.getTranslation("scoreV2Description"),
-                    `**${value.toLocaleString(BCP47)}**`
+                    bold(value.toLocaleString(BCP47))
                 );
             case "miss":
                 return value === 0
                     ? localization.getTranslation("noMisses")
                     : StringHelper.formatString(
                           localization.getTranslation("missCountDescription"),
-                          `**${value}**`
+                          bold(value.toString())
                       );
             case "mod":
                 return StringHelper.formatString(
                     localization.getTranslation("modsDescription"),
-                    `**${(<string>value).toUpperCase()}**`
+                    bold((<string>value).toUpperCase())
                 );
             case "combo":
                 return StringHelper.formatString(
                     localization.getTranslation("comboDescription"),
-                    `**${value}**`
+                    bold(value.toString())
                 );
             case "rank":
                 return StringHelper.formatString(
                     localization.getTranslation("rankDescription"),
-                    `**${(<string>value).toUpperCase()}**`
+                    bold((<string>value).toUpperCase())
                 );
             case "dpp":
                 return StringHelper.formatString(
                     localization.getTranslation("droidPPDescription"),
-                    `**${value}**`
+                    bold(value.toString())
                 );
             case "pp":
                 return StringHelper.formatString(
                     localization.getTranslation("pcPPDescription"),
-                    `**${value}**`
+                    bold(value.toString())
                 );
             case "m300":
                 return StringHelper.formatString(
                     localization.getTranslation("min300Description"),
-                    `**${value}**`
+                    bold(value.toString())
                 );
             case "m100":
                 return StringHelper.formatString(
                     localization.getTranslation("max100Description"),
-                    `**${value}**`
+                    bold(value.toString())
                 );
             case "m50":
                 return StringHelper.formatString(
                     localization.getTranslation("max50Description"),
-                    `**${value}**`
+                    bold(value.toString())
                 );
             case "ur":
                 return StringHelper.formatString(
                     localization.getTranslation("maxURDescription"),
-                    `**${value}**`
+                    bold(value.toString())
                 );
         }
     }
