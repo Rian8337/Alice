@@ -369,12 +369,18 @@ export class UserBind extends Manager {
                 perfCalcResult
             );
 
+            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
+                score,
+                diffCalcResult.result,
+                perfCalcResult
+            );
+
             const oldCalcResult: OldPerformanceCalculationResult =
                 (await BeatmapOldDifficultyHelper.calculateScorePerformance(
                     score
                 ))!;
 
-            await HelperFunctions.sleep(0.2);
+            await HelperFunctions.sleep(0.1);
 
             DPPHelper.insertScore(newList, [
                 DPPHelper.scoreToPPEntry(
@@ -569,8 +575,10 @@ export class UserBind extends Manager {
                 hit300: score.accuracy.n300,
                 hit100: score.accuracy.n100,
                 hit50: score.accuracy.n50,
-                sliderCheesePenalized:
-                    (score.replay?.sliderCheesePenalty.aimPenalty ?? 1) > 1,
+                aimSliderCheesePenalty:
+                    score.replay?.sliderCheesePenalty.aimPenalty ?? 1,
+                visualSliderCheesePenalty:
+                    score.replay?.sliderCheesePenalty.visualPenalty ?? 1,
             };
 
             consola.info(
@@ -745,6 +753,12 @@ export class UserBind extends Manager {
                                           ))!.result;
 
                                 await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                                    score,
+                                    diffCalculator,
+                                    perfCalcResult
+                                );
+
+                                await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                                     score,
                                     diffCalculator,
                                     perfCalcResult

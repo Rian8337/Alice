@@ -203,14 +203,14 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * @param difficultyCalculator The difficulty calculator to calculate the slider cheese penalty from.
      * @param calcResult The calculation result to apply the slider cheese penalty to.
      */
-    // static async applySliderCheesePenalty(
-    //     score: Score,
-    //     difficultyCalculator: DroidDifficultyCalculator,
-    //     calcResult: PerformanceCalculationResult<
-    //         DroidDifficultyCalculator,
-    //         DroidPerformanceCalculator
-    //     >
-    // ): Promise<void>;
+    static async applySliderCheesePenalty(
+        score: Score,
+        difficultyCalculator: DroidDifficultyCalculator,
+        calcResult: PerformanceCalculationResult<
+            DroidDifficultyCalculator,
+            DroidPerformanceCalculator
+        >
+    ): Promise<void>;
 
     /**
      * Applies a slider cheese penalty to a calculation result.
@@ -230,16 +230,18 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
 
     static async applySliderCheesePenalty(
         score: Score,
-        difficultyCalculator: // | DroidDifficultyCalculator
-        RebalanceDroidDifficultyCalculator,
-        calcResult: // | PerformanceCalculationResult<
-        //       DroidDifficultyCalculator,
-        //       DroidPerformanceCalculator
-        //   >
-        RebalancePerformanceCalculationResult<
-            RebalanceDroidDifficultyCalculator,
-            RebalanceDroidPerformanceCalculator
-        >
+        difficultyCalculator:
+            | DroidDifficultyCalculator
+            | RebalanceDroidDifficultyCalculator,
+        calcResult:
+            | PerformanceCalculationResult<
+                  DroidDifficultyCalculator,
+                  DroidPerformanceCalculator
+              >
+            | RebalancePerformanceCalculationResult<
+                  RebalanceDroidDifficultyCalculator,
+                  RebalanceDroidPerformanceCalculator
+              >
     ): Promise<void> {
         if (difficultyCalculator.attributes.sliderCount === 0) {
             return;

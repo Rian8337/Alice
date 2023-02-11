@@ -607,7 +607,7 @@ export abstract class EmbedCreator {
         });
 
         embed.setAuthor({
-            name: `${score.title} ${score.getCompleteModString()}`,
+            name: `${score.title} ${score.completeModString}`,
             iconURL: playerAvatarURL,
         });
 
@@ -644,9 +644,9 @@ export abstract class EmbedCreator {
 
         embed
             .setAuthor({
-                name: `${
-                    beatmap.fullTitle
-                } ${score.getCompleteModString()} [${droidCalcResult.difficultyAttributes.starRating.toFixed(
+                name: `${beatmap.fullTitle} ${
+                    score.completeModString
+                } [${droidCalcResult.difficultyAttributes.starRating.toFixed(
                     2
                 )}${
                     Symbols.star

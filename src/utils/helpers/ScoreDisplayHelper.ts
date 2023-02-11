@@ -86,7 +86,7 @@ export abstract class ScoreDisplayHelper {
                 embed.addFields({
                     name: `${i + 1}. ${BeatmapManager.getRankEmote(
                         <ScoreRank>score.rank
-                    )} | ${score.title} ${score.getCompleteModString()}`,
+                    )}** | ${score.title} ${score.completeModString}`,
                     value:
                         `${score.score.toLocaleString(
                             LocaleHelper.convertToBCP47(localization.language)
@@ -354,7 +354,7 @@ export abstract class ScoreDisplayHelper {
                     `${bold(
                         `${topScore.username}${
                             topScore.mods.length > 0
-                                ? ` (${topScore.getCompleteModString()})`
+                                ? ` (${topScore.completeModString})`
                                 : ""
                         }`
                     )}\n` + (await getScoreDescription(topScore)),
@@ -372,7 +372,7 @@ export abstract class ScoreDisplayHelper {
                     name: `${bold(
                         `#${++i} ${score.username}${
                             score.mods.length > 0
-                                ? ` (${score.getCompleteModString()})`
+                                ? ` (${score.completeModString})`
                                 : ""
                         }`
                     )}`,
