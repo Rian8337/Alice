@@ -6,7 +6,12 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { EmbedBuilder, GuildMember, BaseMessageOptions } from "discord.js";
+import {
+    EmbedBuilder,
+    GuildMember,
+    BaseMessageOptions,
+    bold,
+} from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { WhitelistLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -103,7 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 (v) =>
                     `- [${v.version}](https://osu.ppy.sh/b/${
                         v.beatmapID
-                    }) - **${v.totalDifficulty.toFixed(2)}**`
+                    }) - ${bold(v.totalDifficulty.toFixed(2))}`
             )
             .join("\n")}`,
     });

@@ -23,6 +23,7 @@ import {
     EmbedBuilder,
     RepliableInteraction,
     Snowflake,
+    underscore,
 } from "discord.js";
 import { CommandHelper } from "./CommandHelper";
 import { NumberHelper } from "./NumberHelper";
@@ -156,9 +157,11 @@ export abstract class DPPHelper {
                         name: `${i + 1}. ${pp.title} ${modstring}`,
                         value: `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
                             pp.miss
-                        } ${Symbols.missIcon} | __${pp.pp} pp__ (Net pp: ${(
-                            pp.pp * Math.pow(0.95, i)
-                        ).toFixed(2)} pp)`,
+                        } ${Symbols.missIcon} | ${underscore(
+                            `${pp.pp} pp`
+                        )} (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(
+                            2
+                        )} pp)`,
                     });
                 } else {
                     embed.addFields({ name: `${i + 1}. -`, value: "-" });

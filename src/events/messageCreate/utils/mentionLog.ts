@@ -5,6 +5,7 @@ import {
     Role,
     TextChannel,
     User,
+    hyperlink,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -42,7 +43,10 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
 
     embed.addFields({
         name: "Channel",
-        value: `${message.channel} | [Go to Message](${message.url})`,
+        value: `${message.channel} | ${hyperlink(
+            "Go to Message",
+            message.url
+        )}`,
     });
 
     if (mentionedUsers.length > 0) {

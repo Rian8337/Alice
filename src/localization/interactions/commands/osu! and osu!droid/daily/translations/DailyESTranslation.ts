@@ -1,4 +1,9 @@
 import { Translation } from "@alice-localization/base/Translation";
+import {
+    bold,
+    chatInputApplicationCommandMention,
+    userMention,
+} from "discord.js";
 import { DailyStrings } from "../DailyLocalization";
 
 /**
@@ -42,17 +47,26 @@ export class DailyESTranslation extends Translation<DailyStrings> {
         aboutAnswer1:
             "Diariamente, habrán nuevos desafios para completar. Cada desafio otorgará diferentes cantidades de puntos dependiendo de que tan dificil es. Puedes obtener puntos y %s monedas Alice completando el desafio. Tambien habrán ciertos bonus que te permitiran ganar aun más puntos y %smonedas Alice! Cada nivel adicional se convertirá en `2` puntos de desafio, los cuales se convertiran a %s`4` monedas Alice.\n\n El desafio semanal, el cual solo es una vez por semana, da muchos mas puntos y %smonedas Alice, ya que este desafio es considerablemente más dificil que cualquier desafio diario. Es por eso que tienen una semana para completarlo!",
         aboutQuestion2: "Como puedo completar los desafios?",
-        aboutAnswer2:
-            "Habrá un mapa por separado que podrás descargar en caso ya hayas jugado el mapa original. De hecho, tu **debes** descargar dicho mapa aparte para poder registrar tu puntaje.\n\nUna vez se complete el desafio, deberas usar el comando </daily submit:889506666498895942> para poder registrarlo.",
+        aboutAnswer2: `Habrá un mapa por separado que podrás descargar en caso ya hayas jugado el mapa original. De hecho, tu ${bold(
+            "debes"
+        )} descargar dicho mapa aparte para poder registrar tu puntaje.\n\nUna vez se complete el desafio, deberas usar el comando ${chatInputApplicationCommandMention(
+            "daily",
+            "submit",
+            "889506666498895942"
+        )} para poder registrarlo.`,
         aboutQuestion3: "Como puedo usar mis puntos y monedas Alice?",
         aboutAnswer3:
             "De momento, los puntos no tienen ningun uso. Sin embargo, las %smonedas Alice pueden ser usadas para clanes y customización.",
         aboutQuestion4: "Hay algun ranking de puntos y monedas Alice?",
-        aboutAnswer4:
-            "No hay ninguna tabla de %sMonedas Alice, sin embargo si hay una para los puntos. Puedes usar </daily leaderboard:889506666498895942> para ver la tabla.",
+        aboutAnswer4: `No hay ninguna tabla de %sMonedas Alice, sin embargo si hay una para los puntos. Puedes usar ${chatInputApplicationCommandMention(
+            "daily",
+            "leaderboard",
+            "889506666498895942"
+        )} para ver la tabla.`,
         aboutQuestion5: "Tengo más preguntas que no han sido mencionadas aqui!",
-        aboutAnswer5:
-            "Puedes hablar con <@386742340968120321> para tener más información acerca de los desafios diarios y semanales.",
+        aboutAnswer5: `Puedes hablar con ${userMention(
+            "386742340968120321"
+        )} para tener más información acerca de los desafios diarios y semanales.`,
         username: "Nick",
         uid: "UID",
         points: "Puntos",

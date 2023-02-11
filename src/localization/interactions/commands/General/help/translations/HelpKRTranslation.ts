@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { userMention } from "discord.js";
 import { HelpStrings } from "../HelpLocalization";
 
 /**
@@ -8,7 +9,9 @@ export class HelpKRTranslation extends Translation<HelpStrings> {
     override readonly translations: HelpStrings = {
         noCommandFound: "죄송해요, 그런 명령어를 찾을 수 없어요!",
         aliceHelp: "Alice Synthesis Thirty 도움말",
-        creator: "제작자: <@132783516176875520>, <@386742340968120321>.",
+        creator: `제작자: ${userMention("132783516176875520")}, ${userMention(
+            "386742340968120321"
+        )}.`,
         useHelpCommand:
             "명령어에 관한 더 자세한 정보를 알고 싶으시면, `/help [명령어 이름]`을 사용하세요.",
         issuesContact:

@@ -13,6 +13,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import {
     APIEmbedField,
+    bold,
     Collection,
     EmbedBuilder,
     GuildMember,
@@ -258,12 +259,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     embed
         .setDescription(
-            `${localization.getTranslation("totalPP")}: **${totalPP.toFixed(
-                2
-            )}pp**\n` +
-                `${localization.getTranslation("ppGained")}: **${(
-                    totalPP - bindInfo.pptotal
-                ).toFixed(2)}pp**`
+            `${localization.getTranslation("totalPP")}: ${bold(
+                totalPP.toFixed(2)
+            )}pp\n` +
+                `${localization.getTranslation("ppGained")}: ${bold(
+                    (totalPP - bindInfo.pptotal).toFixed(2)
+                )}pp`
         )
         .addFields(embedFields);
 

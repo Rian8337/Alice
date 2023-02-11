@@ -10,6 +10,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { UpdateFilter } from "mongodb";
 import { DatabaseVoting } from "structures/database/aliceDb/DatabaseVoting";
+import { bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
@@ -121,9 +122,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         query
     );
 
-    let string: string = `**${localization.getTranslation("topic")}: ${
-        voteInfo.topic
-    }**\n\n`;
+    let string: string = `${bold(
+        `${localization.getTranslation("topic")}: ${voteInfo.topic}`
+    )}\n\n`;
 
     for (let i = 0; i < voteInfo.choices.length; ++i) {
         const choice: VoteChoice = voteInfo.choices[i];

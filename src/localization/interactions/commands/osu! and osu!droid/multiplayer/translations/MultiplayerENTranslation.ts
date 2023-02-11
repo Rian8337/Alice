@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { chatInputApplicationCommandMention, hyperlink } from "discord.js";
 import { MultiplayerStrings } from "../MultiplayerLocalization";
 
 /**
@@ -6,7 +7,10 @@ import { MultiplayerStrings } from "../MultiplayerLocalization";
  */
 export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
     override readonly translations: MultiplayerStrings = {
-        about: "Please read [this](%s) document for an explanation about the system.",
+        about: `Please read ${hyperlink(
+            "this",
+            "%s"
+        )} document for an explanation about the system.`,
         roomWithIdDoesntExist:
             "I'm sorry, there is no multiplayer room with that ID!",
         roomWithIdAlreadyExists:
@@ -143,8 +147,12 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         roundStartFailed: "I'm sorry, I couldn't start the round: %s.",
         roundStartSuccess:
             "The round will start in %s seconds! Good luck and have fun!",
-        matchStatusUpdateFailed:
-            "I'm sorry, I couldn't update the match status: %s.\n\nPlease use </multiplayer round forcesubmit:978330292005765131> to update the match status.",
+        matchStatusUpdateFailed: `I'm sorry, I couldn't update the match status: %s.\n\nPlease use ${chatInputApplicationCommandMention(
+            "multiplayer",
+            "round",
+            "forcesubmit",
+            "978330292005765131"
+        )} to update the match status.`,
         matchStatusUpdateSuccess: "Successfully updated match status.",
         setMaxPlayerSlotFailed:
             "I'm sorry, I couldn't set the multiplayer room's maximum player slots: %s.",

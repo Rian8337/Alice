@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { chatInputApplicationCommandMention } from "discord.js";
 import { EmbedCreatorStrings } from "../EmbedCreatorLocalization";
 
 /**
@@ -38,8 +39,11 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         constrain: "Requisitos",
         modOnly: "Solo %s mod",
         rankableMods: "Cualquier mod rankeable menos EZ, NF ni HT",
-        challengeBonuses:
-            "Usa </daily bonuses:889506666498895942> para revisar los bonus.",
+        challengeBonuses: `Usa ${chatInputApplicationCommandMention(
+            "daily",
+            "bonuses",
+            "889506666498895942"
+        )} para revisar los bonus.`,
         auctionInfo: "Información de la subasta",
         auctionName: "Nombre",
         auctionAuctioneer: "Subastador",
@@ -52,8 +56,10 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         auctionBidders: "Pujadores",
         auctionTopBidders: "Top Pujas",
         broadcast: "Transmisión",
-        broadcast1:
-            "Si tu ves a algún usuario violando las reglas, con mal comportamiento, o siendo molesto de manera malintencionada, por favor reportarlo usando el comando </report:937926296560869466> (Más información disponible en `/help report`)",
+        broadcast1: `Si tu ves a algún usuario violando las reglas, con mal comportamiento, o siendo molesto de manera malintencionada, por favor reportarlo usando el comando ${chatInputApplicationCommandMention(
+            "report",
+            "937926296560869466"
+        )} (Más información disponible en \`/help report\`)`,
         broadcast2:
             "Ten en cuenta que solo miembros del staff pueden ver los reportes, por ende tu privacidad esta a salvo. Apreciamos la ayuda realizada para mantener este lugar con un ambiente amigable!",
         mapShareSubmission: "Registrado por %s",

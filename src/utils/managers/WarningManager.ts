@@ -17,6 +17,9 @@ import {
     EmbedBuilder,
     RepliableInteraction,
     Snowflake,
+    bold,
+    channelMention,
+    userMention,
 } from "discord.js";
 import { PunishmentManager } from "./PunishmentManager";
 
@@ -147,18 +150,20 @@ export abstract class WarningManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(
-                    logLocalization.getTranslation("inChannel"),
-                    `<#${channelId}>`
-                )}: ${DateTimeFormatHelper.secondsToDHMS(
-                    duration,
-                    logLocalization.language
-                )}**\n` +
-                    `**${logLocalization.getTranslation(
-                        "points"
-                    )}: ${points}**\n\n` +
+                `${bold(
+                    `${member} ${StringHelper.formatString(
+                        logLocalization.getTranslation("inChannel"),
+                        channelMention(channelId)
+                    )}: ${DateTimeFormatHelper.secondsToDHMS(
+                        duration,
+                        logLocalization.language
+                    )}`
+                )}\n` +
+                    `${bold(
+                        `${logLocalization.getTranslation("points")}: ${points}`
+                    )}\n\n` +
                     `=========================\n\n` +
-                    `**${logLocalization.getTranslation("reason")}**:\n` +
+                    `${bold(logLocalization.getTranslation("reason"))}:\n` +
                     reason
             );
 
@@ -184,18 +189,22 @@ export abstract class WarningManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${member} ${StringHelper.formatString(
-                    userLocalization.getTranslation("inChannel"),
-                    `<@${channelId}>`
-                )}: ${DateTimeFormatHelper.secondsToDHMS(
-                    duration,
-                    userLocalization.language
-                )}**\n\n` +
-                    `**${userLocalization.getTranslation(
-                        "points"
-                    )}: ${points}**\n\n` +
+                `${bold(
+                    `${member} ${StringHelper.formatString(
+                        userLocalization.getTranslation("inChannel"),
+                        channelMention(channelId)
+                    )}: ${DateTimeFormatHelper.secondsToDHMS(
+                        duration,
+                        userLocalization.language
+                    )}`
+                )}\n\n` +
+                    `${bold(
+                        `${userLocalization.getTranslation(
+                            "points"
+                        )}: ${points}`
+                    )}\n\n` +
                     `=========================\n\n` +
-                    `**${userLocalization.getTranslation("reason")}**:\n` +
+                    `${bold(userLocalization.getTranslation("reason"))}:\n` +
                     reason
             );
 
@@ -324,23 +333,27 @@ export abstract class WarningManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${StringHelper.formatString(
-                    localization.getTranslation("warningIssueInChannel"),
-                    `<#${warning.channelId}>`
-                )}**\n\n` +
-                    `**${localization.getTranslation("warnedUser")}**: <@${
+                `${bold(
+                    `${StringHelper.formatString(
+                        localization.getTranslation("warningIssueInChannel"),
+                        channelMention(warning.channelId)
+                    )}`
+                )}\n\n` +
+                    `${bold(
+                        localization.getTranslation("warnedUser")
+                    )}: ${userMention(warning.discordId)} (${
                         warning.discordId
-                    }> (${warning.discordId})\n` +
-                    `**${localization.getTranslation("points")}**: ${
+                    })\n` +
+                    `${bold(localization.getTranslation("points"))}: ${
                         warning.points
                     }\n` +
-                    `**${localization.getTranslation("warningReason")}**: ${
+                    `${bold(localization.getTranslation("warningReason"))}: ${
                         warning.reason
                     }\n\n` +
                     `=========================\n\n` +
-                    `**${localization.getTranslation(
-                        "warningUnissueReason"
-                    )}**:\n` +
+                    `${bold(
+                        localization.getTranslation("warningUnissueReason")
+                    )}:\n` +
                     reason
             );
 
@@ -366,20 +379,24 @@ export abstract class WarningManager extends PunishmentManager {
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${StringHelper.formatString(
-                    userLocalization.getTranslation("warningIssueInChannel"),
-                    warning.channelId
-                )}**\n\n` +
-                    `**${userLocalization.getTranslation("points")}**: ${
+                `${bold(
+                    `${StringHelper.formatString(
+                        userLocalization.getTranslation(
+                            "warningIssueInChannel"
+                        ),
+                        channelMention(warning.channelId)
+                    )}`
+                )}\n\n` +
+                    `${bold(userLocalization.getTranslation("points"))}: ${
                         warning.points
                     }\n` +
-                    `**${userLocalization.getTranslation("warningReason")}**: ${
-                        warning.reason
-                    }\n` +
+                    `${bold(
+                        userLocalization.getTranslation("warningReason")
+                    )}: ${warning.reason}\n` +
                     `=========================\n\n` +
-                    `**${userLocalization.getTranslation(
-                        "warningUnissueReason"
-                    )}**:\n` +
+                    `${bold(
+                        userLocalization.getTranslation("warningUnissueReason")
+                    )}:\n` +
                     reason
             );
 
@@ -461,14 +478,14 @@ export abstract class WarningManager extends PunishmentManager {
             })
             .setTitle(localization.getTranslation("warningTransferred"))
             .setDescription(
-                `**${localization.getTranslation(
-                    "fromUser"
-                )}**: <@${fromUserId}> (${fromUserId})\n` +
-                    `**${localization.getTranslation(
-                        "toUser"
-                    )}**: <@${toUserId}> (${toUserId})\n\n` +
+                `${bold(
+                    localization.getTranslation("fromUser")
+                )}: ${userMention(fromUserId)} (${fromUserId})\n` +
+                    `${bold(
+                        localization.getTranslation("toUser")
+                    )}: ${userMention(toUserId)} (${toUserId})\n\n` +
                     `=========================\n\n` +
-                    `**${localization.getTranslation("reason")}**:\n` +
+                    `${bold(localization.getTranslation("reason"))}:\n` +
                     reason ?? localization.getTranslation("notSpecified")
             );
 

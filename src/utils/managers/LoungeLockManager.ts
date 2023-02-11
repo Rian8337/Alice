@@ -4,6 +4,8 @@ import {
     EmbedBuilder,
     Snowflake,
     TextChannel,
+    bold,
+    userMention,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
@@ -112,9 +114,9 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setColor("#c7c03c")
                 .setTitle("Lounge Lock Extended")
                 .setDescription(
-                    `**User**: <@${userId}>\n` +
-                        `**Updated Reason**: ${reason}\n` +
-                        `**New Expiration Date**: ${
+                    `${bold("User")}: ${userMention(userId)}\n` +
+                        `${bold("Updated Reason")}: ${reason}\n` +
+                        `${bold("New Expiration Date")}: ${
                             !Number.isFinite(
                                 lockInfo.expiration + duration * 1000
                             )
@@ -132,9 +134,9 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setColor("#a5de6f")
                 .setTitle("Lounge Lock Added")
                 .setDescription(
-                    `**User**: <@${userId}>\n` +
-                        `**Reason**: ${reason}\n` +
-                        `**Expiration Date**: ${
+                    `${bold("User")}: ${userMention(userId)}\n` +
+                        `${bold("Reason")}: ${reason}\n` +
+                        `${bold("Expiration Date")}: ${
                             !Number.isFinite(duration * 1000)
                                 ? "Never"
                                 : new Date(
@@ -220,8 +222,8 @@ export abstract class LoungeLockManager extends PunishmentManager {
             .setColor("#3ba7b8")
             .setTitle("Lounge Lock Removed")
             .setDescription(
-                `**User**: <@${userId}>
-                **Reason**: ${reason}`
+                `${bold("User")}: ${userMention(userId)}\n
+                ${bold("Reason")}: ${reason}`
             );
 
         await lockInfo.unlock();

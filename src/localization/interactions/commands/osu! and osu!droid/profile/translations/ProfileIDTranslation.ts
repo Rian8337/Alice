@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { hideLinkEmbed, hyperlink, userMention } from "discord.js";
 import { ProfileStrings } from "../ProfileLocalization";
 
 /**
@@ -11,7 +12,10 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
         selfProfileNotFound: "Maaf, aku tidak dapat menemukan profilmu!",
         userProfileNotFound:
             "Maaf, aku tidak dapat menemukan profile pemain tersebut!",
-        viewingProfile: "Profil osu!droid untuk [%s](<%s>):",
+        viewingProfile: `Profil osu!droid untuk ${hyperlink(
+            "%s",
+            hideLinkEmbed("%s")
+        )}:`,
         invalidRGBAformat: "Maaf, format warna RGBA tersebut tidak benar!",
         invalidHexCode: "Maaf, format warna hex tersebut tidak benar!",
         changeInfoTextColorConfirmation:
@@ -117,14 +121,16 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
         playCount: "Jumlah Main",
         country: "Negara",
         bindInformation: "Informasi Hubungan",
-        binded: "Terhubung ke <@%s> (ID pengguna: %s)",
+        binded: `Terhubung ke ${userMention("%s")} (ID pengguna: %s)`,
         notBinded: "Tidak terhubung",
         playerCredentialsInfo: "",
         username: "Nama Pemain",
         password: "Kata Sandi",
         doNotShareCredentialsWarning:
             "Jangan berikan kredensial ini ke siapapun sebelum kamu mengubah kata sandi kamu.",
-        changeCredentialsDirection:
-            "Silakan masuk ke [laman ini](%s) menggunakan kredensial ini dan ubah email dan kata sandi kamu.",
+        changeCredentialsDirection: `Silakan masuk ke ${hyperlink(
+            "laman ini",
+            "%s"
+        )} menggunakan kredensial ini dan ubah email dan kata sandi kamu.`,
     };
 }

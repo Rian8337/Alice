@@ -6,6 +6,7 @@ import { VoteLocalization } from "@alice-localization/interactions/commands/Tool
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
@@ -25,9 +26,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    let string: string = `**${localization.getTranslation("topic")}: ${
-        voteInfo.topic
-    }**\n\n`;
+    let string: string = `${bold(
+        `${localization.getTranslation("topic")}: ${voteInfo.topic}`
+    )}\n\n`;
 
     const choiceArray: VoteChoice[] = [...voteInfo.choices.values()];
 

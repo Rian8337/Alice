@@ -11,7 +11,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -48,21 +48,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed
         .setTitle(localization.getTranslation("auctionInfo"))
         .setDescription(
-            `**${localization.getTranslation("auctionName")}**: ${
+            `${bold(localization.getTranslation("auctionName"))}: ${
                 auction.name
             }\n` +
-                `**${localization.getTranslation("auctionAuctioneer")}**: ${
+                `${bold(localization.getTranslation("auctionAuctioneer"))}: ${
                     auction.auctioneer
                 }\n` +
-                `**${localization.getTranslation(
-                    "creationDate"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                `${bold(
+                    localization.getTranslation("creationDate")
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(auction.creationdate * 1000),
                     localization.language
                 )}\n` +
-                `**${localization.getTranslation(
-                    "expirationDate"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                `${bold(
+                    localization.getTranslation("expirationDate")
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(auction.expirydate * 1000),
                     localization.language
                 )}`
@@ -70,15 +70,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         .addFields({
             name: localization.getTranslation("auctionItem"),
             value:
-                `**${localization.getTranslation(
-                    "auctionPowerup"
-                )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
-                `**${localization.getTranslation(
-                    "auctionAmount"
-                )}**: ${auction.amount.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation(
-                    "auctionMinimumBid"
-                )}**: ${auction.min_price.toLocaleString(BCP47)} Alice coins`,
+                `${bold(
+                    localization.getTranslation("auctionPowerup")
+                )}: ${StringHelper.capitalizeString(auction.powerup)}\n` +
+                `${bold(
+                    localization.getTranslation("auctionAmount")
+                )}: ${auction.amount.toLocaleString(BCP47)}\n` +
+                `${bold(
+                    localization.getTranslation("auctionMinimumBid")
+                )}: ${auction.min_price.toLocaleString(BCP47)} Alice coins`,
         });
 
     const bids: AuctionBid[] = [...auction.bids.values()];
@@ -91,9 +91,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const bid: AuctionBid = bids[i];
 
         if (bid) {
-            biddersDescription += `#${i + 1}: ${
-                bid.clan
-            } - **${bid.amount.toLocaleString(BCP47)}** Alice coins\n`;
+            biddersDescription += `#${i + 1}: ${bid.clan} - ${bold(
+                bid.amount.toLocaleString(BCP47)
+            )} Alice coins\n`;
         } else {
             biddersDescription += `#${i + 1}: -\n`;
         }
@@ -101,9 +101,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (bidIndex > 4) {
         biddersDescription += ".\n".repeat(Math.min(bidIndex - 4, 3));
-        biddersDescription += `#${bidIndex + 1}: ${clanName} - **${bids[
-            bidIndex
-        ].amount.toLocaleString(BCP47)}** Alice coins`;
+        biddersDescription += `#${bidIndex + 1}: ${clanName} - ${bold(
+            bids[bidIndex].amount.toLocaleString(BCP47)
+        )} Alice coins`;
     }
 
     embed.addFields({

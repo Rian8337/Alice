@@ -14,6 +14,7 @@ import {
     EmbedBuilder,
     AuditLogEvent,
     GuildBasedChannel,
+    bold,
 } from "discord.js";
 
 export const run: EventUtil["run"] = async (
@@ -94,12 +95,14 @@ export const run: EventUtil["run"] = async (
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${newMember}: ${DateTimeFormatHelper.secondsToDHMS(
-                    timeDifference,
-                    localization.language
-                )}**\n\n` +
+                `${bold(
+                    `${newMember}: ${DateTimeFormatHelper.secondsToDHMS(
+                        timeDifference,
+                        localization.language
+                    )}`
+                )}\n\n` +
                     `=========================\n\n` +
-                    `**${localization.getTranslation("reason")}**:\n` +
+                    `${bold(localization.getTranslation("reason"))}:\n` +
                     (auditLog.reason ??
                         localization.getTranslation("notSpecified"))
             );
@@ -117,12 +120,14 @@ export const run: EventUtil["run"] = async (
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${newMember}: ${DateTimeFormatHelper.secondsToDHMS(
-                    timeDifference,
-                    userLocalization.language
-                )}**\n\n` +
+                `${bold(
+                    `${newMember}: ${DateTimeFormatHelper.secondsToDHMS(
+                        timeDifference,
+                        userLocalization.language
+                    )}`
+                )}\n\n` +
                     `=========================\n\n` +
-                    `**${userLocalization.getTranslation("reason")}**:\n` +
+                    `${bold(userLocalization.getTranslation("reason"))}:\n` +
                     (auditLog.reason ??
                         userLocalization.getTranslation("notSpecified"))
             );
@@ -214,7 +219,7 @@ export const run: EventUtil["run"] = async (
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${localization.getTranslation("userId")}**:\n` +
+                `${bold(localization.getTranslation("userId"))}:\n` +
                     (auditLog.reason ??
                         localization.getTranslation("notSpecified"))
             );
@@ -232,7 +237,7 @@ export const run: EventUtil["run"] = async (
             })
             .setTimestamp(new Date())
             .setDescription(
-                `**${userLocalization.getTranslation("userId")}**:\n` +
+                `${bold(userLocalization.getTranslation("userId"))}:\n` +
                     (auditLog.reason ??
                         userLocalization.getTranslation("notSpecified"))
             );

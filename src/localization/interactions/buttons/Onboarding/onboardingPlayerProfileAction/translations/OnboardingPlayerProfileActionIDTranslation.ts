@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { hyperlink, hideLinkEmbed } from "discord.js";
 import { OnboardingPlayerProfileActionStrings } from "../OnboardingPlayerProfileActionLocalization";
 
 /**
@@ -8,6 +9,9 @@ export class OnboardingPlayerProfileActionIDTranslation extends Translation<Onbo
     override readonly translations: OnboardingPlayerProfileActionStrings = {
         userNotBinded: "",
         profileNotFound: "Maaf, aku tidak dapat menemukan profilmu!",
-        viewingProfile: "Profil osu!droid untuk [%s](<%s>):",
+        viewingProfile: `Profil osu!droid untuk ${hyperlink(
+            "%s",
+            hideLinkEmbed("%s")
+        )}:`,
     };
 }

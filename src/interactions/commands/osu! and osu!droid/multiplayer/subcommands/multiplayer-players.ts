@@ -11,7 +11,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, bold, userMention } from "discord.js";
 import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -58,9 +58,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed
         .setTitle(room.settings.roomName)
         .setDescription(
-            `**${localization.getTranslation("roomHost")}** <@${
+            `${bold(localization.getTranslation("roomHost"))} ${userMention(
                 room.settings.roomHost
-            }> (${room.settings.roomHost})`
+            )} (${room.settings.roomHost})`
         );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -77,13 +77,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         ? ` ${Symbols.crown}`
                         : ""
                 }`,
-                value: `**${localization.getTranslation(
-                    "playerDiscordAccount"
-                )}**: <@${player.discordId}> (${
+                value: `${bold(
+                    localization.getTranslation("playerDiscordAccount")
+                )}: ${userMention(player.discordId)} (${
                     player.discordId
-                })\n**${localization.getTranslation(
-                    "playerState"
-                )}**: ${localization.getTranslation(
+                })\n${bold(
+                    localization.getTranslation("playerState")
+                )}: ${localization.getTranslation(
                     player.isSpectating
                         ? "spectating"
                         : player.isReady

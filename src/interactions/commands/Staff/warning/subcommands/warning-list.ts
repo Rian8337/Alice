@@ -11,7 +11,15 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { WarningManager } from "@alice-utils/managers/WarningManager";
-import { Collection, GuildMember, EmbedBuilder, User } from "discord.js";
+import {
+    Collection,
+    GuildMember,
+    EmbedBuilder,
+    User,
+    bold,
+    userMention,
+    channelMention,
+} from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
@@ -64,15 +72,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         )
         .setThumbnail(user.avatarURL()!)
         .setDescription(
-            `**${localization.getTranslation("totalActivePoints")}**: ${warnings
+            `${bold(
+                localization.getTranslation("totalActivePoints")
+            )}: ${warnings
                 .filter((v) => v.isActive)
                 .reduce((a, v) => a + v.points, 0)}\n` +
-                `**${localization.getTranslation("totalWarnings")}**: ${
+                `${bold(localization.getTranslation("totalWarnings"))}: ${
                     warnings.size
                 }\n` +
-                `**${localization.getTranslation(
-                    "lastWarning"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                `${bold(
+                    localization.getTranslation("lastWarning")
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(warnings.at(0)!.creationDate * 1000),
                     localization.language
                 )}`
@@ -89,21 +99,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embed.addFields({
                 name: `${i + 1}. ID ${warning.guildSpecificId}`,
                 value:
-                    `**${localization.getTranslation("warningIssuer")}**: <@${
+                    `${bold(
+                        localization.getTranslation("warningIssuer")
+                    )}: ${userMention(warning.issuerId)} (${
                         warning.issuerId
-                    }> (${warning.issuerId})\n` +
-                    `**${localization.getTranslation("channel")}**: <#${
+                    })\n` +
+                    `${bold(
+                        localization.getTranslation("channel")
+                    )}: ${channelMention(warning.channelId)} (${
                         warning.channelId
-                    }> (${warning.channelId})\n` +
-                    `**${localization.getTranslation(
-                        "creationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    })\n` +
+                    `${bold(
+                        localization.getTranslation("creationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.creationDate * 1000),
                         localization.language
                     )}\n` +
-                    `**${localization.getTranslation(
-                        "expirationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    `${bold(
+                        localization.getTranslation("expirationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.expirationDate * 1000),
                         localization.language
                     )}`,

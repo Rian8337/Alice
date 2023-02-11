@@ -10,7 +10,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { EmbedBuilder, GuildMember } from "discord.js";
+import { bold, EmbedBuilder, GuildMember, hyperlink } from "discord.js";
 import { Filter, Sort } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -231,9 +231,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     embed.setDescription(
-        `**${localization.getTranslation(
-            "beatmapsFound"
-        )}**: ${beatmapsFound.toLocaleString(BCP47)}`
+        `${bold(
+            localization.getTranslation("beatmapsFound")
+        )}: ${beatmapsFound.toLocaleString(BCP47)}`
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -248,31 +248,38 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             result.map((v) => {
                 return {
                     name: v.mapname,
-                    value: `**${localization.getTranslation(
-                        "download"
-                    )}**: [osu!](https://osu.ppy.sh/d/${
-                        v.mapid
-                    }) [(no video)](https://osu.ppy.sh/d/${
-                        v.mapid
-                    }n) - [Chimu](https://chimu.moe/en/d/${
-                        v.mapid
-                    }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
-                        v.mapid
-                    }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${
-                        v.mapid
-                    }) - [Beatconnect](https://beatconnect.io/b/${
-                        v.mapid
-                    }) - [Nerina](https://nerina.pw/d/${v.mapid})\n**CS**: ${
-                        v.diffstat.cs
-                    } - **AR**: ${v.diffstat.ar} - **OD**: ${
-                        v.diffstat.od
-                    } - **HP**: ${
+                    value: `${bold(
+                        localization.getTranslation("download")
+                    )}: ${hyperlink(
+                        "osu!",
+                        `https://osu.ppy.sh/d/${v.mapid}`
+                    )} ${hyperlink(
+                        "(no video)",
+                        `https://osu.ppy.sh/d/${v.mapid}n`
+                    )} - ${hyperlink(
+                        "Chimu",
+                        `https://chimu.moe/en/d/${v.mapid}`
+                    )} - ${hyperlink(
+                        "Sayobot",
+                        `https://txy1.sayobot.cn/beatmaps/download/full/${v.mapid}`
+                    )} ${hyperlink(
+                        "(no video)",
+                        `https://txy1.sayobot.cn/beatmaps/download/novideo/${v.mapid}`
+                    )} - ${hyperlink(
+                        "Beatconnect",
+                        `https://beatconnect.io/b/${v.mapid}/`
+                    )} - ${hyperlink(
+                        "Nerina",
+                        `https://nerina.pw/d/${v.mapid}`
+                    )}\n${bold("CS")}: ${v.diffstat.cs} - ${bold("AR")}: ${
+                        v.diffstat.ar
+                    } - ${bold("OD")}: ${v.diffstat.od} - ${bold("HP")}: ${
                         v.diffstat.hp
-                    } - **BPM**: ${v.diffstat.bpm.toLocaleString(
+                    } - ${bold("BPM")}: ${v.diffstat.bpm.toLocaleString(
                         BCP47
-                    )}\n**${localization.getTranslation(
-                        "dateWhitelisted"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    )}\n${bold(
+                        localization.getTranslation("dateWhitelisted")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         v._id!.getTimestamp(),
                         localization.language
                     )}`,

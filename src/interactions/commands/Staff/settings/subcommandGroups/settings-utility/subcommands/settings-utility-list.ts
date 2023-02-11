@@ -6,7 +6,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { EmbedBuilder } from "discord.js";
+import { bold, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
@@ -27,9 +27,11 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.setDescription(
-            `**${localization.getTranslation(
-                "eventName"
-            )}: \`${client.eventUtilities.keyAt(page - 1)}\`**`
+            bold(
+                `${localization.getTranslation(
+                    "eventName"
+                )}: \`${client.eventUtilities.keyAt(page - 1)}\``
+            )
         );
 
         for (const [utilName, utility] of client.eventUtilities.at(page - 1)!) {
@@ -37,14 +39,14 @@ export const run: SlashSubcommand<true>["run"] = async (
                 name: `- ${utilName}`,
                 value:
                     `${utility.config.description}\n` +
-                    `**${localization.getTranslation(
-                        "requiredPermissions"
-                    )}**: ${PermissionHelper.getPermissionString(
+                    `${bold(
+                        localization.getTranslation("requiredPermissions")
+                    )}: ${PermissionHelper.getPermissionString(
                         utility.config.togglePermissions
                     )}\n` +
-                    `**${localization.getTranslation(
-                        "toggleableScope"
-                    )}**: ${utility.config.toggleScope
+                    `${bold(
+                        localization.getTranslation("toggleableScope")
+                    )}: ${utility.config.toggleScope
                         .map((v) => StringHelper.capitalizeString(v, true))
                         .join(", ")}`,
             });

@@ -4,6 +4,7 @@ import {
     TextChannel,
     PermissionsBitField,
     roleMention,
+    bold,
 } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { ApplicationCommandOptionType } from "discord.js";
@@ -79,13 +80,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     embed
         .setThumbnail(toReport.user.avatarURL()!)
         .setDescription(
-            `**${localization.getTranslation("offender")}**: ${toReport} (${
+            `${bold(localization.getTranslation("offender"))}: ${toReport} (${
                 toReport.id
             })\n` +
-                `**${localization.getTranslation("channel")}**: ${
+                `${bold(localization.getTranslation("channel"))}: ${
                     interaction.channel
                 }\n` +
-                `**${localization.getTranslation("reason")}**: ${reason}`
+                `${bold(localization.getTranslation("reason"))}: ${reason}`
         );
 
     const reportChannel: TextChannel = <TextChannel>(
@@ -113,13 +114,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             name: localization.getTranslation("reportSummary"),
         })
         .setDescription(
-            `**${localization.getTranslation("offender")}**: ${toReport} (${
+            `${bold(localization.getTranslation("offender"))}: ${toReport} (${
                 toReport.id
             })\n` +
-                `**${localization.getTranslation("channel")}**: ${
+                `${bold(localization.getTranslation("channel"))}: ${
                     interaction.channel
                 }\n` +
-                `**${localization.getTranslation("reason")}**: ${reason}\n\n` +
+                `${bold(
+                    localization.getTranslation("reason")
+                )}: ${reason}\n\n` +
                 localization.getTranslation("saveEvidence")
         );
 

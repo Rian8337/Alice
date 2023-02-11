@@ -3,7 +3,7 @@ import { DatabaseNameChange } from "structures/database/aliceDb/DatabaseNameChan
 import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
-import { EmbedBuilder, Snowflake, User } from "discord.js";
+import { bold, EmbedBuilder, Snowflake, User } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
@@ -202,21 +202,21 @@ export class NameChange extends Manager implements DatabaseNameChange {
             embed
                 .setTitle(localization.getTranslation("requestDetails"))
                 .setDescription(
-                    `**${localization.getTranslation("currentUsername")}**: ${
+                    `${bold(localization.getTranslation("currentUsername"))}: ${
                         this.player.username
                     }\n` +
-                        `**${localization.getTranslation(
-                            "requestedUsername"
-                        )}**: ${this.new_username}\n` +
-                        `**${localization.getTranslation(
-                            "creationDate"
-                        )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        `${bold(
+                            localization.getTranslation("requestedUsername")
+                        )}: ${this.new_username}\n` +
+                        `${bold(
+                            localization.getTranslation("creationDate")
+                        )}: ${DateTimeFormatHelper.dateToLocaleString(
                             new Date((this.cooldown - 86400 * 30) * 1000),
                             localization.language
                         )}\n\n` +
-                        `**${localization.getTranslation(
-                            "status"
-                        )}**: ${localization.getTranslation("accepted")}`
+                        `${bold(
+                            localization.getTranslation("status")
+                        )}: ${localization.getTranslation("accepted")}`
                 );
 
             user.send({
@@ -260,24 +260,24 @@ export class NameChange extends Manager implements DatabaseNameChange {
             embed
                 .setTitle(localization.getTranslation("requestDetails"))
                 .setDescription(
-                    `**${localization.getTranslation("currentUsername")}**: ${
+                    `${bold(localization.getTranslation("currentUsername"))}: ${
                         this.player.username
                     }\n` +
-                        `**${localization.getTranslation(
-                            "requestedUsername"
-                        )}**: ${this.new_username}\n` +
-                        `**${localization.getTranslation(
-                            "creationDate"
-                        )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                        `${bold(
+                            localization.getTranslation("requestedUsername")
+                        )}: ${this.new_username}\n` +
+                        `${bold(
+                            localization.getTranslation("creationDate")
+                        )}: ${DateTimeFormatHelper.dateToLocaleString(
                             new Date((this.cooldown - 86400 * 30) * 1000),
                             localization.language
                         )}\n\n` +
-                        `**${localization.getTranslation(
-                            "status"
-                        )}**: ${localization.getTranslation("denied")}\n` +
-                        `**${localization.getTranslation(
-                            "reason"
-                        )}**: ${reason}`
+                        `${bold(
+                            localization.getTranslation("status")
+                        )}: ${localization.getTranslation("denied")}\n` +
+                        `${bold(
+                            localization.getTranslation("reason")
+                        )}: ${reason}`
                 );
 
             user.send({

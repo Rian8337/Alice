@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { chatInputApplicationCommandMention } from "discord.js";
 import { ConstantsStrings } from "../ConstantsLocalization";
 
 /**
@@ -8,13 +9,19 @@ export class ConstantsESTranslation extends Translation<ConstantsStrings> {
     override readonly translations: ConstantsStrings = {
         noPermissionToExecuteCommand:
             "Lo siento, no tienes permisos para usar este comando.",
-        selfAccountNotBinded:
-            "Lo siento, tu cuenta no esta enlazada. Para enlazar tu cuenta, usa </userbind username:881019231863468083> primero.",
+        selfAccountNotBinded: `Lo siento, tu cuenta no esta enlazada. Para enlazar tu cuenta, usa ${chatInputApplicationCommandMention(
+            "userbind",
+            "username",
+            "881019231863468083"
+        )} primero.`,
         commandNotAvailableInServer:
             "Lo siento, ese comando no esta disponible en este servidor.",
         commandNotAvailableInChannel:
             "Lo siento, este comando no esta disponible en este canal.",
-        userAccountNotBinded:
-            "Lo siento, esa cuenta no esta enlazada. El usuario necesito enlazar su cuenta usando </userbind username:881019231863468083> primero.",
+        userAccountNotBinded: `Lo siento, esa cuenta no esta enlazada. El usuario necesito enlazar su cuenta usando ${chatInputApplicationCommandMention(
+            "userbind",
+            "username",
+            "881019231863468083"
+        )} primero.`,
     };
 }

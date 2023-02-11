@@ -7,7 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, userMention } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
@@ -35,7 +35,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed.setTitle(collection.name).addFields(
         {
             name: localization.getTranslation("collectionOwner"),
-            value: `<@${collection.owner}> (${collection.owner})`,
+            value: `${userMention(collection.owner)} (${collection.owner})`,
         },
         {
             name: localization.getTranslation("creationDate"),

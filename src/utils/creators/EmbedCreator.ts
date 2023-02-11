@@ -11,6 +11,10 @@ import {
     BaseMessageOptions,
     RepliableInteraction,
     User,
+    bold,
+    userMention,
+    underscore,
+    channelMention,
 } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -208,27 +212,27 @@ export abstract class EmbedCreator {
             .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
             .addFields(
                 {
-                    name: `**${localization.getTranslation(
-                        "beatmapDroidStatistics"
-                    )}**`,
+                    name: bold(
+                        localization.getTranslation("beatmapDroidStatistics")
+                    ),
                     value: beatmapInfo.showStatistics(
                         3,
                         calculationParams?.customStatistics
                     ),
                 },
                 {
-                    name: `**${localization.getTranslation(
-                        "beatmapOsuStatistics"
-                    )}**`,
+                    name: bold(
+                        localization.getTranslation("beatmapOsuStatistics")
+                    ),
                     value: beatmapInfo.showStatistics(
                         4,
                         calculationParams?.customStatistics
                     ),
                 },
                 {
-                    name: `**${localization.getTranslation(
-                        "beatmapGeneralStatistics"
-                    )}**`,
+                    name: bold(
+                        localization.getTranslation("beatmapGeneralStatistics")
+                    ),
                     value: beatmapInfo.showStatistics(
                         5,
                         calculationParams?.customStatistics
@@ -248,9 +252,11 @@ export abstract class EmbedCreator {
                     name: localization.getTranslation("starRating"),
                     value: `${Symbols.star.repeat(
                         Math.floor(beatmapInfo.totalDifficulty)
-                    )} **${beatmapInfo.totalDifficulty.toFixed(
-                        2
-                    )} ${localization.getTranslation("pcStars")}**`,
+                    )} ${bold(
+                        `${beatmapInfo.totalDifficulty.toFixed(
+                            2
+                        )} ${localization.getTranslation("pcStars")}`
+                    )}`,
                 }
             );
 
@@ -293,28 +299,34 @@ export abstract class EmbedCreator {
         ).getUserDPPRank(playerInfo.pptotal);
 
         embed.setDescription(
-            `**${StringHelper.formatString(
-                localization.getTranslation(
-                    playerInfo instanceof OldPPProfile
-                        ? "oldPpProfileTitle"
-                        : "ppProfileTitle"
-                ),
-                `<@${
-                    playerInfo instanceof OldPPProfile
-                        ? playerInfo.discordId
-                        : playerInfo.discordid
-                }> (${playerInfo.username})`
-            )}**\n` +
+            `${bold(
+                `${StringHelper.formatString(
+                    localization.getTranslation(
+                        playerInfo instanceof OldPPProfile
+                            ? "oldPpProfileTitle"
+                            : "ppProfileTitle"
+                    ),
+                    `${userMention(
+                        playerInfo instanceof OldPPProfile
+                            ? playerInfo.discordId
+                            : playerInfo.discordid
+                    )} (${playerInfo.username})`
+                )}`
+            )}\n` +
+                `${localization.getTranslation("totalPP")}: ${bold(
+                    `${playerInfo.pptotal.toFixed(
+                        2
+                    )} pp (#${ppRank.toLocaleString(
+                        LocaleHelper.convertToBCP47(language)
+                    )})`
+                )}\n` +
                 `${localization.getTranslation(
-                    "totalPP"
-                )}: **${playerInfo.pptotal.toFixed(
-                    2
-                )} pp (#${ppRank.toLocaleString(
-                    LocaleHelper.convertToBCP47(language)
-                )})**\n` +
-                `${localization.getTranslation("recommendedStarRating")}: **${(
-                    Math.pow(playerInfo.pptotal, 0.4) * 0.225
-                ).toFixed(2)}${Symbols.star}**\n` +
+                    "recommendedStarRating"
+                )}: ${bold(
+                    `${(Math.pow(playerInfo.pptotal, 0.4) * 0.225).toFixed(2)}${
+                        Symbols.star
+                    }`
+                )}\n` +
                 `[${localization.getTranslation(
                     "ppProfile"
                 )}](https://droidpp.osudroid.moe/${
@@ -443,18 +455,18 @@ export abstract class EmbedCreator {
                         value: `${beatmap.showStatistics(
                             7,
                             customStatistics
-                        )}\n**${localization.getTranslation(
-                            "result"
-                        )}**: ${combo}/${beatmap.maxCombo}x | ${(
+                        )}\n${bold(
+                            `${localization.getTranslation("result")}`
+                        )}: ${combo}/${beatmap.maxCombo}x | ${(
                             accuracy.value() * 100
                         ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${
                             accuracy.n50
                         }/${accuracy.nmiss}]`,
                     },
                     {
-                        name: `**${localization.getTranslation(
-                            "droidPP"
-                        )}**: __${droidPP.total.toFixed(2)} pp__${
+                        name: `${bold(
+                            localization.getTranslation("droidPP")
+                        )}: ${underscore(`${droidPP.total.toFixed(2)} pp`)}${
                             calculationParams.isEstimated
                                 ? ` (${localization.getTranslation(
                                       "estimated"
@@ -470,9 +482,9 @@ export abstract class EmbedCreator {
                                       2
                                   )
                         }${Symbols.star}`,
-                        value: `**${localization.getTranslation(
-                            "pcPP"
-                        )}**: ${pcPP.total.toFixed(2)} pp${
+                        value: `${bold(
+                            localization.getTranslation("pcPP")
+                        )}: ${pcPP.total.toFixed(2)} pp${
                             calculationParams.isEstimated
                                 ? ` (${localization.getTranslation(
                                       "estimated"
@@ -494,7 +506,7 @@ export abstract class EmbedCreator {
                 )
                 .spliceFields(embed.data.fields!.length - 1, 1)
                 .addFields({
-                    name: `**${localization.getTranslation("starRating")}**`,
+                    name: bold(localization.getTranslation("starRating")),
                     value:
                         `${Symbols.star.repeat(
                             Math.min(
@@ -517,8 +529,9 @@ export abstract class EmbedCreator {
 
         if (droidPerfCalcResult instanceof OldPerformanceCalculationResult) {
             embed.setDescription(
-                `**${localization.getTranslation("oldCalculationNote")}**\n` +
-                    embed.data.description
+                `${bold(
+                    `${localization.getTranslation("oldCalculationNote")}`
+                )}\n` + embed.data.description
             );
         }
 
@@ -610,9 +623,9 @@ export abstract class EmbedCreator {
             )?.result;
         }
 
-        let beatmapInformation: string = `${arrow} **${BeatmapManager.getRankEmote(
+        let beatmapInformation: string = `${arrow} ${BeatmapManager.getRankEmote(
             <ScoreRank>score.rank
-        )}** ${arrow} `;
+        )} ${arrow} `;
 
         if (!droidCalcResult || !osuCalcResult) {
             beatmapInformation +=
@@ -647,11 +660,13 @@ export abstract class EmbedCreator {
                 `https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`
             );
 
-        beatmapInformation += `**${droidCalcResult.total.toFixed(2)}DPP**${
+        beatmapInformation += `${bold(
+            `${droidCalcResult.total.toFixed(2)}DPP`
+        )}${
             droidCalcResult.tapPenalty !== 1
                 ? ` (*${localization.getTranslation("penalized")}*)`
                 : ""
-        } | **${osuCalcResult.total.toFixed(2)}PP** `;
+        } | ${bold(`${osuCalcResult.total.toFixed(2)}PP`)} `;
 
         if (score.accuracy.nmiss > 0 || score.combo < beatmap.maxCombo) {
             const calcParams: PerformanceCalculationParameters =
@@ -849,12 +864,12 @@ export abstract class EmbedCreator {
             .setDescription(
                 StringHelper.formatString(
                     localization.getTranslation("featuredPerson"),
-                    `<@${challenge.featured}>`
+                    userMention(challenge.featured)
                 )
             )
             .addFields({
                 name:
-                    `**${localization.getTranslation("starRating")}**\n` +
+                    `${bold(localization.getTranslation("starRating"))}\n` +
                     `${Symbols.star.repeat(
                         Math.min(10, Math.floor(droidCalcResult.result.total))
                     )} ${droidCalcResult.result.total.toFixed(
@@ -866,13 +881,13 @@ export abstract class EmbedCreator {
                         2
                     )} ${localization.getTranslation("pcStars")}`,
                 value:
-                    `**${localization.getTranslation("points")}**: ${
+                    `${bold(localization.getTranslation("points"))}: ${
                         challenge.points
                     } ${localization.getTranslation("points")}\n` +
-                    `**${localization.getTranslation(
-                        "passCondition"
-                    )}**: ${challenge.getPassInformation()}\n` +
-                    `**${localization.getTranslation("constrain")}**: ${
+                    `${bold(
+                        localization.getTranslation("passCondition")
+                    )}: ${challenge.getPassInformation()}\n` +
+                    `${bold(localization.getTranslation("constrain"))}: ${
                         challenge.constrain
                             ? StringHelper.formatString(
                                   localization.getTranslation("modOnly"),
@@ -949,44 +964,44 @@ export abstract class EmbedCreator {
         embed
             .setTitle(localization.getTranslation("auctionInfo"))
             .setDescription(
-                `**${localization.getTranslation("auctionName")}**: ${
+                `${bold(localization.getTranslation("auctionName"))}: ${
                     auction.name
                 }\n` +
-                    `**${localization.getTranslation("auctionAuctioneer")}**: ${
-                        auction.auctioneer
-                    }\n` +
-                    `**${localization.getTranslation(
-                        "creationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    `${bold(
+                        localization.getTranslation("auctionAuctioneer")
+                    )}: ${auction.auctioneer}\n` +
+                    `${bold(
+                        localization.getTranslation("creationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(auction.creationdate * 1000),
                         language
                     )}\n` +
-                    `**${localization.getTranslation(
-                        "auctionMinimumBid"
-                    )}**: ${coinEmoji}${auction.min_price} Alice coins`
+                    `${bold(
+                        localization.getTranslation("auctionMinimumBid")
+                    )}: ${coinEmoji}${auction.min_price} Alice coins`
             )
             .addFields(
                 {
                     name: localization.getTranslation("auctionItemInfo"),
                     value:
-                        `**${localization.getTranslation(
-                            "auctionPowerup"
-                        )}**: ${StringHelper.capitalizeString(
+                        `${bold(
+                            localization.getTranslation("auctionPowerup")
+                        )}: ${StringHelper.capitalizeString(
                             auction.powerup
                         )}\n` +
-                        `**${localization.getTranslation(
-                            "auctionItemAmount"
-                        )}**: ${auction.amount.toLocaleString(BCP47)}`,
+                        `${bold(
+                            localization.getTranslation("auctionItemAmount")
+                        )}: ${auction.amount.toLocaleString(BCP47)}`,
                 },
                 {
                     name: localization.getTranslation("auctionBidInfo"),
                     value:
-                        `**${localization.getTranslation(
-                            "auctionBidders"
-                        )}**: ${auction.bids.size.toLocaleString(BCP47)}\n` +
-                        `**${localization.getTranslation(
-                            "auctionTopBidders"
-                        )}**:\n` +
+                        `${bold(
+                            localization.getTranslation("auctionBidders")
+                        )}: ${auction.bids.size.toLocaleString(BCP47)}\n` +
+                        `${bold(
+                            localization.getTranslation("auctionTopBidders")
+                        )}:\n` +
                         auction.bids
                             .first(5)
                             .map(
@@ -1047,12 +1062,12 @@ export abstract class EmbedCreator {
         embed.setTitle(match.name).addFields(
             {
                 name: match.team[0][0],
-                value: `**${match.team[0][1]}**`,
+                value: bold(match.team[0][1].toString()),
                 inline: true,
             },
             {
                 name: match.team[1][0],
-                value: `**${match.team[1][1]}**`,
+                value: bold(match.team[1][1].toString()),
                 inline: true,
             }
         );
@@ -1118,7 +1133,7 @@ export abstract class EmbedCreator {
             })
             .addFields(
                 {
-                    name: `**${localization.getTranslation("starRating")}**`,
+                    name: bold(localization.getTranslation("starRating")),
                     value:
                         `${Symbols.star.repeat(
                             Math.min(
@@ -1135,13 +1150,13 @@ export abstract class EmbedCreator {
                         )} ${localization.getTranslation("pcStars")}`,
                 },
                 {
-                    name: `**${localization.getTranslation(
-                        "mapShareStatusAndSummary"
-                    )}**`,
+                    name: bold(
+                        localization.getTranslation("mapShareStatusAndSummary")
+                    ),
                     value:
-                        `**${localization.getTranslation(
-                            "mapShareStatus"
-                        )}**: ${StringHelper.capitalizeString(
+                        `${bold(
+                            localization.getTranslation("mapShareStatus")
+                        )}: ${StringHelper.capitalizeString(
                             localization.getTranslation(
                                 <keyof EmbedCreatorStrings>(
                                     `mapShareStatus${StringHelper.capitalizeString(
@@ -1150,9 +1165,9 @@ export abstract class EmbedCreator {
                                 )
                             )
                         )}\n\n` +
-                        `**${localization.getTranslation(
-                            "mapShareSummary"
-                        )}**:\n${submission.summary}`,
+                        `${bold(
+                            localization.getTranslation("mapShareSummary")
+                        )}:\n${submission.summary}`,
                 }
             );
 
@@ -1185,7 +1200,7 @@ export abstract class EmbedCreator {
                     "musicDuration"
                 )}: ${queue.information.duration.toString()}\n\n${StringHelper.formatString(
                     localization.getTranslation("musicQueuer"),
-                    `<@${queue.queuer}>`
+                    userMention(queue.queuer)
                 )}`
             )
             .setURL(queue.information.url);
@@ -1216,30 +1231,36 @@ export abstract class EmbedCreator {
         embed
             .setTitle(localization.getTranslation("warningInfo"))
             .setDescription(
-                `**${StringHelper.formatString(
-                    localization.getTranslation("warningIssuedBy"),
-                    warning.issuerId,
-                    warning.issuerId
-                )}**\n\n` +
-                    `**${localization.getTranslation("warnedUser")}**: <@${
+                `${bold(
+                    StringHelper.formatString(
+                        localization.getTranslation("warningIssuedBy"),
+                        warning.issuerId,
+                        warning.issuerId
+                    )
+                )}\n\n` +
+                    `${bold(
+                        localization.getTranslation("warnedUser")
+                    )}: ${userMention(warning.discordId)} (${
                         warning.discordId
-                    }> (${warning.discordId})\n` +
-                    `**${localization.getTranslation("channel")}**: <#${
+                    })\n` +
+                    `${bold(
+                        localization.getTranslation("channel")
+                    )}: ${channelMention(warning.channelId)} (${
                         warning.channelId
-                    }> (${warning.channelId})\n` +
-                    `**${localization.getTranslation(
-                        "creationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    })\n` +
+                    `${bold(
+                        localization.getTranslation("creationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.creationDate * 1000),
                         language
                     )}\n` +
-                    `**${localization.getTranslation(
-                        "expirationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    `${bold(
+                        localization.getTranslation("expirationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.expirationDate * 1000),
                         language
                     )}\n\n` +
-                    `**${localization.getTranslation("reason")}**:\n${
+                    `${bold(localization.getTranslation("reason"))}:\n${
                         warning.reason
                     }`
             );

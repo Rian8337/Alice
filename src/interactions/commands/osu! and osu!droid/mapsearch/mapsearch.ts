@@ -2,6 +2,8 @@ import {
     ApplicationCommandOptionType,
     GuildMember,
     EmbedBuilder,
+    bold,
+    hyperlink,
 } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -95,9 +97,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     embed.setDescription(
-        `**${localization.getTranslation(
-            "beatmapsFound"
-        )}**: ${data.results.toLocaleString(BCP47)}`
+        `${bold(
+            localization.getTranslation("beatmapsFound")
+        )}: ${data.results.toLocaleString(BCP47)}`
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -127,35 +129,44 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             embed.addFields({
                 name: `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`,
-                value: `**${localization.getTranslation(
-                    "download"
-                )}**: [osu!](https://osu.ppy.sh/d/${
-                    d.sid
-                }) [(no video)](https://osu.ppy.sh/d/${
-                    d.sid
-                }n) - [Chimu](https://chimu.moe/en/d/${
-                    d.sid
-                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
-                    d.sid
-                }) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${
-                    d.sid
-                }) - [Beatconnect](https://beatconnect.io/b/${
-                    d.sid
-                }/) - [Nerina](https://nerina.pw/d/${d.sid})${
+                value: `${bold(
+                    localization.getTranslation("download")
+                )}: ${hyperlink(
+                    "osu!",
+                    `https://osu.ppy.sh/d/${d.sid}`
+                )} ${hyperlink(
+                    "(no video)",
+                    `https://osu.ppy.sh/d/${d.sid}n`
+                )} - ${hyperlink(
+                    "Chimu",
+                    `https://chimu.moe/en/d/${d.sid}`
+                )} - ${hyperlink(
+                    "Sayobot",
+                    `https://txy1.sayobot.cn/beatmaps/download/full/${d.sid}`
+                )} ${hyperlink(
+                    "(no video)",
+                    `https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid}`
+                )} - ${hyperlink(
+                    "Beatconnect",
+                    `https://beatconnect.io/b/${d.sid}/`
+                )} - ${hyperlink("Nerina", `https://nerina.pw/d/${d.sid}`)}${
                     d.approved >= RankedStatus.ranked &&
                     d.approved !== RankedStatus.qualified
-                        ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})`
+                        ? ` - ${hyperlink(
+                              "Ripple",
+                              `https://storage.ripple.moe/d/${d.sid}`
+                          )}`
                         : ""
-                }\n**${localization.getTranslation(
-                    "lastUpdate"
-                )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                }\n${bold(
+                    localization.getTranslation("lastUpdate")
+                )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(d.lastupdate * 1000),
                     localization.language
-                )} | **${status}**\n${
-                    Symbols.heart
-                } **${d.favourite_count.toLocaleString(BCP47)}** - ${
-                    Symbols.playButton
-                } **${d.play_count.toLocaleString(BCP47)}**`,
+                )} | ${bold(status)}\n${Symbols.heart} ${bold(
+                    d.favourite_count.toLocaleString(BCP47)
+                )} - ${Symbols.playButton} ${bold(
+                    d.play_count.toLocaleString(BCP47)
+                )}`,
             });
         }
     };

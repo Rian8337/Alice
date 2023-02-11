@@ -3,7 +3,7 @@ import { MusicInfo } from "@alice-utils/music/MusicInfo";
 import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, userMention } from "discord.js";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             name: `${i + 1}. ${queue[i].information.title}`,
             value: StringHelper.formatString(
                 localization.getTranslation("requestedBy"),
-                `<@${queue[i].queuer}>`
+                userMention(queue[i].queuer)
             ),
         });
     }

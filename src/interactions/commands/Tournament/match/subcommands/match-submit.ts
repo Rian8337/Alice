@@ -6,7 +6,7 @@ import { OperationResult } from "structures/core/OperationResult";
 import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { EmbedBuilder } from "discord.js";
+import { bold, EmbedBuilder } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
@@ -177,16 +177,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         const scoreString: string = `${match.player[i][0]} - (${
             score.mods.map((v) => v.name).join(", ") || "NoMod"
-        }): **${scoreV2List.at(-1)!}** - ${BeatmapManager.getRankEmote(
-            <ScoreRank>score.rank
-        )} - ${(score.accuracy.value() * 100).toFixed(2)}% - ${
-            score.accuracy.nmiss
-        } ${Symbols.missIcon}\n`;
-        const failString: string = `${match.player[i][0]} - (N/A): **0** - **${
+        }): ${bold(
+            scoreV2List.at(-1)!.toString()
+        )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${(
+            score.accuracy.value() * 100
+        ).toFixed(2)}% - ${score.accuracy.nmiss} ${Symbols.missIcon}\n`;
+        const failString: string = `${match.player[i][0]} - (N/A): ${bold(
+            "0"
+        )} - ${bold(
             !teamScoreStatus.success
-                ? teamScoreStatus.reason
-                : verificationResult.reason
-        }**\n`;
+                ? teamScoreStatus.reason!
+                : verificationResult.reason!
+        )}\n`;
 
         if (i % 2 === 0) {
             if (teamScoreStatus.success) {
@@ -252,7 +254,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             },
             {
                 name: "=================================",
-                value: `**${description}**`,
+                value: bold(description),
             }
         );
 

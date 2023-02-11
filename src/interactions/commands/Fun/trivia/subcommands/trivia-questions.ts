@@ -13,6 +13,7 @@ import {
     GuildMember,
     EmbedBuilder,
     StringSelectMenuInteraction,
+    bold,
 } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -94,7 +95,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     result.correctAnswers.length === 1
                         ? "oneCorrectAnswer"
                         : "multipleCorrectAnswers"
-                )} **${result.correctAnswers.join(", ")}**.`
+                )} ${bold(result.correctAnswers.join(", "))}.`
         );
     } else {
         embed.setDescription(
@@ -103,7 +104,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     result.correctAnswers.length === 1
                         ? "oneCorrectAnswer"
                         : "multipleCorrectAnswers"
-                )} **${result.correctAnswers.join(", ")}**.`
+                )} ${bold(result.correctAnswers.join(", "))}.`
         );
     }
 

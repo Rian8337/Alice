@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { chatInputApplicationCommandMention, userMention } from "discord.js";
 import { EmbedCreatorStrings } from "../EmbedCreatorLocalization";
 
 /**
@@ -39,8 +40,11 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         constrain: "Constrain",
         modOnly: "%s mod only",
         rankableMods: "Any rankable mod except EZ, NF, and HT",
-        challengeBonuses:
-            "Use </daily bonuses:889506666498895942> to check bonuses.",
+        challengeBonuses: `Use ${chatInputApplicationCommandMention(
+            "daily",
+            "bonuses",
+            "889506666498895942"
+        )} to check bonuses.`,
         auctionInfo: "Auction Information",
         auctionName: "Name",
         auctionAuctioneer: "Auctioneer",
@@ -53,8 +57,10 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         auctionBidders: "Bidders",
         auctionTopBidders: "Top Bidders",
         broadcast: "Broadcast",
-        broadcast1:
-            "If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using </report:937926296560869466> command (more information is available using `/help report`)",
+        broadcast1: `If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using ${chatInputApplicationCommandMention(
+            "report",
+            "937926296560869466"
+        )} command (more information is available using \`/help report\`)`,
         broadcast2:
             "Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!",
         mapShareSubmission: "Submission by %s",
@@ -75,7 +81,7 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         warningInfo: "Warning Info",
         warningId: "Warning ID",
         warnedUser: "Warned User",
-        warningIssuedBy: "Issued by <@%s> (%s)",
+        warningIssuedBy: `Issued by ${userMention("%s")} (%s)`,
         expirationDate: "Expiration Date",
         reason: "Reason",
         channel: "Channel",

@@ -12,7 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, GuildMember, EmbedBuilder } from "discord.js";
+import { Collection, GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
@@ -52,37 +52,37 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             const auction: ClanAuction = auctions.at(i)!;
 
             embed.addFields({
-                name: `**${i + 1}. ${auction.name}**`,
+                name: bold(`${i + 1}. ${auction.name}`),
                 value:
-                    `**${localization.getTranslation("auctionAuctioneer")}**: ${
-                        auction.auctioneer
-                    }\n` +
-                    `**${localization.getTranslation(
-                        "creationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    `${bold(
+                        localization.getTranslation("auctionAuctioneer")
+                    )}: ${auction.auctioneer}\n` +
+                    `${bold(
+                        localization.getTranslation("creationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(auction.creationdate * 1000),
                         localization.language
                     )}\n` +
-                    `**${localization.getTranslation(
-                        "expirationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    `${bold(
+                        localization.getTranslation("expirationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(auction.expirydate * 1000),
                         localization.language
                     )}\n\n` +
-                    `**${localization.getTranslation(
-                        "auctionPowerup"
-                    )}**: ${StringHelper.capitalizeString(auction.powerup)}\n` +
-                    `**${localization.getTranslation(
-                        "auctionAmount"
-                    )}**: ${auction.amount.toLocaleString(BCP47)}\n` +
-                    `**${localization.getTranslation(
-                        "auctionMinimumBid"
-                    )}**: ${auction.min_price.toLocaleString(
+                    `${bold(
+                        localization.getTranslation("auctionPowerup")
+                    )}: ${StringHelper.capitalizeString(auction.powerup)}\n` +
+                    `${bold(
+                        localization.getTranslation("auctionAmount")
+                    )}: ${auction.amount.toLocaleString(BCP47)}\n` +
+                    `${bold(
+                        localization.getTranslation("auctionMinimumBid")
+                    )}: ${auction.min_price.toLocaleString(
                         BCP47
                     )} Alice coins\n` +
-                    `**${localization.getTranslation(
-                        "auctionBidders"
-                    )}**: ${auction.bids.size.toLocaleString(BCP47)}`,
+                    `${bold(
+                        localization.getTranslation("auctionBidders")
+                    )}: ${auction.bids.size.toLocaleString(BCP47)}`,
             });
         }
     };

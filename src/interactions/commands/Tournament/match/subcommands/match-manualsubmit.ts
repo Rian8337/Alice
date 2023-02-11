@@ -6,7 +6,7 @@ import { OperationResult } from "structures/core/OperationResult";
 import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { EmbedBuilder } from "discord.js";
+import { bold, EmbedBuilder } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -139,14 +139,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         scoreList.push(scoreV2);
 
-        const scoreString: string = `${
-            match.player[i][0]
-        } - (N/A): **${scoreV2}** - ${parseFloat(scoreData[1]).toFixed(2)}% - ${
-            scoreData[2]
-        } ${Symbols.missIcon}\n`;
-        const failString: string = `${
-            match.player[i][0]
-        } - (N/A): **0** - **${localization.getTranslation("failed")}**`;
+        const scoreString: string = `${match.player[i][0]} - (N/A): ${bold(
+            scoreV2.toString()
+        )} - ${parseFloat(scoreData[1]).toFixed(2)}% - ${scoreData[2]} ${
+            Symbols.missIcon
+        }\n`;
+        const failString: string = `${match.player[i][0]} - (N/A): ${bold(
+            "0"
+        )} - ${bold(localization.getTranslation("failed"))}`;
 
         if (i % 2 === 0) {
             team1OverallScore += scoreV2;
@@ -198,7 +198,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             },
             {
                 name: "=================================",
-                value: `**${description}**`,
+                value: bold(description),
             }
         );
 

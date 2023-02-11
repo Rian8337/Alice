@@ -10,6 +10,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import {
     Attachment,
     AttachmentBuilder,
+    bold,
     Message,
     TextChannel,
 } from "discord.js";
@@ -121,10 +122,10 @@ export const run: SlashSubcommand<true>["run"] = async (
         try {
             const message: Message = await channel.send({
                 content:
-                    `**Tag by ${interaction.user}**\n` +
-                    `**User ID**: ${interaction.user.id}\n` +
-                    `**Name**: \`${name}\`\n` +
-                    `**Created at ${interaction.createdAt.toUTCString()}**`,
+                    `${bold(`Tag by ${interaction.user}`)}\n` +
+                    `${bold("User ID")}: ${interaction.user.id}\n` +
+                    `${bold("Name")}: \`${name}\`\n` +
+                    bold(`Created at ${interaction.createdAt.toUTCString()}`),
                 files: [attachment],
             });
 

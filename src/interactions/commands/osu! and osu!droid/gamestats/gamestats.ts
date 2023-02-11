@@ -1,4 +1,4 @@
-import { GuildMember, EmbedBuilder } from "discord.js";
+import { GuildMember, EmbedBuilder, bold } from "discord.js";
 import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -50,21 +50,21 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         {
             name: localization.getTranslation("registeredAccounts"),
             value:
-                `**${localization.getTranslation(
-                    "totalRegisteredAccounts"
-                )}**: ${totalUserCount.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation(
-                    "moreThan5ScoresAcc"
-                )}**: ${userCountAbove5Scores.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation(
-                    "moreThan20ScoresAcc"
-                )}**: ${userCountAbove20Scores.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation(
-                    "moreThan100ScoresAcc"
-                )}**: ${userCountAbove100Scores.toLocaleString(BCP47)}\n` +
-                `**${localization.getTranslation(
-                    "moreThan200ScoresAcc"
-                )}**: ${userCountAbove200Scores.toLocaleString(BCP47)}`,
+                `${bold(
+                    localization.getTranslation("totalRegisteredAccounts")
+                )}: ${totalUserCount.toLocaleString(BCP47)}\n` +
+                `${bold(
+                    localization.getTranslation("moreThan5ScoresAcc")
+                )}: ${userCountAbove5Scores.toLocaleString(BCP47)}\n` +
+                `${bold(
+                    localization.getTranslation("moreThan20ScoresAcc")
+                )}: ${userCountAbove20Scores.toLocaleString(BCP47)}\n` +
+                `${bold(
+                    localization.getTranslation("moreThan100ScoresAcc")
+                )}: ${userCountAbove100Scores.toLocaleString(BCP47)}\n` +
+                `${bold(
+                    localization.getTranslation("moreThan200ScoresAcc")
+                )}: ${userCountAbove200Scores.toLocaleString(BCP47)}`,
         },
         {
             name: localization.getTranslation("totalScores"),

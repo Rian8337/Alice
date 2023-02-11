@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder } from "discord.js";
+import { Message, EmbedBuilder, bold } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EightBallResponseType } from "@alice-enums/utils/EightBallResponseType";
@@ -90,7 +90,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             answer = ArrayHelper.getRandomArrayElement(res.response);
     }
 
-    embed.setDescription(`**Q**: ${message.content}\n**A**: ${answer}`);
+    embed.setDescription(
+        `${bold("Q")}: ${message.content}\n${bold("A")}: ${answer}`
+    );
 
     message.channel.send({
         embeds: [embed],

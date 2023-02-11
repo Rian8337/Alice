@@ -12,6 +12,8 @@ import {
     EmbedBuilder,
     BaseMessageOptions,
     ChannelType,
+    bold,
+    underscore,
 } from "discord.js";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
@@ -188,9 +190,11 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                 .setDescription(
                     `${firstBeatmap.showStatistics(1, stats)}\n` +
-                        `**BPM**: ${firstBeatmap.convertBPM(
+                        `${bold("BPM")}: ${firstBeatmap.convertBPM(
                             stats
-                        )} - **Length**: ${firstBeatmap.convertTime(stats)}`
+                        )} - ${bold("Length")}: ${firstBeatmap.convertTime(
+                            stats
+                        )}`
                 );
 
             for (const beatmapInfo of beatmapInformations) {
@@ -247,9 +251,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 }
 
                 embed.addFields({
-                    name: `__${
+                    name: `${underscore(
                         beatmapInfo.version
-                    }__ (${droidAttributes.starRating.toFixed(2)} ${
+                    )} (${droidAttributes.starRating.toFixed(2)} ${
                         Symbols.star
                     } | ${osuAttributes.starRating.toFixed(2)} ${
                         Symbols.star
@@ -258,9 +262,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         `${beatmapInfo.showStatistics(2, stats)}\n` +
                         `${beatmapInfo.showStatistics(3, stats)}\n` +
                         `${beatmapInfo.showStatistics(4, stats)}\n` +
-                        `**${droidAttributes.starRating.toFixed(
-                            2
-                        )}**dpp - ${osuAttributes.starRating.toFixed(2)}pp`,
+                        `${bold(
+                            droidAttributes.starRating.toFixed(2)
+                        )}dpp - ${osuAttributes.starRating.toFixed(2)}pp`,
                 });
             }
 

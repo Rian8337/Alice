@@ -1,4 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
+import { chatInputApplicationCommandMention, userMention } from "discord.js";
 import { EmbedCreatorStrings } from "../EmbedCreatorLocalization";
 
 /**
@@ -40,7 +41,11 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         constrain: "Batasan Mod",
         modOnly: "Hanya mod %s",
         rankableMods: "Semua mod ranked selain EZ, NF, dan HT",
-        challengeBonuses: "Gunakan `/daily challenge` untuk mengecek bonus.",
+        challengeBonuses: `Gunakan ${chatInputApplicationCommandMention(
+            "daily",
+            "bonuses",
+            "889506666498895942"
+        )} untuk mengecek bonus.`,
         auctionInfo: "Informasi Lelangan",
         auctionName: "Nama",
         auctionAuctioneer: "Pelelang",
@@ -53,8 +58,10 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         auctionBidders: "Jumlah Penawar",
         auctionTopBidders: "Penawar Teratas",
         broadcast: "Siaran",
-        broadcast1:
-            "Apabila kamu melihat pengguna yang melanggar peraturan, bertingkah laku tidak benar, atau mencoba memberi kekesalan secara sengaja, mohon laporkan pengguna tersebut menggunakan perintah </report:937926296560869466> (informasi lebih dapat diakses menggunakan perintah `/help report`).",
+        broadcast1: `Apabila kamu melihat pengguna yang melanggar peraturan, bertingkah laku tidak benar, atau mencoba memberi kekesalan secara sengaja, mohon laporkan pengguna tersebut menggunakan perintah ${chatInputApplicationCommandMention(
+            "report",
+            "937926296560869466"
+        )} (informasi lebih dapat diakses menggunakan perintah \`/help report\`).`,
         broadcast2:
             "Perlu diingat bahwa hanya anggota staff yang dapat melihat laporan, sehingga privasimu akan terjaga. Kami menghargai kontribusimu dalam membawa lingkungan yang bersahabat!",
         mapShareSubmission: "Pengajuan dari %s",
@@ -75,7 +82,7 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         warningInfo: "Info Peringatan",
         warningId: "ID Peringatan",
         warnedUser: "Pengguna yang Diingatkan",
-        warningIssuedBy: "Diberikan oleh <@%s> (%s)",
+        warningIssuedBy: `Diberikan oleh ${userMention("%s")} (%s)`,
         expirationDate: "Tanggal Kadaluarsa",
         reason: "Alasan",
         channel: "Channel",

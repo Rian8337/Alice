@@ -1,4 +1,9 @@
-import { GuildMember, PermissionsBitField, TextChannel } from "discord.js";
+import {
+    bold,
+    GuildMember,
+    PermissionsBitField,
+    TextChannel,
+} from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { VoteChoice } from "structures/interactions/commands/Tools/VoteChoice";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
@@ -42,9 +47,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await voteInfo.end();
 
-    let string: string = `**${localization.getTranslation("topic")}: ${
-        voteInfo.topic
-    }**\n\n`;
+    let string: string = `${bold(
+        `${localization.getTranslation("topic")}: ${voteInfo.topic}`
+    )}\n\n`;
 
     for (let i = 0; i < voteInfo.choices.length; ++i) {
         const choice: VoteChoice = voteInfo.choices[i];

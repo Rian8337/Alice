@@ -12,7 +12,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, GuildMember, EmbedBuilder } from "discord.js";
+import { Collection, GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
@@ -69,17 +69,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     submission.submitter
                 )}`,
                 value:
-                    `**${localization.getTranslation("userId")}**: ${
+                    `${bold(localization.getTranslation("userId"))}: ${
                         submission.id
                     }\n` +
-                    `**${localization.getTranslation("beatmapId")}**: ${
+                    `${bold(localization.getTranslation("beatmapId"))}: ${
                         submission.beatmap_id
                     } ([${localization.getTranslation(
                         "beatmapLink"
                     )}](https://osu.ppy.sh/b/${submission.beatmap_id}))\n` +
-                    `**${localization.getTranslation(
-                        "creationDate"
-                    )}**: ${DateTimeFormatHelper.dateToLocaleString(
+                    `${bold(
+                        localization.getTranslation("creationDate")
+                    )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(submission.date * 1000),
                         localization.language
                     )}`,
