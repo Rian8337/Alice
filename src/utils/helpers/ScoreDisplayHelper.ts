@@ -86,7 +86,7 @@ export abstract class ScoreDisplayHelper {
                 embed.addFields({
                     name: `${i + 1}. ${BeatmapManager.getRankEmote(
                         <ScoreRank>score.rank
-                    )}** | ${score.title} ${score.completeModString}`,
+                    )} | ${score.title} ${score.completeModString}`,
                     value:
                         `${score.score.toLocaleString(
                             LocaleHelper.convertToBCP47(localization.language)
