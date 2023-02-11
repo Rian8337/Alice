@@ -116,7 +116,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             value:
                 `**${topScore.score.username}${
                     topScore.score.mods.length > 0
-                        ? ` (${topScore.score.getCompleteModString()})`
+                        ? ` (${topScore.score.completeModString})`
                         : ""
                 }**\n` + getScoreDescription(topScore),
         });
@@ -136,7 +136,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embed.addFields({
                 name: `**#${++i} ${score.score.username}${
                     score.score.mods.length > 0
-                        ? ` (${score.score.getCompleteModString()})`
+                        ? ` (${score.score.completeModString})`
                         : ""
                 }**`,
                 value: getScoreDescription(score),
