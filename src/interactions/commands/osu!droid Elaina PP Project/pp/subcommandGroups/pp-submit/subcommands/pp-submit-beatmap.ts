@@ -196,6 +196,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 perfCalcResult
             );
 
+            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
+                score,
+                diffCalculator,
+                perfCalcResult
+            );
+
             ppEntry.pp = NumberHelper.round(perfCalcResult.result.total, 2);
 
             DPPHelper.insertScore(bindInfo.pp, [ppEntry]);
