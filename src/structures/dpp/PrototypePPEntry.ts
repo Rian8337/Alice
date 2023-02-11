@@ -99,7 +99,12 @@ export interface PrototypePPEntry extends PPEntry {
     hit50: number;
 
     /**
-     * Whether this score is penalized from cheesing sliders.
+     * The aim slider cheese penalty of the score.
      */
-    sliderCheesePenalized: boolean;
+    aimSliderCheesePenalty: number;
+
+    /**
+     * The visual slider cheese penalty of the score.
+     */
+    visualSliderCheesePenalty: number;
 }

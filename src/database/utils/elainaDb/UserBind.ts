@@ -569,8 +569,10 @@ export class UserBind extends Manager {
                 hit300: score.accuracy.n300,
                 hit100: score.accuracy.n100,
                 hit50: score.accuracy.n50,
-                sliderCheesePenalized:
-                    (score.replay?.sliderCheesePenalty.aimPenalty ?? 1) > 1,
+                aimSliderCheesePenalty:
+                    score.replay?.sliderCheesePenalty.aimPenalty ?? 1,
+                visualSliderCheesePenalty:
+                    score.replay?.sliderCheesePenalty.visualPenalty ?? 1,
             };
 
             consola.info(
