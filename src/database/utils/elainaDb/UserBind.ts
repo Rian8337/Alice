@@ -496,6 +496,12 @@ export class UserBind extends Manager {
                 perfCalcResult
             );
 
+            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
+                score,
+                diffCalculator,
+                perfCalcResult
+            );
+
             const rebalDiffCalculator: RebalanceDroidDifficultyCalculator =
                 rebalPerfCalcResult.requestedDifficultyCalculation()
                     ? rebalPerfCalcResult.difficultyCalculator

@@ -797,6 +797,12 @@ export abstract class BeatmapDifficultyHelper<
             combo: calculationParams.combo,
             accPercent: calculationParams.accuracy,
             tapPenalty: calculationParams.tapPenalty,
+            aimSliderCheesePenalty:
+                calculationParams.sliderCheesePenalty?.aimPenalty,
+            flashlightSliderCheesePenalty:
+                calculationParams.sliderCheesePenalty?.flashlightPenalty,
+            visualSliderCheesePenalty:
+                calculationParams.sliderCheesePenalty?.visualPenalty,
         });
 
         return new PerformanceCalculationResult(
