@@ -44,7 +44,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             command.config.scope === "GUILD_CHANNEL"
         ) {
             if (command.config.permissions.includes("BotOwner")) {
-                memberPermissions = [];
+                memberPermissions = ["Administrator"];
             } else if (!command.config.permissions.includes("Special")) {
                 memberPermissions = <PermissionResolvable[]>(
                     command.config.permissions
