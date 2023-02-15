@@ -1,7 +1,5 @@
 # Alice
 
-> Retired until I receive help with maintaining this thing... or be bothered enough to do it.
-
 A rewrite version of [Elaina](https://github.com/NeroYuki/Elaina), a multipurpose Discord bot mainly made for [osu!droid](https://osudroid.moe/) and Malody. It is mainly designed for use in the [osu!droid International Discord server](https://discord.gg/nyD92cE).
 
 This is being open-sourced for maintenance and transparency purposes.
