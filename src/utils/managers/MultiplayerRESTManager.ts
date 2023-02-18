@@ -13,7 +13,7 @@ import { RESTManager } from "./RESTManager";
 export abstract class MultiplayerRESTManager extends RESTManager {
     private static readonly endpoint = Config.isDebug
         ? "https://droidpp.osudroid.moe/api/droid/"
-        : "http://localhost:3001/api/droid/";
+        : "http://localhost:3002/api/droid/";
 
     /**
      * Broadcasts a round start state.
