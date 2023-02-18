@@ -81,6 +81,12 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             diffCalculator,
             perfCalcResult
         );
+
+        await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
+            score,
+            diffCalculator,
+            perfCalcResult
+        );
     }
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
