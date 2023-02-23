@@ -49,14 +49,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     if (
-        !(await DatabaseManager.aliceDb.collections.playerSkins.checkSkinNameAvailability(
+        await DatabaseManager.aliceDb.collections.playerSkins.checkSkinNameAvailability(
             interaction.user,
             newName
-        ))
+        )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidSkinLink")
+                localization.getTranslation("skinNameNotAvailable")
             ),
         });
     }
