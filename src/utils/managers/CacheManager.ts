@@ -22,7 +22,7 @@ export abstract class CacheManager {
      * The beatmaps that have been cached, mapped by beatmap ID.
      */
     static readonly beatmapCache: LimitedCapacityCollection<number, MapInfo> =
-        new LimitedCapacityCollection(50, 600);
+        new LimitedCapacityCollection(150, 600);
 
     /**
      * The beatmap cache of each channel, mapped by channel ID.
@@ -30,7 +30,7 @@ export abstract class CacheManager {
     static readonly channelMapCache: LimitedCapacityCollection<
         Snowflake,
         string
-    > = new LimitedCapacityCollection(75, 1800);
+    > = new LimitedCapacityCollection(100, 1800);
 
     /**
      * The command cooldowns that are currently active.
