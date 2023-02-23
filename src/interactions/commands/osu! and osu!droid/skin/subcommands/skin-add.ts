@@ -25,10 +25,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     if (
-        !(await DatabaseManager.aliceDb.collections.playerSkins.checkSkinNameAvailability(
+        await DatabaseManager.aliceDb.collections.playerSkins.checkSkinNameAvailability(
             interaction.user,
             name
-        ))
+        )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -48,7 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.playerSkins.insert({
             discordid: interaction.user.id,
-            name: interaction.options.getString("name", true),
+            name: name,
             url: link,
         });
 
