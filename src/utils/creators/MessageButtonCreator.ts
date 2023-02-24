@@ -23,13 +23,12 @@ import {
 } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
 import { MissAnalyzer } from "@alice-utils/missanalyzer/MissAnalyzer";
-import { DroidDifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
-import { DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { ReplayData } from "@rian8337/osu-droid-replay-analyzer";
 import { MissInformation } from "@alice-utils/missanalyzer/MissInformation";
 import { OnButtonPressed } from "@alice-structures/utils/OnButtonPressed";
 import { OnCollectorEndButtonRemover } from "@alice-structures/utils/OnCollectorEndButtonRemover";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { Beatmap } from "@rian8337/osu-base";
 
 /**
  * A utility to create message buttons.
@@ -233,16 +232,14 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      *
      * @param interaction The interaction that triggered the button.
      * @param options Options of the message.
-     * @param difficultyCalculator The difficulty calculator instance.
+     * @param beatmap The beatmap shown in the miss analyzer.
      * @param replayData The replay data.
      * @returns The message resulted from the interaction's reply.
      */
     static createMissAnalyzerButton(
         interaction: RepliableInteraction,
         options: InteractionReplyOptions,
-        difficultyCalculator:
-            | DroidDifficultyCalculator
-            | RebalanceDroidDifficultyCalculator,
+        beatmap: Beatmap,
         replayData: ReplayData
     ): Promise<Message> {
         const button: ButtonBuilder = new ButtonBuilder()
@@ -270,7 +267,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                 if (pressed) {
                     const missAnalyzer: MissAnalyzer = new MissAnalyzer(
-                        difficultyCalculator,
+                        beatmap,
                         replayData
                     );
                     const missInformations: MissInformation[] =

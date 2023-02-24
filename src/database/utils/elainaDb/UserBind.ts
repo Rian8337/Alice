@@ -26,7 +26,6 @@ import {
     MapStats,
 } from "@rian8337/osu-base";
 import {
-    DroidDifficultyAttributes,
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
@@ -42,7 +41,6 @@ import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
 import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { HitErrorInformation } from "@rian8337/osu-droid-replay-analyzer";
 
 /**
@@ -340,38 +338,42 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            await HelperFunctions.sleep(0.1);
-
-            const diffCalcResult: DifficultyCalculationResult<
-                DroidDifficultyAttributes,
-                DroidDifficultyCalculator
-            > | null = await this.diffCalcHelper.calculateScoreDifficulty(
-                score
+            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+                score.hash,
+                { checkFile: false }
             );
 
-            if (!diffCalcResult) {
+            if (!beatmapInfo) {
                 continue;
             }
+
+            await HelperFunctions.sleep(0.1);
 
             const perfCalcResult: PerformanceCalculationResult<
                 DroidDifficultyCalculator,
                 DroidPerformanceCalculator
-            > = await this.diffCalcHelper.calculateBeatmapPerformance(
-                diffCalcResult.result.attributes,
-                DroidBeatmapDifficultyHelper.getCalculationParamsFromScore(
-                    score
-                )
+            > | null = await this.diffCalcHelper.calculateScorePerformance(
+                score
             );
+
+            if (!perfCalcResult) {
+                continue;
+            }
+
+            await beatmapInfo.retrieveBeatmapFile();
+            if (!beatmapInfo.hasDownloadedBeatmap()) {
+                continue;
+            }
 
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                diffCalcResult.result,
+                beatmapInfo.beatmap,
                 perfCalcResult
             );
 
             await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                 score,
-                diffCalcResult.result,
+                beatmapInfo.beatmap,
                 perfCalcResult
             );
 
@@ -384,7 +386,7 @@ export class UserBind extends Manager {
 
             DPPHelper.insertScore(newList, [
                 DPPHelper.scoreToPPEntry(
-                    diffCalcResult.map.fullTitle,
+                    beatmapInfo.fullTitle,
                     score,
                     perfCalcResult
                 ),
@@ -392,7 +394,7 @@ export class UserBind extends Manager {
 
             DPPHelper.insertScore(oldPPNewList, [
                 DPPHelper.scoreToOldPPEntry(
-                    diffCalcResult.map.fullTitle,
+                    beatmapInfo.fullTitle,
                     score,
                     oldCalcResult
                 ),
@@ -483,22 +485,20 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const diffCalculator: DroidDifficultyCalculator =
-                perfCalcResult.requestedDifficultyCalculation()
-                    ? perfCalcResult.difficultyCalculator
-                    : (await this.diffCalcHelper.calculateScoreDifficulty(
-                          score
-                      ))!.result;
+            await beatmapInfo.retrieveBeatmapFile();
+            if (!beatmapInfo.hasDownloadedBeatmap()) {
+                continue;
+            }
 
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                diffCalculator,
+                beatmapInfo.beatmap,
                 perfCalcResult
             );
 
             await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                 score,
-                diffCalculator,
+                beatmapInfo.beatmap,
                 perfCalcResult
             );
 
@@ -511,13 +511,13 @@ export class UserBind extends Manager {
 
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                rebalDiffCalculator,
+                beatmapInfo.beatmap,
                 rebalPerfCalcResult
             );
 
             await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                 score,
-                rebalDiffCalculator,
+                beatmapInfo.beatmap,
                 rebalPerfCalcResult
             );
 
@@ -751,22 +751,20 @@ export class UserBind extends Manager {
                             if (
                                 DPPHelper.checkScoreInsertion(newList, ppEntry)
                             ) {
-                                const diffCalculator: DroidDifficultyCalculator =
-                                    perfCalcResult.requestedDifficultyCalculation()
-                                        ? perfCalcResult.difficultyCalculator
-                                        : (await this.diffCalcHelper.calculateScoreDifficulty(
-                                              score
-                                          ))!.result;
+                                await beatmapInfo.retrieveBeatmapFile();
+                                if (!beatmapInfo.hasDownloadedBeatmap()) {
+                                    continue;
+                                }
 
                                 await DroidBeatmapDifficultyHelper.applyTapPenalty(
                                     score,
-                                    diffCalculator,
+                                    beatmapInfo.beatmap,
                                     perfCalcResult
                                 );
 
                                 await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                                     score,
-                                    diffCalculator,
+                                    beatmapInfo.beatmap,
                                     perfCalcResult
                                 );
 

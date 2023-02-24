@@ -126,8 +126,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const embedFields: APIEmbedField[] = [];
 
     for (const score of scoresToSubmit) {
-        const beatmapInfo: MapInfo<false> | null =
-            await BeatmapManager.getBeatmap(score.hash, { checkFile: false });
+        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+            score.hash,
+            { checkFile: false }
+        );
         const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${
             score.mods.map((v) => v.acronym).join(",") || "No Mod"
         }`;
@@ -194,22 +196,24 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 );
 
                 if (DPPHelper.checkScoreInsertion(bindInfo.pp, ppEntry)) {
-                    const diffCalculator: DroidDifficultyCalculator =
-                        perfCalcResult.requestedDifficultyCalculation()
-                            ? perfCalcResult.difficultyCalculator
-                            : (await droidDiffHelper.calculateScoreDifficulty(
-                                  score
-                              ))!.result;
+                    await beatmapInfo.retrieveBeatmapFile();
+
+                    if (!beatmapInfo.hasDownloadedBeatmap()) {
+                        fieldContent += localization.getTranslation(
+                            "beatmapNotFoundReject"
+                        );
+                        break;
+                    }
 
                     await DroidBeatmapDifficultyHelper.applyTapPenalty(
                         score,
-                        diffCalculator,
+                        beatmapInfo.beatmap,
                         perfCalcResult
                     );
 
                     await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                         score,
-                        diffCalculator,
+                        beatmapInfo.beatmap,
                         perfCalcResult
                     );
 

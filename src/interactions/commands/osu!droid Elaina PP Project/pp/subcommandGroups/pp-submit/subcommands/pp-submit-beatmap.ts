@@ -81,7 +81,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID,
         { checkFile: false }
     );
@@ -184,21 +184,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         );
 
         if (DPPHelper.checkScoreInsertion(bindInfo.pp, ppEntry)) {
-            const diffCalculator: DroidDifficultyCalculator =
-                perfCalcResult.requestedDifficultyCalculation()
-                    ? perfCalcResult.difficultyCalculator
-                    : (await droidCalcHelper.calculateScoreDifficulty(score))!
-                          .result;
+            await beatmapInfo.retrieveBeatmapFile();
+
+            if (!beatmapInfo.hasDownloadedBeatmap()) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("beatmapNotFound")
+                    ),
+                });
+            }
 
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                diffCalculator,
+                beatmapInfo.beatmap,
                 perfCalcResult
             );
 
             await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                 score,
-                diffCalculator,
+                beatmapInfo.beatmap,
                 perfCalcResult
             );
 

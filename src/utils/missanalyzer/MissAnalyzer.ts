@@ -1,18 +1,18 @@
 import {
     Beatmap,
+    BeatmapMetadata,
     DroidHitWindow,
-    HitObject,
     Interpolation,
     MapStats,
     Modes,
     ModHardRock,
     ModPrecise,
     ModUtil,
+    PlaceableHitObject,
     Spinner,
+    Utils,
     Vector2,
 } from "@rian8337/osu-base";
-import { DroidDifficultyCalculator } from "@rian8337/osu-difficulty-calculator";
-import { DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator } from "@rian8337/osu-rebalance-difficulty-calculator";
 import {
     CursorData,
     CursorOccurrence,
@@ -29,9 +29,14 @@ import { MissInformation } from "./MissInformation";
  */
 export class MissAnalyzer {
     /**
-     * The beatmap played in the replay.
+     * The beatmap metadata played in the replay.
      */
-    private readonly beatmap: Beatmap;
+    private readonly beatmapMetadata: BeatmapMetadata;
+
+    /**
+     * The objects of the beatmap played in the replay.
+     */
+    private readonly objects: readonly PlaceableHitObject[];
 
     /**
      * The data of the replay.
@@ -39,40 +44,38 @@ export class MissAnalyzer {
     private readonly data: ReplayData;
 
     /**
-     * The hit window of the beatmap.
-     */
-    private readonly hitWindow: DroidHitWindow;
-
-    /**
      * Approach rate converted to milliseconds.
      */
     private readonly approachRateTime: number;
 
     /**
-     * Whether the Precise mod was used.
+     * The hit window 50 of the replay.
      */
-    private readonly isPrecise: boolean;
-
-    private get hitWindow50(): number {
-        return this.hitWindow.hitWindowFor50(this.isPrecise);
-    }
+    private readonly hitWindow50: number;
 
     /**
      * @param difficultyCalculator The difficulty calculator result of the replay.
      * @param data The data of the replay.
      */
-    constructor(
-        difficultyCalculator:
-            | DroidDifficultyCalculator
-            | RebalanceDroidDifficultyCalculator,
-        data: ReplayData
-    ) {
-        this.beatmap = difficultyCalculator.beatmap;
+    constructor(beatmap: Beatmap, data: ReplayData) {
+        this.beatmapMetadata = beatmap.metadata;
+        // Deep copy objects so that we can change the scale.
+        this.objects = Utils.deepCopy(beatmap.hitObjects.objects);
         this.data = data;
 
+        const circleSize: number = new MapStats({
+            cs: beatmap.difficulty.cs,
+            mods: data.convertedMods,
+        }).calculate({ mode: Modes.droid }).cs!;
+        const scale: number = (1 - (0.7 * (circleSize - 5)) / 5) / 2;
+
+        for (const object of this.objects) {
+            object.droidScale = scale;
+        }
+
         const stats: MapStats = new MapStats({
-            ar: this.beatmap.difficulty.ar,
-            od: this.beatmap.difficulty.od,
+            ar: beatmap.difficulty.ar,
+            od: beatmap.difficulty.od,
             mods: data.convertedMods.filter(
                 (m) =>
                     m.isApplicableToDroid() &&
@@ -83,11 +86,10 @@ export class MissAnalyzer {
             ),
         }).calculate();
 
-        this.hitWindow = new DroidHitWindow(stats.od!);
-        this.approachRateTime = MapStats.arToMS(stats.ar!);
-        this.isPrecise = data.convertedMods.some(
-            (m) => m instanceof ModPrecise
+        this.hitWindow50 = new DroidHitWindow(stats.od!).hitWindowFor50(
+            data.convertedMods.some((m) => m instanceof ModPrecise)
         );
+        this.approachRateTime = MapStats.arToMS(stats.ar!);
     }
 
     /**
@@ -118,13 +120,12 @@ export class MissAnalyzer {
             cursorPosition?: Vector2,
             closestHit?: number
         ): MissInformation => {
-            const object: HitObject =
-                this.beatmap.hitObjects.objects[objectIndex];
-            const previousObjects: HitObject[] = [];
+            const object: PlaceableHitObject = this.objects[objectIndex];
+            const previousObjects: PlaceableHitObject[] = [];
             const previousHitResults: HitResult[] = [];
 
             for (let i = objectIndex - 1; i >= 0; --i) {
-                const o: HitObject = this.beatmap.hitObjects.objects[i];
+                const o: PlaceableHitObject = this.objects[i];
                 const timeDifference: number = object.startTime - o.startTime;
 
                 if (timeDifference >= this.approachRateTime) {
@@ -159,10 +160,10 @@ export class MissAnalyzer {
             }
 
             return new MissInformation(
-                this.beatmap.metadata,
-                this.beatmap.hitObjects.objects[objectIndex],
+                this.beatmapMetadata,
+                this.objects[objectIndex],
                 objectIndex,
-                this.beatmap.hitObjects.objects.length,
+                this.objects.length,
                 missIndex++,
                 this.data.accuracy.nmiss,
                 stats.speedMultiplier,
@@ -191,7 +192,7 @@ export class MissAnalyzer {
                 continue;
             }
 
-            const object: HitObject = this.beatmap.hitObjects.objects[i];
+            const object: PlaceableHitObject = this.objects[i];
 
             if (object instanceof Spinner) {
                 // Spinner misses are simple. They just didn't spin enough.
@@ -261,7 +262,7 @@ export class MissAnalyzer {
      * the cursor is the closest to the object, `null` if not found.
      */
     private getCursorOccurrenceClosestToObject(
-        object: HitObject,
+        object: PlaceableHitObject,
         cursorIndex: number,
         includeNotelockVerdict: boolean
     ): { position: Vector2; closestHit: number; verdict: string } | null {

@@ -9,6 +9,8 @@ import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalcul
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { MapInfo } from "@rian8337/osu-base";
 import {
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
@@ -69,22 +71,23 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         DroidPerformanceCalculator
     > | null = await diffCalcHelper.calculateScorePerformance(score);
 
-    let diffCalculator: DroidDifficultyCalculator | undefined;
-
     if (perfCalcResult) {
-        diffCalculator = perfCalcResult.requestedDifficultyCalculation()
-            ? perfCalcResult.difficultyCalculator
-            : (await diffCalcHelper.calculateScoreDifficulty(score))!.result;
+        const beatmapInfo: MapInfo<true> = (await BeatmapManager.getBeatmap(
+            score.hash,
+            {
+                checkFile: true,
+            }
+        ))!;
 
         await DroidBeatmapDifficultyHelper.applyTapPenalty(
             score,
-            diffCalculator,
+            beatmapInfo.beatmap,
             perfCalcResult
         );
 
         await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
             score,
-            diffCalculator,
+            beatmapInfo.beatmap,
             perfCalcResult
         );
     }
@@ -107,13 +110,22 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         ephemeral: true,
     };
 
-    if (diffCalculator && score.replay?.data && score.accuracy.nmiss > 0) {
-        MessageButtonCreator.createMissAnalyzerButton(
-            interaction,
-            options,
-            diffCalculator,
-            score.replay.data
-        );
+    if (score.replay?.data && score.accuracy.nmiss > 0) {
+        const beatmapInfo: MapInfo<true> | null =
+            await BeatmapManager.getBeatmap(score.hash, {
+                checkFile: true,
+            });
+
+        if (beatmapInfo?.hasDownloadedBeatmap()) {
+            MessageButtonCreator.createMissAnalyzerButton(
+                interaction,
+                options,
+                beatmapInfo.beatmap,
+                score.replay.data
+            );
+        } else {
+            InteractionHelper.reply(interaction, options);
+        }
     } else {
         InteractionHelper.reply(interaction, options);
     }

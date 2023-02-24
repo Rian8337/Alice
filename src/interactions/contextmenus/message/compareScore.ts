@@ -74,7 +74,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapId,
         { checkFile: false }
     );
@@ -113,24 +113,22 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         DroidPerformanceCalculator
     > | null = await diffCalcHelper.calculateScorePerformance(score);
 
-    let diffCalculator: DroidDifficultyCalculator | undefined;
-
     if (perfCalcResult) {
-        diffCalculator = perfCalcResult.requestedDifficultyCalculation()
-            ? perfCalcResult.difficultyCalculator
-            : (await diffCalcHelper.calculateScoreDifficulty(score))!.result;
+        await beatmapInfo.retrieveBeatmapFile();
 
-        await DroidBeatmapDifficultyHelper.applyTapPenalty(
-            score,
-            diffCalculator,
-            perfCalcResult
-        );
+        if (beatmapInfo.hasDownloadedBeatmap()) {
+            await DroidBeatmapDifficultyHelper.applyTapPenalty(
+                score,
+                beatmapInfo.beatmap,
+                perfCalcResult
+            );
 
-        await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
-            score,
-            diffCalculator,
-            perfCalcResult
-        );
+            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
+                score,
+                beatmapInfo.beatmap,
+                perfCalcResult
+            );
+        }
     }
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
@@ -150,13 +148,22 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (diffCalculator && score.replay?.data && score.accuracy.nmiss > 0) {
-        MessageButtonCreator.createMissAnalyzerButton(
-            interaction,
-            options,
-            diffCalculator,
-            score.replay.data
-        );
+    if (score.replay?.data && score.accuracy.nmiss > 0) {
+        const beatmapInfo: MapInfo<true> | null =
+            await BeatmapManager.getBeatmap(score.hash, {
+                checkFile: true,
+            });
+
+        if (beatmapInfo?.hasDownloadedBeatmap()) {
+            MessageButtonCreator.createMissAnalyzerButton(
+                interaction,
+                options,
+                beatmapInfo.beatmap,
+                score.replay.data
+            );
+        } else {
+            InteractionHelper.reply(interaction, options);
+        }
     } else {
         InteractionHelper.reply(interaction, options);
     }

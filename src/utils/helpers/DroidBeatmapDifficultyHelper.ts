@@ -3,11 +3,13 @@ import {
     DroidDifficultyAttributes,
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
+    ExtendedDroidDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes,
     DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+    ExtendedDroidDifficultyAttributes as RebalanceExtendedDroidDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
@@ -19,6 +21,7 @@ import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/Rebalanc
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { ReplayHelper } from "./ReplayHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { Beatmap } from "@rian8337/osu-base";
 
 /**
  * A helper class for calculating osu!droid difficulty and performance of beatmaps or scores.
@@ -48,12 +51,12 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * Applies a tap penalty to a calculation result.
      *
      * @param score The score associated to the calculation result.
-     * @param difficultyCalculator The difficulty calculator to calculate the tap penalty from.
+     * @param beatmap The beatmap associated with the score.
      * @param calcResult The calculation result to apply the tap penalty to.
      */
     static async applyTapPenalty(
         score: Score,
-        difficultyCalculator: DroidDifficultyCalculator,
+        beatmap: Beatmap,
         calcResult: PerformanceCalculationResult<
             DroidDifficultyCalculator,
             DroidPerformanceCalculator
@@ -64,12 +67,12 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * Applies a tap penalty to a calculation result.
      *
      * @param score The score associated to the calculation result.
-     * @param difficultyCalculator The difficulty calculator to calculate the tap penalty from.
+     * @param beatmap The beatmap associated with the score.
      * @param calcResult The calculation result to apply the tap penalty to.
      */
     static async applyTapPenalty(
         score: Score,
-        difficultyCalculator: RebalanceDroidDifficultyCalculator,
+        beatmap: Beatmap,
         calcResult: RebalancePerformanceCalculationResult<
             RebalanceDroidDifficultyCalculator,
             RebalanceDroidPerformanceCalculator
@@ -78,9 +81,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
 
     static async applyTapPenalty(
         score: Score,
-        difficultyCalculator:
-            | DroidDifficultyCalculator
-            | RebalanceDroidDifficultyCalculator,
+        beatmap: Beatmap,
         calcResult:
             | PerformanceCalculationResult<
                   DroidDifficultyCalculator,
@@ -91,11 +92,11 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
                   RebalanceDroidPerformanceCalculator
               >
     ): Promise<void> {
-        if (
-            !ThreeFingerChecker.isEligibleToDetect(
-                difficultyCalculator.attributes
-            )
-        ) {
+        const difficultyAttributes = <
+            | ExtendedDroidDifficultyAttributes
+            | RebalanceExtendedDroidDifficultyAttributes
+        >calcResult.result.difficultyAttributes;
+        if (!ThreeFingerChecker.isEligibleToDetect(difficultyAttributes)) {
             return;
         }
 
@@ -106,7 +107,8 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         }
 
         if (!score.replay.hasBeenCheckedFor3Finger) {
-            score.replay.beatmap = difficultyCalculator;
+            score.replay.beatmap ??= beatmap;
+            score.replay.difficultyAttributes = difficultyAttributes;
             score.replay.checkFor3Finger();
             calcResult.params.tapPenalty = score.replay.tapPenalty;
         }
@@ -204,12 +206,12 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * Applies a slider cheese penalty to a calculation result.
      *
      * @param score The score associated to the calculation result.
-     * @param difficultyCalculator The difficulty calculator to calculate the slider cheese penalty from.
+     * @param beatmap The beatmap associated with the score.
      * @param calcResult The calculation result to apply the slider cheese penalty to.
      */
     static async applySliderCheesePenalty(
         score: Score,
-        difficultyCalculator: DroidDifficultyCalculator,
+        beatmap: Beatmap,
         calcResult: PerformanceCalculationResult<
             DroidDifficultyCalculator,
             DroidPerformanceCalculator
@@ -220,12 +222,12 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * Applies a slider cheese penalty to a calculation result.
      *
      * @param score The score associated to the calculation result.
-     * @param difficultyCalculator The difficulty calculator to calculate the slider cheese penalty from.
+     * @param beatmap The beatmap associated with the score.
      * @param calcResult The calculation result to apply the slider cheese penalty to.
      */
     static async applySliderCheesePenalty(
         score: Score,
-        difficultyCalculator: RebalanceDroidDifficultyCalculator,
+        beatmap: Beatmap,
         calcResult: RebalancePerformanceCalculationResult<
             RebalanceDroidDifficultyCalculator,
             RebalanceDroidPerformanceCalculator
@@ -234,9 +236,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
 
     static async applySliderCheesePenalty(
         score: Score,
-        difficultyCalculator:
-            | DroidDifficultyCalculator
-            | RebalanceDroidDifficultyCalculator,
+        beatmap: Beatmap,
         calcResult:
             | PerformanceCalculationResult<
                   DroidDifficultyCalculator,
@@ -247,7 +247,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
                   RebalanceDroidPerformanceCalculator
               >
     ): Promise<void> {
-        if (difficultyCalculator.attributes.sliderCount === 0) {
+        if (beatmap.hitObjects.sliders === 0) {
             return;
         }
 
@@ -258,7 +258,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         }
 
         if (!score.replay.hasBeenCheckedForSliderCheesing) {
-            score.replay.beatmap = difficultyCalculator;
+            score.replay.beatmap ??= beatmap;
             score.replay.checkForSliderCheesing();
             calcResult.params.sliderCheesePenalty =
                 score.replay.sliderCheesePenalty;
