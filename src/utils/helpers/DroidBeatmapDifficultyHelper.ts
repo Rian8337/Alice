@@ -91,7 +91,11 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
                   RebalanceDroidPerformanceCalculator
               >
     ): Promise<void> {
-        if (!ThreeFingerChecker.isEligibleToDetect(difficultyCalculator)) {
+        if (
+            !ThreeFingerChecker.isEligibleToDetect(
+                difficultyCalculator.attributes
+            )
+        ) {
             return;
         }
 

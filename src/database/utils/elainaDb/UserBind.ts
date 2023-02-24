@@ -573,7 +573,7 @@ export class UserBind extends Manager {
                     rebalPerfResult.tapDeviation * 10,
                     2
                 ),
-                aimNoteCount: rebalPerfResult.difficultyAttributes.aimNoteCount,
+                aimNoteCount: rebalDiffCalculator.attributes.aimNoteCount,
                 twoHandedNoteCount: score.replay?.twoHandedNoteCount ?? 0,
                 assumedTwoHand: score.replay?.is2Hand ?? false,
                 overallDifficulty:
