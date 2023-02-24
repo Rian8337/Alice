@@ -39,6 +39,11 @@ export class MissAnalyzer {
     private readonly objects: readonly PlaceableHitObject[];
 
     /**
+     * The true scale of objects.
+     */
+    private readonly trueObjectScale: number;
+
+    /**
      * The data of the replay.
      */
     private readonly data: ReplayData;
@@ -59,19 +64,14 @@ export class MissAnalyzer {
      */
     constructor(beatmap: Beatmap, data: ReplayData) {
         this.beatmapMetadata = beatmap.metadata;
-        // Deep copy objects so that we can change the scale.
-        this.objects = Utils.deepCopy(beatmap.hitObjects.objects);
+        this.objects = beatmap.hitObjects.objects;
         this.data = data;
 
         const circleSize: number = new MapStats({
             cs: beatmap.difficulty.cs,
             mods: data.convertedMods,
         }).calculate({ mode: Modes.droid }).cs!;
-        const scale: number = (1 - (0.7 * (circleSize - 5)) / 5) / 2;
-
-        for (const object of this.objects) {
-            object.droidScale = scale;
-        }
+        this.trueObjectScale = (1 - (0.7 * (circleSize - 5)) / 5) / 2;
 
         const stats: MapStats = new MapStats({
             ar: beatmap.difficulty.ar,
@@ -162,6 +162,7 @@ export class MissAnalyzer {
             return new MissInformation(
                 this.beatmapMetadata,
                 this.objects[objectIndex],
+                this.trueObjectScale,
                 objectIndex,
                 this.objects.length,
                 missIndex++,
@@ -266,6 +267,12 @@ export class MissAnalyzer {
         cursorIndex: number,
         includeNotelockVerdict: boolean
     ): { position: Vector2; closestHit: number; verdict: string } | null {
+        if (object.droidScale !== this.trueObjectScale) {
+            // Deep clone the object so that we can assign scale properly.
+            object = Utils.deepCopy(object);
+            object.droidScale = this.trueObjectScale;
+        }
+
         const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
 
         // Limit to cursor occurrences within this distance.

@@ -1,13 +1,14 @@
 import {
     BeatmapMetadata,
-    HitObject,
     Interpolation,
     Modes,
+    PlaceableHitObject,
     Playfield,
     Slider,
     SliderRepeat,
     SliderTick,
     Spinner,
+    Utils,
     Vector2,
 } from "@rian8337/osu-base";
 import {
@@ -30,7 +31,7 @@ export class MissInformation {
     /**
      * The object that was missed.
      */
-    readonly object: HitObject;
+    readonly object: PlaceableHitObject;
 
     /**
      * The zero-based index of the miss in the score.
@@ -80,7 +81,7 @@ export class MissInformation {
     /**
      * The objects prior to the current object.
      */
-    readonly previousObjects: HitObject[];
+    readonly previousObjects: PlaceableHitObject[];
 
     /**
      * The hit results of past objects.
@@ -99,6 +100,7 @@ export class MissInformation {
 
     private canvas?: Canvas;
     private readonly playfieldScale: number = 1.75;
+    private readonly trueObjectScale: number;
 
     /**
      * @param metadata The metadata of the beatmap.
@@ -118,14 +120,15 @@ export class MissInformation {
      */
     constructor(
         metadata: BeatmapMetadata,
-        object: HitObject,
+        object: PlaceableHitObject,
+        trueObjectScale: number,
         objectIndex: number,
         totalObjects: number,
         missIndex: number,
         totalMisses: number,
         clockRate: number,
         drawFlipped: boolean,
-        previousObjects: HitObject[],
+        previousObjects: PlaceableHitObject[],
         previousHitResults: HitResult[],
         cursorGroups: CursorOccurrenceGroup[][],
         approachRateTime: number,
@@ -134,7 +137,16 @@ export class MissInformation {
         closestHit?: number
     ) {
         this.metadata = metadata;
-        this.object = object;
+        this.trueObjectScale = trueObjectScale;
+
+        if (object.droidScale !== this.trueObjectScale) {
+            // Deep copy the object so that we can assign scale properly.
+            this.object = Utils.deepCopy(object);
+            this.object.droidScale = this.trueObjectScale;
+        } else {
+            this.object = object;
+        }
+
         this.objectIndex = objectIndex;
         this.totalObjects = totalObjects;
         this.missIndex = missIndex;
@@ -313,6 +325,14 @@ export class MissInformation {
      */
     private drawObjects(): void {
         for (let i = 0; i < this.previousObjects.length; ++i) {
+            if (this.previousObjects[i].droidScale !== this.trueObjectScale) {
+                // Deep clone the object so that we can assign scale properly.
+                this.previousObjects[i] = Utils.deepCopy(
+                    this.previousObjects[i]
+                );
+                this.previousObjects[i].droidScale = this.trueObjectScale;
+            }
+
             this.drawObject(
                 this.previousObjects[i],
                 this.previousHitResults[i],
@@ -335,7 +355,7 @@ export class MissInformation {
      * @param objectIndex The index of the object.
      */
     private drawObject(
-        object: HitObject,
+        object: PlaceableHitObject,
         objectHitResult: HitResult,
         objectIndex: number
     ): void {
