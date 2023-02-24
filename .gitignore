@@ -26,6 +26,9 @@ Thumbs.db
 # Main distribution folder
 /dist
 
+# Recalculation processes folder
+/src/recalculations
+
 # Coveralls
 coverage
 
