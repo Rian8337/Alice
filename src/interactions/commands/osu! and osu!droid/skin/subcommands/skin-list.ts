@@ -55,9 +55,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.addFields(
-            entries.slice(10 * (page - 1), 10 + 10 * (page - 1)).map((v, i) => {
+            entries.slice(5 * (page - 1), 5 + 5 * (page - 1)).map((v, i) => {
                 return {
-                    name: `${10 * (page - 1) + i + 1}. ${v.name}`,
+                    name: `${5 * (page - 1) + i + 1}. ${v.name}`,
                     value: v.description,
                 };
             })
@@ -69,7 +69,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         { embeds: [embed] },
         [interaction.user.id],
         1,
-        Math.ceil(skins.size / 10),
+        Math.ceil(skins.size / 5),
         90,
         onPageChange
     );
