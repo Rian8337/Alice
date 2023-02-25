@@ -107,4 +107,11 @@ export interface PrototypePPEntry extends PPEntry {
      * The visual slider cheese penalty of the score.
      */
     visualSliderCheesePenalty: number;
+
+    /**
+     * The number of clickable objects weighted by difficulty.
+     *
+     * Related to tap difficulty.
+     */
+    speedNoteCount: number;
 }

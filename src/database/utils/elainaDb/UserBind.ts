@@ -32,6 +32,7 @@ import {
 import {
     DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+    ExtendedDroidDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
@@ -473,7 +474,7 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            let rebalPerfCalcResult: RebalancePerformanceCalculationResult<
+            const rebalPerfCalcResult: RebalancePerformanceCalculationResult<
                 RebalanceDroidDifficultyCalculator,
                 RebalanceDroidPerformanceCalculator
             > | null =
@@ -502,12 +503,12 @@ export class UserBind extends Manager {
                 perfCalcResult
             );
 
-            const rebalDiffCalculator: RebalanceDroidDifficultyCalculator =
-                rebalPerfCalcResult.requestedDifficultyCalculation()
-                    ? rebalPerfCalcResult.difficultyCalculator
-                    : (await this.diffCalcHelper.calculateScoreRebalanceDifficulty(
-                          score
-                      ))!.result;
+            // const rebalDiffCalculator: RebalanceDroidDifficultyCalculator =
+            //     rebalPerfCalcResult.requestedDifficultyCalculation()
+            //         ? rebalPerfCalcResult.difficultyCalculator
+            //         : (await this.diffCalcHelper.calculateScoreRebalanceDifficulty(
+            //               score
+            //           ))!.result;
 
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
@@ -521,16 +522,17 @@ export class UserBind extends Manager {
                 rebalPerfCalcResult
             );
 
-            rebalPerfCalcResult =
-                await DroidBeatmapDifficultyHelper.applyAimPenalty(
-                    score,
-                    rebalDiffCalculator,
-                    score.replay?.tapPenalty,
-                    score.replay?.sliderCheesePenalty
-                );
+            // rebalPerfCalcResult =
+            //     await DroidBeatmapDifficultyHelper.applyAimPenalty(
+            //         score,
+            //         rebalDiffCalculator,
+            //         score.replay?.tapPenalty,
+            //         score.replay?.sliderCheesePenalty
+            //     );
 
             if (score.replay) {
-                score.replay.beatmap ??= rebalDiffCalculator;
+                // score.replay.beatmap ??= rebalDiffCalculator;
+                score.replay.beatmap ??= beatmapInfo.beatmap;
             }
 
             const hitError: HitErrorInformation | undefined | null =
@@ -573,11 +575,13 @@ export class UserBind extends Manager {
                     rebalPerfResult.tapDeviation * 10,
                     2
                 ),
-                aimNoteCount: rebalDiffCalculator.attributes.aimNoteCount,
+                aimNoteCount: (<ExtendedDroidDifficultyAttributes>(
+                    rebalPerfResult.difficultyAttributes
+                )).aimNoteCount,
                 twoHandedNoteCount: score.replay?.twoHandedNoteCount ?? 0,
                 assumedTwoHand: score.replay?.is2Hand ?? false,
                 overallDifficulty:
-                    rebalDiffCalculator.attributes.overallDifficulty,
+                    rebalPerfResult.difficultyAttributes.overallDifficulty,
                 hit300: score.accuracy.n300,
                 hit100: score.accuracy.n100,
                 hit50: score.accuracy.n50,
@@ -585,6 +589,8 @@ export class UserBind extends Manager {
                     score.replay?.sliderCheesePenalty.aimPenalty ?? 1,
                 visualSliderCheesePenalty:
                     score.replay?.sliderCheesePenalty.visualPenalty ?? 1,
+                speedNoteCount:
+                    rebalPerfResult.difficultyAttributes.speedNoteCount,
             };
 
             consola.info(
