@@ -97,11 +97,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     interaction.options.getInteger("misses") ?? 0
                 ),
             }),
-            NumberHelper.clamp(
-                interaction.options.getNumber("accuracy") ?? 100,
-                0,
-                100
-            ),
+            interaction.options.getNumber("accuracy") ?? 100,
             interaction.options.getInteger("combo")
                 ? Math.max(0, interaction.options.getInteger("combo", true))
                 : undefined,
@@ -111,11 +107,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     interaction.options.getString("mods") ?? ""
                 ),
                 ar: forceAR,
-                speedMultiplier: NumberHelper.clamp(
+                speedMultiplier:
                     interaction.options.getNumber("speedmultiplier") ?? 1,
-                    0.5,
-                    2
-                ),
                 isForceAR: !isNaN(<number>forceAR),
             })
         );
