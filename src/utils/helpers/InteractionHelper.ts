@@ -1,9 +1,9 @@
 import {
+    InteractionEditReplyOptions,
     InteractionResponse,
     Message,
     MessageComponentInteraction,
     RepliableInteraction,
-    WebhookEditMessageOptions,
 } from "discord.js";
 
 /**
@@ -49,7 +49,7 @@ export abstract class InteractionHelper {
      */
     static async reply(
         interaction: RepliableInteraction,
-        reply: WebhookEditMessageOptions
+        reply: InteractionEditReplyOptions
     ): Promise<Message> {
         // Reset message components
         reply.components ??= [];
@@ -79,7 +79,7 @@ export abstract class InteractionHelper {
      */
     static async update(
         interaction: MessageComponentInteraction,
-        response: WebhookEditMessageOptions
+        response: InteractionEditReplyOptions
     ): Promise<Message> {
         // Reset message components
         response.components ??= [];
