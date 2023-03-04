@@ -7,7 +7,7 @@ import { GuildMember, EmbedBuilder, hyperlink } from "discord.js";
 //@ts-expect-error: package.json will be included in distribution folder otherwise
 import { version } from "../../../../../package.json";
 //@ts-expect-error: package-lock.json will be included in distribution folder otherwise
-import { dependencies } from "../../../../../package-lock.json";
+import { packages } from "../../../../../package-lock.json";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -31,11 +31,14 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             | "osu-droid-utilities"
             | "osu-strain-graph-generator"
     ): string => {
-        let version: string = dependencies[`@rian8337/${moduleName}`].version;
+        let version: string = (
+            packages[`node_modules/@rian8337/${moduleName}`] ??
+            packages[`../osu-droid-module/packages/${moduleName}`]
+        ).version;
         const source: string = `https://github.com/Rian8337/osu-droid-module/tree/master/packages/${moduleName}`;
 
         // Local version.
-        if (version.startsWith("file")) {
+        if (packages[`../osu-droid-module/packages/${moduleName}`]) {
             version = "Local version";
         }
 
@@ -76,11 +79,11 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                 name: localization.getTranslation("coreLibraries"),
                 value:
                     `${localization.getTranslation("discordJs")}: ${hyperlink(
-                        dependencies["discord.js"].version,
+                        packages["node_modules/discord.js"].version,
                         "https://discord.js.org"
                     )}\n` +
                     `${localization.getTranslation("typescript")}: ${hyperlink(
-                        dependencies["typescript"].version,
+                        packages["node_modules/typescript"].version,
                         "https://typescriptlang.org"
                     )}`,
             },
