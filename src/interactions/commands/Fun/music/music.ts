@@ -24,7 +24,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(interaction, language);
 };
 
-export const category: SlashCommand["category"] = CommandCategory.FUN;
+export const category: SlashCommand["category"] = CommandCategory.fun;
 
 export const config: SlashCommand["config"] = {
     name: "music",

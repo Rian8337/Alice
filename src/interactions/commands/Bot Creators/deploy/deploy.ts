@@ -94,7 +94,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     });
 };
 
-export const category: SlashCommand["category"] = CommandCategory.BOT_CREATORS;
+export const category: SlashCommand["category"] = CommandCategory.botCreators;
 
 export const config: SlashCommand["config"] = {
     name: "deploy",

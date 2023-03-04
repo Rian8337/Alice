@@ -53,7 +53,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, embedOptions);
 };
 
-export const category: SlashCommand["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.osu;
 
 export const config: SlashCommand["config"] = {
     name: "downloadlink",

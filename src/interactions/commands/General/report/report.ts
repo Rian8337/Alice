@@ -136,7 +136,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 };
 
-export const category: SlashCommand["category"] = CommandCategory.GENERAL;
+export const category: SlashCommand["category"] = CommandCategory.general;
 
 export const config: SlashCommand["config"] = {
     name: "report",

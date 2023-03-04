@@ -11,7 +11,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 };
 
-export const category: CommandCategory = CommandCategory.PP;
+export const category: CommandCategory = CommandCategory.pp;
 
 export const config: SlashCommand["config"] = {
     name: "pp",

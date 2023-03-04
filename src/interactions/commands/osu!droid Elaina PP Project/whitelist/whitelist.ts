@@ -10,7 +10,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 };
 
-export const category: SlashCommand["category"] = CommandCategory.PP;
+export const category: SlashCommand["category"] = CommandCategory.pp;
 
 export const config: SlashCommand["config"] = {
     name: "whitelist",

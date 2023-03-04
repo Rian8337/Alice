@@ -384,67 +384,67 @@ export abstract class TriviaHelper {
      */
     static getCategoryName(category: TriviaQuestionCategory): string {
         switch (category) {
-            case TriviaQuestionCategory.ANIMAL:
+            case TriviaQuestionCategory.animal:
                 return "Animals";
-            case TriviaQuestionCategory.ANIME_AND_MANGA:
+            case TriviaQuestionCategory.animeAndManga:
                 return "Entertainment: Japanese Anime and Manga";
-            case TriviaQuestionCategory.ART_AND_LITERATURE:
+            case TriviaQuestionCategory.artAndLiterature:
                 return "Art and Literature";
-            case TriviaQuestionCategory.ENTERTAINMENT_BOARD_GAMES:
+            case TriviaQuestionCategory.entertainmentBoardGames:
                 return "Entertainment: Board Games";
-            case TriviaQuestionCategory.ENTERTAINMENT_CARTOONS_AND_ANIMATIONS:
+            case TriviaQuestionCategory.entertainmentCartoonsAndAnimations:
                 return "Entertainment: Cartoons and Animations";
-            case TriviaQuestionCategory.CELEBRITIES:
+            case TriviaQuestionCategory.celebrities:
                 return "Celebrities";
-            case TriviaQuestionCategory.ENTERTAINMENT_COMICS:
+            case TriviaQuestionCategory.entertainmentComics:
                 return "Entertainment: Comics";
-            case TriviaQuestionCategory.VIDEO_GAME_DOTA_2:
+            case TriviaQuestionCategory.videoGameDOTA2:
                 return "Video Game: DotA 2";
-            case TriviaQuestionCategory.VIDEO_GAME_FINAL_FANTASY:
+            case TriviaQuestionCategory.videoGameFinalFantasy:
                 return "Video Game: Final Fantasy";
-            case TriviaQuestionCategory.SCIENCE_COMPUTERS:
+            case TriviaQuestionCategory.scienceComputers:
                 return "Science: Computers";
-            case TriviaQuestionCategory.ENTERTAINMENT_FILM:
+            case TriviaQuestionCategory.entertainmentFilm:
                 return "Entertainment: Film";
-            case TriviaQuestionCategory.SCIENCE_GADGETS:
+            case TriviaQuestionCategory.scienceGadgets:
                 return "Science: Gadgets";
-            case TriviaQuestionCategory.GENERAL_KNOWLEDGE:
+            case TriviaQuestionCategory.generalKnowledge:
                 return "General Knowledge";
-            case TriviaQuestionCategory.GEOGRAPHY:
+            case TriviaQuestionCategory.geography:
                 return "Geography";
-            case TriviaQuestionCategory.HISTORY:
+            case TriviaQuestionCategory.history:
                 return "History";
-            case TriviaQuestionCategory.VIDEO_GAME_LEAGUE_OF_LEGENDS:
+            case TriviaQuestionCategory.videoGameLeagueOfLegends:
                 return "Video Game: League of Legends";
-            case TriviaQuestionCategory.SCIENCE_MATHEMATICS:
+            case TriviaQuestionCategory.scienceMathematics:
                 return "Science: Mathematics";
-            case TriviaQuestionCategory.ENTERTAINMENT_MUSIC:
+            case TriviaQuestionCategory.entertainmentMusic:
                 return "Entertainment: Music";
-            case TriviaQuestionCategory.MYTHOLOGY:
+            case TriviaQuestionCategory.mythology:
                 return "Mythology";
-            case TriviaQuestionCategory.VIDEO_GAME_POKEMON:
+            case TriviaQuestionCategory.videoGamePokemon:
                 return "Video Game: Pokemon";
-            case TriviaQuestionCategory.SCIENCE_AND_NATURE:
+            case TriviaQuestionCategory.scienceAndNature:
                 return "Science and Nature";
-            case TriviaQuestionCategory.COMPANY_SLOGANS:
+            case TriviaQuestionCategory.companySlogans:
                 return "Company Slogans";
-            case TriviaQuestionCategory.SPORTS:
+            case TriviaQuestionCategory.sports:
                 return "Sports";
-            case TriviaQuestionCategory.FILM_STAR_WARS:
+            case TriviaQuestionCategory.filmStarWars:
                 return "Film: Star Wars";
-            case TriviaQuestionCategory.ENTERTAINMENT_TELEVISION:
+            case TriviaQuestionCategory.entertainmentTelevision:
                 return "Entertainment: Television";
-            case TriviaQuestionCategory.NONCATEGORIZED:
+            case TriviaQuestionCategory.noncategorized:
                 return "Noncategorized";
-            case TriviaQuestionCategory.ENTERTAINMENT_MUSICALS_AND_THEATRES:
+            case TriviaQuestionCategory.entertainmentMusicalsANdTheatres:
                 return "Entertainment: Musicals and Theatres";
-            case TriviaQuestionCategory.VEHICLES:
+            case TriviaQuestionCategory.vehicles:
                 return "Vehicles";
-            case TriviaQuestionCategory.ENTERTAINMENT_VIDEO_GAMES:
+            case TriviaQuestionCategory.entertainmentVideoGames:
                 return "Entertainment: Video Games";
-            case TriviaQuestionCategory.ENGLISH_LANGUAGE:
+            case TriviaQuestionCategory.englishLanguage:
                 return "The English Language";
-            case TriviaQuestionCategory.LOGICAL_REASONING:
+            case TriviaQuestionCategory.logicalReasoning:
                 return "Logical Reasoning";
         }
     }
@@ -453,67 +453,67 @@ export abstract class TriviaHelper {
         category: TriviaQuestionCategory
     ): string {
         switch (category) {
-            case TriviaQuestionCategory.ANIMAL:
+            case TriviaQuestionCategory.animal:
                 return "animal.txt";
-            case TriviaQuestionCategory.ANIME_AND_MANGA:
+            case TriviaQuestionCategory.animeAndManga:
                 return "animemanga.txt";
-            case TriviaQuestionCategory.ART_AND_LITERATURE:
+            case TriviaQuestionCategory.artAndLiterature:
                 return "artnliterature.txt";
-            case TriviaQuestionCategory.ENTERTAINMENT_BOARD_GAMES:
+            case TriviaQuestionCategory.entertainmentBoardGames:
                 return "boardgame.txt";
-            case TriviaQuestionCategory.ENTERTAINMENT_CARTOONS_AND_ANIMATIONS:
+            case TriviaQuestionCategory.entertainmentCartoonsAndAnimations:
                 return "cartoon.txt";
-            case TriviaQuestionCategory.CELEBRITIES:
+            case TriviaQuestionCategory.celebrities:
                 return "celeb.txt";
-            case TriviaQuestionCategory.ENTERTAINMENT_COMICS:
+            case TriviaQuestionCategory.entertainmentComics:
                 return "comic.txt";
-            case TriviaQuestionCategory.VIDEO_GAME_DOTA_2:
+            case TriviaQuestionCategory.videoGameDOTA2:
                 return "dota2.txt";
-            case TriviaQuestionCategory.VIDEO_GAME_FINAL_FANTASY:
+            case TriviaQuestionCategory.videoGameFinalFantasy:
                 return "ff.txt";
-            case TriviaQuestionCategory.SCIENCE_COMPUTERS:
+            case TriviaQuestionCategory.scienceComputers:
                 return "computer.txt";
-            case TriviaQuestionCategory.ENTERTAINMENT_FILM:
+            case TriviaQuestionCategory.entertainmentFilm:
                 return "film.txt";
-            case TriviaQuestionCategory.SCIENCE_GADGETS:
+            case TriviaQuestionCategory.scienceGadgets:
                 return "gadget.txt";
-            case TriviaQuestionCategory.GENERAL_KNOWLEDGE:
+            case TriviaQuestionCategory.generalKnowledge:
                 return "general.txt";
-            case TriviaQuestionCategory.GEOGRAPHY:
+            case TriviaQuestionCategory.geography:
                 return "geography.txt";
-            case TriviaQuestionCategory.HISTORY:
+            case TriviaQuestionCategory.history:
                 return "history.txt";
-            case TriviaQuestionCategory.VIDEO_GAME_LEAGUE_OF_LEGENDS:
+            case TriviaQuestionCategory.videoGameLeagueOfLegends:
                 return "leagueoflegends.txt";
-            case TriviaQuestionCategory.SCIENCE_MATHEMATICS:
+            case TriviaQuestionCategory.scienceMathematics:
                 return "math.txt";
-            case TriviaQuestionCategory.ENTERTAINMENT_MUSIC:
+            case TriviaQuestionCategory.entertainmentMusic:
                 return "music.txt";
-            case TriviaQuestionCategory.MYTHOLOGY:
+            case TriviaQuestionCategory.mythology:
                 return "myth.txt";
-            case TriviaQuestionCategory.VIDEO_GAME_POKEMON:
+            case TriviaQuestionCategory.videoGamePokemon:
                 return "pokemon.txt";
-            case TriviaQuestionCategory.SCIENCE_AND_NATURE:
+            case TriviaQuestionCategory.scienceAndNature:
                 return "science.txt";
-            case TriviaQuestionCategory.COMPANY_SLOGANS:
+            case TriviaQuestionCategory.companySlogans:
                 return "slogan.txt";
-            case TriviaQuestionCategory.SPORTS:
+            case TriviaQuestionCategory.sports:
                 return "sport.txt";
-            case TriviaQuestionCategory.FILM_STAR_WARS:
+            case TriviaQuestionCategory.filmStarWars:
                 return "starwars.txt";
-            case TriviaQuestionCategory.ENTERTAINMENT_TELEVISION:
+            case TriviaQuestionCategory.entertainmentTelevision:
                 return "television.txt";
-            case TriviaQuestionCategory.NONCATEGORIZED:
+            case TriviaQuestionCategory.noncategorized:
                 return "test.txt";
-            case TriviaQuestionCategory.ENTERTAINMENT_MUSICALS_AND_THEATRES:
+            case TriviaQuestionCategory.entertainmentMusicalsANdTheatres:
                 return "theater.txt";
-            case TriviaQuestionCategory.VEHICLES:
+            case TriviaQuestionCategory.vehicles:
                 return "vehicle.txt";
-            case TriviaQuestionCategory.ENTERTAINMENT_VIDEO_GAMES:
+            case TriviaQuestionCategory.entertainmentVideoGames:
                 return "videogame.txt";
-            case TriviaQuestionCategory.ENGLISH_LANGUAGE:
+            case TriviaQuestionCategory.englishLanguage:
                 return "english.txt";
-            case TriviaQuestionCategory.LOGICAL_REASONING:
+            case TriviaQuestionCategory.logicalReasoning:
                 return "logic.txt";
         }
     }

@@ -10,7 +10,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 };
 
-export const category: CommandCategory = CommandCategory.STAFF;
+export const category: CommandCategory = CommandCategory.staff;
 
 export const config: SlashCommand["config"] = {
     name: "warning",

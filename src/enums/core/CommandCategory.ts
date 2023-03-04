@@ -2,12 +2,12 @@
  * Categories of commands.
  */
 export enum CommandCategory {
-    BOT_CREATORS = "Bot Creators",
-    FUN = "Fun",
-    GENERAL = "General",
-    OSU = "osu! and osu!droid",
-    PP = "osu!droid Elaina PP Project",
-    STAFF = "Staff",
-    TOOLS = "Tools",
-    TOURNAMENT = "Tournament",
+    botCreators = "Bot Creators",
+    fun = "Fun",
+    general = "General",
+    osu = "osu! and osu!droid",
+    pp = "osu!droid Elaina PP Project",
+    staff = "Staff",
+    tools = "Tools",
+    tournament = "Tournament",
 }

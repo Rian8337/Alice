@@ -8,7 +8,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(interaction);
 };
 
-export const category: SlashCommand["category"] = CommandCategory.FUN;
+export const category: SlashCommand["category"] = CommandCategory.fun;
 
 export const config: SlashCommand["config"] = {
     name: "trivia",

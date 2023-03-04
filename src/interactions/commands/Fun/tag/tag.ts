@@ -7,7 +7,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(interaction);
 };
 
-export const category: SlashCommand["category"] = CommandCategory.BOT_CREATORS;
+export const category: SlashCommand["category"] = CommandCategory.botCreators;
 
 export const config: SlashCommand["config"] = {
     name: "tag",

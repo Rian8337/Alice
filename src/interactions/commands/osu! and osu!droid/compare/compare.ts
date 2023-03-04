@@ -202,7 +202,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 };
 
-export const category: SlashCommand["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.osu;
 
 export const config: SlashCommand["config"] = {
     name: "compare",

@@ -84,15 +84,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     // Get calculation parameters
-    const forceAR: number | undefined = interaction.options.getNumber(
-        "approachrate"
-    )
-        ? NumberHelper.clamp(
-              interaction.options.getNumber("approachrate", true),
-              0,
-              12.5
-          )
-        : undefined;
+    const forceAR: number | undefined =
+        interaction.options.getNumber("approachrate") ?? undefined;
 
     const calcParams: PerformanceCalculationParameters =
         new PerformanceCalculationParameters(
@@ -348,7 +341,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, calcEmbedOptions);
 };
 
-export const category: SlashCommand["category"] = CommandCategory.OSU;
+export const category: SlashCommand["category"] = CommandCategory.osu;
 
 export const config: SlashCommand["config"] = {
     name: "calculate",
