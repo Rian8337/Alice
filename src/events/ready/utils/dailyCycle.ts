@@ -52,6 +52,7 @@ export const run: EventUtil["run"] = async () => {
 
         resetDailyCoinsAndMapShare();
         MessageAnalyticsHelper.fetchDaily((resetTime - 86400) * 1000);
+        DatabaseManager.elainaDb.collections.userBind.updateRoleConnectionMetadata();
     }, 15 * 1000);
 };
 

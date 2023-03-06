@@ -9,6 +9,7 @@ import {
     User,
 } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { OperationResult } from "@alice-structures/core/OperationResult";
 
 /**
  * A manager for the `userbind` collection.
@@ -293,6 +294,34 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
                 value: v.username,
             };
         });
+    }
+
+    /**
+     * Updates the role connection metadata of users.
+     */
+    async updateRoleConnectionMetadata(): Promise<OperationResult> {
+        const users: DatabaseUserBind[] = await this.collection
+            .find(
+                {
+                    dailyRoleMetadataUpdateComplete: { $ne: true },
+                },
+                this.processFindOptions({
+                    projection: {
+                        _id: 0,
+                        discordid: 1,
+                    },
+                })
+            )
+            .toArray();
+
+        for (const user of users) {
+            await new UserBind(user).updateRoleMetadata();
+        }
+
+        return this.updateMany(
+            {},
+            { $unset: { dailyRoleMetadataUpdateComplete: "" } }
+        );
     }
 
     protected override processFindOptions(

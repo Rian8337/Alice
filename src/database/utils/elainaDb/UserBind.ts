@@ -133,6 +133,11 @@ export class UserBind extends Manager {
     calculationInfo?: RecalculationProgress;
 
     /**
+     * Whether the daily role connection metadata for this user has been completed.
+     */
+    dailyRoleMetadataUpdateComplete?: boolean;
+
+    /**
      * The BSON object ID of this document in the database.
      */
     readonly _id?: ObjectId;
@@ -166,6 +171,8 @@ export class UserBind extends Manager {
         this.dppScanComplete = data.dppScanComplete;
         this.dppRecalcComplete = data.dppRecalcComplete;
         this.calculationInfo = data.calculationInfo;
+        this.dailyRoleMetadataUpdateComplete =
+            data.dailyRoleMetadataUpdateComplete;
     }
 
     /**
@@ -1277,6 +1284,27 @@ export class UserBind extends Manager {
         }
 
         return null;
+    }
+
+    /**
+     * Updates the role connection metadata of this user.
+     */
+    async updateRoleMetadata(): Promise<OperationResult> {
+        const response: RequestResponse =
+            await DiscordBackendRESTManager.updateMetadata(this.discordid);
+
+        if (response.statusCode === 200) {
+            return DatabaseManager.elainaDb.collections.userBind.updateOne(
+                { discordid: this.discordid },
+                {
+                    $set: {
+                        dailyRoleMetadataUpdateComplete: true,
+                    },
+                }
+            );
+        } else {
+            return this.createOperationResult(false, "Metadata update failed");
+        }
     }
 
     /**
