@@ -22,6 +22,10 @@ export abstract class DiscordBackendRESTManager extends RESTManager {
                 userId: userId,
                 key: process.env.DISCORD_OAUTH_BACKEND_INTERNAL_KEY,
             },
+            headers: {
+                "Content-Type": "application/json",
+            },
+            json: true,
         });
     }
 }
