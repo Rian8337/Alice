@@ -85,4 +85,9 @@ export class Constants {
      * The ID of the channel that is storing skin previews.
      */
     static readonly skinPreviewChannel: Snowflake = "999480010459070505";
+
+    /**
+     * The ID of the linked role for displaying dpp statistics in user profiles.
+     */
+    static readonly dppProfileDisplayerRole: Snowflake = "1082254268691644446";
 }

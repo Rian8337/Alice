@@ -5,11 +5,14 @@ import { Filter, FindOptions, WithId } from "mongodb";
 import {
     ApplicationCommandOptionChoiceData,
     Collection as DiscordCollection,
+    Guild,
+    Role,
     Snowflake,
     User,
 } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { OperationResult } from "@alice-structures/core/OperationResult";
+import { Constants } from "@alice-core/Constants";
 
 /**
  * A manager for the `userbind` collection.
@@ -300,9 +303,24 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      * Updates the role connection metadata of users.
      */
     async updateRoleConnectionMetadata(): Promise<OperationResult> {
+        const guild: Guild = await this.client.guilds.fetch(
+            Constants.mainServer
+        );
+        const role: Role | null = await guild.roles.fetch(
+            Constants.dppProfileDisplayerRole
+        );
+
+        if (!role) {
+            return this.createOperationResult(true);
+        }
+
+        const userIDs: Snowflake[] = [...role.members.keys()];
         const users: DatabaseUserBind[] = await this.collection
             .find(
                 {
+                    discordid: {
+                        $in: userIDs,
+                    },
                     dailyRoleMetadataUpdateComplete: { $ne: true },
                 },
                 this.processFindOptions({
@@ -319,7 +337,11 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
         }
 
         return this.updateMany(
-            {},
+            {
+                discordid: {
+                    $in: userIDs,
+                },
+            },
             { $unset: { dailyRoleMetadataUpdateComplete: "" } }
         );
     }
