@@ -3,6 +3,9 @@ import { Snowflake } from "discord.js";
 import { RequestResponse } from "@rian8337/osu-base";
 import { RESTManager } from "./RESTManager";
 
+/**
+ * A REST manager for the Tatsu API.
+ */
 export abstract class TatsuRESTManager extends RESTManager {
     /**
      * Gets a user's Tatsu XP in a guild.
