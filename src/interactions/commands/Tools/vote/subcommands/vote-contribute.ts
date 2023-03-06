@@ -7,10 +7,10 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { UpdateFilter } from "mongodb";
 import { DatabaseVoting } from "structures/database/aliceDb/DatabaseVoting";
 import { bold } from "discord.js";
+import { TatsuRESTManager } from "@alice-utils/managers/TatsuRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     if (voteInfo.xpReq) {
-        const userXP: number | null = await RESTManager.getUserTatsuXP(
+        const userXP: number | null = await TatsuRESTManager.getUserTatsuXP(
             interaction.guildId!,
             interaction.user.id
         );
