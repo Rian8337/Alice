@@ -43,6 +43,7 @@ import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformance
 import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { HitErrorInformation } from "@rian8337/osu-droid-replay-analyzer";
+import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -298,7 +299,7 @@ export class UserBind extends Manager {
 
         const finalPP: number = DPPHelper.calculateFinalPerformancePoints(list);
 
-        return this.bindDb.updateOne(
+        const result = await this.bindDb.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -311,6 +312,12 @@ export class UserBind extends Manager {
                 },
             }
         );
+
+        if (result.success) {
+            await DiscordBackendRESTManager.updateMetadata(this.discordid);
+        }
+
+        return result;
     }
 
     /**
@@ -418,6 +425,8 @@ export class UserBind extends Manager {
                 },
             }
         );
+
+        await DiscordBackendRESTManager.updateMetadata(this.discordid);
 
         return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
             { discordId: this.discordid },
@@ -868,6 +877,8 @@ export class UserBind extends Manager {
         }
 
         await this.bindDb.updateOne({ discordid: this.discordid }, query);
+
+        await DiscordBackendRESTManager.updateMetadata(this.discordid);
 
         return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
             { discordId: this.discordid },
