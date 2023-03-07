@@ -660,10 +660,20 @@ export abstract class EmbedCreator {
                 `https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`
             );
 
+        const {
+            tapPenalty,
+            aimSliderCheesePenalty,
+            flashlightSliderCheesePenalty,
+            visualSliderCheesePenalty,
+        } = droidCalcResult;
+
         beatmapInformation += `${bold(
             `${droidCalcResult.total.toFixed(2)}DPP`
         )}${
-            droidCalcResult.tapPenalty !== 1
+            tapPenalty !== 1 ||
+            aimSliderCheesePenalty !== 1 ||
+            flashlightSliderCheesePenalty !== 1 ||
+            visualSliderCheesePenalty !== 1
                 ? ` (*${localization.getTranslation("penalized")}*)`
                 : ""
         } | ${bold(`${osuCalcResult.total.toFixed(2)}PP`)} `;
