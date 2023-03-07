@@ -11,6 +11,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 import {
@@ -360,6 +361,8 @@ export abstract class DPPHelper {
 
         for (const toUpdate of toUpdateList.values()) {
             toUpdate.pp.delete(hash);
+
+            await DiscordBackendRESTManager.updateMetadata(toUpdate.discordid);
 
             await DatabaseManager.elainaDb.collections.userBind.updateOne(
                 { discordid: toUpdate.discordid },
