@@ -1,6 +1,6 @@
 {
   "name": "alice",
-  "version": "2023.307.0",
+  "version": "2023.308.0",
   "description": "A Discord bot for osu!droid",
   "main": "dist/main.js",
   "scripts": {
@@ -57,7 +57,7 @@
     "bufferutil": "^4.0.3",
     "canvas": "^2.8.0",
     "consola": "^2.15.3",
-    "d3": "^6.7.0",
+    "d3": "^7.8.2",
     "discord.js": "^14.7.2-dev.1677931434-dc142c4.0",
     "dotenv": "^16.0.3",
     "erlpack": "github:discord/erlpack",
