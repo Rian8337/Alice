@@ -520,6 +520,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             accuracy.nmiss === 0:
             rank = isHidden ? "SH" : "S";
             break;
+        case (hit300Ratio > 0.8 && accuracy.nmiss === 0) || hit300Ratio > 0.9:
+            rank = "A";
+            break;
         case (hit300Ratio > 0.7 && accuracy.nmiss === 0) || hit300Ratio > 0.8:
             rank = "B";
             break;
