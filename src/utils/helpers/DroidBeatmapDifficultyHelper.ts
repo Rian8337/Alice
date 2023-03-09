@@ -57,31 +57,6 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
     static async applyTapPenalty(
         score: Score,
         beatmap: Beatmap,
-        calcResult: PerformanceCalculationResult<
-            DroidDifficultyCalculator,
-            DroidPerformanceCalculator
-        >
-    ): Promise<void>;
-
-    /**
-     * Applies a tap penalty to a calculation result.
-     *
-     * @param score The score associated to the calculation result.
-     * @param beatmap The beatmap associated with the score.
-     * @param calcResult The calculation result to apply the tap penalty to.
-     */
-    static async applyTapPenalty(
-        score: Score,
-        beatmap: Beatmap,
-        calcResult: RebalancePerformanceCalculationResult<
-            RebalanceDroidDifficultyCalculator,
-            RebalanceDroidPerformanceCalculator
-        >
-    ): Promise<void>;
-
-    static async applyTapPenalty(
-        score: Score,
-        beatmap: Beatmap,
         calcResult:
             | PerformanceCalculationResult<
                   DroidDifficultyCalculator,
@@ -209,31 +184,6 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * @param beatmap The beatmap associated with the score.
      * @param calcResult The calculation result to apply the slider cheese penalty to.
      */
-    static async applySliderCheesePenalty(
-        score: Score,
-        beatmap: Beatmap,
-        calcResult: PerformanceCalculationResult<
-            DroidDifficultyCalculator,
-            DroidPerformanceCalculator
-        >
-    ): Promise<void>;
-
-    /**
-     * Applies a slider cheese penalty to a calculation result.
-     *
-     * @param score The score associated to the calculation result.
-     * @param beatmap The beatmap associated with the score.
-     * @param calcResult The calculation result to apply the slider cheese penalty to.
-     */
-    static async applySliderCheesePenalty(
-        score: Score,
-        beatmap: Beatmap,
-        calcResult: RebalancePerformanceCalculationResult<
-            RebalanceDroidDifficultyCalculator,
-            RebalanceDroidPerformanceCalculator
-        >
-    ): Promise<void>;
-
     static async applySliderCheesePenalty(
         score: Score,
         beatmap: Beatmap,

@@ -1,7 +1,6 @@
+import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
 import { Accuracy, MapStats, Precision } from "@rian8337/osu-base";
-import { DifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { SliderCheeseInformation } from "@rian8337/osu-droid-replay-analyzer";
-import { DifficultyAttributes as RebalanceDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { DifficultyCalculationParameters } from "./DifficultyCalculationParameters";
 
 /**
@@ -74,9 +73,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
      *
      * @param attributes The difficulty attributes.
      */
-    applyFromAttributes(
-        attributes: DifficultyAttributes | RebalanceDifficultyAttributes
-    ): void {
+    applyFromAttributes(attributes: RawDifficultyAttributes): void {
         const objectCount: number =
             attributes.hitCircleCount +
             attributes.sliderCount +

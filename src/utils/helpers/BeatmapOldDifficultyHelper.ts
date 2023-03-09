@@ -442,15 +442,10 @@ export abstract class BeatmapOldDifficultyHelper {
 
         const attributes: OldDroidDifficultyAttributes = {
             tapDifficulty: star.speed,
-            rhythmDifficulty: 0,
-            visualDifficulty: 0,
             mods: [],
             starRating: star.total,
             maxCombo: beatmap.maxCombo,
             aimDifficulty: star.aim,
-            flashlightDifficulty: 0,
-            speedNoteCount: 0,
-            sliderFactor: 0,
             approachRate: stats.ar!,
             overallDifficulty: stats.od!,
             hitCircleCount: beatmap.circles,

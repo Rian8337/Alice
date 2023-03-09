@@ -1,9 +1,7 @@
-import { DifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
-import { DifficultyAttributes as RebalanceDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
+import { RawDifficultyAttributes } from "./RawDifficultyAttributes";
 
 /**
  * Represents difficulty attributes that can be cached.
  */
-export type CacheableDifficultyAttributes<
-    T extends DifficultyAttributes | RebalanceDifficultyAttributes
-> = Omit<T, "mods">;
+export type CacheableDifficultyAttributes<T extends RawDifficultyAttributes> =
+    Omit<T, "mods">;

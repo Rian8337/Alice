@@ -1,6 +1,4 @@
 import { CachedDifficultyAttributes } from "@alice-structures/difficultyattributes/CachedDifficultyAttributes";
-import { DifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
-import { DifficultyAttributes as RebalanceDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { mkdir, readdir, readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import { Collection } from "discord.js";
@@ -8,12 +6,13 @@ import { MapInfo, Mod, Modes } from "@rian8337/osu-base";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
+import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
 
 /**
  * A cache manager for difficulty attributes.
  */
 export abstract class DifficultyAttributesCacheManager<
-    T extends DifficultyAttributes | RebalanceDifficultyAttributes
+    T extends RawDifficultyAttributes
 > {
     /**
      * The type of the attribute.

@@ -5,5 +5,10 @@ import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
  */
 export type OldDroidDifficultyAttributes = Omit<
     DroidDifficultyAttributes,
-    "aimNoteCount"
+    | "aimNoteCount"
+    | "flashlightDifficulty"
+    | "rhythmDifficulty"
+    | "sliderFactor"
+    | "speedNoteCount"
+    | "visualDifficulty"
 >;

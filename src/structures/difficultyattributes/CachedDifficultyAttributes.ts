@@ -1,13 +1,10 @@
-import { DifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
-import { DifficultyAttributes as RebalanceDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { CacheableDifficultyAttributes } from "./CacheableDifficultyAttributes";
+import { RawDifficultyAttributes } from "./RawDifficultyAttributes";
 
 /**
  * Difficulty attributes of a beatmap that were cached.
  */
-export interface CachedDifficultyAttributes<
-    T extends DifficultyAttributes | RebalanceDifficultyAttributes
-> {
+export interface CachedDifficultyAttributes<T extends RawDifficultyAttributes> {
     /**
      * The time at which the beatmap was last updated.
      */
