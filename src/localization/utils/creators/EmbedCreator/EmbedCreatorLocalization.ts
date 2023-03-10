@@ -23,6 +23,8 @@ export interface EmbedCreatorStrings {
     readonly beatmapInfo: string;
     readonly dateAchieved: string;
     readonly penalized: string;
+    readonly threeFinger: string;
+    readonly sliderCheese: string;
     readonly forFC: string;
     readonly sliderTicks: string;
     readonly sliderEnds: string;

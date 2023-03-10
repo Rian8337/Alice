@@ -26,6 +26,8 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         beatmapInfo: "Informasi Beatmap",
         dateAchieved: "Dicapai pada %s",
         penalized: "terpenalti",
+        threeFinger: "tiga jari",
+        sliderCheese: "",
         forFC: "untuk FC %s",
         sliderTicks: "slider tick",
         sliderEnds: "slider end",

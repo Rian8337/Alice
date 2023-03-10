@@ -25,6 +25,8 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         beatmapInfo: "Beatmap Information",
         dateAchieved: "Achieved on %s",
         penalized: "penalized",
+        threeFinger: "three finger",
+        sliderCheese: "slider cheese",
         forFC: "for %s FC",
         sliderTicks: "slider ticks",
         sliderEnds: "slider ends",

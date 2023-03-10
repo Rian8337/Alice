@@ -667,16 +667,35 @@ export abstract class EmbedCreator {
             visualSliderCheesePenalty,
         } = droidCalcResult;
 
-        beatmapInformation += `${bold(
-            `${droidCalcResult.total.toFixed(2)}DPP`
-        )}${
-            tapPenalty !== 1 ||
-            aimSliderCheesePenalty !== 1 ||
-            flashlightSliderCheesePenalty !== 1 ||
-            visualSliderCheesePenalty !== 1
-                ? ` (*${localization.getTranslation("penalized")}*)`
-                : ""
-        } | ${bold(`${osuCalcResult.total.toFixed(2)}PP`)} `;
+        beatmapInformation += bold(`${droidCalcResult.total.toFixed(2)}DPP`);
+
+        const isThreeFinger: boolean = tapPenalty !== 1;
+        const isSliderCheese: boolean = [
+            aimSliderCheesePenalty,
+            flashlightSliderCheesePenalty,
+            visualSliderCheesePenalty,
+        ].some((v) => v !== 1);
+
+        if (isThreeFinger || isSliderCheese) {
+            beatmapInformation += ` *(${localization.getTranslation(
+                "penalized"
+            )} `;
+
+            const str: string[] = [];
+
+            if (isThreeFinger) {
+                str.push(localization.getTranslation("threeFinger"));
+            }
+            if (isSliderCheese) {
+                str.push(localization.getTranslation("sliderCheese"));
+            }
+
+            beatmapInformation += `(${str.join(", ")}))*`;
+        }
+
+        beatmapInformation += ` | ${bold(
+            `${osuCalcResult.total.toFixed(2)}PP`
+        )} `;
 
         if (score.accuracy.nmiss > 0 || score.combo < beatmap.maxCombo) {
             const calcParams: PerformanceCalculationParameters =
