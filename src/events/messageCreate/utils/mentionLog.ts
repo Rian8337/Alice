@@ -1,27 +1,33 @@
 import {
     Message,
     EmbedBuilder,
-    MessageMentions,
     Role,
     TextChannel,
     User,
     hyperlink,
+    Snowflake,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Constants } from "@alice-core/Constants";
+
+const excludedChannels: Snowflake[] = [
+    "783506454966566912",
+    "988135588060364931",
+];
 
 export const run: EventUtil["run"] = async (client, message: Message) => {
     if (
         message.author.bot ||
         (message.mentions.users.size === 0 &&
             message.mentions.roles.size === 0) ||
-        message.guildId !== Constants.mainServer
+        message.guildId !== Constants.mainServer ||
+        excludedChannels.includes(message.channelId)
     ) {
         return;
     }
 
-    const mentions: MessageMentions = message.mentions;
+    const { mentions } = message;
 
     const mentionedUsers: User[] = [];
     const mentionedRoles: Role[] = [];
