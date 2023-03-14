@@ -58,7 +58,7 @@
     "canvas": "^2.8.0",
     "consola": "^2.15.3",
     "d3": "^6.7.0",
-    "discord.js": "^14.7.2-dev.1677931434-dc142c4.0",
+    "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
     "erlpack": "github:discord/erlpack",
     "html-entities": "^2.3.2",
