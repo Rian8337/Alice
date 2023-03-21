@@ -262,45 +262,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 c.stop();
             },
             async (c) => {
-                const pressed: ButtonInteraction | undefined =
-                    c.collector.collected.first();
-
-                if (pressed) {
-                    const missAnalyzer: MissAnalyzer = new MissAnalyzer(
-                        beatmap,
-                        replayData
-                    );
-                    const missInformations: MissInformation[] =
-                        missAnalyzer.analyze();
-
-                    const onPageChange: OnButtonPageChange = async (
-                        o,
-                        page
-                    ) => {
-                        const attachment: AttachmentBuilder =
-                            new AttachmentBuilder(
-                                missInformations[page - 1].draw().toBuffer(),
-                                { name: `miss-${page + 1}.png` }
-                            );
-
-                        o.files = [attachment];
-                    };
-
-                    this.createLimitedButtonBasedPaging(
-                        pressed,
-                        {
-                            content: MessageCreator.createWarn(
-                                "This feature is still beta. Expect wrong verdicts."
-                            ),
-                        },
-                        [interaction.user.id],
-                        1,
-                        missInformations.length,
-                        90,
-                        onPageChange
-                    );
-                }
-
+                // Remove the original button
                 const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
                     options.components
                 )).findIndex((v) => {
@@ -319,19 +281,104 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     options.components!.splice(index, 1);
                 }
 
-                if (!c.componentIsDeleted) {
-                    try {
-                        interaction.isMessageComponent()
-                            ? await InteractionHelper.update(
-                                  interaction,
-                                  options
-                              )
-                            : await InteractionHelper.reply(
-                                  interaction,
-                                  options
-                              );
-                        // eslint-disable-next-line no-empty
-                    } catch {}
+                const pressed: ButtonInteraction | undefined =
+                    c.collector.collected.first();
+
+                if (pressed) {
+                    const missAnalyzer: MissAnalyzer = new MissAnalyzer(
+                        beatmap,
+                        replayData
+                    );
+                    const missInformations: MissInformation[] =
+                        missAnalyzer.analyze();
+
+                    const buttons: ButtonBuilder[] = [];
+
+                    for (let i = 0; i < missInformations.length; ++i) {
+                        const id: string = `analyze-miss-${i + 1}`;
+
+                        CacheManager.exemptedButtonCustomIds.add(id);
+
+                        buttons.push(
+                            new ButtonBuilder()
+                                .setCustomId(`analyze-miss-${i + 1}`)
+                                .setStyle(ButtonStyle.Primary)
+                                .setLabel((i + 1).toString())
+                        );
+                    }
+
+                    const options: InteractionReplyOptions = {
+                        content: MessageCreator.createWarn(
+                            "This feature is still beta. Expect wrong verdicts."
+                        ),
+                    };
+
+                    this.createLimitedTimeButtons(
+                        interaction,
+                        options,
+                        buttons,
+                        [interaction.user.id],
+                        90,
+                        async (_, i) => {
+                            await i.deferReply();
+
+                            const pressedIndex: number = parseInt(
+                                i.customId.replace("analyze-miss-", "")
+                            );
+                            const attachment: AttachmentBuilder =
+                                new AttachmentBuilder(
+                                    missInformations[pressedIndex - 1]
+                                        .draw()
+                                        .toBuffer(),
+                                    { name: `miss-${pressedIndex}.png` }
+                                );
+
+                            for (const button of buttons) {
+                                button.setDisabled(false);
+                            }
+
+                            buttons[pressedIndex - 1].setDisabled(true);
+
+                            options.files = [attachment];
+                        },
+                        async (c) => {
+                            const index: number = (<
+                                ActionRowBuilder<ButtonBuilder>[]
+                            >options.components).findIndex((v) => {
+                                return (
+                                    v.components.length === buttons.length &&
+                                    v.components.every(
+                                        (c, i) =>
+                                            (<APIButtonComponentWithCustomId>(
+                                                c.data
+                                            )).custom_id ===
+                                            (<APIButtonComponentWithCustomId>(
+                                                buttons[i].data
+                                            )).custom_id
+                                    )
+                                );
+                            });
+
+                            if (index !== -1) {
+                                options.components!.splice(index, 1);
+                            }
+
+                            if (!c.componentIsDeleted) {
+                                try {
+                                    interaction.isMessageComponent()
+                                        ? await InteractionHelper.update(
+                                              interaction,
+                                              options
+                                          )
+                                        : await InteractionHelper.reply(
+                                              interaction,
+                                              options
+                                          );
+                                    // eslint-disable-next-line no-empty
+                                } catch {}
+                            }
+                        }
+                    );
                 }
             }
         );
