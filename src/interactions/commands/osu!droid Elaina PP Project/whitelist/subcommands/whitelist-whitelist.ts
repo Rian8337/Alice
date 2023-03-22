@@ -102,7 +102,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
 
     embed.spliceFields(0, embed.data.fields!.length).addFields({
-        name: beatmaps[0].showStatistics(6),
+        name: BeatmapManager.showStatistics(beatmaps[0], 6),
         value: `${localization.getTranslation("starRating")}:\n${beatmaps
             .map(
                 (v) =>

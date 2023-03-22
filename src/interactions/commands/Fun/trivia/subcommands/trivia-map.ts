@@ -35,6 +35,7 @@ import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollec
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
+import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     if (fetchAttempt === 5) {
@@ -513,13 +514,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     )
                     .setURL(`https://osu.ppy.sh/s/${beatmapInfo.beatmapsetID}`)
                     .setDescription(
-                        `${beatmapInfo.showStatistics(
+                        `${BeatmapManager.showStatistics(
+                            beatmapInfo,
                             1
-                        )}\n${beatmapInfo.showStatistics(
+                        )}\n${BeatmapManager.showStatistics(
+                            beatmapInfo,
                             6
-                        )}\n${beatmapInfo.showStatistics(7)}`
+                        )}\n${BeatmapManager.showStatistics(beatmapInfo, 7)}`
                     )
-                    .setColor(beatmapInfo.statusColor);
+                    .setColor(
+                        BeatmapManager.getStatusColor(beatmapInfo.approved)
+                    );
 
                 const correctAnswers: TriviaMapCachedAnswer[] = [];
 

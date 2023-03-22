@@ -1,9 +1,21 @@
 import * as d3 from "d3";
-import { AttachmentBuilder, GuildEmoji, Message, Snowflake } from "discord.js";
+import {
+    AttachmentBuilder,
+    ColorResolvable,
+    GuildEmoji,
+    Message,
+    Snowflake,
+} from "discord.js";
 import {
     MapInfo,
+    MapStats,
+    MathUtils,
+    Modes,
     OsuAPIRequestBuilder,
     OsuAPIResponse,
+    Precision,
+    RankedStatus,
+    TimingControlPoint,
 } from "@rian8337/osu-base";
 import { Manager } from "@alice-utils/base/Manager";
 import { CacheManager } from "./CacheManager";
@@ -394,5 +406,451 @@ export abstract class BeatmapManager extends Manager {
             case "XH":
                 return this.client.emojis.resolve("611559473479155713")!;
         }
+    }
+
+    /**
+     * Shows a beatmap's statistics based on applied statistics and option.
+     *
+     * - Option `0`: return map title and mods used if defined
+     * - Option `1`: return song source and map download link to beatmap mirrors
+     * - Option `2`: return circle, slider, and spinner count
+     * - Option `3`: return CS, AR, OD, HP, and max score statistics for droid
+     * - Option `4`: return CS, AR, OD, HP, and max score statistics for PC
+     * - Option `5`: return BPM, map length, and max combo
+     * - Option `6`: return last update date and map status
+     * - Option `7`: return favorite count and play count
+     *
+     * @param beatmapInfo The beatmap info to show.
+     * @param option The option to pick.
+     * @param stats The custom statistics to apply. This will only be used to apply mods, custom speed multiplier, and force AR.
+     */
+    static showStatistics(
+        beatmapInfo: MapInfo,
+        option: number,
+        stats?: MapStats
+    ): string {
+        const mapParams = {
+            cs: beatmapInfo.cs,
+            ar: beatmapInfo.ar,
+            od: beatmapInfo.od,
+            hp: beatmapInfo.hp,
+            mods: stats?.mods ?? [],
+            isForceAR: false,
+            speedMultiplier: 1,
+        };
+        if (stats) {
+            if (stats.isForceAR) {
+                mapParams.ar = stats.ar ?? mapParams.ar;
+            }
+            mapParams.isForceAR = stats.isForceAR ?? mapParams.isForceAR;
+            mapParams.speedMultiplier =
+                stats.speedMultiplier ?? mapParams.speedMultiplier;
+        }
+
+        switch (option) {
+            case 0: {
+                const mapStatistics: MapStats = new MapStats(
+                    mapParams
+                ).calculate();
+
+                let string: string = `${beatmapInfo.fullTitle}${
+                    (mapStatistics.mods.length ?? 0) > 0
+                        ? ` +${mapStatistics.mods
+                              .map((m) => m.acronym)
+                              .join("")}`
+                        : ""
+                }`;
+                if (
+                    mapParams.speedMultiplier !== 1 ||
+                    mapStatistics.isForceAR
+                ) {
+                    string += " (";
+                    if (mapStatistics.isForceAR) {
+                        string += `AR${mapStatistics.ar}`;
+                    }
+                    if (mapParams.speedMultiplier !== 1) {
+                        if (mapStatistics.isForceAR) {
+                            string += ", ";
+                        }
+                        string += `${mapParams.speedMultiplier}x`;
+                    }
+                    string += ")";
+                }
+                return string;
+            }
+            case 1: {
+                let string: string = `${
+                    beatmapInfo.source
+                        ? `**Source**: ${beatmapInfo.source}\n`
+                        : ""
+                }**Download**: [osu!](https://osu.ppy.sh/d/${
+                    beatmapInfo.beatmapsetID
+                })${
+                    beatmapInfo.videoAvailable
+                        ? ` [(no video)](https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}n)`
+                        : ""
+                } - [Chimu](https://chimu.moe/en/d/${
+                    beatmapInfo.beatmapsetID
+                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
+                    beatmapInfo.beatmapsetID
+                })${
+                    beatmapInfo.videoAvailable
+                        ? ` [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${beatmapInfo.beatmapsetID})`
+                        : ""
+                } - [Beatconnect](https://beatconnect.io/b/${
+                    beatmapInfo.beatmapsetID
+                }/) - [Nerina](https://nerina.pw/d/${
+                    beatmapInfo.beatmapsetID
+                })${
+                    beatmapInfo.approved >= RankedStatus.ranked &&
+                    beatmapInfo.approved !== RankedStatus.qualified
+                        ? ` - [Ripple](https://storage.ripple.moe/d/${beatmapInfo.beatmapsetID})`
+                        : ""
+                }`;
+                if (beatmapInfo.packs.length > 0) {
+                    string += "\n**Beatmap Pack**: ";
+                    for (let i = 0; i < beatmapInfo.packs.length; i++) {
+                        string += `[${beatmapInfo.packs[i]}](https://osu.ppy.sh/beatmaps/packs/${beatmapInfo.packs[i]})`;
+                        if (i + 1 < beatmapInfo.packs.length) {
+                            string += " - ";
+                        }
+                    }
+                }
+                string += `\n🖼️ ${
+                    beatmapInfo.storyboardAvailable ? "✅" : "❎"
+                } **|** 🎞️ ${beatmapInfo.videoAvailable ? "✅" : "❎"}`;
+                return string;
+            }
+            case 2:
+                return `**Circles**: ${beatmapInfo.circles} - **Sliders**: ${beatmapInfo.sliders} - **Spinners**: ${beatmapInfo.spinners}`;
+            case 3: {
+                const droidOriginalStats: MapStats = new MapStats({
+                    cs: beatmapInfo.cs,
+                    ar: beatmapInfo.ar,
+                    od: beatmapInfo.od,
+                    hp: beatmapInfo.hp,
+                }).calculate({ mode: Modes.droid });
+
+                const droidModifiedStats: MapStats = new MapStats(
+                    mapParams
+                ).calculate({ mode: Modes.droid });
+
+                droidOriginalStats.cs = MathUtils.round(
+                    droidOriginalStats.cs!,
+                    2
+                );
+                droidOriginalStats.ar = MathUtils.round(
+                    droidOriginalStats.ar!,
+                    2
+                );
+                droidOriginalStats.od = MathUtils.round(
+                    droidOriginalStats.od!,
+                    2
+                );
+                droidOriginalStats.hp = MathUtils.round(
+                    droidOriginalStats.hp!,
+                    2
+                );
+
+                droidModifiedStats.cs = MathUtils.round(
+                    droidModifiedStats.cs!,
+                    2
+                );
+                droidModifiedStats.ar = MathUtils.round(
+                    droidModifiedStats.ar!,
+                    2
+                );
+                droidModifiedStats.od = MathUtils.round(
+                    droidModifiedStats.od!,
+                    2
+                );
+                droidModifiedStats.hp = MathUtils.round(
+                    droidModifiedStats.hp!,
+                    2
+                );
+
+                const maxScore: number =
+                    beatmapInfo.beatmap?.maxDroidScore(
+                        new MapStats(mapParams)
+                    ) ?? 0;
+
+                return `**CS**: ${droidOriginalStats.cs}${
+                    Precision.almostEqualsNumber(
+                        droidOriginalStats.cs!,
+                        droidModifiedStats.cs!
+                    )
+                        ? ""
+                        : ` (${droidModifiedStats.cs})`
+                } - **AR**: ${droidOriginalStats.ar}${
+                    Precision.almostEqualsNumber(
+                        droidOriginalStats.ar!,
+                        droidModifiedStats.ar!
+                    )
+                        ? ""
+                        : ` (${droidModifiedStats.ar})`
+                } - **OD**: ${droidOriginalStats.od}${
+                    Precision.almostEqualsNumber(
+                        droidOriginalStats.od!,
+                        droidModifiedStats.od!
+                    )
+                        ? ""
+                        : ` (${droidModifiedStats.od})`
+                } - **HP**: ${droidOriginalStats.hp}${
+                    Precision.almostEqualsNumber(
+                        droidOriginalStats.hp!,
+                        droidModifiedStats.hp!
+                    )
+                        ? ""
+                        : ` (${droidModifiedStats.hp})`
+                }${
+                    maxScore > 0
+                        ? `\n**Max Score**: ${maxScore.toLocaleString()}`
+                        : ""
+                }`;
+            }
+            case 4: {
+                const mapStatistics: MapStats = new MapStats(
+                    mapParams
+                ).calculate();
+
+                mapStatistics.cs = MathUtils.round(mapStatistics.cs!, 2);
+                mapStatistics.ar = MathUtils.round(mapStatistics.ar!, 2);
+                mapStatistics.od = MathUtils.round(mapStatistics.od!, 2);
+                mapStatistics.hp = MathUtils.round(mapStatistics.hp!, 2);
+
+                const maxScore: number =
+                    beatmapInfo.beatmap?.maxOsuScore(mapStatistics.mods) ?? 0;
+
+                return `**CS**: ${beatmapInfo.cs}${
+                    Precision.almostEqualsNumber(
+                        beatmapInfo.cs,
+                        mapStatistics.cs!
+                    )
+                        ? ""
+                        : ` (${mapStatistics.cs})`
+                } - **AR**: ${beatmapInfo.ar}${
+                    Precision.almostEqualsNumber(
+                        beatmapInfo.ar,
+                        mapStatistics.ar!
+                    )
+                        ? ""
+                        : ` (${mapStatistics.ar})`
+                } - **OD**: ${beatmapInfo.od}${
+                    Precision.almostEqualsNumber(
+                        beatmapInfo.od,
+                        mapStatistics.od!
+                    )
+                        ? ""
+                        : ` (${mapStatistics.od})`
+                } - **HP**: ${beatmapInfo.hp}${
+                    Precision.almostEqualsNumber(
+                        beatmapInfo.hp,
+                        mapStatistics.hp!
+                    )
+                        ? ""
+                        : ` (${mapStatistics.hp})`
+                }${
+                    maxScore > 0
+                        ? `\n**Max Score**: ${maxScore.toLocaleString()}`
+                        : ""
+                }`;
+            }
+            case 5: {
+                const mapStatistics: MapStats = new MapStats(
+                    mapParams
+                ).calculate();
+
+                const convertedBPM: number = this.convertBPM(
+                    beatmapInfo.bpm,
+                    mapStatistics
+                );
+                let string = "**BPM**: ";
+                if (beatmapInfo.beatmap) {
+                    const uninheritedTimingPoints: readonly TimingControlPoint[] =
+                        beatmapInfo.beatmap.controlPoints.timing.points;
+
+                    if (uninheritedTimingPoints.length === 1) {
+                        string += `${beatmapInfo.bpm}${
+                            !Precision.almostEqualsNumber(
+                                beatmapInfo.bpm,
+                                convertedBPM
+                            )
+                                ? ` (${convertedBPM})`
+                                : ""
+                        } - **Length**: ${this.convertTime(
+                            beatmapInfo.hitLength,
+                            beatmapInfo.totalLength,
+                            mapStatistics
+                        )} - **Max Combo**: ${beatmapInfo.maxCombo}x`;
+                    } else {
+                        let maxBPM: number = beatmapInfo.bpm;
+                        let minBPM: number = beatmapInfo.bpm;
+                        for (const t of uninheritedTimingPoints) {
+                            const bpm: number = parseFloat(
+                                (60000 / t.msPerBeat).toFixed(2)
+                            );
+                            maxBPM = Math.max(maxBPM, bpm);
+                            minBPM = Math.min(minBPM, bpm);
+                        }
+                        maxBPM = Math.round(maxBPM);
+                        minBPM = Math.round(minBPM);
+                        const speedMulMinBPM: number = Math.round(
+                            minBPM * mapStatistics.speedMultiplier
+                        );
+                        const speedMulMaxBPM: number = Math.round(
+                            maxBPM * mapStatistics.speedMultiplier
+                        );
+
+                        string +=
+                            Precision.almostEqualsNumber(
+                                minBPM,
+                                beatmapInfo.bpm
+                            ) &&
+                            Precision.almostEqualsNumber(
+                                maxBPM,
+                                beatmapInfo.bpm
+                            )
+                                ? `${beatmapInfo.bpm} `
+                                : `${minBPM}-${maxBPM} (${beatmapInfo.bpm}) `;
+
+                        if (
+                            !Precision.almostEqualsNumber(
+                                beatmapInfo.bpm,
+                                convertedBPM
+                            )
+                        ) {
+                            if (
+                                !Precision.almostEqualsNumber(
+                                    speedMulMinBPM,
+                                    speedMulMaxBPM
+                                )
+                            ) {
+                                string += `(${speedMulMinBPM}-${speedMulMaxBPM} (${convertedBPM})) `;
+                            } else {
+                                string += `(${convertedBPM}) `;
+                            }
+                        }
+
+                        string += `- **Length**: ${this.convertTime(
+                            beatmapInfo.hitLength,
+                            beatmapInfo.totalLength,
+                            mapStatistics
+                        )} - **Max Combo**: ${beatmapInfo.maxCombo}x`;
+                    }
+                } else {
+                    string += `${beatmapInfo.bpm}${
+                        !Precision.almostEqualsNumber(
+                            beatmapInfo.bpm,
+                            convertedBPM
+                        )
+                            ? ` (${convertedBPM})`
+                            : ""
+                    } - **Length**: ${this.convertTime(
+                        beatmapInfo.hitLength,
+                        beatmapInfo.totalLength,
+                        mapStatistics
+                    )} - **Max Combo**: ${beatmapInfo.maxCombo}x`;
+                }
+                return string;
+            }
+            case 6:
+                return `**Last Update**: ${beatmapInfo.lastUpdate.toUTCString()} | **${this.convertStatus(
+                    beatmapInfo.approved
+                )}**`;
+            case 7:
+                return `❤️ **${beatmapInfo.favorites.toLocaleString()}** - ▶️ **${beatmapInfo.plays.toLocaleString()}**`;
+            default:
+                throw {
+                    name: "NotSupportedError",
+                    message: `This mode (${option}) is not supported`,
+                };
+        }
+    }
+
+    /**
+     * Returns a color integer based on the beatmap's ranking status.
+     *
+     * Useful to make embed messages.
+     */
+    static getStatusColor(status: RankedStatus): ColorResolvable {
+        switch (status) {
+            case RankedStatus.graveyard:
+                return 16711711; // Graveyard: red
+            case RankedStatus.wip:
+                return 9442302; // WIP: purple
+            case RankedStatus.pending:
+                return 16312092; // Pending: yellow
+            case RankedStatus.ranked:
+                return 2483712; // Ranked: green
+            case RankedStatus.approved:
+                return 16741376; // Approved: tosca
+            case RankedStatus.qualified:
+                return 5301186; // Qualified: light blue
+            case RankedStatus.loved:
+                return 16711796; // Loved: pink
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * Converts the beatmap's BPM if speed-changing mods are applied.
+     */
+    static convertBPM(bpm: number, stats: MapStats): number {
+        bpm *= stats.speedMultiplier;
+
+        return parseFloat(bpm.toFixed(2));
+    }
+
+    /**
+     * Converts the beatmap's status into a string.
+     */
+    private static convertStatus(status: RankedStatus): string {
+        let s: keyof typeof RankedStatus = "approved";
+        for (const stat in RankedStatus) {
+            if (RankedStatus[<keyof typeof RankedStatus>stat] === status) {
+                s = <keyof typeof RankedStatus>stat;
+                break;
+            }
+        }
+        return s !== "wip"
+            ? s.charAt(0).toUpperCase() + s.slice(1)
+            : s.toUpperCase();
+    }
+
+    /**
+     * Converts the beatmap's length if speed-changing mods are applied.
+     */
+    static convertTime(
+        hitLength: number,
+        totalLength: number,
+        stats: MapStats
+    ): string {
+        hitLength /= stats.speedMultiplier;
+        totalLength /= stats.speedMultiplier;
+
+        return `${this.timeString(hitLength)}${
+            hitLength === hitLength ? "" : ` (${this.timeString(hitLength)})`
+        }/${this.timeString(totalLength)}${
+            totalLength === totalLength
+                ? ""
+                : ` (${this.timeString(totalLength)})`
+        }`;
+    }
+
+    /**
+     * Time string parsing function for statistics utility.
+     */
+    private static timeString(second: number): string {
+        let str: string = new Date(1000 * Math.ceil(second))
+            .toISOString()
+            .substr(11, 8)
+            .replace(/^[0:]+/, "");
+
+        if (second < 60) {
+            str = "0:" + str;
+        }
+
+        return str;
     }
 }

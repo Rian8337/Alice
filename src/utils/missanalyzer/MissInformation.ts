@@ -98,6 +98,13 @@ export class MissInformation {
      */
     readonly cursorGroups: CursorOccurrenceGroup[][];
 
+    /**
+     * Whether the canvas for this miss information has been generated.
+     */
+    get isGenerated(): boolean {
+        return this.canvas !== undefined;
+    }
+
     private canvas?: Canvas;
     private readonly playfieldScale: number = 1.75;
     private readonly trueObjectScale: number;

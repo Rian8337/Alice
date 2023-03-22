@@ -166,14 +166,25 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     .setTitle(
                         `${firstBeatmap.artist} - ${firstBeatmap.title} by ${firstBeatmap.creator}`
                     )
-                    .setColor(firstBeatmap.statusColor)
+                    .setColor(
+                        BeatmapManager.getStatusColor(firstBeatmap.approved)
+                    )
                     .setAuthor({ name: "Beatmap Information" })
                     .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
                     .setDescription(
-                        `${firstBeatmap.showStatistics(1, stats)}\n` +
-                            `${bold("BPM")}: ${firstBeatmap.convertBPM(
+                        `${BeatmapManager.showStatistics(
+                            firstBeatmap,
+                            1,
+                            stats
+                        )}\n` +
+                            `${bold("BPM")}: ${BeatmapManager.convertBPM(
+                                firstBeatmap.bpm,
                                 stats
-                            )} - ${bold("Length")}: ${firstBeatmap.convertTime(
+                            )} - ${bold(
+                                "Length"
+                            )}: ${BeatmapManager.convertTime(
+                                firstBeatmap.hitLength,
+                                firstBeatmap.totalLength,
                                 stats
                             )}`
                     );
@@ -240,9 +251,21 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                             Symbols.star
                         })`,
                         value:
-                            `${beatmapInfo.showStatistics(2, stats)}\n` +
-                            `${beatmapInfo.showStatistics(3, stats)}\n` +
-                            `${beatmapInfo.showStatistics(4, stats)}\n` +
+                            `${BeatmapManager.showStatistics(
+                                beatmapInfo,
+                                2,
+                                stats
+                            )}\n` +
+                            `${BeatmapManager.showStatistics(
+                                beatmapInfo,
+                                3,
+                                stats
+                            )}\n` +
+                            `${BeatmapManager.showStatistics(
+                                beatmapInfo,
+                                4,
+                                stats
+                            )}\n` +
                             `${bold(
                                 droidAttributes.starRating.toFixed(2)
                             )}dpp - ${osuAttributes.starRating.toFixed(2)}pp`,

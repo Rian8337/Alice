@@ -193,18 +193,21 @@ export abstract class EmbedCreator {
                 `https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`
             )
             .setTitle(
-                beatmapInfo.showStatistics(
+                BeatmapManager.showStatistics(
+                    beatmapInfo,
                     0,
                     calculationParams?.customStatistics
                 )
             )
             .setDescription(
-                beatmapInfo.showStatistics(
+                BeatmapManager.showStatistics(
+                    beatmapInfo,
                     1,
                     calculationParams?.customStatistics
                 ) +
                     "\n" +
-                    beatmapInfo.showStatistics(
+                    BeatmapManager.showStatistics(
+                        beatmapInfo,
                         2,
                         calculationParams?.customStatistics
                     )
@@ -215,7 +218,8 @@ export abstract class EmbedCreator {
                     name: bold(
                         localization.getTranslation("beatmapDroidStatistics")
                     ),
-                    value: beatmapInfo.showStatistics(
+                    value: BeatmapManager.showStatistics(
+                        beatmapInfo,
                         3,
                         calculationParams?.customStatistics
                     ),
@@ -224,7 +228,8 @@ export abstract class EmbedCreator {
                     name: bold(
                         localization.getTranslation("beatmapOsuStatistics")
                     ),
-                    value: beatmapInfo.showStatistics(
+                    value: BeatmapManager.showStatistics(
+                        beatmapInfo,
                         4,
                         calculationParams?.customStatistics
                     ),
@@ -233,17 +238,20 @@ export abstract class EmbedCreator {
                     name: bold(
                         localization.getTranslation("beatmapGeneralStatistics")
                     ),
-                    value: beatmapInfo.showStatistics(
+                    value: BeatmapManager.showStatistics(
+                        beatmapInfo,
                         5,
                         calculationParams?.customStatistics
                     ),
                 },
                 {
-                    name: beatmapInfo.showStatistics(
+                    name: BeatmapManager.showStatistics(
+                        beatmapInfo,
                         6,
                         calculationParams?.customStatistics
                     ),
-                    value: beatmapInfo.showStatistics(
+                    value: BeatmapManager.showStatistics(
+                        beatmapInfo,
                         7,
                         calculationParams?.customStatistics
                     ),
@@ -451,8 +459,13 @@ export abstract class EmbedCreator {
                 .spliceFields(embed.data.fields!.length - 2, 2)
                 .addFields(
                     {
-                        name: beatmap.showStatistics(6, customStatistics),
-                        value: `${beatmap.showStatistics(
+                        name: BeatmapManager.showStatistics(
+                            beatmap,
+                            6,
+                            customStatistics
+                        ),
+                        value: `${BeatmapManager.showStatistics(
+                            beatmap,
                             7,
                             customStatistics
                         )}\n${bold(
