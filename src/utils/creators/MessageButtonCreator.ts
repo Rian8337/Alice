@@ -262,25 +262,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 c.stop();
             },
             async (c) => {
-                // Remove the original button
-                const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
-                    options.components
-                )).findIndex((v) => {
-                    if (v.components.length !== 1) {
-                        return;
-                    }
-
-                    return (
-                        (<APIButtonComponentWithCustomId>v.components[0].data)
-                            .custom_id ===
-                        (<APIButtonComponentWithCustomId>button.data).custom_id
-                    );
-                });
-
-                if (index !== -1) {
-                    options.components!.splice(index, 1);
-                }
-
                 const pressed: ButtonInteraction | undefined =
                     c.collector.collected.first();
 
@@ -304,6 +285,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                                 .setCustomId(`analyze-miss-${i + 1}`)
                                 .setStyle(ButtonStyle.Primary)
                                 .setLabel((i + 1).toString())
+                                // Disable the first button as the first miss will be loaded initially.
+                                .setDisabled(i === 0)
                         );
                     }
 
@@ -311,16 +294,22 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         content: MessageCreator.createWarn(
                             "This feature is still beta. Expect wrong verdicts."
                         ),
+                        files: [
+                            new AttachmentBuilder(
+                                missInformations[0].draw().toBuffer(),
+                                { name: "miss-1.png" }
+                            ),
+                        ],
                     };
 
                     this.createLimitedTimeButtons(
-                        interaction,
+                        pressed,
                         options,
                         buttons,
                         [interaction.user.id],
                         90,
                         async (_, i) => {
-                            await i.deferReply();
+                            await i.deferUpdate();
 
                             const pressedIndex: number = parseInt(
                                 i.customId.replace("analyze-miss-", "")
@@ -333,13 +322,19 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                                     { name: `miss-${pressedIndex}.png` }
                                 );
 
-                            for (const button of buttons) {
-                                button.setDisabled(false);
+                            for (let i = 0; i < buttons.length; ++i) {
+                                buttons[i]
+                                    .setDisabled(i === pressedIndex - 1)
+                                    .setStyle(
+                                        missInformations[i].isGenerated
+                                            ? ButtonStyle.Secondary
+                                            : ButtonStyle.Primary
+                                    );
                             }
 
-                            buttons[pressedIndex - 1].setDisabled(true);
-
                             options.files = [attachment];
+
+                            await i.editReply(options);
                         },
                         async (c) => {
                             const index: number = (<
@@ -379,6 +374,42 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             }
                         }
                     );
+
+                    // Remove the original button
+                    const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
+                        options.components
+                    )).findIndex((v) => {
+                        if (v.components.length !== 1) {
+                            return;
+                        }
+
+                        return (
+                            (<APIButtonComponentWithCustomId>(
+                                v.components[0].data
+                            )).custom_id ===
+                            (<APIButtonComponentWithCustomId>button.data)
+                                .custom_id
+                        );
+                    });
+
+                    if (index !== -1) {
+                        options.components!.splice(index, 1);
+                    }
+
+                    if (!c.componentIsDeleted) {
+                        try {
+                            interaction.isMessageComponent()
+                                ? await InteractionHelper.update(
+                                      interaction,
+                                      options
+                                  )
+                                : await InteractionHelper.reply(
+                                      interaction,
+                                      options
+                                  );
+                            // eslint-disable-next-line no-empty
+                        } catch {}
+                    }
                 }
             }
         );
