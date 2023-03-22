@@ -1,8 +1,10 @@
 import * as d3 from "d3";
 import {
     AttachmentBuilder,
+    bold,
     ColorResolvable,
     GuildEmoji,
+    hyperlink,
     Message,
     Snowflake,
 } from "discord.js";
@@ -481,36 +483,53 @@ export abstract class BeatmapManager extends Manager {
             case 1: {
                 let string: string = `${
                     beatmapInfo.source
-                        ? `**Source**: ${beatmapInfo.source}\n`
+                        ? `${bold("Source")}: ${beatmapInfo.source}\n`
                         : ""
-                }**Download**: [osu!](https://osu.ppy.sh/d/${
-                    beatmapInfo.beatmapsetID
-                })${
+                }${bold("Download")}: ${hyperlink(
+                    "osu!",
+                    `https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}`
+                )}${
                     beatmapInfo.videoAvailable
-                        ? ` [(no video)](https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}n)`
+                        ? ` ${hyperlink(
+                              "(no video)",
+                              `https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}n`
+                          )}`
                         : ""
-                } - [Chimu](https://chimu.moe/en/d/${
-                    beatmapInfo.beatmapsetID
-                }) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${
-                    beatmapInfo.beatmapsetID
-                })${
+                } - ${hyperlink(
+                    "Chimu",
+                    `https://chimu.moe/en/d/${beatmapInfo.beatmapsetID}`
+                )} - ${hyperlink(
+                    "Sayobot",
+                    `https://txy1.sayobot.cn/beatmaps/download/full/${beatmapInfo.beatmapsetID}`
+                )}${
                     beatmapInfo.videoAvailable
-                        ? ` [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${beatmapInfo.beatmapsetID})`
+                        ? ` ${hyperlink(
+                              "(no video)",
+                              `https://txy1.sayobot.cn/beatmaps/download/novideo/${beatmapInfo.beatmapsetID}`
+                          )}`
                         : ""
-                } - [Beatconnect](https://beatconnect.io/b/${
-                    beatmapInfo.beatmapsetID
-                }/) - [Nerina](https://nerina.pw/d/${
-                    beatmapInfo.beatmapsetID
-                })${
+                } - ${hyperlink(
+                    "Beatconnect",
+                    `https://beatconnect.io/b/${beatmapInfo.beatmapsetID}/`
+                )} - ${hyperlink(
+                    "Nerina",
+                    `https://nerina.pw/d/${beatmapInfo.beatmapsetID}`
+                )}${
                     beatmapInfo.approved >= RankedStatus.ranked &&
                     beatmapInfo.approved !== RankedStatus.qualified
-                        ? ` - [Ripple](https://storage.ripple.moe/d/${beatmapInfo.beatmapsetID})`
+                        ? ` - ${hyperlink(
+                              "Ripple",
+                              `https://storage.ripple.moe/d/${beatmapInfo.beatmapsetID}`
+                          )}`
                         : ""
                 }`;
                 if (beatmapInfo.packs.length > 0) {
-                    string += "\n**Beatmap Pack**: ";
+                    string += `\n${bold("Beatmap Pack")}: `;
                     for (let i = 0; i < beatmapInfo.packs.length; i++) {
-                        string += `[${beatmapInfo.packs[i]}](https://osu.ppy.sh/beatmaps/packs/${beatmapInfo.packs[i]})`;
+                        string += hyperlink(
+                            beatmapInfo.packs[i],
+                            `https://osu.ppy.sh/beatmaps/packs/${beatmapInfo.packs[i]}`
+                        );
                         if (i + 1 < beatmapInfo.packs.length) {
                             string += " - ";
                         }
@@ -522,7 +541,11 @@ export abstract class BeatmapManager extends Manager {
                 return string;
             }
             case 2:
-                return `**Circles**: ${beatmapInfo.circles} - **Sliders**: ${beatmapInfo.sliders} - **Spinners**: ${beatmapInfo.spinners}`;
+                return `${bold("Circles")}: ${beatmapInfo.circles} - ${bold(
+                    "Sliders"
+                )}: ${beatmapInfo.sliders} - ${bold("Spinners")}: ${
+                    beatmapInfo.spinners
+                }`;
             case 3: {
                 const droidOriginalStats: MapStats = new MapStats({
                     cs: beatmapInfo.cs,
@@ -574,28 +597,28 @@ export abstract class BeatmapManager extends Manager {
                         new MapStats(mapParams)
                     ) ?? 0;
 
-                return `**CS**: ${droidOriginalStats.cs}${
+                return `${bold("CS")}: ${droidOriginalStats.cs}${
                     Precision.almostEqualsNumber(
                         droidOriginalStats.cs!,
                         droidModifiedStats.cs!
                     )
                         ? ""
                         : ` (${droidModifiedStats.cs})`
-                } - **AR**: ${droidOriginalStats.ar}${
+                } - ${bold("AR")}: ${droidOriginalStats.ar}${
                     Precision.almostEqualsNumber(
                         droidOriginalStats.ar!,
                         droidModifiedStats.ar!
                     )
                         ? ""
                         : ` (${droidModifiedStats.ar})`
-                } - **OD**: ${droidOriginalStats.od}${
+                } - ${bold("OD")}: ${droidOriginalStats.od}${
                     Precision.almostEqualsNumber(
                         droidOriginalStats.od!,
                         droidModifiedStats.od!
                     )
                         ? ""
                         : ` (${droidModifiedStats.od})`
-                } - **HP**: ${droidOriginalStats.hp}${
+                } - ${bold("HP")}: ${droidOriginalStats.hp}${
                     Precision.almostEqualsNumber(
                         droidOriginalStats.hp!,
                         droidModifiedStats.hp!
@@ -604,7 +627,7 @@ export abstract class BeatmapManager extends Manager {
                         : ` (${droidModifiedStats.hp})`
                 }${
                     maxScore > 0
-                        ? `\n**Max Score**: ${maxScore.toLocaleString()}`
+                        ? `\n${bold("Max Score")}: ${maxScore.toLocaleString()}`
                         : ""
                 }`;
             }
@@ -621,28 +644,28 @@ export abstract class BeatmapManager extends Manager {
                 const maxScore: number =
                     beatmapInfo.beatmap?.maxOsuScore(mapStatistics.mods) ?? 0;
 
-                return `**CS**: ${beatmapInfo.cs}${
+                return `${bold("CS")}: ${beatmapInfo.cs}${
                     Precision.almostEqualsNumber(
                         beatmapInfo.cs,
                         mapStatistics.cs!
                     )
                         ? ""
                         : ` (${mapStatistics.cs})`
-                } - **AR**: ${beatmapInfo.ar}${
+                } - ${bold("AR")}: ${beatmapInfo.ar}${
                     Precision.almostEqualsNumber(
                         beatmapInfo.ar,
                         mapStatistics.ar!
                     )
                         ? ""
                         : ` (${mapStatistics.ar})`
-                } - **OD**: ${beatmapInfo.od}${
+                } - ${bold("OD")}: ${beatmapInfo.od}${
                     Precision.almostEqualsNumber(
                         beatmapInfo.od,
                         mapStatistics.od!
                     )
                         ? ""
                         : ` (${mapStatistics.od})`
-                } - **HP**: ${beatmapInfo.hp}${
+                } - ${bold("HP")}: ${beatmapInfo.hp}${
                     Precision.almostEqualsNumber(
                         beatmapInfo.hp,
                         mapStatistics.hp!
@@ -651,7 +674,7 @@ export abstract class BeatmapManager extends Manager {
                         : ` (${mapStatistics.hp})`
                 }${
                     maxScore > 0
-                        ? `\n**Max Score**: ${maxScore.toLocaleString()}`
+                        ? `\n${bold("Max Score")}: ${maxScore.toLocaleString()}`
                         : ""
                 }`;
             }
@@ -664,7 +687,7 @@ export abstract class BeatmapManager extends Manager {
                     beatmapInfo.bpm,
                     mapStatistics
                 );
-                let string = "**BPM**: ";
+                let string = `${bold("BPM")}: `;
                 if (beatmapInfo.beatmap) {
                     const uninheritedTimingPoints: readonly TimingControlPoint[] =
                         beatmapInfo.beatmap.controlPoints.timing.points;
@@ -677,11 +700,11 @@ export abstract class BeatmapManager extends Manager {
                             )
                                 ? ` (${convertedBPM})`
                                 : ""
-                        } - **Length**: ${this.convertTime(
+                        } - ${bold("Length")}: ${this.convertTime(
                             beatmapInfo.hitLength,
                             beatmapInfo.totalLength,
                             mapStatistics
-                        )} - **Max Combo**: ${beatmapInfo.maxCombo}x`;
+                        )} - ${bold("Max Combo")}: ${beatmapInfo.maxCombo}x`;
                     } else {
                         let maxBPM: number = beatmapInfo.bpm;
                         let minBPM: number = beatmapInfo.bpm;
@@ -731,11 +754,11 @@ export abstract class BeatmapManager extends Manager {
                             }
                         }
 
-                        string += `- **Length**: ${this.convertTime(
+                        string += `- ${bold("Length")}: ${this.convertTime(
                             beatmapInfo.hitLength,
                             beatmapInfo.totalLength,
                             mapStatistics
-                        )} - **Max Combo**: ${beatmapInfo.maxCombo}x`;
+                        )} - ${bold("Max Combo")}: ${beatmapInfo.maxCombo}x`;
                     }
                 } else {
                     string += `${beatmapInfo.bpm}${
@@ -745,20 +768,24 @@ export abstract class BeatmapManager extends Manager {
                         )
                             ? ` (${convertedBPM})`
                             : ""
-                    } - **Length**: ${this.convertTime(
+                    } - ${bold("Length")}: ${this.convertTime(
                         beatmapInfo.hitLength,
                         beatmapInfo.totalLength,
                         mapStatistics
-                    )} - **Max Combo**: ${beatmapInfo.maxCombo}x`;
+                    )} - ${bold("Max Combo")}: ${beatmapInfo.maxCombo}x`;
                 }
                 return string;
             }
             case 6:
-                return `**Last Update**: ${beatmapInfo.lastUpdate.toUTCString()} | **${this.convertStatus(
-                    beatmapInfo.approved
-                )}**`;
+                return `${bold(
+                    "Last Update"
+                )}: ${beatmapInfo.lastUpdate.toUTCString()} | ${bold(
+                    this.convertStatus(beatmapInfo.approved)
+                )}`;
             case 7:
-                return `❤️ **${beatmapInfo.favorites.toLocaleString()}** - ▶️ **${beatmapInfo.plays.toLocaleString()}**`;
+                return `❤️ ${bold(
+                    beatmapInfo.favorites.toLocaleString()
+                )} - ▶️ ${bold(beatmapInfo.plays.toLocaleString())}`;
             default:
                 throw {
                     name: "NotSupportedError",
