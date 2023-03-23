@@ -262,6 +262,40 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 c.stop();
             },
             async (c) => {
+                // Remove the original button
+                const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
+                    options.components
+                )).findIndex((v) => {
+                    if (v.components.length !== 1) {
+                        return;
+                    }
+
+                    return (
+                        (<APIButtonComponentWithCustomId>v.components[0].data)
+                            .custom_id ===
+                        (<APIButtonComponentWithCustomId>button.data).custom_id
+                    );
+                });
+
+                if (index !== -1) {
+                    options.components!.splice(index, 1);
+                }
+
+                if (!c.componentIsDeleted) {
+                    try {
+                        interaction.isMessageComponent()
+                            ? await InteractionHelper.update(
+                                  interaction,
+                                  options
+                              )
+                            : await InteractionHelper.reply(
+                                  interaction,
+                                  options
+                              );
+                        // eslint-disable-next-line no-empty
+                    } catch {}
+                }
+
                 const pressed: ButtonInteraction | undefined =
                     c.collector.collected.first();
 
@@ -374,42 +408,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             }
                         }
                     );
-
-                    // Remove the original button
-                    const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
-                        options.components
-                    )).findIndex((v) => {
-                        if (v.components.length !== 1) {
-                            return;
-                        }
-
-                        return (
-                            (<APIButtonComponentWithCustomId>(
-                                v.components[0].data
-                            )).custom_id ===
-                            (<APIButtonComponentWithCustomId>button.data)
-                                .custom_id
-                        );
-                    });
-
-                    if (index !== -1) {
-                        options.components!.splice(index, 1);
-                    }
-
-                    if (!c.componentIsDeleted) {
-                        try {
-                            interaction.isMessageComponent()
-                                ? await InteractionHelper.update(
-                                      interaction,
-                                      options
-                                  )
-                                : await InteractionHelper.reply(
-                                      interaction,
-                                      options
-                                  );
-                            // eslint-disable-next-line no-empty
-                        } catch {}
-                    }
                 }
             }
         );
