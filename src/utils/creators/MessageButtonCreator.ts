@@ -317,7 +317,11 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         buttons.push(
                             new ButtonBuilder()
                                 .setCustomId(`analyze-miss-${i + 1}`)
-                                .setStyle(ButtonStyle.Primary)
+                                .setStyle(
+                                    i === 0
+                                        ? ButtonStyle.Success
+                                        : ButtonStyle.Primary
+                                )
                                 .setLabel((i + 1).toString())
                                 // Disable the first button as the first miss will be loaded initially.
                                 .setDisabled(i === 0)
