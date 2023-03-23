@@ -119,13 +119,13 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         if (beatmapInfo.hasDownloadedBeatmap()) {
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                beatmapInfo.beatmap,
+                beatmapInfo.beatmap!,
                 perfCalcResult
             );
 
             await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                 score,
-                beatmapInfo.beatmap,
+                beatmapInfo.beatmap!,
                 perfCalcResult
             );
         }

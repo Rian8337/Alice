@@ -700,7 +700,7 @@ export abstract class BeatmapDifficultyHelper<
      * @returns The calculation result.
      */
     private async calculateDifficulty(
-        beatmap: MapInfo,
+        beatmap: MapInfo<true>,
         calculationParams: DifficultyCalculationParameters
     ): Promise<DifficultyCalculationResult<DA, DC> | null> {
         await this.initBeatmap(beatmap);
@@ -742,7 +742,7 @@ export abstract class BeatmapDifficultyHelper<
      * @returns The calculation result.
      */
     private async calculateRebalanceDifficulty(
-        beatmap: MapInfo,
+        beatmap: MapInfo<true>,
         calculationParams: DifficultyCalculationParameters
     ): Promise<RebalanceDifficultyCalculationResult<RDA, RDC> | null> {
         await this.initBeatmap(beatmap);

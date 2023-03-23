@@ -404,7 +404,7 @@ export abstract class BeatmapOldDifficultyHelper {
      * @returns The calculation result.
      */
     private static async calculateDifficulty(
-        beatmap: MapInfo,
+        beatmap: MapInfo<true>,
         calculationParams: DifficultyCalculationParameters
     ): Promise<OldDifficultyCalculationResult | null> {
         await this.initBeatmap(beatmap);

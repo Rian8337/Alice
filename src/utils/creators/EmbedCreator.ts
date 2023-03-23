@@ -653,7 +653,9 @@ export abstract class EmbedCreator {
             return embed;
         }
 
-        const beatmap: MapInfo = (await BeatmapManager.getBeatmap(score.hash))!;
+        const beatmap: MapInfo<true> = (await BeatmapManager.getBeatmap(
+            score.hash
+        ))!;
 
         embed
             .setAuthor({

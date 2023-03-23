@@ -704,7 +704,7 @@ export class Challenge extends Manager {
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.score
                                 : scoreOrReplay.data!.score;
-                        bonusComplete = score >= tier.value;
+                        bonusComplete = score >= +tier.value;
                         break;
                     }
                     case "acc": {
@@ -712,7 +712,7 @@ export class Challenge extends Manager {
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy
                                 : scoreOrReplay.data!.accuracy;
-                        bonusComplete = accuracy.value() * 100 >= tier.value;
+                        bonusComplete = accuracy.value() * 100 >= +tier.value;
                         break;
                     }
                     case "miss": {
@@ -720,7 +720,7 @@ export class Challenge extends Manager {
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.nmiss
                                 : scoreOrReplay.data!.accuracy.nmiss;
-                        bonusComplete = miss < tier.value || !miss;
+                        bonusComplete = miss < +tier.value || !miss;
                         break;
                     }
                     case "combo": {
@@ -728,11 +728,11 @@ export class Challenge extends Manager {
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.combo
                                 : scoreOrReplay.data!.maxCombo;
-                        bonusComplete = combo >= tier.value;
+                        bonusComplete = combo >= +tier.value;
                         break;
                     }
                     case "scorev2": {
-                        bonusComplete = scoreV2 >= tier.value;
+                        bonusComplete = scoreV2 >= +tier.value;
                         break;
                     }
                     case "mod": {
@@ -761,18 +761,18 @@ export class Challenge extends Manager {
                     }
                     case "dpp":
                         bonusComplete =
-                            droidCalcResult.result.total >= tier.value;
+                            droidCalcResult.result.total >= +tier.value;
                         break;
                     case "pp":
                         bonusComplete =
-                            osuCalcResult.result.total >= tier.value;
+                            osuCalcResult.result.total >= +tier.value;
                         break;
                     case "m300": {
                         const n300: number =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n300
                                 : scoreOrReplay.data!.accuracy.n300;
-                        bonusComplete = n300 >= tier.value;
+                        bonusComplete = n300 >= +tier.value;
                         break;
                     }
                     case "m100": {
@@ -780,7 +780,7 @@ export class Challenge extends Manager {
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n100
                                 : scoreOrReplay.data!.accuracy.n100;
-                        bonusComplete = n100 <= tier.value;
+                        bonusComplete = n100 <= +tier.value;
                         break;
                     }
                     case "m50": {
@@ -788,13 +788,13 @@ export class Challenge extends Manager {
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n50
                                 : scoreOrReplay.data!.accuracy.n50;
-                        bonusComplete = n50 <= tier.value;
+                        bonusComplete = n50 <= +tier.value;
                         break;
                     }
                     case "ur":
                         bonusComplete =
                             (hitErrorInformation?.unstableRate ??
-                                Number.POSITIVE_INFINITY) <= tier.value;
+                                Number.POSITIVE_INFINITY) <= +tier.value;
                         break;
                 }
 
@@ -830,7 +830,7 @@ export class Challenge extends Manager {
     getPassInformation(language: Language = "en"): string {
         return this.getPassOrBonusDescription(
             this.pass.id,
-            this.pass.value,
+            +this.pass.value,
             language
         );
     }
@@ -1036,28 +1036,28 @@ export class Challenge extends Manager {
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.score
                         : scoreOrReplay.data!.score;
-                return score >= this.pass.value;
+                return score >= +this.pass.value;
             }
             case "acc": {
                 const accuracy: Accuracy =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy
                         : scoreOrReplay.data!.accuracy;
-                return accuracy.value() * 100 >= this.pass.value;
+                return accuracy.value() * 100 >= +this.pass.value;
             }
             case "miss": {
                 const miss: number =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.nmiss
                         : scoreOrReplay.data!.accuracy.nmiss;
-                return miss < this.pass.value || !miss;
+                return miss < +this.pass.value || !miss;
             }
             case "combo": {
                 const combo: number =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.combo
                         : scoreOrReplay.data!.maxCombo;
-                return combo >= this.pass.value;
+                return combo >= +this.pass.value;
             }
             case "scorev2": {
                 const scoreV2: number =
@@ -1066,7 +1066,7 @@ export class Challenge extends Manager {
                         : await this.calculateChallengeScoreV2(
                               scoreOrReplay.data!
                           );
-                return scoreV2 >= this.pass.value;
+                return scoreV2 >= +this.pass.value;
             }
             case "rank": {
                 const rank: string =
@@ -1079,32 +1079,32 @@ export class Challenge extends Manager {
                 );
             }
             case "dpp":
-                return droidCalcResult.result.total >= this.pass.value;
+                return droidCalcResult.result.total >= +this.pass.value;
             case "pp":
-                return osuCalcResult.result.total >= this.pass.value;
+                return osuCalcResult.result.total >= +this.pass.value;
             case "m300": {
                 const n300: number =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n300
                         : scoreOrReplay.data!.accuracy.n300;
-                return n300 >= this.pass.value;
+                return n300 >= +this.pass.value;
             }
             case "m100": {
                 const n100: number =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n100
                         : scoreOrReplay.data!.accuracy.n100;
-                return n100 <= this.pass.value;
+                return n100 <= +this.pass.value;
             }
             case "m50": {
                 const n50: number =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n50
                         : scoreOrReplay.data!.accuracy.n50;
-                return n50 <= this.pass.value;
+                return n50 <= +this.pass.value;
             }
             case "ur":
-                return hitErrorInformation.unstableRate <= this.pass.value;
+                return hitErrorInformation.unstableRate <= +this.pass.value;
         }
     }
 

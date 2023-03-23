@@ -82,7 +82,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     });
                 }
 
-                const maxScore: number = beatmap.beatmap.maxDroidScore(
+                const maxScore: number = beatmap.beatmap!.maxDroidScore(
                     new MapStats({
                         mods: ModUtil.pcStringToMods(challenge.constrain),
                     })

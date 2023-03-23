@@ -242,7 +242,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    score.replay.beatmap ??= beatmap.beatmap;
+    score.replay.beatmap ??= beatmap.beatmap!;
 
     // Simulate replay given the mods input.
     // For the moment, we're not gonna check for cursor position in sliders as the operation will be too expensive.
@@ -375,9 +375,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         maxCombo = Math.max(maxCombo, currentCombo);
     };
 
-    for (let i = 0; i < beatmap.beatmap.hitObjects.objects.length; ++i) {
+    for (let i = 0; i < beatmap.beatmap!.hitObjects.objects.length; ++i) {
         const object: PlaceableHitObject =
-            beatmap.beatmap.hitObjects.objects[i];
+            beatmap.beatmap!.hitObjects.objects[i];
         const objectData: ReplayObjectData = score.replay.data.hitObjectData[i];
         const hitAccuracy: number = Math.abs(objectData.accuracy);
 

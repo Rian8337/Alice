@@ -382,13 +382,13 @@ export class UserBind extends Manager {
 
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                beatmapInfo.beatmap,
+                beatmapInfo.beatmap!,
                 perfCalcResult
             );
 
             await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                 score,
-                beatmapInfo.beatmap,
+                beatmapInfo.beatmap!,
                 perfCalcResult
             );
 
@@ -509,13 +509,13 @@ export class UserBind extends Manager {
 
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                beatmapInfo.beatmap,
+                beatmapInfo.beatmap!,
                 perfCalcResult
             );
 
             await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                 score,
-                beatmapInfo.beatmap,
+                beatmapInfo.beatmap!,
                 perfCalcResult
             );
 
@@ -528,13 +528,13 @@ export class UserBind extends Manager {
 
             await DroidBeatmapDifficultyHelper.applyTapPenalty(
                 score,
-                beatmapInfo.beatmap,
+                beatmapInfo.beatmap!,
                 rebalPerfCalcResult
             );
 
             await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                 score,
-                beatmapInfo.beatmap,
+                beatmapInfo.beatmap!,
                 rebalPerfCalcResult
             );
 
@@ -548,7 +548,7 @@ export class UserBind extends Manager {
 
             if (score.replay) {
                 // score.replay.beatmap ??= rebalDiffCalculator;
-                score.replay.beatmap ??= beatmapInfo.beatmap;
+                score.replay.beatmap ??= beatmapInfo.beatmap!;
             }
 
             const hitError: HitErrorInformation | undefined | null =
@@ -780,13 +780,13 @@ export class UserBind extends Manager {
 
                                 await DroidBeatmapDifficultyHelper.applyTapPenalty(
                                     score,
-                                    beatmapInfo.beatmap,
+                                    beatmapInfo.beatmap!,
                                     perfCalcResult
                                 );
 
                                 await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                                     score,
-                                    beatmapInfo.beatmap,
+                                    beatmapInfo.beatmap!,
                                     perfCalcResult
                                 );
 

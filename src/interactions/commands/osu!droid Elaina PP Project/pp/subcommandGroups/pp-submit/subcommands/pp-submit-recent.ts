@@ -207,13 +207,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
                     await DroidBeatmapDifficultyHelper.applyTapPenalty(
                         score,
-                        beatmapInfo.beatmap,
+                        beatmapInfo.beatmap!,
                         perfCalcResult
                     );
 
                     await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
                         score,
-                        beatmapInfo.beatmap,
+                        beatmapInfo.beatmap!,
                         perfCalcResult
                     );
 
