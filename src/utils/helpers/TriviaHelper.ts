@@ -186,6 +186,8 @@ export abstract class TriviaHelper {
             embeds: [embed],
         };
 
+        const triviaMultipleChoicePrefix: string = "triviaMultipleChoice";
+
         if (isMultipleChoice) {
             for (let i = 0; i < allAnswers.length; ++i) {
                 const button: ButtonBuilder = new ButtonBuilder()
@@ -194,7 +196,7 @@ export abstract class TriviaHelper {
                     .setLabel(String.fromCharCode(65 + i));
 
                 CacheManager.exemptedButtonCustomIds.add(
-                    String.fromCharCode(65 + i)
+                    triviaMultipleChoicePrefix + String.fromCharCode(65 + i)
                 );
                 component.addComponents(button);
             }
@@ -247,7 +249,7 @@ export abstract class TriviaHelper {
                     i.reply({
                         content: MessageCreator.createAccept(
                             localization.getTranslation("latestChoiceRecorded"),
-                            i.customId
+                            i.customId.replace(triviaMultipleChoicePrefix, "")
                         ),
                         ephemeral: true,
                     });
@@ -270,7 +272,13 @@ export abstract class TriviaHelper {
                             )!,
                         ],
                         results: answers
-                            .filter((v) => v.customId === correctAnswers[0])
+                            .filter(
+                                (v) =>
+                                    v.customId.replace(
+                                        triviaMultipleChoicePrefix,
+                                        ""
+                                    ) === correctAnswers[0]
+                            )
                             .map((v) => {
                                 return {
                                     user: v.user,
