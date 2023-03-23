@@ -362,6 +362,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                                     .setStyle(
                                         missInformations[i].isGenerated
                                             ? ButtonStyle.Secondary
+                                            : i === pressedIndex - 1
+                                            ? ButtonStyle.Success
                                             : ButtonStyle.Primary
                                     );
                             }
