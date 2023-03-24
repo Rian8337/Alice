@@ -377,41 +377,19 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             await i.editReply(options);
                         },
                         async (c) => {
-                            const index: number = (<
-                                ActionRowBuilder<ButtonBuilder>[]
-                            >options.components).findIndex((v) => {
-                                return (
-                                    v.components.length === buttons.length &&
-                                    v.components.every(
-                                        (c, i) =>
-                                            (<APIButtonComponentWithCustomId>(
-                                                c.data
-                                            )).custom_id ===
-                                            (<APIButtonComponentWithCustomId>(
-                                                buttons[i].data
-                                            )).custom_id
-                                    )
+                            if (c.componentIsDeleted) {
+                                return;
+                            }
+
+                            options.components = [];
+
+                            try {
+                                await InteractionHelper.update(
+                                    pressed,
+                                    options
                                 );
-                            });
-
-                            if (index !== -1) {
-                                options.components!.splice(index, 1);
-                            }
-
-                            if (!c.componentIsDeleted) {
-                                try {
-                                    interaction.isMessageComponent()
-                                        ? await InteractionHelper.update(
-                                              interaction,
-                                              options
-                                          )
-                                        : await InteractionHelper.reply(
-                                              interaction,
-                                              options
-                                          );
-                                    // eslint-disable-next-line no-empty
-                                } catch {}
-                            }
+                                // eslint-disable-next-line no-empty
+                            } catch {}
                         }
                     );
                 }
