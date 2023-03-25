@@ -10,7 +10,7 @@ import { CollectorState } from "./CollectorState";
  *
  * This function should remove or deactivate buttons present in the component.
  */
-export interface OnCollectorEndButtonRemover {
+export interface OnButtonCollectorEnd {
     /**
      * @param collectorState The collector's state.
      * @param options The options that were used to send the initial message.

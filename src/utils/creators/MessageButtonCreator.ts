@@ -26,7 +26,7 @@ import { MissAnalyzer } from "@alice-utils/missanalyzer/MissAnalyzer";
 import { ReplayData } from "@rian8337/osu-droid-replay-analyzer";
 import { MissInformation } from "@alice-utils/missanalyzer/MissInformation";
 import { OnButtonPressed } from "@alice-structures/utils/OnButtonPressed";
-import { OnCollectorEndButtonRemover } from "@alice-structures/utils/OnCollectorEndButtonRemover";
+import { OnButtonCollectorEnd } from "@alice-structures/utils/OnButtonCollectorEnd";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Beatmap } from "@rian8337/osu-base";
 
@@ -401,7 +401,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * Creates a button collector that lasts for the specified duration.
      *
      * After the duration ends, it is recommended to remove or disable necessary components
-     * via {@link onCollectorEndButtonRemover}.
+     * via {@link onButtonCollectorEnd}.
      *
      * @param interaction The interaction that triggered the button collector.
      * @param options Options for the message.
@@ -409,7 +409,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param users The users who can interact with the buttons.
      * @param duration The duration the collector will remain active, in seconds.
      * @param onButtonPressedListener The function that will be run when a button is pressed.
-     * @param onCollectorEndButtonRemover The function that will be run when the collector ends.
+     * @param onButtonCollectorEnd The function that will be run when the collector ends.
      * This function should remove or disable necessary components.
      * @returns The message resulted from the interaction's reply.
      */
@@ -420,7 +420,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         users: Snowflake[],
         duration: number,
         onButtonPressedListener: OnButtonPressed,
-        onCollectorEndButtonRemover: OnCollectorEndButtonRemover
+        onButtonCollectorEnd: OnButtonCollectorEnd
     ): Promise<Message> {
         const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
@@ -494,7 +494,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             onButtonPressedListener(collector, i, options)
         );
         collector.once("end", () =>
-            onCollectorEndButtonRemover(collectorOptions, options)
+            onButtonCollectorEnd(collectorOptions, options)
         );
 
         return message;
