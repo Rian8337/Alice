@@ -1,5 +1,9 @@
 import { Translation } from "@alice-localization/base/Translation";
-import { chatInputApplicationCommandMention, hyperlink } from "discord.js";
+import {
+    bold,
+    chatInputApplicationCommandMention,
+    hyperlink,
+} from "discord.js";
 import { OnboardingBindAccountStrings } from "../OnboardingBindAccountLocalization";
 
 /**
@@ -18,8 +22,9 @@ export class OnboardingBindAccountENTranslation extends Translation<OnboardingBi
             "here",
             "https://osudroid.moe/user/?action=register"
         )}.`,
-        bindingProcedure:
-            "To bind your osu!droid account, press the button below. You will be prompted to enter the email and username of your osu!droid account to verify your ownership of the account.",
+        bindingProcedure: `To bind your osu!droid account, press the button below. You will be prompted to enter the email and username of your osu!droid account to verify your ownership of the account. ${bold(
+            "Do not worry, your information is not stored!"
+        )}`,
         furtherBindQuote: `You may also use the ${chatInputApplicationCommandMention(
             "userbind",
             "uid",
