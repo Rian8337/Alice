@@ -115,13 +115,8 @@ export const run: EventUtil["run"] = async (
 
     // Command cooldown
     if (!botOwnerExecution) {
-        const channelCooldownKey: ChannelCooldownKey = <ChannelCooldownKey>(
-            `${interaction.user.id}:${interaction.channelId}:${interaction.commandName}`
-        );
-
-        const globalCooldownKey: GlobalCooldownKey = <GlobalCooldownKey>(
-            `${interaction.user.id}:${interaction.commandName}`
-        );
+        const channelCooldownKey: ChannelCooldownKey = `${interaction.user.id}:${interaction.channelId}:${interaction.commandName}`;
+        const globalCooldownKey: GlobalCooldownKey = `${interaction.user.id}:${interaction.commandName}`;
 
         if (
             CommandHelper.isCooldownActive(channelCooldownKey) ||
