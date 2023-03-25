@@ -20,7 +20,7 @@ export class OnboardingBindAccountENTranslation extends Translation<OnboardingBi
         )}.`,
         bindingProcedure:
             "To bind your osu!droid account, press the button below. You will be prompted to enter the email and username of your osu!droid account to verify your ownership of the account.",
-        furtherBindQuote: `Should you want to bind an osu!droid account in the future, feel free to use the ${chatInputApplicationCommandMention(
+        furtherBindQuote: `You may also use the ${chatInputApplicationCommandMention(
             "userbind",
             "uid",
             "881019231863468083"
@@ -28,6 +28,6 @@ export class OnboardingBindAccountENTranslation extends Translation<OnboardingBi
             "userbind",
             "username",
             "881019231863468083"
-        )} command.`,
+        )} commands to access this feature. The first command identifies your osu!droid account by its uid, while the second command identifies your osu!droid account by its username.`,
     };
 }
