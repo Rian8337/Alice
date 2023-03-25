@@ -3,7 +3,6 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { InitialOnboardingLocalization } from "@alice-localization/interactions/buttons/Onboarding/initialOnboarding/InitialOnboardingLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
@@ -21,14 +20,6 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
         new InitialOnboardingLocalization(
             await CommandHelper.getLocale(interaction)
         );
-
-    if (!interaction.message.mentions.has(interaction.user)) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("onboardingFeatureNotForUser")
-            ),
-        });
-    }
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
         author: interaction.user,

@@ -6,8 +6,6 @@ import { InitialOnboardingStrings } from "../InitialOnboardingLocalization";
  */
 export class InitialOnboardingENTranslation extends Translation<InitialOnboardingStrings> {
     override readonly translations: InitialOnboardingStrings = {
-        onboardingFeatureNotForUser:
-            "I'm sorry, this introduction button is not for you!",
         welcomeToServer: "Welcome to the server!",
         accidentalDismissPrompt:
             "If this message was accidentally dismissed, feel free to restart the process from your welcome message.",

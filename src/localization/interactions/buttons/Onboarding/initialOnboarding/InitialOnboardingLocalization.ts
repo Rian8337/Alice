@@ -3,7 +3,6 @@ import { Translations } from "@alice-localization/base/Translations";
 import { InitialOnboardingENTranslation } from "./translations/InitialOnboardingENTranslation";
 
 export interface InitialOnboardingStrings {
-    readonly onboardingFeatureNotForUser: string;
     readonly welcomeToServer: string;
     readonly accidentalDismissPrompt: string;
     readonly botIntroduction: string;
