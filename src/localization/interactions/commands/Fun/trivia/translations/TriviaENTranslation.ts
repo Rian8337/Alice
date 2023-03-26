@@ -22,7 +22,8 @@ export class TriviaENTranslation extends Translation<TriviaStrings> {
         beatmapTitle: "Title",
         beatmapSource: "Source",
         guessBeatmap: "Guess the beatmap!",
-        answerQuestion: "Guess Beatmap",
+        answerArtist: "Guess Artist",
+        answerTitle: "Guess Title",
         answerModalTitle: "Beatmap Trivia Answer Submission",
         answerModalArtistLabel: "Beatmap Artist",
         answerModalArtistPlaceholder:

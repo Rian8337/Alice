@@ -173,6 +173,18 @@ function createEmbed(
     return embed;
 }
 
+function getMatchingCharacterCount(str1: string, str2: string): number {
+    let count: number = 0;
+
+    for (let i = 0; i < Math.min(str1.length, str2.length); ++i) {
+        if (str1.charAt(i).toLowerCase() === str2.charAt(i).toLowerCase()) {
+            ++count;
+        }
+    }
+
+    return count;
+}
+
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: TriviaLocalization = new TriviaLocalization(
         await CommandHelper.getLocale(interaction)
@@ -277,14 +289,24 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             titleBlankAmount
         );
 
-        const button: ButtonBuilder = new ButtonBuilder()
-            .setCustomId("answerMapTrivia")
-            .setStyle(ButtonStyle.Primary)
-            .setLabel(localization.getTranslation("answerQuestion"))
-            .setEmoji(Symbols.memo);
+        const buttons: ButtonBuilder[] = [
+            new ButtonBuilder()
+                .setCustomId("answerMapTriviaArtist")
+                .setStyle(ButtonStyle.Primary)
+                .setLabel(localization.getTranslation("answerArtist"))
+                .setEmoji(Symbols.memo),
+            new ButtonBuilder()
+                .setCustomId("answerMapTriviaTitle")
+                .setStyle(ButtonStyle.Primary)
+                .setLabel(localization.getTranslation("answerTitle"))
+                .setEmoji(Symbols.memo),
+        ];
+
+        CacheManager.exemptedButtonCustomIds.add("answerMapTriviaArtist");
+        CacheManager.exemptedButtonCustomIds.add("answerMapTriviaTitle");
 
         const component: ActionRowBuilder<ButtonBuilder> =
-            new ActionRowBuilder<ButtonBuilder>().addComponents(button);
+            new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
 
         const message: Message = await interaction.channel!.send({
             content: MessageCreator.createWarn(
@@ -397,8 +419,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             message,
             45,
             (i) =>
-                (<APIButtonComponentWithCustomId>button.data).custom_id ===
-                i.customId,
+                buttons.some(
+                    (b) =>
+                        (<APIButtonComponentWithCustomId>b.data).custom_id ===
+                        i.customId
+                ),
             (m) => {
                 const row: ActionRow<MessageActionRowComponent> | undefined =
                     m.components.find((c) => c.components.length === 1);
@@ -407,15 +432,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     return false;
                 }
 
-                return (
-                    row.components[0].customId ===
-                    (<APIButtonComponentWithCustomId>button.data).custom_id
+                return buttons.some(
+                    (b) =>
+                        row.components[0].customId ===
+                        (<APIButtonComponentWithCustomId>b.data).custom_id
                 );
             }
         );
 
         await new Promise<void>((resolve) => {
             collector.on("collect", async (i) => {
+                i.ephemeral = true;
+
                 const playerLocalization: TriviaLocalization =
                     new TriviaLocalization(await CommandHelper.getLocale(i));
 
@@ -424,53 +452,56 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
                 const textInputBuilders: TextInputBuilder[] = [];
 
-                if (
-                    answer?.answer.artist.toLowerCase() !==
-                    beatmapInfo.artist.toLowerCase()
-                ) {
-                    textInputBuilders.push(
-                        new TextInputBuilder()
-                            .setCustomId("artist")
-                            .setRequired(true)
-                            .setStyle(TextInputStyle.Short)
-                            .setLabel(
-                                playerLocalization.getTranslation(
-                                    "answerModalArtistLabel"
-                                )
-                            )
-                            .setPlaceholder(
-                                playerLocalization.getTranslation(
-                                    "answerModalArtistPlaceholder"
-                                )
-                            )
-                    );
-                }
-
-                if (
-                    answer?.answer.title.toLowerCase() !==
-                    beatmapInfo.title.toLowerCase()
-                ) {
-                    textInputBuilders.push(
-                        new TextInputBuilder()
-                            .setCustomId("title")
-                            .setRequired(true)
-                            .setStyle(TextInputStyle.Short)
-                            .setLabel(
-                                playerLocalization.getTranslation(
-                                    "answerModalTitleLabel"
-                                )
-                            )
-                            .setPlaceholder(
-                                playerLocalization.getTranslation(
-                                    "answerModalTitlePlaceholder"
-                                )
-                            )
-                    );
+                switch (i.customId) {
+                    case "answerMapTriviaArtist":
+                        if (
+                            answer?.answer.artist.toLowerCase() !==
+                            beatmapInfo.artist.toLowerCase()
+                        ) {
+                            textInputBuilders.push(
+                                new TextInputBuilder()
+                                    .setCustomId("artist")
+                                    .setRequired(true)
+                                    .setStyle(TextInputStyle.Short)
+                                    .setLabel(
+                                        playerLocalization.getTranslation(
+                                            "answerModalArtistLabel"
+                                        )
+                                    )
+                                    .setPlaceholder(
+                                        playerLocalization.getTranslation(
+                                            "answerModalArtistPlaceholder"
+                                        )
+                                    )
+                            );
+                        }
+                        break;
+                    case "answerMapTriviaTitle":
+                        if (
+                            answer?.answer.title.toLowerCase() !==
+                            beatmapInfo.title.toLowerCase()
+                        ) {
+                            textInputBuilders.push(
+                                new TextInputBuilder()
+                                    .setCustomId("title")
+                                    .setRequired(true)
+                                    .setStyle(TextInputStyle.Short)
+                                    .setLabel(
+                                        playerLocalization.getTranslation(
+                                            "answerModalTitleLabel"
+                                        )
+                                    )
+                                    .setPlaceholder(
+                                        playerLocalization.getTranslation(
+                                            "answerModalTitlePlaceholder"
+                                        )
+                                    )
+                            );
+                        }
+                        break;
                 }
 
                 if (textInputBuilders.length === 0) {
-                    i.ephemeral = true;
-
                     await InteractionHelper.reply(i, {
                         content: MessageCreator.createReject(
                             playerLocalization.getTranslation(
@@ -526,69 +557,82 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         BeatmapManager.getStatusColor(beatmapInfo.approved)
                     );
 
-                const correctAnswers: TriviaMapCachedAnswer[] = [];
+                const correctAnswers: Collection<
+                    Snowflake,
+                    TriviaMapCachedAnswer
+                > = new Collection();
 
                 for (const [, answer] of answerCollection) {
+                    const playerStats: MapTriviaPlayer = statistics.get(
+                        answer.user.id
+                    ) ?? {
+                        id: answer.user.id,
+                        score: 0,
+                    };
+
+                    answer.artistMatchingCharacterCount =
+                        getMatchingCharacterCount(
+                            answer.answer.artist,
+                            beatmapInfo.artist
+                        );
+
+                    playerStats.score +=
+                        level / 10 +
+                        MathUtils.round(
+                            (answer.artistMatchingCharacterCount /
+                                beatmapInfo.artist.length) *
+                                Math.max(
+                                    0,
+                                    1 -
+                                        (answer.artistAnswerSubmissionTime -
+                                            message.createdTimestamp) /
+                                            1000 /
+                                            45
+                                ),
+                            2
+                        );
+
+                    answer.titleMatchingCharacterCount =
+                        getMatchingCharacterCount(
+                            answer.answer.title,
+                            beatmapInfo.title
+                        );
+
+                    playerStats.score +=
+                        level / 10 +
+                        MathUtils.round(
+                            (answer.titleMatchingCharacterCount /
+                                beatmapInfo.title.length) *
+                                Math.max(
+                                    0,
+                                    1 -
+                                        (answer.titleAnswerSubmissionTime -
+                                            message.createdTimestamp) /
+                                            1000 /
+                                            45
+                                ),
+                            2
+                        );
+
+                    statistics.set(answer.user.id, playerStats);
+
                     if (
-                        answer.answer.artist.toLowerCase() ===
-                            beatmapInfo.artist.toLowerCase() ||
-                        answer.answer.title.toLowerCase() ===
-                            beatmapInfo.title.toLowerCase()
+                        answer.artistMatchingCharacterCount > 0 ||
+                        answer.titleMatchingCharacterCount > 0
                     ) {
-                        const playerStats: MapTriviaPlayer = statistics.get(
-                            answer.user.id
-                        ) ?? {
-                            id: answer.user.id,
-                            score: 0,
-                        };
-
-                        if (
-                            answer.answer.artist.toLowerCase() ===
-                            beatmapInfo.artist.toLowerCase()
-                        ) {
-                            playerStats.score +=
-                                level / 10 +
-                                MathUtils.round(
-                                    Math.max(
-                                        0,
-                                        1 -
-                                            (answer.artistAnswerSubmissionTime -
-                                                message.createdTimestamp) /
-                                                1000 /
-                                                45
-                                    ),
-                                    2
-                                );
-                        }
-
-                        if (
-                            answer.answer.title.toLowerCase() ===
-                            beatmapInfo.title.toLowerCase()
-                        ) {
-                            playerStats.score +=
-                                level / 10 +
-                                MathUtils.round(
-                                    Math.max(
-                                        0,
-                                        1 -
-                                            (answer.artistAnswerSubmissionTime -
-                                                message.createdTimestamp) /
-                                                1000 /
-                                                45
-                                    ),
-                                    2
-                                );
-                        }
-
-                        statistics.set(answer.user.id, playerStats);
-
-                        correctAnswers.push(answer);
+                        correctAnswers.set(answer.user.id, answer);
                     }
                 }
 
-                if (correctAnswers.length > 0) {
+                if (correctAnswers.size > 0) {
+                    if (answersEmbed.data.fields?.length) {
+                        answersEmbed.spliceFields(
+                            0,
+                            answersEmbed.data.fields.length
+                        );
+                    }
+
                     answersEmbed
-                        .spliceFields(0, answersEmbed.data.fields!.length)
                         .setDescription(
                             localization.getTranslation("correctAnswerGotten")
                         )
@@ -601,13 +645,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                     correctAnswers
                                         .filter(
                                             (v) =>
-                                                v.answer.artist ===
-                                                beatmapInfo.artist
+                                                v.artistMatchingCharacterCount >
+                                                0
                                         )
                                         .sort(
                                             (a, b) =>
-                                                a.artistAnswerSubmissionTime -
-                                                b.artistAnswerSubmissionTime
+                                                b.artistMatchingCharacterCount -
+                                                a.artistMatchingCharacterCount
                                         )
                                         .map(
                                             (v) =>
@@ -618,7 +662,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                                         message.createdTimestamp) /
                                                         1000,
                                                     3
-                                                )} s`
+                                                )} s (${
+                                                    v.artistMatchingCharacterCount
+                                                }/${beatmapInfo.artist.length})`
                                         )
                                         .join("\n") ||
                                     localization.getTranslation("none"),
@@ -631,13 +677,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                     correctAnswers
                                         .filter(
                                             (v) =>
-                                                v.answer.title ===
-                                                beatmapInfo.title
+                                                v.titleMatchingCharacterCount >
+                                                0
                                         )
                                         .sort(
                                             (a, b) =>
-                                                a.titleAnswerSubmissionTime -
-                                                b.titleAnswerSubmissionTime
+                                                b.titleMatchingCharacterCount -
+                                                a.titleMatchingCharacterCount
                                         )
                                         .map(
                                             (v) =>
@@ -648,7 +694,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                                         message.createdTimestamp) /
                                                         1000,
                                                     3
-                                                )} s`
+                                                )} s (${
+                                                    v.titleMatchingCharacterCount
+                                                }/${beatmapInfo.title.length})`
                                         )
                                         .join("\n") ||
                                     localization.getTranslation("none"),

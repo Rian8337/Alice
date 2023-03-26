@@ -16,7 +16,8 @@ export interface TriviaStrings {
     readonly beatmapTitle: string;
     readonly beatmapSource: string;
     readonly guessBeatmap: string;
-    readonly answerQuestion: string;
+    readonly answerArtist: string;
+    readonly answerTitle: string;
     readonly answerModalTitle: string;
     readonly answerModalArtistLabel: string;
     readonly answerModalArtistPlaceholder: string;

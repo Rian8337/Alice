@@ -28,4 +28,14 @@ export interface TriviaMapCachedAnswer extends TriviaCachedAnswer {
      * The UNIX time at which the title answer was submitted, in milliseconds.
      */
     titleAnswerSubmissionTime: number;
+
+    /**
+     * The amount of characters that match with the beatmap's artist.
+     */
+    artistMatchingCharacterCount: number;
+
+    /**
+     * The amount of characters that match with the beatmap's title.
+     */
+    titleMatchingCharacterCount: number;
 }

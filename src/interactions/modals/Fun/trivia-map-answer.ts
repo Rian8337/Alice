@@ -35,6 +35,8 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         },
         artistAnswerSubmissionTime: 0,
         titleAnswerSubmissionTime: 0,
+        artistMatchingCharacterCount: 0,
+        titleMatchingCharacterCount: 0,
     };
 
     try {
