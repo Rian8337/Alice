@@ -38,6 +38,7 @@ import { UserLocale } from "@alice-database/utils/aliceDb/UserLocale";
 import { CommandHelperLocalization } from "@alice-localization/utils/helpers/CommandHelper/CommandHelperLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "./InteractionHelper";
+import { Locale } from "discord.js";
 
 /**
  * Helpers for commands.
@@ -131,10 +132,10 @@ export abstract class CommandHelper extends Manager {
         ) {
             if (input instanceof BaseInteraction) {
                 switch (input.locale) {
-                    case "ko":
+                    case Locale.Korean:
                         language = "kr";
                         break;
-                    case "es-ES":
+                    case Locale.SpanishES:
                         language = "es";
                         break;
                 }
