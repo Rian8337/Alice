@@ -54,7 +54,11 @@ export const run: SlashSubcommand<false>["run"] = async (
     }
 
     const backgroundList: Collection<string, ProfileBackground> =
-        await DatabaseManager.aliceDb.collections.profileBackgrounds.get("id");
+        await DatabaseManager.aliceDb.collections.profileBackgrounds.get(
+            "id",
+            {},
+            { projection: { _id: 0 } }
+        );
 
     const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
 
@@ -110,7 +114,7 @@ export const run: SlashSubcommand<false>["run"] = async (
 
     if (!isBackgroundOwned) {
         if ((playerInfo?.alicecoins ?? 0) < 500) {
-            return InteractionHelper.update(interaction, {
+            return InteractionHelper.update(selectMenuInteraction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation(
                         "coinsToBuyBackgroundNotEnough"
@@ -128,7 +132,7 @@ export const run: SlashSubcommand<false>["run"] = async (
 
     pictureConfig.activeBackground = background;
 
-    await InteractionHelper.deferReply(interaction);
+    await InteractionHelper.deferUpdate(selectMenuInteraction);
 
     const image: Buffer | null = await ProfileManager.getProfileStatistics(
         bindInfo.uid,
@@ -140,7 +144,7 @@ export const run: SlashSubcommand<false>["run"] = async (
     );
 
     if (!image) {
-        return InteractionHelper.update(interaction, {
+        return InteractionHelper.update(selectMenuInteraction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("selfProfileNotFound")
             ),
@@ -148,7 +152,7 @@ export const run: SlashSubcommand<false>["run"] = async (
     }
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
-        interaction,
+        selectMenuInteraction,
         {
             content: MessageCreator.createWarn(
                 isBackgroundOwned
@@ -184,18 +188,21 @@ export const run: SlashSubcommand<false>["run"] = async (
         { discordid: interaction.user.id },
         {
             $set: {
-                "picture_config.activeBackground": background,
+                "picture_config.activeBackground": {
+                    id: background.id,
+                    name: background.name,
+                },
             },
             $push: {
                 "picture_config.backgrounds": !isBackgroundOwned
-                    ? background
+                    ? { id: background.id, name: background.name }
                     : undefined,
             },
             $inc: { alicecoins: isBackgroundOwned ? 0 : -500 },
         }
     );
 
-    InteractionHelper.update(interaction, {
+    InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("switchBackgroundSuccess") +
                 (isBackgroundOwned
@@ -206,10 +213,8 @@ export const run: SlashSubcommand<false>["run"] = async (
                           playerInfo!.alicecoins.toLocaleString(BCP47)
                       )}`),
             interaction.user.toString(),
-            bgId
+            background.name
         ),
-        embeds: [],
-        files: [],
     });
 };
 
