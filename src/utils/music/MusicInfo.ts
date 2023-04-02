@@ -11,13 +11,7 @@ import {
     VoiceConnectionDisconnectReason,
     VoiceConnectionStatus,
 } from "@discordjs/voice";
-import {
-    DMChannel,
-    GuildTextBasedChannel,
-    PartialDMChannel,
-    Snowflake,
-    TextBasedChannel,
-} from "discord.js";
+import { GuildTextBasedChannel, Snowflake } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
@@ -48,10 +42,7 @@ export class MusicInfo {
     /**
      * The channel this music information is binded to.
      */
-    readonly executionChannel: Exclude<
-        TextBasedChannel,
-        DMChannel | PartialDMChannel
-    >;
+    readonly executionChannel: GuildTextBasedChannel;
 
     /**
      * The timeout for the bot to leave the voice channel after channel inactivity.
