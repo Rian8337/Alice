@@ -102,6 +102,8 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const playerInfoDbManager: PlayerInfoCollectionManager =
         DatabaseManager.aliceDb.collections.playerInfo;
 
+    await InteractionHelper.deferUpdate(interaction);
+
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
         interaction.user,
         {
