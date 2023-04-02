@@ -94,13 +94,12 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     }
 
     const badgeID: string = selectMenuInteraction.values[0];
-
     const badge: PartialProfileBackground = ownedBadges.find(
         (v) => v.id === badgeID
     )!;
 
     selectMenuInteraction = await SelectMenuCreator.createStringSelectMenu(
-        interaction,
+        selectMenuInteraction,
         {
             content: MessageCreator.createWarn(
                 "Choose the slot number where you want to put the badge on."
@@ -147,7 +146,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         query
     );
 
-    InteractionHelper.update(interaction, {
+    InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("equipBadgeSuccess"),
             interaction.user.toString(),
