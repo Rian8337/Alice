@@ -117,13 +117,12 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         query
     );
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("unequipBadgeSuccess"),
             interaction.user.toString(),
             (badgeIndex + 1).toString()
         ),
-        embeds: [],
     });
 };
 
