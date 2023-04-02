@@ -58,7 +58,11 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     }
 
     const badgeList: Collection<string, ProfileBadge> =
-        await DatabaseManager.aliceDb.collections.profileBadges.get("id");
+        await DatabaseManager.aliceDb.collections.profileBadges.get(
+            "id",
+            {},
+            { projection: { _id: 0 } }
+        );
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createStringSelectMenu(
@@ -83,7 +87,6 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     }
 
     const badgeID: string = selectMenuInteraction.values[0];
-
     const badge: ProfileBadge = badgeList.find((v) => v.id === badgeID)!;
 
     const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
