@@ -56,6 +56,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             embed.addFields({
                 name: `${i + 1}. ${bg.name}`,
                 value: `${localization.getTranslation("owned")}: ${
+                    bg.id === "default" ||
                     ownedBackgrounds.find((v) => v.id === bg.id)
                         ? Symbols.checkmark
                         : Symbols.cross
