@@ -217,13 +217,7 @@ export abstract class TimeoutManager extends PunishmentManager {
                 userTimeoutEmbed
             );
         } catch {
-            interaction.channel!.send({
-                content: MessageCreator.createWarn(
-                    `A user has been timeouted, but their DMs are locked. The user will be timeouted for \`${DateTimeFormatHelper.secondsToDHMS(
-                        duration
-                    )}\`.`
-                ),
-            });
+            // Ignore member notify failing.
         }
 
         await logChannel.send({ embeds: [timeoutEmbed] });
@@ -363,14 +357,20 @@ export abstract class TimeoutManager extends PunishmentManager {
 
         await logChannel.send({ embeds: [untimeoutEmbed] });
 
-        await this.notifyMember(
-            member,
-            StringHelper.formatString(
-                userLocalization.getTranslation("untimeoutUserNotification"),
-                reason
-            ),
-            userUntimeoutEmbed
-        );
+        try {
+            await this.notifyMember(
+                member,
+                StringHelper.formatString(
+                    userLocalization.getTranslation(
+                        "untimeoutUserNotification"
+                    ),
+                    reason
+                ),
+                userUntimeoutEmbed
+            );
+        } catch {
+            // Ignore member notify failing.
+        }
 
         await member.timeout(null, reason);
 
