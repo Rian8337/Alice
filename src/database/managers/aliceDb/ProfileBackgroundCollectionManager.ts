@@ -15,7 +15,7 @@ export class ProfileBackgroundCollectionManager extends DatabaseCollectionManage
 
     override get defaultDocument(): DatabaseProfileBackground {
         return {
-            id: "bg",
+            id: "default",
             name: "Default",
         };
     }

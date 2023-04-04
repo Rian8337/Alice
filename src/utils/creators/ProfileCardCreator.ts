@@ -129,7 +129,7 @@ export class ProfileCardCreator {
         this.context.save();
 
         const backgroundImageID: string =
-            this.playerInfo?.picture_config.activeBackground.id ?? "bg";
+            this.playerInfo?.picture_config.activeBackground.id ?? "default";
         const bg: Image = await loadImage(
             `${process.cwd()}/files/images/backgrounds/${backgroundImageID}.png`
         );

@@ -27,7 +27,7 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
                 badges: [],
                 activeBadges: [],
                 activeBackground: {
-                    id: "bg",
+                    id: "default",
                     name: "Default",
                 },
                 backgrounds: [],
