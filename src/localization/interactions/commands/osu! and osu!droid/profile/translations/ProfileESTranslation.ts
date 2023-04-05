@@ -66,7 +66,7 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
         chooseClaimBadge: "Elige la medalla que quisieras reclamar.",
         claimBadge: "Reclamar medalla para el perfil",
         enterBeatmap:
-            "Ingresa el link o ID del mapa que sea de al menos %s★ en PC y tengas un FC.",
+            "Ingresa el link o ID del mapa que sea de al menos %s%s en PC y tengas un FC.",
         enterBeatmapRestriction:
             "El mapa debe ser un mapa calificado o aprobado.",
         chooseEquipBadge: "Elige la medalla que quisieras equipar.",

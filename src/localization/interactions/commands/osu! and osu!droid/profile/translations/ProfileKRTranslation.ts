@@ -60,7 +60,7 @@ export class ProfileKRTranslation extends Translation<ProfileStrings> {
         chooseClaimBadge: "얻으려는 뱃지를 선택해 주세요.",
         claimBadge: "프로필 뱃지 획득하기",
         enterBeatmap:
-            "PC 레이팅이 %s★ 이상이며 당신이 풀콤보를 달성한 비트맵의 ID나 링크를 입력해 주세요.",
+            "PC 레이팅이 %s%s 이상이며 당신이 풀콤보를 달성한 비트맵의 ID나 링크를 입력해 주세요.",
         enterBeatmapRestriction: "비트맵은 ranked 또는 approved 상태여야 해요.",
         chooseEquipBadge: "장착하려는 뱃지를 선택하세요.",
         chooseBadgeSlot: "뱃지를 놓을 슬롯 번호를 선택하세요.",
