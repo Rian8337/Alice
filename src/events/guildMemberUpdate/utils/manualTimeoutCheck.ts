@@ -220,7 +220,7 @@ export const run: EventUtil["run"] = async (
             .setTimestamp(new Date())
             .setDescription(
                 `${bold(localization.getTranslation("userId"))}:\n` +
-                    (auditLog.reason ??
+                    (auditLog.target?.id ??
                         localization.getTranslation("notSpecified"))
             );
 
