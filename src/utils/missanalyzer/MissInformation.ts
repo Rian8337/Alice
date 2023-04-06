@@ -437,7 +437,7 @@ export class MissInformation {
             context.stroke();
 
             // Only draw path direction if the path is long enough.
-            if (object.path.expectedDistance > 150) {
+            if (object.path.expectedDistance > 250) {
                 context.strokeStyle = "#606060";
                 context.globalAlpha = 0.5;
                 context.lineWidth = radius * 0.15;
