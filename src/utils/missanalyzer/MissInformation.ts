@@ -422,10 +422,14 @@ export class MissInformation {
             context.globalAlpha = 0.8;
             context.beginPath();
 
-            for (const path of object.path.calculatedPath.slice(1)) {
-                const drawPosition: Vector2 = startPosition.add(
-                    this.flipVectorVertically(path)
-                );
+            for (const path of object.path.calculatedPath) {
+                const drawPosition: Vector2 = this.flipVectorVertically(
+                    object.position
+                )
+                    .add(
+                        new Vector2(path.x, this.drawFlipped ? -path.y : path.y)
+                    )
+                    .add(stackOffset);
 
                 context.lineTo(drawPosition.x, drawPosition.y);
             }
