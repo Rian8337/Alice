@@ -427,6 +427,8 @@ export class MissInformation {
                     object.position
                 )
                     .add(
+                        // Because path is an offset of the start position, we are not using
+                        // flipVectorVertically here.
                         new Vector2(path.x, this.drawFlipped ? -path.y : path.y)
                     )
                     .add(stackOffset);
