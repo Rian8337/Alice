@@ -214,10 +214,9 @@ export class MissAnalyzer {
                     this.getCursorOccurrenceClosestToObject(
                         object,
                         j,
-                        i > 0
-                            ? this.data.hitObjectData[i - 1].result ===
-                                  HitResult.miss
-                            : false
+                        i > 0 &&
+                            this.data.hitObjectData[i - 1].result ===
+                                HitResult.miss
                     );
 
                 if (cursorOccurrenceInfo === null) {
