@@ -309,15 +309,13 @@ export class MissAnalyzer {
 
             const { allOccurrences } = group;
 
-            // Don't include the cursor up occurrence.
-            if (group.up) {
-                allOccurrences.pop();
-            }
-
             for (let i = 0; i < allOccurrences.length; ++i) {
                 const occurrence: CursorOccurrence = allOccurrences[i];
 
-                if (occurrence.time > maxAllowableTapTime) {
+                if (
+                    occurrence.time > maxAllowableTapTime ||
+                    occurrence.id === MovementType.up
+                ) {
                     break;
                 }
 
@@ -335,7 +333,7 @@ export class MissAnalyzer {
 
                 const nextOccurrence: CursorOccurrence = allOccurrences[i + 1];
 
-                if (nextOccurrence?.id === MovementType.move) {
+                if (nextOccurrence) {
                     // Check if other cursor instances have a tap occurrence within both occurrences' boundary.
                     for (let j = 0; j < this.data.cursorMovement.length; ++j) {
                         // Do not check the current cursor instance in loop.
@@ -362,18 +360,21 @@ export class MissAnalyzer {
                                 (cursorDownTime - occurrence.time) /
                                 (nextOccurrence.time - occurrence.time);
 
-                            const cursorPosition: Vector2 = new Vector2(
-                                Interpolation.lerp(
-                                    occurrence.position.x,
-                                    nextOccurrence.position.x,
-                                    t
-                                ),
-                                Interpolation.lerp(
-                                    occurrence.position.y,
-                                    nextOccurrence.position.y,
-                                    t
-                                )
-                            );
+                            const cursorPosition: Vector2 =
+                                nextOccurrence.id === MovementType.move
+                                    ? new Vector2(
+                                          Interpolation.lerp(
+                                              occurrence.position.x,
+                                              nextOccurrence.position.x,
+                                              t
+                                          ),
+                                          Interpolation.lerp(
+                                              occurrence.position.y,
+                                              nextOccurrence.position.y,
+                                              t
+                                          )
+                                      )
+                                    : occurrence.position;
 
                             const distanceToObject: number = object
                                 .getStackedPosition(Modes.droid)
