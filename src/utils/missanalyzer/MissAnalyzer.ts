@@ -1,6 +1,7 @@
 import {
     Beatmap,
     BeatmapMetadata,
+    CircleSizeCalculator,
     DroidHitWindow,
     Interpolation,
     MapStats,
@@ -71,18 +72,14 @@ export class MissAnalyzer {
             cs: beatmap.difficulty.cs,
             mods: data.convertedMods,
         }).calculate({ mode: Modes.droid }).cs!;
-        this.trueObjectScale = (1 - (0.7 * (circleSize - 5)) / 5) / 2;
+        this.trueObjectScale =
+            CircleSizeCalculator.standardCSToStandardScale(circleSize);
 
         const stats: MapStats = new MapStats({
             ar: beatmap.difficulty.ar,
             od: beatmap.difficulty.od,
-            mods: data.convertedMods.filter(
-                (m) =>
-                    m.isApplicableToDroid() &&
-                    !ModUtil.speedChangingMods.some(
-                        (v) => v.acronym === m.acronym
-                    ) &&
-                    !(m instanceof ModPrecise)
+            mods: ModUtil.removeSpeedChangingMods(data.convertedMods).filter(
+                (m) => !(m instanceof ModPrecise)
             ),
         }).calculate();
 
