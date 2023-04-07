@@ -152,7 +152,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embeds: [EmbedCreator.createNormalEmbed()],
         };
         const embed: EmbedBuilder = <EmbedBuilder>embedOptions.embeds![0];
-        embed.data.fields!.pop();
 
         const topScore: DanCourseLeaderboardScore = scoreCache.get(1)![0];
 
