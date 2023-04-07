@@ -16,7 +16,7 @@ export const run: EventUtil["run"] = async () => {
         }
 
         consola.success("Done");
-    }, 60 * 10 * 1000);
+    }, 60 * 30 * 1000);
 };
 
 export const config: EventUtil["config"] = {
