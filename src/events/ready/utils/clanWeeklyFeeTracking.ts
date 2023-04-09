@@ -14,6 +14,8 @@ import { Language } from "@alice-localization/base/Language";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: EventUtil["run"] = async (client) => {
+    return;
+
     const interval: NodeJS.Timeout = setInterval(async () => {
         if (
             Config.maintenance ||
