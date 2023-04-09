@@ -186,7 +186,7 @@ export abstract class TriviaHelper {
             embeds: [embed],
         };
 
-        const triviaMultipleChoicePrefix: string = "triviaMultipleChoice";
+        const triviaMultipleChoicePrefix: string = "triviaMultipleChoiceOption";
 
         if (isMultipleChoice) {
             for (let i = 0; i < allAnswers.length; ++i) {

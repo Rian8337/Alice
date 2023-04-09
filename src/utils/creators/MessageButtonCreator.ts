@@ -242,13 +242,14 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         beatmap: Beatmap,
         replayData: ReplayData
     ): Promise<Message> {
+        const buttonId: string = "analyzeMissesFromRecent";
         const button: ButtonBuilder = new ButtonBuilder()
-            .setCustomId("analyze-miss")
+            .setCustomId(buttonId)
             .setLabel("Analyze First 10 Misses (Beta)")
             .setStyle(ButtonStyle.Primary)
             .setEmoji(Symbols.magnifyingGlassTiltedRight);
 
-        CacheManager.exemptedButtonCustomIds.add("analyze-miss");
+        CacheManager.exemptedButtonCustomIds.add(buttonId);
 
         return this.createLimitedTimeButtons(
             interaction,
@@ -310,13 +311,13 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     const buttons: ButtonBuilder[] = [];
 
                     for (let i = 0; i < missInformations.length; ++i) {
-                        const id: string = `analyze-miss-${i + 1}`;
+                        const id: string = buttonId + (i + 1);
 
                         CacheManager.exemptedButtonCustomIds.add(id);
 
                         buttons.push(
                             new ButtonBuilder()
-                                .setCustomId(`analyze-miss-${i + 1}`)
+                                .setCustomId(id)
                                 .setStyle(
                                     i === 0
                                         ? ButtonStyle.Success
@@ -350,7 +351,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             await i.deferUpdate();
 
                             const pressedIndex: number = parseInt(
-                                i.customId.replace("analyze-miss-", "")
+                                i.customId.replace(buttonId, "")
                             );
                             const attachment: AttachmentBuilder =
                                 new AttachmentBuilder(
@@ -544,24 +545,24 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 await i.deferUpdate();
 
                 switch (i.customId) {
-                    case "backward":
+                    case "pagingBackward":
                         currentPage = Math.max(1, currentPage - 10);
                         break;
-                    case "back":
+                    case "pagingBack":
                         if (currentPage === 1) {
                             currentPage = maxPage;
                         } else {
                             --currentPage;
                         }
                         break;
-                    case "next":
+                    case "pagingNext":
                         if (currentPage === maxPage) {
                             currentPage = 1;
                         } else {
                             ++currentPage;
                         }
                         break;
-                    case "forward":
+                    case "pagingForward":
                         currentPage = Math.min(currentPage + 10, maxPage);
                         break;
                     default:
@@ -608,7 +609,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 }
 
                 await onPageChange(options, currentPage, ...onPageChangeArgs);
-
                 await i.editReply(options);
             },
             async (c) => {
@@ -653,7 +653,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     /**
      * Creates buttons used in paging.
      *
-     * ID order: `[backward, back, none, next, forward]`
+     * ID order: `[pagingBackward, pagingBack, pagingNone, pagingNext, pagingForward]`
      *
      * @param currentPage The current page to be used for button label.
      * @param maxPage The maximum page possible to be used for button label.
@@ -662,20 +662,20 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         currentPage: number,
         maxPage: number
     ): ButtonBuilder[] {
-        CacheManager.exemptedButtonCustomIds.add("backward");
-        CacheManager.exemptedButtonCustomIds.add("back");
-        CacheManager.exemptedButtonCustomIds.add("none");
-        CacheManager.exemptedButtonCustomIds.add("next");
-        CacheManager.exemptedButtonCustomIds.add("forward");
+        CacheManager.exemptedButtonCustomIds.add("pagingBackward");
+        CacheManager.exemptedButtonCustomIds.add("pagingBack");
+        CacheManager.exemptedButtonCustomIds.add("pagingNone");
+        CacheManager.exemptedButtonCustomIds.add("pagingNext");
+        CacheManager.exemptedButtonCustomIds.add("pagingForward");
 
         return [
             new ButtonBuilder()
-                .setCustomId("backward")
+                .setCustomId("pagingBackward")
                 .setEmoji(Symbols.skipBackward)
                 .setStyle(ButtonStyle.Primary)
                 .setDisabled(currentPage === 1 || maxPage <= 5),
             new ButtonBuilder()
-                .setCustomId("back")
+                .setCustomId("pagingBack")
                 .setEmoji(Symbols.leftArrow)
                 .setStyle(ButtonStyle.Success)
                 .setDisabled(
@@ -684,7 +684,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             currentPage === 1)
                 ),
             new ButtonBuilder()
-                .setCustomId("none")
+                .setCustomId("pagingNone")
                 .setLabel(
                     Number.isFinite(maxPage)
                         ? `${currentPage}/${maxPage}`
@@ -693,12 +693,12 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 .setStyle(ButtonStyle.Secondary)
                 .setDisabled(true),
             new ButtonBuilder()
-                .setCustomId("next")
+                .setCustomId("pagingNext")
                 .setEmoji(Symbols.rightArrow)
                 .setStyle(ButtonStyle.Success)
                 .setDisabled(maxPage === 1),
             new ButtonBuilder()
-                .setCustomId("forward")
+                .setCustomId("pagingForward")
                 .setEmoji(Symbols.skipForward)
                 .setStyle(ButtonStyle.Primary)
                 .setDisabled(currentPage === maxPage || maxPage <= 5),
@@ -708,20 +708,20 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     /**
      * Creates buttons used in confirmation.
      *
-     * ID order: `[yes, no]`
+     * ID order: `[confirmationYes, confirmationNo]`
      */
     private static createConfirmationButtons(): ButtonBuilder[] {
-        CacheManager.exemptedButtonCustomIds.add("yes");
-        CacheManager.exemptedButtonCustomIds.add("no");
+        CacheManager.exemptedButtonCustomIds.add("confirmationYes");
+        CacheManager.exemptedButtonCustomIds.add("confirmationNo");
 
         return [
             new ButtonBuilder()
-                .setCustomId("yes")
+                .setCustomId("confirmationYes")
                 .setEmoji(Symbols.checkmark)
                 .setLabel("Yes")
                 .setStyle(ButtonStyle.Success),
             new ButtonBuilder()
-                .setCustomId("no")
+                .setCustomId("confirmationNo")
                 .setEmoji(Symbols.cross)
                 .setLabel("No")
                 .setStyle(ButtonStyle.Danger),
