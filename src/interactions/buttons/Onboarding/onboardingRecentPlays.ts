@@ -46,12 +46,12 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 
     row.addComponents(
         new ButtonBuilder()
-            .setCustomId("showMostRecentPlay")
+            .setCustomId("onboardingShowMostRecentPlay")
             .setEmoji(Symbols.inboxTray)
             .setStyle(ButtonStyle.Primary)
             .setLabel(localization.getTranslation("showMostRecentPlay")),
         new ButtonBuilder()
-            .setCustomId("showRecentPlays")
+            .setCustomId("onboardingShowRecentPlays")
             .setEmoji(Symbols.memo)
             .setStyle(ButtonStyle.Primary)
             .setLabel(localization.getTranslation("showRecentPlays"))
