@@ -31,6 +31,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 localization.getTranslation("playerProfileConstraint") +
                 "\n\n" +
                 quote(localization.getTranslation("accountRegistrationQuote")) +
+                "\n\n" +
                 localization.getTranslation("profileCommandExplanation") +
                 "\n\n" +
                 quote(
