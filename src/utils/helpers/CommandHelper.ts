@@ -155,10 +155,9 @@ export abstract class CommandHelper extends Manager {
         let channelId: Snowflake;
 
         if (input instanceof BaseInteraction) {
-            channelId =
-                input.channel instanceof ThreadChannel
-                    ? input.channel.parentId!
-                    : input.channelId!;
+            channelId = input.channel?.isThread()
+                ? input.channel.parentId!
+                : input.channelId!;
         } else if (input instanceof ThreadChannel) {
             channelId = input.parentId!;
         } else if (input instanceof BaseGuildTextChannel) {
