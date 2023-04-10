@@ -143,7 +143,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         c.collector.collected.first();
 
                     if (pressed) {
-                        if (pressed.customId === "yes") {
+                        if (pressed.customId === "confirmationYes") {
                             interaction.isMessageComponent()
                                 ? await InteractionHelper.update(interaction, {
                                       content:
