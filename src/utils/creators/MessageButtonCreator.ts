@@ -221,7 +221,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         }
                     }
 
-                    resolve(pressed?.customId === "yes");
+                    resolve(pressed?.customId === "confirmationYes");
                 }
             )
         );
