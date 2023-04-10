@@ -138,6 +138,9 @@ export abstract class CommandHelper extends Manager {
                     case Locale.SpanishES:
                         language = "es";
                         break;
+                    case Locale.Indonesian:
+                        language = "id";
+                        break;
                 }
             }
 
