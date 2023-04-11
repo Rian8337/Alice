@@ -1,9 +1,12 @@
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import {
     BeatmapMetadata,
+    DroidHitWindow,
     Interpolation,
     Modes,
     PlaceableHitObject,
     Playfield,
+    RGBColor,
     Slider,
     SliderRepeat,
     SliderTick,
@@ -16,6 +19,7 @@ import {
     CursorOccurrenceGroup,
     HitResult,
     MovementType,
+    ReplayObjectData,
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Canvas, CanvasRenderingContext2D } from "canvas";
 
@@ -84,9 +88,9 @@ export class MissInformation {
     readonly previousObjects: PlaceableHitObject[];
 
     /**
-     * The hit results of past objects.
+     * The replay data of past objects.
      */
-    readonly previousHitResults: HitResult[];
+    readonly previousObjectData: ReplayObjectData[];
 
     /**
      * The AR of the beatmap, in milliseconds.
@@ -99,6 +103,16 @@ export class MissInformation {
     readonly cursorGroups: CursorOccurrenceGroup[][];
 
     /**
+     * The hit window of the object.
+     */
+    readonly hitWindow: DroidHitWindow;
+
+    /**
+     * Whether the Precise mod was used.
+     */
+    readonly isPrecise: boolean;
+
+    /**
      * Whether the canvas for this miss information has been generated.
      */
     get isGenerated(): boolean {
@@ -108,6 +122,16 @@ export class MissInformation {
     private canvas?: Canvas;
     private readonly playfieldScale: number = 1.75;
     private readonly trueObjectScale: number;
+
+    // Colors are taken from osu!lazer: https://github.com/ppy/osu/blob/daae560ff731bdf49970a5bc6588c0861fac760f/osu.Game/Graphics/OsuColour.cs#L105-L131
+    private readonly hitColors: Record<
+        Exclude<HitResult, HitResult.miss>,
+        RGBColor
+    > = {
+        [HitResult.meh]: new RGBColor(255, 204, 34),
+        [HitResult.good]: new RGBColor(179, 217, 68),
+        [HitResult.great]: new RGBColor(102, 204, 255),
+    };
 
     /**
      * @param metadata The metadata of the beatmap.
@@ -119,9 +143,11 @@ export class MissInformation {
      * @param clockRate The rate at which the clock progress in the score.
      * @param drawFlipped Whether to flip objects vertically before drawing them.
      * @param previousObjects The objects prior to the current object.
-     * @param previousHitResults The hit results of past objects.
+     * @param previousObjectData The replay object data of past objects.
      * @param cursorGroups The cursor groups to draw.
      * @param approachRateTime The AR of the beatmap, in milliseconds.
+     * @param hitWindow The hit window of the object.
+     * @param isPrecise Whether the Precise mod was used.
      * @param closestCursorPosition The cursor position at the closest hit to the object.
      * @param closestHit The closest hit to the object.
      */
@@ -136,9 +162,11 @@ export class MissInformation {
         clockRate: number,
         drawFlipped: boolean,
         previousObjects: PlaceableHitObject[],
-        previousHitResults: HitResult[],
+        previousObjectData: ReplayObjectData[],
         cursorGroups: CursorOccurrenceGroup[][],
         approachRateTime: number,
+        hitWindow: DroidHitWindow,
+        isPrecise: boolean,
         verdict?: string,
         closestCursorPosition?: Vector2,
         closestHit?: number
@@ -164,9 +192,11 @@ export class MissInformation {
         this.closestCursorPosition = closestCursorPosition;
         this.closestHit = closestHit;
         this.previousObjects = previousObjects;
-        this.previousHitResults = previousHitResults;
+        this.previousObjectData = previousObjectData;
         this.cursorGroups = cursorGroups;
         this.approachRateTime = approachRateTime;
+        this.hitWindow = hitWindow;
+        this.isPrecise = isPrecise;
 
         if (this.closestHit) {
             this.closestHit /= clockRate;
@@ -187,6 +217,7 @@ export class MissInformation {
         this.writeTexts();
         this.initPlayfield();
         this.drawObjects();
+        this.drawHitErrorBar();
         this.drawCursorGroups();
         this.drawClosestCursorPosition();
 
@@ -316,7 +347,7 @@ export class MissInformation {
 
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
         context.translate(
-            // Center the playfield.
+            // Put (0, 0) in the top-left corner of the playfield.
             (this.canvas.width - scaledPlayfieldX) / 2,
             (this.canvas.height - scaledPlayfieldY) / 2
         );
@@ -342,7 +373,7 @@ export class MissInformation {
 
             this.drawObject(
                 this.previousObjects[i],
-                this.previousHitResults[i],
+                this.previousObjectData[i].result,
                 i + 1
             );
         }
@@ -517,6 +548,129 @@ export class MissInformation {
             startPosition.x,
             startPosition.y
         );
+    }
+
+    /**
+     * Draws the hit error bar to the canvas.
+     */
+    private drawHitErrorBar(): void {
+        if (!this.canvas) {
+            return;
+        }
+
+        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+        const centerCoordinate: Vector2 = new Vector2(
+            Playfield.baseSize.x / 2,
+            Playfield.baseSize.y * 1.1
+        );
+
+        context.globalAlpha = 1;
+        context.lineWidth = Playfield.baseSize.y / 50;
+        context.lineCap = "round";
+
+        const calculateDrawDistance = (ms: number): number => {
+            const maxDrawDistance: number = Playfield.baseSize.x / 1.25;
+            // The highest hit window the player can achieve with mods.
+            const maxMs: number = new DroidHitWindow(0).hitWindowFor50();
+
+            return (ms / maxMs) * maxDrawDistance;
+        };
+
+        const drawBar = (
+            ms: number,
+            hitResult: Exclude<HitResult, HitResult.miss>
+        ): void => {
+            const drawDistance: number = calculateDrawDistance(ms);
+
+            context.strokeStyle = `rgb(${this.hitColors[hitResult]})`;
+            context.beginPath();
+            context.moveTo(
+                centerCoordinate.x - drawDistance,
+                centerCoordinate.y
+            );
+            context.lineTo(
+                centerCoordinate.x + drawDistance,
+                centerCoordinate.y
+            );
+            context.stroke();
+            context.closePath();
+        };
+
+        // Draw from hit 50 -> hit 100 -> hit 300 range.
+        drawBar(this.hitWindow.hitWindowFor50(this.isPrecise), HitResult.meh);
+        drawBar(this.hitWindow.hitWindowFor100(this.isPrecise), HitResult.good);
+        drawBar(
+            this.hitWindow.hitWindowFor300(this.isPrecise),
+            HitResult.great
+        );
+
+        // Draw middle line.
+        context.lineWidth = Playfield.baseSize.x / 100;
+        context.strokeStyle = "#aaaaaa";
+        context.beginPath();
+        context.moveTo(
+            centerCoordinate.x,
+            centerCoordinate.y - Playfield.baseSize.y / 20
+        );
+        context.lineTo(
+            centerCoordinate.x,
+            centerCoordinate.y + Playfield.baseSize.y / 20
+        );
+        context.stroke();
+        context.closePath();
+
+        // Draw hit results.
+        context.lineWidth = Playfield.baseSize.x / 125;
+
+        for (let i = 0; i < this.previousObjectData.length; ++i) {
+            const prevObject: PlaceableHitObject = this.previousObjects[i];
+            const objectData: ReplayObjectData = this.previousObjectData[i];
+
+            if (objectData.result === HitResult.miss) {
+                continue;
+            }
+
+            if (prevObject instanceof Spinner) {
+                continue;
+            }
+
+            // Check for slider head break.
+            if (
+                prevObject instanceof Slider &&
+                objectData.accuracy ===
+                    Math.floor(this.hitWindow.hitWindowFor50(this.isPrecise)) +
+                        13
+            ) {
+                continue;
+            }
+
+            const distanceFromCenter: number = calculateDrawDistance(
+                objectData.accuracy
+            );
+
+            context.globalAlpha = NumberHelper.clamp(
+                1 -
+                    Math.pow(
+                        (this.object.startTime - prevObject.startTime) /
+                            this.approachRateTime,
+                        2
+                    ),
+                0.15,
+                1
+            );
+            context.strokeStyle = `rgb(${this.hitColors[objectData.result]})`;
+            context.beginPath();
+            context.moveTo(
+                centerCoordinate.x + distanceFromCenter,
+                centerCoordinate.y - Playfield.baseSize.y / 30
+            );
+            context.lineTo(
+                centerCoordinate.x + distanceFromCenter,
+                centerCoordinate.y + Playfield.baseSize.y / 30
+            );
+            context.stroke();
+            context.closePath();
+        }
     }
 
     /**

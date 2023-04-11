@@ -55,9 +55,19 @@ export class MissAnalyzer {
     private readonly approachRateTime: number;
 
     /**
+     * The hit window of the replay.
+     */
+    private readonly hitWindow: DroidHitWindow;
+
+    /**
      * The hit window 50 of the replay.
      */
     private readonly hitWindow50: number;
+
+    /**
+     * Whether the Precise mod was used.
+     */
+    private readonly isPrecise: boolean;
 
     /**
      * @param difficultyCalculator The difficulty calculator result of the replay.
@@ -78,14 +88,14 @@ export class MissAnalyzer {
         const stats: MapStats = new MapStats({
             ar: beatmap.difficulty.ar,
             od: beatmap.difficulty.od,
-            mods: ModUtil.removeSpeedChangingMods(data.convertedMods).filter(
-                (m) => !(m instanceof ModPrecise)
-            ),
-        }).calculate();
+            mods: ModUtil.removeSpeedChangingMods(data.convertedMods),
+        }).calculate({ mode: Modes.droid, convertDroidOD: false });
 
-        this.hitWindow50 = new DroidHitWindow(stats.od!).hitWindowFor50(
-            data.convertedMods.some((m) => m instanceof ModPrecise)
+        this.isPrecise = data.convertedMods.some(
+            (m) => m instanceof ModPrecise
         );
+        this.hitWindow = new DroidHitWindow(stats.od!);
+        this.hitWindow50 = this.hitWindow.hitWindowFor50(this.isPrecise);
         this.approachRateTime = MapStats.arToMS(stats.ar!);
     }
 
@@ -119,7 +129,7 @@ export class MissAnalyzer {
         ): MissInformation => {
             const object: PlaceableHitObject = this.objects[objectIndex];
             const previousObjects: PlaceableHitObject[] = [];
-            const previousHitResults: HitResult[] = [];
+            const previousObjectData: ReplayObjectData[] = [];
 
             for (let i = objectIndex - 1; i >= 0; --i) {
                 const o: PlaceableHitObject = this.objects[i];
@@ -130,7 +140,7 @@ export class MissAnalyzer {
                 }
 
                 previousObjects.push(o);
-                previousHitResults.push(this.data.hitObjectData[i].result);
+                previousObjectData.push(this.data.hitObjectData[i]);
             }
 
             const cursorGroups: CursorOccurrenceGroup[][] = [];
@@ -167,9 +177,11 @@ export class MissAnalyzer {
                 stats.speedMultiplier,
                 flipObjects,
                 previousObjects.reverse(),
-                previousHitResults.reverse(),
+                previousObjectData.reverse(),
                 cursorGroups,
                 this.approachRateTime,
+                this.hitWindow,
+                this.isPrecise,
                 verdict,
                 cursorPosition,
                 closestHit
