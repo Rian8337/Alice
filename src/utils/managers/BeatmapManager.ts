@@ -541,7 +541,7 @@ export abstract class BeatmapManager extends Manager {
                 }
                 string += `\n🖼️ ${
                     beatmapInfo.storyboardAvailable ? "✅" : "❎"
-                } **|** 🎞️ ${beatmapInfo.videoAvailable ? "✅" : "❎"}`;
+                } ${bold("|")} 🎞️ ${beatmapInfo.videoAvailable ? "✅" : "❎"}`;
                 return string;
             }
             case 2:
