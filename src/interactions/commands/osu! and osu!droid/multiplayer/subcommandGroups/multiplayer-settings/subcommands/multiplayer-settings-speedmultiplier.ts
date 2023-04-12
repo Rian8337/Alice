@@ -8,8 +8,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { MathUtils, Precision } from "@rian8337/osu-base";
+import { Precision } from "@rian8337/osu-base";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -55,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const value: number = MathUtils.round(
+    const value: number = NumberHelper.round(
         interaction.options.getNumber("value") ?? 1,
         2
     );

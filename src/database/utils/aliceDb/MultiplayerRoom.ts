@@ -30,7 +30,6 @@ import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import {
-    MathUtils,
     Accuracy,
     ModUtil,
     MapStats,
@@ -60,6 +59,7 @@ import {
 } from "discord.js";
 import { ObjectId } from "mongodb";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 /**
  * Represents a multiplayer room.
@@ -762,7 +762,7 @@ export class MultiplayerRoom
                 return this.applyCustomModMultiplier(score.score, mods);
             }
             case MultiplayerWinCondition.accuracy:
-                return MathUtils.round(
+                return NumberHelper.round(
                     new Accuracy({
                         n300: score.perfect,
                         n100: score.good,
@@ -807,7 +807,7 @@ export class MultiplayerRoom
             case MultiplayerWinCondition.leastMisses:
                 return score.miss;
             case MultiplayerWinCondition.leastUnstableRate:
-                return MathUtils.round(score.unstableRate, 2);
+                return NumberHelper.round(score.unstableRate, 2);
             case MultiplayerWinCondition.mostDroidPp: {
                 const { mods, forcedAR, speedMultiplier } =
                     this.convertModString(score.modstring);
@@ -844,7 +844,7 @@ export class MultiplayerRoom
                         )
                     );
 
-                return MathUtils.round(performance?.result.total ?? 0, 2);
+                return NumberHelper.round(performance?.result.total ?? 0, 2);
             }
             case MultiplayerWinCondition.mostPcPp: {
                 const { mods, forcedAR, speedMultiplier } =
@@ -897,7 +897,7 @@ export class MultiplayerRoom
                         )
                     );
 
-                return MathUtils.round(performance.result.total, 2);
+                return NumberHelper.round(performance.result.total, 2);
             }
         }
     }
@@ -962,7 +962,7 @@ export class MultiplayerRoom
                 false,
                 StringHelper.formatString(
                     localization.getTranslation("submissionTooLate"),
-                    MathUtils.round(
+                    NumberHelper.round(
                         submissionTimeDifference / 1000 - 30,
                         1
                     ).toLocaleString(BCP47)
@@ -976,7 +976,7 @@ export class MultiplayerRoom
                 false,
                 StringHelper.formatString(
                     localization.getTranslation("submissionTooEarly"),
-                    MathUtils.round(
+                    NumberHelper.round(
                         Math.abs(submissionTimeDifference / 1000 + 10),
                         1
                     ).toLocaleString(BCP47)

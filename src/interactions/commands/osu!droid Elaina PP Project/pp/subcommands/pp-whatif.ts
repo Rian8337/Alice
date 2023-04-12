@@ -11,9 +11,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { MathUtils } from "@rian8337/osu-base";
 import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -99,7 +99,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("whatIfScoreNotEntered"),
-                MathUtils.round(ppValue, 2).toLocaleString(BCP47),
+                NumberHelper.round(ppValue, 2).toLocaleString(BCP47),
                 bindInfo.username
             ),
         });
@@ -126,15 +126,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("whatIfScoreEntered"),
-            MathUtils.round(ppValue, 2).toLocaleString(BCP47),
-            MathUtils.round(
+            NumberHelper.round(ppValue, 2).toLocaleString(BCP47),
+            NumberHelper.round(
                 ppValue * Math.pow(0.95, playIndex),
                 2
             ).toLocaleString(BCP47),
             bindInfo.username,
             (playIndex + 1).toLocaleString(BCP47),
-            MathUtils.round(totalPP, 2).toLocaleString(BCP47),
-            MathUtils.round(totalPP - bindInfo.pptotal, 2).toLocaleString(BCP47)
+            NumberHelper.round(totalPP, 2).toLocaleString(BCP47),
+            NumberHelper.round(totalPP - bindInfo.pptotal, 2).toLocaleString(
+                BCP47
+            )
         ),
     });
 };

@@ -11,7 +11,6 @@ import {
 import {
     MapInfo,
     MapStats,
-    MathUtils,
     Modes,
     OsuAPIRequestBuilder,
     OsuAPIResponse,
@@ -563,36 +562,36 @@ export abstract class BeatmapManager extends Manager {
                     mapParams
                 ).calculate({ mode: Modes.droid });
 
-                droidOriginalStats.cs = MathUtils.round(
+                droidOriginalStats.cs = NumberHelper.round(
                     droidOriginalStats.cs!,
                     2
                 );
-                droidOriginalStats.ar = MathUtils.round(
+                droidOriginalStats.ar = NumberHelper.round(
                     droidOriginalStats.ar!,
                     2
                 );
-                droidOriginalStats.od = MathUtils.round(
+                droidOriginalStats.od = NumberHelper.round(
                     droidOriginalStats.od!,
                     2
                 );
-                droidOriginalStats.hp = MathUtils.round(
+                droidOriginalStats.hp = NumberHelper.round(
                     droidOriginalStats.hp!,
                     2
                 );
 
-                droidModifiedStats.cs = MathUtils.round(
+                droidModifiedStats.cs = NumberHelper.round(
                     droidModifiedStats.cs!,
                     2
                 );
-                droidModifiedStats.ar = MathUtils.round(
+                droidModifiedStats.ar = NumberHelper.round(
                     droidModifiedStats.ar!,
                     2
                 );
-                droidModifiedStats.od = MathUtils.round(
+                droidModifiedStats.od = NumberHelper.round(
                     droidModifiedStats.od!,
                     2
                 );
-                droidModifiedStats.hp = MathUtils.round(
+                droidModifiedStats.hp = NumberHelper.round(
                     droidModifiedStats.hp!,
                     2
                 );
@@ -641,10 +640,10 @@ export abstract class BeatmapManager extends Manager {
                     mapParams
                 ).calculate();
 
-                mapStatistics.cs = MathUtils.round(mapStatistics.cs!, 2);
-                mapStatistics.ar = MathUtils.round(mapStatistics.ar!, 2);
-                mapStatistics.od = MathUtils.round(mapStatistics.od!, 2);
-                mapStatistics.hp = MathUtils.round(mapStatistics.hp!, 2);
+                mapStatistics.cs = NumberHelper.round(mapStatistics.cs!, 2);
+                mapStatistics.ar = NumberHelper.round(mapStatistics.ar!, 2);
+                mapStatistics.od = NumberHelper.round(mapStatistics.od!, 2);
+                mapStatistics.hp = NumberHelper.round(mapStatistics.hp!, 2);
 
                 const maxScore: number =
                     beatmapInfo.beatmap?.maxOsuScore(mapStatistics.mods) ?? 0;

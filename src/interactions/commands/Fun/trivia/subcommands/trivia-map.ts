@@ -23,7 +23,6 @@ import {
 } from "discord.js";
 import {
     MapInfo,
-    MathUtils,
     OsuAPIRequestBuilder,
     OsuAPIResponse,
     RequestResponse,
@@ -36,6 +35,7 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     if (fetchAttempt === 5) {
@@ -578,7 +578,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
                     playerStats.score +=
                         level / 10 +
-                        MathUtils.round(
+                        NumberHelper.round(
                             (answer.artistMatchingCharacterCount /
                                 beatmapInfo.artist.length) *
                                 Math.max(
@@ -600,7 +600,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
                     playerStats.score +=
                         level / 10 +
-                        MathUtils.round(
+                        NumberHelper.round(
                             (answer.titleMatchingCharacterCount /
                                 beatmapInfo.title.length) *
                                 Math.max(
@@ -657,7 +657,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                             (v) =>
                                                 `${
                                                     v.user.username
-                                                } - ${MathUtils.round(
+                                                } - ${NumberHelper.round(
                                                     (v.artistAnswerSubmissionTime -
                                                         message.createdTimestamp) /
                                                         1000,
@@ -689,7 +689,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                             (v) =>
                                                 `${
                                                     v.user.username
-                                                } - ${MathUtils.round(
+                                                } - ${NumberHelper.round(
                                                     (v.titleAnswerSubmissionTime -
                                                         message.createdTimestamp) /
                                                         1000,
