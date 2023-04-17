@@ -690,6 +690,9 @@ export class MissInformation {
         const minTime: number = this.object.startTime - this.approachRateTime;
         const maxTime: number = this.object.endTime + 200;
 
+        // Draw direction arrow every 50 pixels the cursor has travelled.
+        const arrowDistanceRate: number = 50;
+
         const defaultColor: string = "#cc00cc";
         const defaultArrowColor: string = "#990099";
         const mehColor: string = "#e69417";
@@ -843,13 +846,15 @@ export class MissInformation {
                             }
                         }
 
-                        if (
-                            // Draw direction arrow every 50 pixels the cursor has travelled.
-                            travelDistance > 50 &&
-                            // Only draw direction arrow if the occurrence isn't near the missed object.
-                            Math.abs(this.object.startTime - occurrence.time) >
-                                50
+                        for (
+                            let distance = arrowDistanceRate;
+                            distance <= travelDistance;
+                            distance += arrowDistanceRate
                         ) {
+                            const displacement: Vector2 =
+                                occurrence.position.subtract(
+                                    prevOccurrence.position
+                                );
                             const drawDisplacement: Vector2 =
                                 drawPosition.subtract(previousDrawPosition);
                             const angle: number = Math.atan2(
@@ -857,8 +862,25 @@ export class MissInformation {
                                 drawDisplacement.x
                             );
 
-                            // Draw the direction arrow half-way.
-                            const t: number = 0.5;
+                            const prevDistanceTravelled: number =
+                                travelDistance - displacement.length;
+
+                            const t: number =
+                                (distance - prevDistanceTravelled) /
+                                (travelDistance - prevDistanceTravelled);
+
+                            const cursorTime: number = Interpolation.lerp(
+                                prevOccurrence.time,
+                                occurrence.time,
+                                t
+                            );
+                            const timeOffset: number =
+                                cursorTime - this.object.startTime;
+                            // Don't draw direction arrow if cursor time is close to object hit time.
+                            if (Math.abs(timeOffset) <= 50) {
+                                continue;
+                            }
+
                             const cursorDrawPosition: Vector2 =
                                 this.flipVectorVertically(
                                     new Vector2(
@@ -875,14 +897,7 @@ export class MissInformation {
                                     )
                                 );
                             const headLength: number = 10;
-                            const cursorTime: number = Interpolation.lerp(
-                                prevOccurrence.time,
-                                occurrence.time,
-                                t
-                            );
 
-                            const timeOffset: number =
-                                cursorTime - this.object.startTime;
                             switch (true) {
                                 case timeOffset <=
                                     this.hitWindow.hitWindowFor300(
@@ -930,6 +945,8 @@ export class MissInformation {
                             context.stroke();
                             context.closePath();
                         }
+
+                        travelDistance %= arrowDistanceRate;
                     }
                 }
             }
