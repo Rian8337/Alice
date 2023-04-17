@@ -245,7 +245,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         const buttonId: string = "analyzeMissesFromRecent";
         const button: ButtonBuilder = new ButtonBuilder()
             .setCustomId(buttonId)
-            .setLabel("Analyze First 10 Misses (Beta)")
+            .setLabel("Analyze First 10 Misses")
             .setStyle(ButtonStyle.Primary)
             .setEmoji(Symbols.magnifyingGlassTiltedRight);
 
@@ -309,9 +309,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         missAnalyzer.analyze();
 
                     const options: InteractionReplyOptions = {
-                        content: MessageCreator.createWarn(
-                            "This feature is still beta. Expect wrong verdicts."
-                        ),
                         files: [
                             new AttachmentBuilder(
                                 missInformations[0].draw().toBuffer(),
