@@ -308,6 +308,23 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     const missInformations: MissInformation[] =
                         missAnalyzer.analyze();
 
+                    const options: InteractionReplyOptions = {
+                        content: MessageCreator.createWarn(
+                            "This feature is still beta. Expect wrong verdicts."
+                        ),
+                        files: [
+                            new AttachmentBuilder(
+                                missInformations[0].draw().toBuffer(),
+                                { name: "miss-1.png" }
+                            ),
+                        ],
+                    };
+
+                    if (missInformations.length === 1) {
+                        await InteractionHelper.update(pressed, options);
+                        return;
+                    }
+
                     const buttons: ButtonBuilder[] = [];
 
                     for (let i = 0; i < missInformations.length; ++i) {
@@ -328,18 +345,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                                 .setDisabled(i === 0)
                         );
                     }
-
-                    const options: InteractionReplyOptions = {
-                        content: MessageCreator.createWarn(
-                            "This feature is still beta. Expect wrong verdicts."
-                        ),
-                        files: [
-                            new AttachmentBuilder(
-                                missInformations[0].draw().toBuffer(),
-                                { name: "miss-1.png" }
-                            ),
-                        ],
-                    };
 
                     this.createLimitedTimeButtons(
                         pressed,
