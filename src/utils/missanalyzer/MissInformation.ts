@@ -693,11 +693,11 @@ export class MissInformation {
         const defaultColor: string = "#cc00cc";
         const defaultArrowColor: string = "#990099";
         const mehColor: string = "#e69417";
-        const mehArrowColor: string = "#a86c11";
+        const mehArrowColor: string = "#e6a645";
         const goodColor: string = "#44b02e";
-        const goodArrowColor: string = "#368f24";
+        const goodArrowColor: string = "#53d439";
         const greatColor: string = "#6bbbdb";
-        const greatArrowColor: string = "#52a4c4";
+        const greatArrowColor: string = "#78c1de";
 
         const applyHitColor = (hitTime: number): void => {
             const hitAccuracy: number = hitTime - this.object.startTime;
