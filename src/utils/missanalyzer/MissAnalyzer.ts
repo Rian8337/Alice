@@ -308,7 +308,7 @@ export class MissAnalyzer {
         };
 
         for (const group of cursorData.occurrenceGroups) {
-            if (group.startTime < minAllowableTapTime) {
+            if (group.endTime < minAllowableTapTime) {
                 continue;
             }
 
