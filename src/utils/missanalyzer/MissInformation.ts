@@ -690,13 +690,45 @@ export class MissInformation {
         const minTime: number = this.object.startTime - this.approachRateTime;
         const maxTime: number = this.object.endTime + 200;
 
-        const color: string = "#cc00cc";
-        const arrowColor: string = "#990099";
         // Draw direction arrow every 50 pixels the cursor has travelled.
         const arrowDistanceRate: number = 50;
 
-        context.fillStyle = color;
-        context.strokeStyle = color;
+        const defaultColor: string = "#cc00cc";
+        const defaultArrowColor: string = "#990099";
+        const mehColor: string = "#e69417";
+        const mehArrowColor: string = "#a86c11";
+        const goodColor: string = "#44b02e";
+        const goodArrowColor: string = "#368f24";
+        const greatColor: string = "#6bbbdb";
+        const greatArrowColor: string = "#52a4c4";
+
+        const applyHitColor = (hitTime: number): void => {
+            const hitAccuracy: number = hitTime - this.object.startTime;
+
+            switch (true) {
+                case hitAccuracy <=
+                    this.hitWindow.hitWindowFor300(this.isPrecise):
+                    context.fillStyle = greatColor;
+                    context.strokeStyle = greatColor;
+                    break;
+                case hitAccuracy <=
+                    this.hitWindow.hitWindowFor100(this.isPrecise):
+                    context.fillStyle = goodColor;
+                    context.strokeStyle = goodColor;
+                    break;
+                case hitAccuracy <=
+                    this.hitWindow.hitWindowFor50(this.isPrecise):
+                    context.fillStyle = mehColor;
+                    context.strokeStyle = mehColor;
+                    break;
+                default:
+                    context.fillStyle = defaultColor;
+                    context.strokeStyle = defaultColor;
+            }
+        };
+
+        context.fillStyle = defaultColor;
+        context.strokeStyle = defaultColor;
         context.lineWidth = 2.5;
         context.lineCap = "round";
         context.globalAlpha = 1;
@@ -724,6 +756,8 @@ export class MissInformation {
                     );
 
                     if (occurrence.id === MovementType.down) {
+                        applyHitColor(occurrence.time);
+
                         context.beginPath();
                         context.moveTo(drawPosition.x, drawPosition.y);
                         context.arc(
@@ -744,6 +778,8 @@ export class MissInformation {
                         travelDistance += occurrence.position.getDistance(
                             prevOccurrence.position
                         );
+
+                        applyHitColor(prevOccurrence.time);
 
                         context.beginPath();
                         context.moveTo(
@@ -792,6 +828,8 @@ export class MissInformation {
 
                                 const cursorDrawPosition: Vector2 =
                                     this.flipVectorVertically(cursorPosition);
+
+                                applyHitColor(cursorDownTime);
 
                                 context.beginPath();
                                 context.lineWidth = 2;
@@ -846,8 +884,37 @@ export class MissInformation {
                                     )
                                 );
                             const headLength: number = 10;
+                            const cursorTime: number = Interpolation.lerp(
+                                prevOccurrence.time,
+                                occurrence.time,
+                                t
+                            );
 
-                            context.strokeStyle = arrowColor;
+                            const timeOffset: number =
+                                cursorTime - this.object.startTime;
+                            switch (true) {
+                                case timeOffset <=
+                                    this.hitWindow.hitWindowFor300(
+                                        this.isPrecise
+                                    ):
+                                    context.strokeStyle = greatArrowColor;
+                                    break;
+                                case timeOffset <=
+                                    this.hitWindow.hitWindowFor100(
+                                        this.isPrecise
+                                    ):
+                                    context.strokeStyle = goodArrowColor;
+                                    break;
+                                case timeOffset <=
+                                    this.hitWindow.hitWindowFor50(
+                                        this.isPrecise
+                                    ):
+                                    context.strokeStyle = mehArrowColor;
+                                    break;
+                                default:
+                                    context.strokeStyle = defaultArrowColor;
+                            }
+
                             context.beginPath();
                             context.moveTo(
                                 cursorDrawPosition.x,
@@ -871,7 +938,6 @@ export class MissInformation {
                             );
                             context.stroke();
                             context.closePath();
-                            context.strokeStyle = color;
                         }
 
                         travelDistance %= arrowDistanceRate;
