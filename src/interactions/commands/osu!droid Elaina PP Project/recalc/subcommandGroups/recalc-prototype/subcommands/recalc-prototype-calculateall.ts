@@ -7,7 +7,7 @@ import { RecalcLocalization } from "@alice-localization/interactions/commands/os
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import consola from "consola";
+import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,

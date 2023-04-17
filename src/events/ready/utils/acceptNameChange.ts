@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import consola from "consola";
+import { consola } from "consola";
 import { EventUtil } from "structures/core/EventUtil";
 
 export const run: EventUtil["run"] = async () => {

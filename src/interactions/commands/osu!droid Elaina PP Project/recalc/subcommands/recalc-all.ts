@@ -8,7 +8,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { Message } from "discord.js";
-import consola from "consola";
+import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,

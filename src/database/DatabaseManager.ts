@@ -1,5 +1,5 @@
 import { Db, MongoClient } from "mongodb";
-import consola from "consola";
+import { consola } from "consola";
 import { AliceDBCollection } from "./AliceDBCollection";
 import { ElainaDBCollection } from "./ElainaDBCollection";
 

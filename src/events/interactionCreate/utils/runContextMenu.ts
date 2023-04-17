@@ -7,7 +7,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BaseInteraction } from "discord.js";
-import consola from "consola";
+import { consola } from "consola";
 import { GlobalCooldownKey } from "@alice-structures/core/CooldownKey";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 

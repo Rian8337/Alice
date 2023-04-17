@@ -20,7 +20,7 @@ import {
     CacheType,
     CommandInteractionOption,
 } from "discord.js";
-import consola from "consola";
+import { consola } from "consola";
 
 export const run: EventUtil["run"] = async (
     client,

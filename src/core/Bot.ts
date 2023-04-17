@@ -8,7 +8,7 @@ import {
     Partials,
     Snowflake,
 } from "discord.js";
-import consola from "consola";
+import { consola } from "consola";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { Event } from "structures/core/Event";
 import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";

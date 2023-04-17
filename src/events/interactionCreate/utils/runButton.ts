@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import consola from "consola";
+import { consola } from "consola";
 import { BaseInteraction } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 

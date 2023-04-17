@@ -8,7 +8,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
 import { Collection, Guild, GuildTextBasedChannel } from "discord.js";
-import consola from "consola";
+import { consola } from "consola";
 import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
 
 export const run: SlashSubcommand<true>["run"] = async (

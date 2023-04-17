@@ -7,7 +7,7 @@ import { ChallengeCollectionManager } from "@alice-database/managers/aliceDb/Cha
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Config } from "@alice-core/Config";
 import { OperationResult } from "structures/core/OperationResult";
-import consola from "consola";
+import { consola } from "consola";
 
 export const run: EventUtil["run"] = async (client) => {
     if (!Config.isDebug) {

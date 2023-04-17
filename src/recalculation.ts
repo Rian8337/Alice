@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import consola from "consola";
+import { consola } from "consola";
 process.env.UV_THREADPOOL_SIZE = "128";
 
 config();

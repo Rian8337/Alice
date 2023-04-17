@@ -7,7 +7,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { InteractionType, ModalSubmitInteraction } from "discord.js";
-import consola from "consola";
+import { consola } from "consola";
 
 export const run: EventUtil["run"] = async (
     client,
