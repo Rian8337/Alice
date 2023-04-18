@@ -846,11 +846,8 @@ export class MissInformation {
                             }
                         }
 
-                        for (
-                            let distance = arrowDistanceRate;
-                            distance <= travelDistance;
-                            distance += arrowDistanceRate
-                        ) {
+                        if (travelDistance >= arrowDistanceRate) {
+                            // Draw direction arrow.
                             const displacement: Vector2 =
                                 occurrence.position.subtract(
                                     prevOccurrence.position
@@ -865,88 +862,98 @@ export class MissInformation {
                             const prevDistanceTravelled: number =
                                 travelDistance - displacement.length;
 
-                            const t: number =
-                                (distance - prevDistanceTravelled) /
-                                (travelDistance - prevDistanceTravelled);
+                            for (
+                                let distance = arrowDistanceRate;
+                                distance <= travelDistance;
+                                distance += arrowDistanceRate
+                            ) {
+                                const t: number =
+                                    (distance - prevDistanceTravelled) /
+                                    (travelDistance - prevDistanceTravelled);
 
-                            const cursorTime: number = Interpolation.lerp(
-                                prevOccurrence.time,
-                                occurrence.time,
-                                t
-                            );
-                            const timeOffset: number =
-                                cursorTime - this.object.startTime;
-                            // Don't draw direction arrow if cursor time is close to object hit time.
-                            if (Math.abs(timeOffset) <= 50) {
-                                continue;
-                            }
-
-                            const cursorDrawPosition: Vector2 =
-                                this.flipVectorVertically(
-                                    new Vector2(
-                                        Interpolation.lerp(
-                                            prevOccurrence.position.x,
-                                            occurrence.position.x,
-                                            t
-                                        ),
-                                        Interpolation.lerp(
-                                            prevOccurrence.position.y,
-                                            occurrence.position.y,
-                                            t
-                                        )
-                                    )
+                                const cursorTime: number = Interpolation.lerp(
+                                    prevOccurrence.time,
+                                    occurrence.time,
+                                    t
                                 );
-                            const headLength: number = 10;
+                                const timeOffset: number =
+                                    cursorTime - this.object.startTime;
+                                // Don't draw direction arrow if cursor time is close to object hit time.
+                                if (Math.abs(timeOffset) <= 50) {
+                                    continue;
+                                }
 
-                            switch (true) {
-                                case timeOffset <=
-                                    this.hitWindow.hitWindowFor300(
-                                        this.isPrecise
-                                    ):
-                                    context.strokeStyle = greatArrowColor;
-                                    break;
-                                case timeOffset <=
-                                    this.hitWindow.hitWindowFor100(
-                                        this.isPrecise
-                                    ):
-                                    context.strokeStyle = goodArrowColor;
-                                    break;
-                                case timeOffset <=
-                                    this.hitWindow.hitWindowFor50(
-                                        this.isPrecise
-                                    ):
-                                    context.strokeStyle = mehArrowColor;
-                                    break;
-                                default:
-                                    context.strokeStyle = defaultArrowColor;
+                                const cursorDrawPosition: Vector2 =
+                                    this.flipVectorVertically(
+                                        new Vector2(
+                                            Interpolation.lerp(
+                                                prevOccurrence.position.x,
+                                                occurrence.position.x,
+                                                t
+                                            ),
+                                            Interpolation.lerp(
+                                                prevOccurrence.position.y,
+                                                occurrence.position.y,
+                                                t
+                                            )
+                                        )
+                                    );
+                                const headLength: number = 10;
+
+                                switch (true) {
+                                    case timeOffset <=
+                                        this.hitWindow.hitWindowFor300(
+                                            this.isPrecise
+                                        ):
+                                        context.strokeStyle = greatArrowColor;
+                                        break;
+                                    case timeOffset <=
+                                        this.hitWindow.hitWindowFor100(
+                                            this.isPrecise
+                                        ):
+                                        context.strokeStyle = goodArrowColor;
+                                        break;
+                                    case timeOffset <=
+                                        this.hitWindow.hitWindowFor50(
+                                            this.isPrecise
+                                        ):
+                                        context.strokeStyle = mehArrowColor;
+                                        break;
+                                    default:
+                                        context.strokeStyle = defaultArrowColor;
+                                }
+
+                                context.beginPath();
+                                context.moveTo(
+                                    cursorDrawPosition.x,
+                                    cursorDrawPosition.y
+                                );
+                                context.lineTo(
+                                    cursorDrawPosition.x -
+                                        headLength *
+                                            Math.cos(angle - Math.PI / 6),
+                                    cursorDrawPosition.y -
+                                        headLength *
+                                            Math.sin(angle - Math.PI / 6)
+                                );
+                                context.moveTo(
+                                    cursorDrawPosition.x,
+                                    cursorDrawPosition.y
+                                );
+                                context.lineTo(
+                                    cursorDrawPosition.x -
+                                        headLength *
+                                            Math.cos(angle + Math.PI / 6),
+                                    cursorDrawPosition.y -
+                                        headLength *
+                                            Math.sin(angle + Math.PI / 6)
+                                );
+                                context.stroke();
+                                context.closePath();
                             }
 
-                            context.beginPath();
-                            context.moveTo(
-                                cursorDrawPosition.x,
-                                cursorDrawPosition.y
-                            );
-                            context.lineTo(
-                                cursorDrawPosition.x -
-                                    headLength * Math.cos(angle - Math.PI / 6),
-                                cursorDrawPosition.y -
-                                    headLength * Math.sin(angle - Math.PI / 6)
-                            );
-                            context.moveTo(
-                                cursorDrawPosition.x,
-                                cursorDrawPosition.y
-                            );
-                            context.lineTo(
-                                cursorDrawPosition.x -
-                                    headLength * Math.cos(angle + Math.PI / 6),
-                                cursorDrawPosition.y -
-                                    headLength * Math.sin(angle + Math.PI / 6)
-                            );
-                            context.stroke();
-                            context.closePath();
+                            travelDistance %= arrowDistanceRate;
                         }
-
-                        travelDistance %= arrowDistanceRate;
                     }
                 }
             }
