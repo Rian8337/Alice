@@ -7,6 +7,7 @@ export class PoolESTranslation extends Translation<PoolStrings> {
             "Lo siento, no puedo encontrar la lista de mapas que estas buscando!",
         mapNotFound: "",
         length: "Duración",
+        maxScore: "",
         beatmapHasNoScores: "",
         topScore: "",
     };

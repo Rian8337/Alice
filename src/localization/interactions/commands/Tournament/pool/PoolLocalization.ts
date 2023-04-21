@@ -8,6 +8,7 @@ export interface PoolStrings {
     readonly poolNotFound: string;
     readonly mapNotFound: string;
     readonly length: string;
+    readonly maxScore: string;
     readonly beatmapHasNoScores: string;
     readonly topScore: string;
 }

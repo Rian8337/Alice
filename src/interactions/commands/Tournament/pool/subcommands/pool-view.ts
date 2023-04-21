@@ -11,6 +11,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { bold, EmbedBuilder, GuildMember } from "discord.js";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
@@ -52,6 +53,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     map.duration,
                     localization.language
+                )}\n${bold(
+                    localization.getTranslation("maxScore")
+                )}: ${map.maxScore.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
                 )}`,
             });
         }
