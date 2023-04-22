@@ -23,7 +23,7 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         oldCalculationNote: "",
         beatmapInfo: "Información del mapa",
         dateAchieved: "Conseguido el %s",
-        penalized: "Penalizado",
+        penalties: "",
         threeFinger: "",
         sliderCheese: "",
         forFC: "con %s FC",

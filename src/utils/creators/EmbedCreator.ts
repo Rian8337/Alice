@@ -675,42 +675,9 @@ export abstract class EmbedCreator {
                 `https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`
             );
 
-        const {
-            tapPenalty,
-            aimSliderCheesePenalty,
-            flashlightSliderCheesePenalty,
-            visualSliderCheesePenalty,
-        } = droidCalcResult;
-
-        beatmapInformation += bold(`${droidCalcResult.total.toFixed(2)}DPP`);
-
-        const isThreeFinger: boolean = tapPenalty !== 1;
-        const isSliderCheese: boolean = [
-            aimSliderCheesePenalty,
-            flashlightSliderCheesePenalty,
-            visualSliderCheesePenalty,
-        ].some((v) => v !== 1);
-
-        if (isThreeFinger || isSliderCheese) {
-            beatmapInformation += ` *(${localization.getTranslation(
-                "penalized"
-            )} `;
-
-            const str: string[] = [];
-
-            if (isThreeFinger) {
-                str.push(localization.getTranslation("threeFinger"));
-            }
-            if (isSliderCheese) {
-                str.push(localization.getTranslation("sliderCheese"));
-            }
-
-            beatmapInformation += `(${str.join(", ")}))*`;
-        }
-
-        beatmapInformation += ` | ${bold(
-            `${osuCalcResult.total.toFixed(2)}PP`
-        )} `;
+        beatmapInformation += `${bold(
+            `${droidCalcResult.total.toFixed(2)}DPP`
+        )} | ${bold(`${osuCalcResult.total.toFixed(2)}PP`)} `;
 
         if (score.accuracy.nmiss > 0 || score.combo < beatmap.maxCombo) {
             const calcParams: PerformanceCalculationParameters =
@@ -817,6 +784,35 @@ export abstract class EmbedCreator {
             )}ms ${localization.getTranslation(
                 "hitErrorAvg"
             )} ${arrow} ${hitErrorInformation.unstableRate.toFixed(2)} UR`;
+        }
+
+        const {
+            tapPenalty,
+            aimSliderCheesePenalty,
+            flashlightSliderCheesePenalty,
+            visualSliderCheesePenalty,
+        } = droidCalcResult;
+
+        const isThreeFinger: boolean = tapPenalty !== 1;
+        const isSliderCheese: boolean = [
+            aimSliderCheesePenalty,
+            flashlightSliderCheesePenalty,
+            visualSliderCheesePenalty,
+        ].some((v) => v !== 1);
+
+        if (isThreeFinger || isSliderCheese) {
+            const str: string[] = [];
+
+            if (isThreeFinger) {
+                str.push(localization.getTranslation("threeFinger"));
+            }
+            if (isSliderCheese) {
+                str.push(localization.getTranslation("sliderCheese"));
+            }
+
+            beatmapInformation += `\n${arrow} ${localization.getTranslation(
+                "penalties"
+            )}: ${str.join(", ")}`;
         }
 
         embed.setDescription(beatmapInformation);

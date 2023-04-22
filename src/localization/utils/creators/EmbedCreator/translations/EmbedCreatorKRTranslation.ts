@@ -23,7 +23,7 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         oldCalculationNote: "",
         beatmapInfo: "비트맵 정보",
         dateAchieved: "%s에 달성함",
-        penalized: "패널티를 받음",
+        penalties: "",
         threeFinger: "",
         sliderCheese: "",
         forFC: "for %s FC",

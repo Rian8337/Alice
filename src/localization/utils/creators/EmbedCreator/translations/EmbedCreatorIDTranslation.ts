@@ -25,7 +25,7 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
             "Hasil perhitungan droid pp berasal dari sistem lama.",
         beatmapInfo: "Informasi Beatmap",
         dateAchieved: "Dicapai pada %s",
-        penalized: "terpenalti",
+        penalties: "Penalti",
         threeFinger: "tiga jari",
         sliderCheese: "",
         forFC: "untuk FC %s",

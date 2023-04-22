@@ -22,7 +22,7 @@ export interface EmbedCreatorStrings {
     readonly oldCalculationNote: string;
     readonly beatmapInfo: string;
     readonly dateAchieved: string;
-    readonly penalized: string;
+    readonly penalties: string;
     readonly threeFinger: string;
     readonly sliderCheese: string;
     readonly forFC: string;
