@@ -44,7 +44,7 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         challengeBonuses: `보너스를 확인하려면 ${chatInputApplicationCommandMention(
             "daily",
             "bonuses",
-            "889506666498895942"
+            "1075209201049153617"
         )}를 사용하세요.`,
         auctionInfo: "경매 정보",
         auctionName: "이름",
@@ -57,12 +57,12 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         auctionBidInfo: "입찰 정보",
         auctionBidders: "입찰한 클랜 수",
         auctionTopBidders: "최고 입찰자",
-        broadcast: "안내",
-        broadcast1: `유저가 규칙을 위반하거나, 적절하지 못한 행동을 하거나, 의도적으로 짜증나게 한다면, ${chatInputApplicationCommandMention(
+        reportBroadcast: "안내",
+        reportBroadcast1: `유저가 규칙을 위반하거나, 적절하지 못한 행동을 하거나, 의도적으로 짜증나게 한다면, ${chatInputApplicationCommandMention(
             "report",
-            "937926296560869466"
-        )} 명령어를 사용해서 유저를 신고해 주세요(\`/help report\`로 더 많은 정보를 얻을 수 있어요)`,
-        broadcast2:
+            "1075209098997542986"
+        )} 명령어를 사용해서 유저를 신고해 주세요.`,
+        reportBroadcast2:
             "오직 스태프 멤버만 신고를 볼 수 있기 때문에, 여러분의 프라이버시는 안전하다는걸 알아주세요. 더욱 깨끗한 서버 환경을 위한 여러분의 노력과 기여에는 언제나 감사드려요!",
         mapShareSubmission: "%s의 제출",
         mapShareStatusAndSummary: "상태 및 요약",

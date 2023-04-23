@@ -52,7 +52,7 @@ export class DailyESTranslation extends Translation<DailyStrings> {
         )} descargar dicho mapa aparte para poder registrar tu puntaje.\n\nUna vez se complete el desafio, deberas usar el comando ${chatInputApplicationCommandMention(
             "daily",
             "submit",
-            "889506666498895942"
+            "1075209201049153617"
         )} para poder registrarlo.`,
         aboutQuestion3: "Como puedo usar mis puntos y monedas Alice?",
         aboutAnswer3:
@@ -61,7 +61,7 @@ export class DailyESTranslation extends Translation<DailyStrings> {
         aboutAnswer4: `No hay ninguna tabla de %sMonedas Alice, sin embargo si hay una para los puntos. Puedes usar ${chatInputApplicationCommandMention(
             "daily",
             "leaderboard",
-            "889506666498895942"
+            "1075209201049153617"
         )} para ver la tabla.`,
         aboutQuestion5: "Tengo más preguntas que no han sido mencionadas aqui!",
         aboutAnswer5: `Puedes hablar con ${userMention(

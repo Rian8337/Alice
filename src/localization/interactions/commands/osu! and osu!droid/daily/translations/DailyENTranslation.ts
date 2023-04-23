@@ -95,7 +95,7 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         )} download the set in order to submit your play.\n\nOnce you complete a challenge, use the ${chatInputApplicationCommandMention(
             "daily",
             "submit",
-            "889506666498895942"
+            "1075209201049153617"
         )} command to submit your play.`,
         aboutQuestion3: "How can I use my points and Alice coins?",
         aboutAnswer3:
@@ -104,7 +104,7 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         aboutAnswer4: `There is no leaderboard for %sAlice coins, however there is a leaderboard for points. You can use ${chatInputApplicationCommandMention(
             "daily",
             "leaderboard",
-            "889506666498895942"
+            "1075209201049153617"
         )} to view the leaderboard.`,
         aboutQuestion5: "I have more questions that are not mentioned in here!",
         aboutAnswer5: `You can ask ${userMention(

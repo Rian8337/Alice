@@ -46,7 +46,7 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         challengeBonuses: `Gunakan ${chatInputApplicationCommandMention(
             "daily",
             "bonuses",
-            "889506666498895942"
+            "1075209201049153617"
         )} untuk mengecek bonus.`,
         auctionInfo: "Informasi Lelangan",
         auctionName: "Nama",
@@ -59,12 +59,12 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         auctionBidInfo: "Informasi Tawaran",
         auctionBidders: "Jumlah Penawar",
         auctionTopBidders: "Penawar Teratas",
-        broadcast: "Siaran",
-        broadcast1: `Apabila kamu melihat pengguna yang melanggar peraturan, bertingkah laku tidak benar, atau mencoba memberi kekesalan secara sengaja, mohon laporkan pengguna tersebut menggunakan perintah ${chatInputApplicationCommandMention(
+        reportBroadcast: "Siaran",
+        reportBroadcast1: `Apabila kamu melihat pengguna yang melanggar peraturan, bertingkah laku tidak benar, atau mencoba memberi kekesalan secara sengaja, mohon laporkan pengguna tersebut menggunakan perintah ${chatInputApplicationCommandMention(
             "report",
-            "937926296560869466"
-        )} (informasi lebih dapat diakses menggunakan perintah \`/help report\`).`,
-        broadcast2:
+            "1075209098997542986"
+        )}.`,
+        reportBroadcast2:
             "Perlu diingat bahwa hanya anggota staff yang dapat melihat laporan, sehingga privasimu akan terjaga. Kami menghargai kontribusimu dalam membawa lingkungan yang bersahabat!",
         mapShareSubmission: "Pengajuan dari %s",
         mapShareStatusAndSummary: "Status dan Ringkasan",

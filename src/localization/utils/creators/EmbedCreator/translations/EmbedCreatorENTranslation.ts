@@ -45,7 +45,7 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         challengeBonuses: `Use ${chatInputApplicationCommandMention(
             "daily",
             "bonuses",
-            "889506666498895942"
+            "1075209201049153617"
         )} to check bonuses.`,
         auctionInfo: "Auction Information",
         auctionName: "Name",
@@ -58,12 +58,12 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         auctionBidInfo: "Bid Information",
         auctionBidders: "Bidders",
         auctionTopBidders: "Top Bidders",
-        broadcast: "Broadcast",
-        broadcast1: `If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using ${chatInputApplicationCommandMention(
+        reportBroadcast: "Broadcast",
+        reportBroadcast1: `If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using ${chatInputApplicationCommandMention(
             "report",
-            "937926296560869466"
-        )} command (more information is available using \`/help report\`)`,
-        broadcast2:
+            "1075209098997542986"
+        )} command.`,
+        reportBroadcast2:
             "Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!",
         mapShareSubmission: "Submission by %s",
         mapShareStatusAndSummary: "Status and Summary",

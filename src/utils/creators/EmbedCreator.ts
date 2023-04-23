@@ -1076,13 +1076,13 @@ export abstract class EmbedCreator {
 
         embed
             .setAuthor({
-                name: localization.getTranslation("broadcast"),
+                name: localization.getTranslation("reportBroadcast"),
                 iconURL: guild.iconURL()!,
             })
             .setDescription(
                 `${localization.getTranslation(
-                    "broadcast1"
-                )}\n\n${localization.getTranslation("broadcast2")}`
+                    "reportBroadcast1"
+                )}\n\n${localization.getTranslation("reportBroadcast2")}`
             );
 
         return embed;

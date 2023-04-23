@@ -50,7 +50,7 @@ export class DailyKRTranslation extends Translation<DailyStrings> {
         )} 이 비트맵을 다운로드해서 플레이해야 해요.\n\n챌린지를 완료하면, 기록을 제출하기 위해 ${chatInputApplicationCommandMention(
             "daily",
             "submit",
-            "889506666498895942"
+            "1075209201049153617"
         )} 명령어를 사용 해 주세요.`,
         aboutQuestion3: "포인트와 앨리스 코인은 어디에 쓰나요?",
         aboutAnswer3:
@@ -59,7 +59,7 @@ export class DailyKRTranslation extends Translation<DailyStrings> {
         aboutAnswer4: `%s앨리스 코인 리더보드는 없지만, 포인트 리더보드는 있어요. ${chatInputApplicationCommandMention(
             "daily",
             "leaderboard",
-            "889506666498895942"
+            "1075209201049153617"
         )}를 사용하시면 리더보드를 볼 수 있어요.`,
         aboutQuestion5: "여기서 언급되지 않은 질문이 더 있어요!",
         aboutAnswer5: `${userMention(

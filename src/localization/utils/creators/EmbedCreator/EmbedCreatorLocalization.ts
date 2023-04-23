@@ -52,9 +52,9 @@ export interface EmbedCreatorStrings {
     readonly auctionBidInfo: string;
     readonly auctionBidders: string;
     readonly auctionTopBidders: string;
-    readonly broadcast: string;
-    readonly broadcast1: string;
-    readonly broadcast2: string;
+    readonly reportBroadcast: string;
+    readonly reportBroadcast1: string;
+    readonly reportBroadcast2: string;
     readonly mapShareSubmission: string;
     readonly mapShareStatusAndSummary: string;
     readonly mapShareStatus: string;
