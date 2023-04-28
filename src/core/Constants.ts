@@ -54,7 +54,7 @@ export class Constants {
      * The link to welcome image (used to welcome new members to the server).
      */
     static readonly welcomeImageLink: string =
-        "https://i.imgur.com/LLzteLz.jpg";
+        "https://cdn.discordapp.com/attachments/316545691545501706/1101147416410984478/LLzteLz.jpg";
 
     /**
      * The uid limit that is used to check if a uid from a user's input is too small.
