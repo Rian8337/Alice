@@ -141,6 +141,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ProfileManager.getProfileLink(player.uid).toString(),
                 createHash("md5").update(player.email).digest("hex")
             ),
+            files: [profileImage],
         });
     } else {
         InteractionHelper.reply(interaction, {
