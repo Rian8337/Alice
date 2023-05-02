@@ -12,11 +12,28 @@ import { OperationResult } from "structures/core/OperationResult";
 import { SwitchbindLocalization } from "@alice-localization/interactions/commands/Bot Creators/switchbind/SwitchbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: SwitchbindLocalization = new SwitchbindLocalization(
         await CommandHelper.getLocale(interaction)
     );
+
+    if (
+        !CommandHelper.isExecutedByBotOwner(interaction) &&
+        (!interaction.inCachedGuild() ||
+            !interaction.member.roles.cache.has("803154670380908575"))
+    ) {
+        interaction.ephemeral = true;
+
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(localization.language).getTranslation(
+                    Constants.noPermissionReject
+                )
+            ),
+        });
+    }
 
     const uid: number = interaction.options.getInteger("uid", true);
 
@@ -125,6 +142,6 @@ export const config: SlashCommand["config"] = {
                 "will switch the osu!droid account with uid 5475's bind to the Discord account with ID 132783516176875520.",
         },
     ],
-    permissions: ["BotOwner"],
+    permissions: ["Special"],
     scope: "ALL",
 };
