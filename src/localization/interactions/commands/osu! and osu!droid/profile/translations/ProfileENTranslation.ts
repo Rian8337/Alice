@@ -1,5 +1,5 @@
 import { Translation } from "@alice-localization/base/Translation";
-import { hideLinkEmbed, hyperlink, userMention } from "discord.js";
+import { hideLinkEmbed, hyperlink, inlineCode, userMention } from "discord.js";
 import { ProfileStrings } from "../ProfileLocalization";
 
 /**
@@ -18,7 +18,7 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         viewingProfileWithEmail: `osu!droid profile for ${hyperlink(
             "%s",
             hideLinkEmbed("%s")
-        )}:\nHashed Email: %s`,
+        )}:\nHashed Email: ${inlineCode("%s")}`,
         invalidRGBAformat: "I'm sorry, that's an invalid RGBA color format!",
         invalidHexCode: "I'm sorry, that's an invalid hex code!",
         changeInfoTextColorConfirmation:
