@@ -13,7 +13,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction)
     );
 
-    const color: string = interaction.options.getString("color") ?? "DEFAULT";
+    const color: string =
+        interaction.options.getString("color")?.toUpperCase() ?? "DEFAULT";
 
     if (
         interaction.options.getString("color") &&
@@ -27,7 +28,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     // Restrict reserved role color for admin/mod/helper/ref
-    if (["#3498DB", "#9543BA", "#FFD78C", "#4C6876"].includes(color)) {
+    if (
+        ["#3498DB", "#9543BA", "#FFD78C", "#4C6876", "#274D81"].includes(color)
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanRoleHexCodeIsRestricted")
