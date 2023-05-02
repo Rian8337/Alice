@@ -165,7 +165,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                 type: OverwriteType.Role,
             },
             {
-                id: "369108742077284353",
+                id: "803154670380908575",
                 allow: [
                     PermissionsBitField.Flags.ViewChannel,
                     PermissionsBitField.Flags.ManageMessages,

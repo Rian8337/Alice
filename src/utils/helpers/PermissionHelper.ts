@@ -89,6 +89,7 @@ export abstract class PermissionHelper {
         const roleIds: Snowflake[] = [
             "369108742077284353",
             "595667274707370024",
+            "803154670380908575",
         ];
 
         for (const roleId of roleIds) {
