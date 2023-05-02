@@ -16,6 +16,7 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
             "%s",
             hideLinkEmbed("%s")
         )}:`,
+        viewingProfileWithEmail: "",
         invalidRGBAformat: "Maaf, format warna RGBA tersebut tidak benar!",
         invalidHexCode: "Maaf, format warna hex tersebut tidak benar!",
         changeInfoTextColorConfirmation:

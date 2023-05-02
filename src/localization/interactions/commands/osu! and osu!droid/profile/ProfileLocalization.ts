@@ -10,6 +10,7 @@ export interface ProfileStrings {
     readonly selfProfileNotFound: string;
     readonly userProfileNotFound: string;
     readonly viewingProfile: string;
+    readonly viewingProfileWithEmail: string;
     readonly invalidRGBAformat: string;
     readonly invalidHexCode: string;
     readonly changeInfoTextColorConfirmation: string;

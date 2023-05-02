@@ -15,6 +15,10 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
             "%s",
             hideLinkEmbed("%s")
         )}:`,
+        viewingProfileWithEmail: `osu!droid profile for ${hyperlink(
+            "%s",
+            hideLinkEmbed("%s")
+        )}:\nHashed Email: %s`,
         invalidRGBAformat: "I'm sorry, that's an invalid RGBA color format!",
         invalidHexCode: "I'm sorry, that's an invalid hex code!",
         changeInfoTextColorConfirmation:

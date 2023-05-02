@@ -11,6 +11,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { createHash } from "crypto";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -27,7 +28,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    await InteractionHelper.deferReply(interaction);
+    await InteractionHelper.deferReply(
+        interaction,
+        interaction.options.getBoolean("showhashedemail") ?? false
+    );
 
     const discordid: Snowflake | undefined =
         interaction.options.getUser("user")?.id;
@@ -124,14 +128,30 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         localization.language
     ))!;
 
-    InteractionHelper.reply(interaction, {
-        content: MessageCreator.createAccept(
-            localization.getTranslation("viewingProfile"),
-            `${player.username} (${player.uid})`,
-            ProfileManager.getProfileLink(player.uid).toString()
-        ),
-        files: [profileImage],
-    });
+    if (
+        interaction.user.id === bindInfo?.discordid ||
+        // Allow global moderators to see hashed email
+        (interaction.inCachedGuild() &&
+            interaction.member.roles.cache.has("803154670380908575"))
+    ) {
+        InteractionHelper.reply(interaction, {
+            content: MessageCreator.createAccept(
+                localization.getTranslation("viewingProfileWithEmail"),
+                `${player.username} (${player.uid})`,
+                ProfileManager.getProfileLink(player.uid).toString(),
+                createHash("md5").update(player.email).digest("hex")
+            ),
+        });
+    } else {
+        InteractionHelper.reply(interaction, {
+            content: MessageCreator.createAccept(
+                localization.getTranslation("viewingProfile"),
+                `${player.username} (${player.uid})`,
+                ProfileManager.getProfileLink(player.uid).toString()
+            ),
+            files: [profileImage],
+        });
+    }
 };
 
 export const config: SlashSubcommand["config"] = {

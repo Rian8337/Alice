@@ -15,6 +15,7 @@ export class ProfileKRTranslation extends Translation<ProfileStrings> {
             "%s",
             hideLinkEmbed("%s")
         )}의 osu!droid 프로필:`,
+        viewingProfileWithEmail: "",
         invalidRGBAformat: "죄송해요, 그건 유효하지 않은 RGBA 색상 형식이에요!",
         invalidHexCode: "죄송해요, 그건 유효하지 않은 hex 코드값이에요!",
         changeInfoTextColorConfirmation:

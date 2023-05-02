@@ -113,6 +113,12 @@ export const config: SlashCommand["config"] = {
                         },
                     ],
                 },
+                {
+                    name: "showhashedemail",
+                    type: ApplicationCommandOptionType.Boolean,
+                    description:
+                        "Whether to display the hashed email of the osu!droid account if you own the account.",
+                },
             ],
         },
     ],
