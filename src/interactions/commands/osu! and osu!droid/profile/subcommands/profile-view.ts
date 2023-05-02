@@ -129,10 +129,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ))!;
 
     if (
-        interaction.user.id === bindInfo?.discordid ||
-        // Allow global moderators to see hashed email
-        (interaction.inCachedGuild() &&
-            interaction.member.roles.cache.has("803154670380908575"))
+        interaction.options.getBoolean("showhashedemail") &&
+        (interaction.user.id === bindInfo?.discordid ||
+            // Allow global moderators to see hashed email
+            (interaction.inCachedGuild() &&
+                interaction.member.roles.cache.has("803154670380908575")))
     ) {
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
