@@ -39,6 +39,8 @@ export interface PPEntry {
 
     /**
      * The ID of the score inside osu!droid game database.
+     *
+     * If this is 0, the score does not overwrite the highest score of the player in the leaderboard.
      */
     scoreID: number;
 
