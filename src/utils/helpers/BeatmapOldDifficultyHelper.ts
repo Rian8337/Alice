@@ -443,6 +443,7 @@ export abstract class BeatmapOldDifficultyHelper {
         const attributes: OldDroidDifficultyAttributes = {
             tapDifficulty: star.speed,
             mods: [],
+            clockRate: stats.speedMultiplier,
             starRating: star.total,
             maxCombo: beatmap.maxCombo,
             aimDifficulty: star.aim,

@@ -116,6 +116,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             pp: ppValue,
             scoreID: 0,
             title: "",
+            replayFilename: "",
         },
     ]);
 

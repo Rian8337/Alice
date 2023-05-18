@@ -260,6 +260,18 @@ export abstract class DPPHelper {
             DroidPerformanceCalculator
         >
     ): PPEntry {
+        let replayFilename: string = `${score.uid}_${score.hash}_${
+            score.mods.map((v) => v.droidString) || "-"
+        }`;
+
+        if (score.speedMultiplier !== 1) {
+            replayFilename += `_${score.speedMultiplier}x`;
+        }
+
+        if (score.forcedAR !== undefined) {
+            replayFilename += `_AR${score.forcedAR}`;
+        }
+
         return {
             hash: score.hash,
             title: beatmapTitle,
@@ -269,6 +281,7 @@ export abstract class DPPHelper {
             combo: score.combo,
             miss: score.accuracy.nmiss,
             scoreID: score.scoreID,
+            replayFilename: replayFilename,
         };
     }
 

@@ -607,6 +607,7 @@ export class UserBind extends Manager {
                     score.replay?.sliderCheesePenalty.visualPenalty ?? 1,
                 speedNoteCount:
                     rebalPerfResult.difficultyAttributes.speedNoteCount,
+                replayFilename: ppEntry.replayFilename,
             };
 
             consola.info(
