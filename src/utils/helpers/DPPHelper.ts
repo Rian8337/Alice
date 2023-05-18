@@ -282,6 +282,8 @@ export abstract class DPPHelper {
             miss: score.accuracy.nmiss,
             scoreID: score.scoreID,
             replayFilename: replayFilename,
+            speedMultiplier:
+                score.speedMultiplier !== 1 ? score.speedMultiplier : undefined,
         };
     }
 
@@ -306,6 +308,8 @@ export abstract class DPPHelper {
             accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
             combo: score.combo,
             miss: score.accuracy.nmiss,
+            speedMultiplier:
+                score.speedMultiplier !== 1 ? score.speedMultiplier : undefined,
         };
     }
 
