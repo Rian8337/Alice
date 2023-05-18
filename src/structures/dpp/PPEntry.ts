@@ -53,4 +53,11 @@ export interface PPEntry {
      * The custom speed multiplier used in the score.
      */
     speedMultiplier?: number;
+
+    /**
+     * The file name of the replay of this score.
+     *
+     * Will be defined if score ID is 0.
+     */
+    replayFilename?: string;
 }
