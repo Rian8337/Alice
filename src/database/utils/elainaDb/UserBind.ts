@@ -575,6 +575,11 @@ export class UserBind extends Manager {
                 combo: score.combo,
                 miss: score.accuracy.nmiss,
                 scoreID: score.scoreID,
+                speedMultiplier:
+                    score.speedMultiplier !== 1
+                        ? score.speedMultiplier
+                        : undefined,
+                forcedAR: score.forcedAR,
                 calculatedUnstableRate: hitError
                     ? hitError.unstableRate /
                       new MapStats({
@@ -607,7 +612,6 @@ export class UserBind extends Manager {
                     score.replay?.sliderCheesePenalty.visualPenalty ?? 1,
                 speedNoteCount:
                     rebalPerfResult.difficultyAttributes.speedNoteCount,
-                replayFilename: ppEntry.replayFilename,
             };
 
             consola.info(
