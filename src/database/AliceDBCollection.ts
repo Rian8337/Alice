@@ -13,7 +13,6 @@ import { DPPAPIKeyCollectionManager } from "./managers/aliceDb/DPPAPIKeyCollecti
 import { GuildTagCollectionManager } from "./managers/aliceDb/GuildTagCollectionManager";
 import { GuildPunishmentConfigCollectionManager } from "./managers/aliceDb/GuildPunishmentConfigCollectionManager";
 import { NameChangeCollectionManager } from "./managers/aliceDb/NameChangeCollectionManager";
-import { OsuBindCollectionManager } from "./managers/aliceDb/OsuBindCollectionManager";
 import { PlayerInfoCollectionManager } from "./managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerSkinCollectionManager } from "./managers/aliceDb/PlayerSkinCollectionManager";
 import { ProfileBackgroundCollectionManager } from "./managers/aliceDb/ProfileBackgroundCollectionManager";
@@ -88,11 +87,6 @@ export class AliceDBCollection {
      * The database collection for name changes.
      */
     readonly nameChange: NameChangeCollectionManager;
-
-    /**
-     * The database collection for Discord users who have their osu! account binded.
-     */
-    readonly osuBind: OsuBindCollectionManager;
 
     /**
      * The database collection for information about Discord users regarding the bot
@@ -223,9 +217,6 @@ export class AliceDBCollection {
         );
         this.nameChange = new NameChangeCollectionManager(
             aliceDb.collection("namechange")
-        );
-        this.osuBind = new OsuBindCollectionManager(
-            aliceDb.collection("osubind")
         );
         this.playerInfo = new PlayerInfoCollectionManager(
             aliceDb.collection("playerpoints")
