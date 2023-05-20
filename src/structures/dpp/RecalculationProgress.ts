@@ -1,4 +1,3 @@
-import { OldPPEntry } from "./OldPPEntry";
 import { PPEntry } from "./PPEntry";
 
 /**
@@ -24,9 +23,4 @@ export interface RecalculationProgress {
      * The current pp entries that contains scores that have been processed up to this point.
      */
     currentPPEntries: PPEntry[];
-
-    /**
-     * The old pp entries that contains scores that have been processed up to this point.
-     */
-    oldPPEntries: OldPPEntry[];
 }

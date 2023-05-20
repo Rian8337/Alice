@@ -20,8 +20,6 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         pcStars: "PC stars",
         starRating: "Star Rating",
         rebalanceCalculationNote: "The resulting values are subject to change.",
-        oldCalculationNote:
-            "The droid pp calculation result is from an old version of the system.",
         beatmapInfo: "Beatmap Information",
         dateAchieved: "Achieved on %s",
         penalties: "Penalties",
@@ -77,7 +75,6 @@ export class EmbedCreatorENTranslation extends Translation<EmbedCreatorStrings> 
         musicDuration: "Duration",
         musicQueuer: "Queued/requested by %s",
         ppProfileTitle: "PP Profile for %s",
-        oldPpProfileTitle: "Old PP Profile for %s",
         totalPP: "Total PP",
         ppProfile: "PP Profile",
         warningInfo: "Warning Info",

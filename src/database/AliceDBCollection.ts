@@ -26,7 +26,6 @@ import { UserLocaleCollectionManager } from "./managers/aliceDb/UserLocaleCollec
 import { WarningCollectionManager } from "./managers/aliceDb/WarningCollectionManager";
 import { MultiplayerRoomCollectionManager } from "./managers/aliceDb/MultiplayerRoomCollectionManager";
 import { RestoredPlayerCredentialsCollectionManager } from "./managers/aliceDb/RestoredPlayerCredentialsCollectionManager";
-import { OldPPProfileCollectionManager } from "./managers/aliceDb/OldPPProfileCollectionManager";
 import { DanCourseCollectionManager } from "./managers/aliceDb/DanCourseCollectionManager";
 import { DanCourseLeaderboardScoreCollectionManager } from "./managers/aliceDb/DanCourseLeaderboardScoreCollectionManager";
 import { DanCourseScoreCollectionManager } from "./managers/aliceDb/DanCourseScoreCollectionManager";
@@ -174,11 +173,6 @@ export class AliceDBCollection {
     readonly restoredPlayerCredentials: RestoredPlayerCredentialsCollectionManager;
 
     /**
-     * The database collection for players' old dpp profiles.
-     */
-    readonly playerOldPPProfile: OldPPProfileCollectionManager;
-
-    /**
      * The database collection for dan courses.
      */
     readonly danCourses: DanCourseCollectionManager;
@@ -277,9 +271,6 @@ export class AliceDBCollection {
             new RestoredPlayerCredentialsCollectionManager(
                 aliceDb.collection("restoredplayercredentials")
             );
-        this.playerOldPPProfile = new OldPPProfileCollectionManager(
-            aliceDb.collection("playeroldpp")
-        );
         this.danCourses = new DanCourseCollectionManager(
             aliceDb.collection("dancoursemaps")
         );

@@ -12,9 +12,6 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
-import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
-import { DatabaseOldPPProfile } from "@alice-structures/database/aliceDb/DatabaseOldPPProfile";
-import { OldPPProfileCollectionManager } from "@alice-database/managers/aliceDb/OldPPProfileCollectionManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -36,16 +33,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const dbManager: UserBindCollectionManager | OldPPProfileCollectionManager =
-        (interaction.options.getString("type") ?? "live") === "live"
-            ? DatabaseManager.elainaDb.collections.userBind
-            : DatabaseManager.aliceDb.collections.playerOldPPProfile;
+    const dbManager: UserBindCollectionManager =
+        DatabaseManager.elainaDb.collections.userBind;
 
-    let playerInfo: UserBind | OldPPProfile | null;
+    let playerInfo: UserBind | null;
 
-    const findOptions:
-        | FindOptions<DatabaseUserBind>
-        | FindOptions<DatabaseOldPPProfile> = {
+    const findOptions: FindOptions<DatabaseUserBind> = {
         projection: {
             _id: 0,
             uid: 1,

@@ -4,5 +4,4 @@
 export enum PPCalculationMethod {
     live,
     rebalance,
-    old,
 }

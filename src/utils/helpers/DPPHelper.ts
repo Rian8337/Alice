@@ -1,14 +1,11 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
 import { PPEntry } from "@alice-structures/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
@@ -106,13 +103,13 @@ export abstract class DPPHelper {
      */
     static async displayDPPList(
         interaction: RepliableInteraction,
-        playerInfo: UserBind | OldPPProfile,
+        playerInfo: UserBind,
         page: number
     ): Promise<void> {
-        const ppRank: number = await (playerInfo instanceof OldPPProfile
-            ? DatabaseManager.aliceDb.collections.playerOldPPProfile
-            : DatabaseManager.elainaDb.collections.userBind
-        ).getUserDPPRank(playerInfo.pptotal);
+        const ppRank: number =
+            await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
+                playerInfo.pptotal
+            );
 
         const embed: EmbedBuilder = await EmbedCreator.createDPPListEmbed(
             interaction,
@@ -121,11 +118,11 @@ export abstract class DPPHelper {
             await CommandHelper.getLocale(interaction)
         );
 
-        const list: OldPPEntry[] = [...playerInfo.pp.values()];
+        const list: PPEntry[] = [...playerInfo.pp.values()];
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-                const pp: OldPPEntry | undefined = list[i];
+                const pp: PPEntry | undefined = list[i];
 
                 if (pp) {
                     let modstring = pp.mods ? `+${pp.mods}` : "";
@@ -187,9 +184,9 @@ export abstract class DPPHelper {
      * @param dppList The list of dpp plays, mapped by hash.
      * @param entries The plays to add.
      */
-    static insertScore<T extends OldPPEntry>(
-        dppList: Collection<string, T>,
-        entries: T[]
+    static insertScore(
+        dppList: Collection<string, PPEntry>,
+        entries: PPEntry[]
     ): void {
         let needsSorting: boolean = false;
 
@@ -226,9 +223,9 @@ export abstract class DPPHelper {
      * @param entry The entry to check.
      * @returns Whether the PP entry will be kept.
      */
-    static checkScoreInsertion<T extends OldPPEntry>(
-        dppList: Collection<string, T>,
-        entry: T
+    static checkScoreInsertion(
+        dppList: Collection<string, PPEntry>,
+        entry: PPEntry
     ): boolean {
         if (dppList.size < 75) {
             return true;
@@ -276,39 +273,13 @@ export abstract class DPPHelper {
     }
 
     /**
-     * Converts a score to an old PP entry.
-     *
-     * @param beatmapTitle The title of the beatmap.
-     * @param score The score to convert.
-     * @param calculationResult The dpp calculation result of the score.
-     * @returns An old PP entry from the score and calculation result.
-     */
-    static scoreToOldPPEntry(
-        beatmapTitle: string,
-        score: Score,
-        calculationResult: OldPerformanceCalculationResult
-    ): OldPPEntry {
-        return {
-            hash: score.hash,
-            title: beatmapTitle,
-            pp: parseFloat(calculationResult.result.total.toFixed(2)),
-            mods: score.mods.reduce((a, v) => a + v.acronym, ""),
-            accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
-            combo: score.combo,
-            miss: score.accuracy.nmiss,
-            speedMultiplier:
-                score.speedMultiplier !== 1 ? score.speedMultiplier : undefined,
-        };
-    }
-
-    /**
      * Calculates the weighted accuracy of a dpp list.
      *
      * @param dppList The list.
      * @returns The weighted accuracy of the list.
      */
-    static calculateWeightedAccuracy<T extends OldPPEntry>(
-        dppList: Collection<string, T>
+    static calculateWeightedAccuracy(
+        dppList: Collection<string, PPEntry>
     ): number {
         if (dppList.size === 0) {
             return 0;
@@ -333,8 +304,8 @@ export abstract class DPPHelper {
      * @param list The list.
      * @returns The final performance points.
      */
-    static calculateFinalPerformancePoints<T extends OldPPEntry>(
-        list: Collection<string, T>
+    static calculateFinalPerformancePoints(
+        list: Collection<string, PPEntry>
     ): number {
         list.sort((a, b) => b.pp - a.pp);
 
@@ -357,13 +328,6 @@ export abstract class DPPHelper {
                 { projection: { _id: 0, discordid: 1, pp: 1, playc: 1 } }
             );
 
-        const oldPPToUpdateList: Collection<string, OldPPProfile> =
-            await DatabaseManager.aliceDb.collections.playerOldPPProfile.get(
-                "discordId",
-                { "pp.hash": hash },
-                { projection: { _id: 0, discordId: 1, pp: 1, playc: 1 } }
-            );
-
         for (const toUpdate of toUpdateList.values()) {
             toUpdate.pp.delete(hash);
 
@@ -371,27 +335,6 @@ export abstract class DPPHelper {
 
             await DatabaseManager.elainaDb.collections.userBind.updateOne(
                 { discordid: toUpdate.discordid },
-                {
-                    $set: {
-                        pptotal: this.calculateFinalPerformancePoints(
-                            toUpdate.pp
-                        ),
-                        playc: Math.max(0, toUpdate.playc - 1),
-                    },
-                    $pull: {
-                        pp: {
-                            hash: hash,
-                        },
-                    },
-                }
-            );
-        }
-
-        for (const toUpdate of oldPPToUpdateList.values()) {
-            toUpdate.pp.delete(hash);
-
-            await DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
-                { discordId: toUpdate.discordId },
                 {
                     $set: {
                         pptotal: this.calculateFinalPerformancePoints(

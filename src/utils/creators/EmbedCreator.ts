@@ -80,11 +80,7 @@ import {
 } from "@alice-localization/utils/creators/EmbedCreator/EmbedCreatorLocalization";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
-import { std_ppv2 } from "ojsamadroid";
-import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
 import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
-import { OldDroidDifficultyAttributes } from "@alice-structures/difficultyattributes/OldDroidDifficultyAttributes";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 
 /**
@@ -289,7 +285,7 @@ export abstract class EmbedCreator {
      */
     static async createDPPListEmbed(
         interaction: RepliableInteraction,
-        playerInfo: UserBind | OldPPProfile,
+        playerInfo: UserBind,
         ppRank?: number,
         language: Language = "en"
     ): Promise<EmbedBuilder> {
@@ -301,24 +297,18 @@ export abstract class EmbedCreator {
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
 
-        ppRank ??= await (playerInfo instanceof OldPPProfile
-            ? DatabaseManager.aliceDb.collections.playerOldPPProfile
-            : DatabaseManager.elainaDb.collections.userBind
-        ).getUserDPPRank(playerInfo.pptotal);
+        ppRank ??=
+            await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
+                playerInfo.pptotal
+            );
 
         embed.setDescription(
             `${bold(
                 `${StringHelper.formatString(
-                    localization.getTranslation(
-                        playerInfo instanceof OldPPProfile
-                            ? "oldPpProfileTitle"
-                            : "ppProfileTitle"
-                    ),
-                    `${userMention(
-                        playerInfo instanceof OldPPProfile
-                            ? playerInfo.discordId
-                            : playerInfo.discordid
-                    )} (${playerInfo.username})`
+                    localization.getTranslation("ppProfileTitle"),
+                    `${userMention(playerInfo.discordid)} (${
+                        playerInfo.username
+                    })`
                 )}`
             )}\n` +
                 `${localization.getTranslation("totalPP")}: ${bold(
@@ -337,9 +327,7 @@ export abstract class EmbedCreator {
                 )}\n` +
                 `[${localization.getTranslation(
                     "ppProfile"
-                )}](https://droidpp.osudroid.moe/${
-                    playerInfo instanceof OldPPProfile ? "old/" : ""
-                }profile/${playerInfo.uid})`
+                )}](https://droidpp.osudroid.moe/profile/${playerInfo.uid})`
         );
 
         return embed;
@@ -388,15 +376,12 @@ export abstract class EmbedCreator {
         beatmap: MapInfo,
         calculationParams: DifficultyCalculationParameters,
         droidDifficultyAttributes: CacheableDifficultyAttributes<
-            | DroidDifficultyAttributes
-            | RebalanceDroidDifficultyAttributes
-            | OldDroidDifficultyAttributes
+            DroidDifficultyAttributes | RebalanceDroidDifficultyAttributes
         >,
         osuDifficultyAttributes: CacheableDifficultyAttributes<
             OsuDifficultyAttributes | RebalanceOsuDifficultyAttributes
         >,
         droidPerfCalcResult?:
-            | OldPerformanceCalculationResult
             | PerformanceCalculationResult<
                   DroidDifficultyCalculator,
                   DroidPerformanceCalculator
@@ -437,8 +422,8 @@ export abstract class EmbedCreator {
         ) {
             const droidPP:
                 | DroidPerformanceCalculator
-                | RebalanceDroidPerformanceCalculator
-                | std_ppv2 = droidPerfCalcResult.result;
+                | RebalanceDroidPerformanceCalculator =
+                droidPerfCalcResult.result;
             const pcPP:
                 | OsuPerformanceCalculator
                 | RebalanceOsuPerformanceCalculator = osuPerfCalcResult.result;
@@ -485,16 +470,9 @@ export abstract class EmbedCreator {
                                       "estimated"
                                   )})`
                                 : ""
-                        } - ${
-                            droidPerfCalcResult instanceof
-                            OldPerformanceCalculationResult
-                                ? droidPerfCalcResult.difficultyAttributes.starRating.toFixed(
-                                      2
-                                  )
-                                : droidDifficultyAttributes.starRating.toFixed(
-                                      2
-                                  )
-                        }${Symbols.star}`,
+                        } - ${droidDifficultyAttributes.starRating.toFixed(2)}${
+                            Symbols.star
+                        }`,
                         value: `${bold(
                             localization.getTranslation("pcPP")
                         )}: ${pcPP.total.toFixed(2)} pp${
@@ -538,14 +516,6 @@ export abstract class EmbedCreator {
                             2
                         )} ${localization.getTranslation("pcStars")}`,
                 });
-        }
-
-        if (droidPerfCalcResult instanceof OldPerformanceCalculationResult) {
-            embed.setDescription(
-                `${bold(
-                    `${localization.getTranslation("oldCalculationNote")}`
-                )}\n` + embed.data.description
-            );
         }
 
         if (

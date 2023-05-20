@@ -38,9 +38,6 @@ import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
-import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
-import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
-import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { HitErrorInformation } from "@rian8337/osu-droid-replay-analyzer";
 import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
@@ -333,7 +330,6 @@ export class UserBind extends Manager {
      */
     async recalculateDPP(): Promise<OperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
-        const oldPPNewList: Collection<string, OldPPEntry> = new Collection();
 
         this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
 
@@ -392,11 +388,6 @@ export class UserBind extends Manager {
                 perfCalcResult
             );
 
-            const oldCalcResult: OldPerformanceCalculationResult =
-                (await BeatmapOldDifficultyHelper.calculateScorePerformance(
-                    score
-                ))!;
-
             await HelperFunctions.sleep(0.1);
 
             DPPHelper.insertScore(newList, [
@@ -404,14 +395,6 @@ export class UserBind extends Manager {
                     beatmapInfo.fullTitle,
                     score,
                     perfCalcResult
-                ),
-            ]);
-
-            DPPHelper.insertScore(oldPPNewList, [
-                DPPHelper.scoreToOldPPEntry(
-                    beatmapInfo.fullTitle,
-                    score,
-                    oldCalcResult
                 ),
             ]);
         }
@@ -433,20 +416,10 @@ export class UserBind extends Manager {
             }
         );
 
-        await DiscordBackendRESTManager.updateMetadata(this.discordid);
+        const metadataOperation: RequestResponse =
+            await DiscordBackendRESTManager.updateMetadata(this.discordid);
 
-        return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
-            { discordId: this.discordid },
-            {
-                $set: {
-                    pp: [...oldPPNewList.values()],
-                    pptotal:
-                        DPPHelper.calculateFinalPerformancePoints(oldPPNewList),
-                    weightedAccuracy:
-                        DPPHelper.calculateWeightedAccuracy(oldPPNewList),
-                },
-            }
-        );
+        return this.createOperationResult(metadataOperation.statusCode === 200);
     }
 
     /**
@@ -658,7 +631,6 @@ export class UserBind extends Manager {
         isDPPRecalc: boolean = false
     ): Promise<OperationResult> {
         let newList: Collection<string, PPEntry> = new Collection();
-        let oldPPNewList: Collection<string, OldPPEntry> = new Collection();
 
         this.playc = 0;
 
@@ -724,10 +696,6 @@ export class UserBind extends Manager {
                         v.hash,
                         v,
                     ])
-                );
-
-                oldPPNewList = new Collection(
-                    this.calculationInfo.oldPPEntries.map((v) => [v.hash, v])
                 );
             }
 
@@ -802,21 +770,6 @@ export class UserBind extends Manager {
 
                                 DPPHelper.insertScore(newList, [ppEntry]);
                             }
-
-                            const oldCalcResult: OldPerformanceCalculationResult | null =
-                                await BeatmapOldDifficultyHelper.calculateScorePerformance(
-                                    score
-                                );
-
-                            if (oldCalcResult) {
-                                DPPHelper.insertScore(oldPPNewList, [
-                                    DPPHelper.scoreToOldPPEntry(
-                                        beatmapInfo.fullTitle,
-                                        score,
-                                        oldCalcResult
-                                    ),
-                                ]);
-                            }
                         }
                     }
                 }
@@ -827,7 +780,6 @@ export class UserBind extends Manager {
                         page: page,
                         playc: this.playc,
                         currentPPEntries: [...newList.values()],
-                        oldPPEntries: [...oldPPNewList.values()],
                     };
 
                     await this.bindDb.updateOne(
@@ -847,7 +799,6 @@ export class UserBind extends Manager {
                     page: 0,
                     playc: this.playc,
                     currentPPEntries: [...newList.values()],
-                    oldPPEntries: [...oldPPNewList.values()],
                 };
 
                 await this.bindDb.updateOne(
@@ -890,21 +841,10 @@ export class UserBind extends Manager {
 
         await this.bindDb.updateOne({ discordid: this.discordid }, query);
 
-        await DiscordBackendRESTManager.updateMetadata(this.discordid);
+        const metadataOperation: RequestResponse =
+            await DiscordBackendRESTManager.updateMetadata(this.discordid);
 
-        return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
-            { discordId: this.discordid },
-            {
-                $set: {
-                    pp: [...oldPPNewList.values()],
-                    pptotal:
-                        DPPHelper.calculateFinalPerformancePoints(oldPPNewList),
-                    playc: this.playc,
-                    weightedAccuracy:
-                        DPPHelper.calculateWeightedAccuracy(oldPPNewList),
-                },
-            }
-        );
+        return this.createOperationResult(metadataOperation.statusCode === 200);
     }
 
     /**
@@ -1018,15 +958,6 @@ export class UserBind extends Manager {
                 },
                 { upsert: true }
             );
-
-            await DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
-                { discordId: this.discordid },
-                {
-                    $set: {
-                        discordId: to,
-                    },
-                }
-            );
         } else {
             await this.bindDb.updateOne(
                 { discordid: this.discordid },
@@ -1130,18 +1061,7 @@ export class UserBind extends Manager {
         this.uid = player.uid;
         this.username = player.username;
 
-        await this.bindDb.updateOne(
-            { discordid: this.discordid },
-            {
-                $set: {
-                    username: this.username,
-                    uid: this.uid,
-                    previous_bind: this.previous_bind,
-                },
-            }
-        );
-
-        return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
+        return this.bindDb.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
@@ -1197,12 +1117,6 @@ export class UserBind extends Manager {
                 }
             }
 
-            await DatabaseManager.aliceDb.collections.playerOldPPProfile.deleteOne(
-                {
-                    discordId: this.discordid,
-                }
-            );
-
             return this.bindDb.deleteOne({
                 discordid: this.discordid,
             });
@@ -1216,21 +1130,8 @@ export class UserBind extends Manager {
             this.username = player.username;
         }
 
-        await this.bindDb.updateOne(
+        return this.bindDb.updateOne(
             { discordid: this.discordid },
-            {
-                $set: {
-                    uid: this.uid,
-                    username: this.username,
-                },
-                $pull: {
-                    previous_bind: uid,
-                },
-            }
-        );
-
-        return DatabaseManager.aliceDb.collections.playerOldPPProfile.updateOne(
-            { discordId: this.discordid },
             {
                 $set: {
                     uid: this.uid,

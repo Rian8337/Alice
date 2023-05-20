@@ -45,10 +45,6 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         discordid: guildBan.user.id,
     });
 
-    await DatabaseManager.aliceDb.collections.playerOldPPProfile.deleteOne({
-        discordId: guildBan.user.id,
-    });
-
     logChannel.send(
         MessageCreator.createAccept(`Successfully unbinded ${guildBan.user}.`)
     );

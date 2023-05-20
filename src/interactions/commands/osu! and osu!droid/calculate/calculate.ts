@@ -31,8 +31,6 @@ import { CalculateLocalization } from "@alice-localization/interactions/commands
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
-import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
 import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { RebalanceDifficultyCalculationResult } from "@alice-utils/dpp/RebalanceDifficultyCalculationResult";
 
@@ -122,7 +120,6 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
               RebalanceDroidDifficultyCalculator,
               RebalanceDroidPerformanceCalculator
           >
-        | OldPerformanceCalculationResult
         | null;
 
     let osuCalcResult:
@@ -197,50 +194,6 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             }
 
             break;
-        case PPCalculationMethod.old:
-            droidCalcResult =
-                await BeatmapOldDifficultyHelper.calculateBeatmapPerformance(
-                    beatmap,
-                    calcParams
-                );
-            osuCalcResult = await osuCalcHelper.calculateBeatmapPerformance(
-                beatmap,
-                calcParams
-            );
-
-            if (!droidCalcResult || !osuCalcResult) {
-                break;
-            }
-
-            if (showStrainGraph) {
-                let difficultyCalculator: OsuDifficultyCalculator | undefined;
-
-                if (osuCalcResult.requestedDifficultyCalculation()) {
-                    difficultyCalculator = osuCalcResult.difficultyCalculator;
-                } else {
-                    const diffCalcResult: DifficultyCalculationResult<
-                        OsuDifficultyAttributes,
-                        OsuDifficultyCalculator
-                    > | null = await osuCalcHelper.calculateBeatmapDifficulty(
-                        beatmap,
-                        calcParams
-                    );
-
-                    if (diffCalcResult) {
-                        difficultyCalculator = diffCalcResult.result;
-                    }
-                }
-
-                if (difficultyCalculator) {
-                    strainGraphImage = (await getStrainChart(
-                        difficultyCalculator,
-                        beatmap.beatmapsetID,
-                        strainGraphColor
-                    ))!;
-                }
-            }
-
-            break;
         default:
             droidCalcResult = await droidCalcHelper.calculateBeatmapPerformance(
                 beatmap,
@@ -296,9 +249,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         EmbedCreator.createCalculationEmbed(
             beatmap,
             calcParams,
-            droidCalcResult instanceof OldPerformanceCalculationResult
-                ? droidCalcResult.difficultyAttributes
-                : droidCalcResult.result.difficultyAttributes,
+            droidCalcResult.result.difficultyAttributes,
             osuCalcResult.result.difficultyAttributes,
             droidCalcResult,
             osuCalcResult,
@@ -425,10 +376,6 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "Rebalance",
                     value: PPCalculationMethod.rebalance,
-                },
-                {
-                    name: "Old",
-                    value: PPCalculationMethod.old,
                 },
             ],
         },

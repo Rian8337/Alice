@@ -4,7 +4,6 @@ import { DifficultyAttributes as RebalanceDifficultyAttributes } from "@rian8337
 /**
  * A base difficulty attributes structure for all difficulty attributes.
  */
-export type RawDifficultyAttributes = Omit<
-    DifficultyAttributes | RebalanceDifficultyAttributes,
-    "sliderFactor" | "flashlightDifficulty" | "speedNoteCount"
->;
+export type RawDifficultyAttributes =
+    | DifficultyAttributes
+    | RebalanceDifficultyAttributes;

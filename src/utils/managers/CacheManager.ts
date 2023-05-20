@@ -12,7 +12,6 @@ import { LiveDroidDifficultyAttributesCacheManager } from "@alice-utils/difficul
 import { LiveOsuDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/LiveOsuDifficultyAttributesCacheManager";
 import { RebalanceDroidDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/RebalanceDroidDifficultyAttributesCacheManager";
 import { RebalanceOsuDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/RebalanceOsuDifficultyAttributesCacheManager";
-import { OldDroidDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/OldDroidDifficultyAttributesCacheManager";
 
 /**
  * A manager that holds anything that is cached.
@@ -107,9 +106,6 @@ export abstract class CacheManager {
         rebalance: {
             droid: new RebalanceDroidDifficultyAttributesCacheManager(),
             osu: new RebalanceOsuDifficultyAttributesCacheManager(),
-        },
-        old: {
-            droid: new OldDroidDifficultyAttributesCacheManager(),
         },
     };
 

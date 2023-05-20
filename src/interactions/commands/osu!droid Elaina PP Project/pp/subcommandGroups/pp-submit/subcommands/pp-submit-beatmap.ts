@@ -4,7 +4,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { bold, Collection, EmbedBuilder, GuildMember } from "discord.js";
+import { bold, EmbedBuilder, GuildMember } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
@@ -22,11 +22,6 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
-import { OldPerformanceCalculationResult } from "@alice-utils/dpp/OldPerformanceCalculationResult";
-import { BeatmapOldDifficultyHelper } from "@alice-utils/helpers/BeatmapOldDifficultyHelper";
-import { OldPPProfile } from "@alice-database/utils/aliceDb/OldPPProfile";
-import { OldPPProfileCollectionManager } from "@alice-database/managers/aliceDb/OldPPProfileCollectionManager";
-import { OldPPEntry } from "@alice-structures/dpp/OldPPEntry";
 import { PPEntry } from "@alice-structures/dpp/PPEntry";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
@@ -39,8 +34,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const bindDbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
-    const oldPPDbManager: OldPPProfileCollectionManager =
-        DatabaseManager.aliceDb.collections.playerOldPPProfile;
 
     const bindInfo: UserBind | null = await bindDbManager.getFromUser(
         interaction.user,
@@ -64,10 +57,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ),
         });
     }
-
-    const oldPPInfo: OldPPProfile | null = await oldPPDbManager.getFromUser(
-        interaction.user
-    );
 
     const beatmapID: number = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap", true)
@@ -211,38 +200,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             DPPHelper.insertScore(bindInfo.pp, [ppEntry]);
 
             await bindInfo.setNewDPPValue(bindInfo.pp, 1);
-        }
-
-        const oldCalcResult: OldPerformanceCalculationResult =
-            (await BeatmapOldDifficultyHelper.calculateScorePerformance(
-                score
-            ))!;
-
-        const oldPPEntry: OldPPEntry = DPPHelper.scoreToOldPPEntry(
-            beatmapInfo.fullTitle,
-            score,
-            oldCalcResult
-        );
-
-        if (oldPPInfo) {
-            DPPHelper.insertScore(oldPPInfo.pp, [oldPPEntry]);
-
-            await oldPPInfo.setNewDPPValue(oldPPInfo.pp, 1);
-        } else {
-            const list: Collection<string, OldPPEntry> = new Collection([
-                [oldPPEntry.hash, oldPPEntry],
-            ]);
-
-            await oldPPDbManager.insert({
-                discordId: interaction.user.id,
-                uid: bindInfo.uid,
-                username: bindInfo.username,
-                playc: 1,
-                pptotal: DPPHelper.calculateFinalPerformancePoints(list),
-                previous_bind: bindInfo.previous_bind,
-                pp: [oldPPEntry],
-                weightedAccuracy: DPPHelper.calculateWeightedAccuracy(list),
-            });
         }
 
         const dpp: number = parseFloat(perfCalcResult.result.total.toFixed(2));

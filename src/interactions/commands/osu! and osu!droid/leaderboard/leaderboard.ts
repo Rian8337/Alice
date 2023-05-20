@@ -65,19 +65,6 @@ export const config: SlashCommand["config"] = {
             ],
         },
         {
-            name: "old",
-            type: ApplicationCommandOptionType.Subcommand,
-            description: "View the droid pp (dpp) old leaderboard.",
-            options: [
-                {
-                    name: "page",
-                    type: ApplicationCommandOptionType.Integer,
-                    description: "The page of the leaderboard. Defaults to 1.",
-                    minValue: 1,
-                },
-            ],
-        },
-        {
             name: "prototype",
             type: ApplicationCommandOptionType.Subcommand,
             description: "View the droid pp (dpp) prototype leaderboard.",

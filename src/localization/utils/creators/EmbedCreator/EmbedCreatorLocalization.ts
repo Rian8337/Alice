@@ -19,7 +19,6 @@ export interface EmbedCreatorStrings {
     readonly pcStars: string;
     readonly starRating: string;
     readonly rebalanceCalculationNote: string;
-    readonly oldCalculationNote: string;
     readonly beatmapInfo: string;
     readonly dateAchieved: string;
     readonly penalties: string;
@@ -67,7 +66,6 @@ export interface EmbedCreatorStrings {
     readonly musicDuration: string;
     readonly musicQueuer: string;
     readonly ppProfileTitle: string; // see PrototypecheckLocalization
-    readonly oldPpProfileTitle: string; // see PrototypecheckLocalization
     readonly totalPP: string;
     readonly ppProfile: string;
     readonly warningInfo: string;

@@ -49,9 +49,6 @@ export abstract class DifficultyAttributesCacheManager<
             case PPCalculationMethod.rebalance:
                 attributeTypeFolder = "rebalance";
                 break;
-            case PPCalculationMethod.old:
-                attributeTypeFolder = "old";
-                break;
         }
 
         switch (this.mode) {

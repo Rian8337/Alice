@@ -21,8 +21,6 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         starRating: "Star Rating",
         rebalanceCalculationNote:
             "Hasil perhitungan dapat berubah seiring waktu.",
-        oldCalculationNote:
-            "Hasil perhitungan droid pp berasal dari sistem lama.",
         beatmapInfo: "Informasi Beatmap",
         dateAchieved: "Dicapai pada %s",
         penalties: "Penalti",
@@ -78,7 +76,6 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         musicDuration: "Durasi",
         musicQueuer: "Dimasukkan oleh %s",
         ppProfileTitle: "Profil PP untuk %s",
-        oldPpProfileTitle: "Profil PP lama untuk %s",
         totalPP: "Total PP",
         ppProfile: "Profil PP",
         warningInfo: "Info Peringatan",
