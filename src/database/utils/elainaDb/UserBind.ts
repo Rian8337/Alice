@@ -531,6 +531,7 @@ export class UserBind extends Manager {
             const { result: rebalPerfResult } = rebalPerfCalcResult;
 
             const entry: PrototypePPEntry = {
+                uid: score.uid,
                 hash: beatmapInfo.hash,
                 title: beatmapInfo.fullTitle,
                 pp: NumberHelper.round(rebalPerfResult.total, 2),

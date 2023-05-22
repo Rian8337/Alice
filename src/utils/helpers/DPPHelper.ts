@@ -258,6 +258,7 @@ export abstract class DPPHelper {
         >
     ): PPEntry {
         return {
+            uid: score.uid,
             hash: score.hash,
             title: beatmapTitle,
             pp: NumberHelper.round(calculationResult.result.total, 2),

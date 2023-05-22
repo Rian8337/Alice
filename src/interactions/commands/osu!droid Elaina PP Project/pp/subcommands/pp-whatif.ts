@@ -108,6 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Mock the PP entry.
     DPPHelper.insertScore(bindInfo.pp, [
         {
+            uid: 0,
             accuracy: 100,
             combo: 0,
             hash: "",

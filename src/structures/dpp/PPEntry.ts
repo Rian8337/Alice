@@ -3,6 +3,11 @@
  */
 export interface PPEntry {
     /**
+     * The uid of the osu!droid account of which this score belongs to.
+     */
+    uid: number;
+
+    /**
      * The MD5 hash of the beatmap.
      */
     hash: string;
