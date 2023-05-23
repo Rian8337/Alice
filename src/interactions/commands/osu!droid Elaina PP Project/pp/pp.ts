@@ -215,29 +215,29 @@ export const config: SlashCommand["config"] = {
                         },
                     ],
                 },
-                {
-                    name: "recent",
-                    type: ApplicationCommandOptionType.Subcommand,
-                    description: "Submits score(s) from your recent plays.",
-                    options: [
-                        {
-                            name: "amount",
-                            type: ApplicationCommandOptionType.Integer,
-                            description:
-                                "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1.",
-                            minValue: 1,
-                            maxValue: 5,
-                        },
-                        {
-                            name: "offset",
-                            type: ApplicationCommandOptionType.Integer,
-                            description:
-                                "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50.",
-                            minValue: 1,
-                            maxValue: 50,
-                        },
-                    ],
-                },
+                // {
+                //     name: "recent",
+                //     type: ApplicationCommandOptionType.Subcommand,
+                //     description: "Submits score(s) from your recent plays.",
+                //     options: [
+                //         {
+                //             name: "amount",
+                //             type: ApplicationCommandOptionType.Integer,
+                //             description:
+                //                 "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1.",
+                //             minValue: 1,
+                //             maxValue: 5,
+                //         },
+                //         {
+                //             name: "offset",
+                //             type: ApplicationCommandOptionType.Integer,
+                //             description:
+                //                 "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50.",
+                //             minValue: 1,
+                //             maxValue: 50,
+                //         },
+                //     ],
+                // },
             ],
         },
         {

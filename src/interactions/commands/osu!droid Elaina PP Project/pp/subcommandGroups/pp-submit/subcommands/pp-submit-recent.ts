@@ -24,8 +24,15 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPEntry } from "@alice-structures/dpp/PPEntry";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
+import { Config } from "@alice-core/Config";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
+    if (!Config.isDebug) {
+        return InteractionHelper.reply(interaction, {
+            content: "Command not supported",
+        });
+    }
+
     const localization: PPLocalization = new PPLocalization(
         await CommandHelper.getLocale(interaction)
     );
