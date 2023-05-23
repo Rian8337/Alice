@@ -15,7 +15,7 @@ export abstract class RESTManager extends Manager {
         url: string | URL,
         options?: CoreOptions
     ): Promise<RequestResponse> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const dataArray: Buffer[] = [];
 
             request(url.toString(), options)
@@ -25,7 +25,8 @@ export abstract class RESTManager extends Manager {
                         statusCode: req.statusCode,
                         data: Buffer.concat(dataArray),
                     });
-                });
+                })
+                .on("error", (e) => reject(e));
         });
     }
 
