@@ -266,7 +266,6 @@ export abstract class DPPHelper {
             accuracy: NumberHelper.round(score.accuracy.value() * 100, 2),
             combo: score.combo,
             miss: score.accuracy.nmiss,
-            scoreID: score.scoreID,
             speedMultiplier:
                 score.speedMultiplier !== 1 ? score.speedMultiplier : undefined,
             forcedAR: score.forcedAR,

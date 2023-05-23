@@ -115,7 +115,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             miss: 0,
             mods: "",
             pp: ppValue,
-            scoreID: 0,
             title: "",
         },
     ]);

@@ -334,8 +334,9 @@ export class UserBind extends Manager {
         this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
 
         for (const ppEntry of this.pp.values()) {
-            const score: Score | null = await this.getScoreRelativeToPP(
-                ppEntry
+            const score: Score | null = await Score.getFromHash(
+                ppEntry.uid,
+                ppEntry.hash
             );
 
             if (!score) {
@@ -431,8 +432,9 @@ export class UserBind extends Manager {
         this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
 
         for (const ppEntry of this.pp.values()) {
-            const score: Score | null = await this.getScoreRelativeToPP(
-                ppEntry
+            const score: Score | null = await Score.getFromHash(
+                ppEntry.uid,
+                ppEntry.hash
             );
 
             if (!score) {
@@ -548,7 +550,6 @@ export class UserBind extends Manager {
                 accuracy: NumberHelper.round(score.accuracy.value() * 100, 2),
                 combo: score.combo,
                 miss: score.accuracy.nmiss,
-                scoreID: score.scoreID,
                 speedMultiplier:
                     score.speedMultiplier !== 1
                         ? score.speedMultiplier
@@ -1170,27 +1171,6 @@ export class UserBind extends Manager {
      */
     isUidBinded(uid: number): boolean {
         return this.previous_bind.includes(uid);
-    }
-
-    /**
-     * Gets a score from this binded Discord account with respect to a pp entry.
-     *
-     * @param ppEntry The pp entry to retrieve.
-     * @returns The score, `null` if not found.
-     */
-    async getScoreRelativeToPP(ppEntry: PPEntry): Promise<Score | null> {
-        for (const uid of this.previous_bind) {
-            const score: Score | null = await Score.getFromHash(
-                uid,
-                ppEntry.hash
-            );
-
-            if (score?.scoreID === ppEntry.scoreID) {
-                return score;
-            }
-        }
-
-        return null;
     }
 
     /**
