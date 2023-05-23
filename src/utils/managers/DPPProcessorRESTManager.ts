@@ -199,7 +199,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             body: {
                 key: process.env.DROID_SERVER_INTERNAL_KEY,
                 uid: playerId,
-                scoreId: scoreId,
+                scoreid: scoreId,
             },
         }).catch(() => null);
 
