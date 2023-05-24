@@ -32,14 +32,14 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Retrieves a difficulty attributes from the backend.
      *
-     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The difficulty calculation parameters to use.
      * @returns The difficulty attributes, `null` if the difficulty attributes cannot be retrieved.
      */
     static async getDifficultyAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: DifficultyCalculationParameters
@@ -48,14 +48,14 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Retrieves a difficulty attributes from the backend.
      *
-     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The difficulty calculation parameters to use.
      * @returns The difficulty attributes, `null` if the difficulty attributes cannot be retrieved.
      */
     static async getDifficultyAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: DifficultyCalculationParameters
@@ -64,14 +64,14 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Retrieves a difficulty attributes from the backend.
      *
-     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The difficulty calculation parameters to use.
      * @returns The difficulty attributes, `null` if the difficulty attributes cannot be retrieved.
      */
     static async getDifficultyAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: DifficultyCalculationParameters
@@ -80,30 +80,33 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Retrieves a difficulty attributes from the backend.
      *
-     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The difficulty calculation parameters to use.
      * @returns The difficulty attributes, `null` if the difficulty attributes cannot be retrieved.
      */
     static async getDifficultyAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: DifficultyCalculationParameters
     ): Promise<CacheableDifficultyAttributes<RebalanceOsuDifficultyAttributes> | null>;
 
     static async getDifficultyAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes,
         calculationMethod: PPCalculationMethod,
         calculationParams?: DifficultyCalculationParameters
     ): Promise<CacheableDifficultyAttributes<RawDifficultyAttributes> | null> {
         const url: URL = new URL(`${this.endpoint}get-difficulty-attributes`);
         url.searchParams.set("key", process.env.DROID_INTERNAL_SERVER_KEY!);
-        url.searchParams.set("beatmaphash", beatmapHash);
         url.searchParams.set("mode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
+        url.searchParams.set(
+            typeof beatmapIdOrHash === "number" ? "beatmapid" : "beatmaphash",
+            beatmapIdOrHash.toString()
+        );
 
         if (calculationParams) {
             const { customStatistics } = calculationParams;
@@ -166,14 +169,14 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Retrieves a difficulty and performance attributes from the backend.
      *
-     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
      * @returns The performance attributes, `null` if the performance attributes cannot be retrieved.
      */
     static async getPerformanceAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: PerformanceCalculationParameters
@@ -183,16 +186,16 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     > | null>;
 
     /**
-     * Retrieves a performance attributes from the backend.
+     * Retrieves a difficulty and performance attributes from the backend.
      *
-     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
      * @returns The performance attributes, `null` if the performance attributes cannot be retrieved.
      */
     static async getPerformanceAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: PerformanceCalculationParameters
@@ -202,16 +205,16 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     > | null>;
 
     /**
-     * Retrieves a performance attributes from the backend.
+     * Retrieves a difficulty and performance attributes from the backend.
      *
-     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
      * @returns The performance attributes, `null` if the performance attributes cannot be retrieved.
      */
     static async getPerformanceAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: PerformanceCalculationParameters
@@ -221,16 +224,16 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     > | null>;
 
     /**
-     * Retrieves a performance attributes from the backend.
+     * Retrieves a difficulty and performance attributes from the backend.
      *
-     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
      * @returns The performance attributes, `null` if the performance attributes cannot be retrieved.
      */
     static async getPerformanceAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: PerformanceCalculationParameters
@@ -240,7 +243,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     > | null>;
 
     static async getPerformanceAttributes(
-        beatmapHash: string,
+        beatmapIdOrHash: string | number,
         mode: Modes,
         calculationMethod: PPCalculationMethod,
         calculationParams?: PerformanceCalculationParameters
@@ -250,9 +253,12 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     > | null> {
         const url: URL = new URL(`${this.endpoint}get-performance-attributes`);
         url.searchParams.set("key", process.env.DROID_INTERNAL_SERVER_KEY!);
-        url.searchParams.set("beatmaphash", beatmapHash);
         url.searchParams.set("mode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
+        url.searchParams.set(
+            typeof beatmapIdOrHash === "number" ? "beatmapid" : "beatmaphash",
+            beatmapIdOrHash.toString()
+        );
 
         if (calculationParams) {
             const { customStatistics } = calculationParams;
