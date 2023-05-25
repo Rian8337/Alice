@@ -101,8 +101,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationParams?: DifficultyCalculationParameters
     ): Promise<CacheableDifficultyAttributes<RawDifficultyAttributes> | null> {
         const url: URL = new URL(`${this.endpoint}get-difficulty-attributes`);
-        url.searchParams.set("key", process.env.DROID_INTERNAL_SERVER_KEY!);
-        url.searchParams.set("mode", mode);
+        url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
+        url.searchParams.set("gamemode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
         url.searchParams.set(
             typeof beatmapIdOrHash === "number" ? "beatmapid" : "beatmaphash",
@@ -253,8 +253,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         PerformanceAttributes
     > | null> {
         const url: URL = new URL(`${this.endpoint}get-performance-attributes`);
-        url.searchParams.set("key", process.env.DROID_INTERNAL_SERVER_KEY!);
-        url.searchParams.set("mode", mode);
+        url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
+        url.searchParams.set("gamemode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
         url.searchParams.set(
             typeof beatmapIdOrHash === "number" ? "beatmapid" : "beatmaphash",
@@ -323,7 +323,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
 
         if (result?.statusCode !== 200) {
             if (result) {
-                const errorJson = JSON.parse(result.data.toString());
+                console.log(result.data.toString("utf-8"));
+                const errorJson = JSON.parse(result.data.toString("utf-8"));
 
                 consola.error(
                     "Request to %s failed with error: %s",
@@ -420,8 +421,9 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         PerformanceAttributes
     > | null> {
         const url: URL = new URL(`${this.endpoint}get-online-score-attributes`);
+        url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
         url.searchParams.set("scoreid", scoreId.toString());
-        url.searchParams.set("mode", mode);
+        url.searchParams.set("gamemode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
 
         const result: RequestResponse | null = await this.request(url).catch(
