@@ -537,17 +537,19 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param scoreIds The ID of the scores to be submitted.
      * @returns The status of the submission for each score ID, `null` if the server fails to be reached.
      */
-    static async submitScore(
+    static async submitScores(
         playerId: number,
         scoreIds: number[]
     ): Promise<PPSubmissionStatus[] | null> {
-        const url: URL = new URL(`${this.endpoint}submit-score`);
+        const url: URL = new URL(`${this.endpoint}submit-scores`);
         const result: RequestResponse | null = await this.request(url, {
+            method: "POST",
             body: {
                 key: process.env.DROID_SERVER_INTERNAL_KEY,
                 uid: playerId,
                 scoreids: scoreIds.join(","),
             },
+            json: true,
         }).catch(() => null);
 
         if (result?.statusCode !== 200) {

@@ -90,7 +90,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const statuses: PPSubmissionStatus[] | null =
-        await DPPProcessorRESTManager.submitScore(
+        await DPPProcessorRESTManager.submitScores(
             bindInfo.uid,
             scoresToSubmit.map((v) => v.scoreID)
         );
