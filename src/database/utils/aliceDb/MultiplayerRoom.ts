@@ -19,13 +19,8 @@ import { ScoreRank } from "structures/utils/ScoreRank";
 import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
-import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -37,14 +32,11 @@ import {
     MapInfo,
     Precision,
     IModApplicableToDroid,
+    Modes,
 } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
-    DroidDifficultyCalculator,
-    DroidPerformanceCalculator,
     OsuDifficultyAttributes,
-    OsuDifficultyCalculator,
-    OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     APIEmbedField,
@@ -60,6 +52,11 @@ import {
 import { ObjectId } from "mongodb";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 
 /**
  * Represents a multiplayer room.
@@ -76,21 +73,6 @@ export class MultiplayerRoom
     currentScores: MultiplayerScore[];
     settings: MultiplayerRoomSettings;
     _id?: ObjectId;
-
-    private readonly droidStarRatingCalculationCache: Record<
-        string,
-        DifficultyCalculationResult<
-            DroidDifficultyAttributes,
-            DroidDifficultyCalculator
-        >
-    > = {};
-    private readonly pcStarRatingCalculationCache: Record<
-        string,
-        DifficultyCalculationResult<
-            OsuDifficultyAttributes,
-            OsuDifficultyCalculator
-        >
-    > = {};
 
     private currentBeatmapMaxScore?: number;
 
@@ -812,24 +794,14 @@ export class MultiplayerRoom
                 const { mods, forcedAR, speedMultiplier } =
                     this.convertModString(score.modstring);
 
-                const customStats: MapStats = new MapStats({
-                    ar: forcedAR,
-                    mods: mods,
-                    speedMultiplier: speedMultiplier,
-                    isForceAR: forcedAR !== undefined,
-                });
-
-                const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-                    this.settings.beatmap!.hash,
-                    { checkFile: false }
-                ))!;
-
-                const performance: PerformanceCalculationResult<
-                    DroidDifficultyCalculator,
-                    DroidPerformanceCalculator
+                const attribs: CompleteCalculationAttributes<
+                    DroidDifficultyAttributes,
+                    DroidPerformanceAttributes
                 > | null =
-                    await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                        beatmapInfo,
+                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                        this.settings.beatmap!.hash,
+                        Modes.droid,
+                        PPCalculationMethod.live,
                         new PerformanceCalculationParameters(
                             new Accuracy({
                                 n300: score.perfect,
@@ -840,50 +812,29 @@ export class MultiplayerRoom
                             undefined,
                             score.maxCombo,
                             undefined,
-                            customStats
+                            new MapStats({
+                                ar: forcedAR,
+                                mods: mods,
+                                speedMultiplier: speedMultiplier,
+                                isForceAR: forcedAR !== undefined,
+                            })
                         )
                     );
 
-                return NumberHelper.round(performance?.result.total ?? 0, 2);
+                return NumberHelper.round(attribs?.performance.total ?? 0, 2);
             }
             case MultiplayerWinCondition.mostPcPp: {
                 const { mods, forcedAR, speedMultiplier } =
                     this.convertModString(score.modstring);
 
-                const sortedMod: string = StringHelper.sortAlphabet(
-                    mods.reduce((a, m) => a + m.acronym, "")
-                );
-
-                const customStats: MapStats = new MapStats({
-                    ar: forcedAR,
-                    mods: mods,
-                    speedMultiplier: speedMultiplier,
-                    isForceAR: forcedAR !== undefined,
-                });
-
-                const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(
-                    this.settings.beatmap!.hash,
-                    { checkFile: false }
-                ))!;
-
-                const starRating: DifficultyCalculationResult<
+                const attribs: CompleteCalculationAttributes<
                     OsuDifficultyAttributes,
-                    OsuDifficultyCalculator
-                > =
-                    this.pcStarRatingCalculationCache[sortedMod] ??
-                    (await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
-                        beatmapInfo,
-                        new DifficultyCalculationParameters(customStats)
-                    ));
-
-                this.pcStarRatingCalculationCache[sortedMod] ??= starRating;
-
-                const performance: PerformanceCalculationResult<
-                    OsuDifficultyCalculator,
-                    OsuPerformanceCalculator
-                > =
-                    await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                        starRating.result.attributes,
+                    OsuPerformanceAttributes
+                > | null =
+                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                        this.settings.beatmap!.hash,
+                        Modes.osu,
+                        PPCalculationMethod.live,
                         new PerformanceCalculationParameters(
                             new Accuracy({
                                 n300: score.perfect,
@@ -893,11 +844,17 @@ export class MultiplayerRoom
                             }),
                             undefined,
                             score.maxCombo,
-                            1
+                            undefined,
+                            new MapStats({
+                                ar: forcedAR,
+                                mods: mods,
+                                speedMultiplier: speedMultiplier,
+                                isForceAR: forcedAR !== undefined,
+                            })
                         )
                     );
 
-                return NumberHelper.round(performance.result.total, 2);
+                return NumberHelper.round(attribs?.performance.total ?? 0, 2);
             }
         }
     }

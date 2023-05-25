@@ -104,6 +104,11 @@ export interface PrototypePPEntry extends PPEntry {
     aimSliderCheesePenalty: number;
 
     /**
+     * The flashlight slider cheese penalty of the score.
+     */
+    flashlightSliderCheesePenalty: number;
+
+    /**
      * The visual slider cheese penalty of the score.
      */
     visualSliderCheesePenalty: number;

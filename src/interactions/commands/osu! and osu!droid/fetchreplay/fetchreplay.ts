@@ -9,19 +9,14 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
-import { IModApplicableToDroid, MapInfo, Mod } from "@rian8337/osu-base";
+import { IModApplicableToDroid, MapInfo, Mod, Modes } from "@rian8337/osu-base";
 import {
-    DroidDifficultyCalculator,
-    DroidPerformanceCalculator,
-    OsuDifficultyCalculator,
-    OsuPerformanceCalculator,
+    DroidDifficultyAttributes,
+    OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     ExportedReplayJSON,
@@ -34,6 +29,12 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: FetchreplayLocalization = new FetchreplayLocalization(
@@ -186,29 +187,70 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const droidCalcResult: PerformanceCalculationResult<
-        DroidDifficultyCalculator,
-        DroidPerformanceCalculator
-    > = (await new DroidBeatmapDifficultyHelper().calculateScorePerformance(
-        score
-    ))!;
+    const droidAttribs: CompleteCalculationAttributes<
+        DroidDifficultyAttributes,
+        DroidPerformanceAttributes
+    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+        score.scoreID,
+        Modes.droid,
+        PPCalculationMethod.live
+    );
 
-    const osuCalcResult: PerformanceCalculationResult<
-        OsuDifficultyCalculator,
-        OsuPerformanceCalculator
-    > = (await new OsuBeatmapDifficultyHelper().calculateScorePerformance(
-        score
-    ))!;
+    if (!droidAttribs) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createAccept(
+                localization.getTranslation("fetchReplayNoBeatmapSuccessful"),
+                score.rank,
+                score.score.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
+                score.combo.toString(),
+                (score.accuracy.value() * 100).toFixed(2),
+                score.accuracy.n300.toString(),
+                score.accuracy.n100.toString(),
+                score.accuracy.n50.toString(),
+                score.accuracy.nmiss.toString()
+            ),
+            files: [replayAttachment],
+        });
+    }
+
+    const osuAttribs: CompleteCalculationAttributes<
+        OsuDifficultyAttributes,
+        OsuPerformanceAttributes
+    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+        score.scoreID,
+        Modes.osu,
+        PPCalculationMethod.live
+    );
+
+    if (!osuAttribs) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createAccept(
+                localization.getTranslation("fetchReplayNoBeatmapSuccessful"),
+                score.rank,
+                score.score.toLocaleString(
+                    LocaleHelper.convertToBCP47(localization.language)
+                ),
+                score.combo.toString(),
+                (score.accuracy.value() * 100).toFixed(2),
+                score.accuracy.n300.toString(),
+                score.accuracy.n100.toString(),
+                score.accuracy.n50.toString(),
+                score.accuracy.nmiss.toString()
+            ),
+            files: [replayAttachment],
+        });
+    }
 
     const calcEmbedOptions: BaseMessageOptions =
         EmbedCreator.createCalculationEmbed(
             beatmapInfo,
-            osuCalcResult.params,
-            droidCalcResult.result.difficultyAttributes,
-            osuCalcResult.result.difficultyAttributes,
-            droidCalcResult,
-            osuCalcResult,
-            undefined,
+            BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+            droidAttribs.difficulty,
+            osuAttribs.difficulty,
+            droidAttribs.performance,
+            osuAttribs.performance,
             localization.language
         );
 

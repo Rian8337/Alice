@@ -9,16 +9,17 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MapInfo } from "@rian8337/osu-base";
+import { MapInfo, Modes } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { EmbedBuilder, GuildMember, InteractionReplyOptions } from "discord.js";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import {
-    DroidDifficultyCalculator,
-    DroidPerformanceCalculator,
-} from "@rian8337/osu-difficulty-calculator";
+import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
+import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
+import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     const localization: CompareScoreLocalization = new CompareScoreLocalization(
@@ -105,37 +106,20 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         beatmapInfo.hash
     );
 
-    const diffCalcHelper: DroidBeatmapDifficultyHelper =
-        new DroidBeatmapDifficultyHelper();
-
-    const perfCalcResult: PerformanceCalculationResult<
-        DroidDifficultyCalculator,
-        DroidPerformanceCalculator
-    > | null = await diffCalcHelper.calculateScorePerformance(score);
-
-    if (perfCalcResult) {
-        await beatmapInfo.retrieveBeatmapFile();
-
-        if (beatmapInfo.hasDownloadedBeatmap()) {
-            await DroidBeatmapDifficultyHelper.applyTapPenalty(
-                score,
-                beatmapInfo.beatmap!,
-                perfCalcResult
-            );
-
-            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
-                score,
-                beatmapInfo.beatmap!,
-                perfCalcResult
-            );
-        }
-    }
+    const scoreAttribs: CompleteCalculationAttributes<
+        DroidDifficultyAttributes,
+        DroidPerformanceAttributes
+    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+        score.scoreID,
+        Modes.droid,
+        PPCalculationMethod.live
+    );
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
-        perfCalcResult?.result,
+        scoreAttribs,
         undefined,
         localization.language
     );
@@ -148,7 +132,14 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (score.replay?.data && score.accuracy.nmiss > 0) {
+    if (score.accuracy.nmiss > 0) {
+        score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
+        await ReplayHelper.analyzeReplay(score);
+
+        if (!score.replay.data) {
+            return InteractionHelper.reply(interaction, options);
+        }
+
         const beatmapInfo: MapInfo<true> | null =
             await BeatmapManager.getBeatmap(score.hash, {
                 checkFile: true,

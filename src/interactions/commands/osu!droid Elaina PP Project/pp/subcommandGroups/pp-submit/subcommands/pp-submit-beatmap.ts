@@ -13,6 +13,9 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPSubmissionStatus } from "@alice-structures/dpp/PPSubmissionStatus";
+import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { EmbedBuilder, GuildMember, bold } from "discord.js";
+import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -82,20 +85,41 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const status: PPSubmissionStatus | null =
-        await DPPProcessorRESTManager.submitScore(bindInfo.uid, score.scoreID);
+    const statuses: PPSubmissionStatus[] | null =
+        await DPPProcessorRESTManager.submitScore(bindInfo.uid, [
+            score.scoreID,
+        ]);
 
-    if (!status?.success) {
+    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+        author: interaction.user,
+        color: (<GuildMember>interaction.member).displayColor,
+    });
+
+    embed.setTitle(localization.getTranslation("ppSubmissionInfo")).addFields({
+        name: `${beatmapInfo?.fullTitle ?? score.title} +${
+            score.mods.map((v) => v.acronym).join(",") || "No Mod"
+        }`,
+        value: `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(
+            2
+        )}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | ${bold(
+            statuses?.[0]?.success
+                ? "Success"
+                : statuses?.[0].reason ?? "Unknown"
+        )}`,
+    });
+
+    if (!statuses || statuses.length === 0 || !statuses[0].success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                "Submission failed: %s.",
-                status?.reason ?? "Unknown"
+                localization.getTranslation("submitFailed")
             ),
+            embeds: [embed],
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept("Submission success."),
+        embeds: [embed],
     });
 };
 

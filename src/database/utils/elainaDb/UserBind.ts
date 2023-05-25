@@ -5,7 +5,6 @@ import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind"
 import { PPEntry } from "@alice-structures/dpp/PPEntry";
 import { PrototypePPEntry } from "@alice-structures/dpp/PrototypePPEntry";
 import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
@@ -15,32 +14,26 @@ import { Collection, Snowflake } from "discord.js";
 import { Clan } from "./Clan";
 import { ObjectId, UpdateFilter } from "mongodb";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
-import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { consola } from "consola";
 import {
     MapInfo,
     DroidAPIRequestBuilder,
     RequestResponse,
     Precision,
-    MapStats,
 } from "@rian8337/osu-base";
-import {
-    DroidDifficultyCalculator,
-    DroidPerformanceCalculator,
-} from "@rian8337/osu-difficulty-calculator";
-import {
-    DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
-    DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
-    ExtendedDroidDifficultyAttributes,
-} from "@rian8337/osu-rebalance-difficulty-calculator";
+import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
+import { DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { HitErrorInformation } from "@rian8337/osu-droid-replay-analyzer";
 import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -138,8 +131,6 @@ export class UserBind extends Manager {
      * The BSON object ID of this document in the database.
      */
     readonly _id?: ObjectId;
-
-    private diffCalcHelper?: DroidBeatmapDifficultyHelper;
 
     private get bindDb(): UserBindCollectionManager {
         return DatabaseManager.elainaDb.collections.userBind;
@@ -331,63 +322,39 @@ export class UserBind extends Manager {
     async recalculateDPP(): Promise<OperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
 
-        this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
-
         for (const ppEntry of this.pp.values()) {
-            const score: Score | null = await Score.getFromHash(
-                ppEntry.uid,
-                ppEntry.hash
-            );
-
-            if (!score) {
-                continue;
-            }
-
-            if (
-                (await DPPHelper.checkSubmissionValidity(score)) !==
-                DPPSubmissionValidity.valid
-            ) {
-                continue;
-            }
-
             const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-                score.hash,
-                { checkFile: false }
+                ppEntry.hash,
+                {
+                    checkFile: false,
+                }
             );
 
             if (!beatmapInfo) {
                 continue;
             }
 
-            await HelperFunctions.sleep(0.1);
-
-            const perfCalcResult: PerformanceCalculationResult<
-                DroidDifficultyCalculator,
-                DroidPerformanceCalculator
-            > | null = await this.diffCalcHelper.calculateScorePerformance(
-                score
+            const score: Score | null = await Score.getFromHash(
+                ppEntry.uid,
+                beatmapInfo.hash
             );
 
-            if (!perfCalcResult) {
+            if (!score) {
                 continue;
             }
 
-            await beatmapInfo.retrieveBeatmapFile();
-            if (!beatmapInfo.hasDownloadedBeatmap()) {
+            const attribs: CompleteCalculationAttributes<
+                DroidDifficultyAttributes,
+                DroidPerformanceAttributes
+            > | null = await DPPProcessorRESTManager.getBestScorePerformance(
+                score.uid,
+                beatmapInfo.hash,
+                PPCalculationMethod.live
+            );
+
+            if (!attribs) {
                 continue;
             }
-
-            await DroidBeatmapDifficultyHelper.applyTapPenalty(
-                score,
-                beatmapInfo.beatmap!,
-                perfCalcResult
-            );
-
-            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
-                score,
-                beatmapInfo.beatmap!,
-                perfCalcResult
-            );
 
             await HelperFunctions.sleep(0.1);
 
@@ -395,7 +362,7 @@ export class UserBind extends Manager {
                 DPPHelper.scoreToPPEntry(
                     beatmapInfo.fullTitle,
                     score,
-                    perfCalcResult
+                    attribs.performance.total
                 ),
             ]);
         }
@@ -429,8 +396,6 @@ export class UserBind extends Manager {
     async calculatePrototypeDPP(): Promise<OperationResult> {
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
-        this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
-
         for (const ppEntry of this.pp.values()) {
             const score: Score | null = await Score.getFromHash(
                 ppEntry.uid,
@@ -446,91 +411,38 @@ export class UserBind extends Manager {
                 { checkFile: false }
             );
 
-            if (
-                !beatmapInfo ||
-                (await DPPHelper.checkSubmissionValidity(score)) !==
-                    DPPSubmissionValidity.valid
-            ) {
+            if (!beatmapInfo) {
                 continue;
             }
 
-            const perfCalcResult: PerformanceCalculationResult<
-                DroidDifficultyCalculator,
-                DroidPerformanceCalculator
-            > | null = await this.diffCalcHelper.calculateScorePerformance(
-                score
+            const liveAttribs: CompleteCalculationAttributes<
+                DroidDifficultyAttributes,
+                DroidPerformanceAttributes
+            > | null = await DPPProcessorRESTManager.getBestScorePerformance(
+                ppEntry.uid,
+                beatmapInfo.hash,
+                PPCalculationMethod.live
             );
 
-            if (!perfCalcResult) {
+            if (!liveAttribs) {
                 continue;
             }
 
-            const rebalPerfCalcResult: RebalancePerformanceCalculationResult<
-                RebalanceDroidDifficultyCalculator,
-                RebalanceDroidPerformanceCalculator
-            > | null =
-                await this.diffCalcHelper.calculateScoreRebalancePerformance(
-                    score
-                );
+            const rebalAttribs: CompleteCalculationAttributes<
+                RebalanceDroidDifficultyAttributes,
+                RebalanceDroidPerformanceAttributes
+            > | null = await DPPProcessorRESTManager.getBestScorePerformance(
+                ppEntry.uid,
+                beatmapInfo.hash,
+                PPCalculationMethod.rebalance
+            );
 
-            if (!rebalPerfCalcResult) {
+            if (!rebalAttribs) {
                 continue;
             }
 
-            await beatmapInfo.retrieveBeatmapFile();
-            if (!beatmapInfo.hasDownloadedBeatmap()) {
-                continue;
-            }
-
-            await DroidBeatmapDifficultyHelper.applyTapPenalty(
-                score,
-                beatmapInfo.beatmap!,
-                perfCalcResult
-            );
-
-            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
-                score,
-                beatmapInfo.beatmap!,
-                perfCalcResult
-            );
-
-            // const rebalDiffCalculator: RebalanceDroidDifficultyCalculator =
-            //     rebalPerfCalcResult.requestedDifficultyCalculation()
-            //         ? rebalPerfCalcResult.difficultyCalculator
-            //         : (await this.diffCalcHelper.calculateScoreRebalanceDifficulty(
-            //               score
-            //           ))!.result;
-
-            await DroidBeatmapDifficultyHelper.applyTapPenalty(
-                score,
-                beatmapInfo.beatmap!,
-                rebalPerfCalcResult
-            );
-
-            await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
-                score,
-                beatmapInfo.beatmap!,
-                rebalPerfCalcResult
-            );
-
-            // rebalPerfCalcResult =
-            //     await DroidBeatmapDifficultyHelper.applyAimPenalty(
-            //         score,
-            //         rebalDiffCalculator,
-            //         score.replay?.tapPenalty,
-            //         score.replay?.sliderCheesePenalty
-            //     );
-
-            if (score.replay) {
-                // score.replay.beatmap ??= rebalDiffCalculator;
-                score.replay.beatmap ??= beatmapInfo.beatmap!;
-            }
-
-            const hitError: HitErrorInformation | undefined | null =
-                score.replay?.calculateHitError();
-
-            const { result: perfResult } = perfCalcResult;
-            const { result: rebalPerfResult } = rebalPerfCalcResult;
+            const { performance: perfResult } = liveAttribs;
+            const { performance: rebalPerfResult } = rebalAttribs;
 
             const entry: PrototypePPEntry = {
                 uid: score.uid,
@@ -555,14 +467,7 @@ export class UserBind extends Manager {
                         ? score.speedMultiplier
                         : undefined,
                 forcedAR: score.forcedAR,
-                calculatedUnstableRate: hitError
-                    ? hitError.unstableRate /
-                      new MapStats({
-                          mods: score.mods,
-                          speedMultiplier: score.speedMultiplier,
-                          oldStatistics: score.oldStatistics,
-                      }).calculate().speedMultiplier
-                    : null,
+                calculatedUnstableRate: rebalPerfResult.calculatedUnstableRate,
                 estimatedUnstableRate: NumberHelper.round(
                     rebalPerfResult.deviation * 10,
                     2
@@ -571,22 +476,19 @@ export class UserBind extends Manager {
                     rebalPerfResult.tapDeviation * 10,
                     2
                 ),
-                aimNoteCount: (<ExtendedDroidDifficultyAttributes>(
-                    rebalPerfResult.difficultyAttributes
-                )).aimNoteCount,
+                aimNoteCount: 0,
                 twoHandedNoteCount: score.replay?.twoHandedNoteCount ?? 0,
                 assumedTwoHand: score.replay?.is2Hand ?? false,
-                overallDifficulty:
-                    rebalPerfResult.difficultyAttributes.overallDifficulty,
+                overallDifficulty: rebalAttribs.difficulty.overallDifficulty,
                 hit300: score.accuracy.n300,
                 hit100: score.accuracy.n100,
                 hit50: score.accuracy.n50,
-                aimSliderCheesePenalty:
-                    score.replay?.sliderCheesePenalty.aimPenalty ?? 1,
+                aimSliderCheesePenalty: rebalPerfResult.aimSliderCheesePenalty,
+                flashlightSliderCheesePenalty:
+                    rebalPerfResult.flashlightSliderCheesePenalty,
                 visualSliderCheesePenalty:
-                    score.replay?.sliderCheesePenalty.visualPenalty ?? 1,
-                speedNoteCount:
-                    rebalPerfResult.difficultyAttributes.speedNoteCount,
+                    rebalPerfResult.visualSliderCheesePenalty,
+                speedNoteCount: rebalAttribs.difficulty.speedNoteCount,
             };
 
             consola.info(
@@ -633,10 +535,7 @@ export class UserBind extends Manager {
         isDPPRecalc: boolean = false
     ): Promise<OperationResult> {
         let newList: Collection<string, PPEntry> = new Collection();
-
-        this.playc = 0;
-
-        this.diffCalcHelper ??= new DroidBeatmapDifficultyHelper();
+        let playCount: number = 0;
 
         const getScores = async (
             uid: number,
@@ -681,7 +580,6 @@ export class UserBind extends Manager {
             }
 
             const player: Player | null = await Player.getInformation(uid);
-
             if (!player) {
                 continue;
             }
@@ -690,9 +588,7 @@ export class UserBind extends Manager {
 
             if (isDPPRecalc && this.calculationInfo) {
                 page = this.calculationInfo.page;
-
-                this.playc = this.calculationInfo.playc;
-
+                playCount = this.calculationInfo.playc;
                 newList = new Collection(
                     this.calculationInfo.currentPPEntries.map((v) => [
                         v.hash,
@@ -724,63 +620,36 @@ export class UserBind extends Manager {
                         continue;
                     }
 
-                    if (
-                        (await DPPHelper.checkSubmissionValidity(score)) ===
-                        DPPSubmissionValidity.valid
-                    ) {
-                        const perfCalcResult: PerformanceCalculationResult<
-                            DroidDifficultyCalculator,
-                            DroidPerformanceCalculator
-                        > | null =
-                            await this.diffCalcHelper.calculateScorePerformance(
-                                score
-                            );
+                    const attribs: CompleteCalculationAttributes<
+                        DroidDifficultyAttributes,
+                        DroidPerformanceAttributes
+                    > | null =
+                        await DPPProcessorRESTManager.getBestScorePerformance(
+                            score.uid,
+                            beatmapInfo.hash,
+                            PPCalculationMethod.live
+                        );
 
-                        if (perfCalcResult) {
-                            ++this.playc;
-
-                            const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
-                                beatmapInfo.fullTitle,
-                                score,
-                                perfCalcResult
-                            );
-
-                            if (
-                                DPPHelper.checkScoreInsertion(newList, ppEntry)
-                            ) {
-                                await beatmapInfo.retrieveBeatmapFile();
-                                if (!beatmapInfo.hasDownloadedBeatmap()) {
-                                    continue;
-                                }
-
-                                await DroidBeatmapDifficultyHelper.applyTapPenalty(
-                                    score,
-                                    beatmapInfo.beatmap!,
-                                    perfCalcResult
-                                );
-
-                                await DroidBeatmapDifficultyHelper.applySliderCheesePenalty(
-                                    score,
-                                    beatmapInfo.beatmap!,
-                                    perfCalcResult
-                                );
-
-                                ppEntry.pp = NumberHelper.round(
-                                    perfCalcResult.result.total,
-                                    2
-                                );
-
-                                DPPHelper.insertScore(newList, [ppEntry]);
-                            }
-                        }
+                    if (!attribs) {
+                        continue;
                     }
+
+                    this.playc = Math.max(this.playc, ++playCount);
+
+                    const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
+                        beatmapInfo.fullTitle,
+                        score,
+                        attribs.performance.total
+                    );
+
+                    DPPHelper.insertScore(newList, [ppEntry]);
                 }
 
                 if (isDPPRecalc) {
                     this.calculationInfo = {
                         uid: uid,
                         page: page,
-                        playc: this.playc,
+                        playc: playCount,
                         currentPPEntries: [...newList.values()],
                     };
 
@@ -799,7 +668,7 @@ export class UserBind extends Manager {
                 this.calculationInfo = {
                     uid: this.previous_bind[i + 1],
                     page: 0,
-                    playc: this.playc,
+                    playc: playCount,
                     currentPPEntries: [...newList.values()],
                 };
 

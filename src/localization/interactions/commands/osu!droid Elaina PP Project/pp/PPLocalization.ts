@@ -30,17 +30,11 @@ export interface PPStrings {
     readonly beatmapTooShort: string;
     readonly noScoreSubmitted: string;
     readonly noScoresInSubmittedList: string;
-    readonly scoreUsesForceAR: string;
-    readonly scoreUsesCustomSpeedMultiplier: string;
-    readonly submitSuccessful: string;
+    readonly submitFailed: string;
+    readonly partialSubmitSuccessful: string;
+    readonly fullSubmitSuccessful: string;
     readonly profileNotFound: string;
-    readonly ppGained: string;
     readonly ppSubmissionInfo: string;
-    readonly blacklistedBeatmapReject: string;
-    readonly unrankedBeatmapReject: string;
-    readonly beatmapTooShortReject: string;
-    readonly unrankedFeaturesReject: string;
-    readonly beatmapNotFoundReject: string;
     readonly whatIfScoreNotEntered: string;
     readonly whatIfScoreEntered: string;
 }

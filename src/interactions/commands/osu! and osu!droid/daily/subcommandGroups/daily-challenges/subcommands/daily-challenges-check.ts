@@ -6,6 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { BaseMessageOptions } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
@@ -35,13 +36,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    InteractionHelper.reply(
-        interaction,
+    const options: BaseMessageOptions | null =
         await EmbedCreator.createChallengeEmbed(
             challenge,
             challenge.isWeekly ? "#af46db" : "#e3b32d",
             localization.language
-        )
+        );
+
+    InteractionHelper.reply(
+        interaction,
+        options ?? {
+            // TODO: put in localization
+            content: MessageCreator.createReject("Embed creation failed."),
+        }
     );
 };
 

@@ -43,19 +43,11 @@ export class PPESTranslation extends Translation<PPStrings> {
             "Lo siento, tu no tienes ningún puntaje registrado en este mapa!",
         noScoresInSubmittedList:
             "Lo siento, tu no tienes ningún puntaje para registrar dentro de ese rango u orden!",
-        scoreUsesForceAR: "Lo siento, AR modificado no esta permitido!",
-        scoreUsesCustomSpeedMultiplier:
-            "Lo siento, la modificación de velocidad no esta permitida!",
-        submitSuccessful:
-            "Puntaje(s) registrados correctamente. Más información a continuación.",
+        submitFailed: "",
+        partialSubmitSuccessful: "",
+        fullSubmitSuccessful: "Puntaje(s) registrados correctamente.",
         profileNotFound: "Lo siento, no puedo encontrar tu perfil!",
-        ppGained: "PP Obtenido",
         ppSubmissionInfo: "Información de PP registrada",
-        blacklistedBeatmapReject: "Mapa vetado",
-        unrankedBeatmapReject: "Mapa sin rankear",
-        beatmapTooShortReject: "Mapa demasiado corto",
-        unrankedFeaturesReject: "Características no rankeables",
-        beatmapNotFoundReject: "Mapa no encontrado",
         whatIfScoreNotEntered: "",
         whatIfScoreEntered: "",
     };

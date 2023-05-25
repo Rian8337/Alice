@@ -6,15 +6,18 @@ import { PPEntry } from "@alice-structures/dpp/PPEntry";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 import {
-    DroidDifficultyCalculator,
-    DroidPerformanceCalculator,
+    DroidDifficultyAttributes,
+    OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
+import {
+    DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes,
+    OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
+} from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
 import {
     Collection,
@@ -25,6 +28,9 @@ import {
 } from "discord.js";
 import { CommandHelper } from "./CommandHelper";
 import { NumberHelper } from "./NumberHelper";
+import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 
 /**
  * A helper for droid performance points related things.
@@ -246,22 +252,19 @@ export abstract class DPPHelper {
      *
      * @param beatmapTitle The title of the beatmap.
      * @param score The score to convert.
-     * @param calculationResult The dpp calculation result of the score.
+     * @param totalPP The total pp of the score.
      * @returns A PP entry from the score and calculation result.
      */
     static scoreToPPEntry(
         beatmapTitle: string,
         score: Score,
-        calculationResult: PerformanceCalculationResult<
-            DroidDifficultyCalculator,
-            DroidPerformanceCalculator
-        >
+        totalPP: number
     ): PPEntry {
         return {
             uid: score.uid,
             hash: score.hash,
             title: beatmapTitle,
-            pp: NumberHelper.round(calculationResult.result.total, 2),
+            pp: NumberHelper.round(totalPP, 2),
             mods: score.mods.reduce((a, v) => a + v.acronym, ""),
             accuracy: NumberHelper.round(score.accuracy.value() * 100, 2),
             combo: score.combo,
@@ -350,5 +353,164 @@ export abstract class DPPHelper {
                 }
             );
         }
+    }
+
+    /**
+     * Generates a string containing information about a difficulty attributes' star rating.
+     *
+     * @param attributes The difficulty attributes.
+     * @returns The string.
+     */
+    static getDroidDifficultyAttributesInfo(
+        attributes:
+            | DroidDifficultyAttributes
+            | CacheableDifficultyAttributes<DroidDifficultyAttributes>
+    ): string {
+        let string: string = `${attributes.starRating.toFixed(2)} stars (`;
+        const starRatingDetails: string[] = [];
+
+        const addDetail = (num: number, suffix: string) =>
+            starRatingDetails.push(`${num.toFixed(2)} ${suffix}`);
+
+        addDetail(attributes.aimDifficulty, "aim");
+        addDetail(attributes.tapDifficulty, "tap");
+        addDetail(attributes.rhythmDifficulty, "rhythm");
+        addDetail(attributes.flashlightDifficulty, "flashlight");
+        addDetail(attributes.visualDifficulty, "visual");
+
+        string += starRatingDetails.join(", ") + ")";
+
+        return string;
+    }
+
+    /**
+     * Generates a string containing information about a difficulty attributes' star rating.
+     *
+     * @param attributes The difficulty attributes.
+     * @returns The string.
+     */
+    static getRebalanceDroidDifficultyAttributesInfo(
+        attributes:
+            | RebalanceDroidDifficultyAttributes
+            | CacheableDifficultyAttributes<RebalanceDroidDifficultyAttributes>
+    ): string {
+        let string: string = `${attributes.starRating.toFixed(2)} stars (`;
+        const starRatingDetails: string[] = [];
+
+        const addDetail = (num: number, suffix: string) =>
+            starRatingDetails.push(`${num.toFixed(2)} ${suffix}`);
+
+        addDetail(attributes.aimDifficulty, "aim");
+        addDetail(attributes.tapDifficulty, "tap");
+        addDetail(attributes.rhythmDifficulty, "rhythm");
+        addDetail(attributes.flashlightDifficulty, "flashlight");
+        addDetail(attributes.visualDifficulty, "visual");
+
+        string += starRatingDetails.join(", ") + ")";
+
+        return string;
+    }
+
+    /**
+     * Generates a string containing information about a difficulty attributes' star rating.
+     *
+     * @param attributes The difficulty attributes.
+     * @returns The string.
+     */
+    static getOsuDifficultyAttributesInfo(
+        attributes:
+            | OsuDifficultyAttributes
+            | CacheableDifficultyAttributes<OsuDifficultyAttributes>
+    ): string {
+        let string: string = `${attributes.starRating.toFixed(2)} stars (`;
+        const starRatingDetails: string[] = [];
+
+        const addDetail = (num: number, suffix: string) =>
+            starRatingDetails.push(`${num.toFixed(2)} ${suffix}`);
+
+        addDetail(attributes.aimDifficulty, "aim");
+        addDetail(attributes.speedDifficulty, "speed");
+        addDetail(attributes.flashlightDifficulty, "flashlight");
+
+        string += starRatingDetails.join(", ") + ")";
+
+        return string;
+    }
+
+    /**
+     * Generates a string containing information about a difficulty attributes' star rating.
+     *
+     * @param attributes The difficulty attributes.
+     * @returns The string.
+     */
+    static getRebalanceOsuDifficultyAttributesInfo(
+        attributes:
+            | RebalanceOsuDifficultyAttributes
+            | CacheableDifficultyAttributes<RebalanceOsuDifficultyAttributes>
+    ): string {
+        let string: string = `${attributes.starRating.toFixed(2)} stars (`;
+        const starRatingDetails: string[] = [];
+
+        const addDetail = (num: number, suffix: string) =>
+            starRatingDetails.push(`${num.toFixed(2)} ${suffix}`);
+
+        addDetail(attributes.aimDifficulty, "aim");
+        addDetail(attributes.speedDifficulty, "speed");
+        addDetail(attributes.flashlightDifficulty, "flashlight");
+
+        string += starRatingDetails.join(", ") + ")";
+
+        return string;
+    }
+
+    /**
+     * Generates a string containing the summary of a performance attributes.
+     *
+     * @param attributes The performance attributes.
+     * @returns The string.
+     */
+    static getDroidPerformanceAttributesInfo(
+        attributes: DroidPerformanceAttributes
+    ): string {
+        let string: string = `${attributes.total.toFixed(2)} pp (`;
+        const starRatingDetails: string[] = [];
+
+        const addDetail = (num: number, suffix: string) =>
+            starRatingDetails.push(`${num.toFixed(2)} ${suffix}`);
+
+        addDetail(attributes.aim, "aim");
+        addDetail(attributes.tap, "tap");
+        addDetail(attributes.accuracy, "accuracy");
+        addDetail(attributes.flashlight, "flashlight");
+        addDetail(attributes.visual, "visual");
+
+        string += starRatingDetails.join(", ") + ")";
+
+        return string;
+    }
+
+    /**
+     * Generates a string containing the summary of a performance attributes.
+     *
+     * @param attributes The performance attributes.
+     * @returns The string.
+     */
+    static getOsuPerformanceAttributesInfo(
+        attributes: OsuPerformanceAttributes
+    ): string {
+        let string: string = `${attributes.total.toFixed(2)} pp (`;
+        const starRatingDetails: string[] = [];
+
+        const addDetail = (num: number, suffix: string) =>
+            starRatingDetails.push(`${num.toFixed(2)} ${suffix}`);
+
+        addDetail(attributes.aim, "aim");
+        addDetail(attributes.speed, "speed");
+        addDetail(attributes.accuracy, "accuracy");
+        addDetail(attributes.flashlight, "flashlight");
+
+        string += starRatingDetails.join(", ") + ")";
+
+        return string;
     }
 }

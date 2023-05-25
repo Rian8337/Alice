@@ -11,6 +11,7 @@ export class ChallengeKRTranslation extends Translation<ChallengeStrings> {
         challengeNotOngoing: "챌린지가 진행중이지 않음",
         challengeNotExpired: "아직 챌린지를 끝낼 시간이 아님",
         challengeEndSuccess: "성공적으로 챌린지 `%s`를 종료했어요.",
+        challengeEmbedGenerationFailed: "",
         firstPlace:
             "%s님, 챌린지 %s에서 1등을 차지한 걸 축하드려요! 보상으로 %s 포인트와 %s%s 앨리스 코인을 드렸어요!",
         constrainNotFulfilled: "조건이 충족되지 않음",

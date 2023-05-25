@@ -1,38 +1,37 @@
-import { BaseMessageOptions, GuildMember } from "discord.js";
+import { BaseMessageOptions } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
-import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
-import { MapStats, ModUtil, Accuracy, MapInfo } from "@rian8337/osu-base";
 import {
-    DroidDifficultyCalculator,
-    DroidPerformanceCalculator,
+    MapStats,
+    ModUtil,
+    Accuracy,
+    MapInfo,
+    Modes,
+} from "@rian8337/osu-base";
+import {
+    DroidDifficultyAttributes,
     OsuDifficultyAttributes,
-    OsuDifficultyCalculator,
-    OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
-    DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
-    DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
+    DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes,
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
-    OsuDifficultyCalculator as RebalanceOsuDifficultyCalculator,
-    OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
-import getStrainChart from "@rian8337/osu-strain-graph-generator";
 import { CalculateLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/calculate/CalculateLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
-import { RebalanceDifficultyCalculationResult } from "@alice-utils/dpp/RebalanceDifficultyCalculationResult";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CalculateLocalization = new CalculateLocalization(
@@ -111,130 +110,48 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             })
         );
 
-    let droidCalcResult:
-        | PerformanceCalculationResult<
-              DroidDifficultyCalculator,
-              DroidPerformanceCalculator
-          >
-        | RebalancePerformanceCalculationResult<
-              RebalanceDroidDifficultyCalculator,
-              RebalanceDroidPerformanceCalculator
-          >
-        | null;
+    let droidCalcResult: CompleteCalculationAttributes<
+        DroidDifficultyAttributes | RebalanceDroidDifficultyAttributes,
+        DroidPerformanceAttributes | RebalanceDroidPerformanceAttributes
+    > | null;
 
-    let osuCalcResult:
-        | PerformanceCalculationResult<
-              OsuDifficultyCalculator,
-              OsuPerformanceCalculator
-          >
-        | RebalancePerformanceCalculationResult<
-              RebalanceOsuDifficultyCalculator,
-              RebalanceOsuPerformanceCalculator
-          >
-        | null = null;
-
-    let strainGraphImage: Buffer | undefined;
-    const strainGraphColor: string | undefined = (<GuildMember | null>(
-        interaction.member
-    ))?.displayHexColor;
-    const showStrainGraph: boolean | null =
-        interaction.options.getBoolean("showstraingraph");
-
-    const droidCalcHelper: DroidBeatmapDifficultyHelper =
-        new DroidBeatmapDifficultyHelper();
-    const osuCalcHelper: OsuBeatmapDifficultyHelper =
-        new OsuBeatmapDifficultyHelper();
+    let osuCalcResult: CompleteCalculationAttributes<
+        OsuDifficultyAttributes | RebalanceOsuDifficultyAttributes,
+        OsuPerformanceAttributes
+    > | null = null;
 
     switch (interaction.options.getInteger("calculationmethod")) {
         case PPCalculationMethod.rebalance:
             droidCalcResult =
-                await droidCalcHelper.calculateBeatmapRebalancePerformance(
-                    beatmap,
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    beatmap.beatmapID,
+                    Modes.droid,
+                    PPCalculationMethod.rebalance,
                     calcParams
                 );
             osuCalcResult =
-                await osuCalcHelper.calculateBeatmapRebalancePerformance(
-                    beatmap,
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    beatmap.beatmapID,
+                    Modes.osu,
+                    PPCalculationMethod.rebalance,
                     calcParams
                 );
-
-            if (!droidCalcResult || !osuCalcResult) {
-                break;
-            }
-
-            if (showStrainGraph) {
-                let difficultyCalculator:
-                    | RebalanceOsuDifficultyCalculator
-                    | undefined;
-
-                if (osuCalcResult.requestedDifficultyCalculation()) {
-                    difficultyCalculator = osuCalcResult.difficultyCalculator;
-                } else {
-                    const diffCalcResult: RebalanceDifficultyCalculationResult<
-                        RebalanceOsuDifficultyAttributes,
-                        RebalanceOsuDifficultyCalculator
-                    > | null =
-                        await osuCalcHelper.calculateBeatmapRebalanceDifficulty(
-                            beatmap,
-                            calcParams
-                        );
-
-                    if (diffCalcResult) {
-                        difficultyCalculator = diffCalcResult.result;
-                    }
-                }
-
-                if (difficultyCalculator) {
-                    strainGraphImage = (await getStrainChart(
-                        difficultyCalculator,
-                        beatmap.beatmapsetID,
-                        strainGraphColor
-                    ))!;
-                }
-            }
-
             break;
         default:
-            droidCalcResult = await droidCalcHelper.calculateBeatmapPerformance(
-                beatmap,
-                calcParams
-            );
-            osuCalcResult = await osuCalcHelper.calculateBeatmapPerformance(
-                beatmap,
-                calcParams
-            );
-
-            if (!droidCalcResult || !osuCalcResult) {
-                break;
-            }
-
-            if (showStrainGraph) {
-                let difficultyCalculator: OsuDifficultyCalculator | undefined;
-
-                if (osuCalcResult.requestedDifficultyCalculation()) {
-                    difficultyCalculator = osuCalcResult.difficultyCalculator;
-                } else {
-                    const diffCalcResult: DifficultyCalculationResult<
-                        OsuDifficultyAttributes,
-                        OsuDifficultyCalculator
-                    > | null = await osuCalcHelper.calculateBeatmapDifficulty(
-                        beatmap,
-                        calcParams
-                    );
-
-                    if (diffCalcResult) {
-                        difficultyCalculator = diffCalcResult.result;
-                    }
-                }
-
-                if (difficultyCalculator) {
-                    strainGraphImage = (await getStrainChart(
-                        difficultyCalculator,
-                        beatmap.beatmapsetID,
-                        strainGraphColor
-                    ))!;
-                }
-            }
+            droidCalcResult =
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    beatmap.beatmapID,
+                    Modes.droid,
+                    PPCalculationMethod.live,
+                    calcParams
+                );
+            osuCalcResult =
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    beatmap.beatmapID,
+                    Modes.osu,
+                    PPCalculationMethod.live,
+                    calcParams
+                );
     }
 
     if (!droidCalcResult || !osuCalcResult) {
@@ -249,11 +166,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         EmbedCreator.createCalculationEmbed(
             beatmap,
             calcParams,
-            droidCalcResult.result.difficultyAttributes,
-            osuCalcResult.result.difficultyAttributes,
-            droidCalcResult,
-            osuCalcResult,
-            strainGraphImage,
+            droidCalcResult.difficulty,
+            osuCalcResult.difficulty,
+            droidCalcResult.performance,
+            osuCalcResult.performance,
             localization.language
         );
 
@@ -261,19 +177,39 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     if (interaction.options.getBoolean("showdroiddetail")) {
         string += `${localization.getTranslation("rawDroidSr")}: ${
-            droidCalcResult.starRatingInfo
+            interaction.options.getInteger("calculationmethod") ===
+            PPCalculationMethod.rebalance
+                ? DPPHelper.getRebalanceDroidDifficultyAttributesInfo(
+                      <RebalanceDroidDifficultyAttributes>(
+                          droidCalcResult.difficulty
+                      )
+                  )
+                : DPPHelper.getDroidDifficultyAttributesInfo(
+                      droidCalcResult.difficulty
+                  )
         }`;
         string += `\n${localization.getTranslation(
             "rawDroidPp"
-        )}: ${droidCalcResult.result.toString()}\n`;
+        )}: ${DPPHelper.getDroidPerformanceAttributesInfo(
+            droidCalcResult.performance
+        )}\n`;
     }
 
     if (interaction.options.getBoolean("showosudetail")) {
         string += `${localization.getTranslation("rawPcSr")}: ${
-            osuCalcResult.starRatingInfo
+            interaction.options.getInteger("calculationmethod") ===
+            PPCalculationMethod.rebalance
+                ? DPPHelper.getRebalanceOsuDifficultyAttributesInfo(
+                      <RebalanceOsuDifficultyAttributes>osuCalcResult.difficulty
+                  )
+                : DPPHelper.getOsuDifficultyAttributesInfo(
+                      osuCalcResult.difficulty
+                  )
         }\n${localization.getTranslation(
             "rawPcPp"
-        )}: ${osuCalcResult.result.toString()}`;
+        )}: ${DPPHelper.getOsuPerformanceAttributesInfo(
+            osuCalcResult.performance
+        )}`;
     }
 
     if (string) {
@@ -378,11 +314,6 @@ export const config: SlashCommand["config"] = {
                     value: PPCalculationMethod.rebalance,
                 },
             ],
-        },
-        {
-            name: "showstraingraph",
-            type: ApplicationCommandOptionType.Boolean,
-            description: "Whether to show the beatmap's strain graph.",
         },
     ],
     example: [

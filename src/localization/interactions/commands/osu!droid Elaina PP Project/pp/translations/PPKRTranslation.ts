@@ -40,19 +40,11 @@ export class PPKRTranslation extends Translation<PPStrings> {
         noScoreSubmitted: "죄송해요, 당신은 이 비트맵에 제출한 기록이 없어요!",
         noScoresInSubmittedList:
             "죄송해요, 당신은 해당 범위에서 제출할 기록을 가지고 있지 않아요!",
-        scoreUsesForceAR: "죄송해요, AR 강제(force AR)은 허용되지 않아요!",
-        scoreUsesCustomSpeedMultiplier:
-            "죄송해요, 커스텀 속도 조절(custom speed multiplier)은 허용되지 않아요!",
-        submitSuccessful:
-            "성공적으로 기록을 제출했어요. 더 많은 정보는 첨부해 드렸어요.",
+        submitFailed: "",
+        partialSubmitSuccessful: "",
+        fullSubmitSuccessful: "성공적으로 기록을 제출했어요.",
         profileNotFound: "죄송해요, 당신의 프로필을 찾을 수 없었어요!",
-        ppGained: "얻은 PP",
         ppSubmissionInfo: "PP 제출 정보",
-        blacklistedBeatmapReject: "블랙리스트된 비트맵",
-        unrankedBeatmapReject: "언랭크드(Unranked) 비트맵",
-        beatmapTooShortReject: "비트맵 너무 짧음",
-        unrankedFeaturesReject: "Unranked 기능",
-        beatmapNotFoundReject: "비트맵 발견되지 않음",
         whatIfScoreNotEntered: "",
         whatIfScoreEntered: "",
     };

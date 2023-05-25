@@ -11,6 +11,7 @@ export class ChallengeESTranslation extends Translation<ChallengeStrings> {
         challengeNotOngoing: "El desafio no esta en curso",
         challengeNotExpired: "No es momento de finalizar el desafio aun",
         challengeEndSuccess: "Desafio `%s` finalizado correctamente.",
+        challengeEmbedGenerationFailed: "",
         firstPlace:
             "Felicitaciones a %s por conseguir el primer lugar en el desafio %s, ganando %s puntos y %s%s monedas Alice!",
         constrainNotFulfilled: "Restricciones no cumplidas",

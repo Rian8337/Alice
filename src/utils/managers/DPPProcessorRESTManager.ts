@@ -20,6 +20,7 @@ import { CompleteCalculationAttributes } from "@alice-structures/difficultyattri
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { PerformanceAttributes } from "@alice-structures/difficultyattributes/PerformanceAttributes";
+import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 
 /**
  * A REST manager for the droid performance points processor backend.
@@ -173,7 +174,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
-     * @returns The performance attributes, `null` if the performance attributes cannot be retrieved.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getPerformanceAttributes(
         beatmapIdOrHash: string | number,
@@ -192,7 +193,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
-     * @returns The performance attributes, `null` if the performance attributes cannot be retrieved.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getPerformanceAttributes(
         beatmapIdOrHash: string | number,
@@ -201,7 +202,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationParams?: PerformanceCalculationParameters
     ): Promise<CompleteCalculationAttributes<
         RebalanceDroidDifficultyAttributes,
-        DroidPerformanceAttributes
+        RebalanceDroidPerformanceAttributes
     > | null>;
 
     /**
@@ -211,7 +212,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
-     * @returns The performance attributes, `null` if the performance attributes cannot be retrieved.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getPerformanceAttributes(
         beatmapIdOrHash: string | number,
@@ -230,7 +231,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
-     * @returns The performance attributes, `null` if the performance attributes cannot be retrieved.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getPerformanceAttributes(
         beatmapIdOrHash: string | number,
@@ -343,22 +344,207 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     }
 
     /**
+     * Gets the difficulty and performance attributes of a score.
+     *
+     * @param scoreId The ID of the score.
+     * @param mode The gamemode to calculate.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
+     */
+    static async getOnlineScoreAttributes(
+        scoreId: number,
+        mode: Modes.droid,
+        calculationMethod: PPCalculationMethod.live
+    ): Promise<CompleteCalculationAttributes<
+        DroidDifficultyAttributes,
+        DroidPerformanceAttributes
+    > | null>;
+
+    /**
+     * Gets the difficulty and performance attributes of a score.
+     *
+     * @param scoreId The ID of the score.
+     * @param mode The gamemode to calculate.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
+     */
+    static async getOnlineScoreAttributes(
+        scoreId: number,
+        mode: Modes.droid,
+        calculationMethod: PPCalculationMethod.rebalance
+    ): Promise<CompleteCalculationAttributes<
+        RebalanceDroidDifficultyAttributes,
+        RebalanceDroidPerformanceAttributes
+    > | null>;
+
+    /**
+     * Gets the difficulty and performance attributes of a score.
+     *
+     * @param scoreId The ID of the score.
+     * @param mode The gamemode to calculate.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
+     */
+    static async getOnlineScoreAttributes(
+        scoreId: number,
+        mode: Modes.osu,
+        calculationMethod: PPCalculationMethod.live
+    ): Promise<CompleteCalculationAttributes<
+        OsuDifficultyAttributes,
+        OsuPerformanceAttributes
+    > | null>;
+
+    /**
+     * Gets the difficulty and performance attributes of a score.
+     *
+     * @param scoreId The ID of the score.
+     * @param mode The gamemode to calculate.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
+     */
+    static async getOnlineScoreAttributes(
+        scoreId: number,
+        mode: Modes.osu,
+        calculationMethod: PPCalculationMethod.rebalance
+    ): Promise<CompleteCalculationAttributes<
+        RebalanceDroidDifficultyAttributes,
+        OsuPerformanceAttributes
+    > | null>;
+
+    static async getOnlineScoreAttributes(
+        scoreId: number,
+        mode: Modes,
+        calculationMethod: PPCalculationMethod
+    ): Promise<CompleteCalculationAttributes<
+        RawDifficultyAttributes,
+        PerformanceAttributes
+    > | null> {
+        const url: URL = new URL(`${this.endpoint}get-online-score-attributes`);
+        url.searchParams.set("scoreid", scoreId.toString());
+        url.searchParams.set("mode", mode);
+        url.searchParams.set("calculationmethod", calculationMethod.toString());
+
+        const result: RequestResponse | null = await this.request(url).catch(
+            () => null
+        );
+
+        if (result?.statusCode !== 200) {
+            if (result) {
+                const errorJson = JSON.parse(result.data.toString());
+
+                consola.error(
+                    "Request to %s failed with error: %s",
+                    url.toString(),
+                    errorJson.error
+                );
+            } else {
+                consola.error(
+                    "Request to %s failed with unknown error",
+                    url.toString()
+                );
+            }
+
+            return null;
+        }
+
+        return JSON.parse(result.data.toString("utf-8"));
+    }
+
+    /**
+     * Get the best performance of a player in a beatmap.
+     *
+     * @param playerId The ID of the player.
+     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes representing the best difficulty and performance
+     * of the player's score in the beatmap, `null` if the attributes cannot be retrieved.
+     */
+    static async getBestScorePerformance(
+        playerId: number,
+        beatmapHash: string,
+        calculationMethod: PPCalculationMethod.live
+    ): Promise<CompleteCalculationAttributes<
+        DroidDifficultyAttributes,
+        DroidPerformanceAttributes
+    > | null>;
+
+    /**
+     * Get the best performance of a player in a beatmap.
+     *
+     * @param playerId The ID of the player.
+     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes representing the best difficulty and performance
+     * of the player's score in the beatmap, `null` if the attributes cannot be retrieved.
+     */
+    static async getBestScorePerformance(
+        playerId: number,
+        beatmapHash: string,
+        calculationMethod: PPCalculationMethod.rebalance
+    ): Promise<CompleteCalculationAttributes<
+        RebalanceDroidDifficultyAttributes,
+        RebalanceDroidPerformanceAttributes
+    > | null>;
+
+    static async getBestScorePerformance(
+        playerId: number,
+        beatmapHash: string,
+        calculationMethod: PPCalculationMethod
+    ): Promise<CompleteCalculationAttributes<
+        RawDifficultyAttributes,
+        DroidPerformanceAttributes
+    > | null> {
+        const url: URL = new URL(
+            `${this.endpoint}get-player-best-score-performance`
+        );
+        url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
+        url.searchParams.set("playerid", playerId.toString());
+        url.searchParams.set("beatmaphash", beatmapHash);
+        url.searchParams.set("calculationmethod", calculationMethod.toString());
+
+        const result: RequestResponse | null = await this.request(url).catch(
+            () => null
+        );
+
+        if (result?.statusCode !== 200) {
+            if (result) {
+                const errorJson = JSON.parse(result.data.toString());
+
+                consola.error(
+                    "Request to %s failed with error: %s",
+                    url.toString(),
+                    errorJson.error
+                );
+            } else {
+                consola.error(
+                    "Request to %s failed with unknown error",
+                    url.toString()
+                );
+            }
+
+            return null;
+        }
+
+        return JSON.parse(result.data.toString("utf-8"));
+    }
+
+    /**
      * Sends a score submission request to the backend.
      *
      * @param playerId The ID of the player of which the score belongs to.
-     * @param scoreId The ID of the score.
-     * @returns The status of the submission, `null` if the server fails to be reached.
+     * @param scoreIds The ID of the scores to be submitted.
+     * @returns The status of the submission for each score ID, `null` if the server fails to be reached.
      */
     static async submitScore(
         playerId: number,
-        scoreId: number
-    ): Promise<PPSubmissionStatus | null> {
+        scoreIds: number[]
+    ): Promise<PPSubmissionStatus[] | null> {
         const url: URL = new URL(`${this.endpoint}submit-score`);
         const result: RequestResponse | null = await this.request(url, {
             body: {
                 key: process.env.DROID_SERVER_INTERNAL_KEY,
                 uid: playerId,
-                scoreid: scoreId,
+                scoreids: scoreIds.join(","),
             },
         }).catch(() => null);
 

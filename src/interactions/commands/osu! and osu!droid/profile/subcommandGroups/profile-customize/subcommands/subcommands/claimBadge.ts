@@ -13,8 +13,7 @@ import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
-import { MapInfo, RankedStatus } from "@rian8337/osu-base";
+import { MapInfo, Modes, RankedStatus } from "@rian8337/osu-base";
 import { OsuDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
@@ -22,8 +21,10 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
+import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
@@ -209,24 +210,21 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     continue;
                 }
 
-                const cacheManager =
-                    CacheManager.difficultyAttributesCache.live.osu;
+                const attribs: CompleteCalculationAttributes<
+                    OsuDifficultyAttributes,
+                    OsuPerformanceAttributes
+                > | null =
+                    await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                        score.scoreID,
+                        Modes.osu,
+                        PPCalculationMethod.live
+                    );
 
-                const attributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> =
-                    cacheManager.getDifficultyAttributes(
-                        beatmapInfo,
-                        cacheManager.getAttributeName(
-                            score.mods,
-                            score.oldStatistics,
-                            score.speedMultiplier,
-                            score.forcedAR
-                        )
-                    ) ??
-                    (await new OsuBeatmapDifficultyHelper().calculateScoreDifficulty(
-                        score
-                    ))!.cachedAttributes;
+                if (!attribs) {
+                    continue;
+                }
 
-                if (attributes.starRating >= badge.requirement) {
+                if (attribs.difficulty.starRating >= badge.requirement) {
                     canUserClaimBadge = true;
                     break;
                 }

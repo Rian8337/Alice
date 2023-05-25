@@ -3,22 +3,24 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { SimulateLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/simulate/SimulateLocalization";
 import { SlashCommand } from "@alice-structures/core/SlashCommand";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { ScoreRank } from "@alice-structures/utils/ScoreRank";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import {
     Accuracy,
     Circle,
@@ -38,10 +40,8 @@ import {
     SliderTick,
 } from "@rian8337/osu-base";
 import {
-    DroidDifficultyCalculator,
-    DroidPerformanceCalculator,
-    OsuDifficultyCalculator,
-    OsuPerformanceCalculator,
+    DroidDifficultyAttributes,
+    OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     HitResult,
@@ -559,31 +559,25 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             })
         );
 
-    const droidCalcResult: PerformanceCalculationResult<
-        DroidDifficultyCalculator,
-        DroidPerformanceCalculator
-    > | null =
-        await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-            beatmap,
-            calcParams
-        );
+    const droidAttribs: CompleteCalculationAttributes<
+        DroidDifficultyAttributes,
+        DroidPerformanceAttributes
+    > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
+        beatmap.beatmapID,
+        Modes.droid,
+        PPCalculationMethod.live,
+        calcParams
+    );
 
-    const osuCalcResult: PerformanceCalculationResult<
-        OsuDifficultyCalculator,
-        OsuPerformanceCalculator
-    > | null =
-        await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-            beatmap,
-            calcParams
-        );
-
-    if (!droidCalcResult || !osuCalcResult) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
-            ),
-        });
-    }
+    const osuAttribs: CompleteCalculationAttributes<
+        OsuDifficultyAttributes,
+        OsuPerformanceAttributes
+    > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
+        beatmap.beatmapID,
+        Modes.osu,
+        PPCalculationMethod.live,
+        calcParams
+    );
 
     BeatmapManager.setChannelLatestBeatmap(interaction.channelId, score.hash);
 
@@ -591,8 +585,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
-        droidCalcResult?.result,
-        osuCalcResult?.result
+        droidAttribs,
+        osuAttribs
     );
 
     InteractionHelper.reply(interaction, {

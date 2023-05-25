@@ -1,7 +1,6 @@
 import { Config } from "@alice-core/Config";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { EventUtil } from "structures/core/EventUtil";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
@@ -15,22 +14,21 @@ import {
     bold,
     underscore,
 } from "discord.js";
-import { DroidBeatmapDifficultyHelper } from "@alice-utils/helpers/DroidBeatmapDifficultyHelper";
-import { OsuBeatmapDifficultyHelper } from "@alice-utils/helpers/OsuBeatmapDifficultyHelper";
-import { MapInfo, MapStats } from "@rian8337/osu-base";
+import { MapInfo, MapStats, Modes } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
-    DroidDifficultyCalculator,
-    DroidPerformanceCalculator,
     OsuDifficultyAttributes,
-    OsuDifficultyCalculator,
-    OsuPerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (Config.maintenance || message.author.bot) {
@@ -58,13 +56,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const beatmapID: number = BeatmapManager.getBeatmapID(arg)[0];
+        const beatmapId: number = BeatmapManager.getBeatmapID(arg)[0];
         const beatmapsetID: number = BeatmapManager.getBeatmapsetID(arg)[0];
 
         // Prioritize beatmap ID over beatmapset ID
-        if (beatmapID) {
+        if (beatmapId) {
             const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-                beatmapID,
+                beatmapId,
                 { checkFile: false }
             );
 
@@ -78,25 +76,27 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 beatmapInfo.hash
             );
 
-            const droidCalcResult: PerformanceCalculationResult<
-                DroidDifficultyCalculator,
-                DroidPerformanceCalculator
-            > | null =
-                await new DroidBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                    beatmapInfo,
-                    calcParams
-                );
+            const droidAttribs: CompleteCalculationAttributes<
+                DroidDifficultyAttributes,
+                DroidPerformanceAttributes
+            > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
+                beatmapId,
+                Modes.droid,
+                PPCalculationMethod.live,
+                calcParams
+            );
 
-            const osuPerfCalcResult: PerformanceCalculationResult<
-                OsuDifficultyCalculator,
-                OsuPerformanceCalculator
-            > | null =
-                await new OsuBeatmapDifficultyHelper().calculateBeatmapPerformance(
-                    beatmapInfo,
-                    calcParams
-                );
+            const osuAttribs: CompleteCalculationAttributes<
+                OsuDifficultyAttributes,
+                OsuPerformanceAttributes
+            > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
+                beatmapId,
+                Modes.osu,
+                PPCalculationMethod.live,
+                calcParams
+            );
 
-            if (!droidCalcResult || !osuPerfCalcResult) {
+            if (!droidAttribs || !osuAttribs) {
                 continue;
             }
 
@@ -104,30 +104,37 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 EmbedCreator.createCalculationEmbed(
                     beatmapInfo,
                     calcParams,
-                    droidCalcResult.result.difficultyAttributes,
-                    osuPerfCalcResult.result.difficultyAttributes,
-                    droidCalcResult,
-                    osuPerfCalcResult,
-                    undefined,
+                    droidAttribs.difficulty,
+                    osuAttribs.difficulty,
+                    droidAttribs.performance,
+                    osuAttribs.performance,
                     localization.language
                 );
 
             let string: string = "";
 
             if (message.content.includes("-d")) {
-                string += `${localization.getTranslation("droidStars")}: ${
-                    droidCalcResult.starRatingInfo
-                }\n${localization.getTranslation(
+                string += `${localization.getTranslation(
+                    "droidStars"
+                )}: ${DPPHelper.getDroidDifficultyAttributesInfo(
+                    droidAttribs.difficulty
+                )}\n${localization.getTranslation(
                     "droidPP"
-                )}: ${droidCalcResult.result.toString()}\n`;
+                )}: ${DPPHelper.getDroidPerformanceAttributesInfo(
+                    droidAttribs.performance
+                )}\n`;
             }
 
             if (message.content.includes("-p")) {
-                string += `${localization.getTranslation("pcStars")}: ${
-                    osuPerfCalcResult.starRatingInfo
-                }\n${localization.getTranslation(
+                string += `${localization.getTranslation(
+                    "pcStars"
+                )}: ${DPPHelper.getOsuDifficultyAttributesInfo(
+                    osuAttribs.difficulty
+                )}\n${localization.getTranslation(
                     "pcPP"
-                )}: ${osuPerfCalcResult.result.toString()}`;
+                )}: ${DPPHelper.getOsuPerformanceAttributesInfo(
+                    osuAttribs.performance
+                )}`;
             }
 
             if (string) {
@@ -209,60 +216,32 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     break;
                 }
 
-                const { customStatistics } = calcParams;
-                const { droid: droidCacheManager, osu: osuCacheManager } =
-                    CacheManager.difficultyAttributesCache.live;
+                const droidDiffAttribs: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
+                    await DPPProcessorRESTManager.getDifficultyAttributes(
+                        beatmapInfo.hash,
+                        Modes.droid,
+                        PPCalculationMethod.live,
+                        calcParams
+                    );
 
-                const droidAttributes: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
-                    droidCacheManager.getDifficultyAttributes(
-                        beatmapInfo,
-                        droidCacheManager.getAttributeName(
-                            customStatistics?.mods,
-                            customStatistics?.oldStatistics,
-                            customStatistics?.speedMultiplier,
-                            customStatistics?.isForceAR
-                                ? customStatistics.ar
-                                : undefined
-                        )
-                    ) ??
-                    (
-                        await new DroidBeatmapDifficultyHelper().calculateBeatmapDifficulty(
-                            beatmapInfo.hash,
-                            calcParams
-                        )
-                    )?.cachedAttributes ??
-                    null;
+                const osuDiffAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
+                    await DPPProcessorRESTManager.getDifficultyAttributes(
+                        beatmapInfo.hash,
+                        Modes.osu,
+                        PPCalculationMethod.live,
+                        calcParams
+                    );
 
-                const osuAttributes: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
-                    osuCacheManager.getDifficultyAttributes(
-                        beatmapInfo,
-                        osuCacheManager.getAttributeName(
-                            customStatistics?.mods,
-                            customStatistics?.oldStatistics,
-                            customStatistics?.speedMultiplier,
-                            customStatistics?.isForceAR
-                                ? customStatistics.ar
-                                : undefined
-                        )
-                    ) ??
-                    (
-                        await new OsuBeatmapDifficultyHelper().calculateBeatmapDifficulty(
-                            beatmapInfo.hash,
-                            calcParams
-                        )
-                    )?.cachedAttributes ??
-                    null;
-
-                if (!droidAttributes || !osuAttributes) {
+                if (!droidDiffAttribs || !osuDiffAttribs) {
                     continue;
                 }
 
                 embed.addFields({
                     name: `${underscore(
                         beatmapInfo.version
-                    )} (${droidAttributes.starRating.toFixed(2)} ${
+                    )} (${droidDiffAttribs.starRating.toFixed(2)} ${
                         Symbols.star
-                    } | ${osuAttributes.starRating.toFixed(2)} ${
+                    } | ${osuDiffAttribs.starRating.toFixed(2)} ${
                         Symbols.star
                     })`,
                     value:
@@ -282,8 +261,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                             stats
                         )}\n` +
                         `${bold(
-                            droidAttributes.starRating.toFixed(2)
-                        )}dpp - ${osuAttributes.starRating.toFixed(2)}pp`,
+                            droidDiffAttribs.starRating.toFixed(2)
+                        )}dpp - ${osuDiffAttribs.starRating.toFixed(2)}pp`,
                 });
             }
 

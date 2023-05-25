@@ -42,19 +42,11 @@ export class PPENTranslation extends Translation<PPStrings> {
             "I'm sorry, you don't have a score submitted in this beatmap!",
         noScoresInSubmittedList:
             "I'm sorry, you don't have any scores to submit within that range and offset!",
-        scoreUsesForceAR: "I'm sorry, force AR is not allowed!",
-        scoreUsesCustomSpeedMultiplier:
-            "I'm sorry, custom speed multiplier is not allowed!",
-        submitSuccessful:
-            "Successfully submitted your play(s). More info in embed.",
+        submitFailed: "Submission failed.",
+        partialSubmitSuccessful: "Successfully submitted some of your play(s).",
+        fullSubmitSuccessful: "Successfully submitted your play(s).",
         profileNotFound: "I'm sorry, I cannot find your profile!",
-        ppGained: "PP gained",
         ppSubmissionInfo: "PP submission info",
-        blacklistedBeatmapReject: "Blacklisted beatmap",
-        unrankedBeatmapReject: "Unranked beatmap",
-        beatmapTooShortReject: "Beatmap too short",
-        unrankedFeaturesReject: "Unranked features",
-        beatmapNotFoundReject: "Beatmap not found",
         whatIfScoreNotEntered:
             "A score of `%spp` for `%s` would not affect their total pp.",
         whatIfScoreEntered:

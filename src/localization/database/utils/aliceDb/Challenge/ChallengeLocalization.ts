@@ -2,7 +2,6 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { ChallengeENTranslation } from "./translations/ChallengeENTranslation";
 import { ChallengeESTranslation } from "./translations/ChallengeESTranslation";
-import { ChallengeIDTranslation } from "./translations/ChallengeIDTranslation";
 import { ChallengeKRTranslation } from "./translations/ChallengeKRTranslation";
 
 export interface ChallengeStrings {
@@ -11,6 +10,7 @@ export interface ChallengeStrings {
     readonly challengeNotOngoing: string;
     readonly challengeNotExpired: string;
     readonly challengeEndSuccess: string;
+    readonly challengeEmbedGenerationFailed: string;
     readonly firstPlace: string;
     readonly constrainNotFulfilled: string;
     readonly eznfhtUsage: string;
@@ -58,7 +58,6 @@ export class ChallengeLocalization extends Localization<ChallengeStrings> {
     > = {
         en: new ChallengeENTranslation(),
         kr: new ChallengeKRTranslation(),
-        id: new ChallengeIDTranslation(),
         es: new ChallengeESTranslation(),
     };
 }
