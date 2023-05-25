@@ -93,6 +93,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     0,
                     interaction.options.getInteger("misses") ?? 0
                 ),
+                nobjects: beatmap.objects,
             }),
             interaction.options.getNumber("accuracy") ?? 100,
             interaction.options.getInteger("combo")
