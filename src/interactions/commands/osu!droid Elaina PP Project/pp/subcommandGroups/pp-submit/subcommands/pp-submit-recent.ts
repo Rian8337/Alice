@@ -108,9 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             const score: Score = scoresToSubmit[i];
 
             return {
-                name: `${score.title} +${
-                    score.mods.map((v) => v.acronym).join(",") || "No Mod"
-                }`,
+                name: `${score.title} +${score.completeModString}`,
                 value: `${score.combo}x | ${(
                     score.accuracy.value() * 100
                 ).toFixed(2)}% | ${score.accuracy.nmiss} ${

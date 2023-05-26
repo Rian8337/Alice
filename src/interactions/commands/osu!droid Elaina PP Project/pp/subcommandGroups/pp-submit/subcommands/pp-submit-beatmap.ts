@@ -98,7 +98,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     embed.setTitle(localization.getTranslation("ppSubmissionInfo")).addFields({
         name: `${beatmapInfo?.fullTitle ?? score.title} +${
-            score.mods.map((v) => v.acronym).join(",") || "No Mod"
+            score.completeModString
         }`,
         value: `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(
             2
