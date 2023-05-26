@@ -101,4 +101,30 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
             });
         }
     }
+
+    /**
+     * Recalculates the accuracy of this parameter.
+     *
+     * @param objectCount The amount of objects..
+     */
+    recalculateAccuracy(objectCount: number): void {
+        if (this.accuracy.n50 || this.accuracy.n100) {
+            this.accuracy = new Accuracy({
+                n300:
+                    objectCount -
+                    this.accuracy.n100 -
+                    this.accuracy.n50 -
+                    this.accuracy.nmiss,
+                n100: this.accuracy.n100,
+                n50: this.accuracy.n50,
+                nmiss: this.accuracy.nmiss,
+            });
+        } else {
+            this.accuracy = new Accuracy({
+                percent: this.inputAccuracy,
+                nmiss: this.accuracy.nmiss,
+                nobjects: objectCount,
+            });
+        }
+    }
 }

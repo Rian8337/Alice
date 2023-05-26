@@ -70,6 +70,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 continue;
             }
 
+            calcParams.recalculateAccuracy(beatmapInfo.objects);
+
             // Beatmap cache
             BeatmapManager.setChannelLatestBeatmap(
                 message.channel.id,

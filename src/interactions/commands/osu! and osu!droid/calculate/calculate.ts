@@ -111,6 +111,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             })
         );
 
+    calcParams.recalculateAccuracy(beatmap.objects);
+
     let droidCalcResult: CompleteCalculationAttributes<
         DroidDifficultyAttributes | RebalanceDroidDifficultyAttributes,
         DroidPerformanceAttributes | RebalanceDroidPerformanceAttributes
