@@ -115,7 +115,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (customStatistics?.mods && customStatistics.mods.length > 0) {
                 url.searchParams.set(
                     "mods",
-                    customStatistics.mods.reduce((a, v) => a + v, "")
+                    customStatistics.mods.reduce((a, v) => a + v.acronym, "")
                 );
             }
 
@@ -267,7 +267,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (customStatistics?.mods && customStatistics.mods.length > 0) {
                 url.searchParams.set(
                     "mods",
-                    customStatistics.mods.reduce((a, v) => a + v, "")
+                    customStatistics.mods.reduce((a, v) => a + v.acronym, "")
                 );
             }
 
