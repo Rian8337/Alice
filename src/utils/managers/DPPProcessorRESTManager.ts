@@ -147,12 +147,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
 
         if (result?.statusCode !== 200) {
             if (result) {
-                const errorJson = JSON.parse(result.data.toString());
-
                 consola.error(
                     "Request to %s failed with error: %s",
                     url.toString(),
-                    errorJson.error
+                    result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
@@ -323,13 +321,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
 
         if (result?.statusCode !== 200) {
             if (result) {
-                console.log(result.data.toString("utf-8"));
-                const errorJson = JSON.parse(result.data.toString("utf-8"));
-
                 consola.error(
                     "Request to %s failed with error: %s",
                     url.toString(),
-                    errorJson.error
+                    result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
@@ -432,12 +427,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
 
         if (result?.statusCode !== 200) {
             if (result) {
-                const errorJson = JSON.parse(result.data.toString());
-
                 consola.error(
                     "Request to %s failed with error: %s",
                     url.toString(),
-                    errorJson.error
+                    result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
@@ -510,12 +503,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
 
         if (result?.statusCode !== 200) {
             if (result) {
-                const errorJson = JSON.parse(result.data.toString());
-
                 consola.error(
                     "Request to %s failed with error: %s",
                     url.toString(),
-                    errorJson.error
+                    result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
@@ -554,12 +545,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
 
         if (result?.statusCode !== 200) {
             if (result) {
-                const errorJson = JSON.parse(result.data.toString());
-
                 consola.error(
                     "Request to %s failed with error: %s",
                     url.toString(),
-                    errorJson.error
+                    result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
