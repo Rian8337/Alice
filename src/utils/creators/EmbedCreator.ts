@@ -390,9 +390,12 @@ export abstract class EmbedCreator {
             osuPerfAttribs
         ) {
             const combo: number = calculationParams.combo ?? beatmap.maxCombo;
-            const accuracy: Accuracy = calculationParams.accuracy;
-            const customStatistics: MapStats | undefined =
-                calculationParams.customStatistics;
+            // Recompute accuracy to consider amount of objects.
+            calculationParams.accuracy = new Accuracy({
+                ...calculationParams.accuracy,
+                nobjects: beatmap.objects,
+            });
+            const { accuracy, customStatistics } = calculationParams;
 
             embed
                 .setColor(
