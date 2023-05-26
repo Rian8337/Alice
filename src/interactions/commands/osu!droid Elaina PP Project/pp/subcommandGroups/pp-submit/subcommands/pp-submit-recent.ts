@@ -132,7 +132,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     if (statuses.some((s) => !s.success)) {
-        InteractionHelper.reply(interaction, {
+        return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("partialSubmitSuccessful")
             ),
