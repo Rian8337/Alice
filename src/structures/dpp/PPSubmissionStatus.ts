@@ -16,4 +16,9 @@ export interface PPSubmissionStatus {
      * Whether the replay file needs to be persisted.
      */
     replayNeedsPersistence?: boolean;
+
+    /**
+     * The calculated pp value.
+     */
+    pp: number;
 }

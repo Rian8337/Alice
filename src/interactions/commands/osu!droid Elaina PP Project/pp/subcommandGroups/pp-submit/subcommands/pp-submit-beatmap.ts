@@ -16,6 +16,7 @@ import { PPSubmissionStatus } from "@alice-structures/dpp/PPSubmissionStatus";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { EmbedBuilder, GuildMember, bold } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -102,6 +103,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         value: `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(
             2
         )}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | ${bold(
+            `${NumberHelper.round(statuses?.[0]?.pp ?? 0, 2)}pp`
+        )} | ${bold(
             statuses?.[0]?.success
                 ? "Success"
                 : statuses?.[0].reason ?? "Unknown"

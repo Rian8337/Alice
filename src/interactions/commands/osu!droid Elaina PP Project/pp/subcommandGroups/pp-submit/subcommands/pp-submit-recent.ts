@@ -116,6 +116,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ).toFixed(2)}% | ${score.accuracy.nmiss} ${
                     Symbols.missIcon
                 } | ${bold(
+                    `${NumberHelper.round(status?.pp ?? 0, 2)}pp`
+                )} | ${bold(
                     status?.success ? "Success" : status?.reason ?? "Unknown"
                 )}`,
             };
