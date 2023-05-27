@@ -492,9 +492,7 @@ export class UserBind extends Manager {
             };
 
             consola.info(
-                `${beatmapInfo.fullTitle}${
-                    entry.mods ? ` +${entry.mods}` : ""
-                }: ${entry.prevPP} ⮕  ${entry.pp}`
+                `${beatmapInfo.fullTitle} ${score.completeModString}: ${entry.prevPP} ⮕  ${entry.pp}`
             );
 
             newList.set(ppEntry.hash, entry);
