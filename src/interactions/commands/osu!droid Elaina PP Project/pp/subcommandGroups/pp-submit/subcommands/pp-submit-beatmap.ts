@@ -17,19 +17,8 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { EmbedBuilder, GuildMember, bold } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { Config } from "@alice-core/Config";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    if (!Config.isDebug) {
-        interaction.ephemeral = true;
-
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                "I'm sorry, this command is not available for the time being."
-            ),
-        });
-    }
-
     const localization: PPLocalization = new PPLocalization(
         await CommandHelper.getLocale(interaction)
     );

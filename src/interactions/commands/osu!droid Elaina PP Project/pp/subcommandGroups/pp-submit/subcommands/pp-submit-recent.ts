@@ -15,19 +15,8 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 import { PPSubmissionStatus } from "@alice-structures/dpp/PPSubmissionStatus";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { Config } from "@alice-core/Config";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    if (!Config.isDebug) {
-        interaction.ephemeral = true;
-
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                "I'm sorry, this command is not available for the time being."
-            ),
-        });
-    }
-
     const localization: PPLocalization = new PPLocalization(
         await CommandHelper.getLocale(interaction)
     );
