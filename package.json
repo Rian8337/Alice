@@ -6,8 +6,8 @@
   "scripts": {
     "analyze-code": "npx eslint \"src/**\"",
     "build": "tsc --build tsconfig.json",
-    "build-windows": "rmdir dist /s /q & npm run compile-build",
-    "build-linux": "rm -rf dist & npm run compile-build",
+    "build-windows": "rmdir dist /s /q & npm run build",
+    "build-linux": "rm -rf dist & npm run build",
     "format-code": "npx prettier -w --loglevel=silent \"src/**\"",
     "start": "node --trace-warnings .",
     "startDebug": "node --trace-warnings --inspect .",
