@@ -5,9 +5,9 @@
   "main": "dist/main.js",
   "scripts": {
     "analyze-code": "npx eslint \"src/**\"",
-    "compile-windows": "rmdir dist /s /q & npm run compile-build",
-    "compile-linux": "rm -rf dist & npm run compile-build",
-    "compile-build": "tsc --build tsconfig.json",
+    "build": "tsc --build tsconfig.json",
+    "build-windows": "rmdir dist /s /q & npm run compile-build",
+    "build-linux": "rm -rf dist & npm run compile-build",
     "format-code": "npx prettier -w --loglevel=silent \"src/**\"",
     "start": "node --trace-warnings .",
     "startDebug": "node --trace-warnings --inspect .",
