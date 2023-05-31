@@ -12,11 +12,12 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { PPSubmissionStatus } from "@alice-structures/dpp/PPSubmissionStatus";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { EmbedBuilder, GuildMember, bold } from "discord.js";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { PPSubmissionOperationResult } from "@alice-structures/dpp/PPSubmissionOperationResult";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -86,7 +87,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const statuses: PPSubmissionStatus[] | null =
+    const result: PPSubmissionOperationResult | null =
         await DPPProcessorRESTManager.submitScores(bindInfo.uid, [
             score.scoreID,
         ]);
@@ -96,22 +97,38 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    embed.setTitle(localization.getTranslation("ppSubmissionInfo")).addFields({
-        name: `${beatmapInfo?.fullTitle ?? score.title} ${
-            score.completeModString
-        }`,
-        value: `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(
-            2
-        )}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | ${bold(
-            `${NumberHelper.round(statuses?.[0]?.pp ?? 0, 2)}pp`
-        )} | ${bold(
-            statuses?.[0]?.success
-                ? "Success"
-                : statuses?.[0].reason ?? "Unknown"
-        )}`,
-    });
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-    if (!statuses || statuses.length === 0 || !statuses[0].success) {
+    embed
+        .setTitle(localization.getTranslation("ppSubmissionInfo"))
+        .setDescription(
+            `${localization.getTranslation("totalPP")}: ${bold(
+                (result?.newTotalPP ?? 0).toLocaleString(BCP47)
+            )}pp\n` +
+                `${localization.getTranslation("ppGained")}: ${bold(
+                    (result?.ppGained ?? 0).toLocaleString(BCP47)
+                )}pp`
+        )
+        .addFields({
+            name: `${beatmapInfo?.fullTitle ?? score.title} ${
+                score.completeModString
+            }`,
+            value: `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(
+                2
+            )}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | ${bold(
+                `${NumberHelper.round(result?.statuses[0]?.pp ?? 0, 2)}pp`
+            )} | ${bold(
+                result?.statuses[0]?.success
+                    ? "Success"
+                    : result?.statuses[0].reason ?? "Unknown"
+            )}`,
+        });
+
+    if (
+        !result ||
+        result.statuses.length === 0 ||
+        !result.statuses[0].success
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("submitFailed")

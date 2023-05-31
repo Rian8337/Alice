@@ -46,6 +46,7 @@ export class PPESTranslation extends Translation<PPStrings> {
         submitFailed: "",
         partialSubmitSuccessful: "",
         fullSubmitSuccessful: "Puntaje(s) registrados correctamente.",
+        ppGained: "PP Obtenido",
         profileNotFound: "Lo siento, no puedo encontrar tu perfil!",
         ppSubmissionInfo: "Información de PP registrada",
         whatIfScoreNotEntered: "",

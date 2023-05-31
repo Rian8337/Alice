@@ -1,5 +1,5 @@
 /**
- * Status of pp submission operation.
+ * Represents the status of a pp submission operation.
  */
 export interface PPSubmissionStatus {
     /**

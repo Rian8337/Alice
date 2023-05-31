@@ -15,6 +15,8 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 import { PPSubmissionStatus } from "@alice-structures/dpp/PPSubmissionStatus";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { PPSubmissionOperationResult } from "@alice-structures/dpp/PPSubmissionOperationResult";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
@@ -89,7 +91,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const statuses: PPSubmissionStatus[] | null =
+    const result: PPSubmissionOperationResult | null =
         await DPPProcessorRESTManager.submitScores(
             bindInfo.uid,
             scoresToSubmit.map((v) => v.scoreID)
@@ -100,29 +102,43 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    embed.setTitle(localization.getTranslation("ppSubmissionInfo")).addFields(
-        (
-            statuses ??
-            new Array<PPSubmissionStatus | undefined>(scoresToSubmit.length)
-        ).map((status, i) => {
-            const score: Score = scoresToSubmit[i];
+    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
-            return {
-                name: `${score.title} ${score.completeModString}`,
-                value: `${score.combo}x | ${(
-                    score.accuracy.value() * 100
-                ).toFixed(2)}% | ${score.accuracy.nmiss} ${
-                    Symbols.missIcon
-                } | ${bold(
-                    `${NumberHelper.round(status?.pp ?? 0, 2)}pp`
-                )} | ${bold(
-                    status?.success ? "Success" : status?.reason ?? "Unknown"
-                )}`,
-            };
-        })
-    );
+    embed
+        .setTitle(localization.getTranslation("ppSubmissionInfo"))
+        .setDescription(
+            `${localization.getTranslation("totalPP")}: ${bold(
+                (result?.newTotalPP ?? 0).toLocaleString(BCP47)
+            )}pp\n` +
+                `${localization.getTranslation("ppGained")}: ${bold(
+                    (result?.ppGained ?? 0).toLocaleString(BCP47)
+                )}pp`
+        )
+        .addFields(
+            (
+                result?.statuses ??
+                new Array<PPSubmissionStatus | undefined>(scoresToSubmit.length)
+            ).map((status, i) => {
+                const score: Score = scoresToSubmit[i];
 
-    if (statuses === null || statuses.every((s) => !s.success)) {
+                return {
+                    name: `${score.title} ${score.completeModString}`,
+                    value: `${score.combo}x | ${(
+                        score.accuracy.value() * 100
+                    ).toFixed(2)}% | ${score.accuracy.nmiss} ${
+                        Symbols.missIcon
+                    } | ${bold(
+                        `${NumberHelper.round(status?.pp ?? 0, 2)}pp`
+                    )} | ${bold(
+                        status?.success
+                            ? "Success"
+                            : status?.reason ?? "Unknown"
+                    )}`,
+                };
+            })
+        );
+
+    if (result === null || result.statuses.every((s) => !s.success)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("submitFailed")
@@ -131,7 +147,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    if (statuses.some((s) => !s.success)) {
+    if (result.statuses.some((s) => !s.success)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("partialSubmitSuccessful")

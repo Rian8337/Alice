@@ -13,7 +13,6 @@ import {
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { consola } from "consola";
-import { PPSubmissionStatus } from "@alice-structures/dpp/PPSubmissionStatus";
 import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
@@ -21,6 +20,7 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { PerformanceAttributes } from "@alice-structures/difficultyattributes/PerformanceAttributes";
 import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
+import { PPSubmissionOperationResult } from "@alice-structures/dpp/PPSubmissionOperationResult";
 
 /**
  * A REST manager for the droid performance points processor backend.
@@ -531,7 +531,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async submitScores(
         playerId: number,
         scoreIds: number[]
-    ): Promise<PPSubmissionStatus[] | null> {
+    ): Promise<PPSubmissionOperationResult | null> {
         const url: URL = new URL(`${this.endpoint}submit-scores`);
         const result: RequestResponse | null = await this.request(url, {
             method: "POST",

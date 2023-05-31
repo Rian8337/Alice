@@ -45,6 +45,7 @@ export class PPENTranslation extends Translation<PPStrings> {
         submitFailed: "Submission failed.",
         partialSubmitSuccessful: "Successfully submitted some of your play(s).",
         fullSubmitSuccessful: "Successfully submitted your play(s).",
+        ppGained: "PP gained",
         profileNotFound: "I'm sorry, I cannot find your profile!",
         ppSubmissionInfo: "PP submission info",
         whatIfScoreNotEntered:

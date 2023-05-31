@@ -33,6 +33,7 @@ export interface PPStrings {
     readonly submitFailed: string;
     readonly partialSubmitSuccessful: string;
     readonly fullSubmitSuccessful: string;
+    readonly ppGained: string;
     readonly profileNotFound: string;
     readonly ppSubmissionInfo: string;
     readonly whatIfScoreNotEntered: string;
