@@ -622,9 +622,9 @@ class LeasedBindable<T> extends Bindable<T> {
     constructor(defaultValue: T);
     constructor(sourceVal: Bindable<T>, revertValueOnReturn?: boolean);
     constructor(sourceVal: Bindable<T> | T, revertValueOnReturn?: boolean) {
-        super(sourceVal instanceof Bindable<T> ? sourceVal.value : sourceVal);
+        super(sourceVal instanceof Bindable ? sourceVal.value : sourceVal);
 
-        if (!(sourceVal instanceof Bindable<T>)) {
+        if (!(sourceVal instanceof Bindable)) {
             // Used for `getBoundCopy`, where we don't want a source.
             return;
         }
