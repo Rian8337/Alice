@@ -3,14 +3,14 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "compile-linux",
+			"script": "build-linux",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
 			"problemMatcher": [],
-			"label": "npm: compile-linux",
-			"detail": "rm -rf dist & npm run compile-build"
+			"label": "npm: build-linux",
+			"detail": "rm -rf dist & npm run build"
 		}
 	]
 }
