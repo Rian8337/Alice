@@ -33,6 +33,7 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattributes/ResponseDifficultyAttributes";
 
 /**
  * A helper for droid performance points related things.
@@ -380,7 +381,7 @@ export abstract class DPPHelper {
     static getDroidDifficultyAttributesInfo(
         attributes:
             | DroidDifficultyAttributes
-            | CacheableDifficultyAttributes<DroidDifficultyAttributes>
+            | ResponseDifficultyAttributes<DroidDifficultyAttributes>
     ): string {
         let string: string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
@@ -408,7 +409,7 @@ export abstract class DPPHelper {
     static getRebalanceDroidDifficultyAttributesInfo(
         attributes:
             | RebalanceDroidDifficultyAttributes
-            | CacheableDifficultyAttributes<RebalanceDroidDifficultyAttributes>
+            | ResponseDifficultyAttributes<RebalanceDroidDifficultyAttributes>
     ): string {
         let string: string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
@@ -462,7 +463,7 @@ export abstract class DPPHelper {
     static getRebalanceOsuDifficultyAttributesInfo(
         attributes:
             | RebalanceOsuDifficultyAttributes
-            | CacheableDifficultyAttributes<RebalanceOsuDifficultyAttributes>
+            | ResponseDifficultyAttributes<RebalanceOsuDifficultyAttributes>
     ): string {
         let string: string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];

@@ -32,6 +32,7 @@ import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
+import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattributes/ResponseDifficultyAttributes";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CalculateLocalization = new CalculateLocalization(
@@ -183,9 +184,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             interaction.options.getInteger("calculationmethod") ===
             PPCalculationMethod.rebalance
                 ? DPPHelper.getRebalanceDroidDifficultyAttributesInfo(
-                      <RebalanceDroidDifficultyAttributes>(
-                          droidCalcResult.difficulty
-                      )
+                      <
+                          ResponseDifficultyAttributes<RebalanceDroidDifficultyAttributes>
+                      >droidCalcResult.difficulty
                   )
                 : DPPHelper.getDroidDifficultyAttributesInfo(
                       droidCalcResult.difficulty
@@ -203,7 +204,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             interaction.options.getInteger("calculationmethod") ===
             PPCalculationMethod.rebalance
                 ? DPPHelper.getRebalanceOsuDifficultyAttributesInfo(
-                      <RebalanceOsuDifficultyAttributes>osuCalcResult.difficulty
+                      <
+                          ResponseDifficultyAttributes<RebalanceOsuDifficultyAttributes>
+                      >osuCalcResult.difficulty
                   )
                 : DPPHelper.getOsuDifficultyAttributesInfo(
                       osuCalcResult.difficulty
