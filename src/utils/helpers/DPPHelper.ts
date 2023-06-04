@@ -31,6 +31,8 @@ import { NumberHelper } from "./NumberHelper";
 import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 /**
  * A helper for droid performance points related things.
@@ -252,26 +254,40 @@ export abstract class DPPHelper {
      *
      * @param beatmapTitle The title of the beatmap.
      * @param score The score to convert.
-     * @param totalPP The total pp of the score.
+     * @param attributes The calculation attributes of the score.
      * @returns A PP entry from the score and calculation result.
      */
     static scoreToPPEntry(
         beatmapTitle: string,
         score: Score,
-        totalPP: number
+        attributes: CompleteCalculationAttributes<
+            DroidDifficultyAttributes,
+            DroidPerformanceAttributes
+        >
     ): PPEntry {
+        const { params, difficulty, performance } = attributes;
+        const calcParams: PerformanceCalculationParameters =
+            PerformanceCalculationParameters.from(params);
+
+        const { customStatistics, combo, accuracy } = calcParams;
+
         return {
             uid: score.uid,
             hash: score.hash,
             title: beatmapTitle,
-            pp: NumberHelper.round(totalPP, 2),
-            mods: score.mods.reduce((a, v) => a + v.acronym, ""),
-            accuracy: NumberHelper.round(score.accuracy.value() * 100, 2),
-            combo: score.combo,
-            miss: score.accuracy.nmiss,
+            pp: NumberHelper.round(performance.total, 2),
+            mods: difficulty.mods,
+            accuracy: NumberHelper.round(accuracy.value() * 100, 2),
+            // This is returned from the dpp backend, and is guaranteed to not be null.
+            combo: combo!,
+            miss: accuracy.nmiss,
             speedMultiplier:
-                score.speedMultiplier !== 1 ? score.speedMultiplier : undefined,
-            forcedAR: score.forcedAR,
+                customStatistics && customStatistics.speedMultiplier !== 1
+                    ? customStatistics.speedMultiplier
+                    : undefined,
+            forcedAR: customStatistics?.isForceAR
+                ? customStatistics.ar
+                : undefined,
         };
     }
 

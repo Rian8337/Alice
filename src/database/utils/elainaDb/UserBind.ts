@@ -360,11 +360,7 @@ export class UserBind extends Manager {
             await HelperFunctions.sleep(0.1);
 
             DPPHelper.insertScore(newList, [
-                DPPHelper.scoreToPPEntry(
-                    beatmapInfo.fullTitle,
-                    score,
-                    attribs.performance.total
-                ),
+                DPPHelper.scoreToPPEntry(beatmapInfo.fullTitle, score, attribs),
             ]);
         }
 
@@ -464,11 +460,7 @@ export class UserBind extends Manager {
                 prevTap: NumberHelper.round(perfResult.tap, 2),
                 prevAccuracy: NumberHelper.round(perfResult.accuracy, 2),
                 prevVisual: NumberHelper.round(perfResult.visual, 2),
-                mods:
-                    customStatistics?.mods.reduce(
-                        (a, v) => a + v.acronym,
-                        ""
-                    ) ?? "",
+                mods: rebalAttribs.difficulty.mods,
                 accuracy: NumberHelper.round(accuracy.value() * 100, 2),
                 combo: combo ?? beatmapInfo.maxCombo,
                 miss: accuracy.nmiss,
@@ -646,7 +638,7 @@ export class UserBind extends Manager {
                     const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
                         beatmapInfo.fullTitle,
                         score,
-                        attribs.performance.total
+                        attribs
                     );
 
                     DPPHelper.insertScore(newList, [ppEntry]);
