@@ -555,7 +555,7 @@ export abstract class EmbedCreator {
             iconURL: playerAvatarURL,
         });
 
-        if (droidAttribs === undefined) {
+        if (droidAttribs === undefined && osuAttribs !== null) {
             droidAttribs =
                 await DPPProcessorRESTManager.getOnlineScoreAttributes(
                     score.scoreID,
@@ -564,7 +564,7 @@ export abstract class EmbedCreator {
                 );
         }
 
-        if (osuAttribs === undefined) {
+        if (osuAttribs === undefined && droidAttribs !== null) {
             osuAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
                 score.scoreID,
                 Modes.osu,
@@ -800,6 +800,10 @@ export abstract class EmbedCreator {
                 calcParams
             );
 
+        if (!droidDiffAttribs) {
+            return null;
+        }
+
         const osuDiffAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
             await DPPProcessorRESTManager.getDifficultyAttributes(
                 challenge.beatmapid,
@@ -808,7 +812,7 @@ export abstract class EmbedCreator {
                 calcParams
             );
 
-        if (!droidDiffAttribs || !osuDiffAttribs) {
+        if (!osuDiffAttribs) {
             return null;
         }
 

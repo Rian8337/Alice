@@ -88,6 +88,10 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 calcParams
             );
 
+            if (!droidAttribs) {
+                continue;
+            }
+
             const osuAttribs: CompleteCalculationAttributes<
                 OsuDifficultyAttributes,
                 OsuPerformanceAttributes
@@ -98,7 +102,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 calcParams
             );
 
-            if (!droidAttribs || !osuAttribs) {
+            if (!osuAttribs) {
                 continue;
             }
 

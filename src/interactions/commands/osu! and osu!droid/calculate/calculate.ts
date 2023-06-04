@@ -133,13 +133,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     PPCalculationMethod.rebalance,
                     calcParams
                 );
-            osuCalcResult =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
-                    beatmap.beatmapID,
-                    Modes.osu,
-                    PPCalculationMethod.rebalance,
-                    calcParams
-                );
+
+            if (droidCalcResult) {
+                osuCalcResult =
+                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                        beatmap.beatmapID,
+                        Modes.osu,
+                        PPCalculationMethod.rebalance,
+                        calcParams
+                    );
+            }
             break;
         default:
             droidCalcResult =
@@ -149,13 +152,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     PPCalculationMethod.live,
                     calcParams
                 );
-            osuCalcResult =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
-                    beatmap.beatmapID,
-                    Modes.osu,
-                    PPCalculationMethod.live,
-                    calcParams
-                );
+
+            if (droidCalcResult) {
+                osuCalcResult =
+                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                        beatmap.beatmapID,
+                        Modes.osu,
+                        PPCalculationMethod.live,
+                        calcParams
+                    );
+            }
     }
 
     if (!droidCalcResult || !osuCalcResult) {

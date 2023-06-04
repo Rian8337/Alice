@@ -201,6 +201,10 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                             calcParams
                         );
 
+                    if (!droidAttribs) {
+                        continue;
+                    }
+
                     const osuAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
                         await DPPProcessorRESTManager.getDifficultyAttributes(
                             beatmapInfo.beatmapID,
@@ -209,7 +213,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                             calcParams
                         );
 
-                    if (!droidAttribs || !osuAttribs) {
+                    if (!osuAttribs) {
                         continue;
                     }
 
