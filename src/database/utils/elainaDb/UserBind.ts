@@ -34,6 +34,7 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -442,7 +443,12 @@ export class UserBind extends Manager {
             }
 
             const { performance: perfResult } = liveAttribs;
-            const { performance: rebalPerfResult } = rebalAttribs;
+            const { performance: rebalPerfResult, params } = rebalAttribs;
+
+            const calcParams: PerformanceCalculationParameters =
+                PerformanceCalculationParameters.from(params);
+
+            const { customStatistics, accuracy, combo } = calcParams;
 
             const entry: PrototypePPEntry = {
                 uid: score.uid,
@@ -453,20 +459,26 @@ export class UserBind extends Manager {
                 newTap: NumberHelper.round(rebalPerfResult.tap, 2),
                 newAccuracy: NumberHelper.round(rebalPerfResult.accuracy, 2),
                 newVisual: NumberHelper.round(rebalPerfResult.visual, 2),
-                prevPP: ppEntry.pp,
+                prevPP: NumberHelper.round(perfResult.total, 2),
                 prevAim: NumberHelper.round(perfResult.aim, 2),
                 prevTap: NumberHelper.round(perfResult.tap, 2),
                 prevAccuracy: NumberHelper.round(perfResult.accuracy, 2),
                 prevVisual: NumberHelper.round(perfResult.visual, 2),
-                mods: score.mods.reduce((a, v) => a + v.acronym, ""),
-                accuracy: NumberHelper.round(score.accuracy.value() * 100, 2),
-                combo: score.combo,
-                miss: score.accuracy.nmiss,
+                mods:
+                    customStatistics?.mods.reduce(
+                        (a, v) => a + v.acronym,
+                        ""
+                    ) ?? "",
+                accuracy: NumberHelper.round(accuracy.value() * 100, 2),
+                combo: combo ?? beatmapInfo.maxCombo,
+                miss: accuracy.nmiss,
                 speedMultiplier:
-                    score.speedMultiplier !== 1
-                        ? score.speedMultiplier
+                    customStatistics && customStatistics.speedMultiplier !== 1
+                        ? customStatistics.speedMultiplier
                         : undefined,
-                forcedAR: score.forcedAR,
+                forcedAR: customStatistics?.isForceAR
+                    ? customStatistics.ar
+                    : undefined,
                 calculatedUnstableRate: rebalPerfResult.calculatedUnstableRate,
                 estimatedUnstableRate: NumberHelper.round(
                     rebalPerfResult.deviation * 10,
@@ -476,13 +488,10 @@ export class UserBind extends Manager {
                     rebalPerfResult.tapDeviation * 10,
                     2
                 ),
-                aimNoteCount: 0,
-                twoHandedNoteCount: score.replay?.twoHandedNoteCount ?? 0,
-                assumedTwoHand: score.replay?.is2Hand ?? false,
                 overallDifficulty: rebalAttribs.difficulty.overallDifficulty,
-                hit300: score.accuracy.n300,
-                hit100: score.accuracy.n100,
-                hit50: score.accuracy.n50,
+                hit300: accuracy.n300,
+                hit100: accuracy.n100,
+                hit50: accuracy.n50,
                 aimSliderCheesePenalty: rebalPerfResult.aimSliderCheesePenalty,
                 flashlightSliderCheesePenalty:
                     rebalPerfResult.flashlightSliderCheesePenalty,

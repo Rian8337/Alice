@@ -1,13 +1,37 @@
 import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
-import { Accuracy, MapStats, Precision } from "@rian8337/osu-base";
+import { Accuracy, MapStats, ModUtil, Precision } from "@rian8337/osu-base";
 import { SliderCheeseInformation } from "@rian8337/osu-droid-replay-analyzer";
 import { DifficultyCalculationParameters } from "./DifficultyCalculationParameters";
 import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
+import { CloneablePerformanceCalculationParameters } from "@alice-structures/dpp/CloneablePerformanceCalculationParameters";
 
 /**
  * Represents a parameter to alter performance calculation result.
  */
 export class PerformanceCalculationParameters extends DifficultyCalculationParameters {
+    /**
+     * Constructs a `PerformanceCalculationParameters` object from raw data.
+     *
+     * @param data The data.
+     */
+    static override from(
+        data: CloneablePerformanceCalculationParameters
+    ): PerformanceCalculationParameters {
+        const accuracy: Accuracy = new Accuracy(data.accuracy);
+
+        return new this(
+            accuracy,
+            accuracy.value(),
+            data.combo,
+            data.tapPenalty,
+            new MapStats({
+                ...data.customStatistics,
+                mods: ModUtil.pcStringToMods(data.customStatistics?.mods ?? ""),
+            }),
+            data.sliderCheesePenalty
+        );
+    }
+
     /**
      * The combo achieved.
      */
