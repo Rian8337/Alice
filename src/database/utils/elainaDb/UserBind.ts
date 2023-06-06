@@ -619,6 +619,13 @@ export class UserBind extends Manager {
                         continue;
                     }
 
+                    const submissionValidity: DPPSubmissionValidity =
+                        await DPPHelper.checkSubmissionValidity(beatmapInfo);
+
+                    if (submissionValidity !== DPPSubmissionValidity.valid) {
+                        continue;
+                    }
+
                     const attribs: CompleteCalculationAttributes<
                         DroidDifficultyAttributes,
                         DroidPerformanceAttributes

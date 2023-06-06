@@ -82,9 +82,6 @@ export abstract class DPPHelper {
             case beatmapOrScore instanceof Score &&
                 beatmapOrScore.forcedAR !== undefined:
                 return DPPSubmissionValidity.scoreUsesForceAR;
-            case beatmapOrScore instanceof Score &&
-                beatmapOrScore.speedMultiplier !== 1:
-                return DPPSubmissionValidity.scoreUsesCustomSpeed;
             case beatmapInfo.approved === RankedStatus.loved &&
                 (beatmapInfo.hitLength < 30 ||
                     beatmapInfo.hitLength / beatmapInfo.totalLength < 0.6):
