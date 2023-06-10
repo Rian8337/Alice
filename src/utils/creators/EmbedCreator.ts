@@ -172,9 +172,6 @@ export abstract class EmbedCreator {
                     2
                 )}.png`,
             })
-            .setThumbnail(
-                `https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`
-            )
             .setTitle(
                 BeatmapManager.showStatistics(
                     beatmapInfo,
@@ -593,21 +590,15 @@ export abstract class EmbedCreator {
             score.hash
         ))!;
 
-        embed
-            .setAuthor({
-                name: `${beatmap.fullTitle} ${
-                    score.completeModString
-                } [${droidAttribs.difficulty.starRating.toFixed(2)}${
-                    Symbols.star
-                } | ${osuAttribs.difficulty.starRating.toFixed(2)}${
-                    Symbols.star
-                }]`,
-                iconURL: playerAvatarURL,
-                url: `https://osu.ppy.sh/b/${beatmap.beatmapID}`,
-            })
-            .setThumbnail(
-                `https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`
-            );
+        embed.setAuthor({
+            name: `${beatmap.fullTitle} ${
+                score.completeModString
+            } [${droidAttribs.difficulty.starRating.toFixed(2)}${
+                Symbols.star
+            } | ${osuAttribs.difficulty.starRating.toFixed(2)}${Symbols.star}]`,
+            iconURL: playerAvatarURL,
+            url: `https://osu.ppy.sh/b/${beatmap.beatmapID}`,
+        });
 
         beatmapInformation += `${bold(
             `${droidAttribs.performance.total.toFixed(2)}DPP`
