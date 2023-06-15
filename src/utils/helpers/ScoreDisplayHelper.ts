@@ -13,7 +13,7 @@ import {
     Snowflake,
     bold,
 } from "discord.js";
-import { Player, Score } from "@rian8337/osu-droid-utilities";
+import { Score } from "@rian8337/osu-droid-utilities";
 import { NumberHelper } from "./NumberHelper";
 import { Language } from "@alice-localization/base/Language";
 import { ScoreDisplayHelperLocalization } from "@alice-localization/utils/helpers/ScoreDisplayHelper/ScoreDisplayHelperLocalization";
@@ -36,6 +36,7 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 
 /**
  * A helper for displaying scores to a user.
@@ -45,12 +46,14 @@ export abstract class ScoreDisplayHelper {
      * Shows a player's recent plays.
      *
      * @param interaction The interaction that triggered the command.
-     * @param player The player.
+     * @param username The name of the player.
+     * @param scores The recent scores of the player.
      * @returns A message showing the player's recent plays.
      */
     static async showRecentPlays(
         interaction: RepliableInteraction,
-        player: Player,
+        username: string,
+        scores: (Score | RecentPlay)[],
         page: number = 1
     ): Promise<Message> {
         const localization: ScoreDisplayHelperLocalization =
@@ -61,26 +64,22 @@ export abstract class ScoreDisplayHelper {
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
 
-        page = NumberHelper.clamp(
-            page,
-            1,
-            Math.ceil(player.recentPlays.length / 5)
-        );
+        page = NumberHelper.clamp(page, 1, Math.ceil(scores.length / 5));
 
         embed.setDescription(
             StringHelper.formatString(
                 localization.getTranslation("recentPlays"),
-                bold(player.username)
+                bold(username)
             )
         );
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             for (
                 let i = 5 * (page - 1);
-                i < Math.min(player.recentPlays.length, 5 + 5 * (page - 1));
+                i < Math.min(scores.length, 5 + 5 * (page - 1));
                 ++i
             ) {
-                const score: Score = player.recentPlays[i];
+                const score: Score | RecentPlay = scores[i];
 
                 embed.addFields({
                     name: `${i + 1}. ${BeatmapManager.getRankEmote(
@@ -107,7 +106,7 @@ export abstract class ScoreDisplayHelper {
             { embeds: [embed] },
             [interaction.user.id],
             page,
-            Math.ceil(player.recentPlays.length / 5),
+            Math.ceil(scores.length / 5),
             120,
             onPageChange
         );

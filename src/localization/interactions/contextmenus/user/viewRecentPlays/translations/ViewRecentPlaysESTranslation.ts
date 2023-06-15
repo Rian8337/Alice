@@ -9,5 +9,7 @@ export class ViewRecentPlaysESTranslation extends Translation<ViewRecentPlaysStr
         selfProfileNotFound: "Lo siento, no puede encontrar tu perfil!",
         userProfileNotFound:
             "Lo siento, no puede encontrar el perfil de ese jugador!",
+        playerHasNoRecentPlays:
+            "Lo siento, este jugador no tiene ningun puntaje!",
     };
 }

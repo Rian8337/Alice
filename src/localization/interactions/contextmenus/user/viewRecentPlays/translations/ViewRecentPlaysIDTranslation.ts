@@ -9,5 +9,7 @@ export class ViewRecentPlaysIDTranslation extends Translation<ViewRecentPlaysStr
         selfProfileNotFound: "Maaf, aku tidak dapat menemukan profilmu!",
         userProfileNotFound:
             "Maaf, aku tidak dapat menemukan profile pemain tersebut!",
+        playerHasNoRecentPlays:
+            "Maaf, pemain ini belum pernah mengirimkan skor!",
     };
 }

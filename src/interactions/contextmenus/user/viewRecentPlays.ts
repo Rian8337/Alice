@@ -8,7 +8,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
-import { Player } from "@rian8337/osu-droid-utilities";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
     const localization: ViewRecentPlaysLocalization =
@@ -68,7 +70,22 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    ScoreDisplayHelper.showRecentPlays(interaction, player);
+    const recentPlays: (Score | RecentPlay)[] =
+        await ScoreHelper.getRecentScores(player.uid, player.recentPlays);
+
+    if (recentPlays.length === 0) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("playerHasNoRecentPlays")
+            ),
+        });
+    }
+
+    ScoreDisplayHelper.showRecentPlays(
+        interaction,
+        player.username,
+        recentPlays
+    );
 };
 
 export const config: UserContextMenuCommand["config"] = {

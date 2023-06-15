@@ -1,4 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OnboardingShowRecentPlaysLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingShowRecentPlays/OnboardingShowRecentPlaysLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
@@ -6,7 +7,8 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
-import { Player } from "@rian8337/osu-droid-utilities";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization: OnboardingShowRecentPlaysLocalization =
@@ -45,7 +47,22 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    ScoreDisplayHelper.showRecentPlays(interaction, player);
+    const recentPlays: (Score | RecentPlay)[] =
+        await ScoreHelper.getRecentScores(player.uid, player.recentPlays);
+
+    if (recentPlays.length === 0) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("playerHasNoRecentPlays")
+            ),
+        });
+    }
+
+    ScoreDisplayHelper.showRecentPlays(
+        interaction,
+        player.username,
+        recentPlays
+    );
 };
 
 export const config: ButtonCommand["config"] = {

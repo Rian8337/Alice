@@ -8,11 +8,13 @@ import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { Snowflake } from "discord.js";
-import { Player } from "@rian8337/osu-droid-utilities";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Recent5Localization } from "@alice-localization/interactions/commands/osu! and osu!droid/recent5/Recent5Localization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: Recent5Localization = new Recent5Localization(
@@ -23,6 +25,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
+    const considerNonOverwrite: boolean =
+        interaction.options.getBoolean("considernonoverwrite") ?? true;
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         interaction.ephemeral = true;
@@ -93,7 +97,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (player.recentPlays.length === 0) {
+    const recentPlays: (Score | RecentPlay)[] = considerNonOverwrite
+        ? await ScoreHelper.getRecentScores(player.uid, player.recentPlays)
+        : player.recentPlays;
+
+    if (recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerHasNoRecentPlays")
@@ -103,7 +111,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     ScoreDisplayHelper.showRecentPlays(
         interaction,
-        player,
+        player.username,
+        recentPlays,
         interaction.options.getInteger("page") ?? undefined
     );
 };
@@ -140,6 +149,12 @@ export const config: SlashCommand["config"] = {
             minLength: 2,
             maxLength: 20,
             autocomplete: true,
+        },
+        {
+            name: "considernonoverwrite",
+            type: ApplicationCommandOptionType.Boolean,
+            description:
+                "Whether to take non-overwritten plays into consideration. Defaults to true.",
         },
     ],
     example: [

@@ -8,5 +8,7 @@ export class ViewRecentPlaysENTranslation extends Translation<ViewRecentPlaysStr
     override readonly translations: ViewRecentPlaysStrings = {
         selfProfileNotFound: "I'm sorry, I cannot find your profile!",
         userProfileNotFound: "I'm sorry, I cannot find the player's profile!",
+        playerHasNoRecentPlays:
+            "I'm sorry, this player has not submitted any scores!",
     };
 }

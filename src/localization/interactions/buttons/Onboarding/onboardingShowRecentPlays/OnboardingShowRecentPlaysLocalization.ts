@@ -8,6 +8,7 @@ import { OnboardingShowRecentPlaysKRTranslation } from "./translations/Onboardin
 export interface OnboardingShowRecentPlaysStrings {
     readonly userNotBinded: string;
     readonly profileNotFound: string;
+    readonly playerHasNoRecentPlays: string;
 }
 
 /**

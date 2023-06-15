@@ -8,6 +8,7 @@ import { ViewRecentPlaysKRTranslation } from "./translations/ViewRecentPlaysKRTr
 export interface ViewRecentPlaysStrings {
     readonly selfProfileNotFound: string;
     readonly userProfileNotFound: string;
+    readonly playerHasNoRecentPlays: string;
 }
 
 /**
