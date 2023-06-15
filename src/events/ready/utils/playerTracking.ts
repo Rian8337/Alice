@@ -5,8 +5,10 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, EmbedBuilder, TextChannel } from "discord.js";
-import { Player } from "@rian8337/osu-droid-utilities";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { TrackedPlayer } from "@alice-database/utils/elainaDb/TrackedPlayer";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 export const run: EventUtil["run"] = async (client) => {
     const channel: TextChannel = <TextChannel>(
@@ -38,8 +40,13 @@ export const run: EventUtil["run"] = async (client) => {
             }
 
             const currentTime: Date = new Date();
+            const recentPlays: (Score | RecentPlay)[] =
+                await ScoreHelper.getRecentScores(
+                    player.uid,
+                    player.recentPlays
+                );
 
-            for (const score of player.recentPlays) {
+            for (const score of recentPlays) {
                 if (currentTime.getTime() - score.date.getTime() > 600 * 1000) {
                     break;
                 }
