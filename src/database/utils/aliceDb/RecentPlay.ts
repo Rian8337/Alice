@@ -3,6 +3,7 @@ import { DatabaseRecentPlay } from "@alice-structures/database/aliceDb/DatabaseR
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { SliderTickInformation } from "@alice-structures/dpp/SliderTickInformation";
 import { Manager } from "@alice-utils/base/Manager";
 import {
     Accuracy,
@@ -86,6 +87,16 @@ export class RecentPlay extends Manager {
     readonly hitError?: HitErrorInformation;
 
     /**
+     * Information about this play's slider tick collection.
+     */
+    readonly sliderTickInformation?: SliderTickInformation;
+
+    /**
+     * Information about this play's slider end collection.
+     */
+    readonly sliderEndInformation?: SliderTickInformation;
+
+    /**
      * The osu!droid difficulty attributes of this play.
      */
     readonly droidAttribs?: CompleteCalculationAttributes<
@@ -109,7 +120,10 @@ export class RecentPlay extends Manager {
             this.mods.length > 0 ? this.mods.map((v) => v.acronym) : "No Mod"
         }`;
 
-        if (this.forcedAR !== undefined || this.speedMultiplier !== 1) {
+        if (
+            this.forcedAR !== undefined ||
+            (this.speedMultiplier != undefined && this.speedMultiplier !== 1)
+        ) {
             finalString += " (";
             if (this.forcedAR !== undefined) {
                 finalString += `AR${this.forcedAR}`;
@@ -150,6 +164,8 @@ export class RecentPlay extends Manager {
         this.speedMultiplier = data.speedMultiplier;
         this.forcedAR = data.forcedAR;
         this.hitError = data.hitError;
+        this.sliderTickInformation = data.sliderTickInformation;
+        this.sliderEndInformation = data.sliderEndInformation;
         this.droidAttribs = data.droidAttribs;
         this.osuAttribs = data.osuAttribs;
     }

@@ -26,7 +26,6 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
-import { ScoreSelectionPriority } from "@alice-enums/utils/ScoreSelectionPriority";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
@@ -39,10 +38,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
-    const priority: ScoreSelectionPriority =
-        <ScoreSelectionPriority>(
-            interaction.options.getInteger("scorepriority")
-        ) ?? ScoreSelectionPriority.recent;
+    const considerNonOverwrite: boolean =
+        interaction.options.getBoolean("considernonoverwrite") ?? true;
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         interaction.ephemeral = true;
@@ -113,10 +110,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const recentPlays: (Score | RecentPlay)[] =
-        priority === ScoreSelectionPriority.recent
-            ? await ScoreHelper.getRecentScores(player.uid, player.recentPlays)
-            : player.recentPlays;
+    const recentPlays: (Score | RecentPlay)[] = considerNonOverwrite
+        ? await ScoreHelper.getRecentScores(player.uid, player.recentPlays)
+        : player.recentPlays;
 
     if (recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
@@ -169,25 +165,37 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (score instanceof Score && score.accuracy.nmiss > 0) {
-        score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
-        await ReplayHelper.analyzeReplay(score);
+    if (
+        (score instanceof Score || score.replayID) &&
+        score.accuracy.nmiss > 0
+    ) {
+        let replay: ReplayAnalyzer | undefined;
 
-        if (!score.replay.data) {
+        if (score instanceof Score) {
+            score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
+
+            await ReplayHelper.analyzeReplay(score);
+
+            replay = score.replay;
+        } else if (score.replayID) {
+            replay ??= await new ReplayAnalyzer({
+                scoreID: score.replayID,
+            }).analyze();
+        }
+
+        if (!replay?.data) {
             return InteractionHelper.reply(interaction, options);
         }
 
         const beatmapInfo: MapInfo<true> | null =
-            await BeatmapManager.getBeatmap(score.hash, {
-                checkFile: true,
-            });
+            await BeatmapManager.getBeatmap(score.hash);
 
         if (beatmapInfo?.hasDownloadedBeatmap()) {
             MessageButtonCreator.createMissAnalyzerButton(
                 interaction,
                 options,
                 beatmapInfo.beatmap,
-                score.replay.data
+                replay.data
             );
         } else {
             InteractionHelper.reply(interaction, options);
@@ -231,20 +239,10 @@ export const config: SlashCommand["config"] = {
             maxValue: 50,
         },
         {
-            name: "scorepriority",
-            type: ApplicationCommandOptionType.Integer,
+            name: "considernonoverwrite",
+            type: ApplicationCommandOptionType.Boolean,
             description:
-                "The priority when considering overwritten versus recent plays. Priority defaults to recent plays.",
-            choices: [
-                {
-                    name: "Prioritize recent plays over overwritten plays",
-                    value: ScoreSelectionPriority.recent,
-                },
-                {
-                    name: "Prioritize overwritten plays over recent plays",
-                    value: ScoreSelectionPriority.overwritten,
-                },
-            ],
+                "Whether to take non-overwritten plays into consideration. Defaults to true.",
         },
     ],
     example: [

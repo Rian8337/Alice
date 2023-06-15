@@ -7,6 +7,7 @@ import { CompleteCalculationAttributes } from "@alice-structures/difficultyattri
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { BaseDocument } from "../BaseDocument";
+import { SliderTickInformation } from "@alice-structures/dpp/SliderTickInformation";
 
 /**
  * Represents a recent play.
@@ -96,6 +97,16 @@ export interface DatabaseRecentPlay extends BaseDocument {
      * Information about this play's hit error.
      */
     hitError?: HitErrorInformation;
+
+    /**
+     * Information about this play's slider tick collection.
+     */
+    sliderTickInformation?: SliderTickInformation;
+
+    /**
+     * Information about this play's slider end collection.
+     */
+    sliderEndInformation?: SliderTickInformation;
 
     /**
      * The osu!droid difficulty attributes of this play.

@@ -592,9 +592,9 @@ export abstract class EmbedCreator {
             return embed;
         }
 
-        const beatmap: MapInfo<true> = (await BeatmapManager.getBeatmap(
-            score.hash
-        ))!;
+        const beatmap: MapInfo = (await BeatmapManager.getBeatmap(score.hash, {
+            checkFile: false,
+        }))!;
 
         embed
             .setAuthor({
@@ -674,9 +674,10 @@ export abstract class EmbedCreator {
 
             const replayData: ReplayData | undefined | null =
                 score.replay?.data;
+            await beatmap.retrieveBeatmapFile();
 
             if (replayData && beatmap.hasDownloadedBeatmap()) {
-                score.replay!.beatmap ??= beatmap.beatmap;
+                score.replay!.beatmap ??= beatmap.beatmap!;
 
                 // Get amount of slider ticks and ends hit
                 let collectedSliderTicks: number = 0;
@@ -685,7 +686,7 @@ export abstract class EmbedCreator {
                 for (let i = 0; i < replayData.hitObjectData.length; ++i) {
                     // Using droid star rating as legacy slider tail doesn't exist.
                     const object: HitObject =
-                        beatmap.beatmap.hitObjects.objects[i];
+                        beatmap.beatmap!.hitObjects.objects[i];
                     const objectData: ReplayObjectData =
                         replayData.hitObjectData[i];
 
@@ -713,11 +714,11 @@ export abstract class EmbedCreator {
                 }
 
                 beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${
-                    beatmap.beatmap.hitObjects.sliderTicks
+                    beatmap.beatmap!.hitObjects.sliderTicks
                 } ${localization.getTranslation(
                     "sliderTicks"
                 )} ${arrow} ${collectedSliderEnds}/${
-                    beatmap.beatmap.hitObjects.sliderEnds
+                    beatmap.beatmap!.hitObjects.sliderEnds
                 } ${localization.getTranslation("sliderEnds")}`;
 
                 // Get hit error average and UR
@@ -725,6 +726,26 @@ export abstract class EmbedCreator {
             }
         } else {
             hitError = score.hitError;
+
+            if (score.sliderTickInformation || score.sliderEndInformation) {
+                beatmapInformation += `\n`;
+
+                if (score.sliderTickInformation) {
+                    beatmapInformation += ` ${arrow} ${
+                        score.sliderTickInformation.obtained
+                    }/${
+                        score.sliderTickInformation.total
+                    } ${localization.getTranslation("sliderTicks")}`;
+                }
+
+                if (score.sliderEndInformation) {
+                    beatmapInformation += ` ${arrow} ${
+                        score.sliderEndInformation.obtained
+                    }/${
+                        score.sliderEndInformation.total
+                    } ${localization.getTranslation("sliderEnds")}`;
+                }
+            }
         }
 
         if (hitError) {
