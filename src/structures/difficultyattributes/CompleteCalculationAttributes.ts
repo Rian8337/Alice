@@ -1,6 +1,7 @@
 import { CloneablePerformanceCalculationParameters } from "@alice-structures/dpp/CloneablePerformanceCalculationParameters";
 import { PerformanceAttributes } from "./PerformanceAttributes";
 import { RawDifficultyAttributes } from "./RawDifficultyAttributes";
+import { ReplayAttributes } from "./ReplayAttributes";
 import { ResponseDifficultyAttributes } from "./ResponseDifficultyAttributes";
 
 /**
@@ -21,7 +22,12 @@ export interface CompleteCalculationAttributes<
     readonly difficulty: ResponseDifficultyAttributes<TDiffAttr>;
 
     /**
-     * The difficulty attributes.
+     * The performance attributes.
      */
     readonly performance: TPerfAttr;
+
+    /**
+     * The replay attributes, if any.
+     */
+    readonly replay?: ReplayAttributes;
 }
