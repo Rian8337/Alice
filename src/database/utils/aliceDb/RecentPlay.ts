@@ -114,7 +114,10 @@ export class RecentPlay extends Manager {
             if (this.forcedAR !== undefined) {
                 finalString += `AR${this.forcedAR}`;
             }
-            if (this.speedMultiplier !== 1) {
+            if (
+                this.speedMultiplier !== undefined &&
+                this.speedMultiplier !== 1
+            ) {
                 if (this.forcedAR !== undefined) {
                     finalString += ", ";
                 }
