@@ -1,0 +1,128 @@
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseRecentPlay } from "@alice-structures/database/aliceDb/DatabaseRecentPlay";
+import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { Manager } from "@alice-utils/base/Manager";
+import {
+    Accuracy,
+    IModApplicableToDroid,
+    Mod,
+    ModUtil,
+} from "@rian8337/osu-base";
+import {
+    DroidDifficultyAttributes,
+    OsuDifficultyAttributes,
+} from "@rian8337/osu-difficulty-calculator";
+import { HitErrorInformation } from "@rian8337/osu-droid-replay-analyzer";
+
+/**
+ * Represents a recent play.
+ */
+export class RecentPlay extends Manager {
+    /**
+     * The uid of the player who submitted ths play.
+     */
+    readonly uid: number;
+
+    /**
+     * The ID of the replay of this play, if it was submitted to the game server.
+     */
+    readonly replayID?: number;
+
+    /**
+     * The title of the beatmap in this play.
+     */
+    readonly beatmapTitle: string;
+
+    /**
+     * The maximum combo achieved in this play.
+     */
+    readonly combo: number;
+
+    /**
+     * The score achieved in this play.
+     */
+    readonly score: number;
+
+    /**
+     * The rank achieved in this play.
+     */
+    readonly rank: string;
+
+    /**
+     * The date of which this play was set.
+     */
+    readonly date: Date;
+
+    /**
+     * The accuracy achieved in this play.
+     */
+    readonly accuracy: Accuracy;
+
+    /**
+     * Enabled modifications in this play, in osu!standard string.
+     */
+    readonly mods: (Mod & IModApplicableToDroid)[];
+
+    /**
+     * The MD5 hash of the beatmap in this play.
+     */
+    readonly hash: string;
+
+    /**
+     * The speed multiplier of this play. Should default to 1.
+     */
+    readonly speedMultiplier?: number;
+
+    /**
+     * The forced AR of this play.
+     */
+    readonly forcedAR?: number;
+
+    /**
+     * Information about this play's hit error.
+     */
+    readonly hitError?: HitErrorInformation;
+
+    /**
+     * The osu!droid difficulty attributes of this play.
+     */
+    readonly droidAttribs?: CompleteCalculationAttributes<
+        DroidDifficultyAttributes,
+        DroidPerformanceAttributes
+    >;
+
+    /**
+     * The osu!standard difficulty attributes of this play.
+     */
+    readonly osuAttribs?: CompleteCalculationAttributes<
+        OsuDifficultyAttributes,
+        OsuPerformanceAttributes
+    >;
+
+    constructor(
+        data: DatabaseRecentPlay = DatabaseManager.aliceDb?.collections
+            .recentPlays.defaultDocument ?? {}
+    ) {
+        super();
+
+        this.uid = data.uid;
+        this.replayID = data.replayID;
+        this.beatmapTitle = data.beatmapTitle;
+        this.combo = data.combo;
+        this.score = data.score;
+        this.rank = data.rank;
+        this.date = data.date;
+        this.accuracy = new Accuracy(data.accuracy);
+        this.mods = <(Mod & IModApplicableToDroid)[]>(
+            ModUtil.pcStringToMods(data.mods)
+        );
+        this.hash = data.hash;
+        this.speedMultiplier = data.speedMultiplier;
+        this.forcedAR = data.forcedAR;
+        this.hitError = data.hitError;
+        this.droidAttribs = data.droidAttribs;
+        this.osuAttribs = data.osuAttribs;
+    }
+}

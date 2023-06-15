@@ -28,6 +28,7 @@ import { RestoredPlayerCredentialsCollectionManager } from "./managers/aliceDb/R
 import { DanCourseCollectionManager } from "./managers/aliceDb/DanCourseCollectionManager";
 import { DanCourseLeaderboardScoreCollectionManager } from "./managers/aliceDb/DanCourseLeaderboardScoreCollectionManager";
 import { DanCourseScoreCollectionManager } from "./managers/aliceDb/DanCourseScoreCollectionManager";
+import { RecentPlaysCollectionManager } from "./managers/aliceDb/RecentPlaysCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -182,6 +183,11 @@ export class AliceDBCollection {
     readonly danCourseScores: DanCourseScoreCollectionManager;
 
     /**
+     * The database colleciton for recent plays.
+     */
+    readonly recentPlays: RecentPlaysCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -271,6 +277,9 @@ export class AliceDBCollection {
             );
         this.danCourseScores = new DanCourseScoreCollectionManager(
             aliceDb.collection("dancoursescore")
+        );
+        this.recentPlays = new RecentPlaysCollectionManager(
+            aliceDb.collection("recentplays")
         );
     }
 }
