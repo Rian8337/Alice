@@ -33,7 +33,7 @@ export class RecentPlay extends Manager {
     /**
      * The title of the beatmap in this play.
      */
-    readonly beatmapTitle: string;
+    readonly title: string;
 
     /**
      * The maximum combo achieved in this play.
@@ -101,6 +101,31 @@ export class RecentPlay extends Manager {
         OsuPerformanceAttributes
     >;
 
+    /**
+     * The complete mod string of this play (mods, speed multiplier, and force AR combined).
+     */
+    get completeModString(): string {
+        let finalString: string = `+${
+            this.mods.length > 0 ? this.mods.map((v) => v.acronym) : "No Mod"
+        }`;
+
+        if (this.forcedAR !== undefined || this.speedMultiplier !== 1) {
+            finalString += " (";
+            if (this.forcedAR !== undefined) {
+                finalString += `AR${this.forcedAR}`;
+            }
+            if (this.speedMultiplier !== 1) {
+                if (this.forcedAR !== undefined) {
+                    finalString += ", ";
+                }
+                finalString += `${this.speedMultiplier}x`;
+            }
+            finalString += ")";
+        }
+
+        return finalString;
+    }
+
     constructor(
         data: DatabaseRecentPlay = DatabaseManager.aliceDb?.collections
             .recentPlays.defaultDocument ?? {}
@@ -109,7 +134,7 @@ export class RecentPlay extends Manager {
 
         this.uid = data.uid;
         this.replayID = data.replayID;
-        this.beatmapTitle = data.beatmapTitle;
+        this.title = data.title;
         this.combo = data.combo;
         this.score = data.score;
         this.rank = data.rank;

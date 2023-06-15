@@ -25,7 +25,7 @@ export interface DatabaseRecentPlay extends BaseDocument {
     /**
      * The title of the beatmap in this play.
      */
-    beatmapTitle: string;
+    title: string;
 
     /**
      * The maximum combo achieved in this play.

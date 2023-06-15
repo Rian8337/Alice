@@ -73,6 +73,7 @@ import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 
 /**
  * Utility to create message embeds.
@@ -519,7 +520,7 @@ export abstract class EmbedCreator {
      * @returns The embed.
      */
     static async createRecentPlayEmbed(
-        score: Score,
+        score: Score | RecentPlay,
         playerAvatarURL: string,
         embedColor?: ColorResolvable,
         droidAttribs?: CompleteCalculationAttributes<
@@ -554,19 +555,24 @@ export abstract class EmbedCreator {
 
         if (droidAttribs === undefined && osuAttribs !== null) {
             droidAttribs =
-                await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                    score.scoreID,
-                    Modes.droid,
-                    PPCalculationMethod.live
-                );
+                score instanceof Score
+                    ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                          score.scoreID,
+                          Modes.droid,
+                          PPCalculationMethod.live
+                      )
+                    : score.droidAttribs;
         }
 
         if (osuAttribs === undefined && droidAttribs !== null) {
-            osuAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                score.scoreID,
-                Modes.osu,
-                PPCalculationMethod.live
-            );
+            osuAttribs =
+                score instanceof Score
+                    ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                          score.scoreID,
+                          Modes.osu,
+                          PPCalculationMethod.live
+                      )
+                    : score.osuAttribs;
         }
 
         let beatmapInformation: string = `${arrow} ${BeatmapManager.getRankEmote(
@@ -661,66 +667,74 @@ export abstract class EmbedCreator {
             }x/${beatmap.maxCombo}x ${arrow} [${score.accuracy.n300}/${
                 score.accuracy.n100
             }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
+        let hitError: HitErrorInformation | null | undefined;
 
-        await ReplayHelper.analyzeReplay(score);
+        if (score instanceof Score) {
+            await ReplayHelper.analyzeReplay(score);
 
-        const replayData: ReplayData | undefined | null = score.replay?.data;
+            const replayData: ReplayData | undefined | null =
+                score.replay?.data;
 
-        if (replayData && beatmap.hasDownloadedBeatmap()) {
-            score.replay!.beatmap ??= beatmap.beatmap;
+            if (replayData && beatmap.hasDownloadedBeatmap()) {
+                score.replay!.beatmap ??= beatmap.beatmap;
 
-            // Get amount of slider ticks and ends hit
-            let collectedSliderTicks: number = 0;
-            let collectedSliderEnds: number = 0;
+                // Get amount of slider ticks and ends hit
+                let collectedSliderTicks: number = 0;
+                let collectedSliderEnds: number = 0;
 
-            for (let i = 0; i < replayData.hitObjectData.length; ++i) {
-                // Using droid star rating as legacy slider tail doesn't exist.
-                const object: HitObject = beatmap.beatmap.hitObjects.objects[i];
-                const objectData: ReplayObjectData =
-                    replayData.hitObjectData[i];
+                for (let i = 0; i < replayData.hitObjectData.length; ++i) {
+                    // Using droid star rating as legacy slider tail doesn't exist.
+                    const object: HitObject =
+                        beatmap.beatmap.hitObjects.objects[i];
+                    const objectData: ReplayObjectData =
+                        replayData.hitObjectData[i];
 
-                if (
-                    objectData.result === HitResult.miss ||
-                    !(object instanceof Slider)
-                ) {
-                    continue;
-                }
-
-                // Exclude the head circle.
-                for (let j = 1; j < object.nestedHitObjects.length; ++j) {
-                    const nested: HitObject = object.nestedHitObjects[j];
-
-                    if (!objectData.tickset[j - 1]) {
+                    if (
+                        objectData.result === HitResult.miss ||
+                        !(object instanceof Slider)
+                    ) {
                         continue;
                     }
 
-                    if (nested instanceof SliderTick) {
-                        ++collectedSliderTicks;
-                    } else if (nested instanceof SliderTail) {
-                        ++collectedSliderEnds;
+                    // Exclude the head circle.
+                    for (let j = 1; j < object.nestedHitObjects.length; ++j) {
+                        const nested: HitObject = object.nestedHitObjects[j];
+
+                        if (!objectData.tickset[j - 1]) {
+                            continue;
+                        }
+
+                        if (nested instanceof SliderTick) {
+                            ++collectedSliderTicks;
+                        } else if (nested instanceof SliderTail) {
+                            ++collectedSliderEnds;
+                        }
                     }
                 }
+
+                beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${
+                    beatmap.beatmap.hitObjects.sliderTicks
+                } ${localization.getTranslation(
+                    "sliderTicks"
+                )} ${arrow} ${collectedSliderEnds}/${
+                    beatmap.beatmap.hitObjects.sliderEnds
+                } ${localization.getTranslation("sliderEnds")}`;
+
+                // Get hit error average and UR
+                hitError = score.replay!.calculateHitError()!;
             }
+        } else {
+            hitError = score.hitError;
+        }
 
-            beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${
-                beatmap.beatmap.hitObjects.sliderTicks
-            } ${localization.getTranslation(
-                "sliderTicks"
-            )} ${arrow} ${collectedSliderEnds}/${
-                beatmap.beatmap.hitObjects.sliderEnds
-            } ${localization.getTranslation("sliderEnds")}`;
-
-            // Get hit error average and UR
-            const hitErrorInformation: HitErrorInformation =
-                score.replay!.calculateHitError()!;
-
-            beatmapInformation += `\n${arrow} ${hitErrorInformation.negativeAvg.toFixed(
+        if (hitError) {
+            beatmapInformation += `\n${arrow} ${hitError.negativeAvg.toFixed(
                 2
-            )}ms - ${hitErrorInformation.positiveAvg.toFixed(
+            )}ms - ${hitError.positiveAvg.toFixed(
                 2
             )}ms ${localization.getTranslation(
                 "hitErrorAvg"
-            )} ${arrow} ${hitErrorInformation.unstableRate.toFixed(2)} UR`;
+            )} ${arrow} ${hitError.unstableRate.toFixed(2)} UR`;
         }
 
         const {

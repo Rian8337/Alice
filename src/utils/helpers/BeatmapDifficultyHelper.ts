@@ -26,6 +26,7 @@ import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculat
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/DifficultyAttributesCacheManager";
 import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 
 /**
  * A helper class for calculating difficulty and performance of beatmaps or scores.
@@ -163,7 +164,7 @@ export abstract class BeatmapDifficultyHelper<
      * @returns Calculation parameters of the score.
      */
     static getCalculationParamsFromScore(
-        score: Score
+        score: Score | RecentPlay
     ): PerformanceCalculationParameters {
         return new PerformanceCalculationParameters(
             score.accuracy,
@@ -175,7 +176,8 @@ export abstract class BeatmapDifficultyHelper<
                 ar: score.forcedAR,
                 speedMultiplier: score.speedMultiplier,
                 isForceAR: !isNaN(score.forcedAR!),
-                oldStatistics: score.oldStatistics,
+                oldStatistics:
+                    score instanceof Score ? score.oldStatistics : false,
             })
         );
     }

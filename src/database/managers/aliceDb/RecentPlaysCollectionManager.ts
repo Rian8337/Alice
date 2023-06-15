@@ -24,7 +24,7 @@ export class RecentPlaysCollectionManager extends DatabaseCollectionManager<
                 n50: 0,
                 nmiss: 0,
             },
-            beatmapTitle: "",
+            title: "",
             combo: 0,
             date: new Date(),
             hash: "",

@@ -1,3 +1,5 @@
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import {
     DroidAPIRequestBuilder,
     Mod,
@@ -8,6 +10,7 @@ import {
     RequestResponse,
 } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
+import { Collection } from "discord.js";
 
 /**
  * A helper for global score-related things.
@@ -234,5 +237,50 @@ export abstract class ScoreHelper {
         }
 
         return Math.round(score);
+    }
+
+    /**
+     * Gets the recent scores of a player, combined with scores from the recent
+     * plays database when necessary.
+     *
+     * This method follows the following rules:
+     * - A play submitted to the server will be of instance `Score`.
+     * - A play submitted to the recent plays database will be type of `RecentPlay`.
+     * - If there are intersecting beatmaps in existing scores and the recent plays from database,
+     * the newest one will be picked.
+     *
+     * @param uid The uid of the player.
+     * @param existingScores Existing scores, usually obtained from an API response.
+     * @returns The recent scores of the player, sorted by submission date descendingly.
+     */
+    static async getRecentScores(
+        uid: number,
+        existingScores: Score[]
+    ): Promise<(Score | RecentPlay)[]> {
+        const recentPlays: Collection<string, RecentPlay> =
+            await DatabaseManager.aliceDb.collections.recentPlays.getFromUid(
+                uid
+            );
+
+        const newRecentPlays: Collection<string, Score | RecentPlay> =
+            new Collection();
+
+        for (const score of existingScores) {
+            newRecentPlays.set(score.hash, score);
+        }
+
+        for (const play of recentPlays.values()) {
+            const item: Score | RecentPlay | undefined = newRecentPlays.get(
+                play.hash
+            );
+
+            if (!item || item.date.getTime() < play.date.getTime()) {
+                newRecentPlays.set(play.hash, play);
+            }
+        }
+
+        newRecentPlays.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+        return [...newRecentPlays.values()];
     }
 }

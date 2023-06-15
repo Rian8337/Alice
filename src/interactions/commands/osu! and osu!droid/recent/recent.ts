@@ -26,6 +26,9 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
+import { ScoreSelectionPriority } from "@alice-enums/utils/ScoreSelectionPriority";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: RecentLocalization = new RecentLocalization(
@@ -36,6 +39,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
+    const priority: ScoreSelectionPriority =
+        <ScoreSelectionPriority>(
+            interaction.options.getInteger("scorepriority")
+        ) ?? ScoreSelectionPriority.recent;
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         interaction.ephemeral = true;
@@ -106,7 +113,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (player.recentPlays.length === 0) {
+    const recentPlays: (Score | RecentPlay)[] =
+        priority === ScoreSelectionPriority.recent
+            ? await ScoreHelper.getRecentScores(player.uid, player.recentPlays)
+            : player.recentPlays;
+
+    if (recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerHasNoRecentPlays")
@@ -115,8 +127,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     const index: number = interaction.options.getInteger("index") ?? 1;
-
-    const score: Score = player.recentPlays[index - 1];
+    const score: Score | RecentPlay = recentPlays[index - 1];
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
@@ -132,18 +143,21 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const scoreAttribs: CompleteCalculationAttributes<
         DroidDifficultyAttributes,
         DroidPerformanceAttributes
-    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        score.scoreID,
-        Modes.droid,
-        PPCalculationMethod.live
-    );
+    > | null =
+        score instanceof Score
+            ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                  score.scoreID,
+                  Modes.droid,
+                  PPCalculationMethod.live
+              )
+            : score.droidAttribs ?? null;
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,
-        undefined,
+        score instanceof Score ? undefined : score.osuAttribs ?? null,
         localization.language
     );
 
@@ -155,7 +169,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (score.accuracy.nmiss > 0) {
+    if (score instanceof Score && score.accuracy.nmiss > 0) {
         score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
         await ReplayHelper.analyzeReplay(score);
 
@@ -215,6 +229,22 @@ export const config: SlashCommand["config"] = {
                 "The n-th play to show, ranging from 1 to 50. Defaults to the most recent play.",
             minValue: 1,
             maxValue: 50,
+        },
+        {
+            name: "scorepriority",
+            type: ApplicationCommandOptionType.Integer,
+            description:
+                "The priority when considering overwritten versus recent plays. Priority defaults to recent plays.",
+            choices: [
+                {
+                    name: "Prioritize recent plays over overwritten plays",
+                    value: ScoreSelectionPriority.recent,
+                },
+                {
+                    name: "Prioritize overwritten plays over recent plays",
+                    value: ScoreSelectionPriority.overwritten,
+                },
+            ],
         },
     ],
     example: [
