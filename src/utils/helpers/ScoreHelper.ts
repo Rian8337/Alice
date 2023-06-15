@@ -250,12 +250,12 @@ export abstract class ScoreHelper {
      * the newest one will be picked.
      *
      * @param uid The uid of the player.
-     * @param existingScores Existing scores, usually obtained from an API response.
+     * @param existingScores Existing scores, usually obtained from an API response, if any.
      * @returns The recent scores of the player, sorted by submission date descendingly.
      */
     static async getRecentScores(
         uid: number,
-        existingScores: Score[]
+        existingScores: Score[] = []
     ): Promise<(Score | RecentPlay)[]> {
         const recentPlays: Collection<string, RecentPlay> =
             await DatabaseManager.aliceDb.collections.recentPlays.getFromUid(
