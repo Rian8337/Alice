@@ -1,9 +1,7 @@
 import { DatabaseRecentPlay } from "@alice-structures/database/aliceDb/DatabaseRecentPlay";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
-import { Collection as DiscordCollection } from "discord.js";
 import { FindOptions } from "mongodb";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
 /**
  * A manager for the `recentplays` collection.
@@ -41,23 +39,20 @@ export class RecentPlaysCollectionManager extends DatabaseCollectionManager<
      * @param uid The uid of the player.
      * @param options Options for the retrieval.
      * @param limit The limit of recent plays. Defaults to 50.
-     * @returns The recent plays of the player, mapped by MD5 hash.
+     * @returns The recent plays of the player.
      */
     async getFromUid(
         uid: number,
         options?: FindOptions<DatabaseRecentPlay>,
         limit: number = 50
-    ): Promise<DiscordCollection<string, RecentPlay>> {
+    ): Promise<RecentPlay[]> {
         const recentPlays: DatabaseRecentPlay[] = await this.collection
             .find({ uid: uid }, this.processFindOptions(options))
             .sort({ date: -1 })
             .limit(limit)
             .toArray();
 
-        return ArrayHelper.arrayToCollection(
-            recentPlays.map((v) => new RecentPlay(v)),
-            "hash"
-        );
+        return recentPlays.map((v) => new RecentPlay(v));
     }
 
     protected override processFindOptions(

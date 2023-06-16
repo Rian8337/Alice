@@ -11,6 +11,7 @@ import {
 } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { Collection } from "discord.js";
+import { ArrayHelper } from "./ArrayHelper";
 
 /**
  * A helper for global score-related things.
@@ -257,30 +258,29 @@ export abstract class ScoreHelper {
         uid: number,
         existingScores: Score[] = []
     ): Promise<(Score | RecentPlay)[]> {
-        const recentPlays: Collection<string, RecentPlay> =
+        const recentPlays: RecentPlay[] =
             await DatabaseManager.aliceDb.collections.recentPlays.getFromUid(
                 uid
             );
 
-        const newRecentPlays: Collection<string, Score | RecentPlay> =
-            new Collection();
+        const newRecentPlays: (Score | RecentPlay)[] = existingScores.slice();
 
-        for (const score of existingScores) {
-            newRecentPlays.set(score.hash, score);
-        }
+        // Convert existing scores to a collection for better lookup performance.
+        const existingScoreCollection: Collection<string, Score> =
+            ArrayHelper.arrayToCollection(existingScores, "hash");
 
         for (const play of recentPlays.values()) {
-            const item: Score | RecentPlay | undefined = newRecentPlays.get(
-                play.hash
-            );
+            const existingScore: Score | undefined =
+                existingScoreCollection.get(play.hash);
 
-            if (!item || item.date.getTime() < play.date.getTime()) {
-                newRecentPlays.set(play.hash, play);
+            // Do not add existing scores from game response.
+            if (!existingScore || existingScore.scoreID !== play.replayID) {
+                newRecentPlays.push(play);
             }
         }
 
         newRecentPlays.sort((a, b) => b.date.getTime() - a.date.getTime());
 
-        return [...newRecentPlays.values()];
+        return newRecentPlays;
     }
 }
