@@ -18,24 +18,11 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PPSubmissionOperationResult } from "@alice-structures/dpp/PPSubmissionOperationResult";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { Config } from "@alice-core/Config";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
         await CommandHelper.getLocale(interaction)
     );
-
-    if (!Config.isDebug) {
-        interaction.ephemeral = true;
-
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.notAvailableInChannelReject
-                )
-            ),
-        });
-    }
 
     await InteractionHelper.deferReply(interaction);
 
