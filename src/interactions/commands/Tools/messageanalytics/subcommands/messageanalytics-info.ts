@@ -87,6 +87,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
+    await InteractionHelper.deferReply(interaction);
+
     const droidParent: Snowflake = "360715107220717568";
     const generalParent: Snowflake = "360714965814083586";
     const clansParent: Snowflake = "696646649128288346";
