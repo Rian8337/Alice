@@ -862,6 +862,7 @@ export class UserBind extends Manager {
                         playc: 0,
                         pp: [],
                         clan: "",
+                        weightedAccuracy: 0,
                     },
                 },
                 { upsert: true }
