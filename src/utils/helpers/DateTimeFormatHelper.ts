@@ -47,6 +47,33 @@ export abstract class DateTimeFormatHelper {
     }
 
     /**
+     * Converts seconds into DD:HH:MM:SS format.
+     *
+     * @param seconds The amount of seconds to convert.
+     * @returns The formatted time.
+     */
+    static secondsToDDHHMMSS(seconds: number): string {
+        seconds = Math.trunc(seconds);
+
+        const days: number = Math.floor(seconds / 86400);
+        seconds -= days * 86400;
+
+        const hours: number = Math.floor(seconds / 3600);
+        seconds -= hours * 3600;
+
+        const minutes: number = Math.floor(seconds / 60);
+        seconds -= minutes * 60;
+
+        const final: number[] = [hours, minutes, seconds];
+
+        if (days > 0) {
+            final.unshift(days);
+        }
+
+        return final.join(":");
+    }
+
+    /**
      * Converts a DD:HH:MM:SS time format or DHMS time format into seconds.
      *
      * Example formats:

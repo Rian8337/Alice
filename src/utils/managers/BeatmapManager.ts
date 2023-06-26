@@ -25,6 +25,7 @@ import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { ScoreRank } from "structures/utils/ScoreRank";
 import { BeatmapRetrievalOptions } from "@alice-structures/utils/BeatmapRetrievalOptions";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 /**
  * A manager for beatmaps.
@@ -860,28 +861,14 @@ export abstract class BeatmapManager extends Manager {
         hitLength /= stats.speedMultiplier;
         totalLength /= stats.speedMultiplier;
 
-        return `${this.timeString(hitLength)}${
-            hitLength === hitLength ? "" : ` (${this.timeString(hitLength)})`
-        }/${this.timeString(totalLength)}${
+        return `${DateTimeFormatHelper.secondsToDDHHMMSS(hitLength)}${
+            hitLength === hitLength
+                ? ""
+                : ` (${DateTimeFormatHelper.secondsToDDHHMMSS(hitLength)})`
+        }/${DateTimeFormatHelper.secondsToDDHHMMSS(totalLength)}${
             totalLength === totalLength
                 ? ""
-                : ` (${this.timeString(totalLength)})`
+                : ` (${DateTimeFormatHelper.secondsToDDHHMMSS(totalLength)})`
         }`;
-    }
-
-    /**
-     * Time string parsing function for statistics utility.
-     */
-    private static timeString(second: number): string {
-        let str: string = new Date(1000 * Math.ceil(second))
-            .toISOString()
-            .substr(11, 8)
-            .replace(/^[0:]+/, "");
-
-        if (second < 60) {
-            str = "0:" + str;
-        }
-
-        return str;
     }
 }
