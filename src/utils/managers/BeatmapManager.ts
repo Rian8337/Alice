@@ -487,7 +487,7 @@ export abstract class BeatmapManager extends Manager {
                 }${bold(
                     hyperlink(
                         "Beatmap Preview",
-                        `https://osu-preview.jmir.ml/preview#${beatmapInfo.beatmapsetID}`
+                        `https://osu-preview.jmir.ml/preview#${beatmapInfo.beatmapID}`
                     )
                 )}\n${bold("Download")}: ${hyperlink(
                     "osu!",
