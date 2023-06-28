@@ -64,7 +64,11 @@ export abstract class DateTimeFormatHelper {
         const minutes: number = Math.floor(seconds / 60);
         seconds -= minutes * 60;
 
-        const final: number[] = [hours, minutes, seconds];
+        const final: number[] = [minutes, seconds];
+
+        if (hours > 0) {
+            final.unshift(hours);
+        }
 
         if (days > 0) {
             final.unshift(days);
