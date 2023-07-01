@@ -64,14 +64,17 @@ export abstract class DateTimeFormatHelper {
         const minutes: number = Math.floor(seconds / 60);
         seconds -= minutes * 60;
 
-        const final: number[] = [minutes, seconds];
+        const final: string[] = [
+            minutes.toString(),
+            seconds.toString().padStart(2, "0"),
+        ];
 
         if (hours > 0) {
-            final.unshift(hours);
+            final.unshift(hours.toString());
         }
 
         if (days > 0) {
-            final.unshift(days);
+            final.unshift(days.toString());
         }
 
         return final.join(":");
