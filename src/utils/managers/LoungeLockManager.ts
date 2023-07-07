@@ -8,6 +8,7 @@ import {
     userMention,
     User,
     Role,
+    GuildMember,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
@@ -138,6 +139,16 @@ export abstract class LoungeLockManager extends PunishmentManager {
         } else {
             // Insert new lock
             await this.loungeLockDb.insertNewLock(userId, duration, reason);
+
+            if (this.loungeRole) {
+                const member: GuildMember | null = await this.mainServer.members
+                    .fetch(userId)
+                    .catch(() => null);
+
+                if (member) {
+                    await member.roles.remove(this.loungeRole);
+                }
+            }
 
             logEmbed
                 .setColor("#a5de6f")
