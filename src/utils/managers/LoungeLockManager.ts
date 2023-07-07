@@ -6,6 +6,8 @@ import {
     TextChannel,
     bold,
     userMention,
+    User,
+    Role,
 } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
@@ -18,6 +20,7 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 import { LoungeLockManagerLocalization } from "@alice-localization/utils/managers/LoungeLockManager/LoungeLockManagerLocalization";
 import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
 import { Language } from "@alice-localization/base/Language";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
 /**
  * A manager for lounge locks.
@@ -39,13 +42,19 @@ export abstract class LoungeLockManager extends PunishmentManager {
     static loungeChannel: TextChannel;
 
     /**
+     * The lounge role.
+     */
+    private static loungeRole: Role | null;
+
+    /**
      * Initializes the manager.
      */
     static override async init(): Promise<void> {
         this.loungeLockDb = DatabaseManager.aliceDb.collections.loungeLock;
-
         this.mainServer = await this.client.guilds.fetch(Constants.mainServer);
-
+        this.loungeRole = await this.mainServer.roles.fetch(
+            Constants.loungeRole
+        );
         this.loungeChannel = <TextChannel>(
             await this.mainServer.channels.fetch(Constants.loungeChannel)
         );
@@ -147,6 +156,13 @@ export abstract class LoungeLockManager extends PunishmentManager {
         }
 
         await logChannel.send({ embeds: [logEmbed] });
+        await this.notifyMember(
+            userId,
+            this.getLocalization(language).getTranslation(
+                "lockUserNotification"
+            ),
+            logEmbed
+        );
 
         return this.createOperationResult(true);
     }
@@ -229,8 +245,37 @@ export abstract class LoungeLockManager extends PunishmentManager {
         await lockInfo.unlock();
 
         await logChannel.send({ embeds: [logEmbed] });
+        await this.notifyMember(
+            userId,
+            localization.getTranslation("unlockUserNotification"),
+            logEmbed
+        );
 
         return this.createOperationResult(true);
+    }
+
+    /**
+     * Notifies a guild member about their lounge lock status.
+     *
+     * @param member The member to notify.
+     * @param content The content of the notification.
+     * @param embed The embed for notification.
+     */
+    private static async notifyMember(
+        userId: Snowflake,
+        content: string,
+        embed: EmbedBuilder
+    ): Promise<void> {
+        const user: User | null = await this.client.users
+            .fetch(userId)
+            .catch(() => null);
+
+        if (user) {
+            await user.send({
+                content: MessageCreator.createWarn(content),
+                embeds: [embed],
+            });
+        }
     }
 
     /**

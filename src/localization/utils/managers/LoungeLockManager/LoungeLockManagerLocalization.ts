@@ -7,6 +7,8 @@ import { LoungeLockManagerKRTranslation } from "./translations/LoungeLockManager
 
 export interface LoungeLockManagerStrings {
     readonly userNotLocked: string;
+    readonly lockUserNotification: string;
+    readonly unlockUserNotification: string;
 }
 
 /**

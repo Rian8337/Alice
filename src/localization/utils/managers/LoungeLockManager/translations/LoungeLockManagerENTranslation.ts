@@ -7,5 +7,7 @@ import { LoungeLockManagerStrings } from "../LoungeLockManagerLocalization";
 export class LoungeLockManagerENTranslation extends Translation<LoungeLockManagerStrings> {
     override readonly translations: LoungeLockManagerStrings = {
         userNotLocked: "User is not locked from lounge",
+        lockUserNotification: "Hey, you were lounge-locked. Sorry!",
+        unlockUserNotification: "Hey, your lounge-locked was lifted.",
     };
 }

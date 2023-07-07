@@ -46,9 +46,14 @@ export class Constants {
     static readonly testingServer: Snowflake = "528941000555757598";
 
     /**
-     * The ID of lounge channel in main server.
+     * The ID of the lounge channel in the main server.
      */
     static readonly loungeChannel: Snowflake = "927204556683771945";
+
+    /**
+     * The ID of the lounge role in the main server.
+     */
+    static readonly loungeRole: Snowflake = "667403004118433793";
 
     /**
      * The link to welcome image (used to welcome new members to the server).
