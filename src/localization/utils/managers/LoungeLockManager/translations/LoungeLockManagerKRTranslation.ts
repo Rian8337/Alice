@@ -7,5 +7,7 @@ import { LoungeLockManagerStrings } from "../LoungeLockManagerLocalization";
 export class LoungeLockManagerKRTranslation extends Translation<LoungeLockManagerStrings> {
     override readonly translations: LoungeLockManagerStrings = {
         userNotLocked: "유저가 라운지로부터 잠겨있지 않음",
+        lockUserNotification: "",
+        unlockUserNotification: "",
     };
 }
