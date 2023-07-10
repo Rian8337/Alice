@@ -1369,13 +1369,23 @@ export class MultiplayerRoom
             return new Collection();
         }
 
+        const stats: MapStats = new MapStats({
+            mods: ModUtil.pcStringToMods(this.settings.requiredMods),
+            speedMultiplier: this.settings.speedMultiplier,
+        }).calculate();
+
+        const beatmapDuration: number =
+            (this.settings.beatmap!.duration * 1000) / stats.speedMultiplier;
+        const beatmapFinishTime: number =
+            this.status.playingSince + beatmapDuration;
+
         return DatabaseManager.aliceDb.collections.recentPlays.get("uid", {
             hash: this.settings.beatmap.hash,
             uid: {
                 $in: this.players.map((v) => v.uid),
             },
             date: {
-                $gte: new Date(this.status.playingSince),
+                $gte: new Date(beatmapFinishTime),
             },
         });
     }
