@@ -989,45 +989,48 @@ export class MultiplayerRoom
 
         const beatmapDuration: number =
             (this.settings.beatmap!.duration * 1000) / stats.speedMultiplier;
-
         const beatmapFinishTime: number =
             this.status.playingSince + beatmapDuration;
 
-        if (!(score instanceof RecentPlay)) {
-            const submissionTimeDifference: number =
+        let submissionTimeDifference: number;
+
+        if (score instanceof RecentPlay) {
+            submissionTimeDifference = score.date.getTime() - beatmapFinishTime;
+        } else {
+            submissionTimeDifference =
                 score.date +
                 (score.skippedTime * 1000) / stats.speedMultiplier -
                 beatmapFinishTime;
+        }
 
-            const BCP47: string = LocaleHelper.convertToBCP47(language);
+        const BCP47: string = LocaleHelper.convertToBCP47(language);
 
-            // Give 30 seconds leniency for score submission.
-            if (submissionTimeDifference > 30 * 1000) {
-                return this.createOperationResult(
-                    false,
-                    StringHelper.formatString(
-                        localization.getTranslation("submissionTooLate"),
-                        NumberHelper.round(
-                            submissionTimeDifference / 1000 - 30,
-                            1
-                        ).toLocaleString(BCP47)
-                    )
-                );
-            }
+        // Give 30 seconds leniency for score submission.
+        if (submissionTimeDifference > 30 * 1000) {
+            return this.createOperationResult(
+                false,
+                StringHelper.formatString(
+                    localization.getTranslation("submissionTooLate"),
+                    NumberHelper.round(
+                        submissionTimeDifference / 1000 - 30,
+                        1
+                    ).toLocaleString(BCP47)
+                )
+            );
+        }
 
-            // Give 10 seconds constraint for early submission.
-            if (submissionTimeDifference < -10 * 1000) {
-                return this.createOperationResult(
-                    false,
-                    StringHelper.formatString(
-                        localization.getTranslation("submissionTooEarly"),
-                        NumberHelper.round(
-                            Math.abs(submissionTimeDifference / 1000 + 10),
-                            1
-                        ).toLocaleString(BCP47)
-                    )
-                );
-            }
+        // Give 10 seconds constraint for early submission.
+        if (submissionTimeDifference < -10 * 1000) {
+            return this.createOperationResult(
+                false,
+                StringHelper.formatString(
+                    localization.getTranslation("submissionTooEarly"),
+                    NumberHelper.round(
+                        Math.abs(submissionTimeDifference / 1000 + 10),
+                        1
+                    ).toLocaleString(BCP47)
+                )
+            );
         }
 
         const {
@@ -1369,25 +1372,11 @@ export class MultiplayerRoom
             return new Collection();
         }
 
-        const stats: MapStats = new MapStats({
-            mods: ModUtil.pcStringToMods(this.settings.requiredMods),
-            speedMultiplier: this.settings.speedMultiplier,
-        }).calculate();
-
-        const beatmapDuration: number =
-            (this.settings.beatmap!.duration * 1000) / stats.speedMultiplier;
-        const beatmapFinishTime: number =
-            this.status.playingSince + beatmapDuration;
-
-        return DatabaseManager.aliceDb.collections.recentPlays.get("uid", {
-            hash: this.settings.beatmap.hash,
-            uid: {
-                $in: this.players.map((v) => v.uid),
-            },
-            date: {
-                $gte: new Date(beatmapFinishTime),
-            },
-        });
+        return DatabaseManager.aliceDb.collections.recentPlays.getRecentScoresFromPlayers(
+            this.settings.beatmap.hash,
+            this.players.map((v) => v.uid),
+            new Date(this.status.playingSince)
+        );
     }
 
     /**
