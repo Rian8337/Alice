@@ -33,6 +33,9 @@ import {
     Precision,
     IModApplicableToDroid,
     Modes,
+    ModSuddenDeath,
+    ModPerfect,
+    ModNoFail,
 } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
@@ -1040,6 +1043,14 @@ export class MultiplayerRoom
 
         // Consider required mods first, then we can check for invalid mods.
         for (const mod of usedMods) {
+            if (
+                mod instanceof ModNoFail ||
+                mod instanceof ModSuddenDeath ||
+                mod instanceof ModPerfect
+            ) {
+                continue;
+            }
+
             if (requiredMods.length === 0) {
                 break;
             }
@@ -1054,6 +1065,14 @@ export class MultiplayerRoom
         }
 
         for (const mod of usedMods) {
+            if (
+                mod instanceof ModNoFail ||
+                mod instanceof ModSuddenDeath ||
+                mod instanceof ModPerfect
+            ) {
+                continue;
+            }
+
             if (
                 !this.settings.requiredMods.includes(mod.acronym) &&
                 !this.settings.allowedMods.includes(mod.acronym)
