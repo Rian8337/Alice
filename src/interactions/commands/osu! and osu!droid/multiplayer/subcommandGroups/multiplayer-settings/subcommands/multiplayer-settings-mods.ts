@@ -64,12 +64,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const mods: Mod[] = ModUtil.pcStringToMods(
-        interaction.options.getString("mods") ?? ""
+    const requiredMods: Mod[] = ModUtil.pcStringToMods(
+        interaction.options.getString("required") ?? room.settings.requiredMods
+    );
+    const allowedMods: Mod[] = ModUtil.pcStringToMods(
+        interaction.options.getString("allowed") ?? room.settings.allowedMods,
+        { checkIncompatible: false }
     );
 
     if (
-        mods.some(
+        requiredMods.some(
+            (m) =>
+                m instanceof ModSuddenDeath ||
+                m instanceof ModPerfect ||
+                m instanceof ModRelax ||
+                m instanceof ModAuto ||
+                m instanceof ModAutopilot ||
+                m instanceof ModScoreV2
+        ) ||
+        allowedMods.some(
             (m) =>
                 m instanceof ModSuddenDeath ||
                 m instanceof ModPerfect ||
@@ -86,20 +99,45 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    // Filter allowed mods with respect to required mods
-    const allowedMods: Mod[] = [];
+    let newRequiredMods: Mod[] = [];
+    let newAllowedMods: Mod[] = [];
 
-    for (const mod of ModUtil.pcStringToMods(room.settings.allowedMods, {
-        checkIncompatible: false,
-    })) {
-        if (!mods.some((m) => m.acronym === mod.acronym)) {
-            allowedMods.push(mod);
+    const filterMods = (toFilter: Mod[], toRemove: Mod[]): Mod[] => {
+        const newMods: Mod[] = [];
+
+        for (const mod of toFilter) {
+            if (!toRemove.some((m) => m.acronym === mod.acronym)) {
+                newMods.push(mod);
+            }
         }
+
+        return newMods;
+    };
+
+    // Consider 3 different cases.
+    if (
+        interaction.options.getString("allowed") &&
+        !interaction.options.getString("required")
+    ) {
+        // Case 1: Only the allowed mods are changed; in which case, remove conflicting mods from required mods
+        newAllowedMods = allowedMods;
+        newRequiredMods = filterMods(requiredMods, allowedMods);
+    } else {
+        // Case 2: Only the required mods are changed; in which case, remove conflicting mods from allowed mods
+        // This also handles the case where both allowed and required mods are changed;
+        // in which case, conflicting mods from allowed mods are removed as required mods have a higher precedence.
+        newRequiredMods = requiredMods;
+        newAllowedMods = filterMods(allowedMods, requiredMods);
     }
 
-    room.settings.requiredMods = mods.reduce((a, m) => a + m.acronym, "");
-
-    room.settings.allowedMods = allowedMods.reduce((a, m) => a + m.acronym, "");
+    room.settings.requiredMods = newRequiredMods.reduce(
+        (a, m) => a + m.acronym,
+        ""
+    );
+    room.settings.allowedMods = newAllowedMods.reduce(
+        (a, m) => a + m.acronym,
+        ""
+    );
 
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(

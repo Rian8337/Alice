@@ -262,19 +262,6 @@ export const config: SlashCommand["config"] = {
             description: "Manages settings for the multiplayer room.",
             options: [
                 {
-                    name: "allowedmods",
-                    type: ApplicationCommandOptionType.Subcommand,
-                    description: "Sets allowed mods to play.",
-                    options: [
-                        {
-                            name: "mods",
-                            type: ApplicationCommandOptionType.String,
-                            description:
-                                "The mods to set to. Defaults to none.",
-                        },
-                    ],
-                },
-                {
                     name: "forcear",
                     type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the usage rule of force AR.",
@@ -326,6 +313,25 @@ export const config: SlashCommand["config"] = {
                     ],
                 },
                 {
+                    name: "mods",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description: "Sets allowed and required mods.",
+                    options: [
+                        {
+                            name: "required",
+                            type: ApplicationCommandOptionType.String,
+                            description:
+                                "The required mods to set to. Defaults to none.",
+                        },
+                        {
+                            name: "allowed",
+                            type: ApplicationCommandOptionType.String,
+                            description:
+                                "The required mods to set to. Defaults to none.",
+                        },
+                    ],
+                },
+                {
                     name: "name",
                     type: ApplicationCommandOptionType.Subcommand,
                     description: "Sets the name of the multiplayer room.",
@@ -366,19 +372,6 @@ export const config: SlashCommand["config"] = {
                             type: ApplicationCommandOptionType.String,
                             description:
                                 "The password to set to. Defaults to none.",
-                        },
-                    ],
-                },
-                {
-                    name: "requiredmods",
-                    type: ApplicationCommandOptionType.Subcommand,
-                    description: "Sets required mods to play.",
-                    options: [
-                        {
-                            name: "mods",
-                            type: ApplicationCommandOptionType.String,
-                            description:
-                                "The mods to set to. Defaults to none.",
                         },
                     ],
                 },
