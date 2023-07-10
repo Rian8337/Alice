@@ -1,9 +1,15 @@
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { MultiplayerScore } from "./MultiplayerScore";
 
 /**
  * Represents the final result of a multiplayer score.
  */
-export interface MultiplayerScoreFinalResult extends MultiplayerScore {
+export interface MultiplayerScoreFinalResult {
+    /**
+     * The underlying score.
+     */
+    readonly score: MultiplayerScore | RecentPlay;
+
     /**
      * The grade of the score.
      */

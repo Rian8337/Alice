@@ -1,5 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
 import { OperationResult } from "@alice-structures/core/OperationResult";
@@ -20,6 +21,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                     "status.isPlaying": 1,
+                    "settings.clientType": 1,
                     "settings.roomHost": 1,
                     "settings.useSliderAccuracy": 1,
                 },
@@ -48,6 +50,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 new ConstantsLocalization(localization.language).getTranslation(
                     "noPermissionToExecuteCommand"
                 )
+            ),
+        });
+    }
+
+    if (room.settings.clientType === MultiplayerClientType.official) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("settingDisallowedInOfficial")
             ),
         });
     }

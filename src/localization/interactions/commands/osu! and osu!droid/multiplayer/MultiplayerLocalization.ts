@@ -41,6 +41,7 @@ export interface MultiplayerStrings {
     readonly playerIsInReadyState: string;
     readonly beatmapNotFinished: string;
     readonly scorePortionOutOfRange: string;
+    readonly settingDisallowedInOfficial: string;
     readonly scorev1Value: string;
     readonly scorev2Value: string;
     readonly roomIsFull: string;
@@ -103,6 +104,8 @@ export interface MultiplayerStrings {
     readonly setModMultiplierSuccess: string;
     readonly teamSelectFailed: string;
     readonly teamSelectSuccess: string;
+    readonly setClientTypeFailed: string;
+    readonly setClientTypeSuccess: string;
     readonly multiplayerRoomPrefix: string;
     readonly roomHost: string;
     readonly playerDiscordAccount: string;

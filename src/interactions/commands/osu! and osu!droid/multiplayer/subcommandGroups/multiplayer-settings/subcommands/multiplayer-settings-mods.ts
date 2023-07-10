@@ -18,6 +18,7 @@ import {
     ModUtil,
 } from "@rian8337/osu-base";
 import { MultiplayerRESTManager } from "@alice-utils/managers/MultiplayerRESTManager";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -31,6 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                     "status.isPlaying": 1,
+                    "settings.clientType": 1,
                     "settings.roomHost": 1,
                     "settings.allowedMods": 1,
                     "settings.requiredMods": 1,
@@ -73,7 +75,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     );
 
     if (
-        requiredMods.some(
+        [...requiredMods, ...allowedMods].some(
             (m) =>
                 m instanceof ModSuddenDeath ||
                 m instanceof ModPerfect ||
@@ -81,15 +83,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 m instanceof ModAuto ||
                 m instanceof ModAutopilot ||
                 m instanceof ModScoreV2
-        ) ||
-        allowedMods.some(
-            (m) =>
-                m instanceof ModSuddenDeath ||
-                m instanceof ModPerfect ||
-                m instanceof ModRelax ||
-                m instanceof ModAuto ||
-                m instanceof ModAutopilot ||
-                m instanceof ModScoreV2
+        )
+    ) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("unrankedModsIncluded")
+            ),
+        });
+    }
+
+    // For official clients, give a stricter detection.
+    if (
+        room.settings.clientType === MultiplayerClientType.official &&
+        [...requiredMods, ...allowedMods].some(
+            (m) => m.isApplicableToDroid() && !m.droidRanked
         )
     ) {
         return InteractionHelper.reply(interaction, {

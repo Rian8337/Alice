@@ -15,6 +15,7 @@ import {
     ThreadAutoArchiveDuration,
     ThreadChannel,
 } from "discord.js";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -131,6 +132,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 },
             ],
             settings: {
+                clientType: MultiplayerClientType.custom,
                 roomName: name,
                 roomHost: interaction.user.id,
                 password: password ?? undefined,

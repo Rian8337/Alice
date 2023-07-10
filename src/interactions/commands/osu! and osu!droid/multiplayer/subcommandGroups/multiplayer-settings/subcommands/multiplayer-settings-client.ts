@@ -1,13 +1,14 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MultiplayerRoom } from "@alice-database/utils/aliceDb/MultiplayerRoom";
-import { OperationResult } from "structures/core/OperationResult";
-import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { MultiplayerLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/multiplayer/MultiplayerLocalization";
+import { OperationResult } from "@alice-structures/core/OperationResult";
+import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { ModUtil } from "@rian8337/osu-base";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -21,9 +22,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                     "status.isPlaying": 1,
+                    "settings.allowedMods": 1,
                     "settings.clientType": 1,
+                    "settings.forcedAR.allowed": 1,
+                    "settings.requiredMods": 1,
                     "settings.roomHost": 1,
-                    "settings.forcedAR": 1,
+                    "settings.useSliderAccuracy": 1,
                 },
             }
         );
@@ -54,36 +58,37 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const allowed: boolean | null = interaction.options.getBoolean("allowed");
-    const minValue: number | null = interaction.options.getNumber("minvalue");
-    const maxValue: number | null = interaction.options.getNumber("maxvalue");
-    let needsUpdating: boolean = false;
+    const clientType: MultiplayerClientType = <MultiplayerClientType>(
+        interaction.options.getInteger("type", true)
+    );
+    const isOfficial: boolean = clientType === MultiplayerClientType.official;
 
-    if (allowed !== null && room.settings.forcedAR.allowed !== allowed) {
-        needsUpdating = true;
+    if (room.settings.clientType !== clientType) {
+        if (isOfficial) {
+            // Remove unranked mods.
+            const filterMods = (str: string): string =>
+                ModUtil.pcStringToMods(str)
+                    .filter((v) => v.isApplicableToDroid() && v.droidRanked)
+                    .reduce((a, v) => a + v.acronym, "");
 
-        room.settings.forcedAR.allowed = allowed;
-    }
+            room.settings.allowedMods = filterMods(room.settings.allowedMods);
+            room.settings.requiredMods = filterMods(room.settings.requiredMods);
+        }
 
-    if (minValue !== null && room.settings.forcedAR.minValue !== minValue) {
-        needsUpdating = true;
-
-        room.settings.forcedAR.minValue = minValue;
-    }
-
-    if (maxValue !== null && room.settings.forcedAR.maxValue !== maxValue) {
-        needsUpdating = true;
-
-        room.settings.forcedAR.maxValue = maxValue;
-    }
-
-    if (needsUpdating) {
         const result: OperationResult =
             await DatabaseManager.aliceDb.collections.multiplayerRoom.updateOne(
                 { roomId: room.roomId },
                 {
                     $set: {
-                        "settings.forcedAR": room.settings.forcedAR,
+                        "settings.allowedMods": room.settings.allowedMods,
+                        "settings.clientType": clientType,
+                        "settings.forcedAR.allowed": isOfficial
+                            ? false
+                            : room.settings.forcedAR.allowed,
+                        "settings.requiredMods": room.settings.requiredMods,
+                        "settings.useSliderAccuracy": isOfficial
+                            ? false
+                            : room.settings.useSliderAccuracy,
                     },
                 }
             );
@@ -91,23 +96,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("setForceARFailed"),
+                    localization.getTranslation("setClientTypeFailed"),
                     result.reason!
                 ),
             });
         }
     }
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
-
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("setForceARSuccess"),
-            localization.getTranslation(
-                room.settings.forcedAR.allowed ? "allowed" : "disallowed"
-            ),
-            room.settings.forcedAR.minValue.toLocaleString(BCP47),
-            room.settings.forcedAR.maxValue.toLocaleString(BCP47)
+            localization.getTranslation("setClientTypeSuccess"),
+            room.clientTypeToString(localization.language)
         ),
     });
 };

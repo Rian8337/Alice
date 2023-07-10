@@ -3,6 +3,7 @@ import { MultiplayerTeam } from "@alice-enums/multiplayer/MultiplayerTeam";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ApplicationCommandOptionType } from "discord.js";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(
@@ -110,7 +111,7 @@ export const config: SlashCommand["config"] = {
                             name: "mods",
                             type: ApplicationCommandOptionType.String,
                             description:
-                                "The combination of mods to calculate for. Used to apply HDDT penalty and custom mod multipliers.",
+                                "The combination of mods to calculate for.",
                         },
                     ],
                 },
@@ -177,7 +178,7 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "password",
                     type: ApplicationCommandOptionType.String,
-                    description: "The password of the room, if any.",
+                    description: "The password of the room.",
                 },
             ],
         },
@@ -190,7 +191,7 @@ export const config: SlashCommand["config"] = {
                     name: "user",
                     type: ApplicationCommandOptionType.User,
                     required: true,
-                    description: "The user to kick.",
+                    description: "The player to kick.",
                 },
                 {
                     name: "lockslot",
@@ -261,6 +262,29 @@ export const config: SlashCommand["config"] = {
             type: ApplicationCommandOptionType.SubcommandGroup,
             description: "Manages settings for the multiplayer room.",
             options: [
+                {
+                    name: "client",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description: "Sets the client type of this room.",
+                    options: [
+                        {
+                            name: "type",
+                            type: ApplicationCommandOptionType.Integer,
+                            required: true,
+                            description: "The client type to use.",
+                            choices: [
+                                {
+                                    name: "Official Client",
+                                    value: MultiplayerClientType.official,
+                                },
+                                {
+                                    name: "Custom Multiplayer Client",
+                                    value: MultiplayerClientType.custom,
+                                },
+                            ],
+                        },
+                    ],
+                },
                 {
                     name: "forcear",
                     type: ApplicationCommandOptionType.Subcommand,
@@ -385,7 +409,7 @@ export const config: SlashCommand["config"] = {
                             name: "value",
                             type: ApplicationCommandOptionType.Number,
                             description:
-                                "The value to set the score portion to. Defaults to 0.4.",
+                                "The value to set the score portion to, from 0 to 1. Defaults to 0.4.",
                             minValue: 0,
                             maxValue: 1,
                         },
@@ -414,8 +438,7 @@ export const config: SlashCommand["config"] = {
                             name: "allow",
                             type: ApplicationCommandOptionType.Boolean,
                             required: true,
-                            description:
-                                "Whether the option is allowed to be used.",
+                            description: "Whether the option is allowed.",
                         },
                     ],
                 },
@@ -428,7 +451,7 @@ export const config: SlashCommand["config"] = {
                             name: "value",
                             type: ApplicationCommandOptionType.Number,
                             description:
-                                "The custom speed multiplier value to use. Must be divisible by 0.05. Defaults to 1.",
+                                "The custom speed multiplier value to use, from 0.5 to 2. Must be divisible by 0.05. Defaults to 1.",
                             minValue: 0.5,
                             maxValue: 2,
                         },

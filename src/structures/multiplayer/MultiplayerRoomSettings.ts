@@ -2,6 +2,7 @@ import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMod
 import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWinCondition";
 import { Snowflake } from "discord.js";
 import { PickedBeatmap } from "./PickedBeatmap";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 
 /**
  * Represents a multiplayer room's settings.
@@ -21,6 +22,11 @@ export interface MultiplayerRoomSettings {
      * The Discord ID of the room host.
      */
     roomHost: Snowflake;
+
+    /**
+     * The type of client used in this room.
+     */
+    clientType: MultiplayerClientType;
 
     /**
      * The team mode of the room.

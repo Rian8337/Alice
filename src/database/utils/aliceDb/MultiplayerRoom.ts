@@ -41,6 +41,7 @@ import {
 import {
     APIEmbedField,
     bold,
+    Collection,
     EmbedBuilder,
     hyperlink,
     Snowflake,
@@ -57,6 +58,8 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { RecentPlay } from "./RecentPlay";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 
 /**
  * Represents a multiplayer room.
@@ -215,6 +218,14 @@ export class MultiplayerRoom
                     name: localization.getTranslation("settings"),
                     value:
                         `${bold(
+                            localization.getTranslation("clientType")
+                        )}: ${localization.getTranslation(
+                            this.settings.clientType ===
+                                MultiplayerClientType.official
+                                ? "clientTypeOfficial"
+                                : "clientTypeCustom"
+                        )}\n` +
+                        `${bold(
                             localization.getTranslation("teamMode")
                         )}: ${this.teamModeToString(language)}\n` +
                         `${bold(
@@ -340,6 +351,23 @@ export class MultiplayerRoom
     }
 
     /**
+     * Gets the string representation of the current client type.
+     *
+     * @param language The language to localize. Defaults to English.
+     */
+    clientTypeToString(language: Language = "en"): string {
+        const localization: MultiplayerRoomLocalization =
+            this.getLocalization(language);
+
+        switch (this.settings.clientType) {
+            case MultiplayerClientType.official:
+                return localization.getTranslation("clientTypeOfficial");
+            case MultiplayerClientType.custom:
+                return localization.getTranslation("clientTypeCustom");
+        }
+    }
+
+    /**
      * Gets the string representation of the current team mode.
      *
      * @param language The language to localize. Defaults to English.
@@ -433,6 +461,11 @@ export class MultiplayerRoom
 
         const embed: EmbedBuilder = await this.getInitialResultEmbed(language);
 
+        const scores: Collection<number, RecentPlay> | MultiplayerScore[] =
+            this.settings.clientType === MultiplayerClientType.official
+                ? await this.getOfficialClientRecentScores()
+                : this.currentScores;
+
         const validScores: MultiplayerScoreFinalResult[] = [];
         const invalidScores: MultiplayerScoreFinalResult[] = [];
 
@@ -441,32 +474,36 @@ export class MultiplayerRoom
                 continue;
             }
 
-            const score: MultiplayerScore | undefined = this.currentScores.find(
-                (v) => v.uid === player.uid
-            );
+            const score: RecentPlay | MultiplayerScore | undefined =
+                scores instanceof Collection
+                    ? // This looks silly, but TypeScript being TypeScript kek
+                      scores.find((v) => v.uid === player.uid)
+                    : scores.find((v) => v.uid === player.uid);
 
             if (!score) {
                 invalidScores.push({
+                    score: {
+                        uid: player.uid,
+                        username: player.username,
+                        hash: "",
+                        modstring: "",
+                        score: 0,
+                        maxCombo: 0,
+                        rank: "D",
+                        geki: 0,
+                        perfect: 0,
+                        katu: 0,
+                        good: 0,
+                        bad: 0,
+                        miss: 0,
+                        date: 0,
+                        unstableRate: 0,
+                        isSliderLock: false,
+                        useSliderAccuracy: false,
+                        skippedTime: 0,
+                    },
                     grade: 0,
                     reason: localization.getTranslation("scoreNotFound"),
-                    uid: player.uid,
-                    username: player.username,
-                    hash: "",
-                    modstring: "",
-                    score: 0,
-                    maxCombo: 0,
-                    rank: "D",
-                    geki: 0,
-                    perfect: 0,
-                    katu: 0,
-                    good: 0,
-                    bad: 0,
-                    miss: 0,
-                    date: 0,
-                    unstableRate: 0,
-                    isSliderLock: false,
-                    useSliderAccuracy: false,
-                    skippedTime: 0,
                 });
 
                 continue;
@@ -479,12 +516,12 @@ export class MultiplayerRoom
 
             if (scoreValidation.success) {
                 validScores.push({
-                    ...score,
+                    score: score,
                     grade: await this.getScoreGrade(score),
                 });
             } else {
                 invalidScores.push({
-                    ...score,
+                    score: score,
                     grade: 0,
                     reason: scoreValidation.reason!,
                 });
@@ -502,7 +539,7 @@ export class MultiplayerRoom
                 break;
             }
 
-            winners.push(score.username);
+            winners.push(this.getScoreUsername(score.score));
         }
 
         embed
@@ -553,6 +590,11 @@ export class MultiplayerRoom
 
         const embed: EmbedBuilder = await this.getInitialResultEmbed(language);
 
+        const scores: Collection<number, RecentPlay> | MultiplayerScore[] =
+            this.settings.clientType === MultiplayerClientType.official
+                ? await this.getOfficialClientRecentScores()
+                : this.currentScores;
+
         const validRedTeamScores: MultiplayerScoreFinalResult[] = [];
         const validBlueTeamScores: MultiplayerScoreFinalResult[] = [];
         const invalidRedTeamScores: MultiplayerScoreFinalResult[] = [];
@@ -563,9 +605,11 @@ export class MultiplayerRoom
                 continue;
             }
 
-            const score: MultiplayerScore | undefined = this.currentScores.find(
-                (v) => v.uid === player.uid
-            );
+            const score: RecentPlay | MultiplayerScore | undefined =
+                scores instanceof Collection
+                    ? // This looks silly, but TypeScript being TypeScript kek
+                      scores.find((v) => v.uid === player.uid)
+                    : scores.find((v) => v.uid === player.uid);
 
             const invalidScores: MultiplayerScoreFinalResult[] =
                 player.team === MultiplayerTeam.red
@@ -574,26 +618,28 @@ export class MultiplayerRoom
 
             if (!score) {
                 invalidScores.push({
+                    score: {
+                        uid: player.uid,
+                        username: player.username,
+                        hash: "",
+                        modstring: "",
+                        score: 0,
+                        maxCombo: 0,
+                        rank: "D",
+                        geki: 0,
+                        perfect: 0,
+                        katu: 0,
+                        good: 0,
+                        bad: 0,
+                        miss: 0,
+                        date: 0,
+                        unstableRate: 0,
+                        isSliderLock: false,
+                        useSliderAccuracy: false,
+                        skippedTime: 0,
+                    },
                     grade: 0,
                     reason: localization.getTranslation("scoreNotFound"),
-                    uid: player.uid,
-                    username: player.username,
-                    hash: "",
-                    modstring: "",
-                    score: 0,
-                    maxCombo: 0,
-                    rank: "D",
-                    geki: 0,
-                    perfect: 0,
-                    katu: 0,
-                    good: 0,
-                    bad: 0,
-                    miss: 0,
-                    date: 0,
-                    unstableRate: 0,
-                    isSliderLock: false,
-                    useSliderAccuracy: false,
-                    skippedTime: 0,
                 });
 
                 continue;
@@ -611,12 +657,12 @@ export class MultiplayerRoom
 
             if (scoreValidation.success) {
                 validScores.push({
-                    ...score,
+                    score: score,
                     grade: await this.getScoreGrade(score),
                 });
             } else {
                 invalidScores.push({
-                    ...score,
+                    score: score,
                     grade: 0,
                     reason: scoreValidation.reason!,
                 });
@@ -736,25 +782,33 @@ export class MultiplayerRoom
      * @param score The score to grade.
      * @returns The score's grade.
      */
-    private async getScoreGrade(score: MultiplayerScore): Promise<number> {
+    private async getScoreGrade(
+        score: MultiplayerScore | RecentPlay
+    ): Promise<number> {
         switch (this.settings.winCondition) {
             case MultiplayerWinCondition.scoreV1: {
-                const { mods } = this.convertModString(score.modstring);
+                const { mods } = this.processMods(score);
 
                 return this.applyCustomModMultiplier(score.score, mods);
             }
             case MultiplayerWinCondition.accuracy:
                 return NumberHelper.round(
-                    new Accuracy({
-                        n300: score.perfect,
-                        n100: score.good,
-                        n50: score.bad,
-                        nmiss: score.miss,
-                    }).value() * 100,
+                    new Accuracy(
+                        score instanceof RecentPlay
+                            ? score.accuracy
+                            : {
+                                  n300: score.perfect,
+                                  n100: score.good,
+                                  n50: score.bad,
+                                  nmiss: score.miss,
+                              }
+                    ).value() * 100,
                     2
                 );
             case MultiplayerWinCondition.maxCombo:
-                return score.maxCombo;
+                return score instanceof RecentPlay
+                    ? score.combo
+                    : score.maxCombo;
             case MultiplayerWinCondition.scoreV2: {
                 const beatmapInfo: MapInfo<true> =
                     (await BeatmapManager.getBeatmap(
@@ -767,92 +821,120 @@ export class MultiplayerRoom
                 return this.applySpeedMulBonus(
                     ScoreHelper.calculateScoreV2(
                         this.removeSpeedMulBonus(score.score),
-                        new Accuracy({
-                            n300: score.perfect,
-                            n100: score.good,
-                            n50: score.bad,
-                            nmiss: score.miss,
-                        }).value(),
-                        score.miss,
+                        new Accuracy(
+                            score instanceof RecentPlay
+                                ? score.accuracy
+                                : {
+                                      n300: score.perfect,
+                                      n100: score.good,
+                                      n50: score.bad,
+                                      nmiss: score.miss,
+                                  }
+                        ).value(),
+                        score instanceof RecentPlay
+                            ? score.accuracy.nmiss
+                            : score.miss,
                         this.currentBeatmapMaxScore,
-                        this.convertModString(score.modstring).mods,
+                        this.processMods(score).mods,
                         this.settings.scorePortion
                     )
                 );
             }
             case MultiplayerWinCondition.most300:
-                return score.perfect;
+                return score instanceof RecentPlay
+                    ? score.accuracy.n300
+                    : score.perfect;
             case MultiplayerWinCondition.least100:
-                return score.good;
+                return score instanceof RecentPlay
+                    ? score.accuracy.n100
+                    : score.good;
             case MultiplayerWinCondition.least50:
-                return score.bad;
+                return score instanceof RecentPlay
+                    ? score.accuracy.n50
+                    : score.bad;
             case MultiplayerWinCondition.leastMisses:
-                return score.miss;
+                return score instanceof RecentPlay
+                    ? score.accuracy.nmiss
+                    : score.miss;
             case MultiplayerWinCondition.leastUnstableRate:
-                return NumberHelper.round(score.unstableRate, 2);
+                return NumberHelper.round(
+                    score instanceof RecentPlay
+                        ? score.hitError?.unstableRate ??
+                              Number.POSITIVE_INFINITY
+                        : score.unstableRate,
+                    2
+                );
             case MultiplayerWinCondition.mostDroidPp: {
                 const { mods, forcedAR, speedMultiplier } =
-                    this.convertModString(score.modstring);
+                    this.processMods(score);
 
                 const attribs: CompleteCalculationAttributes<
                     DroidDifficultyAttributes,
                     DroidPerformanceAttributes
                 > | null =
-                    await DPPProcessorRESTManager.getPerformanceAttributes(
-                        this.settings.beatmap!.hash,
-                        Modes.droid,
-                        PPCalculationMethod.live,
-                        new PerformanceCalculationParameters(
-                            new Accuracy({
-                                n300: score.perfect,
-                                n100: score.good,
-                                n50: score.bad,
-                                nmiss: score.miss,
-                            }),
-                            undefined,
-                            score.maxCombo,
-                            undefined,
-                            new MapStats({
-                                ar: forcedAR,
-                                mods: mods,
-                                speedMultiplier: speedMultiplier,
-                                isForceAR: forcedAR !== undefined,
-                            })
-                        )
-                    );
+                    score instanceof RecentPlay
+                        ? score.droidAttribs ?? null
+                        : await DPPProcessorRESTManager.getPerformanceAttributes(
+                              this.settings.beatmap!.hash,
+                              Modes.droid,
+                              PPCalculationMethod.live,
+                              new PerformanceCalculationParameters(
+                                  new Accuracy(
+                                      score instanceof RecentPlay
+                                          ? score.accuracy
+                                          : {
+                                                n300: score.perfect,
+                                                n100: score.good,
+                                                n50: score.bad,
+                                                nmiss: score.miss,
+                                            }
+                                  ),
+                                  undefined,
+                                  score.maxCombo,
+                                  undefined,
+                                  new MapStats({
+                                      ar: forcedAR,
+                                      mods: mods,
+                                      speedMultiplier: speedMultiplier,
+                                      isForceAR: forcedAR !== undefined,
+                                  })
+                              )
+                          );
 
                 return NumberHelper.round(attribs?.performance.total ?? 0, 2);
             }
             case MultiplayerWinCondition.mostPcPp: {
                 const { mods, forcedAR, speedMultiplier } =
-                    this.convertModString(score.modstring);
+                    this.processMods(score);
 
                 const attribs: CompleteCalculationAttributes<
                     OsuDifficultyAttributes,
                     OsuPerformanceAttributes
                 > | null =
-                    await DPPProcessorRESTManager.getPerformanceAttributes(
-                        this.settings.beatmap!.hash,
-                        Modes.osu,
-                        PPCalculationMethod.live,
-                        new PerformanceCalculationParameters(
-                            new Accuracy({
-                                n300: score.perfect,
-                                n100: score.good,
-                                n50: score.bad,
-                                nmiss: score.miss,
-                            }),
-                            undefined,
-                            score.maxCombo,
-                            undefined,
-                            new MapStats({
-                                ar: forcedAR,
-                                mods: mods,
-                                speedMultiplier: speedMultiplier,
-                                isForceAR: forcedAR !== undefined,
-                            })
-                        )
-                    );
+                    score instanceof RecentPlay
+                        ? score.osuAttribs ?? null
+                        : await DPPProcessorRESTManager.getPerformanceAttributes(
+                              this.settings.beatmap!.hash,
+                              Modes.osu,
+                              PPCalculationMethod.live,
+                              new PerformanceCalculationParameters(
+                                  new Accuracy({
+                                      n300: score.perfect,
+                                      n100: score.good,
+                                      n50: score.bad,
+                                      nmiss: score.miss,
+                                  }),
+                                  undefined,
+                                  score.maxCombo,
+                                  undefined,
+                                  new MapStats({
+                                      ar: forcedAR,
+                                      mods: mods,
+                                      speedMultiplier: speedMultiplier,
+                                      isForceAR: forcedAR !== undefined,
+                                  })
+                              )
+                          );
 
                 return NumberHelper.round(attribs?.performance.total ?? 0, 2);
             }
@@ -866,7 +948,7 @@ export class MultiplayerRoom
      * @param language The language to localize.
      */
     private verifyScore(
-        score: MultiplayerScore,
+        score: MultiplayerScore | RecentPlay,
         language: Language
     ): OperationResult {
         const localization: MultiplayerRoomLocalization =
@@ -879,20 +961,22 @@ export class MultiplayerRoom
             );
         }
 
-        if (score.isSliderLock && !this.settings.allowSliderLock) {
-            return this.createOperationResult(
-                false,
-                localization.getTranslation("sliderLockEnabled")
-            );
-        }
+        if (!(score instanceof RecentPlay)) {
+            if (score.isSliderLock && !this.settings.allowSliderLock) {
+                return this.createOperationResult(
+                    false,
+                    localization.getTranslation("sliderLockEnabled")
+                );
+            }
 
-        if (score.useSliderAccuracy !== this.settings.useSliderAccuracy) {
-            return this.createOperationResult(
-                false,
-                localization.getTranslation(
-                    "useSliderAccuracySettingDoesntMatch"
-                )
-            );
+            if (score.useSliderAccuracy !== this.settings.useSliderAccuracy) {
+                return this.createOperationResult(
+                    false,
+                    localization.getTranslation(
+                        "useSliderAccuracySettingDoesntMatch"
+                    )
+                );
+            }
         }
 
         const stats: MapStats = new MapStats({
@@ -906,46 +990,48 @@ export class MultiplayerRoom
         const beatmapFinishTime: number =
             this.status.playingSince + beatmapDuration;
 
-        const submissionTimeDifference: number =
-            score.date +
-            (score.skippedTime * 1000) / stats.speedMultiplier -
-            beatmapFinishTime;
+        if (!(score instanceof RecentPlay)) {
+            const submissionTimeDifference: number =
+                score.date +
+                (score.skippedTime * 1000) / stats.speedMultiplier -
+                beatmapFinishTime;
 
-        const BCP47: string = LocaleHelper.convertToBCP47(language);
+            const BCP47: string = LocaleHelper.convertToBCP47(language);
 
-        // Give 30 seconds leniency for score submission.
-        if (submissionTimeDifference > 30 * 1000) {
-            return this.createOperationResult(
-                false,
-                StringHelper.formatString(
-                    localization.getTranslation("submissionTooLate"),
-                    NumberHelper.round(
-                        submissionTimeDifference / 1000 - 30,
-                        1
-                    ).toLocaleString(BCP47)
-                )
-            );
-        }
+            // Give 30 seconds leniency for score submission.
+            if (submissionTimeDifference > 30 * 1000) {
+                return this.createOperationResult(
+                    false,
+                    StringHelper.formatString(
+                        localization.getTranslation("submissionTooLate"),
+                        NumberHelper.round(
+                            submissionTimeDifference / 1000 - 30,
+                            1
+                        ).toLocaleString(BCP47)
+                    )
+                );
+            }
 
-        // Give 10 seconds constraint for early submission.
-        if (submissionTimeDifference < -10 * 1000) {
-            return this.createOperationResult(
-                false,
-                StringHelper.formatString(
-                    localization.getTranslation("submissionTooEarly"),
-                    NumberHelper.round(
-                        Math.abs(submissionTimeDifference / 1000 + 10),
-                        1
-                    ).toLocaleString(BCP47)
-                )
-            );
+            // Give 10 seconds constraint for early submission.
+            if (submissionTimeDifference < -10 * 1000) {
+                return this.createOperationResult(
+                    false,
+                    StringHelper.formatString(
+                        localization.getTranslation("submissionTooEarly"),
+                        NumberHelper.round(
+                            Math.abs(submissionTimeDifference / 1000 + 10),
+                            1
+                        ).toLocaleString(BCP47)
+                    )
+                );
+            }
         }
 
         const {
             mods: usedMods,
             forcedAR,
             speedMultiplier,
-        } = this.convertModString(score.modstring);
+        } = this.processMods(score);
 
         const requiredMods: Mod[] = ModUtil.pcStringToMods(
             this.settings.requiredMods
@@ -1028,20 +1114,21 @@ export class MultiplayerRoom
     /**
      * Gets the description of a score.
      *
-     * @param score The score.
+     * @param resultScore The score.
      * @param index The index of the score.
      * @param language The language to localize.
      * @param afterScore The score that comes after the passed score, if any.
      * @returns The score's description.
      */
     private getScoreEmbedDescription(
-        score: MultiplayerScoreFinalResult,
+        resultScore: MultiplayerScoreFinalResult,
         index: number,
         language: Language,
         afterScore?: MultiplayerScoreFinalResult
     ): APIEmbedField {
-        const { mods, forcedAR, speedMultiplier } = this.convertModString(
-            score.modstring
+        const { score } = resultScore;
+        const { mods, forcedAR, speedMultiplier } = this.processMods(
+            resultScore.score
         );
 
         const BCP47: string = LocaleHelper.convertToBCP47(language);
@@ -1062,20 +1149,27 @@ export class MultiplayerRoom
             modstring += ` (${customMods.join(", ")})`;
         }
 
-        const accuracy: number =
-            new Accuracy({
-                n300: score.perfect,
-                n100: score.good,
-                n50: score.bad,
-                nmiss: score.miss,
-            }).value() * 100 || 0;
+        const accuracy: Accuracy = new Accuracy(
+            score instanceof RecentPlay
+                ? score.accuracy
+                : {
+                      n300: score.perfect,
+                      n100: score.good,
+                      n50: score.bad,
+                      nmiss: score.miss,
+                  }
+        );
 
-        const diff: number = afterScore ? score.grade - afterScore.grade : 0;
+        const diff: number = afterScore
+            ? resultScore.grade - afterScore.grade
+            : 0;
 
         return {
             name: `${bold(
-                `#${index} ${score.username} - ${modstring}: ${underscore(
-                    score.grade.toLocaleString(BCP47)
+                `#${index} ${this.getScoreUsername(
+                    score
+                )} - ${modstring}: ${underscore(
+                    resultScore.grade.toLocaleString(BCP47)
                 )}`
             )}${
                 afterScore
@@ -1085,10 +1179,16 @@ export class MultiplayerRoom
             value: `${score.score.toLocaleString(
                 BCP47
             )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${
-                score.maxCombo
-            }x - [${score.perfect}/${score.good}/${score.bad}/${
-                score.miss
-            }] (${accuracy.toFixed(2)}%) - ${score.unstableRate.toFixed(2)} UR`,
+                score instanceof RecentPlay ? score.combo : score.maxCombo
+            }x - [${accuracy.n300}/${accuracy.n100}/${accuracy.n50}/${
+                accuracy.nmiss
+            }] (${accuracy.value().toFixed(2)}%) - ${
+                score instanceof RecentPlay
+                    ? score.hitError?.unstableRate !== undefined
+                        ? score.hitError.unstableRate.toFixed(2)
+                        : "Unknown"
+                    : score.unstableRate.toFixed(2)
+            } UR`,
         };
     }
 
@@ -1114,21 +1214,26 @@ export class MultiplayerRoom
     }
 
     /**
-     * Converts the mod string received from client.
+     * Processes the mods of a score received from client.
      *
-     * @param modstring The mod string.
+     * @param score The score.
      */
-    private convertModString(modstring: string): {
+    private processMods(score: MultiplayerScore | RecentPlay): {
         mods: (Mod & IModApplicableToDroid)[];
         speedMultiplier: number;
         forcedAR?: number;
     } {
-        const mode = modstring.split("|");
+        if (score instanceof RecentPlay) {
+            return {
+                mods: score.mods,
+                speedMultiplier: score.speedMultiplier ?? 1,
+                forcedAR: score.forcedAR,
+            };
+        }
 
+        const mode: string[] = score.modstring.split("|");
         let speedMultiplier = 1;
-
         let forcedAR: number | undefined;
-
         let actualMods = "";
 
         for (let i = 0; i < mode.length; ++i) {
@@ -1230,6 +1335,43 @@ export class MultiplayerRoom
             customModMultipliersDescription.join(", ") ||
             this.getLocalization(language).getTranslation("none")
         );
+    }
+
+    /**
+     * Gets recent scores of players from the official client.
+     *
+     * @returns Scores from the official client, `null` if the room does
+     * not have any beatmap selected.
+     */
+    private async getOfficialClientRecentScores(): Promise<
+        Collection<number, RecentPlay>
+    > {
+        if (!this.settings.beatmap) {
+            return new Collection();
+        }
+
+        return DatabaseManager.aliceDb.collections.recentPlays.get("uid", {
+            hash: this.settings.beatmap.hash,
+            uid: {
+                $in: this.players.map((v) => v.uid),
+            },
+            date: {
+                $gte: new Date(this.status.playingSince),
+            },
+        });
+    }
+
+    /**
+     * Gets the username of a score.
+     *
+     * @param score The score.
+     * @returns The username of the score.
+     */
+    private getScoreUsername(score: MultiplayerScore | RecentPlay): string {
+        return score instanceof RecentPlay
+            ? this.players.find((v) => v.uid === score.uid)?.username ??
+                  `uid ${score.uid}`
+            : score.username;
     }
 
     /**

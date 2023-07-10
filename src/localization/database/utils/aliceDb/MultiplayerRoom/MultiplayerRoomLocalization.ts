@@ -25,6 +25,9 @@ export interface MultiplayerRoomStrings {
     readonly playerCount: string;
     readonly currentBeatmap: string;
     readonly settings: string;
+    readonly clientType: string;
+    readonly clientTypeOfficial: string;
+    readonly clientTypeCustom: string;
     readonly teamMode: string;
     readonly winCondition: string;
     readonly allowSliderLock: string;

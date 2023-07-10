@@ -70,6 +70,8 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
         beatmapNotFinished:
             "Hey, 30 seconds haven't passed since the beatmap has finished!",
         scorePortionOutOfRange: "Hey, score portion cannot be 0 or 1!",
+        settingDisallowedInOfficial:
+            "I'm sorry, you cannot use this setting in the official client!",
         scorev1Value:
             "The ScoreV1 value with respect to current custom mod multipliers is `%s`.",
         scorev2Value:
@@ -172,6 +174,10 @@ export class MultiplayerENTranslation extends Translation<MultiplayerStrings> {
             "Successfully set the score multiplier of `%s` to `%s`.",
         teamSelectFailed: "I'm sorry, I couldn't set your team: %s.",
         teamSelectSuccess: "Successfully set your team to `%s` team.",
+        setClientTypeFailed:
+            "I'm sorry, I couldn't set the client type of this room: %s.",
+        setClientTypeSuccess:
+            "Successfully set the client type of this room to %s.",
         multiplayerRoomPrefix: "Multiplayer Room",
         roomHost: "Host",
         playerDiscordAccount: "Discord Account",

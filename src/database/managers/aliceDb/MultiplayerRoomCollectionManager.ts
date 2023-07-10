@@ -5,6 +5,7 @@ import { MultiplayerWinCondition } from "@alice-enums/multiplayer/MultiplayerWin
 import { MultiplayerTeamMode } from "@alice-enums/multiplayer/MultiplayerTeamMode";
 import { GuildMember, Snowflake, User } from "discord.js";
 import { FindOptions } from "mongodb";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 
 /**
  * A manager for the `multiplayer` collection.
@@ -29,6 +30,7 @@ export class MultiplayerRoomCollectionManager extends DatabaseCollectionManager<
             },
             currentScores: [],
             settings: {
+                clientType: MultiplayerClientType.custom,
                 roomName: "",
                 roomHost: "",
                 teamMode: MultiplayerTeamMode.headToHead,

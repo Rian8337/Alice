@@ -7,6 +7,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MultiplayerClientType } from "@alice-enums/multiplayer/MultiplayerClientType";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MultiplayerLocalization = new MultiplayerLocalization(
@@ -20,6 +21,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                     "status.isPlaying": 1,
+                    "settings.clientType": 1,
                     "settings.roomHost": 1,
                     "settings.allowSliderLock": 1,
                 },
@@ -48,6 +50,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 new ConstantsLocalization(localization.language).getTranslation(
                     "noPermissionToExecuteCommand"
                 )
+            ),
+        });
+    }
+
+    if (room.settings.clientType === MultiplayerClientType.official) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("settingDisallowedInOfficial")
             ),
         });
     }
