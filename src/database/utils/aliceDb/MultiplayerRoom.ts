@@ -1204,7 +1204,7 @@ export class MultiplayerRoom
                 score instanceof RecentPlay ? score.combo : score.maxCombo
             }x - [${accuracy.n300}/${accuracy.n100}/${accuracy.n50}/${
                 accuracy.nmiss
-            }] (${accuracy.value().toFixed(2)}%) - ${
+            }] (${(accuracy.value() * 100).toFixed(2)}%) - ${
                 score instanceof RecentPlay
                     ? score.hitError?.unstableRate !== undefined
                         ? score.hitError.unstableRate.toFixed(2)
