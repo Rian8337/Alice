@@ -132,29 +132,22 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (score.accuracy.nmiss > 0) {
-        score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
-        await ReplayHelper.analyzeReplay(score);
+    score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
+    await ReplayHelper.analyzeReplay(score);
 
-        if (!score.replay.data) {
-            return InteractionHelper.reply(interaction, options);
-        }
+    if (!score.replay.data) {
+        return InteractionHelper.reply(interaction, options);
+    }
 
-        const beatmapInfo: MapInfo<true> | null =
-            await BeatmapManager.getBeatmap(score.hash, {
-                checkFile: true,
-            });
+    await beatmapInfo.retrieveBeatmapFile();
 
-        if (beatmapInfo?.hasDownloadedBeatmap()) {
-            MessageButtonCreator.createRecentScoreButton(
-                interaction,
-                options,
-                beatmapInfo.beatmap,
-                score.replay.data
-            );
-        } else {
-            InteractionHelper.reply(interaction, options);
-        }
+    if (beatmapInfo?.hasDownloadedBeatmap()) {
+        MessageButtonCreator.createRecentScoreButton(
+            interaction,
+            options,
+            beatmapInfo.beatmap!,
+            score.replay.data
+        );
     } else {
         InteractionHelper.reply(interaction, options);
     }

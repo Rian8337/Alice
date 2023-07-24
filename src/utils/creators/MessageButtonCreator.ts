@@ -245,6 +245,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     ): Promise<Message> {
         const missAnalyzerButtonId: string = "analyzeMissesFromRecent";
         const missAnalyzerButton: ButtonBuilder = new ButtonBuilder()
+            .setDisabled(replayData.accuracy.nmiss === 0)
             .setCustomId(missAnalyzerButtonId)
             .setLabel("Analyze First 10 Misses")
             .setStyle(ButtonStyle.Primary)

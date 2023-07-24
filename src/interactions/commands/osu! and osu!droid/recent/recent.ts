@@ -165,10 +165,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (
-        (score instanceof Score || score.replayID) &&
-        score.accuracy.nmiss > 0
-    ) {
+    if (score instanceof Score || score.replayID) {
         let replay: ReplayAnalyzer | undefined;
 
         if (score instanceof Score) {
