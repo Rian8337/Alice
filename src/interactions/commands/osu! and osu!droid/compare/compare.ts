@@ -176,7 +176,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             });
 
         if (beatmapInfo?.hasDownloadedBeatmap()) {
-            MessageButtonCreator.createMissAnalyzerButton(
+            MessageButtonCreator.createRecentScoreButton(
                 interaction,
                 options,
                 beatmapInfo.beatmap,

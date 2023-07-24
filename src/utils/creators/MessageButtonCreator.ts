@@ -29,6 +29,7 @@ import { OnButtonPressed } from "@alice-structures/utils/OnButtonPressed";
 import { OnButtonCollectorEnd } from "@alice-structures/utils/OnButtonCollectorEnd";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Beatmap } from "@rian8337/osu-base";
+import { TimingDistributionChart } from "@alice-utils/timingdistribution/TimingDistributionChart";
 
 /**
  * A utility to create message buttons.
@@ -236,45 +237,220 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param replayData The replay data.
      * @returns The message resulted from the interaction's reply.
      */
-    static createMissAnalyzerButton(
+    static createRecentScoreButton(
         interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         beatmap: Beatmap,
         replayData: ReplayData
     ): Promise<Message> {
-        const buttonId: string = "analyzeMissesFromRecent";
-        const button: ButtonBuilder = new ButtonBuilder()
-            .setCustomId(buttonId)
+        const missAnalyzerButtonId: string = "analyzeMissesFromRecent";
+        const missAnalyzerButton: ButtonBuilder = new ButtonBuilder()
+            .setCustomId(missAnalyzerButtonId)
             .setLabel("Analyze First 10 Misses")
             .setStyle(ButtonStyle.Primary)
             .setEmoji(Symbols.magnifyingGlassTiltedRight);
 
-        CacheManager.exemptedButtonCustomIds.add(buttonId);
+        const timingDistributionButtonId: string = "timingDistribution";
+        const timingDistributionButton: ButtonBuilder = new ButtonBuilder()
+            .setCustomId(timingDistributionButtonId)
+            .setLabel("View Timing Distribution")
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji(Symbols.timer);
+
+        CacheManager.exemptedButtonCustomIds.add(missAnalyzerButtonId);
+        CacheManager.exemptedButtonCustomIds.add(timingDistributionButtonId);
 
         return this.createLimitedTimeButtons(
             interaction,
             options,
-            [button],
+            [missAnalyzerButton, timingDistributionButton],
             [interaction.user.id],
             60,
             async (c, i) => {
                 await i.deferReply();
 
-                c.stop();
-            },
-            async (c) => {
-                // Remove the original button
+                switch (i.customId) {
+                    case missAnalyzerButtonId: {
+                        const missAnalyzer: MissAnalyzer = new MissAnalyzer(
+                            beatmap,
+                            replayData
+                        );
+                        const missInformations: MissInformation[] =
+                            missAnalyzer.analyze();
+
+                        const options: InteractionReplyOptions = {
+                            files: [
+                                new AttachmentBuilder(
+                                    missInformations[0].draw().toBuffer(),
+                                    { name: "miss-1.png" }
+                                ),
+                            ],
+                        };
+
+                        if (missInformations.length === 1) {
+                            await InteractionHelper.update(i, options);
+                            return;
+                        }
+
+                        const buttons: ButtonBuilder[] = [];
+
+                        for (let i = 0; i < missInformations.length; ++i) {
+                            const id: string = missAnalyzerButtonId + (i + 1);
+
+                            CacheManager.exemptedButtonCustomIds.add(id);
+
+                            buttons.push(
+                                new ButtonBuilder()
+                                    .setCustomId(id)
+                                    .setStyle(
+                                        i === 0
+                                            ? ButtonStyle.Success
+                                            : ButtonStyle.Primary
+                                    )
+                                    .setLabel((i + 1).toString())
+                                    // Disable the first button as the first miss will be loaded initially.
+                                    .setDisabled(i === 0)
+                            );
+                        }
+
+                        this.createLimitedTimeButtons(
+                            i,
+                            options,
+                            buttons,
+                            [interaction.user.id],
+                            90,
+                            async (_, i) => {
+                                await i.deferUpdate();
+
+                                const pressedIndex: number = parseInt(
+                                    i.customId.replace(missAnalyzerButtonId, "")
+                                );
+                                const attachment: AttachmentBuilder =
+                                    new AttachmentBuilder(
+                                        missInformations[pressedIndex - 1]
+                                            .draw()
+                                            .toBuffer(),
+                                        { name: `miss-${pressedIndex}.png` }
+                                    );
+
+                                for (let i = 0; i < buttons.length; ++i) {
+                                    buttons[i]
+                                        .setDisabled(i === pressedIndex - 1)
+                                        .setStyle(
+                                            missInformations[i].isGenerated
+                                                ? ButtonStyle.Secondary
+                                                : i === pressedIndex - 1
+                                                ? ButtonStyle.Success
+                                                : ButtonStyle.Primary
+                                        );
+                                }
+
+                                await i.editReply({
+                                    ...options,
+                                    files: [attachment],
+                                });
+                            },
+                            async (c) => {
+                                if (c.componentIsDeleted) {
+                                    return;
+                                }
+
+                                try {
+                                    await InteractionHelper.update(i, {
+                                        ...options,
+                                        components: [],
+                                    });
+                                    // eslint-disable-next-line no-empty
+                                } catch {}
+                            }
+                        );
+
+                        // Disable the button
+                        missAnalyzerButton.setDisabled(true);
+                        break;
+                    }
+                    case timingDistributionButtonId: {
+                        const timingDistributionChart: TimingDistributionChart =
+                            new TimingDistributionChart(
+                                beatmap,
+                                replayData.convertedMods,
+                                replayData.hitObjectData
+                            );
+
+                        const chart: Buffer =
+                            timingDistributionChart.generate();
+
+                        const attachment: AttachmentBuilder =
+                            new AttachmentBuilder(chart, {
+                                name: "timingDistribution.png",
+                            });
+
+                        await i.editReply({ files: [attachment] });
+
+                        // Disable the button
+                        timingDistributionButton.setDisabled(true);
+                        break;
+                    }
+                }
+
+                // Remove the row
                 const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
                     options.components
                 )).findIndex((v) => {
-                    if (v.components.length !== 1) {
+                    if (v.components.length !== 2) {
                         return;
                     }
 
                     return (
                         (<APIButtonComponentWithCustomId>v.components[0].data)
                             .custom_id ===
-                        (<APIButtonComponentWithCustomId>button.data).custom_id
+                            (<APIButtonComponentWithCustomId>(
+                                missAnalyzerButton.data
+                            )).custom_id &&
+                        (<APIButtonComponentWithCustomId>v.components[1].data)
+                            .custom_id ===
+                            (<APIButtonComponentWithCustomId>(
+                                timingDistributionButton.data
+                            )).custom_id
+                    );
+                });
+
+                if (
+                    index !== -1 &&
+                    (<ActionRowBuilder<ButtonBuilder>[]>options.components)[
+                        index
+                    ].components.every((b) => b.data.disabled)
+                ) {
+                    return c.stop();
+                }
+
+                try {
+                    interaction.isMessageComponent()
+                        ? await InteractionHelper.update(interaction, options)
+                        : await InteractionHelper.reply(interaction, options);
+                    // eslint-disable-next-line no-empty
+                } catch {}
+            },
+            async (c) => {
+                // Remove the row
+                const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
+                    options.components
+                )).findIndex((v) => {
+                    if (v.components.length !== 2) {
+                        return;
+                    }
+
+                    return (
+                        (<APIButtonComponentWithCustomId>v.components[0].data)
+                            .custom_id ===
+                            (<APIButtonComponentWithCustomId>(
+                                missAnalyzerButton.data
+                            )).custom_id &&
+                        (<APIButtonComponentWithCustomId>v.components[1].data)
+                            .custom_id ===
+                            (<APIButtonComponentWithCustomId>(
+                                timingDistributionButton.data
+                            )).custom_id
                     );
                 });
 
@@ -295,106 +471,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                               );
                         // eslint-disable-next-line no-empty
                     } catch {}
-                }
-
-                const pressed: ButtonInteraction | undefined =
-                    c.collector.collected.first();
-
-                if (pressed) {
-                    const missAnalyzer: MissAnalyzer = new MissAnalyzer(
-                        beatmap,
-                        replayData
-                    );
-                    const missInformations: MissInformation[] =
-                        missAnalyzer.analyze();
-
-                    const options: InteractionReplyOptions = {
-                        files: [
-                            new AttachmentBuilder(
-                                missInformations[0].draw().toBuffer(),
-                                { name: "miss-1.png" }
-                            ),
-                        ],
-                    };
-
-                    if (missInformations.length === 1) {
-                        await InteractionHelper.update(pressed, options);
-                        return;
-                    }
-
-                    const buttons: ButtonBuilder[] = [];
-
-                    for (let i = 0; i < missInformations.length; ++i) {
-                        const id: string = buttonId + (i + 1);
-
-                        CacheManager.exemptedButtonCustomIds.add(id);
-
-                        buttons.push(
-                            new ButtonBuilder()
-                                .setCustomId(id)
-                                .setStyle(
-                                    i === 0
-                                        ? ButtonStyle.Success
-                                        : ButtonStyle.Primary
-                                )
-                                .setLabel((i + 1).toString())
-                                // Disable the first button as the first miss will be loaded initially.
-                                .setDisabled(i === 0)
-                        );
-                    }
-
-                    this.createLimitedTimeButtons(
-                        pressed,
-                        options,
-                        buttons,
-                        [interaction.user.id],
-                        90,
-                        async (_, i) => {
-                            await i.deferUpdate();
-
-                            const pressedIndex: number = parseInt(
-                                i.customId.replace(buttonId, "")
-                            );
-                            const attachment: AttachmentBuilder =
-                                new AttachmentBuilder(
-                                    missInformations[pressedIndex - 1]
-                                        .draw()
-                                        .toBuffer(),
-                                    { name: `miss-${pressedIndex}.png` }
-                                );
-
-                            for (let i = 0; i < buttons.length; ++i) {
-                                buttons[i]
-                                    .setDisabled(i === pressedIndex - 1)
-                                    .setStyle(
-                                        missInformations[i].isGenerated
-                                            ? ButtonStyle.Secondary
-                                            : i === pressedIndex - 1
-                                            ? ButtonStyle.Success
-                                            : ButtonStyle.Primary
-                                    );
-                            }
-
-                            options.files = [attachment];
-
-                            await i.editReply(options);
-                        },
-                        async (c) => {
-                            if (c.componentIsDeleted) {
-                                return;
-                            }
-
-                            options.components = [];
-
-                            try {
-                                await InteractionHelper.update(
-                                    pressed,
-                                    options
-                                );
-                                // eslint-disable-next-line no-empty
-                            } catch {}
-                        }
-                    );
                 }
             }
         );
