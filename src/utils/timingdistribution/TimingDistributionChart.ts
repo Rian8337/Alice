@@ -283,10 +283,17 @@ export class TimingDistributionChart {
         const textYPosition: number = this.canvas.height - 10;
 
         context.save();
-        context.font = "10px bold Exo";
+
+        // Title
+        context.font = "14px bold Exo";
         context.fillStyle = "#ffffff";
         context.textAlign = "center";
         context.textBaseline = "middle";
+
+        context.fillText("Timing Distribution", this.canvas.width / 2, 15);
+
+        // Bar text
+        context.font = "10px bold Exo";
 
         for (
             let i = -this.oneSideBarCount;
