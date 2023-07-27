@@ -760,6 +760,8 @@ export class UserBind extends Manager {
             {
                 projection: {
                     _id: 0,
+                    pp: 1,
+                    playc: 1,
                     previous_bind: 1,
                 },
             }
@@ -809,6 +811,10 @@ export class UserBind extends Manager {
                 }
             );
 
+            if (otherBindInfo?.pp) {
+                DPPHelper.insertScore(this.pp, [...otherBindInfo.pp.values()]);
+            }
+
             this.discordid = to;
 
             await this.bindDb.updateOne(
@@ -816,13 +822,18 @@ export class UserBind extends Manager {
                 {
                     $set: {
                         previous_bind: otherPreviousBind,
+                        pptotal: DPPHelper.calculateFinalPerformancePoints(
+                            this.pp
+                        ),
+                        playc: this.playc + (otherBindInfo?.playc ?? 0),
+                        pp: [...this.pp.values()],
+                        weightedAccuracy: DPPHelper.calculateWeightedAccuracy(
+                            this.pp
+                        ),
                     },
                     $setOnInsert: {
                         uid: uid,
                         username: player.username,
-                        pptotal: this.pptotal,
-                        playc: this.playc,
-                        pp: [...this.pp.values()],
                         clan: this.clan,
                         oldclan: this.oldclan,
                         oldjoincooldown: this.oldjoincooldown ?? undefined,
@@ -830,12 +841,17 @@ export class UserBind extends Manager {
                         dppScanComplete: this.dppScanComplete ?? undefined,
                         dppRecalcComplete: this.dppRecalcComplete ?? undefined,
                         calculationInfo: this.calculationInfo ?? undefined,
-                        weightedAccuracy: this.weightedAccuracy,
                     },
                 },
                 { upsert: true }
             );
         } else {
+            const newPPEntries: Collection<string, PPEntry> = this.pp.filter(
+                (v) => v.uid === uid
+            );
+            const oldPPEntries: Collection<string, PPEntry> =
+                this.pp.difference(newPPEntries);
+
             await this.bindDb.updateOne(
                 { discordid: this.discordid },
                 {
@@ -844,6 +860,13 @@ export class UserBind extends Manager {
                     },
                     $set: {
                         uid: this.uid,
+                        pptotal:
+                            DPPHelper.calculateFinalPerformancePoints(
+                                oldPPEntries
+                            ),
+                        pp: [...oldPPEntries.values()],
+                        weightedAccuracy:
+                            DPPHelper.calculateWeightedAccuracy(oldPPEntries),
                     },
                 }
             );
@@ -853,16 +876,20 @@ export class UserBind extends Manager {
                 {
                     $set: {
                         previous_bind: otherPreviousBind,
+                        pptotal:
+                            DPPHelper.calculateFinalPerformancePoints(
+                                newPPEntries
+                            ),
+                        playc: player.playCount,
+                        pp: [...newPPEntries.values()],
+                        weightedAccuracy:
+                            DPPHelper.calculateWeightedAccuracy(newPPEntries),
                     },
                     $setOnInsert: {
                         uid: uid,
                         username: player.username,
                         hasAskedForRecalc: false,
-                        pptotal: 0,
-                        playc: 0,
-                        pp: [],
                         clan: "",
-                        weightedAccuracy: 0,
                     },
                 },
                 { upsert: true }
