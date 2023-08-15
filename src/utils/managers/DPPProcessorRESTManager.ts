@@ -149,13 +149,17 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (result) {
                 consola.error(
                     "Request to %s failed with error: %s",
-                    url.toString(),
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
                     result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
                     "Request to %s failed with unknown error",
-                    url.toString()
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
                 );
             }
 
@@ -323,13 +327,17 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (result) {
                 consola.error(
                     "Request to %s failed with error: %s",
-                    url.toString(),
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
                     result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
                     "Request to %s failed with unknown error",
-                    url.toString()
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
                 );
             }
 
@@ -429,13 +437,17 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (result) {
                 consola.error(
                     "Request to %s failed with error: %s",
-                    url.toString(),
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
                     result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
                     "Request to %s failed with unknown error",
-                    url.toString()
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
                 );
             }
 
@@ -505,13 +517,17 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (result) {
                 consola.error(
                     "Request to %s failed with error: %s",
-                    url.toString(),
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
                     result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
                     "Request to %s failed with unknown error",
-                    url.toString()
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
                 );
             }
 
@@ -547,13 +563,17 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (result) {
                 consola.error(
                     "Request to %s failed with error: %s",
-                    url.toString(),
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
                     result.data.toString("utf-8")
                 );
             } else {
                 consola.error(
                     "Request to %s failed with unknown error",
-                    url.toString()
+                    url
+                        .toString()
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
                 );
             }
 
