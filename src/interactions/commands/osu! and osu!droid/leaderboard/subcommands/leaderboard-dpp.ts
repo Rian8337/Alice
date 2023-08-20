@@ -42,17 +42,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const entries: UserBind[] = [...res.values()];
 
     const onPageChange: OnButtonPageChange = async (options, page) => {
-        const usernameLengths: number[] = [];
-
-        for (
-            let i = 20 * (page - 1);
-            i < Math.min(res.size, 20 + 20 * (page - 1));
-            ++i
-        ) {
-            usernameLengths.push(
-                StringHelper.getUnicodeStringLength(entries[i].username.trim())
-            );
-        }
+        const startIndex: number = 20 * (page - 1);
+        const usersToDisplay: UserBind[] = entries.slice(
+            startIndex,
+            20 + startIndex
+        );
+        const usernameLengths: number[] = usersToDisplay.map((v) =>
+            StringHelper.getUnicodeStringLength(v.username.trim())
+        );
 
         const longestUsernameLength: number = Math.max(...usernameLengths, 16);
 
@@ -64,11 +61,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .getTranslation("playCount")
             .padEnd(4)} | ${localization.getTranslation("pp")}\n`;
 
-        for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
+        for (let i = 0; i < 20; ++i) {
             const player: UserBind | undefined = entries[i];
 
             if (player) {
-                output += `${(i + 1).toString().padEnd(4)} | ${player.username
+                output += `${(startIndex + i + 1)
+                    .toString()
+                    .padEnd(4)} | ${player.username
                     .trim()
                     .padEnd(longestUsernameLength)} | ${player.uid
                     .toString()
