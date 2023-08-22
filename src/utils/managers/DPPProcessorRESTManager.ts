@@ -411,7 +411,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance
     ): Promise<CompleteCalculationAttributes<
-        RebalanceDroidDifficultyAttributes,
+        RebalanceOsuDifficultyAttributes,
         OsuPerformanceAttributes
     > | null>;
 
