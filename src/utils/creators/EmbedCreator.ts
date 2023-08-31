@@ -107,10 +107,10 @@ export abstract class EmbedCreator {
              * Whether to use a timestamp.
              */
             timestamp?: boolean;
-        } = {}
+        } = {},
     ): EmbedBuilder {
         const iconURL: string = ArrayHelper.getRandomArrayElement(
-            Config.avatarList
+            Config.avatarList,
         );
 
         const embed: EmbedBuilder = new EmbedBuilder().setFooter({
@@ -153,7 +153,7 @@ export abstract class EmbedCreator {
     static createBeatmapEmbed(
         beatmapInfo: MapInfo,
         calculationParams?: DifficultyCalculationParameters,
-        language: Language = "en"
+        language: Language = "en",
     ): BaseMessageOptions {
         const localization: EmbedCreatorLocalization =
             new EmbedCreatorLocalization(language);
@@ -161,7 +161,7 @@ export abstract class EmbedCreator {
         const embed: EmbedBuilder = this.createNormalEmbed({
             color: <ColorResolvable>(
                 BeatmapManager.getBeatmapDifficultyColor(
-                    parseFloat(beatmapInfo.totalDifficulty.toFixed(2))
+                    parseFloat(beatmapInfo.totalDifficulty.toFixed(2)),
                 )
             ),
         });
@@ -170,90 +170,90 @@ export abstract class EmbedCreator {
             .setAuthor({
                 name: localization.getTranslation("beatmapInfo"),
                 iconURL: `attachment://osu-${beatmapInfo.totalDifficulty.toFixed(
-                    2
+                    2,
                 )}.png`,
             })
             .setTitle(
                 BeatmapManager.showStatistics(
                     beatmapInfo,
                     0,
-                    calculationParams?.customStatistics
-                )
+                    calculationParams?.customStatistics,
+                ),
             )
             .setDescription(
                 BeatmapManager.showStatistics(
                     beatmapInfo,
                     1,
-                    calculationParams?.customStatistics
+                    calculationParams?.customStatistics,
                 ) +
                     "\n" +
                     BeatmapManager.showStatistics(
                         beatmapInfo,
                         2,
-                        calculationParams?.customStatistics
-                    )
+                        calculationParams?.customStatistics,
+                    ),
             )
             .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
             .addFields(
                 {
                     name: bold(
-                        localization.getTranslation("beatmapDroidStatistics")
+                        localization.getTranslation("beatmapDroidStatistics"),
                     ),
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         3,
-                        calculationParams?.customStatistics
+                        calculationParams?.customStatistics,
                     ),
                 },
                 {
                     name: bold(
-                        localization.getTranslation("beatmapOsuStatistics")
+                        localization.getTranslation("beatmapOsuStatistics"),
                     ),
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         4,
-                        calculationParams?.customStatistics
+                        calculationParams?.customStatistics,
                     ),
                 },
                 {
                     name: bold(
-                        localization.getTranslation("beatmapGeneralStatistics")
+                        localization.getTranslation("beatmapGeneralStatistics"),
                     ),
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         5,
-                        calculationParams?.customStatistics
+                        calculationParams?.customStatistics,
                     ),
                 },
                 {
                     name: BeatmapManager.showStatistics(
                         beatmapInfo,
                         6,
-                        calculationParams?.customStatistics
+                        calculationParams?.customStatistics,
                     ),
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         7,
-                        calculationParams?.customStatistics
+                        calculationParams?.customStatistics,
                     ),
                 },
                 {
                     name: localization.getTranslation("starRating"),
                     value: `${Symbols.star.repeat(
-                        Math.floor(beatmapInfo.totalDifficulty)
+                        Math.floor(beatmapInfo.totalDifficulty),
                     )} ${bold(
                         `${beatmapInfo.totalDifficulty.toFixed(
-                            2
-                        )} ${localization.getTranslation("pcStars")}`
+                            2,
+                        )} ${localization.getTranslation("pcStars")}`,
                     )}`,
-                }
+                },
             );
 
         return {
             embeds: [embed],
             files: [
                 BeatmapManager.getBeatmapDifficultyIconAttachment(
-                    parseFloat(beatmapInfo.totalDifficulty.toFixed(2))
+                    parseFloat(beatmapInfo.totalDifficulty.toFixed(2)),
                 ),
             ],
         };
@@ -272,7 +272,7 @@ export abstract class EmbedCreator {
         interaction: RepliableInteraction,
         playerInfo: UserBind,
         ppRank?: number,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<EmbedBuilder> {
         const localization: EmbedCreatorLocalization =
             new EmbedCreatorLocalization(language);
@@ -284,7 +284,7 @@ export abstract class EmbedCreator {
 
         ppRank ??=
             await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
-                playerInfo.pptotal
+                playerInfo.pptotal,
             );
 
         embed.setDescription(
@@ -293,26 +293,26 @@ export abstract class EmbedCreator {
                     localization.getTranslation("ppProfileTitle"),
                     `${userMention(playerInfo.discordid)} (${
                         playerInfo.username
-                    })`
-                )}`
+                    })`,
+                )}`,
             )}\n` +
                 `${localization.getTranslation("totalPP")}: ${bold(
                     `${playerInfo.pptotal.toFixed(
-                        2
+                        2,
                     )} pp (#${ppRank.toLocaleString(
-                        LocaleHelper.convertToBCP47(language)
-                    )})`
+                        LocaleHelper.convertToBCP47(language),
+                    )})`,
                 )}\n` +
                 `${localization.getTranslation(
-                    "recommendedStarRating"
+                    "recommendedStarRating",
                 )}: ${bold(
                     `${(Math.pow(playerInfo.pptotal, 0.4) * 0.225).toFixed(2)}${
                         Symbols.star
-                    }`
+                    }`,
                 )}\n` +
                 `[${localization.getTranslation(
-                    "ppProfile"
-                )}](https://droidpp.osudroid.moe/profile/${playerInfo.uid})`
+                    "ppProfile",
+                )}](https://droidpp.osudroid.moe/profile/${playerInfo.uid})`,
         );
 
         return embed;
@@ -330,7 +330,7 @@ export abstract class EmbedCreator {
         interaction: RepliableInteraction,
         title: string,
         description: string,
-        language: Language = "en"
+        language: Language = "en",
     ): EmbedBuilder {
         const embed: EmbedBuilder = this.createNormalEmbed({
             author: interaction.user,
@@ -367,7 +367,7 @@ export abstract class EmbedCreator {
         >,
         droidPerfAttribs?: DroidPerformanceAttributes,
         osuPerfAttribs?: OsuPerformanceAttributes,
-        language: Language = "en"
+        language: Language = "en",
     ): BaseMessageOptions {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
@@ -375,7 +375,7 @@ export abstract class EmbedCreator {
         const embedOptions: BaseMessageOptions = this.createBeatmapEmbed(
             beatmap,
             calculationParams,
-            language
+            language,
         );
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
@@ -399,9 +399,9 @@ export abstract class EmbedCreator {
                 .setColor(
                     <ColorResolvable>(
                         BeatmapManager.getBeatmapDifficultyColor(
-                            osuDiffAttribs.starRating
+                            osuDiffAttribs.starRating,
                         )
-                    )
+                    ),
                 )
                 .spliceFields(embed.data.fields!.length - 2, 2)
                 .addFields(
@@ -409,14 +409,14 @@ export abstract class EmbedCreator {
                         name: BeatmapManager.showStatistics(
                             beatmap,
                             6,
-                            customStatistics
+                            customStatistics,
                         ),
                         value: `${BeatmapManager.showStatistics(
                             beatmap,
                             7,
-                            customStatistics
+                            customStatistics,
                         )}\n${bold(
-                            `${localization.getTranslation("result")}`
+                            `${localization.getTranslation("result")}`,
                         )}: ${combo}/${beatmap.maxCombo}x | ${(
                             accuracy.value() * 100
                         ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${
@@ -425,39 +425,39 @@ export abstract class EmbedCreator {
                     },
                     {
                         name: `${bold(
-                            localization.getTranslation("droidPP")
+                            localization.getTranslation("droidPP"),
                         )}: ${underscore(
-                            `${droidPerfAttribs.total.toFixed(2)} pp`
+                            `${droidPerfAttribs.total.toFixed(2)} pp`,
                         )}${
                             calculationParams.isEstimated
                                 ? ` (${localization.getTranslation(
-                                      "estimated"
+                                      "estimated",
                                   )})`
                                 : ""
                         } - ${droidDiffAttribs.starRating.toFixed(2)}${
                             Symbols.star
                         }`,
                         value: `${bold(
-                            localization.getTranslation("pcPP")
+                            localization.getTranslation("pcPP"),
                         )}: ${osuPerfAttribs.total.toFixed(2)} pp${
                             calculationParams.isEstimated
                                 ? ` (${localization.getTranslation(
-                                      "estimated"
+                                      "estimated",
                                   )})`
                                 : ""
                         } - ${osuDiffAttribs.starRating.toFixed(2)}${
                             Symbols.star
                         }`,
-                    }
+                    },
                 );
         } else {
             embed
                 .setColor(
                     <ColorResolvable>(
                         BeatmapManager.getBeatmapDifficultyColor(
-                            osuDiffAttribs.starRating
+                            osuDiffAttribs.starRating,
                         )
-                    )
+                    ),
                 )
                 .spliceFields(embed.data.fields!.length - 1, 1)
                 .addFields({
@@ -466,15 +466,15 @@ export abstract class EmbedCreator {
                         `${Symbols.star.repeat(
                             Math.min(
                                 10,
-                                Math.floor(droidDiffAttribs.starRating)
-                            )
+                                Math.floor(droidDiffAttribs.starRating),
+                            ),
                         )} ${droidDiffAttribs.starRating.toFixed(
-                            2
+                            2,
                         )} ${localization.getTranslation("droidStars")}\n` +
                         `${Symbols.star.repeat(
-                            Math.min(10, Math.floor(osuDiffAttribs.starRating))
+                            Math.min(10, Math.floor(osuDiffAttribs.starRating)),
                         )} ${osuDiffAttribs.starRating.toFixed(
-                            2
+                            2,
                         )} ${localization.getTranslation("pcStars")}`,
                 });
         }
@@ -482,7 +482,7 @@ export abstract class EmbedCreator {
         if (
             !Precision.almostEqualsNumber(
                 osuDiffAttribs.starRating,
-                beatmap.totalDifficulty
+                beatmap.totalDifficulty,
             )
         ) {
             // Recreate difficulty icon if difficulty is different.
@@ -490,14 +490,14 @@ export abstract class EmbedCreator {
 
             files.push(
                 BeatmapManager.getBeatmapDifficultyIconAttachment(
-                    osuDiffAttribs.starRating
-                )
+                    osuDiffAttribs.starRating,
+                ),
             );
 
             embed.setAuthor({
                 name: localization.getTranslation("beatmapInfo"),
                 iconURL: `attachment://osu-${osuDiffAttribs.starRating.toFixed(
-                    2
+                    2,
                 )}.png`,
             });
         }
@@ -531,7 +531,7 @@ export abstract class EmbedCreator {
             OsuDifficultyAttributes,
             OsuPerformanceAttributes
         > | null,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<EmbedBuilder> {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
@@ -544,7 +544,7 @@ export abstract class EmbedCreator {
             color: embedColor,
             footerText: StringHelper.formatString(
                 localization.getTranslation("dateAchieved"),
-                DateTimeFormatHelper.dateToLocaleString(score.date, language)
+                DateTimeFormatHelper.dateToLocaleString(score.date, language),
             ),
         });
 
@@ -559,7 +559,7 @@ export abstract class EmbedCreator {
                     ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
                           score.scoreID,
                           Modes.droid,
-                          PPCalculationMethod.live
+                          PPCalculationMethod.live,
                       )
                     : score.droidAttribs;
         }
@@ -570,13 +570,13 @@ export abstract class EmbedCreator {
                     ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
                           score.scoreID,
                           Modes.osu,
-                          PPCalculationMethod.live
+                          PPCalculationMethod.live,
                       )
                     : score.osuAttribs;
         }
 
         let beatmapInformation: string = `${arrow} ${BeatmapManager.getRankEmote(
-            <ScoreRank>score.rank
+            <ScoreRank>score.rank,
         )} ${arrow} `;
 
         if (!droidAttribs || !osuAttribs) {
@@ -609,11 +609,11 @@ export abstract class EmbedCreator {
                 url: `https://osu.ppy.sh/b/${beatmap.beatmapID}`,
             })
             .setThumbnail(
-                `https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`
+                `https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`,
             );
 
         beatmapInformation += `${bold(
-            `${droidAttribs.performance.total.toFixed(2)}DPP`
+            `${droidAttribs.performance.total.toFixed(2)}DPP`,
         )} | ${bold(`${osuAttribs.performance.total.toFixed(2)}PP`)} `;
 
         if (score.accuracy.nmiss > 0 || score.combo < beatmap.maxCombo) {
@@ -635,7 +635,7 @@ export abstract class EmbedCreator {
                 score.hash,
                 Modes.droid,
                 PPCalculationMethod.live,
-                calcParams
+                calcParams,
             );
 
             const osuFcAttribs: CompleteCalculationAttributes<
@@ -645,17 +645,17 @@ export abstract class EmbedCreator {
                 score.hash,
                 Modes.osu,
                 PPCalculationMethod.live,
-                calcParams
+                calcParams,
             );
 
             if (droidFcAttribs && osuFcAttribs) {
                 beatmapInformation += `(${droidFcAttribs.performance.total.toFixed(
-                    2
+                    2,
                 )}DPP, ${osuFcAttribs.performance.total.toFixed(
-                    2
+                    2,
                 )}PP ${StringHelper.formatString(
                     localization.getTranslation("forFC"),
-                    (calcParams.accuracy.value() * 100).toFixed(2) + "%"
+                    (calcParams.accuracy.value() * 100).toFixed(2) + "%",
                 )}) `;
             }
         }
@@ -716,7 +716,7 @@ export abstract class EmbedCreator {
                 beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${
                     beatmap.beatmap!.hitObjects.sliderTicks
                 } ${localization.getTranslation(
-                    "sliderTicks"
+                    "sliderTicks",
                 )} ${arrow} ${collectedSliderEnds}/${
                     beatmap.beatmap!.hitObjects.sliderEnds
                 } ${localization.getTranslation("sliderEnds")}`;
@@ -750,11 +750,11 @@ export abstract class EmbedCreator {
 
         if (hitError) {
             beatmapInformation += `\n${arrow} ${hitError.negativeAvg.toFixed(
-                2
+                2,
             )}ms - ${hitError.positiveAvg.toFixed(
-                2
+                2,
             )}ms ${localization.getTranslation(
-                "hitErrorAvg"
+                "hitErrorAvg",
             )} ${arrow} ${hitError.unstableRate.toFixed(2)} UR`;
         }
 
@@ -783,7 +783,7 @@ export abstract class EmbedCreator {
             }
 
             beatmapInformation += `\n${arrow} ${localization.getTranslation(
-                "penalties"
+                "penalties",
             )}: ${str.join(", ")}`;
         }
 
@@ -803,14 +803,14 @@ export abstract class EmbedCreator {
     static async createChallengeEmbed(
         challenge: Challenge,
         graphColor?: string,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<BaseMessageOptions | null> {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
             challenge.beatmapid,
-            { checkFile: false }
+            { checkFile: false },
         );
 
         if (!beatmapInfo) {
@@ -821,7 +821,7 @@ export abstract class EmbedCreator {
             new DifficultyCalculationParameters(
                 new MapStats({
                     mods: ModUtil.pcStringToMods(challenge.constrain),
-                })
+                }),
             );
 
         const droidDiffAttribs: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
@@ -829,7 +829,7 @@ export abstract class EmbedCreator {
                 challenge.beatmapid,
                 Modes.droid,
                 PPCalculationMethod.live,
-                calcParams
+                calcParams,
             );
 
         if (!droidDiffAttribs) {
@@ -841,7 +841,7 @@ export abstract class EmbedCreator {
                 challenge.beatmapid,
                 Modes.osu,
                 PPCalculationMethod.live,
-                calcParams
+                calcParams,
             );
 
         if (!osuDiffAttribs) {
@@ -855,7 +855,7 @@ export abstract class EmbedCreator {
             osuDiffAttribs,
             undefined,
             undefined,
-            language
+            language,
         );
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
@@ -868,14 +868,14 @@ export abstract class EmbedCreator {
                     ` | ${localization.getTranslation("challengeId")}: ${
                         challenge.challengeid
                     } | ${localization.getTranslation(
-                        "timeLeft"
+                        "timeLeft",
                     )}: ${DateTimeFormatHelper.secondsToDHMS(
                         Math.max(
                             0,
                             DateTimeFormatHelper.getTimeDifference(
-                                challenge.timelimit * 1000
-                            ) / 1000
-                        )
+                                challenge.timelimit * 1000,
+                            ) / 1000,
+                        ),
                     )}`,
                 iconURL: embed.data.footer!.icon_url,
             })
@@ -883,43 +883,43 @@ export abstract class EmbedCreator {
                 name: localization.getTranslation(
                     challenge.type === "weekly"
                         ? "weeklyChallengeTitle"
-                        : "dailyChallengeTitle"
+                        : "dailyChallengeTitle",
                 ),
                 iconURL: `attachment://osu-${osuDiffAttribs.starRating.toFixed(
-                    2
+                    2,
                 )}.png`,
             })
             .setDescription(
                 StringHelper.formatString(
                     localization.getTranslation("featuredPerson"),
-                    userMention(challenge.featured)
-                )
+                    userMention(challenge.featured),
+                ),
             )
             .addFields({
                 name:
                     `${bold(localization.getTranslation("starRating"))}\n` +
                     `${Symbols.star.repeat(
-                        Math.min(10, Math.floor(droidDiffAttribs.starRating))
+                        Math.min(10, Math.floor(droidDiffAttribs.starRating)),
                     )} ${droidDiffAttribs.starRating.toFixed(
-                        2
+                        2,
                     )} ${localization.getTranslation("droidStars")}\n` +
                     `${Symbols.star.repeat(
-                        Math.min(10, Math.floor(osuDiffAttribs.starRating))
+                        Math.min(10, Math.floor(osuDiffAttribs.starRating)),
                     )} ${osuDiffAttribs.starRating.toFixed(
-                        2
+                        2,
                     )} ${localization.getTranslation("pcStars")}`,
                 value:
                     `${bold(localization.getTranslation("points"))}: ${
                         challenge.points
                     } ${localization.getTranslation("points")}\n` +
                     `${bold(
-                        localization.getTranslation("passCondition")
+                        localization.getTranslation("passCondition"),
                     )}: ${challenge.getPassInformation()}\n` +
                     `${bold(localization.getTranslation("constrain"))}: ${
                         challenge.constrain
                             ? StringHelper.formatString(
                                   localization.getTranslation("modOnly"),
-                                  challenge.constrain.toUpperCase()
+                                  challenge.constrain.toUpperCase(),
                               )
                             : localization.getTranslation("rankableMods")
                     }\n\n` +
@@ -932,7 +932,7 @@ export abstract class EmbedCreator {
                     .setURL(challenge.link[0])
                     .setEmoji(Symbols.inboxTray)
                     .setStyle(ButtonStyle.Link)
-                    .setLabel("Download")
+                    .setLabel("Download"),
             );
 
         if (challenge.link[1]) {
@@ -941,7 +941,7 @@ export abstract class EmbedCreator {
                     .setURL(challenge.link[1])
                     .setEmoji(Symbols.inboxTray)
                     .setStyle(ButtonStyle.Link)
-                    .setLabel("Download (alternative)")
+                    .setLabel("Download (alternative)"),
             );
         }
 
@@ -962,7 +962,7 @@ export abstract class EmbedCreator {
     static createClanAuctionEmbed(
         auction: ClanAuction,
         coinEmoji: GuildEmoji,
-        language: Language = "en"
+        language: Language = "en",
     ): EmbedBuilder {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
@@ -980,39 +980,39 @@ export abstract class EmbedCreator {
                     auction.name
                 }\n` +
                     `${bold(
-                        localization.getTranslation("auctionAuctioneer")
+                        localization.getTranslation("auctionAuctioneer"),
                     )}: ${auction.auctioneer}\n` +
                     `${bold(
-                        localization.getTranslation("creationDate")
+                        localization.getTranslation("creationDate"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(auction.creationdate * 1000),
-                        language
+                        language,
                     )}\n` +
                     `${bold(
-                        localization.getTranslation("auctionMinimumBid")
-                    )}: ${coinEmoji}${auction.min_price} Alice coins`
+                        localization.getTranslation("auctionMinimumBid"),
+                    )}: ${coinEmoji}${auction.min_price} Alice coins`,
             )
             .addFields(
                 {
                     name: localization.getTranslation("auctionItemInfo"),
                     value:
                         `${bold(
-                            localization.getTranslation("auctionPowerup")
+                            localization.getTranslation("auctionPowerup"),
                         )}: ${StringHelper.capitalizeString(
-                            auction.powerup
+                            auction.powerup,
                         )}\n` +
                         `${bold(
-                            localization.getTranslation("auctionItemAmount")
+                            localization.getTranslation("auctionItemAmount"),
                         )}: ${auction.amount.toLocaleString(BCP47)}`,
                 },
                 {
                     name: localization.getTranslation("auctionBidInfo"),
                     value:
                         `${bold(
-                            localization.getTranslation("auctionBidders")
+                            localization.getTranslation("auctionBidders"),
                         )}: ${auction.bids.size.toLocaleString(BCP47)}\n` +
                         `${bold(
-                            localization.getTranslation("auctionTopBidders")
+                            localization.getTranslation("auctionTopBidders"),
                         )}:\n` +
                         auction.bids
                             .first(5)
@@ -1020,9 +1020,9 @@ export abstract class EmbedCreator {
                                 (v, i) =>
                                     `#${i + 1}: ${v.clan} - ${coinEmoji}\`${
                                         v.amount
-                                    }\` Alice coins`
+                                    }\` Alice coins`,
                             ),
-                }
+                },
             );
 
         return embed;
@@ -1037,7 +1037,7 @@ export abstract class EmbedCreator {
      */
     static createReportBroadcastEmbed(
         guild: Guild,
-        language: Language = "en"
+        language: Language = "en",
     ): EmbedBuilder {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
@@ -1053,8 +1053,8 @@ export abstract class EmbedCreator {
             })
             .setDescription(
                 `${localization.getTranslation(
-                    "reportBroadcast1"
-                )}\n\n${localization.getTranslation("reportBroadcast2")}`
+                    "reportBroadcast1",
+                )}\n\n${localization.getTranslation("reportBroadcast2")}`,
             );
 
         return embed;
@@ -1081,7 +1081,7 @@ export abstract class EmbedCreator {
                 name: match.team[1][0],
                 value: bold(match.team[1][1].toString()),
                 inline: true,
-            }
+            },
         );
 
         return embed;
@@ -1095,14 +1095,14 @@ export abstract class EmbedCreator {
      */
     static async createMapShareEmbed(
         submission: MapShare,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<BaseMessageOptions | null> {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
 
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
             submission.beatmap_id,
-            { checkFile: false }
+            { checkFile: false },
         );
 
         if (!beatmapInfo) {
@@ -1117,7 +1117,7 @@ export abstract class EmbedCreator {
                 submission.beatmap_id,
                 Modes.droid,
                 PPCalculationMethod.live,
-                calcParams
+                calcParams,
             );
 
         const osuDiffAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
@@ -1125,7 +1125,7 @@ export abstract class EmbedCreator {
                 submission.beatmap_id,
                 Modes.osu,
                 PPCalculationMethod.live,
-                calcParams
+                calcParams,
             );
 
         if (!droidDiffAttribs || !osuDiffAttribs) {
@@ -1139,7 +1139,7 @@ export abstract class EmbedCreator {
             osuDiffAttribs,
             undefined,
             undefined,
-            language
+            language,
         );
 
         const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
@@ -1149,10 +1149,10 @@ export abstract class EmbedCreator {
             .setAuthor({
                 name: StringHelper.formatString(
                     localization.getTranslation("mapShareSubmission"),
-                    submission.submitter
+                    submission.submitter,
                 ),
                 iconURL: `attachment://osu-${osuDiffAttribs.starRating.toFixed(
-                    2
+                    2,
                 )}.png`,
             })
             .addFields(
@@ -1162,37 +1162,37 @@ export abstract class EmbedCreator {
                         `${Symbols.star.repeat(
                             Math.min(
                                 10,
-                                Math.floor(droidDiffAttribs.starRating)
-                            )
+                                Math.floor(droidDiffAttribs.starRating),
+                            ),
                         )} ${droidDiffAttribs.starRating.toFixed(
-                            2
+                            2,
                         )} ${localization.getTranslation("droidStars")}\n` +
                         `${Symbols.star.repeat(
-                            Math.min(10, Math.floor(osuDiffAttribs.starRating))
+                            Math.min(10, Math.floor(osuDiffAttribs.starRating)),
                         )} ${osuDiffAttribs.starRating.toFixed(
-                            2
+                            2,
                         )} ${localization.getTranslation("pcStars")}`,
                 },
                 {
                     name: bold(
-                        localization.getTranslation("mapShareStatusAndSummary")
+                        localization.getTranslation("mapShareStatusAndSummary"),
                     ),
                     value:
                         `${bold(
-                            localization.getTranslation("mapShareStatus")
+                            localization.getTranslation("mapShareStatus"),
                         )}: ${StringHelper.capitalizeString(
                             localization.getTranslation(
                                 <keyof EmbedCreatorStrings>(
                                     `mapShareStatus${StringHelper.capitalizeString(
-                                        submission.status
+                                        submission.status,
                                     )}`
-                                )
-                            )
+                                ),
+                            ),
                         )}\n\n` +
                         `${bold(
-                            localization.getTranslation("mapShareSummary")
+                            localization.getTranslation("mapShareSummary"),
                         )}:\n${submission.summary}`,
-                }
+                },
             );
 
         return embedOptions;
@@ -1207,7 +1207,7 @@ export abstract class EmbedCreator {
      */
     static createMusicQueueEmbed(
         queue: MusicQueue,
-        language: Language = "en"
+        language: Language = "en",
     ): EmbedBuilder {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
@@ -1216,16 +1216,16 @@ export abstract class EmbedCreator {
 
         embed
             .setTitle(queue.information.title)
-            .setThumbnail(queue.information.thumbnail)
+            .setThumbnail(queue.information.thumbnail ?? null)
             .setDescription(
                 `${localization.getTranslation("musicYoutubeChannel")}: ${
                     queue.information.author.name
                 }\n\n${localization.getTranslation(
-                    "musicDuration"
+                    "musicDuration",
                 )}: ${queue.information.duration.toString()}\n\n${StringHelper.formatString(
                     localization.getTranslation("musicQueuer"),
-                    userMention(queue.queuer)
-                )}`
+                    userMention(queue.queuer),
+                )}`,
             )
             .setURL(queue.information.url);
 
@@ -1240,7 +1240,7 @@ export abstract class EmbedCreator {
      */
     static createWarningEmbed(
         warning: Warning,
-        language: Language = "en"
+        language: Language = "en",
     ): EmbedBuilder {
         const localization: EmbedCreatorLocalization =
             this.getLocalization(language);
@@ -1259,34 +1259,34 @@ export abstract class EmbedCreator {
                     StringHelper.formatString(
                         localization.getTranslation("warningIssuedBy"),
                         warning.issuerId,
-                        warning.issuerId
-                    )
+                        warning.issuerId,
+                    ),
                 )}\n\n` +
                     `${bold(
-                        localization.getTranslation("warnedUser")
+                        localization.getTranslation("warnedUser"),
                     )}: ${userMention(warning.discordId)} (${
                         warning.discordId
                     })\n` +
                     `${bold(
-                        localization.getTranslation("channel")
+                        localization.getTranslation("channel"),
                     )}: ${channelMention(warning.channelId)} (${
                         warning.channelId
                     })\n` +
                     `${bold(
-                        localization.getTranslation("creationDate")
+                        localization.getTranslation("creationDate"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.creationDate * 1000),
-                        language
+                        language,
                     )}\n` +
                     `${bold(
-                        localization.getTranslation("expirationDate")
+                        localization.getTranslation("expirationDate"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.expirationDate * 1000),
-                        language
+                        language,
                     )}\n\n` +
                     `${bold(localization.getTranslation("reason"))}:\n${
                         warning.reason
-                    }`
+                    }`,
             );
 
         return embed;
@@ -1298,7 +1298,7 @@ export abstract class EmbedCreator {
      * @param language The language to localize.
      */
     private static getLocalization(
-        language: Language
+        language: Language,
     ): EmbedCreatorLocalization {
         return new EmbedCreatorLocalization(language);
     }

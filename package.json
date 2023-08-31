@@ -35,13 +35,13 @@
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
     "@types/d3": "^6.7.0",
-    "@types/node": "^18.14.2",
+    "@types/node": "^20.5.7",
     "@types/request": "^2.48.5",
     "@types/yt-search": "^2.3.2",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.4.0",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
     "eslint": "^8.3.0",
-    "prettier": "^2.5.0",
+    "prettier": "^3.0.3",
     "typescript": "^5.0.2"
   },
   "dependencies": {
@@ -63,7 +63,7 @@
     "erlpack": "github:discord/erlpack",
     "html-entities": "^2.3.2",
     "module-alias": "^2.2.2",
-    "mongodb": "^5.0.1",
+    "mongodb": "^6.0.0",
     "request": "^2.88.2",
     "sodium-native": "^4.0.1",
     "utf-8-validate": "^6.0.2",

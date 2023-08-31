@@ -14,7 +14,7 @@ import { VideoSearchResult } from "yt-search";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const musicInformation: MusicInfo | undefined =
@@ -23,7 +23,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!musicInformation) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("botIsNotInVoiceChannel")
+                localization.getTranslation("botIsNotInVoiceChannel"),
             ),
         });
     }
@@ -37,7 +37,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         name: localization.getTranslation("playingSince"),
         value: DateTimeFormatHelper.dateToLocaleString(
             musicInformation.createdAt,
-            localization.language
+            localization.language,
         ),
     });
 
@@ -53,13 +53,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 })\n\n${localization.getTranslation("channel")}: ${
                     information.author.name
                 }\n\n${localization.getTranslation(
-                    "duration"
+                    "duration",
                 )}: ${information.duration.toString()}\n\n${StringHelper.formatString(
                     localization.getTranslation("requestedBy"),
-                    userMention(musicInformation.currentlyPlaying!.queuer)
+                    userMention(musicInformation.currentlyPlaying!.queuer),
                 )}`,
             })
-            .setThumbnail(information.thumbnail);
+            .setThumbnail(information.thumbnail ?? null);
     } else {
         embed.addFields({
             name: localization.getTranslation("currentlyPlaying"),
@@ -71,9 +71,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         {
             name: localization.getTranslation("playbackSettings"),
             value: `${Symbols.repeatSingleButton} ${localization.getTranslation(
-                "repeatMode"
+                "repeatMode",
             )}: ${localization.getTranslation(
-                musicInformation.repeat ? "enabled" : "disabled"
+                musicInformation.repeat ? "enabled" : "disabled",
             )}`,
         },
         {
@@ -82,7 +82,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 musicInformation.queue
                     .map((v, i) => `${i + 1}. ${v.information.title}`)
                     .join("\n") || localization.getTranslation("none"),
-        }
+        },
     );
 
     InteractionHelper.reply(interaction, {
