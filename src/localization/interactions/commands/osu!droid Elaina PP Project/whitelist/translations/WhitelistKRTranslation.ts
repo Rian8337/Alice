@@ -41,6 +41,7 @@ export class WhitelistKRTranslation extends Translation<WhitelistStrings> {
         examplesDescription3: "",
         examplesDescription4: "",
         beatmapsFound: "찾은 비트맵:",
+        beatmapLink: "",
         download: "다운로드",
         dateWhitelisted: "",
     };

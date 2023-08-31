@@ -248,29 +248,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             result.map((v) => {
                 return {
                     name: v.mapname,
-                    value: `${bold(
-                        localization.getTranslation("download")
-                    )}: ${hyperlink(
-                        "osu!",
-                        `https://osu.ppy.sh/d/${v.mapid}`
-                    )} ${hyperlink(
-                        "(no video)",
-                        `https://osu.ppy.sh/d/${v.mapid}n`
-                    )} - ${hyperlink(
-                        "Chimu",
-                        `https://chimu.moe/en/d/${v.mapid}`
-                    )} - ${hyperlink(
-                        "Sayobot",
-                        `https://txy1.sayobot.cn/beatmaps/download/full/${v.mapid}`
-                    )} ${hyperlink(
-                        "(no video)",
-                        `https://txy1.sayobot.cn/beatmaps/download/novideo/${v.mapid}`
-                    )} - ${hyperlink(
-                        "Beatconnect",
-                        `https://beatconnect.io/b/${v.mapid}/`
-                    )} - ${hyperlink(
-                        "Nerina",
-                        `https://nerina.pw/d/${v.mapid}`
+                    value: `${hyperlink(
+                        localization.getTranslation("beatmapLink"),
+                        `https://osu.ppy.sh/b/${v.mapid}`
                     )}\n${bold("CS")}: ${v.diffstat.cs} - ${bold("AR")}: ${
                         v.diffstat.ar
                     } - ${bold("OD")}: ${v.diffstat.od} - ${bold("HP")}: ${

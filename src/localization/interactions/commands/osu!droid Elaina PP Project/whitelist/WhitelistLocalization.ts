@@ -35,6 +35,7 @@ export interface WhitelistStrings {
     readonly examplesDescription3: string;
     readonly examplesDescription4: string;
     readonly beatmapsFound: string;
+    readonly beatmapLink: string;
     readonly download: string;
     readonly dateWhitelisted: string;
 }

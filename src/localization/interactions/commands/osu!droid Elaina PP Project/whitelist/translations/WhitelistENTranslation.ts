@@ -48,6 +48,7 @@ export class WhitelistENTranslation extends Translation<WhitelistStrings> {
         examplesDescription4:
             '`cs>=4.2 ar>9.3 od>=8 hp>=5 sort=-sr logic boi is the best`\nwill search for beatmaps with CS above 4.2 (inclusive), AR above 9.3 (exclusive), OD above 8 (inclusive), HP above 5 (inclusive), and matches the keyword "logic boi is the best" (much like osu! search function), and sort the search results by star rating descendingly',
         beatmapsFound: "Beatmaps Found",
+        beatmapLink: "Beatmap Link",
         download: "Download",
         dateWhitelisted: "Date Whitelisted",
     };

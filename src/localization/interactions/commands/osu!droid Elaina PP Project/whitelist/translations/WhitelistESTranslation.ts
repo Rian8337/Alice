@@ -40,6 +40,7 @@ export class WhitelistESTranslation extends Translation<WhitelistStrings> {
         examplesDescription3: "",
         examplesDescription4: "",
         beatmapsFound: "Mapas encontrados",
+        beatmapLink: "",
         download: "Descarga",
         dateWhitelisted: "",
     };
