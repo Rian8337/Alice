@@ -23,7 +23,6 @@ import { MusicCollectionManager } from "./managers/aliceDb/MusicCollectionManage
 import { IllegalMapCollectionManager } from "./managers/aliceDb/IllegalMapCollectionManager";
 import { UserLocaleCollectionManager } from "./managers/aliceDb/UserLocaleCollectionManager";
 import { WarningCollectionManager } from "./managers/aliceDb/WarningCollectionManager";
-import { MultiplayerRoomCollectionManager } from "./managers/aliceDb/MultiplayerRoomCollectionManager";
 import { RestoredPlayerCredentialsCollectionManager } from "./managers/aliceDb/RestoredPlayerCredentialsCollectionManager";
 import { DanCourseCollectionManager } from "./managers/aliceDb/DanCourseCollectionManager";
 import { DanCourseLeaderboardScoreCollectionManager } from "./managers/aliceDb/DanCourseLeaderboardScoreCollectionManager";
@@ -158,11 +157,6 @@ export class AliceDBCollection {
     readonly userWarning: WarningCollectionManager;
 
     /**
-     * The database collection for multiplayer rooms.
-     */
-    readonly multiplayerRoom: MultiplayerRoomCollectionManager;
-
-    /**
      * The database collection for restored players' credentials.
      */
     readonly restoredPlayerCredentials: RestoredPlayerCredentialsCollectionManager;
@@ -192,94 +186,91 @@ export class AliceDBCollection {
      */
     constructor(aliceDb: Db) {
         this.askCount = new AskCountCollectionManager(
-            aliceDb.collection("askcount")
+            aliceDb.collection("askcount"),
         );
         this.clanAuction = new ClanAuctionCollectionManager(
-            aliceDb.collection("auction")
+            aliceDb.collection("auction"),
         );
         this.birthday = new BirthdayCollectionManager(
-            aliceDb.collection("birthday")
+            aliceDb.collection("birthday"),
         );
         this.channelActivity = new ChannelActivityCollectionManager(
-            aliceDb.collection("channelactivity")
+            aliceDb.collection("channelactivity"),
         );
         this.challenge = new ChallengeCollectionManager(
-            aliceDb.collection("challenge")
+            aliceDb.collection("challenge"),
         );
         this.guildSettings = new GuildSettingsCollectionManager(
-            aliceDb.collection("guildsettings")
+            aliceDb.collection("guildsettings"),
         );
         this.emojiStatistics = new EmojiStatisticsCollectionManager(
-            aliceDb.collection("emojistatistics")
+            aliceDb.collection("emojistatistics"),
         );
         this.loungeLock = new LoungeLockCollectionManager(
-            aliceDb.collection("loungelock")
+            aliceDb.collection("loungelock"),
         );
         this.mapShare = new MapShareCollectionManager(
-            aliceDb.collection("mapshare")
+            aliceDb.collection("mapshare"),
         );
         this.musicCollection = new MusicCollectionManager(
-            aliceDb.collection("musiccollection")
+            aliceDb.collection("musiccollection"),
         );
         this.nameChange = new NameChangeCollectionManager(
-            aliceDb.collection("namechange")
+            aliceDb.collection("namechange"),
         );
         this.playerInfo = new PlayerInfoCollectionManager(
-            aliceDb.collection("playerpoints")
+            aliceDb.collection("playerpoints"),
         );
         this.playerSkins = new PlayerSkinCollectionManager(
-            aliceDb.collection("playerskins")
+            aliceDb.collection("playerskins"),
         );
         this.dppAPIKey = new DPPAPIKeyCollectionManager(
-            aliceDb.collection("ppapikey")
+            aliceDb.collection("ppapikey"),
         );
         this.profileBackgrounds = new ProfileBackgroundCollectionManager(
-            aliceDb.collection("profilebackgrounds")
+            aliceDb.collection("profilebackgrounds"),
         );
         this.profileBadges = new ProfileBadgeCollectionManager(
-            aliceDb.collection("profilebadges")
+            aliceDb.collection("profilebadges"),
         );
         this.prototypePP = new PrototypePPCollectionManager(
-            aliceDb.collection("prototypepp")
+            aliceDb.collection("prototypepp"),
         );
         this.guildPunishmentConfig = new GuildPunishmentConfigCollectionManager(
-            aliceDb.collection("punishmentconfig")
+            aliceDb.collection("punishmentconfig"),
         );
         this.eightBallFilter = new EightBallFilterCollectionManager(
-            aliceDb.collection("responsefilter")
+            aliceDb.collection("responsefilter"),
         );
         this.guildTags = new GuildTagCollectionManager(
-            aliceDb.collection("tags")
+            aliceDb.collection("tags"),
         );
         this.voting = new VotingCollectionManager(aliceDb.collection("voting"));
         this.illegalMap = new IllegalMapCollectionManager(
-            aliceDb.collection("illegalmap")
+            aliceDb.collection("illegalmap"),
         );
         this.userLocale = new UserLocaleCollectionManager(
-            aliceDb.collection("userlocale")
+            aliceDb.collection("userlocale"),
         );
         this.userWarning = new WarningCollectionManager(
-            aliceDb.collection("userwarning")
-        );
-        this.multiplayerRoom = new MultiplayerRoomCollectionManager(
-            aliceDb.collection("multiplayerroom")
+            aliceDb.collection("userwarning"),
         );
         this.restoredPlayerCredentials =
             new RestoredPlayerCredentialsCollectionManager(
-                aliceDb.collection("restoredplayercredentials")
+                aliceDb.collection("restoredplayercredentials"),
             );
         this.danCourses = new DanCourseCollectionManager(
-            aliceDb.collection("dancoursemaps")
+            aliceDb.collection("dancoursemaps"),
         );
         this.danCourseLeaderboardScores =
             new DanCourseLeaderboardScoreCollectionManager(
-                aliceDb.collection("dancourseleaderboard")
+                aliceDb.collection("dancourseleaderboard"),
             );
         this.danCourseScores = new DanCourseScoreCollectionManager(
-            aliceDb.collection("dancoursescore")
+            aliceDb.collection("dancoursescore"),
         );
         this.recentPlays = new RecentPlaysCollectionManager(
-            aliceDb.collection("recentplays")
+            aliceDb.collection("recentplays"),
         );
     }
 }
