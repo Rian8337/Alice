@@ -9,7 +9,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { MapInfo, RankedStatus } from "@rian8337/osu-base";
+import { MapInfo, RankedStatus, Utils } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
@@ -51,7 +51,7 @@ export abstract class DPPHelper {
      * @returns The validity of the beatmap.
      */
     static async checkSubmissionValidity(
-        beatmap: MapInfo
+        beatmap: MapInfo,
     ): Promise<DPPSubmissionValidity>;
 
     /**
@@ -61,11 +61,11 @@ export abstract class DPPHelper {
      * @returns The validity of the score.
      */
     static async checkSubmissionValidity(
-        score: Score
+        score: Score,
     ): Promise<DPPSubmissionValidity>;
 
     static async checkSubmissionValidity(
-        beatmapOrScore: Score | MapInfo
+        beatmapOrScore: Score | MapInfo,
     ): Promise<DPPSubmissionValidity> {
         const beatmapInfo: MapInfo | null =
             beatmapOrScore instanceof MapInfo
@@ -89,10 +89,10 @@ export abstract class DPPHelper {
             case await WhitelistManager.isBlacklisted(beatmapInfo.beatmapID):
                 return DPPSubmissionValidity.beatmapIsBlacklisted;
             case WhitelistManager.beatmapNeedsWhitelisting(
-                beatmapInfo.approved
+                beatmapInfo.approved,
             ) &&
                 (await WhitelistManager.getBeatmapWhitelistStatus(
-                    beatmapInfo.hash
+                    beatmapInfo.hash,
                 )) !== "updated":
                 return DPPSubmissionValidity.beatmapNotWhitelisted;
             default:
@@ -110,18 +110,18 @@ export abstract class DPPHelper {
     static async displayDPPList(
         interaction: RepliableInteraction,
         playerInfo: UserBind,
-        page: number
+        page: number,
     ): Promise<void> {
         const ppRank: number =
             await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
-                playerInfo.pptotal
+                playerInfo.pptotal,
             );
 
         const embed: EmbedBuilder = await EmbedCreator.createDPPListEmbed(
             interaction,
             playerInfo,
             ppRank,
-            await CommandHelper.getLocale(interaction)
+            await CommandHelper.getLocale(interaction),
         );
 
         const list: PPEntry[] = [...playerInfo.pp.values()];
@@ -162,9 +162,9 @@ export abstract class DPPHelper {
                         value: `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
                             pp.miss
                         } ${Symbols.missIcon} | ${underscore(
-                            `${pp.pp} pp`
+                            `${pp.pp} pp`,
                         )} (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(
-                            2
+                            2,
                         )} pp)`,
                     });
                 } else {
@@ -180,7 +180,7 @@ export abstract class DPPHelper {
             Math.max(page, 1),
             Math.ceil(playerInfo.pp.size / 5),
             120,
-            onPageChange
+            onPageChange,
         );
     }
 
@@ -189,11 +189,12 @@ export abstract class DPPHelper {
      *
      * @param dppList The list of dpp plays, mapped by hash.
      * @param entries The plays to add.
+     * @returns An array of booleans denoting whether the scores were inserted.
      */
     static insertScore(
         dppList: Collection<string, PPEntry>,
-        entries: PPEntry[]
-    ): void {
+        entries: PPEntry[],
+    ): boolean[] {
         let needsSorting: boolean = false;
 
         for (const entry of entries) {
@@ -217,9 +218,27 @@ export abstract class DPPHelper {
             dppList.sort((a, b) => b.pp - a.pp);
         }
 
+        const wasInserted: boolean[] = Utils.initializeArray(
+            entries.length,
+            true,
+        );
+
         while (dppList.size > 75) {
+            const lastEntry: PPEntry = dppList.last()!;
+
+            for (let i = 0; i < entries.length; ++i) {
+                if (lastEntry.hash !== entries[i].hash) {
+                    continue;
+                }
+
+                wasInserted[i] = false;
+                break;
+            }
+
             dppList.delete(dppList.lastKey()!);
         }
+
+        return wasInserted;
     }
 
     /**
@@ -231,7 +250,7 @@ export abstract class DPPHelper {
      */
     static checkScoreInsertion(
         dppList: Collection<string, PPEntry>,
-        entry: PPEntry
+        entry: PPEntry,
     ): boolean {
         if (dppList.size < 75) {
             return true;
@@ -261,7 +280,7 @@ export abstract class DPPHelper {
         attributes: CompleteCalculationAttributes<
             DroidDifficultyAttributes,
             DroidPerformanceAttributes
-        >
+        >,
     ): PPEntry {
         const { params, difficulty, performance } = attributes;
         const calcParams: PerformanceCalculationParameters =
@@ -296,7 +315,7 @@ export abstract class DPPHelper {
      * @returns The weighted accuracy of the list.
      */
     static calculateWeightedAccuracy(
-        dppList: Collection<string, PPEntry>
+        dppList: Collection<string, PPEntry>,
     ): number {
         if (dppList.size === 0) {
             return 0;
@@ -322,13 +341,13 @@ export abstract class DPPHelper {
      * @returns The final performance points.
      */
     static calculateFinalPerformancePoints(
-        list: Collection<string, PPEntry>
+        list: Collection<string, PPEntry>,
     ): number {
         list.sort((a, b) => b.pp - a.pp);
 
         return [...list.values()].reduce(
             (a, v, i) => a + v.pp * Math.pow(0.95, i),
-            0
+            0,
         );
     }
 
@@ -342,7 +361,7 @@ export abstract class DPPHelper {
             await DatabaseManager.elainaDb.collections.userBind.get(
                 "discordid",
                 { "pp.hash": hash },
-                { projection: { _id: 0, discordid: 1, pp: 1, playc: 1 } }
+                { projection: { _id: 0, discordid: 1, pp: 1, playc: 1 } },
             );
 
         for (const toUpdate of toUpdateList.values()) {
@@ -355,7 +374,7 @@ export abstract class DPPHelper {
                 {
                     $set: {
                         pptotal: this.calculateFinalPerformancePoints(
-                            toUpdate.pp
+                            toUpdate.pp,
                         ),
                         playc: Math.max(0, toUpdate.playc - 1),
                     },
@@ -364,7 +383,7 @@ export abstract class DPPHelper {
                             hash: hash,
                         },
                     },
-                }
+                },
             );
         }
     }
@@ -378,7 +397,7 @@ export abstract class DPPHelper {
     static getDroidDifficultyAttributesInfo(
         attributes:
             | DroidDifficultyAttributes
-            | ResponseDifficultyAttributes<DroidDifficultyAttributes>
+            | ResponseDifficultyAttributes<DroidDifficultyAttributes>,
     ): string {
         let string: string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
@@ -406,7 +425,7 @@ export abstract class DPPHelper {
     static getRebalanceDroidDifficultyAttributesInfo(
         attributes:
             | RebalanceDroidDifficultyAttributes
-            | ResponseDifficultyAttributes<RebalanceDroidDifficultyAttributes>
+            | ResponseDifficultyAttributes<RebalanceDroidDifficultyAttributes>,
     ): string {
         let string: string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
@@ -434,7 +453,7 @@ export abstract class DPPHelper {
     static getOsuDifficultyAttributesInfo(
         attributes:
             | OsuDifficultyAttributes
-            | CacheableDifficultyAttributes<OsuDifficultyAttributes>
+            | CacheableDifficultyAttributes<OsuDifficultyAttributes>,
     ): string {
         let string: string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
@@ -460,7 +479,7 @@ export abstract class DPPHelper {
     static getRebalanceOsuDifficultyAttributesInfo(
         attributes:
             | RebalanceOsuDifficultyAttributes
-            | ResponseDifficultyAttributes<RebalanceOsuDifficultyAttributes>
+            | ResponseDifficultyAttributes<RebalanceOsuDifficultyAttributes>,
     ): string {
         let string: string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
@@ -484,7 +503,7 @@ export abstract class DPPHelper {
      * @returns The string.
      */
     static getDroidPerformanceAttributesInfo(
-        attributes: DroidPerformanceAttributes
+        attributes: DroidPerformanceAttributes,
     ): string {
         let string: string = `${attributes.total.toFixed(2)} pp (`;
         const starRatingDetails: string[] = [];
@@ -510,7 +529,7 @@ export abstract class DPPHelper {
      * @returns The string.
      */
     static getOsuPerformanceAttributesInfo(
-        attributes: OsuPerformanceAttributes
+        attributes: OsuPerformanceAttributes,
     ): string {
         let string: string = `${attributes.total.toFixed(2)} pp (`;
         const starRatingDetails: string[] = [];

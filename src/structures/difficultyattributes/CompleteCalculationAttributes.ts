@@ -9,7 +9,7 @@ import { ResponseDifficultyAttributes } from "./ResponseDifficultyAttributes";
  */
 export interface CompleteCalculationAttributes<
     TDiffAttr extends RawDifficultyAttributes,
-    TPerfAttr extends PerformanceAttributes
+    TPerfAttr extends PerformanceAttributes,
 > {
     /**
      * The parameters that were used to obtain the calculation result.
@@ -30,4 +30,9 @@ export interface CompleteCalculationAttributes<
      * The replay attributes, if any.
      */
     readonly replay?: ReplayAttributes;
+
+    /**
+     * The MD5 hash of the local replay file, if the file is present.
+     */
+    readonly localReplayMD5?: string;
 }

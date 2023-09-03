@@ -139,7 +139,7 @@ export class UserBind extends Manager {
 
     constructor(
         data: DatabaseUserBind = DatabaseManager.elainaDb?.collections.userBind
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 
@@ -177,7 +177,7 @@ export class UserBind extends Manager {
                             $in: this.previous_bind,
                         },
                     },
-                    { projection: { _id: 0 } }
+                    { projection: { _id: 0 } },
                 )
             ).size > 0
         );
@@ -204,7 +204,7 @@ export class UserBind extends Manager {
                         playc: 0,
                         dppScanComplete: true,
                     },
-                }
+                },
             );
         }
 
@@ -232,7 +232,7 @@ export class UserBind extends Manager {
 
         // Even if there are no deletions, still update to keep track of scan progress.
         const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
-            this.pp
+            this.pp,
         );
 
         const query: UpdateFilter<DatabaseUserBind> = {
@@ -283,7 +283,7 @@ export class UserBind extends Manager {
      */
     async setNewDPPValue(
         list: Collection<string, PPEntry>,
-        playCountIncrement: number
+        playCountIncrement: number,
     ): Promise<OperationResult> {
         this.pp = list;
 
@@ -306,7 +306,7 @@ export class UserBind extends Manager {
                 $inc: {
                     playc: Math.max(0, playCountIncrement),
                 },
-            }
+            },
         );
 
         if (result.success) {
@@ -328,7 +328,7 @@ export class UserBind extends Manager {
                 ppEntry.hash,
                 {
                     checkFile: false,
-                }
+                },
             );
 
             if (!beatmapInfo) {
@@ -337,7 +337,7 @@ export class UserBind extends Manager {
 
             const score: Score | null = await Score.getFromHash(
                 ppEntry.uid,
-                beatmapInfo.hash
+                beatmapInfo.hash,
             );
 
             if (!score) {
@@ -350,7 +350,7 @@ export class UserBind extends Manager {
             > | null = await DPPProcessorRESTManager.getBestScorePerformance(
                 score.uid,
                 beatmapInfo.hash,
-                PPCalculationMethod.live
+                PPCalculationMethod.live,
             );
 
             if (!attribs) {
@@ -359,9 +359,24 @@ export class UserBind extends Manager {
 
             await HelperFunctions.sleep(0.1);
 
-            DPPHelper.insertScore(newList, [
+            const [needsPersistence] = DPPHelper.insertScore(newList, [
                 DPPHelper.scoreToPPEntry(beatmapInfo.fullTitle, score, attribs),
             ]);
+
+            if (needsPersistence) {
+                if (attribs.localReplayMD5) {
+                    await DPPProcessorRESTManager.persistLocalReplay(
+                        ppEntry.uid,
+                        beatmapInfo.hash,
+                        attribs.localReplayMD5,
+                    );
+                } else {
+                    await DPPProcessorRESTManager.persistOnlineReplay(
+                        ppEntry.uid,
+                        score.scoreID,
+                    );
+                }
+            }
         }
 
         this.pp = newList;
@@ -374,11 +389,11 @@ export class UserBind extends Manager {
                     pp: [...this.pp.values()],
                     pptotal: this.pptotal,
                     weightedAccuracy: DPPHelper.calculateWeightedAccuracy(
-                        this.pp
+                        this.pp,
                     ),
                     dppRecalcComplete: true,
                 },
-            }
+            },
         );
 
         const metadataOperation: RequestResponse =
@@ -396,7 +411,7 @@ export class UserBind extends Manager {
         for (const ppEntry of this.pp.values()) {
             const score: Score | null = await Score.getFromHash(
                 ppEntry.uid,
-                ppEntry.hash
+                ppEntry.hash,
             );
 
             if (!score) {
@@ -405,7 +420,7 @@ export class UserBind extends Manager {
 
             const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
                 score.hash,
-                { checkFile: false }
+                { checkFile: false },
             );
 
             if (!beatmapInfo) {
@@ -418,7 +433,7 @@ export class UserBind extends Manager {
             > | null = await DPPProcessorRESTManager.getBestScorePerformance(
                 ppEntry.uid,
                 beatmapInfo.hash,
-                PPCalculationMethod.live
+                PPCalculationMethod.live,
             );
 
             if (!liveAttribs) {
@@ -431,7 +446,7 @@ export class UserBind extends Manager {
             > | null = await DPPProcessorRESTManager.getBestScorePerformance(
                 ppEntry.uid,
                 beatmapInfo.hash,
-                PPCalculationMethod.rebalance
+                PPCalculationMethod.rebalance,
             );
 
             if (!rebalAttribs) {
@@ -474,11 +489,11 @@ export class UserBind extends Manager {
                 calculatedUnstableRate: rebalPerfResult.calculatedUnstableRate,
                 estimatedUnstableRate: NumberHelper.round(
                     rebalPerfResult.deviation * 10,
-                    2
+                    2,
                 ),
                 estimatedSpeedUnstableRate: NumberHelper.round(
                     rebalPerfResult.tapDeviation * 10,
-                    2
+                    2,
                 ),
                 overallDifficulty: rebalAttribs.difficulty.overallDifficulty,
                 hit300: accuracy.n300,
@@ -493,7 +508,7 @@ export class UserBind extends Manager {
             };
 
             consola.info(
-                `${beatmapInfo.fullTitle} ${score.completeModString}: ${entry.prevPP} ⮕  ${entry.pp}`
+                `${beatmapInfo.fullTitle} ${score.completeModString}: ${entry.prevPP} ⮕  ${entry.pp}`,
             );
 
             newList.set(ppEntry.hash, entry);
@@ -501,8 +516,8 @@ export class UserBind extends Manager {
 
         consola.info(
             `${this.pptotal} ⮕  ${DPPHelper.calculateFinalPerformancePoints(
-                newList
-            ).toFixed(2)}`
+                newList,
+            ).toFixed(2)}`,
         );
 
         return DatabaseManager.aliceDb.collections.prototypePP.updateOne(
@@ -519,7 +534,7 @@ export class UserBind extends Manager {
                     scanDone: true,
                 },
             },
-            { upsert: true }
+            { upsert: true },
         );
     }
 
@@ -531,14 +546,14 @@ export class UserBind extends Manager {
      */
     async recalculateAllScores(
         markAsSlotFulfill: boolean = true,
-        isDPPRecalc: boolean = false
+        isDPPRecalc: boolean = false,
     ): Promise<OperationResult> {
         let newList: Collection<string, PPEntry> = new Collection();
         let playCount: number = 0;
 
         const getScores = async (
             uid: number,
-            page: number
+            page: number,
         ): Promise<Score[]> => {
             const apiRequestBuilder: DroidAPIRequestBuilder =
                 new DroidAPIRequestBuilder()
@@ -564,7 +579,7 @@ export class UserBind extends Manager {
 
             if (
                 await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
-                    uid
+                    uid,
                 )
             ) {
                 continue;
@@ -592,7 +607,7 @@ export class UserBind extends Manager {
                     this.calculationInfo.currentPPEntries.map((v) => [
                         v.hash,
                         v,
-                    ])
+                    ]),
                 );
             }
 
@@ -603,7 +618,7 @@ export class UserBind extends Manager {
 
                 if (isDPPRecalc) {
                     consola.info(
-                        `Calculating ${scoreCount} scores from page ${page}`
+                        `Calculating ${scoreCount} scores from page ${page}`,
                     );
                 }
 
@@ -633,7 +648,7 @@ export class UserBind extends Manager {
                         await DPPProcessorRESTManager.getBestScorePerformance(
                             score.uid,
                             beatmapInfo.hash,
-                            PPCalculationMethod.live
+                            PPCalculationMethod.live,
                         );
 
                     if (!attribs) {
@@ -645,10 +660,27 @@ export class UserBind extends Manager {
                     const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
                         beatmapInfo.fullTitle,
                         score,
-                        attribs
+                        attribs,
                     );
 
-                    DPPHelper.insertScore(newList, [ppEntry]);
+                    const [needsPersistence] = DPPHelper.insertScore(newList, [
+                        ppEntry,
+                    ]);
+
+                    if (needsPersistence) {
+                        if (attribs.localReplayMD5) {
+                            await DPPProcessorRESTManager.persistLocalReplay(
+                                ppEntry.uid,
+                                beatmapInfo.hash,
+                                attribs.localReplayMD5,
+                            );
+                        } else {
+                            await DPPProcessorRESTManager.persistOnlineReplay(
+                                ppEntry.uid,
+                                score.scoreID,
+                            );
+                        }
+                    }
                 }
 
                 if (isDPPRecalc) {
@@ -665,7 +697,7 @@ export class UserBind extends Manager {
                             $set: {
                                 calculationInfo: this.calculationInfo,
                             },
-                        }
+                        },
                     );
                 }
             }
@@ -684,7 +716,7 @@ export class UserBind extends Manager {
                         $set: {
                             calculationInfo: this.calculationInfo,
                         },
-                    }
+                    },
                 );
             }
         }
@@ -736,7 +768,7 @@ export class UserBind extends Manager {
     async moveBind(
         uid: number,
         to: Snowflake,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: UserBindLocalization =
             this.getLocalization(language);
@@ -744,14 +776,14 @@ export class UserBind extends Manager {
         if (!this.previous_bind.includes(uid)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("uidNotBindedToAccount")
+                localization.getTranslation("uidNotBindedToAccount"),
             );
         }
 
         if (this.discordid === to) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("cannotRebindToSameAccount")
+                localization.getTranslation("cannotRebindToSameAccount"),
             );
         }
 
@@ -764,7 +796,7 @@ export class UserBind extends Manager {
                     playc: 1,
                     previous_bind: 1,
                 },
-            }
+            },
         );
 
         const otherPreviousBind: number[] = otherBindInfo?.previous_bind ?? [];
@@ -772,7 +804,7 @@ export class UserBind extends Manager {
         if (otherPreviousBind.length >= 2) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("bindLimitReachedInOtherAccount")
+                localization.getTranslation("bindLimitReachedInOtherAccount"),
             );
         }
 
@@ -789,7 +821,7 @@ export class UserBind extends Manager {
 
             return this.createOperationResult(
                 false,
-                localization.getTranslation("playerNotFound")
+                localization.getTranslation("playerNotFound"),
             );
         }
 
@@ -808,7 +840,7 @@ export class UserBind extends Manager {
                     $set: {
                         discordid: to,
                     },
-                }
+                },
             );
 
             if (otherBindInfo?.pp) {
@@ -823,12 +855,12 @@ export class UserBind extends Manager {
                     $set: {
                         previous_bind: otherPreviousBind,
                         pptotal: DPPHelper.calculateFinalPerformancePoints(
-                            this.pp
+                            this.pp,
                         ),
                         playc: this.playc + (otherBindInfo?.playc ?? 0),
                         pp: [...this.pp.values()],
                         weightedAccuracy: DPPHelper.calculateWeightedAccuracy(
-                            this.pp
+                            this.pp,
                         ),
                     },
                     $setOnInsert: {
@@ -843,11 +875,11 @@ export class UserBind extends Manager {
                         calculationInfo: this.calculationInfo ?? undefined,
                     },
                 },
-                { upsert: true }
+                { upsert: true },
             );
         } else {
             const newPPEntries: Collection<string, PPEntry> = this.pp.filter(
-                (v) => v.uid === uid
+                (v) => v.uid === uid,
             );
             const oldPPEntries: Collection<string, PPEntry> =
                 this.pp.difference(newPPEntries);
@@ -862,13 +894,13 @@ export class UserBind extends Manager {
                         uid: this.uid,
                         pptotal:
                             DPPHelper.calculateFinalPerformancePoints(
-                                oldPPEntries
+                                oldPPEntries,
                             ),
                         pp: [...oldPPEntries.values()],
                         weightedAccuracy:
                             DPPHelper.calculateWeightedAccuracy(oldPPEntries),
                     },
-                }
+                },
             );
 
             await this.bindDb.updateOne(
@@ -878,7 +910,7 @@ export class UserBind extends Manager {
                         previous_bind: otherPreviousBind,
                         pptotal:
                             DPPHelper.calculateFinalPerformancePoints(
-                                newPPEntries
+                                newPPEntries,
                             ),
                         playc: player.playCount,
                         pp: [...newPPEntries.values()],
@@ -892,7 +924,7 @@ export class UserBind extends Manager {
                         clan: "",
                     },
                 },
-                { upsert: true }
+                { upsert: true },
             );
         }
 
@@ -902,7 +934,7 @@ export class UserBind extends Manager {
                 $set: {
                     discordid: to,
                 },
-            }
+            },
         );
     }
 
@@ -935,7 +967,7 @@ export class UserBind extends Manager {
 
     async bind(
         uidOrUsernameOrPlayer: string | number | Player,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const player: Player | null =
             uidOrUsernameOrPlayer instanceof Player
@@ -948,7 +980,7 @@ export class UserBind extends Manager {
         if (!player) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("playerWithUidOrUsernameNotFound")
+                localization.getTranslation("playerWithUidOrUsernameNotFound"),
             );
         }
 
@@ -956,7 +988,7 @@ export class UserBind extends Manager {
             if (this.previous_bind.length >= 2) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("bindLimitReached")
+                    localization.getTranslation("bindLimitReached"),
                 );
             }
 
@@ -974,7 +1006,7 @@ export class UserBind extends Manager {
                     uid: this.uid,
                     previous_bind: this.previous_bind,
                 },
-            }
+            },
         );
     }
 
@@ -987,7 +1019,7 @@ export class UserBind extends Manager {
      */
     async unbind(
         uid: number,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: UserBindLocalization =
             this.getLocalization(language);
@@ -995,7 +1027,7 @@ export class UserBind extends Manager {
         if (!this.isUidBinded(uid)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("uidNotBindedToAccount")
+                localization.getTranslation("uidNotBindedToAccount"),
             );
         }
 
@@ -1006,7 +1038,7 @@ export class UserBind extends Manager {
             if (this.clan) {
                 const clan: Clan | null =
                     await DatabaseManager.elainaDb.collections.clan.getFromName(
-                        this.clan
+                        this.clan,
                     );
 
                 if (clan) {
@@ -1015,8 +1047,8 @@ export class UserBind extends Manager {
                     if (!clan.exists) {
                         await clan.notifyLeader(
                             new UserBindLocalization(
-                                await CommandHelper.getLocale(this.discordid)
-                            ).getTranslation("unbindClanDisbandNotification")
+                                await CommandHelper.getLocale(this.discordid),
+                            ).getTranslation("unbindClanDisbandNotification"),
                         );
                     }
                 }
@@ -1045,7 +1077,7 @@ export class UserBind extends Manager {
                 $pull: {
                     previous_bind: uid,
                 },
-            }
+            },
         );
     }
 
@@ -1063,7 +1095,7 @@ export class UserBind extends Manager {
                 $set: {
                     clan: this.clan,
                 },
-            }
+            },
         );
     }
 
@@ -1090,7 +1122,7 @@ export class UserBind extends Manager {
                     $set: {
                         dailyRoleMetadataUpdateComplete: true,
                     },
-                }
+                },
             );
         } else {
             return this.createOperationResult(false, "Metadata update failed");

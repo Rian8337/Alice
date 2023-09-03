@@ -43,7 +43,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
-        calculationParams?: DifficultyCalculationParameters
+        calculationParams?: DifficultyCalculationParameters,
     ): Promise<CacheableDifficultyAttributes<DroidDifficultyAttributes> | null>;
 
     /**
@@ -59,7 +59,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
-        calculationParams?: DifficultyCalculationParameters
+        calculationParams?: DifficultyCalculationParameters,
     ): Promise<CacheableDifficultyAttributes<RebalanceDroidDifficultyAttributes> | null>;
 
     /**
@@ -75,7 +75,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
-        calculationParams?: DifficultyCalculationParameters
+        calculationParams?: DifficultyCalculationParameters,
     ): Promise<CacheableDifficultyAttributes<OsuDifficultyAttributes> | null>;
 
     /**
@@ -91,14 +91,14 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
-        calculationParams?: DifficultyCalculationParameters
+        calculationParams?: DifficultyCalculationParameters,
     ): Promise<CacheableDifficultyAttributes<RebalanceOsuDifficultyAttributes> | null>;
 
     static async getDifficultyAttributes(
         beatmapIdOrHash: string | number,
         mode: Modes,
         calculationMethod: PPCalculationMethod,
-        calculationParams?: DifficultyCalculationParameters
+        calculationParams?: DifficultyCalculationParameters,
     ): Promise<CacheableDifficultyAttributes<RawDifficultyAttributes> | null> {
         const url: URL = new URL(`${this.endpoint}get-difficulty-attributes`);
         url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
@@ -106,7 +106,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         url.searchParams.set("calculationmethod", calculationMethod.toString());
         url.searchParams.set(
             typeof beatmapIdOrHash === "number" ? "beatmapid" : "beatmaphash",
-            beatmapIdOrHash.toString()
+            beatmapIdOrHash.toString(),
         );
 
         if (calculationParams) {
@@ -115,7 +115,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (customStatistics?.mods && customStatistics.mods.length > 0) {
                 url.searchParams.set(
                     "mods",
-                    customStatistics.mods.reduce((a, v) => a + v.acronym, "")
+                    customStatistics.mods.reduce((a, v) => a + v.acronym, ""),
                 );
             }
 
@@ -129,7 +129,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             ) {
                 url.searchParams.set(
                     "customspeedmultiplier",
-                    customStatistics.speedMultiplier.toString()
+                    customStatistics.speedMultiplier.toString(),
                 );
             }
 
@@ -142,26 +142,11 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         }
 
         const result: RequestResponse | null = await this.request(url).catch(
-            () => null
+            () => null,
         );
 
         if (result?.statusCode !== 200) {
-            if (result) {
-                consola.error(
-                    "Request to %s failed with error: %s",
-                    url
-                        .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
-                    result.data.toString("utf-8")
-                );
-            } else {
-                consola.error(
-                    "Request to %s failed with unknown error",
-                    url
-                        .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
-                );
-            }
+            this.logError(url, result);
 
             return null;
         }
@@ -182,7 +167,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
-        calculationParams?: PerformanceCalculationParameters
+        calculationParams?: PerformanceCalculationParameters,
     ): Promise<CompleteCalculationAttributes<
         DroidDifficultyAttributes,
         DroidPerformanceAttributes
@@ -201,7 +186,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
-        calculationParams?: PerformanceCalculationParameters
+        calculationParams?: PerformanceCalculationParameters,
     ): Promise<CompleteCalculationAttributes<
         RebalanceDroidDifficultyAttributes,
         RebalanceDroidPerformanceAttributes
@@ -220,7 +205,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
-        calculationParams?: PerformanceCalculationParameters
+        calculationParams?: PerformanceCalculationParameters,
     ): Promise<CompleteCalculationAttributes<
         OsuDifficultyAttributes,
         OsuPerformanceAttributes
@@ -239,7 +224,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
-        calculationParams?: PerformanceCalculationParameters
+        calculationParams?: PerformanceCalculationParameters,
     ): Promise<CompleteCalculationAttributes<
         RebalanceOsuDifficultyAttributes,
         OsuPerformanceAttributes
@@ -249,7 +234,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapIdOrHash: string | number,
         mode: Modes,
         calculationMethod: PPCalculationMethod,
-        calculationParams?: PerformanceCalculationParameters
+        calculationParams?: PerformanceCalculationParameters,
     ): Promise<CompleteCalculationAttributes<
         RawDifficultyAttributes,
         PerformanceAttributes
@@ -260,7 +245,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         url.searchParams.set("calculationmethod", calculationMethod.toString());
         url.searchParams.set(
             typeof beatmapIdOrHash === "number" ? "beatmapid" : "beatmaphash",
-            beatmapIdOrHash.toString()
+            beatmapIdOrHash.toString(),
         );
 
         if (calculationParams) {
@@ -269,7 +254,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             if (customStatistics?.mods && customStatistics.mods.length > 0) {
                 url.searchParams.set(
                     "mods",
-                    customStatistics.mods.reduce((a, v) => a + v.acronym, "")
+                    customStatistics.mods.reduce((a, v) => a + v.acronym, ""),
                 );
             }
 
@@ -283,7 +268,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             ) {
                 url.searchParams.set(
                     "customspeedmultiplier",
-                    customStatistics.speedMultiplier.toString()
+                    customStatistics.speedMultiplier.toString(),
                 );
             }
 
@@ -296,50 +281,35 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
 
             url.searchParams.set(
                 "n300",
-                calculationParams.accuracy.n300.toString()
+                calculationParams.accuracy.n300.toString(),
             );
             url.searchParams.set(
                 "n100",
-                calculationParams.accuracy.n100.toString()
+                calculationParams.accuracy.n100.toString(),
             );
             url.searchParams.set(
                 "n50",
-                calculationParams.accuracy.n50.toString()
+                calculationParams.accuracy.n50.toString(),
             );
             url.searchParams.set(
                 "nmiss",
-                calculationParams.accuracy.nmiss.toString()
+                calculationParams.accuracy.nmiss.toString(),
             );
 
             if (calculationParams.combo !== undefined) {
                 url.searchParams.set(
                     "maxcombo",
-                    calculationParams.combo.toString()
+                    calculationParams.combo.toString(),
                 );
             }
         }
 
         const result: RequestResponse | null = await this.request(url).catch(
-            () => null
+            () => null,
         );
 
         if (result?.statusCode !== 200) {
-            if (result) {
-                consola.error(
-                    "Request to %s failed with error: %s",
-                    url
-                        .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
-                    result.data.toString("utf-8")
-                );
-            } else {
-                consola.error(
-                    "Request to %s failed with unknown error",
-                    url
-                        .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
-                );
-            }
+            this.logError(url, result);
 
             return null;
         }
@@ -358,7 +328,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async getOnlineScoreAttributes(
         scoreId: number,
         mode: Modes.droid,
-        calculationMethod: PPCalculationMethod.live
+        calculationMethod: PPCalculationMethod.live,
     ): Promise<CompleteCalculationAttributes<
         DroidDifficultyAttributes,
         DroidPerformanceAttributes
@@ -375,7 +345,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async getOnlineScoreAttributes(
         scoreId: number,
         mode: Modes.droid,
-        calculationMethod: PPCalculationMethod.rebalance
+        calculationMethod: PPCalculationMethod.rebalance,
     ): Promise<CompleteCalculationAttributes<
         RebalanceDroidDifficultyAttributes,
         RebalanceDroidPerformanceAttributes
@@ -392,7 +362,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async getOnlineScoreAttributes(
         scoreId: number,
         mode: Modes.osu,
-        calculationMethod: PPCalculationMethod.live
+        calculationMethod: PPCalculationMethod.live,
     ): Promise<CompleteCalculationAttributes<
         OsuDifficultyAttributes,
         OsuPerformanceAttributes
@@ -409,7 +379,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async getOnlineScoreAttributes(
         scoreId: number,
         mode: Modes.osu,
-        calculationMethod: PPCalculationMethod.rebalance
+        calculationMethod: PPCalculationMethod.rebalance,
     ): Promise<CompleteCalculationAttributes<
         RebalanceOsuDifficultyAttributes,
         OsuPerformanceAttributes
@@ -418,7 +388,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async getOnlineScoreAttributes(
         scoreId: number,
         mode: Modes,
-        calculationMethod: PPCalculationMethod
+        calculationMethod: PPCalculationMethod,
     ): Promise<CompleteCalculationAttributes<
         RawDifficultyAttributes,
         PerformanceAttributes
@@ -430,26 +400,11 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         url.searchParams.set("calculationmethod", calculationMethod.toString());
 
         const result: RequestResponse | null = await this.request(url).catch(
-            () => null
+            () => null,
         );
 
         if (result?.statusCode !== 200) {
-            if (result) {
-                consola.error(
-                    "Request to %s failed with error: %s",
-                    url
-                        .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
-                    result.data.toString("utf-8")
-                );
-            } else {
-                consola.error(
-                    "Request to %s failed with unknown error",
-                    url
-                        .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
-                );
-            }
+            this.logError(url, result);
 
             return null;
         }
@@ -469,7 +424,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async getBestScorePerformance(
         playerId: number,
         beatmapHash: string,
-        calculationMethod: PPCalculationMethod.live
+        calculationMethod: PPCalculationMethod.live,
     ): Promise<CompleteCalculationAttributes<
         DroidDifficultyAttributes,
         DroidPerformanceAttributes
@@ -487,7 +442,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async getBestScorePerformance(
         playerId: number,
         beatmapHash: string,
-        calculationMethod: PPCalculationMethod.rebalance
+        calculationMethod: PPCalculationMethod.rebalance,
     ): Promise<CompleteCalculationAttributes<
         RebalanceDroidDifficultyAttributes,
         RebalanceDroidPerformanceAttributes
@@ -496,13 +451,13 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     static async getBestScorePerformance(
         playerId: number,
         beatmapHash: string,
-        calculationMethod: PPCalculationMethod
+        calculationMethod: PPCalculationMethod,
     ): Promise<CompleteCalculationAttributes<
         RawDifficultyAttributes,
         DroidPerformanceAttributes
     > | null> {
         const url: URL = new URL(
-            `${this.endpoint}get-player-best-score-performance`
+            `${this.endpoint}get-player-best-score-performance`,
         );
         url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
         url.searchParams.set("playerid", playerId.toString());
@@ -510,26 +465,11 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         url.searchParams.set("calculationmethod", calculationMethod.toString());
 
         const result: RequestResponse | null = await this.request(url).catch(
-            () => null
+            () => null,
         );
 
         if (result?.statusCode !== 200) {
-            if (result) {
-                consola.error(
-                    "Request to %s failed with error: %s",
-                    url
-                        .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
-                    result.data.toString("utf-8")
-                );
-            } else {
-                consola.error(
-                    "Request to %s failed with unknown error",
-                    url
-                        .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
-                );
-            }
+            this.logError(url, result);
 
             return null;
         }
@@ -546,7 +486,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      */
     static async submitScores(
         playerId: number,
-        scoreIds: number[]
+        scoreIds: number[],
     ): Promise<PPSubmissionOperationResult | null> {
         const url: URL = new URL(`${this.endpoint}submit-scores`);
         const result: RequestResponse | null = await this.request(url, {
@@ -560,26 +500,116 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         }).catch(() => null);
 
         if (result?.statusCode !== 200) {
+            this.logError(url, result);
+
+            return null;
+        }
+
+        return JSON.parse(result.data.toString("utf-8"));
+    }
+
+    /**
+     * Persists a local replay file of a player.
+     *
+     * @param playerId The ID of the player.
+     * @param beatmapHash The MD5 hash of the beatmap where the replay resides.
+     * @param replayHash The MD5 hash of the replay file.
+     * @returns Whether the replay file was successfully persisted.
+     */
+    static async persistLocalReplay(
+        playerId: number,
+        beatmapHash: string,
+        replayHash: string,
+    ): Promise<boolean> {
+        const url: URL = new URL(`${this.endpoint}persist-local-replay`);
+        const result: RequestResponse | null = await this.request(url, {
+            method: "PUT",
+            body: {
+                key: process.env.DROID_SERVER_INTERNAL_KEY,
+                playerid: playerId,
+                beatmaphash: beatmapHash,
+                replayhash: replayHash,
+            },
+            json: true,
+        });
+
+        if (result?.statusCode !== 200) {
             if (result) {
                 consola.error(
                     "Request to %s failed with error: %s",
                     url
                         .toString()
                         .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
-                    result.data.toString("utf-8")
+                    result.data.toString("utf-8"),
                 );
             } else {
                 consola.error(
                     "Request to %s failed with unknown error",
                     url
                         .toString()
-                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, "")
+                        .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
                 );
             }
 
-            return null;
+            return false;
         }
 
-        return JSON.parse(result.data.toString("utf-8"));
+        return true;
+    }
+
+    /**
+     * Persists an online replay file of a player.
+     *
+     * @param playerId The ID of the player.
+     * @param scoreId The ID of the score.
+     * @returns Whether the replay file was successfully persisted.
+     */
+    static async persistOnlineReplay(
+        playerId: number,
+        scoreId: number,
+    ): Promise<boolean> {
+        const url: URL = new URL(`${this.endpoint}persist-online-replay`);
+        const result: RequestResponse | null = await this.request(url, {
+            method: "PUT",
+            body: {
+                key: process.env.DROID_SERVER_INTERNAL_KEY,
+                uid: playerId,
+                scoreid: scoreId,
+            },
+            json: true,
+        });
+
+        if (result?.statusCode !== 200) {
+            this.logError(url, result);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Logs the error of a request.
+     *
+     * @param url The URL the request was directed to.
+     * @param result The request result.
+     */
+    private static logError(url: URL, result: RequestResponse | null): void {
+        if (result) {
+            consola.error(
+                "Request to %s failed with error: %s",
+                url
+                    .toString()
+                    .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
+                result.data.toString("utf-8"),
+            );
+        } else {
+            consola.error(
+                "Request to %s failed with unknown error",
+                url
+                    .toString()
+                    .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
+            );
+        }
     }
 }
