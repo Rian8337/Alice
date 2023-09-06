@@ -6,6 +6,14 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
+    if (!Config.isDebug) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                "Command temporarily disabled while recalculation is in progress.",
+            ),
+        });
+    }
+
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         !Config.ppChannel.includes(interaction.channelId)
@@ -15,15 +23,15 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new PPLocalization(
-                    await CommandHelper.getLocale(interaction)
-                ).getTranslation("commandNotAllowed")
+                    await CommandHelper.getLocale(interaction),
+                ).getTranslation("commandNotAllowed"),
             ),
         });
     }
 
     CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 };
 
