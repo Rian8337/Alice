@@ -19,20 +19,21 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                     username: 1,
                     pp: 1,
                     pptotal: 1,
+                    dppRecalcComplete: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(
-                    await CommandHelper.getLocale(interaction)
+                    await CommandHelper.getLocale(interaction),
                 ).getTranslation(
                     interaction.user.id === interaction.targetUser.id
                         ? Constants.selfNotBindedReject
-                        : Constants.userNotBindedReject
-                )
+                        : Constants.userNotBindedReject,
+                ),
             ),
         });
     }

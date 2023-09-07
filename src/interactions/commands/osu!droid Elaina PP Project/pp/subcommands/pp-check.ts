@@ -15,7 +15,7 @@ import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const discordid: Snowflake | undefined =
@@ -28,7 +28,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -45,6 +45,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             username: 1,
             pp: 1,
             pptotal: 1,
+            dppRecalcComplete: 1,
         },
     };
 
@@ -55,14 +56,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         case !!username:
             playerInfo = await dbManager.getFromUsername(
                 username!,
-                findOptions
+                findOptions,
             );
             break;
         default:
             // If no arguments are specified, default to self
             playerInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
-                findOptions
+                findOptions,
             );
     }
 
@@ -72,8 +73,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 new ConstantsLocalization(localization.language).getTranslation(
                     uid || username || discordid
                         ? Constants.userNotBindedReject
-                        : Constants.selfNotBindedReject
-                )
+                        : Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -81,7 +82,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     DPPHelper.displayDPPList(
         interaction,
         playerInfo,
-        interaction.options.getInteger("page") ?? 1
+        interaction.options.getInteger("page") ?? 1,
     );
 };
 
