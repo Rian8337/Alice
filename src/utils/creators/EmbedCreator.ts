@@ -671,7 +671,7 @@ export abstract class EmbedCreator {
             `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
             `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${
                 score.combo
-            }x/${beatmap.maxCombo}x ${arrow} [${score.accuracy.n300}/${
+            }x/${maxCombo}x ${arrow} [${score.accuracy.n300}/${
                 score.accuracy.n100
             }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
         let hitError: HitErrorInformation | null | undefined;
