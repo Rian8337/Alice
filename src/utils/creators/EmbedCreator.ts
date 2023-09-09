@@ -619,11 +619,15 @@ export abstract class EmbedCreator {
             `${droidAttribs.performance.total.toFixed(2)}DPP`,
         )} | ${bold(`${osuAttribs.performance.total.toFixed(2)}PP`)} `;
 
-        if (score.accuracy.nmiss > 0 || score.combo < beatmap.maxCombo) {
+        // Some beatmaps return `null` max combo from osu! API, i.e. /b/1462961.
+        const maxCombo: number =
+            beatmap.maxCombo ?? droidAttribs.difficulty.maxCombo;
+
+        if (score.accuracy.nmiss > 0 || score.combo < maxCombo) {
             const calcParams: PerformanceCalculationParameters =
                 BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
 
-            calcParams.combo = beatmap.maxCombo;
+            calcParams.combo = maxCombo;
             calcParams.accuracy = new Accuracy({
                 n300: score.accuracy.n300 + score.accuracy.nmiss,
                 n100: score.accuracy.n100,
