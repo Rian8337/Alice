@@ -20,6 +20,7 @@ import {
     DroidAPIRequestBuilder,
     RequestResponse,
     Precision,
+    Accuracy,
 } from "@rian8337/osu-base";
 import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
@@ -34,7 +35,6 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -456,10 +456,8 @@ export class UserBind extends Manager {
             const { performance: perfResult } = liveAttribs;
             const { performance: rebalPerfResult, params } = rebalAttribs;
 
-            const calcParams: PerformanceCalculationParameters =
-                PerformanceCalculationParameters.from(params);
-
-            const { customStatistics, accuracy } = calcParams;
+            const { customStatistics, accuracy: accuracyData } = params;
+            const accuracy = new Accuracy(accuracyData);
 
             const entry: PrototypePPEntry = {
                 uid: score.uid,
@@ -477,16 +475,12 @@ export class UserBind extends Manager {
                 prevVisual: NumberHelper.round(perfResult.visual, 2),
                 mods: rebalAttribs.difficulty.mods,
                 accuracy: NumberHelper.round(accuracy.value() * 100, 2),
-                // Guaranteed to not be null as the processor will assign it to max combo otherwise.
-                combo: calcParams.combo!,
+                combo: params.combo,
                 miss: accuracy.nmiss,
                 speedMultiplier:
-                    customStatistics && customStatistics.speedMultiplier !== 1
+                    customStatistics.speedMultiplier !== 1
                         ? customStatistics.speedMultiplier
                         : undefined,
-                forcedAR: customStatistics?.isForceAR
-                    ? customStatistics.ar
-                    : undefined,
                 calculatedUnstableRate: rebalPerfResult.calculatedUnstableRate,
                 estimatedUnstableRate: NumberHelper.round(
                     rebalPerfResult.deviation * 10,

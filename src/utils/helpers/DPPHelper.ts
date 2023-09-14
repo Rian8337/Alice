@@ -9,7 +9,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { MapInfo, RankedStatus, Utils } from "@rian8337/osu-base";
+import { Accuracy, MapInfo, RankedStatus, Utils } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
@@ -32,7 +32,6 @@ import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattri
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattributes/ResponseDifficultyAttributes";
 
 /**
@@ -283,10 +282,8 @@ export abstract class DPPHelper {
         >,
     ): PPEntry {
         const { params, difficulty, performance } = attributes;
-        const calcParams: PerformanceCalculationParameters =
-            PerformanceCalculationParameters.from(params);
-
-        const { customStatistics, combo, accuracy } = calcParams;
+        const { customStatistics, accuracy: accuracyData } = params;
+        const accuracy = new Accuracy(accuracyData);
 
         return {
             uid: score.uid,
@@ -295,16 +292,12 @@ export abstract class DPPHelper {
             pp: NumberHelper.round(performance.total, 2),
             mods: difficulty.mods,
             accuracy: NumberHelper.round(accuracy.value() * 100, 2),
-            // This is returned from the dpp backend, and is guaranteed to not be null.
-            combo: combo!,
+            combo: params.combo,
             miss: accuracy.nmiss,
             speedMultiplier:
-                customStatistics && customStatistics.speedMultiplier !== 1
+                customStatistics.speedMultiplier !== 1
                     ? customStatistics.speedMultiplier
                     : undefined,
-            forcedAR: customStatistics?.isForceAR
-                ? customStatistics.ar
-                : undefined,
         };
     }
 

@@ -14,7 +14,7 @@ export interface CompleteCalculationAttributes<
     /**
      * The parameters that were used to obtain the calculation result.
      */
-    readonly params: CloneablePerformanceCalculationParameters;
+    readonly params: CloneablePerformanceCalculationParameters<true>;
 
     /**
      * The difficulty attributes.
