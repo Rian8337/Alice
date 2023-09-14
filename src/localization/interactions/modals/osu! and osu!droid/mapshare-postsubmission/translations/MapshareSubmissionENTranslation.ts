@@ -7,6 +7,8 @@ import { MapshareSubmissionStrings } from "../MapshareSubmissionLocalization";
 export class MapshareSubmissionENTranslation extends Translation<MapshareSubmissionStrings> {
     override readonly translations: MapshareSubmissionStrings = {
         noBeatmapFound: "Hey, please enter a valid beatmap link or ID!",
+        unknownBeatmapDifficulty:
+            "I'm sorry, I could not recognize the beatmap's difficulty!",
         beatmapIsTooEasy:
             "I'm sorry, you can only submit beatmaps that are 3* or higher!",
         beatmapHasLessThan50Objects:

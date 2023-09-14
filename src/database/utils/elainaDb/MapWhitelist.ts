@@ -21,7 +21,7 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
 
     constructor(
         data: DatabaseMapWhitelist = DatabaseManager.elainaDb?.collections
-            .mapWhitelist.defaultDocument ?? {}
+            .mapWhitelist.defaultDocument ?? {},
     ) {
         super();
 
@@ -63,16 +63,18 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
      * Updates the diffstat of this whitelisted beatmap.
      *
      * Note that this will not update the beatmap statistics in database.
+     *
+     * @returns Whether the update operation succeeded.
      */
-    async updateDiffstat(): Promise<void> {
+    async updateDiffstat(): Promise<boolean> {
         const beatmapInfo: MapInfo<false> | null =
             await BeatmapManager.getBeatmap(this.hashid, {
                 checkFile: false,
                 cacheBeatmap: false,
             });
 
-        if (!beatmapInfo) {
-            return;
+        if (!beatmapInfo || beatmapInfo.totalDifficulty === null) {
+            return false;
         }
 
         this.diffstat = {
@@ -83,5 +85,7 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
             sr: parseFloat(beatmapInfo.totalDifficulty.toFixed(2)),
             bpm: beatmapInfo.bpm,
         };
+
+        return true;
     }
 }

@@ -161,17 +161,17 @@ export abstract class EmbedCreator {
         const embed: EmbedBuilder = this.createNormalEmbed({
             color: <ColorResolvable>(
                 BeatmapManager.getBeatmapDifficultyColor(
-                    parseFloat(beatmapInfo.totalDifficulty.toFixed(2)),
+                    parseFloat((beatmapInfo.totalDifficulty ?? 0).toFixed(2)),
                 )
             ),
         });
 
+        const totalDifficulty: number = beatmapInfo.totalDifficulty ?? 0;
+
         embed
             .setAuthor({
                 name: localization.getTranslation("beatmapInfo"),
-                iconURL: `attachment://osu-${beatmapInfo.totalDifficulty.toFixed(
-                    2,
-                )}.png`,
+                iconURL: `attachment://osu-${totalDifficulty.toFixed(2)}.png`,
             })
             .setTitle(
                 BeatmapManager.showStatistics(
@@ -240,9 +240,9 @@ export abstract class EmbedCreator {
                 {
                     name: localization.getTranslation("starRating"),
                     value: `${Symbols.star.repeat(
-                        Math.floor(beatmapInfo.totalDifficulty),
+                        Math.floor(totalDifficulty),
                     )} ${bold(
-                        `${beatmapInfo.totalDifficulty.toFixed(
+                        `${totalDifficulty.toFixed(
                             2,
                         )} ${localization.getTranslation("pcStars")}`,
                     )}`,
@@ -253,7 +253,7 @@ export abstract class EmbedCreator {
             embeds: [embed],
             files: [
                 BeatmapManager.getBeatmapDifficultyIconAttachment(
-                    parseFloat(beatmapInfo.totalDifficulty.toFixed(2)),
+                    parseFloat(totalDifficulty.toFixed(2)),
                 ),
             ],
         };
@@ -390,7 +390,10 @@ export abstract class EmbedCreator {
             droidPerfAttribs &&
             osuPerfAttribs
         ) {
-            const combo: number = calculationParams.combo ?? beatmap.maxCombo;
+            const combo: number =
+                calculationParams.combo ??
+                beatmap.maxCombo ??
+                droidDiffAttribs.maxCombo;
             // Recompute accuracy to consider amount of objects.
             calculationParams.accuracy = new Accuracy({
                 ...calculationParams.accuracy,
@@ -483,6 +486,7 @@ export abstract class EmbedCreator {
         }
 
         if (
+            beatmap.totalDifficulty !== null &&
             !Precision.almostEqualsNumber(
                 osuDiffAttribs.starRating,
                 beatmap.totalDifficulty,

@@ -28,6 +28,7 @@ export interface DailyStrings {
     readonly challengeWithIdExists: string;
     readonly noBeatmapProvided: string;
     readonly beatmapNotFound: string;
+    readonly beatmapMaxComboNotFound: string;
     readonly passValueOutOfRange: string;
     readonly bonusValueOutOfRange: string;
     readonly unrankedModsIncluded: string;

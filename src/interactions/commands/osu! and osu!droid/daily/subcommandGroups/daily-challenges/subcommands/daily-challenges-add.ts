@@ -15,7 +15,7 @@ import { User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const id: string = interaction.options.getString("id", true);
@@ -23,7 +23,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!id.startsWith("d") && !id.startsWith("w")) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidChallengeId")
+                localization.getTranslation("invalidChallengeId"),
             ),
         });
     }
@@ -33,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!matched || matched.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidChallengeId")
+                localization.getTranslation("invalidChallengeId"),
             ),
         });
     }
@@ -44,19 +44,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (existingChallenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeWithIdExists")
+                localization.getTranslation("challengeWithIdExists"),
             ),
         });
     }
 
     const beatmapId: number = BeatmapManager.getBeatmapID(
-        interaction.options.getString("beatmap", true)
+        interaction.options.getString("beatmap", true),
     )[0];
 
     if (!beatmapId) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapProvided")
+                localization.getTranslation("noBeatmapProvided"),
             ),
         });
     }
@@ -70,7 +70,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!beatmap) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -83,7 +83,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     let passValue: string | number = interaction.options.getString(
         "passvalue",
-        true
+        true,
     );
 
     const constrain: string = interaction.options.getString("constrain") ?? "";
@@ -99,7 +99,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (!beatmap.hasDownloadedBeatmap()) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("beatmapNotFound")
+                        localization.getTranslation("beatmapNotFound"),
                     ),
                 });
             }
@@ -107,7 +107,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             const maxScore: number = beatmap.beatmap!.maxDroidScore(
                 new MapStats({
                     mods: ModUtil.pcStringToMods(constrain),
-                })
+                }),
             );
 
             if (!NumberHelper.isNumberInRange(passValue, 0, maxScore, true)) {
@@ -115,7 +115,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("passValueOutOfRange"),
                         "0",
-                        maxScore.toLocaleString(BCP47)
+                        maxScore.toLocaleString(BCP47),
                     ),
                 });
             }
@@ -130,7 +130,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("passValueOutOfRange"),
                         "0",
-                        "100"
+                        "100",
                     ),
                 });
             }
@@ -144,13 +144,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("passValueOutOfRange"),
                         "0",
-                        (1000000).toLocaleString(BCP47)
+                        (1000000).toLocaleString(BCP47),
                     ),
                 });
             }
 
             break;
         case "combo":
+            if (beatmap.maxCombo === null) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("beatmapMaxComboNotFound"),
+                    ),
+                });
+            }
+
             passValue = parseInt(passValue);
 
             if (
@@ -158,14 +166,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     passValue,
                     0,
                     beatmap.maxCombo,
-                    true
+                    true,
                 )
             ) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("passValueOutOfRange"),
                         "0",
-                        beatmap.maxCombo.toLocaleString(BCP47)
+                        beatmap.maxCombo.toLocaleString(BCP47),
                     ),
                 });
             }
@@ -176,14 +184,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             if (
                 !["SSH", "SS", "SH", "S", "A", "B", "C", "D"].includes(
-                    passValue
+                    passValue,
                 )
             ) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("passValueOutOfRange"),
                         "SSH",
-                        "D"
+                        "D",
                     ),
                 });
             }
@@ -199,14 +207,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     passValue,
                     0,
                     Number.POSITIVE_INFINITY,
-                    true
+                    true,
                 )
             ) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("passValueOutOfRange"),
                         "0",
-                        Number.POSITIVE_INFINITY.toLocaleString(BCP47)
+                        Number.POSITIVE_INFINITY.toLocaleString(BCP47),
                     ),
                 });
             }
@@ -223,14 +231,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     passValue,
                     0,
                     beatmap.objects,
-                    true
+                    true,
                 )
             ) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("passValueOutOfRange"),
                         "0",
-                        beatmap.objects.toLocaleString(BCP47)
+                        beatmap.objects.toLocaleString(BCP47),
                     ),
                 });
             }
@@ -258,7 +266,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("addNewChallengeFailed")
+                localization.getTranslation("addNewChallengeFailed"),
             ),
         });
     }
@@ -266,7 +274,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("addNewChallengeSuccess"),
-            id
+            id,
         ),
     });
 };

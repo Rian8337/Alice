@@ -7,6 +7,7 @@ import { MapshareSubmissionStrings } from "../MapshareSubmissionLocalization";
 export class MapshareSubmissionKRTranslation extends Translation<MapshareSubmissionStrings> {
     override readonly translations: MapshareSubmissionStrings = {
         noBeatmapFound: "저기, 유효한 비트맵 ID나 링크를 입력해 주세요!",
+        unknownBeatmapDifficulty: "",
         beatmapIsTooEasy: "죄송해요, 3성 이상의 비트맵만 제출할 수 있어요!",
         beatmapHasLessThan50Objects:
             "죄송해요, 비트맵의 오브젝트가 50개보다 적은 것 같네요!",

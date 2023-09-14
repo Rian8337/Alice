@@ -7,6 +7,7 @@ import { WhitelistManagerKRTranslation } from "./translations/WhitelistManagerKR
 
 export interface WhitelistManagerStrings {
     readonly beatmapIsBlacklisted: string;
+    readonly invalidBeatmapDifficulty: string;
     readonly beatmapIsNotBlacklisted: string;
     readonly beatmapIsNotGraveyarded: string;
 }

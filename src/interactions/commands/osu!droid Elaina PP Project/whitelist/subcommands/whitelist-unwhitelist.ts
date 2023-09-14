@@ -19,13 +19,13 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         !(<GuildMember>interaction.member).roles.cache.has(
-            WhitelistManager.whitelistRole
+            WhitelistManager.whitelistRole,
         )
     ) {
         interaction.ephemeral = true;
@@ -33,8 +33,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.noPermissionReject
-                )
+                    Constants.noPermissionReject,
+                ),
             ),
         });
     }
@@ -44,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!beatmapLink) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapProvided")
+                localization.getTranslation("noBeatmapProvided"),
             ),
         });
     }
@@ -55,7 +55,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!beatmapID && !beatmapsetID) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapIDorSetIDFound")
+                localization.getTranslation("noBeatmapIDorSetIDFound"),
             ),
         });
     }
@@ -74,7 +74,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (beatmapsetID) {
         beatmaps.push(
-            ...(await BeatmapManager.getBeatmaps(beatmapsetID, false))
+            ...(await BeatmapManager.getBeatmaps(beatmapsetID, false)),
         );
     } else {
         const beatmapInfo: MapInfo<false> | null =
@@ -88,7 +88,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (beatmaps.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapsFound")
+                localization.getTranslation("noBeatmapsFound"),
             ),
         });
     }
@@ -96,7 +96,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const embedOptions: BaseMessageOptions = EmbedCreator.createBeatmapEmbed(
         beatmaps[0],
         undefined,
-        localization.language
+        localization.language,
     );
 
     const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
@@ -108,7 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 (v) =>
                     `- [${v.version}](https://osu.ppy.sh/b/${
                         v.beatmapID
-                    }) - ${bold(v.totalDifficulty.toFixed(2))}`
+                    }) - ${bold((v.totalDifficulty ?? 0).toFixed(2))}`,
             )
             .join("\n")}`,
     });
@@ -124,8 +124,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 MessageCreator.createReject(
                     localization.getTranslation("unwhitelistFailed"),
                     beatmap.fullTitle,
-                    unwhitelistResult.reason!
-                )
+                    unwhitelistResult.reason!,
+                ),
             );
             continue;
         }
@@ -133,8 +133,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         whitelistResponseStrings.push(
             MessageCreator.createAccept(
                 localization.getTranslation("unwhitelistSuccess"),
-                beatmap.fullTitle
-            )
+                beatmap.fullTitle,
+            ),
         );
     }
 

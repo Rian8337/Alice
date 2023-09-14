@@ -7,6 +7,7 @@ import { WhitelistManagerStrings } from "../WhitelistManagerLocalization";
 export class WhitelistManagerIDTranslation extends Translation<WhitelistManagerStrings> {
     override readonly translations: WhitelistManagerStrings = {
         beatmapIsBlacklisted: "",
+        invalidBeatmapDifficulty: "",
         beatmapIsNotBlacklisted: "",
         beatmapIsNotGraveyarded: "",
     };

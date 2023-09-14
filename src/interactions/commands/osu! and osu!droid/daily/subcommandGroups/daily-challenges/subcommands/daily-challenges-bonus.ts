@@ -16,20 +16,20 @@ import { MapInfo, MapStats, Mod, ModUtil } from "@rian8337/osu-base";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const dbManager: ChallengeCollectionManager =
         DatabaseManager.aliceDb.collections.challenge;
 
     const challenge: Challenge | null = await dbManager.getById(
-        interaction.options.getString("id", true)
+        interaction.options.getString("id", true),
     );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeNotFound")
+                localization.getTranslation("challengeNotFound"),
             ),
         });
     }
@@ -37,7 +37,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!challenge.isScheduled) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeIsOngoing")
+                localization.getTranslation("challengeIsOngoing"),
             ),
         });
     }
@@ -56,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         if (bonus) {
             const index: number = bonus.list.findIndex(
-                (v) => v.level === level
+                (v) => v.level === level,
             );
 
             if (index !== -1) {
@@ -72,14 +72,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         $set: {
                             bonus: [...challenge.bonus.values()],
                         },
-                    }
+                    },
                 );
 
                 if (!result.success) {
                     return InteractionHelper.reply(interaction, {
                         content: MessageCreator.createReject(
                             localization.getTranslation("modifyBonusFailed"),
-                            result.reason!
+                            result.reason!,
                         ),
                     });
                 }
@@ -92,7 +92,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 challenge.challengeid,
                 type,
                 level.toLocaleString(BCP47),
-                localization.getTranslation("none")
+                localization.getTranslation("none"),
             ),
         });
     }
@@ -101,13 +101,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         challenge.beatmapid,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmap) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -121,7 +121,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (!beatmap.hasDownloadedBeatmap()) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("beatmapNotFound")
+                        localization.getTranslation("beatmapNotFound"),
                     ),
                 });
             }
@@ -129,7 +129,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             const maxScore: number = beatmap.beatmap!.maxDroidScore(
                 new MapStats({
                     mods: ModUtil.pcStringToMods(challenge.constrain),
-                })
+                }),
             );
 
             if (!NumberHelper.isNumberInRange(value, 0, maxScore, true)) {
@@ -137,7 +137,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("bonusValueOutOfRange"),
                         "0",
-                        maxScore.toLocaleString(BCP47)
+                        maxScore.toLocaleString(BCP47),
                     ),
                 });
             }
@@ -152,7 +152,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("bonusValueOutOfRange"),
                         "0",
-                        "100"
+                        "100",
                     ),
                 });
             }
@@ -166,13 +166,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("bonusValueOutOfRange"),
                         "0",
-                        (1e6).toLocaleString(BCP47)
+                        (1e6).toLocaleString(BCP47),
                     ),
                 });
             }
 
             break;
         case "combo":
+            if (beatmap.maxCombo === null) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("beatmapMaxComboNotFound"),
+                    ),
+                });
+            }
+
             value = parseInt(value);
 
             if (
@@ -182,7 +190,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("bonusValueOutOfRange"),
                         "0",
-                        beatmap.maxCombo.toLocaleString(BCP47)
+                        beatmap.maxCombo.toLocaleString(BCP47),
                     ),
                 });
             }
@@ -194,7 +202,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (mods.some((m) => !m.isApplicableToDroid() || !m.droidRanked)) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("unrankedModsIncluded")
+                        localization.getTranslation("unrankedModsIncluded"),
                     ),
                 });
             }
@@ -211,7 +219,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("bonusValueOutOfRange"),
                         "SSH",
-                        "D"
+                        "D",
                     ),
                 });
             }
@@ -227,14 +235,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     value,
                     0,
                     Number.POSITIVE_INFINITY,
-                    true
+                    true,
                 )
             ) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("bonusValueOutOfRange"),
                         "0",
-                        Number.POSITIVE_INFINITY.toLocaleString(BCP47)
+                        Number.POSITIVE_INFINITY.toLocaleString(BCP47),
                     ),
                 });
             }
@@ -253,7 +261,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     content: MessageCreator.createReject(
                         localization.getTranslation("bonusValueOutOfRange"),
                         "0",
-                        beatmap.objects.toLocaleString(BCP47)
+                        beatmap.objects.toLocaleString(BCP47),
                     ),
                 });
             }
@@ -284,14 +292,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             $set: {
                 bonus: [...challenge.bonus.values()],
             },
-        }
+        },
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("modifyBonusFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -302,7 +310,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             challenge.challengeid,
             type,
             level.toLocaleString(BCP47),
-            value.toLocaleString(BCP47)
+            value.toLocaleString(BCP47),
         ),
     });
 };

@@ -50,7 +50,7 @@ export abstract class WhitelistManager extends Manager {
     static async blacklist(
         beatmap: MapInfo,
         reason: string,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: WhitelistManagerLocalization =
             this.getLocalization(language);
@@ -58,7 +58,7 @@ export abstract class WhitelistManager extends Manager {
         if (await this.isBlacklisted(beatmap.beatmapID)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("beatmapIsBlacklisted")
+                localization.getTranslation("beatmapIsBlacklisted"),
             );
         }
 
@@ -74,7 +74,7 @@ export abstract class WhitelistManager extends Manager {
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
-                `Successfully blacklisted \`${beatmap.fullTitle}\`.`
+                `Successfully blacklisted \`${beatmap.fullTitle}\`.`,
             ),
             ...embedOptions,
         });
@@ -91,7 +91,7 @@ export abstract class WhitelistManager extends Manager {
      */
     static async unblacklist(
         beatmap: MapInfo,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: WhitelistManagerLocalization =
             this.getLocalization(language);
@@ -99,7 +99,7 @@ export abstract class WhitelistManager extends Manager {
         if (!(await this.isBlacklisted(beatmap.beatmapID))) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("beatmapIsNotGraveyarded")
+                localization.getTranslation("beatmapIsNotGraveyarded"),
             );
         }
 
@@ -112,7 +112,7 @@ export abstract class WhitelistManager extends Manager {
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
-                `Successfully unblacklisted \`${beatmap.fullTitle}\`.`
+                `Successfully unblacklisted \`${beatmap.fullTitle}\`.`,
             ),
             ...embedOptions,
         });
@@ -129,7 +129,7 @@ export abstract class WhitelistManager extends Manager {
      */
     static async whitelist(
         beatmap: MapInfo,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: WhitelistManagerLocalization =
             this.getLocalization(language);
@@ -137,7 +137,14 @@ export abstract class WhitelistManager extends Manager {
         if (!this.isEligibleForWhitelist(beatmap.approved)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("beatmapIsNotGraveyarded")
+                localization.getTranslation("beatmapIsNotGraveyarded"),
+            );
+        }
+
+        if (beatmap.totalDifficulty === null) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("invalidBeatmapDifficulty"),
             );
         }
 
@@ -159,7 +166,7 @@ export abstract class WhitelistManager extends Manager {
         await DatabaseManager.elainaDb.collections.mapWhitelist.updateOne(
             { mapid: beatmap.beatmapID },
             updateQuery,
-            { upsert: true }
+            { upsert: true },
         );
 
         const embedOptions: BaseMessageOptions =
@@ -167,7 +174,7 @@ export abstract class WhitelistManager extends Manager {
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
-                `Successfully whitelisted \`${beatmap.fullTitle}\`.`
+                `Successfully whitelisted \`${beatmap.fullTitle}\`.`,
             ),
             ...embedOptions,
         });
@@ -184,7 +191,7 @@ export abstract class WhitelistManager extends Manager {
      */
     static async unwhitelist(
         beatmap: MapInfo,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: WhitelistManagerLocalization =
             this.getLocalization(language);
@@ -192,7 +199,7 @@ export abstract class WhitelistManager extends Manager {
         if (!this.isEligibleForWhitelist(beatmap.approved)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("beatmapIsNotGraveyarded")
+                localization.getTranslation("beatmapIsNotGraveyarded"),
             );
         }
 
@@ -207,7 +214,7 @@ export abstract class WhitelistManager extends Manager {
 
         await this.whitelistLogChannel.send({
             content: MessageCreator.createAccept(
-                `Successfully unwhitelisted \`${beatmap.fullTitle}\`.`
+                `Successfully unwhitelisted \`${beatmap.fullTitle}\`.`,
             ),
             ...embedOptions,
         });
@@ -222,12 +229,12 @@ export abstract class WhitelistManager extends Manager {
      * @returns Whether the beatmap is whitelisted.
      */
     static async getBeatmapWhitelistStatus(
-        hash: string
+        hash: string,
     ): Promise<WhitelistStatus> {
         const entry: MapWhitelist | null =
             await DatabaseManager.elainaDb.collections.mapWhitelist.getOne(
                 { hashid: hash },
-                { projection: { hashid: 1 } }
+                { projection: { hashid: 1 } },
             );
 
         if (!entry) {
@@ -260,7 +267,7 @@ export abstract class WhitelistManager extends Manager {
      */
     static async isBlacklisted(beatmapID: number): Promise<boolean> {
         return !!(await DatabaseManager.elainaDb.collections.mapBlacklist.getOne(
-            { beatmapID: beatmapID }
+            { beatmapID: beatmapID },
         ));
     }
 
@@ -280,7 +287,7 @@ export abstract class WhitelistManager extends Manager {
      * @param language The language to localize.
      */
     private static getLocalization(
-        language: Language
+        language: Language,
     ): WhitelistManagerLocalization {
         return new WhitelistManagerLocalization(language);
     }

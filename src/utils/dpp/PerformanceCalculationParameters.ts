@@ -15,7 +15,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
      * @param data The data.
      */
     static override from(
-        data: CloneablePerformanceCalculationParameters
+        data: CloneablePerformanceCalculationParameters,
     ): PerformanceCalculationParameters {
         const accuracy: Accuracy = new Accuracy(data.accuracy);
 
@@ -28,7 +28,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
                 ...data.customStatistics,
                 mods: ModUtil.pcStringToMods(data.customStatistics?.mods ?? ""),
             }),
-            data.sliderCheesePenalty
+            data.sliderCheesePenalty,
         );
     }
 
@@ -64,7 +64,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
         return !Precision.almostEqualsNumber(
             this.accuracy.value() * 100,
             this.inputAccuracy,
-            1e-2
+            1e-2,
         );
     }
 
@@ -79,15 +79,15 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
     constructor(
         accuracy: Accuracy,
         inputAccuracy: number = 100,
-        combo?: number,
+        combo?: number | null,
         tapPenalty: number = 1,
         customStatistics?: MapStats,
-        sliderCheesePenalty?: SliderCheeseInformation
+        sliderCheesePenalty?: SliderCheeseInformation,
     ) {
         super(customStatistics);
 
         this.accuracy = accuracy;
-        this.combo = combo;
+        this.combo = combo ?? undefined;
         this.tapPenalty = tapPenalty;
         this.sliderCheesePenalty = sliderCheesePenalty;
         this.inputAccuracy = inputAccuracy;
@@ -99,7 +99,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
      * @param attributes The difficulty attributes.
      */
     applyFromAttributes(
-        attributes: CacheableDifficultyAttributes<RawDifficultyAttributes>
+        attributes: CacheableDifficultyAttributes<RawDifficultyAttributes>,
     ): void {
         const objectCount: number =
             attributes.hitCircleCount +

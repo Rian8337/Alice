@@ -6,6 +6,7 @@ import { MapshareSubmissionKRTranslation } from "./translations/MapshareSubmissi
 
 export interface MapshareSubmissionStrings {
     readonly noBeatmapFound: string;
+    readonly unknownBeatmapDifficulty: string;
     readonly beatmapIsTooEasy: string;
     readonly beatmapHasLessThan50Objects: string;
     readonly beatmapHasNoCirclesOrSliders: string;

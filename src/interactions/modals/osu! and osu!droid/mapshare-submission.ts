@@ -18,17 +18,17 @@ import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const localization: MapshareSubmissionLocalization =
         new MapshareSubmissionLocalization(
-            await CommandHelper.getLocale(interaction)
+            await CommandHelper.getLocale(interaction),
         );
 
     const beatmapId: number = BeatmapManager.getBeatmapID(
-        interaction.fields.getTextInputValue("beatmap")
+        interaction.fields.getTextInputValue("beatmap"),
     )[0];
 
     if (!beatmapId) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapFound")
+                localization.getTranslation("noBeatmapFound"),
             ),
         });
     }
@@ -44,15 +44,15 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
                     uid: 1,
                     username: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -61,13 +61,21 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         beatmapId,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmapInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapFound")
+                localization.getTranslation("noBeatmapFound"),
+            ),
+        });
+    }
+
+    if (beatmapInfo.totalDifficulty === null) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("unknownBeatmapDifficulty"),
             ),
         });
     }
@@ -75,7 +83,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     if (beatmapInfo.totalDifficulty < 3) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapIsTooEasy")
+                localization.getTranslation("beatmapIsTooEasy"),
             ),
         });
     }
@@ -83,7 +91,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     if (beatmapInfo.objects < 50) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapHasLessThan50Objects")
+                localization.getTranslation("beatmapHasLessThan50Objects"),
             ),
         });
     }
@@ -91,7 +99,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     if (beatmapInfo.circles + beatmapInfo.sliders === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapHasNoCirclesOrSliders")
+                localization.getTranslation("beatmapHasNoCirclesOrSliders"),
             ),
         });
     }
@@ -99,7 +107,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     if (beatmapInfo.hitLength < 30) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapDurationIsLessThan30Secs")
+                localization.getTranslation("beatmapDurationIsLessThan30Secs"),
             ),
         });
     }
@@ -110,7 +118,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapIsWIPOrQualified")
+                localization.getTranslation("beatmapIsWIPOrQualified"),
             ),
         });
     }
@@ -122,7 +130,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         ) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("beatmapWasJustSubmitted")
+                    localization.getTranslation("beatmapWasJustSubmitted"),
                 ),
             });
         }
@@ -133,7 +141,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         ) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("beatmapWasJustUpdated")
+                    localization.getTranslation("beatmapWasJustUpdated"),
                 ),
             });
         }
@@ -141,13 +149,13 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     const submission: MapShare | null =
         await DatabaseManager.aliceDb.collections.mapShare.getByBeatmapId(
-            beatmapId
+            beatmapId,
         );
 
     if (submission) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapHasBeenUsed")
+                localization.getTranslation("beatmapHasBeenUsed"),
             ),
         });
     }
@@ -160,7 +168,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("summaryWordCountNotValid"),
-                wordCount.toLocaleString(BCP47)
+                wordCount.toLocaleString(BCP47),
             ),
         });
     }
@@ -172,7 +180,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
                 projection: {
                     _id: 1,
                 },
-            }
+            },
         );
 
     if (playerInfo) {
@@ -182,7 +190,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
                 $set: {
                     hasSubmittedMapShare: true,
                 },
-            }
+            },
         );
     } else {
         await DatabaseManager.aliceDb.collections.playerInfo.insert({
@@ -206,14 +214,14 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("submitFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("submitSuccess")
+            localization.getTranslation("submitSuccess"),
         ),
     });
 };

@@ -459,7 +459,7 @@ export class UserBind extends Manager {
             const calcParams: PerformanceCalculationParameters =
                 PerformanceCalculationParameters.from(params);
 
-            const { customStatistics, accuracy, combo } = calcParams;
+            const { customStatistics, accuracy } = calcParams;
 
             const entry: PrototypePPEntry = {
                 uid: score.uid,
@@ -477,7 +477,8 @@ export class UserBind extends Manager {
                 prevVisual: NumberHelper.round(perfResult.visual, 2),
                 mods: rebalAttribs.difficulty.mods,
                 accuracy: NumberHelper.round(accuracy.value() * 100, 2),
-                combo: combo ?? beatmapInfo.maxCombo,
+                // Guaranteed to not be null as the processor will assign it to max combo otherwise.
+                combo: calcParams.combo!,
                 miss: accuracy.nmiss,
                 speedMultiplier:
                     customStatistics && customStatistics.speedMultiplier !== 1

@@ -47,6 +47,8 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         noBeatmapProvided: "Hey, please enter a valid beatmap!",
         beatmapNotFound:
             "Hey, I cannot find the beatmap with the provided link or ID!",
+        beatmapMaxComboNotFound:
+            "I'm sorry, I'm unable to compute the maximum combo of the beatmap!",
         passValueOutOfRange:
             "Hey, that pass value is out of range! It must be between %s and %s.",
         bonusValueOutOfRange:
@@ -91,11 +93,11 @@ export class DailyENTranslation extends Translation<DailyStrings> {
             "Every day, there will be a new daily challenge to complete. Each challenges grant a different amount of points depending on how hard the challenge is. You can get points and %sAlice coins by passing the challenge. There will be a few bonuses that allows you to gain more points and %sAlice coins, too! Each challenge bonus level converts to 2 challenge points, which also converts to %s`4` Alice coins.\n\nThe weekly bounty challenge, which is only available once per week, grants more points and %sAlice coins as this challenge is considerably harder than any daily challenges. That's also why you have a week to complete it, too!",
         aboutQuestion2: "How can I submit challenges?",
         aboutAnswer2: `There will be a separate beatmap set for you to download in case you have played the original map. In fact, you ${bold(
-            "must"
+            "must",
         )} download the set in order to submit your play.\n\nOnce you complete a challenge, use the ${chatInputApplicationCommandMention(
             "daily",
             "submit",
-            "1075209201049153617"
+            "1075209201049153617",
         )} command to submit your play.`,
         aboutQuestion3: "How can I use my points and Alice coins?",
         aboutAnswer3:
@@ -104,11 +106,11 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         aboutAnswer4: `There is no leaderboard for %sAlice coins, however there is a leaderboard for points. You can use ${chatInputApplicationCommandMention(
             "daily",
             "leaderboard",
-            "1075209201049153617"
+            "1075209201049153617",
         )} to view the leaderboard.`,
         aboutQuestion5: "I have more questions that are not mentioned in here!",
         aboutAnswer5: `You can ask ${userMention(
-            "386742340968120321"
+            "386742340968120321",
         )} for more information about daily and weekly challenges.`,
         username: "Username",
         uid: "UID",
