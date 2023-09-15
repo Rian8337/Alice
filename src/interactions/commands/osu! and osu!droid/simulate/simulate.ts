@@ -57,21 +57,21 @@ import {
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: SimulateLocalization = new SimulateLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const beatmapID: number = BeatmapManager.getBeatmapID(
-        interaction.options.getString("beatmap") ?? ""
+        interaction.options.getString("beatmap") ?? "",
     )[0];
 
     const hash: string | undefined = BeatmapManager.getChannelLatestBeatmap(
-        interaction.channelId
+        interaction.channelId,
     );
 
     if (!beatmapID && !hash) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapProvided")
+                localization.getTranslation("noBeatmapProvided"),
             ),
         });
     }
@@ -82,7 +82,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapProvidedIsInvalid")
+                localization.getTranslation("beatmapProvidedIsInvalid"),
             ),
         });
     }
@@ -94,7 +94,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!modInput && !speedMultiplierInput) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noSimulateOptions")
+                localization.getTranslation("noSimulateOptions"),
             ),
         });
     }
@@ -135,19 +135,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         _id: 0,
                         uid: 1,
                     },
-                }
+                },
             );
 
             if (!bindInfo) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
-                            localization.language
+                            localization.language,
                         ).getTranslation(
                             discordid
                                 ? Constants.userNotBindedReject
-                                : Constants.selfNotBindedReject
-                        )
+                                : Constants.selfNotBindedReject,
+                        ),
                     ),
                 });
             }
@@ -158,7 +158,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerNotFound")
+                localization.getTranslation("playerNotFound"),
             ),
         });
     }
@@ -166,27 +166,27 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (player.recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerHasNoRecentPlays")
+                localization.getTranslation("playerHasNoRecentPlays"),
             ),
         });
     }
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID ?? hash,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmap) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
 
     const score: Score | null = await Score.getFromHash(
         player.uid,
-        beatmap.hash
+        beatmap.hash,
     );
 
     if (!score) {
@@ -195,8 +195,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     uid || discordid || username
                         ? "userScoreNotFound"
-                        : "selfScoreNotFound"
-                )
+                        : "selfScoreNotFound",
+                ),
             ),
         });
     }
@@ -205,16 +205,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     if (
         StringHelper.sortAlphabet(
-            score.mods.reduce((a, v) => a + v.acronym, "")
+            score.mods.reduce((a, v) => a + v.acronym, ""),
         ) ===
             StringHelper.sortAlphabet(
-                mods.reduce((a, v) => a + v.acronym, "")
+                mods.reduce((a, v) => a + v.acronym, ""),
             ) &&
         (speedMultiplierInput ?? 1) === score.speedMultiplier
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noSimulateOptions")
+                localization.getTranslation("noSimulateOptions"),
             ),
         });
     }
@@ -227,8 +227,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     uid || discordid || username
                         ? "userScoreNotFound"
-                        : "selfScoreNotFound"
-                )
+                        : "selfScoreNotFound",
+                ),
             ),
         });
     }
@@ -237,7 +237,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!beatmap.hasDownloadedBeatmap()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -281,12 +281,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         od: beatmap.od,
         mods: score.mods.filter(
             (v) =>
-                !ModUtil.speedChangingMods.some((m) => m.acronym === v.acronym)
+                !ModUtil.speedChangingMods.some((m) => m.acronym === v.acronym),
         ),
     }).calculate({ mode: Modes.droid, convertDroidOD: false }).od!;
     const realHitWindow: DroidHitWindow = new DroidHitWindow(realOD);
     const realIsPrecise: boolean = score.mods.some(
-        (m) => m instanceof ModPrecise
+        (m) => m instanceof ModPrecise,
     );
     const realSpeedMultiplier: number = new MapStats({
         speedMultiplier: score.speedMultiplier,
@@ -298,12 +298,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         od: beatmap.od,
         mods: mods.filter(
             (v) =>
-                !ModUtil.speedChangingMods.some((m) => m.acronym === v.acronym)
+                !ModUtil.speedChangingMods.some((m) => m.acronym === v.acronym),
         ),
     }).calculate({ mode: Modes.droid, convertDroidOD: false }).od!;
     const simulatedHitWindow: DroidHitWindow = new DroidHitWindow(simulatedOD);
     const simulatedIsPrecise: boolean = mods.some(
-        (m) => m instanceof ModPrecise
+        (m) => m instanceof ModPrecise,
     );
     const simulatedSpeedMultiplier: number = new MapStats({
         speedMultiplier: speedMultiplier,
@@ -324,7 +324,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const addSliderNestedResult = (
         object: SliderNestedHitObject,
-        wasHit: boolean = true
+        wasHit: boolean = true,
     ) => {
         if (wasHit) {
             ++currentCombo;
@@ -433,7 +433,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 // All nested objects were hit.
                 for (const nestedObject of object.nestedHitObjects.slice(
                     0,
-                    -1
+                    -1,
                 )) {
                     addSliderNestedResult(nestedObject);
                 }
@@ -449,14 +449,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 object.nestedHitObjects[0],
                 Math.abs(hitAccuracy) !==
                     Math.floor(
-                        simulatedHitWindow.hitWindowFor50(simulatedIsPrecise)
+                        simulatedHitWindow.hitWindowFor50(simulatedIsPrecise),
                     ) +
-                        13
+                        13,
             );
             for (let i = 1; i < object.nestedHitObjects.length - 1; ++i) {
                 addSliderNestedResult(
                     object.nestedHitObjects[i],
-                    objectData.tickset[i - 1]
+                    objectData.tickset[i - 1],
                 );
             }
 
@@ -505,10 +505,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     // Reprocess rank.
     let rank: ScoreRank;
-    const isHidden: boolean =
-        mods.some(
-            (m) => m instanceof ModHidden || m instanceof ModFlashlight
-        ) ?? false;
+    const isHidden: boolean = mods.some(
+        (m) => m instanceof ModHidden || m instanceof ModFlashlight,
+    );
     const hit300Ratio: number = accuracy.n300 / beatmap.objects;
 
     switch (true) {
@@ -556,7 +555,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 speedMultiplier:
                     interaction.options.getNumber("speedmultiplier") ?? 1,
                 isForceAR: !isNaN(<number>score.forcedAR),
-            })
+            }),
         );
 
     const droidAttribs: CompleteCalculationAttributes<
@@ -566,7 +565,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         beatmap.beatmapID,
         Modes.droid,
         PPCalculationMethod.live,
-        calcParams
+        calcParams,
     );
 
     const osuAttribs: CompleteCalculationAttributes<
@@ -576,7 +575,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         beatmap.beatmapID,
         Modes.osu,
         PPCalculationMethod.live,
-        calcParams
+        calcParams,
     );
 
     BeatmapManager.setChannelLatestBeatmap(interaction.channelId, score.hash);
@@ -586,13 +585,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,
         droidAttribs,
-        osuAttribs
+        osuAttribs,
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("simulatedPlayDisplay"),
-            player.username
+            player.username,
         ),
         embeds: [embed],
     });
