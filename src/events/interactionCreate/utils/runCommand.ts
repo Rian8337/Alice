@@ -24,7 +24,7 @@ import { consola } from "consola";
 
 export const run: EventUtil["run"] = async (
     client,
-    interaction: BaseInteraction
+    interaction: BaseInteraction,
 ) => {
     if (!interaction.isChatInputCommand()) {
         return;
@@ -32,7 +32,7 @@ export const run: EventUtil["run"] = async (
 
     // 3 seconds should be enough to get the user's locale
     const localization: RunCommandLocalization = new RunCommandLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const botOwnerExecution: boolean =
@@ -41,20 +41,20 @@ export const run: EventUtil["run"] = async (
     if (Config.isDebug && !botOwnerExecution) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                localization.getTranslation("debugModeActive")
+                localization.getTranslation("debugModeActive"),
             ),
             ephemeral: true,
         });
     }
 
     const command: SlashCommand | undefined = client.interactions.chatInput.get(
-        interaction.commandName
+        interaction.commandName,
     );
 
     if (!command) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                localization.getTranslation("commandNotFound")
+                localization.getTranslation("commandNotFound"),
             ),
             ephemeral: true,
         });
@@ -66,8 +66,8 @@ export const run: EventUtil["run"] = async (
             content: MessageCreator.createReject(
                 StringHelper.formatString(
                     localization.getTranslation("maintenanceMode"),
-                    Config.maintenanceReason
-                )
+                    Config.maintenanceReason,
+                ),
             ),
             ephemeral: true,
         });
@@ -77,12 +77,12 @@ export const run: EventUtil["run"] = async (
     if (
         !CommandHelper.isCommandExecutableInScope(
             interaction,
-            command.config.scope
+            command.config.scope,
         )
     ) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                localization.getTranslation("commandNotExecutableInChannel")
+                localization.getTranslation("commandNotExecutableInChannel"),
             ),
             ephemeral: true,
         });
@@ -92,17 +92,19 @@ export const run: EventUtil["run"] = async (
     if (
         !CommandHelper.userFulfillsCommandPermission(
             interaction,
-            command.config.permissions
+            command.config.permissions,
         )
     ) {
         return interaction.reply({
             content: MessageCreator.createReject(
                 `${new ConstantsLocalization(
-                    localization.language
+                    localization.language,
                 ).getTranslation(
-                    Constants.noPermissionReject
+                    Constants.noPermissionReject,
                 )} ${localization.getTranslation("requiredPermissions")}`,
-                PermissionHelper.getPermissionString(command.config.permissions)
+                PermissionHelper.getPermissionString(
+                    command.config.permissions,
+                ),
             ),
             ephemeral: true,
         });
@@ -124,7 +126,7 @@ export const run: EventUtil["run"] = async (
         ) {
             return interaction.reply({
                 content: MessageCreator.createReject(
-                    localization.getTranslation("commandInCooldown")
+                    localization.getTranslation("commandInCooldown"),
                 ),
                 ephemeral: true,
             });
@@ -144,28 +146,28 @@ export const run: EventUtil["run"] = async (
             // Channel command cooldown
             CommandUtilManager.channelDisabledCommands
                 .get(interaction.channelId)
-                ?.get(interaction.commandName)?.cooldown ?? 0
+                ?.get(interaction.commandName)?.cooldown ?? 0,
         );
 
         const globalCooldown: number = Math.max(
             // Global command cooldown
             CommandUtilManager.globallyDisabledCommands.get(
-                interaction.commandName
+                interaction.commandName,
             ) ?? 0,
             // Global cooldown
-            CommandUtilManager.globalCommandCooldown
+            CommandUtilManager.globalCommandCooldown,
         );
 
         CommandHelper.setCooldown(
             globalCooldown > channelCooldown ||
                 (globalCooldown === channelCooldown &&
                     (CommandUtilManager.globallyDisabledCommands.get(
-                        interaction.commandName
+                        interaction.commandName,
                     ) ||
                         CommandUtilManager.globalCommandCooldown))
                 ? globalCooldownKey
                 : channelCooldownKey,
-            Math.max(channelCooldown, globalCooldown)
+            Math.max(channelCooldown, globalCooldown),
         );
     }
 
@@ -245,7 +247,6 @@ export const run: EventUtil["run"] = async (
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("commandExecutionFailed"),
-                e.message
             ),
         });
 

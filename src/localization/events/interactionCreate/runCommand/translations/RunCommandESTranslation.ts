@@ -17,6 +17,7 @@ export class RunCommandESTranslation extends Translation<RunCommandStrings> {
         requiredPermissions: "Tu necesitas estos permisos: %s",
         commandInCooldown:
             "Hey, tranquilo con los comandos! Necesito descansar no?",
-        commandExecutionFailed: "No puedo ejecutar el comando: %s.",
+        commandExecutionFailed:
+            "Lo siento, encontré un error al procesar el comando.",
     };
 }
