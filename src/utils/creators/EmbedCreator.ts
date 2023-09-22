@@ -310,9 +310,6 @@ export abstract class EmbedCreator {
                         Symbols.star
                     }`,
                 )}\n` +
-                `Recalculated: ${bold(
-                    playerInfo.dppRecalcComplete ? "Yes" : "No",
-                )}\n` +
                 `[${localization.getTranslation(
                     "ppProfile",
                 )}](https://droidpp.osudroid.moe/profile/${playerInfo.uid})`,

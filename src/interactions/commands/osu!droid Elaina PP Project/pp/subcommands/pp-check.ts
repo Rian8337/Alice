@@ -45,7 +45,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             username: 1,
             pp: 1,
             pptotal: 1,
-            dppRecalcComplete: 1,
         },
     };
 
