@@ -420,7 +420,7 @@ export abstract class EmbedCreator {
                             customStatistics,
                         )}\n${bold(
                             `${localization.getTranslation("result")}`,
-                        )}: ${combo}/${beatmap.maxCombo}x | ${(
+                        )}: ${combo}/${droidDiffAttribs.maxCombo}x | ${(
                             accuracy.value() * 100
                         ).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${
                             accuracy.n50
