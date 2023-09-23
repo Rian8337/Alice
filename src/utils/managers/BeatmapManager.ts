@@ -66,10 +66,11 @@ export abstract class BeatmapManager extends Manager {
      */
     static async getBeatmap<T extends boolean = true>(
         beatmapIdOrHash: number | string,
-        options?: BeatmapRetrievalOptions & { checkFile?: T }
+        options?: BeatmapRetrievalOptions & { checkFile?: T },
     ): Promise<MapInfo<T> | null> {
         const oldCache: MapInfo | undefined = CacheManager.beatmapCache.find(
-            (v) => v.beatmapID === beatmapIdOrHash || v.hash === beatmapIdOrHash
+            (v) =>
+                v.beatmapID === beatmapIdOrHash || v.hash === beatmapIdOrHash,
         );
 
         if (oldCache && !options?.forceCheck) {
@@ -82,7 +83,7 @@ export abstract class BeatmapManager extends Manager {
 
         const newCache: MapInfo | null = await MapInfo.getInformation(
             beatmapIdOrHash,
-            options?.checkFile
+            options?.checkFile,
         );
 
         if (!newCache) {
@@ -105,7 +106,7 @@ export abstract class BeatmapManager extends Manager {
      */
     static async getBeatmaps(
         beatmapsetID: number,
-        checkFile: boolean = true
+        checkFile: boolean = true,
     ): Promise<MapInfo[]> {
         const apiRequestBuilder: OsuAPIRequestBuilder =
             new OsuAPIRequestBuilder();
@@ -123,7 +124,7 @@ export abstract class BeatmapManager extends Manager {
         const beatmaps: MapInfo[] = [];
 
         const beatmapsData: OsuAPIResponse[] = JSON.parse(
-            result.data.toString("utf-8")
+            result.data.toString("utf-8"),
         );
 
         for (const beatmapData of beatmapsData) {
@@ -256,7 +257,7 @@ export abstract class BeatmapManager extends Manager {
 
             if (
                 [s.indexOf("/beatmapsets/"), s.indexOf("/s/")].every(
-                    (v) => v === -1
+                    (v) => v === -1,
                 )
             ) {
                 continue;
@@ -364,7 +365,7 @@ export abstract class BeatmapManager extends Manager {
                 return "#000000";
             default:
                 return HelperFunctions.rgbToHex(
-                    this.difficultyColorSpectrum(rating)
+                    this.difficultyColorSpectrum(rating),
                 );
         }
     }
@@ -376,7 +377,7 @@ export abstract class BeatmapManager extends Manager {
      * @returns The generated `AttachmentBuilder`.
      */
     static getBeatmapDifficultyIconAttachment(
-        rating: number
+        rating: number,
     ): AttachmentBuilder {
         return new AttachmentBuilder(this.getBeatmapDifficultyIcon(rating), {
             name: `osu-${rating.toFixed(2)}.png`,
@@ -429,7 +430,7 @@ export abstract class BeatmapManager extends Manager {
     static showStatistics(
         beatmapInfo: MapInfo,
         option: number,
-        stats?: MapStats
+        stats?: MapStats,
     ): string {
         const mapParams = {
             cs: beatmapInfo.cs,
@@ -452,7 +453,7 @@ export abstract class BeatmapManager extends Manager {
         switch (option) {
             case 0: {
                 const mapStatistics: MapStats = new MapStats(
-                    mapParams
+                    mapParams,
                 ).calculate();
 
                 let string: string = `${beatmapInfo.fullTitle}${
@@ -488,43 +489,43 @@ export abstract class BeatmapManager extends Manager {
                 }${bold(
                     hyperlink(
                         "Beatmap Preview",
-                        `https://osu-preview.jmir.ml/preview#${beatmapInfo.beatmapID}`
-                    )
+                        `https://osu-preview.jmir.ml/preview#${beatmapInfo.beatmapID}`,
+                    ),
                 )}\n${bold("Download")}: ${hyperlink(
                     "osu!",
-                    `https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}`
+                    `https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}`,
                 )}${
                     beatmapInfo.videoAvailable
                         ? ` ${hyperlink(
                               "(no video)",
-                              `https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}n`
+                              `https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}n`,
                           )}`
                         : ""
                 } - ${hyperlink(
                     "Chimu",
-                    `https://chimu.moe/en/d/${beatmapInfo.beatmapsetID}`
+                    `https://chimu.moe/en/d/${beatmapInfo.beatmapsetID}`,
                 )} - ${hyperlink(
                     "Sayobot",
-                    `https://txy1.sayobot.cn/beatmaps/download/full/${beatmapInfo.beatmapsetID}`
+                    `https://txy1.sayobot.cn/beatmaps/download/full/${beatmapInfo.beatmapsetID}`,
                 )}${
                     beatmapInfo.videoAvailable
                         ? ` ${hyperlink(
                               "(no video)",
-                              `https://txy1.sayobot.cn/beatmaps/download/novideo/${beatmapInfo.beatmapsetID}`
+                              `https://txy1.sayobot.cn/beatmaps/download/novideo/${beatmapInfo.beatmapsetID}`,
                           )}`
                         : ""
                 } - ${hyperlink(
                     "Beatconnect",
-                    `https://beatconnect.io/b/${beatmapInfo.beatmapsetID}/`
+                    `https://beatconnect.io/b/${beatmapInfo.beatmapsetID}/`,
                 )} - ${hyperlink(
                     "Nerina",
-                    `https://nerina.pw/d/${beatmapInfo.beatmapsetID}`
+                    `https://nerina.pw/d/${beatmapInfo.beatmapsetID}`,
                 )}${
                     beatmapInfo.approved >= RankedStatus.ranked &&
                     beatmapInfo.approved !== RankedStatus.qualified
                         ? ` - ${hyperlink(
                               "Ripple",
-                              `https://storage.ripple.moe/d/${beatmapInfo.beatmapsetID}`
+                              `https://storage.ripple.moe/d/${beatmapInfo.beatmapsetID}`,
                           )}`
                         : ""
                 }`;
@@ -533,7 +534,7 @@ export abstract class BeatmapManager extends Manager {
                     for (let i = 0; i < beatmapInfo.packs.length; i++) {
                         string += hyperlink(
                             beatmapInfo.packs[i],
-                            `https://osu.ppy.sh/beatmaps/packs/${beatmapInfo.packs[i]}`
+                            `https://osu.ppy.sh/beatmaps/packs/${beatmapInfo.packs[i]}`,
                         );
                         if (i + 1 < beatmapInfo.packs.length) {
                             string += " - ";
@@ -547,7 +548,7 @@ export abstract class BeatmapManager extends Manager {
             }
             case 2:
                 return `${bold("Circles")}: ${beatmapInfo.circles} - ${bold(
-                    "Sliders"
+                    "Sliders",
                 )}: ${beatmapInfo.sliders} - ${bold("Spinners")}: ${
                     beatmapInfo.spinners
                 }`;
@@ -560,73 +561,73 @@ export abstract class BeatmapManager extends Manager {
                 }).calculate({ mode: Modes.droid });
 
                 const droidModifiedStats: MapStats = new MapStats(
-                    mapParams
+                    mapParams,
                 ).calculate({ mode: Modes.droid });
 
                 droidOriginalStats.cs = NumberHelper.round(
                     droidOriginalStats.cs!,
-                    2
+                    2,
                 );
                 droidOriginalStats.ar = NumberHelper.round(
                     droidOriginalStats.ar!,
-                    2
+                    2,
                 );
                 droidOriginalStats.od = NumberHelper.round(
                     droidOriginalStats.od!,
-                    2
+                    2,
                 );
                 droidOriginalStats.hp = NumberHelper.round(
                     droidOriginalStats.hp!,
-                    2
+                    2,
                 );
 
                 droidModifiedStats.cs = NumberHelper.round(
                     droidModifiedStats.cs!,
-                    2
+                    2,
                 );
                 droidModifiedStats.ar = NumberHelper.round(
                     droidModifiedStats.ar!,
-                    2
+                    2,
                 );
                 droidModifiedStats.od = NumberHelper.round(
                     droidModifiedStats.od!,
-                    2
+                    2,
                 );
                 droidModifiedStats.hp = NumberHelper.round(
                     droidModifiedStats.hp!,
-                    2
+                    2,
                 );
 
                 const maxScore: number =
                     beatmapInfo.beatmap?.maxDroidScore(
-                        new MapStats(mapParams)
+                        new MapStats(mapParams),
                     ) ?? 0;
 
                 return `${bold("CS")}: ${droidOriginalStats.cs}${
                     Precision.almostEqualsNumber(
                         droidOriginalStats.cs!,
-                        droidModifiedStats.cs!
+                        droidModifiedStats.cs!,
                     )
                         ? ""
                         : ` (${droidModifiedStats.cs})`
                 } - ${bold("AR")}: ${droidOriginalStats.ar}${
                     Precision.almostEqualsNumber(
                         droidOriginalStats.ar!,
-                        droidModifiedStats.ar!
+                        droidModifiedStats.ar!,
                     )
                         ? ""
                         : ` (${droidModifiedStats.ar})`
                 } - ${bold("OD")}: ${droidOriginalStats.od}${
                     Precision.almostEqualsNumber(
                         droidOriginalStats.od!,
-                        droidModifiedStats.od!
+                        droidModifiedStats.od!,
                     )
                         ? ""
                         : ` (${droidModifiedStats.od})`
                 } - ${bold("HP")}: ${droidOriginalStats.hp}${
                     Precision.almostEqualsNumber(
                         droidOriginalStats.hp!,
-                        droidModifiedStats.hp!
+                        droidModifiedStats.hp!,
                     )
                         ? ""
                         : ` (${droidModifiedStats.hp})`
@@ -638,7 +639,7 @@ export abstract class BeatmapManager extends Manager {
             }
             case 4: {
                 const mapStatistics: MapStats = new MapStats(
-                    mapParams
+                    mapParams,
                 ).calculate();
 
                 mapStatistics.cs = NumberHelper.round(mapStatistics.cs!, 2);
@@ -652,28 +653,28 @@ export abstract class BeatmapManager extends Manager {
                 return `${bold("CS")}: ${beatmapInfo.cs}${
                     Precision.almostEqualsNumber(
                         beatmapInfo.cs,
-                        mapStatistics.cs!
+                        mapStatistics.cs!,
                     )
                         ? ""
                         : ` (${mapStatistics.cs})`
                 } - ${bold("AR")}: ${beatmapInfo.ar}${
                     Precision.almostEqualsNumber(
                         beatmapInfo.ar,
-                        mapStatistics.ar!
+                        mapStatistics.ar!,
                     )
                         ? ""
                         : ` (${mapStatistics.ar})`
                 } - ${bold("OD")}: ${beatmapInfo.od}${
                     Precision.almostEqualsNumber(
                         beatmapInfo.od,
-                        mapStatistics.od!
+                        mapStatistics.od!,
                     )
                         ? ""
                         : ` (${mapStatistics.od})`
                 } - ${bold("HP")}: ${beatmapInfo.hp}${
                     Precision.almostEqualsNumber(
                         beatmapInfo.hp,
-                        mapStatistics.hp!
+                        mapStatistics.hp!,
                     )
                         ? ""
                         : ` (${mapStatistics.hp})`
@@ -685,12 +686,12 @@ export abstract class BeatmapManager extends Manager {
             }
             case 5: {
                 const mapStatistics: MapStats = new MapStats(
-                    mapParams
+                    mapParams,
                 ).calculate();
 
                 const convertedBPM: number = this.convertBPM(
                     beatmapInfo.bpm,
-                    mapStatistics
+                    mapStatistics,
                 );
                 let string = `${bold("BPM")}: `;
                 if (beatmapInfo.beatmap) {
@@ -701,21 +702,23 @@ export abstract class BeatmapManager extends Manager {
                         string += `${beatmapInfo.bpm}${
                             !Precision.almostEqualsNumber(
                                 beatmapInfo.bpm,
-                                convertedBPM
+                                convertedBPM,
                             )
                                 ? ` (${convertedBPM})`
                                 : ""
                         } - ${bold("Length")}: ${this.convertTime(
                             beatmapInfo.hitLength,
                             beatmapInfo.totalLength,
-                            mapStatistics
-                        )} - ${bold("Max Combo")}: ${beatmapInfo.maxCombo}x`;
+                            mapStatistics,
+                        )} - ${bold("Max Combo")}: ${
+                            beatmapInfo.maxCombo ?? "Unknown"
+                        }x`;
                     } else {
                         let maxBPM: number = beatmapInfo.bpm;
                         let minBPM: number = beatmapInfo.bpm;
                         for (const t of uninheritedTimingPoints) {
                             const bpm: number = parseFloat(
-                                (60000 / t.msPerBeat).toFixed(2)
+                                (60000 / t.msPerBeat).toFixed(2),
                             );
                             maxBPM = Math.max(maxBPM, bpm);
                             minBPM = Math.min(minBPM, bpm);
@@ -723,20 +726,20 @@ export abstract class BeatmapManager extends Manager {
                         maxBPM = Math.round(maxBPM);
                         minBPM = Math.round(minBPM);
                         const speedMulMinBPM: number = Math.round(
-                            minBPM * mapStatistics.speedMultiplier
+                            minBPM * mapStatistics.speedMultiplier,
                         );
                         const speedMulMaxBPM: number = Math.round(
-                            maxBPM * mapStatistics.speedMultiplier
+                            maxBPM * mapStatistics.speedMultiplier,
                         );
 
                         string +=
                             Precision.almostEqualsNumber(
                                 minBPM,
-                                beatmapInfo.bpm
+                                beatmapInfo.bpm,
                             ) &&
                             Precision.almostEqualsNumber(
                                 maxBPM,
-                                beatmapInfo.bpm
+                                beatmapInfo.bpm,
                             )
                                 ? `${beatmapInfo.bpm} `
                                 : `${minBPM}-${maxBPM} (${beatmapInfo.bpm}) `;
@@ -744,13 +747,13 @@ export abstract class BeatmapManager extends Manager {
                         if (
                             !Precision.almostEqualsNumber(
                                 beatmapInfo.bpm,
-                                convertedBPM
+                                convertedBPM,
                             )
                         ) {
                             if (
                                 !Precision.almostEqualsNumber(
                                     speedMulMinBPM,
-                                    speedMulMaxBPM
+                                    speedMulMaxBPM,
                                 )
                             ) {
                                 string += `(${speedMulMinBPM}-${speedMulMaxBPM} (${convertedBPM})) `;
@@ -762,34 +765,34 @@ export abstract class BeatmapManager extends Manager {
                         string += `- ${bold("Length")}: ${this.convertTime(
                             beatmapInfo.hitLength,
                             beatmapInfo.totalLength,
-                            mapStatistics
+                            mapStatistics,
                         )} - ${bold("Max Combo")}: ${beatmapInfo.maxCombo}x`;
                     }
                 } else {
                     string += `${beatmapInfo.bpm}${
                         !Precision.almostEqualsNumber(
                             beatmapInfo.bpm,
-                            convertedBPM
+                            convertedBPM,
                         )
                             ? ` (${convertedBPM})`
                             : ""
                     } - ${bold("Length")}: ${this.convertTime(
                         beatmapInfo.hitLength,
                         beatmapInfo.totalLength,
-                        mapStatistics
+                        mapStatistics,
                     )} - ${bold("Max Combo")}: ${beatmapInfo.maxCombo}x`;
                 }
                 return string;
             }
             case 6:
                 return `${bold(
-                    "Last Update"
+                    "Last Update",
                 )}: ${beatmapInfo.lastUpdate.toUTCString()} | ${bold(
-                    this.convertStatus(beatmapInfo.approved)
+                    this.convertStatus(beatmapInfo.approved),
                 )}`;
             case 7:
                 return `❤️ ${bold(
-                    beatmapInfo.favorites.toLocaleString()
+                    beatmapInfo.favorites.toLocaleString(),
                 )} - ▶️ ${bold(beatmapInfo.plays.toLocaleString())}`;
             default:
                 throw {
@@ -856,7 +859,7 @@ export abstract class BeatmapManager extends Manager {
     static convertTime(
         hitLength: number,
         totalLength: number,
-        stats: MapStats
+        stats: MapStats,
     ): string {
         hitLength /= stats.speedMultiplier;
         totalLength /= stats.speedMultiplier;
