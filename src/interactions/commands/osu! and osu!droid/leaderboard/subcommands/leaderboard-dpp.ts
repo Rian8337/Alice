@@ -13,22 +13,22 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const clan: string | null = interaction.options.getString("clan");
 
     await InteractionHelper.deferReply(interaction);
 
-    const res: Collection<string, UserBind> =
+    const res: Collection<number, UserBind> =
         await DatabaseManager.elainaDb.collections.userBind.getDPPLeaderboard(
-            clan ?? undefined
+            clan ?? undefined,
         );
 
     if (res.size === 0 && clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("dppLeaderboardClanNotFound")
+                localization.getTranslation("dppLeaderboardClanNotFound"),
             ),
         });
     }
@@ -36,7 +36,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const page: number = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,
         1,
-        Math.ceil(res.size / 20)
+        Math.ceil(res.size / 20),
     );
 
     const entries: UserBind[] = [...res.values()];
@@ -45,10 +45,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const startIndex: number = 20 * (page - 1);
         const usersToDisplay: UserBind[] = entries.slice(
             startIndex,
-            20 + startIndex
+            20 + startIndex,
         );
         const usernameLengths: number[] = usersToDisplay.map((v) =>
-            StringHelper.getUnicodeStringLength(v.username.trim())
+            StringHelper.getUnicodeStringLength(v.username.trim()),
         );
 
         const longestUsernameLength: number = Math.max(...usernameLengths, 16);
@@ -62,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .padEnd(4)} | ${localization.getTranslation("pp")}\n`;
 
         for (let i = 0; i < 20; ++i) {
-            const player: UserBind | undefined = entries[i];
+            const player: UserBind | undefined = usersToDisplay[i];
 
             if (player) {
                 output += `${(startIndex + i + 1)
@@ -76,7 +76,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     .padEnd(4)} | ${(player.pptotal ?? 0).toFixed(2)}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
-                    longestUsernameLength
+                    longestUsernameLength,
                 )} | ${"-".padEnd(6)} | ${"-".padEnd(4)} | -`;
             }
 
@@ -93,7 +93,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         page,
         Math.ceil(res.size / 20),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

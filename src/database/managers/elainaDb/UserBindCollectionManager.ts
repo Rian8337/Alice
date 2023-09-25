@@ -22,7 +22,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
     UserBind
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseUserBind
+        data: DatabaseUserBind,
     ) => UserBind = UserBind;
 
     override get defaultDocument(): DatabaseUserBind {
@@ -60,12 +60,12 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     async getDPPUnscannedPlayers(
         amount: number,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<DiscordCollection<Snowflake, UserBind>> {
         const userBind: DatabaseUserBind[] = await this.collection
             .find(
                 { dppScanComplete: { $ne: true } },
-                this.processFindOptions(options)
+                this.processFindOptions(options),
             )
             .sort({ pptotal: -1 })
             .limit(amount)
@@ -73,7 +73,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
 
         return ArrayHelper.arrayToCollection(
             userBind.map((v) => new UserBind(v)),
-            "discordid"
+            "discordid",
         );
     }
 
@@ -86,7 +86,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     async getRecalcUnscannedPlayers(
         amount: 1,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<UserBind | null>;
 
     /**
@@ -98,17 +98,17 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     async getRecalcUnscannedPlayers(
         amount: Exclude<number, 1>,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<DiscordCollection<Snowflake, UserBind>>;
 
     async getRecalcUnscannedPlayers(
         amount: number,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<DiscordCollection<Snowflake, UserBind> | UserBind | null> {
         const userBind: DatabaseUserBind[] = await this.collection
             .find(
                 { dppRecalcComplete: { $ne: true } },
-                this.processFindOptions(options)
+                this.processFindOptions(options),
             )
             .sort({ pptotal: -1 })
             .limit(amount)
@@ -120,7 +120,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
 
         return ArrayHelper.arrayToCollection(
             userBind.map((v) => new UserBind(v)),
-            "discordid"
+            "discordid",
         );
     }
 
@@ -148,7 +148,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         user: User,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<UserBind | null>;
 
     /**
@@ -159,12 +159,12 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         userId: Snowflake,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<UserBind | null>;
 
     getFromUser(
         userOrId: User | Snowflake,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<UserBind | null> {
         if (userOrId instanceof User && userOrId.bot) {
             return Promise.resolve(null);
@@ -174,7 +174,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
             {
                 discordid: userOrId instanceof User ? userOrId.id : userOrId,
             },
-            options
+            options,
         );
     }
 
@@ -186,7 +186,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     getFromUid(
         uid: number,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<UserBind | null> {
         return this.getOne({ previous_bind: { $all: [uid] } }, options);
     }
@@ -199,7 +199,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     getFromUsername(
         username: string,
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): Promise<UserBind | null> {
         return this.getOne({ username: username }, options);
     }
@@ -210,8 +210,8 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      * @param clan The clan to get the leaderboard for.
      */
     async getDPPLeaderboard(
-        clan?: string
-    ): Promise<DiscordCollection<string, UserBind>> {
+        clan?: string,
+    ): Promise<DiscordCollection<number, UserBind>> {
         const query: Filter<WithId<DatabaseUserBind>> = {};
 
         if (clan) {
@@ -224,20 +224,19 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
                 this.processFindOptions({
                     projection: {
                         _id: 0,
-                        discordid: 1,
                         uid: 1,
                         pptotal: 1,
                         playc: 1,
                         username: 1,
                     },
-                })
+                }),
             )
             .sort({ pptotal: -1 })
             .toArray();
 
         return ArrayHelper.arrayToCollection(
             userBind.map((v) => new UserBind(v)),
-            "discordid"
+            "uid",
         );
     }
 
@@ -263,7 +262,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
                 projection: {
                     _id: 0,
                 },
-            }
+            },
         ));
     }
 
@@ -276,7 +275,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     async searchPlayersForAutocomplete(
         searchQuery: string | RegExp,
-        amount: number = 25
+        amount: number = 25,
     ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
         let regExp: RegExp;
 
@@ -304,10 +303,10 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     async updateRoleConnectionMetadata(): Promise<OperationResult> {
         const guild: Guild = await this.client.guilds.fetch(
-            Constants.mainServer
+            Constants.mainServer,
         );
         const role: Role | null = await guild.roles.fetch(
-            Constants.dppProfileDisplayerRole
+            Constants.dppProfileDisplayerRole,
         );
 
         if (!role) {
@@ -328,7 +327,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
                         _id: 0,
                         discordid: 1,
                     },
-                })
+                }),
             )
             .toArray();
 
@@ -342,12 +341,12 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
                     $in: userIDs,
                 },
             },
-            { $unset: { dailyRoleMetadataUpdateComplete: "" } }
+            { $unset: { dailyRoleMetadataUpdateComplete: "" } },
         );
     }
 
     protected override processFindOptions(
-        options?: FindOptions<DatabaseUserBind>
+        options?: FindOptions<DatabaseUserBind>,
     ): FindOptions<DatabaseUserBind> | undefined {
         if (options?.projection) {
             options.projection.discordid = 1;
