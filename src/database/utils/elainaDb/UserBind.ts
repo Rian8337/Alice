@@ -509,18 +509,16 @@ export class UserBind extends Manager {
             newList.set(ppEntry.hash, entry);
         }
 
-        consola.info(
-            `${this.pptotal} ⮕  ${DPPHelper.calculateFinalPerformancePoints(
-                newList,
-            ).toFixed(2)}`,
-        );
+        const newTotal = DPPHelper.calculateFinalPerformancePoints(newList);
+
+        consola.info(`${this.pptotal} ⮕  ${newTotal.toFixed(2)}`);
 
         return DatabaseManager.aliceDb.collections.prototypePP.updateOne(
             { discordid: this.discordid },
             {
                 $set: {
                     pp: [...newList.values()],
-                    pptotal: DPPHelper.calculateFinalPerformancePoints(newList),
+                    pptotal: newTotal,
                     prevpptotal: this.pptotal,
                     lastUpdate: Date.now(),
                     previous_bind: this.previous_bind,
