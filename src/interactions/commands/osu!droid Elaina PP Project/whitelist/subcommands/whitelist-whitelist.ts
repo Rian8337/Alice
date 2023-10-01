@@ -106,9 +106,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         value: `${localization.getTranslation("starRating")}:\n${beatmaps
             .map(
                 (v) =>
-                    `- [${v.version}](https://osu.ppy.sh/b/${
-                        v.beatmapID
-                    }) - ${bold(
+                    `- [${v.version}](${v.beatmapLink}) - ${bold(
                         v.totalDifficulty !== null
                             ? v.totalDifficulty.toFixed(2)
                             : "Unknown",

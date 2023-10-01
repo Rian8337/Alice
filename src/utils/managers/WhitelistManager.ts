@@ -55,7 +55,7 @@ export abstract class WhitelistManager extends Manager {
         const localization: WhitelistManagerLocalization =
             this.getLocalization(language);
 
-        if (await this.isBlacklisted(beatmap.beatmapID)) {
+        if (await this.isBlacklisted(beatmap.beatmapId)) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("beatmapIsBlacklisted"),
@@ -63,7 +63,7 @@ export abstract class WhitelistManager extends Manager {
         }
 
         await DatabaseManager.elainaDb.collections.mapBlacklist.insert({
-            beatmapID: beatmap.beatmapID,
+            beatmapID: beatmap.beatmapId,
             reason: reason,
         });
 
@@ -96,7 +96,7 @@ export abstract class WhitelistManager extends Manager {
         const localization: WhitelistManagerLocalization =
             this.getLocalization(language);
 
-        if (!(await this.isBlacklisted(beatmap.beatmapID))) {
+        if (!(await this.isBlacklisted(beatmap.beatmapId))) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("beatmapIsNotGraveyarded"),
@@ -104,7 +104,7 @@ export abstract class WhitelistManager extends Manager {
         }
 
         await DatabaseManager.elainaDb.collections.mapBlacklist.deleteOne({
-            beatmapID: beatmap.beatmapID,
+            beatmapID: beatmap.beatmapId,
         });
 
         const embedOptions: BaseMessageOptions =
@@ -164,7 +164,7 @@ export abstract class WhitelistManager extends Manager {
         };
 
         await DatabaseManager.elainaDb.collections.mapWhitelist.updateOne(
-            { mapid: beatmap.beatmapID },
+            { mapid: beatmap.beatmapId },
             updateQuery,
             { upsert: true },
         );
@@ -204,7 +204,7 @@ export abstract class WhitelistManager extends Manager {
         }
 
         await DatabaseManager.elainaDb.collections.mapWhitelist.deleteOne({
-            mapid: beatmap.beatmapID,
+            mapid: beatmap.beatmapId,
         });
 
         await DPPHelper.deletePlays(beatmap.hash);

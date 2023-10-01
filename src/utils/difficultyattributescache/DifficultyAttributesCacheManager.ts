@@ -12,7 +12,7 @@ import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/
  * A cache manager for difficulty attributes.
  */
 export abstract class DifficultyAttributesCacheManager<
-    T extends RawDifficultyAttributes
+    T extends RawDifficultyAttributes,
 > {
     /**
      * The type of the attribute.
@@ -65,7 +65,7 @@ export abstract class DifficultyAttributesCacheManager<
             "files",
             "difficultyattributescache",
             attributeTypeFolder,
-            gamemodeFolder
+            gamemodeFolder,
         );
     }
 
@@ -80,7 +80,7 @@ export abstract class DifficultyAttributesCacheManager<
      * @param beatmapInfo The information about the beatmap.
      */
     getBeatmapAttributes(
-        beatmapInfo: MapInfo
+        beatmapInfo: MapInfo,
     ): CachedDifficultyAttributes<T> | null {
         return this.getCache(beatmapInfo);
     }
@@ -93,7 +93,7 @@ export abstract class DifficultyAttributesCacheManager<
      */
     getDifficultyAttributes(
         beatmapInfo: MapInfo,
-        attributeName: string
+        attributeName: string,
     ): CacheableDifficultyAttributes<T> | null {
         return (
             this.getCache(beatmapInfo)?.difficultyAttributes[attributeName] ??
@@ -116,10 +116,10 @@ export abstract class DifficultyAttributesCacheManager<
         difficultyAttributes: T,
         oldStatistics: boolean = false,
         customSpeedMultiplier: number = 1,
-        customForceAR?: number
+        customForceAR?: number,
     ): CacheableDifficultyAttributes<T> {
         const cache: CachedDifficultyAttributes<T> = this.getBeatmapAttributes(
-            beatmapInfo
+            beatmapInfo,
         ) ?? {
             lastUpdate: Date.now(),
             difficultyAttributes: {},
@@ -129,7 +129,7 @@ export abstract class DifficultyAttributesCacheManager<
             difficultyAttributes.mods,
             oldStatistics,
             customSpeedMultiplier,
-            customForceAR
+            customForceAR,
         );
 
         cache.difficultyAttributes[attributeName] = {
@@ -137,8 +137,8 @@ export abstract class DifficultyAttributesCacheManager<
             mods: undefined,
         };
 
-        this.cache.set(beatmapInfo.beatmapID, cache);
-        this.cacheToSave.set(beatmapInfo.beatmapID, cache);
+        this.cache.set(beatmapInfo.beatmapId, cache);
+        this.cacheToSave.set(beatmapInfo.beatmapId, cache);
 
         return cache.difficultyAttributes[attributeName];
     }
@@ -155,7 +155,7 @@ export abstract class DifficultyAttributesCacheManager<
         mods: Mod[] = [],
         oldStatistics: boolean = false,
         customSpeedMultiplier: number = 1,
-        customForceAR?: number
+        customForceAR?: number,
     ): string {
         let attributeName: string = "";
 
@@ -168,7 +168,7 @@ export abstract class DifficultyAttributesCacheManager<
                         }
 
                         return a + m.droidString;
-                    }, "") || "-"
+                    }, "") || "-",
                 );
                 break;
             case Modes.osu:
@@ -211,7 +211,7 @@ export abstract class DifficultyAttributesCacheManager<
                 const cache: CachedDifficultyAttributes<T> = JSON.parse(
                     await readFile(join(this.folderPath, fileName), {
                         encoding: "utf-8",
-                    })
+                    }),
                 );
 
                 this.cache.set(beatmapId, cache);
@@ -234,7 +234,7 @@ export abstract class DifficultyAttributesCacheManager<
         for (const [beatmapId, cache] of this.cacheToSave) {
             await writeFile(
                 join(this.folderPath, `${beatmapId}.json`),
-                JSON.stringify(cache)
+                JSON.stringify(cache),
             );
         }
 
@@ -249,10 +249,10 @@ export abstract class DifficultyAttributesCacheManager<
      * @param beatmapInfo The information about the beatmap.
      */
     private getCache(
-        beatmapInfo: MapInfo
+        beatmapInfo: MapInfo,
     ): CachedDifficultyAttributes<T> | null {
         const cache: CachedDifficultyAttributes<T> | undefined = this.cache.get(
-            beatmapInfo.beatmapID
+            beatmapInfo.beatmapId,
         );
 
         if (!cache) {
@@ -260,7 +260,7 @@ export abstract class DifficultyAttributesCacheManager<
         }
 
         if (cache.lastUpdate < beatmapInfo.lastUpdate.getTime()) {
-            this.invalidateCache(beatmapInfo.beatmapID);
+            this.invalidateCache(beatmapInfo.beatmapId);
             return null;
         }
 

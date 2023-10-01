@@ -193,7 +193,7 @@ export abstract class EmbedCreator {
                         calculationParams?.customStatistics,
                     ),
             )
-            .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
+            .setURL(beatmapInfo.beatmapLink)
             .addFields(
                 {
                     name: bold(
@@ -608,10 +608,10 @@ export abstract class EmbedCreator {
                     Symbols.star
                 }]`,
                 iconURL: playerAvatarURL,
-                url: `https://osu.ppy.sh/b/${beatmap.beatmapID}`,
+                url: beatmap.beatmapLink,
             })
             .setThumbnail(
-                `https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`,
+                `https://b.ppy.sh/thumb/${beatmap.beatmapSetId}l.jpg`,
             );
 
         beatmapInformation += `${bold(

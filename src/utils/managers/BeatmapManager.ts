@@ -70,7 +70,7 @@ export abstract class BeatmapManager extends Manager {
     ): Promise<MapInfo<T> | null> {
         const oldCache: MapInfo | undefined = CacheManager.beatmapCache.find(
             (v) =>
-                v.beatmapID === beatmapIdOrHash || v.hash === beatmapIdOrHash,
+                v.beatmapId === beatmapIdOrHash || v.hash === beatmapIdOrHash,
         );
 
         if (oldCache && !options?.forceCheck) {
@@ -91,7 +91,7 @@ export abstract class BeatmapManager extends Manager {
         }
 
         if (options?.cacheBeatmap !== false) {
-            CacheManager.beatmapCache.set(newCache.beatmapID, newCache);
+            CacheManager.beatmapCache.set(newCache.beatmapId, newCache);
         }
 
         return newCache;
@@ -132,10 +132,7 @@ export abstract class BeatmapManager extends Manager {
                 continue;
             }
 
-            const beatmapInfo: MapInfo = new MapInfo();
-
-            beatmapInfo.fillMetadata(beatmapData);
-
+            const beatmapInfo: MapInfo = MapInfo.from(beatmapData);
             if (!beatmapInfo.title) {
                 continue;
             }
@@ -146,7 +143,7 @@ export abstract class BeatmapManager extends Manager {
 
             beatmaps.push(beatmapInfo);
 
-            CacheManager.beatmapCache.set(beatmapInfo.beatmapID, beatmapInfo);
+            CacheManager.beatmapCache.set(beatmapInfo.beatmapId, beatmapInfo);
         }
 
         return beatmaps;
@@ -489,43 +486,43 @@ export abstract class BeatmapManager extends Manager {
                 }${bold(
                     hyperlink(
                         "Beatmap Preview",
-                        `https://osu-preview.jmir.ml/preview#${beatmapInfo.beatmapID}`,
+                        `https://osu-preview.jmir.ml/preview#${beatmapInfo.beatmapId}`,
                     ),
                 )}\n${bold("Download")}: ${hyperlink(
                     "osu!",
-                    `https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}`,
+                    `https://osu.ppy.sh/d/${beatmapInfo.beatmapSetId}`,
                 )}${
                     beatmapInfo.videoAvailable
                         ? ` ${hyperlink(
                               "(no video)",
-                              `https://osu.ppy.sh/d/${beatmapInfo.beatmapsetID}n`,
+                              `https://osu.ppy.sh/d/${beatmapInfo.beatmapSetId}n`,
                           )}`
                         : ""
                 } - ${hyperlink(
                     "Chimu",
-                    `https://chimu.moe/en/d/${beatmapInfo.beatmapsetID}`,
+                    `https://chimu.moe/en/d/${beatmapInfo.beatmapSetId}`,
                 )} - ${hyperlink(
                     "Sayobot",
-                    `https://txy1.sayobot.cn/beatmaps/download/full/${beatmapInfo.beatmapsetID}`,
+                    `https://txy1.sayobot.cn/beatmaps/download/full/${beatmapInfo.beatmapSetId}`,
                 )}${
                     beatmapInfo.videoAvailable
                         ? ` ${hyperlink(
                               "(no video)",
-                              `https://txy1.sayobot.cn/beatmaps/download/novideo/${beatmapInfo.beatmapsetID}`,
+                              `https://txy1.sayobot.cn/beatmaps/download/novideo/${beatmapInfo.beatmapSetId}`,
                           )}`
                         : ""
                 } - ${hyperlink(
                     "Beatconnect",
-                    `https://beatconnect.io/b/${beatmapInfo.beatmapsetID}/`,
+                    `https://beatconnect.io/b/${beatmapInfo.beatmapSetId}/`,
                 )} - ${hyperlink(
                     "Nerina",
-                    `https://nerina.pw/d/${beatmapInfo.beatmapsetID}`,
+                    `https://nerina.pw/d/${beatmapInfo.beatmapSetId}`,
                 )}${
                     beatmapInfo.approved >= RankedStatus.ranked &&
                     beatmapInfo.approved !== RankedStatus.qualified
                         ? ` - ${hyperlink(
                               "Ripple",
-                              `https://storage.ripple.moe/d/${beatmapInfo.beatmapsetID}`,
+                              `https://storage.ripple.moe/d/${beatmapInfo.beatmapSetId}`,
                           )}`
                         : ""
                 }`;

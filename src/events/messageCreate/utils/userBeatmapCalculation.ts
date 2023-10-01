@@ -200,7 +200,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 )
                 .setColor(BeatmapManager.getStatusColor(firstBeatmap.approved))
                 .setAuthor({ name: "Beatmap Information" })
-                .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
+                .setURL(firstBeatmap.beatmapSetLink)
                 .setDescription(
                     `${BeatmapManager.showStatistics(
                         firstBeatmap,

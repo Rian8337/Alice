@@ -77,11 +77,11 @@ async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     const beatmapList: MapInfo[] = [];
 
     data.forEach((v) => {
-        const beatmapInfo: MapInfo = new MapInfo().fillMetadata(v);
+        const beatmapInfo: MapInfo = MapInfo.from(v);
 
         if (
             !beatmapList.find(
-                (map) => map.beatmapsetID === beatmapInfo.beatmapsetID,
+                (map) => map.beatmapSetId === beatmapInfo.beatmapSetId,
             )
         ) {
             beatmapList.push(beatmapInfo);
@@ -166,9 +166,9 @@ function createEmbed(
                     : ""
             }`,
         )
-        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapSetId}l.jpg`)
         .setImage(
-            `https://assets.ppy.sh/beatmaps/${beatmapInfo.beatmapsetID}/covers/cover.jpg`,
+            `https://assets.ppy.sh/beatmaps/${beatmapInfo.beatmapSetId}/covers/cover.jpg`,
         );
 
     return embed;
@@ -544,7 +544,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     .setTitle(
                         `${beatmapInfo.artist} - ${beatmapInfo.title} by ${beatmapInfo.creator}`,
                     )
-                    .setURL(`https://osu.ppy.sh/s/${beatmapInfo.beatmapsetID}`)
+                    .setURL(beatmapInfo.beatmapSetLink)
                     .setDescription(
                         `${BeatmapManager.showStatistics(
                             beatmapInfo,

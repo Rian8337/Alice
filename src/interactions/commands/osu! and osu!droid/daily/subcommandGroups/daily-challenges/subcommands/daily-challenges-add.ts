@@ -252,7 +252,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const result: OperationResult =
         await DatabaseManager.aliceDb.collections.challenge.insert({
             challengeid: id,
-            beatmapid: beatmap.beatmapID,
+            beatmapid: beatmap.beatmapId,
             featured: featured.id,
             link: ["", ""],
             constrain: constrain,

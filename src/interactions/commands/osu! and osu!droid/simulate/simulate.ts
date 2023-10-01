@@ -562,7 +562,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         DroidDifficultyAttributes,
         DroidPerformanceAttributes
     > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-        beatmap.beatmapID,
+        beatmap.beatmapId,
         Modes.droid,
         PPCalculationMethod.live,
         calcParams,
@@ -572,7 +572,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         OsuDifficultyAttributes,
         OsuPerformanceAttributes
     > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-        beatmap.beatmapID,
+        beatmap.beatmapId,
         Modes.osu,
         PPCalculationMethod.live,
         calcParams,

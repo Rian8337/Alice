@@ -170,7 +170,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         BeatmapManager.getStatusColor(firstBeatmap.approved),
                     )
                     .setAuthor({ name: "Beatmap Information" })
-                    .setURL(`https://osu.ppy.sh/s/${firstBeatmap.beatmapsetID}`)
+                    .setURL(firstBeatmap.beatmapSetLink)
                     .setDescription(
                         `${BeatmapManager.showStatistics(
                             firstBeatmap,
@@ -196,7 +196,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
                     const droidAttribs: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
                         await DPPProcessorRESTManager.getDifficultyAttributes(
-                            beatmapInfo.beatmapID,
+                            beatmapInfo.beatmapId,
                             Modes.droid,
                             PPCalculationMethod.live,
                             calcParams,
@@ -208,7 +208,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
                     const osuAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
                         await DPPProcessorRESTManager.getDifficultyAttributes(
-                            beatmapInfo.beatmapID,
+                            beatmapInfo.beatmapId,
                             Modes.osu,
                             PPCalculationMethod.live,
                             calcParams,

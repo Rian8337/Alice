@@ -85,7 +85,7 @@ export abstract class DPPHelper {
                 (beatmapInfo.hitLength < 30 ||
                     beatmapInfo.hitLength / beatmapInfo.totalLength < 0.6):
                 return DPPSubmissionValidity.beatmapTooShort;
-            case await WhitelistManager.isBlacklisted(beatmapInfo.beatmapID):
+            case await WhitelistManager.isBlacklisted(beatmapInfo.beatmapId):
                 return DPPSubmissionValidity.beatmapIsBlacklisted;
             case WhitelistManager.beatmapNeedsWhitelisting(
                 beatmapInfo.approved,

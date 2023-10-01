@@ -36,21 +36,21 @@ import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattrib
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CalculateLocalization = new CalculateLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const beatmapID: number = BeatmapManager.getBeatmapID(
-        interaction.options.getString("beatmap") ?? ""
+        interaction.options.getString("beatmap") ?? "",
     )[0];
 
     const hash: string | undefined = BeatmapManager.getChannelLatestBeatmap(
-        interaction.channelId
+        interaction.channelId,
     );
 
     if (!beatmapID && !hash) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapProvided")
+                localization.getTranslation("noBeatmapProvided"),
             ),
         });
     }
@@ -61,7 +61,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapProvidedIsInvalid")
+                localization.getTranslation("beatmapProvidedIsInvalid"),
             ),
         });
     }
@@ -70,13 +70,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID ?? hash,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmap) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -92,7 +92,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
                 nmiss: Math.max(
                     0,
-                    interaction.options.getInteger("misses") ?? 0
+                    interaction.options.getInteger("misses") ?? 0,
                 ),
                 nobjects: beatmap.objects,
             }),
@@ -103,13 +103,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             undefined,
             new MapStats({
                 mods: ModUtil.pcStringToMods(
-                    interaction.options.getString("mods") ?? ""
+                    interaction.options.getString("mods") ?? "",
                 ),
                 ar: forceAR,
                 speedMultiplier:
                     interaction.options.getNumber("speedmultiplier") ?? 1,
                 isForceAR: !isNaN(<number>forceAR),
-            })
+            }),
         );
 
     calcParams.recalculateAccuracy(beatmap.objects);
@@ -128,38 +128,38 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         case PPCalculationMethod.rebalance:
             droidCalcResult =
                 await DPPProcessorRESTManager.getPerformanceAttributes(
-                    beatmap.beatmapID,
+                    beatmap.beatmapId,
                     Modes.droid,
                     PPCalculationMethod.rebalance,
-                    calcParams
+                    calcParams,
                 );
 
             if (droidCalcResult) {
                 osuCalcResult =
                     await DPPProcessorRESTManager.getPerformanceAttributes(
-                        beatmap.beatmapID,
+                        beatmap.beatmapId,
                         Modes.osu,
                         PPCalculationMethod.rebalance,
-                        calcParams
+                        calcParams,
                     );
             }
             break;
         default:
             droidCalcResult =
                 await DPPProcessorRESTManager.getPerformanceAttributes(
-                    beatmap.beatmapID,
+                    beatmap.beatmapId,
                     Modes.droid,
                     PPCalculationMethod.live,
-                    calcParams
+                    calcParams,
                 );
 
             if (droidCalcResult) {
                 osuCalcResult =
                     await DPPProcessorRESTManager.getPerformanceAttributes(
-                        beatmap.beatmapID,
+                        beatmap.beatmapId,
                         Modes.osu,
                         PPCalculationMethod.live,
-                        calcParams
+                        calcParams,
                     );
             }
     }
@@ -167,7 +167,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!droidCalcResult || !osuCalcResult) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -180,7 +180,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             osuCalcResult.difficulty,
             droidCalcResult.performance,
             osuCalcResult.performance,
-            localization.language
+            localization.language,
         );
 
     let string: string = "";
@@ -192,16 +192,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 ? DPPHelper.getRebalanceDroidDifficultyAttributesInfo(
                       <
                           ResponseDifficultyAttributes<RebalanceDroidDifficultyAttributes>
-                      >droidCalcResult.difficulty
+                      >droidCalcResult.difficulty,
                   )
                 : DPPHelper.getDroidDifficultyAttributesInfo(
-                      droidCalcResult.difficulty
+                      droidCalcResult.difficulty,
                   )
         }`;
         string += `\n${localization.getTranslation(
-            "rawDroidPp"
+            "rawDroidPp",
         )}: ${DPPHelper.getDroidPerformanceAttributesInfo(
-            droidCalcResult.performance
+            droidCalcResult.performance,
         )}\n`;
     }
 
@@ -212,15 +212,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 ? DPPHelper.getRebalanceOsuDifficultyAttributesInfo(
                       <
                           ResponseDifficultyAttributes<RebalanceOsuDifficultyAttributes>
-                      >osuCalcResult.difficulty
+                      >osuCalcResult.difficulty,
                   )
                 : DPPHelper.getOsuDifficultyAttributesInfo(
-                      osuCalcResult.difficulty
+                      osuCalcResult.difficulty,
                   )
         }\n${localization.getTranslation(
-            "rawPcPp"
+            "rawPcPp",
         )}: ${DPPHelper.getOsuPerformanceAttributesInfo(
-            osuCalcResult.performance
+            osuCalcResult.performance,
         )}`;
     }
 
