@@ -388,9 +388,7 @@ export abstract class EmbedCreator {
             osuPerfAttribs
         ) {
             const combo: number =
-                calculationParams.combo ??
-                beatmap.maxCombo ??
-                droidDiffAttribs.maxCombo;
+                calculationParams.combo ?? droidDiffAttribs.maxCombo;
             // Recompute accuracy to consider amount of objects.
             calculationParams.accuracy = new Accuracy({
                 ...calculationParams.accuracy,
@@ -621,8 +619,7 @@ export abstract class EmbedCreator {
         )} | ${bold(`${osuAttribs.performance.total.toFixed(2)}PP`)} `;
 
         // Some beatmaps return `null` max combo from osu! API, i.e. /b/1462961.
-        const maxCombo: number =
-            beatmap.maxCombo ?? droidAttribs.difficulty.maxCombo;
+        const maxCombo: number = droidAttribs.difficulty.maxCombo;
 
         if (score.accuracy.nmiss > 0 || score.combo < maxCombo) {
             const calcParams: PerformanceCalculationParameters =

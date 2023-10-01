@@ -129,7 +129,7 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
     /**
      * Recalculates the accuracy of this parameter.
      *
-     * @param objectCount The amount of objects..
+     * @param objectCount The amount of objects.
      */
     recalculateAccuracy(objectCount: number): void {
         if (this.accuracy.n50 || this.accuracy.n100) {
