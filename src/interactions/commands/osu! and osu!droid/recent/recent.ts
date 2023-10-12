@@ -31,7 +31,7 @@ import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: RecentLocalization = new RecentLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const discordid: Snowflake | undefined =
@@ -46,7 +46,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -82,19 +82,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         _id: 0,
                         uid: 1,
                     },
-                }
+                },
             );
 
             if (!bindInfo) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
-                            localization.language
+                            localization.language,
                         ).getTranslation(
                             discordid
                                 ? Constants.userNotBindedReject
-                                : Constants.selfNotBindedReject
-                        )
+                                : Constants.selfNotBindedReject,
+                        ),
                     ),
                 });
             }
@@ -105,7 +105,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerNotFound")
+                localization.getTranslation("playerNotFound"),
             ),
         });
     }
@@ -117,7 +117,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerHasNoRecentPlays")
+                localization.getTranslation("playerHasNoRecentPlays"),
             ),
         });
     }
@@ -129,7 +129,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playIndexOutOfBounds"),
-                index.toString()
+                index.toString(),
             ),
         });
     }
@@ -144,7 +144,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
                   score.scoreID,
                   Modes.droid,
-                  PPCalculationMethod.live
+                  PPCalculationMethod.live,
               )
             : score.droidAttribs ?? null;
 
@@ -154,33 +154,23 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,
         score instanceof Score ? undefined : score.osuAttribs ?? null,
-        localization.language
+        localization.language,
     );
 
     const options: InteractionReplyOptions = {
         content: MessageCreator.createAccept(
             localization.getTranslation("recentPlayDisplay"),
-            player.username
+            player.username,
         ),
         embeds: [embed],
     };
 
-    if (score instanceof Score || score.replayID) {
-        let replay: ReplayAnalyzer | undefined;
+    if (score instanceof Score) {
+        score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
 
-        if (score instanceof Score) {
-            score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
+        await ReplayHelper.analyzeReplay(score);
 
-            await ReplayHelper.analyzeReplay(score);
-
-            replay = score.replay;
-        } else if (score.replayID) {
-            replay ??= await new ReplayAnalyzer({
-                scoreID: score.replayID,
-            }).analyze();
-        }
-
-        if (!replay?.data) {
+        if (!score.replay.data) {
             return InteractionHelper.reply(interaction, options);
         }
 
@@ -192,7 +182,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 interaction,
                 options,
                 beatmapInfo.beatmap,
-                replay.data
+                score.replay.data,
             );
         } else {
             InteractionHelper.reply(interaction, options);

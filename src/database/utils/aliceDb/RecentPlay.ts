@@ -27,11 +27,6 @@ export class RecentPlay extends Manager {
     readonly uid: number;
 
     /**
-     * The ID of the replay of this play, if it was submitted to the game server.
-     */
-    readonly replayID?: number;
-
-    /**
      * The title of the beatmap in this play.
      */
     readonly title: string;
@@ -145,12 +140,11 @@ export class RecentPlay extends Manager {
 
     constructor(
         data: DatabaseRecentPlay = DatabaseManager.aliceDb?.collections
-            .recentPlays.defaultDocument ?? {}
+            .recentPlays.defaultDocument ?? {},
     ) {
         super();
 
         this.uid = data.uid;
-        this.replayID = data.replayID;
         this.title = data.title;
         this.combo = data.combo;
         this.score = data.score;

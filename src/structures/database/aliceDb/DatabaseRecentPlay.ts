@@ -19,11 +19,6 @@ export interface DatabaseRecentPlay extends BaseDocument {
     uid: number;
 
     /**
-     * The ID of the replay of this play, if it was submitted to the game server.
-     */
-    replayID?: number;
-
-    /**
      * The title of the beatmap in this play.
      */
     title: string;

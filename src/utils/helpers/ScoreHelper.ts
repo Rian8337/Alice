@@ -10,8 +10,6 @@ import {
     RequestResponse,
 } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { Collection } from "discord.js";
-import { ArrayHelper } from "./ArrayHelper";
 
 /**
  * A helper for global score-related things.
@@ -25,7 +23,7 @@ export abstract class ScoreHelper {
      */
     static async fetchDroidLeaderboard(
         hash: string,
-        page: number = 1
+        page: number = 1,
     ): Promise<Score[]> {
         const apiRequestBuilder: DroidAPIRequestBuilder =
             new DroidAPIRequestBuilder()
@@ -66,7 +64,7 @@ export abstract class ScoreHelper {
         maxScore: number,
         mods: Mod[],
         scorePortion: number,
-        accuracyPortion: number = 1 - scorePortion
+        accuracyPortion: number = 1 - scorePortion,
     ): number {
         return (
             this.calculateScorePortionScoreV2(
@@ -74,13 +72,13 @@ export abstract class ScoreHelper {
                 misses,
                 maxScore,
                 mods,
-                scorePortion
+                scorePortion,
             ) +
             this.calculateAccuracyPortionScoreV2(
                 accuracy,
                 misses,
                 mods,
-                accuracyPortion
+                accuracyPortion,
             )
         );
     }
@@ -100,13 +98,13 @@ export abstract class ScoreHelper {
         misses: number,
         maxScore: number,
         mods: Mod[],
-        scorePortion: number
+        scorePortion: number,
     ): number {
         const tempScoreV2: number =
             Math.sqrt(
                 (this.removeScoreMultiplier(score, mods) *
                     (mods.some((m) => m instanceof ModNoFail) ? 2 : 1)) /
-                    maxScore
+                    maxScore,
             ) *
             1e6 *
             scorePortion;
@@ -115,8 +113,8 @@ export abstract class ScoreHelper {
             0,
             this.applyScoreMultiplier(
                 tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses),
-                mods
-            )
+                mods,
+            ),
         );
     }
 
@@ -133,7 +131,7 @@ export abstract class ScoreHelper {
         accuracy: number,
         misses: number,
         mods: Mod[],
-        accuracyPortion: number
+        accuracyPortion: number,
     ): number {
         const tempScoreV2: number =
             Math.pow(accuracy, 2) * 1e6 * accuracyPortion;
@@ -142,8 +140,8 @@ export abstract class ScoreHelper {
             0,
             this.applyScoreMultiplier(
                 tempScoreV2 - this.getScoreV2MissPenalty(tempScoreV2, misses),
-                mods
-            )
+                mods,
+            ),
         );
     }
 
@@ -163,7 +161,7 @@ export abstract class ScoreHelper {
                               level) +
                           1.25 * Math.pow(1.8, level - 60)) /
                           1.128
-                    : 23875169174 + 15000000000 * (level - 100)
+                    : 23875169174 + 15000000000 * (level - 100),
             );
         };
 
@@ -190,7 +188,7 @@ export abstract class ScoreHelper {
      */
     private static getScoreV2MissPenalty(
         tempScoreV2: number,
-        misses: number
+        misses: number,
     ): number {
         return misses * 5e-3 * tempScoreV2;
     }
@@ -215,7 +213,7 @@ export abstract class ScoreHelper {
 
         if (
             mods.filter(
-                (m) => m instanceof ModHidden || m instanceof ModDoubleTime
+                (m) => m instanceof ModHidden || m instanceof ModDoubleTime,
             ).length === 2
         ) {
             score /= new ModHidden().droidScoreMultiplier;
@@ -244,11 +242,8 @@ export abstract class ScoreHelper {
      * Gets the recent scores of a player, combined with scores from the recent
      * plays database when necessary.
      *
-     * This method follows the following rules:
-     * - A play submitted to the server will be of instance `Score`.
-     * - A play submitted to the recent plays database will be type of `RecentPlay`.
-     * - If there are intersecting beatmaps in existing scores and the recent plays from database,
-     * the newest one will be picked.
+     * A play submitted to the server will be of instance `Score`, while
+     * a play submitted to the recent plays database will be of instance `RecentPlay`.
      *
      * @param uid The uid of the player.
      * @param existingScores Existing scores, usually obtained from an API response, if any.
@@ -256,31 +251,14 @@ export abstract class ScoreHelper {
      */
     static async getRecentScores(
         uid: number,
-        existingScores: Score[] = []
+        existingScores: Score[] = [],
     ): Promise<(Score | RecentPlay)[]> {
-        const recentPlays: RecentPlay[] =
-            await DatabaseManager.aliceDb.collections.recentPlays.getFromUid(
-                uid
+        return DatabaseManager.aliceDb.collections.recentPlays
+            .getFromUid(uid)
+            .then((recentPlays) =>
+                (<(Score | RecentPlay)[]>existingScores)
+                    .concat(recentPlays)
+                    .sort((a, b) => b.date.getTime() - a.date.getTime()),
             );
-
-        const newRecentPlays: (Score | RecentPlay)[] = existingScores.slice();
-
-        // Convert existing scores to a collection for better lookup performance.
-        const existingScoreCollection: Collection<string, Score> =
-            ArrayHelper.arrayToCollection(existingScores, "hash");
-
-        for (const play of recentPlays.values()) {
-            const existingScore: Score | undefined =
-                existingScoreCollection.get(play.hash);
-
-            // Do not add existing scores from game response.
-            if (!existingScore || existingScore.scoreID !== play.replayID) {
-                newRecentPlays.push(play);
-            }
-        }
-
-        newRecentPlays.sort((a, b) => b.date.getTime() - a.date.getTime());
-
-        return newRecentPlays;
     }
 }
