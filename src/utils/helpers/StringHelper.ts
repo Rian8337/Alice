@@ -34,7 +34,7 @@ export abstract class StringHelper {
 
         if (replacements.length !== replacementsNeeded) {
             throw new Error(
-                `Amount of replacements for string "${str}" doesn't match; expected ${replacementsNeeded}, got ${replacements.length}`
+                `Amount of replacements for string "${str}" doesn't match; expected ${replacementsNeeded}, got ${replacements.length}`,
             );
         }
 
@@ -89,8 +89,10 @@ export abstract class StringHelper {
             return false;
         }
 
+        const url: URL = new URL(link);
+
         return ["png", "jpg", "jpeg", "gif"].some(
-            (v) => link.indexOf(v, link.length - v.length) !== -1
+            (v) => url.pathname.indexOf(v, link.length - v.length) !== -1,
         );
     }
 
@@ -105,8 +107,10 @@ export abstract class StringHelper {
             return false;
         }
 
-        return ["webm", "mp4", "mov"].some(
-            (v) => link.indexOf(v, link.length - v.length) !== -1
+        const url: URL = new URL(link);
+
+        return ["webm", "mp4", "mov", "avi"].some(
+            (v) => url.pathname.indexOf(v, link.length - v.length) !== -1,
         );
     }
 
