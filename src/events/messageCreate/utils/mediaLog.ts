@@ -1,21 +1,26 @@
-import { Message, EmbedBuilder, TextChannel, hyperlink } from "discord.js";
+import { Message, EmbedBuilder, hyperlink } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
-export const run: EventUtil["run"] = async (client, message: Message) => {
+export const run: EventUtil["run"] = async (_, message: Message) => {
     if (
         message.attachments.size === 0 ||
-        message.guild?.id !== Constants.mainServer ||
+        !message.inGuild() ||
+        message.guild.id !== Constants.mainServer ||
         message.author.bot
     ) {
         return;
     }
 
-    const logChannel: TextChannel = <TextChannel>(
-        await client.channels.fetch("684630015538626570")
-    );
+    const logChannel = await message.guild.channels
+        .fetch("684630015538626570")
+        .catch(() => null);
+
+    if (!logChannel?.isTextBased()) {
+        return;
+    }
 
     for (const attachment of message.attachments.values()) {
         if (
@@ -36,7 +41,7 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
             name: "Channel",
             value: `${message.channel} | ${hyperlink(
                 "Go to Message",
-                message.url
+                message.url,
             )}`,
         });
 
