@@ -91,8 +91,8 @@ export abstract class StringHelper {
 
         const url: URL = new URL(link);
 
-        return ["png", "jpg", "jpeg", "gif"].some(
-            (v) => url.pathname.indexOf(v, link.length - v.length) !== -1,
+        return ["png", "jpg", "jpeg", "gif"].some((v) =>
+            url.pathname.endsWith(v),
         );
     }
 
@@ -109,8 +109,8 @@ export abstract class StringHelper {
 
         const url: URL = new URL(link);
 
-        return ["webm", "mp4", "mov", "avi"].some(
-            (v) => url.pathname.indexOf(v, link.length - v.length) !== -1,
+        return ["webm", "mp4", "mov", "avi"].some((v) =>
+            url.pathname.endsWith(v),
         );
     }
 
