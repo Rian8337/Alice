@@ -82,6 +82,16 @@ export interface PrototypePPEntry extends PPEntry {
     hit50: number;
 
     /**
+     * The tap penalty in live.
+     */
+    liveTapPenalty: number;
+
+    /**
+     * The tap penalty in rebalance.
+     */
+    rebalanceTapPenalty: number;
+
+    /**
      * The aim slider cheese penalty of the score.
      */
     aimSliderCheesePenalty: number;

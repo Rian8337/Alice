@@ -500,6 +500,8 @@ export class UserBind extends Manager {
                 visualSliderCheesePenalty:
                     rebalPerfResult.visualSliderCheesePenalty,
                 speedNoteCount: rebalAttribs.difficulty.speedNoteCount,
+                liveTapPenalty: params.tapPenalty,
+                rebalanceTapPenalty: rebalParams.tapPenalty,
             };
 
             consola.info(
