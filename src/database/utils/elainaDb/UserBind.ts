@@ -453,11 +453,31 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const { performance: perfResult } = liveAttribs;
-            const { performance: rebalPerfResult, params } = rebalAttribs;
+            const { performance: perfResult, params } = liveAttribs;
+            const { performance: rebalPerfResult, params: rebalParams } =
+                rebalAttribs;
 
             const { customStatistics, accuracy: accuracyData } = params;
             const accuracy = new Accuracy(accuracyData);
+
+            // This is moved from dpp calculation to minimize core module change.
+            // Normalize the deviation to 300 BPM.
+            const normalizedDeviation: number =
+                rebalPerfResult.tapDeviation *
+                Math.max(1, 50 / rebalAttribs.difficulty.averageSpeedDeltaTime);
+            // We expect the player to get 7500/x deviation when doubletapping x BPM.
+            // Using this expectation, we penalize scores with deviation above 25.
+            const averageBPM: number =
+                60000 / 4 / rebalAttribs.difficulty.averageSpeedDeltaTime;
+            const adjustedDeviation: number =
+                normalizedDeviation *
+                (1 +
+                    1 /
+                        (1 +
+                            Math.exp(
+                                -(normalizedDeviation - 7500 / averageBPM) /
+                                    ((2 * 300) / averageBPM),
+                            )));
 
             const entry: PrototypePPEntry = {
                 uid: score.uid,
@@ -488,6 +508,10 @@ export class UserBind extends Manager {
                 ),
                 estimatedSpeedUnstableRate: NumberHelper.round(
                     rebalPerfResult.tapDeviation * 10,
+                    2,
+                ),
+                adjustedSpeedUnstableRate: NumberHelper.round(
+                    adjustedDeviation * 10,
                     2,
                 ),
                 overallDifficulty: rebalAttribs.difficulty.overallDifficulty,
