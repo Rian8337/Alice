@@ -344,7 +344,7 @@ export abstract class DPPHelper {
                 .reduce((a, v, i) => a + v.pp * Math.pow(0.95, i), 0) +
             // Bonus pp portion
             // TODO: uncomment this after rebalance
-            // (1250 / 3) * (1 - Math.pow(0.9994, playCount))
+            // (1250 / 3) * (1 - Math.pow(0.9992, playCount))
             0
         );
     }
