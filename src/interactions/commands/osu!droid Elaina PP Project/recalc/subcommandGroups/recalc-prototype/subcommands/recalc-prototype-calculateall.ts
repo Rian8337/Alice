@@ -11,10 +11,10 @@ import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: RecalcLocalization = new RecalcLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const dbManager: PrototypePPCollectionManager =
@@ -24,7 +24,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("fullRecalcInProgress")
+            localization.getTranslation("fullRecalcInProgress"),
         ),
     });
 
@@ -44,12 +44,13 @@ export const run: SlashSubcommand<true>["run"] = async (
                     projection: {
                         _id: 0,
                         pp: 1,
+                        playc: 1,
                         pptotal: 1,
                         previous_bind: 1,
                         uid: 1,
                         username: 1,
                     },
-                }
+                },
             );
 
         if (!bindInfo) {
@@ -65,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction.channel!.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("fullRecalcSuccess"),
-            interaction.user.toString()
+            interaction.user.toString(),
         ),
     });
 };

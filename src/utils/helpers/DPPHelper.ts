@@ -335,12 +335,17 @@ export abstract class DPPHelper {
      */
     static calculateFinalPerformancePoints(
         list: Collection<string, PPEntry>,
+        playCount: number,
     ): number {
-        list.sort((a, b) => b.pp - a.pp);
-
-        return [...list.values()].reduce(
-            (a, v, i) => a + v.pp * Math.pow(0.95, i),
-            0,
+        return (
+            // Main pp portion
+            [...list.values()]
+                .sort((a, b) => b.pp - a.pp)
+                .reduce((a, v, i) => a + v.pp * Math.pow(0.95, i), 0) +
+            // Bonus pp portion
+            // TODO: uncomment this after rebalance
+            // (1250 / 3) * (1 - Math.pow(0.9994, playCount))
+            0
         );
     }
 
@@ -368,6 +373,7 @@ export abstract class DPPHelper {
                     $set: {
                         pptotal: this.calculateFinalPerformancePoints(
                             toUpdate.pp,
+                            Math.max(0, toUpdate.playc - 1),
                         ),
                         playc: Math.max(0, toUpdate.playc - 1),
                     },

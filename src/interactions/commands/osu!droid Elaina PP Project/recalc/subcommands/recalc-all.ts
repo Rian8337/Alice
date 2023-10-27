@@ -12,10 +12,10 @@ import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: RecalcLocalization = new RecalcLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const dbManager: UserBindCollectionManager =
@@ -23,7 +23,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("fullRecalcInProgress")
+            localization.getTranslation("fullRecalcInProgress"),
         ),
     });
 
@@ -42,7 +42,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             localization.getTranslation("fullRecalcTrackProgress"),
             calculatedCount.toLocaleString(BCP47),
             total.toLocaleString(BCP47),
-            ((calculatedCount * 100) / total).toFixed(2)
+            ((calculatedCount * 100) / total).toFixed(2),
         ),
     });
 
@@ -53,6 +53,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             projection: {
                 _id: 0,
                 pp: 1,
+                playc: 1,
                 previous_bind: 1,
                 calculationInfo: 1,
             },
@@ -73,7 +74,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                 localization.getTranslation("fullRecalcTrackProgress"),
                 calculatedCount.toLocaleString(BCP47),
                 total.toLocaleString(BCP47),
-                ((calculatedCount * 100) / total).toFixed(2)
+                ((calculatedCount * 100) / total).toFixed(2),
             ),
         });
     }
@@ -83,7 +84,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction.channel!.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("fullRecalcSuccess"),
-            interaction.user.toString()
+            interaction.user.toString(),
         ),
     });
 };

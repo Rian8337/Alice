@@ -17,7 +17,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const discordid: Snowflake | undefined =
@@ -30,7 +30,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -45,6 +45,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             _id: 0,
             "pp.hash": 1,
             "pp.pp": 1,
+            playc: 1,
             pptotal: 1,
             username: 1,
         },
@@ -63,7 +64,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
-                findOptions
+                findOptions,
             );
     }
 
@@ -73,8 +74,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 new ConstantsLocalization(localization.language).getTranslation(
                     uid || username || discordid
                         ? Constants.userNotBindedReject
-                        : Constants.selfNotBindedReject
-                )
+                        : Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -100,7 +101,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createAccept(
                 localization.getTranslation("whatIfScoreNotEntered"),
                 NumberHelper.round(ppValue, 2).toLocaleString(BCP47),
-                bindInfo.username
+                bindInfo.username,
             ),
         });
     }
@@ -120,7 +121,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ]);
 
     const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
-        bindInfo.pp
+        bindInfo.pp,
+        bindInfo.playc,
     );
 
     InteractionHelper.reply(interaction, {
@@ -129,14 +131,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             NumberHelper.round(ppValue, 2).toLocaleString(BCP47),
             NumberHelper.round(
                 ppValue * Math.pow(0.95, playIndex),
-                2
+                2,
             ).toLocaleString(BCP47),
             bindInfo.username,
             (playIndex + 1).toLocaleString(BCP47),
             NumberHelper.round(totalPP, 2).toLocaleString(BCP47),
             NumberHelper.round(totalPP - bindInfo.pptotal, 2).toLocaleString(
-                BCP47
-            )
+                BCP47,
+            ),
         ),
     });
 };

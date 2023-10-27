@@ -233,6 +233,7 @@ export class UserBind extends Manager {
         // Even if there are no deletions, still update to keep track of scan progress.
         const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
             this.pp,
+            this.playc,
         );
 
         const query: UpdateFilter<DatabaseUserBind> = {
@@ -272,48 +273,6 @@ export class UserBind extends Manager {
         }
 
         return this.bindDb.updateOne({ discordid: this.discordid }, query);
-    }
-
-    /**
-     * Sets the dpp list for the player to a new list.
-     *
-     * @param list The new list.
-     * @param playCountIncrement The amount to increment towards play count.
-     * @returns An object containing information about the operation.
-     */
-    async setNewDPPValue(
-        list: Collection<string, PPEntry>,
-        playCountIncrement: number,
-    ): Promise<OperationResult> {
-        this.pp = list;
-
-        this.pp.sort((a, b) => b.pp - a.pp);
-
-        this.playc += Math.max(0, playCountIncrement);
-
-        this.weightedAccuracy = DPPHelper.calculateWeightedAccuracy(this.pp);
-
-        const finalPP: number = DPPHelper.calculateFinalPerformancePoints(list);
-
-        const result = await this.bindDb.updateOne(
-            { discordid: this.discordid },
-            {
-                $set: {
-                    pptotal: finalPP,
-                    pp: [...this.pp.values()],
-                    weightedAccuracy: this.weightedAccuracy,
-                },
-                $inc: {
-                    playc: Math.max(0, playCountIncrement),
-                },
-            },
-        );
-
-        if (result.success) {
-            await DiscordBackendRESTManager.updateMetadata(this.discordid);
-        }
-
-        return result;
     }
 
     /**
@@ -380,7 +339,10 @@ export class UserBind extends Manager {
         }
 
         this.pp = newList;
-        this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
+        this.pptotal = DPPHelper.calculateFinalPerformancePoints(
+            newList,
+            this.playc,
+        );
 
         await this.bindDb.updateOne(
             { discordid: this.discordid },
@@ -535,7 +497,10 @@ export class UserBind extends Manager {
             newList.set(ppEntry.hash, entry);
         }
 
-        const newTotal = DPPHelper.calculateFinalPerformancePoints(newList);
+        const newTotal = DPPHelper.calculateFinalPerformancePoints(
+            newList,
+            this.playc,
+        );
 
         consola.info(`${this.pptotal} ⮕  ${newTotal.toFixed(2)}`);
 
@@ -674,7 +639,7 @@ export class UserBind extends Manager {
                         continue;
                     }
 
-                    this.playc = Math.max(this.playc, ++playCount);
+                    this.playc = ++playCount;
 
                     const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
                         beatmapInfo.fullTitle,
@@ -741,7 +706,10 @@ export class UserBind extends Manager {
         }
 
         this.pp = newList;
-        this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
+        this.pptotal = DPPHelper.calculateFinalPerformancePoints(
+            newList,
+            this.playc,
+        );
         this.weightedAccuracy = DPPHelper.calculateWeightedAccuracy(this.pp);
 
         const query: UpdateFilter<DatabaseUserBind> = {
@@ -863,6 +831,8 @@ export class UserBind extends Manager {
             );
 
             if (otherBindInfo?.pp) {
+                this.playc += this.pp.difference(otherBindInfo.pp).size;
+
                 DPPHelper.insertScore(this.pp, [...otherBindInfo.pp.values()]);
             }
 
@@ -875,8 +845,9 @@ export class UserBind extends Manager {
                         previous_bind: otherPreviousBind,
                         pptotal: DPPHelper.calculateFinalPerformancePoints(
                             this.pp,
+                            this.playc,
                         ),
-                        playc: this.playc + (otherBindInfo?.playc ?? 0),
+                        playc: this.playc,
                         pp: [...this.pp.values()],
                         weightedAccuracy: DPPHelper.calculateWeightedAccuracy(
                             this.pp,
@@ -903,6 +874,11 @@ export class UserBind extends Manager {
             const oldPPEntries: Collection<string, PPEntry> =
                 this.pp.difference(newPPEntries);
 
+            this.playc = Math.max(
+                oldPPEntries.size,
+                this.playc - newPPEntries.size,
+            );
+
             await this.bindDb.updateOne(
                 { discordid: this.discordid },
                 {
@@ -911,10 +887,11 @@ export class UserBind extends Manager {
                     },
                     $set: {
                         uid: this.uid,
-                        pptotal:
-                            DPPHelper.calculateFinalPerformancePoints(
-                                oldPPEntries,
-                            ),
+                        pptotal: DPPHelper.calculateFinalPerformancePoints(
+                            oldPPEntries,
+                            this.playc,
+                        ),
+                        playc: this.playc,
                         pp: [...oldPPEntries.values()],
                         weightedAccuracy:
                             DPPHelper.calculateWeightedAccuracy(oldPPEntries),
@@ -922,16 +899,19 @@ export class UserBind extends Manager {
                 },
             );
 
+            const otherPlayCount: number =
+                (otherBindInfo?.playc ?? 0) + newPPEntries.size;
+
             await this.bindDb.updateOne(
                 { discordid: to },
                 {
                     $set: {
                         previous_bind: otherPreviousBind,
-                        pptotal:
-                            DPPHelper.calculateFinalPerformancePoints(
-                                newPPEntries,
-                            ),
-                        playc: player.playCount,
+                        pptotal: DPPHelper.calculateFinalPerformancePoints(
+                            newPPEntries,
+                            otherPlayCount,
+                        ),
+                        playc: otherPlayCount,
                         pp: [...newPPEntries.values()],
                         weightedAccuracy:
                             DPPHelper.calculateWeightedAccuracy(newPPEntries),

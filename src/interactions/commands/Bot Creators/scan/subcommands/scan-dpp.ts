@@ -10,12 +10,9 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { Collection, Snowflake } from "discord.js";
 import { consola } from "consola";
 
-export const run: SlashSubcommand<true>["run"] = async (
-    client,
-    interaction
-) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ScanLocalization = new ScanLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const dbManager: UserBindCollectionManager =
@@ -25,7 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("scanStarted")
+            localization.getTranslation("scanStarted"),
         ),
     });
 
@@ -42,7 +39,8 @@ export const run: SlashSubcommand<true>["run"] = async (
             await player.scanDPP();
 
             const finalPP: number = DPPHelper.calculateFinalPerformancePoints(
-                player.pp
+                player.pp,
+                player.playc,
             );
 
             consola.info(`Final pp: ${finalPP}`);
@@ -55,7 +53,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction.channel!.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("scanComplete"),
-            interaction.user.toString()
+            interaction.user.toString(),
         ),
     });
 };
