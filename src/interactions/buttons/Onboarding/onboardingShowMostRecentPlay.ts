@@ -15,14 +15,13 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { MapInfo, Modes } from "@rian8337/osu-base";
 import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
-import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { EmbedBuilder, GuildMember, InteractionReplyOptions } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization: OnboardingShowMostRecentPlayLocalization =
         new OnboardingShowMostRecentPlayLocalization(
-            await CommandHelper.getLocale(interaction)
+            await CommandHelper.getLocale(interaction),
         );
 
     await InteractionHelper.deferReply(interaction);
@@ -35,13 +34,13 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                     _id: 0,
                     uid: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userNotBinded")
+                localization.getTranslation("userNotBinded"),
             ),
         });
     }
@@ -50,7 +49,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("profileNotFound")
+                localization.getTranslation("profileNotFound"),
             ),
         });
     }
@@ -58,7 +57,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     if (player.recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerHasNoRecentPlays")
+                localization.getTranslation("playerHasNoRecentPlays"),
             ),
         });
     }
@@ -70,7 +69,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
         score.scoreID,
         Modes.droid,
-        PPCalculationMethod.live
+        PPCalculationMethod.live,
     );
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
@@ -79,23 +78,22 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,
         undefined,
-        localization.language
+        localization.language,
     );
 
     const options: InteractionReplyOptions = {
         content: MessageCreator.createAccept(
             localization.getTranslation("recentPlayDisplay"),
-            player.username
+            player.username,
         ),
         embeds: [embed],
         ephemeral: true,
     };
 
     if (score.accuracy.nmiss > 0) {
-        score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
-        await ReplayHelper.analyzeReplay(score);
+        const replay = await ReplayHelper.analyzeReplay(score);
 
-        if (!score.replay.data) {
+        if (!replay.data) {
             return InteractionHelper.reply(interaction, options);
         }
 
@@ -109,7 +107,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 interaction,
                 options,
                 beatmapInfo.beatmap,
-                score.replay.data
+                replay.data,
             );
         } else {
             InteractionHelper.reply(interaction, options);

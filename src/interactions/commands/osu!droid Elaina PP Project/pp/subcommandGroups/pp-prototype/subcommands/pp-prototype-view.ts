@@ -23,7 +23,7 @@ import { PPLocalization } from "@alice-localization/interactions/commands/osu!dr
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const discordid: Snowflake | undefined =
@@ -36,7 +36,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -56,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         default:
             // If no arguments are specified, default to self
             ppInfo = await dbManager.getFromUser(
-                discordid ?? interaction.user.id
+                discordid ?? interaction.user.id,
             );
     }
 
@@ -66,8 +66,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     uid || username || discordid
                         ? "userInfoNotAvailable"
-                        : "selfInfoNotAvailable"
-                )
+                        : "selfInfoNotAvailable",
+                ),
             ),
         });
     }
@@ -81,33 +81,33 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         `${bold(
             `${StringHelper.formatString(
                 localization.getTranslation("ppProfileTitle"),
-                userMention(ppInfo.discordid)
-            )} (${ppInfo.username})`
+                userMention(ppInfo.discordid),
+            )} (${ppInfo.username})`,
         )}\n` +
             `${localization.getTranslation("totalPP")}: ${bold(
                 `${ppInfo.pptotal.toFixed(2)} pp (#${(
                     await dbManager.getUserDPPRank(ppInfo.pptotal)
                 ).toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )})`
+                    LocaleHelper.convertToBCP47(localization.language),
+                )})`,
             )}\n` +
             `${localization.getTranslation("prevTotalPP")}: ${bold(
-                `${ppInfo.prevpptotal.toFixed(2)} pp`
+                `${ppInfo.prevpptotal.toFixed(2)} pp`,
             )}\n` +
             `Difference: ${bold(
-                `${(ppInfo.pptotal - ppInfo.prevpptotal).toFixed(2)} pp`
+                `${(ppInfo.pptotal - ppInfo.prevpptotal).toFixed(2)} pp`,
             )}\n` +
             `[${localization.getTranslation(
-                "ppProfile"
+                "ppProfile",
             )}](https://droidpp.osudroid.moe/prototype/profile/${
                 ppInfo.uid
             })\n` +
             `${localization.getTranslation("lastUpdate")}: ${bold(
                 `${DateTimeFormatHelper.dateToLocaleString(
                     new Date(ppInfo.lastUpdate),
-                    localization.language
-                )}`
-            )}`
+                    localization.language,
+                )}`,
+            )}`,
     );
 
     const entries: PrototypePPEntry[] = [...ppInfo.pp.values()];
@@ -119,7 +119,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (pp) {
                 let modstring = pp.mods ? `+${pp.mods}` : "";
                 if (
-                    pp.forcedAR ||
+                    pp.forceAR ||
                     (pp.speedMultiplier && pp.speedMultiplier !== 1)
                 ) {
                     if (pp.mods) {
@@ -128,12 +128,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
                     modstring += "(";
 
-                    if (pp.forcedAR) {
-                        modstring += `AR${pp.forcedAR}`;
+                    if (pp.forceAR) {
+                        modstring += `AR${pp.forceAR}`;
                     }
 
                     if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
-                        if (pp.forcedAR) {
+                        if (pp.forceAR) {
                             modstring += ", ";
                         }
 
@@ -148,7 +148,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     value: `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
                         pp.miss
                     } ❌ | ${bold(pp.prevPP.toString())} ⮕ ${bold(
-                        pp.pp.toString()
+                        pp.pp.toString(),
                     )} pp (${(pp.pp - pp.prevPP).toFixed(2)} pp)`,
                 });
             } else {
@@ -164,7 +164,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         Math.max(interaction.options.getInteger("page") ?? 1, 1),
         Math.ceil(ppInfo.pp.size / 5),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

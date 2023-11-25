@@ -16,13 +16,13 @@ import {
 } from "discord.js";
 import { MapInfo, MapStats, Modes } from "@rian8337/osu-base";
 import {
+    CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";

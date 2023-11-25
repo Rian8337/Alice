@@ -9,13 +9,16 @@ import {
 import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import {
+    CacheableDifficultyAttributes,
     DifficultyAttributes,
     DifficultyCalculator,
+    DifficultyHitObject,
     PerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     DifficultyAttributes as RebalanceDifficultyAttributes,
     DifficultyCalculator as RebalanceDifficultyCalculator,
+    DifficultyHitObject as RebalanceDifficultyHitObject,
     PerformanceCalculator as RebalancePerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
@@ -25,7 +28,6 @@ import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalc
 import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/DifficultyAttributesCacheManager";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { NumberHelper } from "./NumberHelper";
 
@@ -33,12 +35,15 @@ import { NumberHelper } from "./NumberHelper";
  * A helper class for calculating difficulty and performance of beatmaps or scores.
  */
 export abstract class BeatmapDifficultyHelper<
-    DC extends DifficultyCalculator,
-    PC extends PerformanceCalculator,
-    RDC extends RebalanceDifficultyCalculator,
-    RPC extends RebalancePerformanceCalculator,
     DA extends DifficultyAttributes,
     RDA extends RebalanceDifficultyAttributes,
+    DC extends DifficultyCalculator<DifficultyHitObject, DA>,
+    PC extends PerformanceCalculator<DA>,
+    RDC extends RebalanceDifficultyCalculator<
+        RebalanceDifficultyHitObject,
+        RDA
+    >,
+    RPC extends RebalancePerformanceCalculator<RDA>,
 > {
     /**
      * The difficulty calculator to use.
@@ -89,7 +94,9 @@ export abstract class BeatmapDifficultyHelper<
     ): PerformanceCalculationParameters {
         const mods: Mod[] = [];
         let combo: number | undefined;
+        let forceCS: number | undefined;
         let forceAR: number | undefined;
+        let forceOD: number | undefined;
         let speedMultiplier: number = 1;
         let accPercent: number = 100;
         let countMiss: number = 0;
@@ -131,6 +138,16 @@ export abstract class BeatmapDifficultyHelper<
             if (input.startsWith("+")) {
                 mods.push(...ModUtil.pcStringToMods(input.replace("+", "")));
             }
+            if (input.startsWith("CS")) {
+                const newForceCS = parseFloat(input.substring(2));
+                if (!Number.isNaN(newForceCS)) {
+                    forceCS = NumberHelper.clamp(
+                        NumberHelper.round(newForceCS, 2),
+                        0,
+                        11,
+                    );
+                }
+            }
             if (input.startsWith("AR")) {
                 const newForceAR = parseFloat(input.substring(2));
                 if (!Number.isNaN(newForceAR)) {
@@ -138,6 +155,16 @@ export abstract class BeatmapDifficultyHelper<
                         NumberHelper.round(newForceAR, 2),
                         0,
                         12.5,
+                    );
+                }
+            }
+            if (input.startsWith("OD")) {
+                const newForceOD = parseFloat(input.substring(2));
+                if (!Number.isNaN(newForceOD)) {
+                    forceOD = NumberHelper.clamp(
+                        NumberHelper.round(newForceOD, 2),
+                        0,
+                        11,
                     );
                 }
             }
@@ -166,9 +193,13 @@ export abstract class BeatmapDifficultyHelper<
             undefined,
             new MapStats({
                 mods: mods,
+                cs: forceCS,
                 ar: forceAR,
+                od: forceOD,
                 speedMultiplier: speedMultiplier,
-                isForceAR: !isNaN(forceAR!),
+                forceCS: !isNaN(forceCS!),
+                forceAR: !isNaN(forceAR!),
+                forceOD: !isNaN(forceOD!),
             }),
         );
     }
@@ -189,9 +220,14 @@ export abstract class BeatmapDifficultyHelper<
             undefined,
             new MapStats({
                 mods: score.mods,
-                ar: score.forcedAR,
+                cs: score.forceCS,
+                ar: score.forceAR,
+                od: score.forceOD,
                 speedMultiplier: score.speedMultiplier,
-                isForceAR: !isNaN(score.forcedAR!),
+                forceCS: !Number.isNaN(score.forceCS),
+                forceAR: !Number.isNaN(score.forceAR),
+                forceOD: !Number.isNaN(score.forceOD),
+                forceHP: !Number.isNaN(score.forceHP),
                 oldStatistics:
                     score instanceof Score ? score.oldStatistics : false,
             }),
@@ -226,7 +262,9 @@ export abstract class BeatmapDifficultyHelper<
                 score.mods,
                 score.oldStatistics,
                 score.speedMultiplier,
-                score.forcedAR,
+                score.forceCS,
+                score.forceAR,
+                score.forceOD,
             );
 
         let cachedAttributes: CacheableDifficultyAttributes<DA> | null =
@@ -291,7 +329,9 @@ export abstract class BeatmapDifficultyHelper<
                 score.mods,
                 score.oldStatistics,
                 score.speedMultiplier,
-                score.forcedAR,
+                score.forceCS,
+                score.forceAR,
+                score.forceOD,
             );
 
         let cachedAttributes: CacheableDifficultyAttributes<RDA> | null =
@@ -420,7 +460,9 @@ export abstract class BeatmapDifficultyHelper<
                 customStatistics?.mods,
                 customStatistics?.oldStatistics,
                 customStatistics?.speedMultiplier,
-                customStatistics?.isForceAR ? customStatistics.ar : undefined,
+                customStatistics?.forceCS ? customStatistics.cs : undefined,
+                customStatistics?.forceAR ? customStatistics.ar : undefined,
+                customStatistics?.forceOD ? customStatistics.od : undefined,
             );
 
         let cachedAttributes: CacheableDifficultyAttributes<DA> | null =
@@ -544,7 +586,9 @@ export abstract class BeatmapDifficultyHelper<
                 customStatistics?.mods,
                 customStatistics?.oldStatistics,
                 customStatistics?.speedMultiplier,
-                customStatistics?.isForceAR ? customStatistics.ar : undefined,
+                customStatistics?.forceCS ? customStatistics.cs : undefined,
+                customStatistics?.forceAR ? customStatistics.ar : undefined,
+                customStatistics?.forceOD ? customStatistics.od : undefined,
             );
 
         let cachedAttributes: CacheableDifficultyAttributes<RDA> | null =
@@ -747,7 +791,9 @@ export abstract class BeatmapDifficultyHelper<
                 <DA>star.attributes,
                 customStatistics?.oldStatistics,
                 customStatistics?.speedMultiplier,
-                customStatistics?.isForceAR ? customStatistics.ar : undefined,
+                customStatistics?.forceCS ? customStatistics.cs : undefined,
+                customStatistics?.forceAR ? customStatistics.ar : undefined,
+                customStatistics?.forceOD ? customStatistics.od : undefined,
             ),
         );
     }
@@ -789,7 +835,9 @@ export abstract class BeatmapDifficultyHelper<
                 <RDA>star.attributes,
                 customStatistics?.oldStatistics,
                 customStatistics?.speedMultiplier,
-                customStatistics?.isForceAR ? customStatistics.ar : undefined,
+                customStatistics?.forceCS ? customStatistics.cs : undefined,
+                customStatistics?.forceAR ? customStatistics.ar : undefined,
+                customStatistics?.forceOD ? customStatistics.od : undefined,
             ),
         );
     }

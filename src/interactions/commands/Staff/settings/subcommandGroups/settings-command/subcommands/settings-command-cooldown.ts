@@ -12,14 +12,14 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     if (!interaction.inGuild()) {
         return;
     }
 
     const localization: SettingsLocalization = new SettingsLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const constantsLocalization: ConstantsLocalization =
@@ -38,7 +38,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!command) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("commandNotFound")
+                localization.getTranslation("commandNotFound"),
             ),
         });
     }
@@ -49,7 +49,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("cannotDisableCommand")
+                localization.getTranslation("cannotDisableCommand"),
             ),
         });
     }
@@ -68,8 +68,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
@@ -79,7 +79,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                     ? interaction.channel.parent!
                     : interaction.channel!,
                 commandName,
-                cooldown
+                cooldown,
             );
             break;
         case "guild":
@@ -93,8 +93,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
@@ -102,7 +102,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             result = await CommandUtilManager.setCommandCooldownInGuild(
                 interaction.guildId!,
                 commandName,
-                cooldown
+                cooldown,
             );
             break;
         case "global":
@@ -113,15 +113,15 @@ export const run: SlashSubcommand<true>["run"] = async (
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
 
             CommandUtilManager.setCommandCooldownGlobally(
                 commandName,
-                cooldown
+                cooldown,
             );
             break;
     }
@@ -130,7 +130,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setCommandCooldownFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -139,7 +139,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         content: MessageCreator.createAccept(
             localization.getTranslation("setCommandCooldownSuccess"),
             commandName,
-            cooldown.toString()
+            cooldown.toString(),
         ),
     });
 };

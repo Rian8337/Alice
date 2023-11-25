@@ -238,7 +238,7 @@ export class Challenge extends Manager {
 
     constructor(
         data: DatabaseChallenge = DatabaseManager.aliceDb?.collections.challenge
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 
@@ -269,19 +269,19 @@ export class Challenge extends Manager {
         if (this.status !== "scheduled") {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("challengeNotFound")
+                localization.getTranslation("challengeNotFound"),
             );
         }
 
         // Check if any challenges are ongoing
         if (
             await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(
-                this.type
+                this.type,
             )
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("challengeOngoing")
+                localization.getTranslation("challengeOngoing"),
             );
         }
 
@@ -298,13 +298,13 @@ export class Challenge extends Manager {
             await EmbedCreator.createChallengeEmbed(
                 this,
                 this.isWeekly ? "#af46db" : "#e3b32d",
-                language
+                language,
             );
 
         if (!challengeEmbedOptions) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("challengeEmbedGenerationFailed")
+                localization.getTranslation("challengeEmbedGenerationFailed"),
             );
         }
 
@@ -312,7 +312,7 @@ export class Challenge extends Manager {
             content: MessageCreator.createAccept(
                 `Successfully started challenge \`${
                     this.challengeid
-                }\`.\n${roleMention("674918022116278282")}`
+                }\`.\n${roleMention("674918022116278282")}`,
             ),
             ...challengeEmbedOptions,
         });
@@ -324,7 +324,7 @@ export class Challenge extends Manager {
                     status: "ongoing",
                     timelimit: this.timelimit,
                 },
-            }
+            },
         );
     }
 
@@ -337,7 +337,7 @@ export class Challenge extends Manager {
      */
     async end(
         force?: boolean,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ChallengeLocalization =
             this.getLocalization(language);
@@ -345,7 +345,7 @@ export class Challenge extends Manager {
         if (!this.isOngoing) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("challengeNotOngoing")
+                localization.getTranslation("challengeNotOngoing"),
             );
         }
 
@@ -355,7 +355,7 @@ export class Challenge extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("challengeNotExpired")
+                localization.getTranslation("challengeNotExpired"),
             );
         }
 
@@ -369,26 +369,26 @@ export class Challenge extends Manager {
             await EmbedCreator.createChallengeEmbed(
                 this,
                 this.isWeekly ? "#af46db" : "#e3b32d",
-                language
+                language,
             );
 
         if (!challengeEmbedOptions) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("challengeEmbedGenerationFailed")
+                localization.getTranslation("challengeEmbedGenerationFailed"),
             );
         }
 
         await notificationChannel.send({
             content: MessageCreator.createAccept(
-                `Successfully ended challenge \`${this.challengeid}\`.`
+                `Successfully ended challenge \`${this.challengeid}\`.`,
             ),
             ...challengeEmbedOptions,
         });
 
         await DatabaseManager.aliceDb.collections.challenge.updateOne(
             { challengeid: this.challengeid },
-            { $set: { status: this.status } }
+            { $set: { status: this.status } },
         );
 
         // Award first place in leaderboard
@@ -405,7 +405,7 @@ export class Challenge extends Manager {
                             _id: 0,
                             uid: 1,
                         },
-                    }
+                    },
                 );
 
             if (winnerBindInfo) {
@@ -416,29 +416,29 @@ export class Challenge extends Manager {
                             points: this.isWeekly ? 50 : 25,
                             alicecoins: this.isWeekly ? 100 : 50,
                         },
-                    }
+                    },
                 );
 
                 await DatabaseManager.elainaDb.collections.clan.updateOne(
                     { "member_list.id": winnerBindInfo.discordid },
-                    { $inc: { power: this.isWeekly ? 50 : 25 } }
+                    { $inc: { power: this.isWeekly ? 50 : 25 } },
                 );
 
                 const coinEmoji: GuildEmoji = this.client.emojis.cache.get(
-                    Constants.aliceCoinEmote
+                    Constants.aliceCoinEmote,
                 )!;
 
                 await notificationChannel.send({
                     content: MessageCreator.createAccept(
                         `Congratulations to ${userMention(
-                            winnerBindInfo.discordid
+                            winnerBindInfo.discordid,
                         )} for achieving first place in challenge \`${
                             this.challengeid
                         }\`, earning them \`${
                             this.isWeekly ? "50" : "25"
                         }\` points and ${coinEmoji}\`${
                             this.isWeekly ? "100" : "50"
-                        }\` Alice coins!`
+                        }\` Alice coins!`,
                     ),
                 });
             }
@@ -451,12 +451,14 @@ export class Challenge extends Manager {
      * Checks whether a score fulfills the challenge requirement.
      *
      * @param score The score.
+     * @param replay The replay of the score, if any.
      * @param language The locale of the user who attempted to check the score. Defaults to English.
      * @returns An object containing information about the operation.
      */
     async checkScoreCompletion(
         score: Score,
-        language: Language = "en"
+        replay?: ReplayAnalyzer,
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ChallengeLocalization =
             this.getLocalization(language);
@@ -464,34 +466,39 @@ export class Challenge extends Manager {
         if (!this.isConstrainFulfilled(score.mods)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("constrainNotFulfilled")
+                localization.getTranslation("constrainNotFulfilled"),
             );
         }
 
         if (!this.isModFulfilled(score.mods)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("eznfhtUsage")
+                localization.getTranslation("eznfhtUsage"),
             );
         }
 
-        score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
-        await ReplayHelper.analyzeReplay(score.replay);
+        replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
+        await ReplayHelper.analyzeReplay(replay);
 
-        if (!score.replay.data) {
+        const { data } = replay;
+
+        if (!data) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("replayNotFound")
+                localization.getTranslation("replayNotFound"),
             );
         }
 
         if (
-            score.replay.data.forcedAR ||
-            (score.replay.data.speedModification ?? 1) !== 1
+            data.forceCS !== undefined ||
+            data.forceAR !== undefined ||
+            data.forceOD !== undefined ||
+            data.forceHP !== undefined ||
+            (data.speedMultiplier ?? 1) !== 1
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("customARSpeedMulUsage")
+                localization.getTranslation("customARSpeedMulUsage"),
             );
         }
 
@@ -504,13 +511,13 @@ export class Challenge extends Manager {
             this.beatmapid,
             Modes.droid,
             PPCalculationMethod.live,
-            calcParams
+            calcParams,
         );
 
         if (!droidAttribs) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             );
         }
 
@@ -521,13 +528,13 @@ export class Challenge extends Manager {
             this.beatmapid,
             Modes.osu,
             PPCalculationMethod.live,
-            calcParams
+            calcParams,
         );
 
         if (!osuAttribs) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             );
         }
 
@@ -535,12 +542,12 @@ export class Challenge extends Manager {
             score,
             droidAttribs,
             osuAttribs,
-            score.replay.calculateHitError()!
+            replay.calculateHitError()!,
         );
 
         return this.createOperationResult(
             pass,
-            localization.getTranslation("passReqNotFulfilled")
+            localization.getTranslation("passReqNotFulfilled"),
         );
     }
 
@@ -553,7 +560,7 @@ export class Challenge extends Manager {
      */
     async checkReplayCompletion(
         replay: ReplayAnalyzer,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ChallengeLocalization =
             this.getLocalization(language);
@@ -564,31 +571,36 @@ export class Challenge extends Manager {
             if (!replay.data) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("cannotParseReplay")
+                    localization.getTranslation("cannotParseReplay"),
                 );
             }
         }
 
-        const data: ReplayData = replay.data;
+        const { data } = replay;
 
         if (!this.isConstrainFulfilled(data.convertedMods)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("constrainNotFulfilled")
+                localization.getTranslation("constrainNotFulfilled"),
             );
         }
 
         if (!this.isModFulfilled(data.convertedMods)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("eznfhtUsage")
+                localization.getTranslation("eznfhtUsage"),
             );
         }
 
-        if (data.forcedAR || data.speedModification !== 1) {
+        if (
+            data.forceCS !== undefined ||
+            data.forceAR !== undefined ||
+            data.forceOD !== undefined ||
+            data.speedMultiplier !== 1
+        ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("customARSpeedMulUsage")
+                localization.getTranslation("customARSpeedMulUsage"),
             );
         }
 
@@ -601,14 +613,14 @@ export class Challenge extends Manager {
                   CompleteCalculationAttributes<
                       OsuDifficultyAttributes,
                       OsuPerformanceAttributes
-                  >
+                  >,
               ]
             | null = await this.getReplayCalculationResult(replay);
 
         if (!attribs) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             );
         }
 
@@ -616,12 +628,12 @@ export class Challenge extends Manager {
             replay,
             attribs[0],
             attribs[1],
-            replay.calculateHitError()!
+            replay.calculateHitError()!,
         );
 
         return this.createOperationResult(
             pass,
-            localization.getTranslation("passReqNotFulfilled")
+            localization.getTranslation("passReqNotFulfilled"),
         );
     }
 
@@ -642,16 +654,12 @@ export class Challenge extends Manager {
     async calculateBonusLevel(score: Score): Promise<number>;
 
     async calculateBonusLevel(
-        scoreOrReplay: Score | ReplayAnalyzer
+        scoreOrReplay: Score | ReplayAnalyzer,
     ): Promise<number> {
-        await ReplayHelper.analyzeReplay(scoreOrReplay);
+        const replay = await ReplayHelper.analyzeReplay(scoreOrReplay);
+        const { data } = replay;
 
-        if (scoreOrReplay instanceof ReplayAnalyzer && !scoreOrReplay.data) {
-            return 0;
-        } else if (
-            scoreOrReplay instanceof Score &&
-            !scoreOrReplay.replay?.data
-        ) {
+        if (!data) {
             return 0;
         }
 
@@ -667,7 +675,7 @@ export class Challenge extends Manager {
         if (scoreOrReplay instanceof Score) {
             const calcParams: PerformanceCalculationParameters =
                 BeatmapDifficultyHelper.getCalculationParamsFromScore(
-                    scoreOrReplay
+                    scoreOrReplay,
                 );
 
             droidAttribs =
@@ -675,13 +683,13 @@ export class Challenge extends Manager {
                     this.beatmapid,
                     Modes.droid,
                     PPCalculationMethod.live,
-                    calcParams
+                    calcParams,
                 );
             osuAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
                 this.beatmapid,
                 Modes.osu,
                 PPCalculationMethod.live,
-                calcParams
+                calcParams,
             );
         } else {
             const attribs:
@@ -693,7 +701,7 @@ export class Challenge extends Manager {
                       CompleteCalculationAttributes<
                           OsuDifficultyAttributes,
                           OsuPerformanceAttributes
-                      >
+                      >,
                   ]
                 | null = await this.getReplayCalculationResult(scoreOrReplay);
 
@@ -711,11 +719,6 @@ export class Challenge extends Manager {
             scoreOrReplay instanceof Score
                 ? await this.calculateChallengeScoreV2(scoreOrReplay)
                 : await this.calculateChallengeScoreV2(scoreOrReplay.data!);
-
-        const replay: ReplayAnalyzer =
-            scoreOrReplay instanceof ReplayAnalyzer
-                ? scoreOrReplay
-                : scoreOrReplay.replay!;
 
         const hitErrorInformation: HitErrorInformation | null =
             replay.calculateHitError();
@@ -772,10 +775,10 @@ export class Challenge extends Manager {
                                 : scoreOrReplay.data!.convertedMods;
                         bonusComplete =
                             StringHelper.sortAlphabet(
-                                mods.reduce((a, v) => a + v.acronym, "")
+                                mods.reduce((a, v) => a + v.acronym, ""),
                             ) ===
                             StringHelper.sortAlphabet(
-                                (<string>tier.value).toUpperCase()
+                                (<string>tier.value).toUpperCase(),
                             );
                         break;
                     }
@@ -846,7 +849,7 @@ export class Challenge extends Manager {
      */
     async getCurrentLeaderboard(): Promise<Score[]> {
         const scores: Score[] = await ScoreHelper.fetchDroidLeaderboard(
-            this.hash
+            this.hash,
         );
 
         return scores;
@@ -861,7 +864,7 @@ export class Challenge extends Manager {
         return this.getPassOrBonusDescription(
             this.pass.id,
             +this.pass.value,
-            language
+            language,
         );
     }
 
@@ -883,12 +886,12 @@ export class Challenge extends Manager {
                             `${bold(
                                 `${localization.getTranslation("level")} ${
                                     b.level
-                                }`
+                                }`,
                             )}: ${this.getPassOrBonusDescription(
                                 v.id,
                                 b.value,
-                                language
-                            )}`
+                                language,
+                            )}`,
                     )
                     .join("\n"),
             };
@@ -905,7 +908,7 @@ export class Challenge extends Manager {
      */
     async getBeatmapFile(): Promise<string | null> {
         const beatmapFileReq: RequestResponse = await RESTManager.request(
-            `https://osu.ppy.sh/osu/${this.beatmapid}`
+            `https://osu.ppy.sh/osu/${this.beatmapid}`,
         );
 
         if (beatmapFileReq.statusCode !== 200) {
@@ -942,9 +945,8 @@ export class Challenge extends Manager {
                 const actualVersion: string = p.slice(1).join(":");
 
                 if (this.isWeekly) {
-                    lines[
-                        i
-                    ] = `${p[0]}:(Weekly Challenge ${id}) ${actualVersion}`;
+                    lines[i] =
+                        `${p[0]}:(Weekly Challenge ${id}) ${actualVersion}`;
                 } else {
                     lines[i] = `${p[0]}:(Challenge ${id}) ${actualVersion}`;
                 }
@@ -971,7 +973,7 @@ export class Challenge extends Manager {
                         $set: {
                             hash: hash,
                         },
-                    }
+                    },
                 );
             }
         }
@@ -988,7 +990,7 @@ export class Challenge extends Manager {
         return (
             !this.constrain ||
             StringHelper.sortAlphabet(
-                mods.reduce((a, v) => a + v.acronym, "")
+                mods.reduce((a, v) => a + v.acronym, ""),
             ) === StringHelper.sortAlphabet(this.constrain.toUpperCase())
         );
     }
@@ -1003,7 +1005,7 @@ export class Challenge extends Manager {
             (m) =>
                 m instanceof ModEasy ||
                 m instanceof ModNoFail ||
-                m instanceof ModHalfTime
+                m instanceof ModHalfTime,
         );
     }
 
@@ -1025,7 +1027,7 @@ export class Challenge extends Manager {
             OsuDifficultyAttributes,
             OsuPerformanceAttributes
         >,
-        hitErrorInformation: HitErrorInformation
+        hitErrorInformation: HitErrorInformation,
     ): Promise<boolean>;
 
     /**
@@ -1045,7 +1047,7 @@ export class Challenge extends Manager {
             OsuDifficultyAttributes,
             OsuPerformanceAttributes
         >,
-        hitErrorInformation: HitErrorInformation
+        hitErrorInformation: HitErrorInformation,
     ): Promise<boolean>;
 
     private async verifyPassCompletion(
@@ -1058,7 +1060,7 @@ export class Challenge extends Manager {
             OsuDifficultyAttributes,
             OsuPerformanceAttributes
         >,
-        hitErrorInformation: HitErrorInformation
+        hitErrorInformation: HitErrorInformation,
     ): Promise<boolean> {
         switch (this.pass.id) {
             case "score": {
@@ -1094,7 +1096,7 @@ export class Challenge extends Manager {
                     scoreOrReplay instanceof Score
                         ? await this.calculateChallengeScoreV2(scoreOrReplay)
                         : await this.calculateChallengeScoreV2(
-                              scoreOrReplay.data!
+                              scoreOrReplay.data!,
                           );
                 return scoreV2 >= +this.pass.value;
             }
@@ -1186,82 +1188,82 @@ export class Challenge extends Manager {
     private getPassOrBonusDescription(
         id: BonusID,
         value: string | number,
-        language: Language = "en"
+        language: Language = "en",
     ): string {
         const localization: ChallengeLocalization =
             this.getLocalization(language);
 
         const BCP47: string = LocaleHelper.convertToBCP47(
-            localization.language
+            localization.language,
         );
 
         switch (id) {
             case "score":
                 return StringHelper.formatString(
                     localization.getTranslation("scoreV1Description"),
-                    bold(value.toLocaleString(BCP47))
+                    bold(value.toLocaleString(BCP47)),
                 );
             case "acc":
                 return StringHelper.formatString(
                     localization.getTranslation("accuracyDescription"),
-                    bold(value.toString())
+                    bold(value.toString()),
                 );
             case "scorev2":
                 return StringHelper.formatString(
                     localization.getTranslation("scoreV2Description"),
-                    bold(value.toLocaleString(BCP47))
+                    bold(value.toLocaleString(BCP47)),
                 );
             case "miss":
                 return value === 0
                     ? localization.getTranslation("noMisses")
                     : StringHelper.formatString(
                           localization.getTranslation("missCountDescription"),
-                          bold(value.toString())
+                          bold(value.toString()),
                       );
             case "mod":
                 return StringHelper.formatString(
                     localization.getTranslation("modsDescription"),
-                    bold((<string>value).toUpperCase())
+                    bold((<string>value).toUpperCase()),
                 );
             case "combo":
                 return StringHelper.formatString(
                     localization.getTranslation("comboDescription"),
-                    bold(value.toString())
+                    bold(value.toString()),
                 );
             case "rank":
                 return StringHelper.formatString(
                     localization.getTranslation("rankDescription"),
-                    bold((<string>value).toUpperCase())
+                    bold((<string>value).toUpperCase()),
                 );
             case "dpp":
                 return StringHelper.formatString(
                     localization.getTranslation("droidPPDescription"),
-                    bold(value.toString())
+                    bold(value.toString()),
                 );
             case "pp":
                 return StringHelper.formatString(
                     localization.getTranslation("pcPPDescription"),
-                    bold(value.toString())
+                    bold(value.toString()),
                 );
             case "m300":
                 return StringHelper.formatString(
                     localization.getTranslation("min300Description"),
-                    bold(value.toString())
+                    bold(value.toString()),
                 );
             case "m100":
                 return StringHelper.formatString(
                     localization.getTranslation("max100Description"),
-                    bold(value.toString())
+                    bold(value.toString()),
                 );
             case "m50":
                 return StringHelper.formatString(
                     localization.getTranslation("max50Description"),
-                    bold(value.toString())
+                    bold(value.toString()),
                 );
             case "ur":
                 return StringHelper.formatString(
                     localization.getTranslation("maxURDescription"),
-                    bold(value.toString())
+                    bold(value.toString()),
                 );
         }
     }
@@ -1302,7 +1304,7 @@ export class Challenge extends Manager {
      * @returns The calculation result.
      */
     private async getReplayCalculationResult(
-        replay: ReplayAnalyzer
+        replay: ReplayAnalyzer,
     ): Promise<
         | [
               CompleteCalculationAttributes<
@@ -1312,7 +1314,7 @@ export class Challenge extends Manager {
               CompleteCalculationAttributes<
                   OsuDifficultyAttributes,
                   OsuPerformanceAttributes
-              >
+              >,
           ]
         | null
     > {
@@ -1324,9 +1326,15 @@ export class Challenge extends Manager {
 
         const stats: MapStats = new MapStats({
             mods: data.convertedMods,
-            ar: data.forcedAR,
-            isForceAR: data.forcedAR !== undefined,
-            speedMultiplier: data.speedModification,
+            cs: data.forceCS,
+            ar: data.forceAR,
+            od: data.forceOD,
+            hp: data.forceHP,
+            forceCS: data.forceCS !== undefined,
+            forceAR: data.forceAR !== undefined,
+            forceOD: data.forceOD !== undefined,
+            forceHP: data.forceHP !== undefined,
+            speedMultiplier: data.speedMultiplier,
             oldStatistics: data.replayVersion <= 3,
         });
 
@@ -1336,7 +1344,7 @@ export class Challenge extends Manager {
                 data.accuracy.value() * 100,
                 data.maxCombo,
                 undefined,
-                stats
+                stats,
             );
 
         const droidAttribs: CompleteCalculationAttributes<
@@ -1346,7 +1354,7 @@ export class Challenge extends Manager {
             this.beatmapid,
             Modes.droid,
             PPCalculationMethod.live,
-            calcParams
+            calcParams,
         );
 
         if (!droidAttribs) {
@@ -1360,7 +1368,7 @@ export class Challenge extends Manager {
             this.beatmapid,
             Modes.osu,
             PPCalculationMethod.live,
-            calcParams
+            calcParams,
         );
 
         if (!osuAttribs) {
@@ -1376,7 +1384,7 @@ export class Challenge extends Manager {
      * @param replay The data of the replay.
      */
     private async calculateChallengeScoreV2(
-        replay: ReplayData
+        replay: ReplayData,
     ): Promise<number>;
 
     /**
@@ -1387,10 +1395,10 @@ export class Challenge extends Manager {
     private async calculateChallengeScoreV2(score: Score): Promise<number>;
 
     private async calculateChallengeScoreV2(
-        scoreOrReplay: Score | ReplayData
+        scoreOrReplay: Score | ReplayData,
     ): Promise<number> {
         const beatmapInfo: MapInfo<true> = (await BeatmapManager.getBeatmap(
-            this.beatmapid
+            this.beatmapid,
         ))!;
 
         const maximumScore: number = beatmapInfo.beatmap.maxDroidScore(
@@ -1400,11 +1408,8 @@ export class Challenge extends Manager {
                 od: beatmapInfo.od,
                 hp: beatmapInfo.hp,
                 mods: ModUtil.pcStringToMods(this.constrain),
-                speedMultiplier:
-                    scoreOrReplay instanceof Score
-                        ? scoreOrReplay.speedMultiplier
-                        : scoreOrReplay.speedModification,
-            })
+                speedMultiplier: scoreOrReplay.speedMultiplier,
+            }),
         );
 
         const tempScoreV2: number =

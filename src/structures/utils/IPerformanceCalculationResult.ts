@@ -1,10 +1,14 @@
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import {
+    DifficultyAttributes,
     DifficultyCalculator,
+    DifficultyHitObject,
     PerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import {
+    DifficultyAttributes as RebalanceDifficultyAttributes,
     DifficultyCalculator as RebalanceDifficultyCalculator,
+    DifficultyHitObject as RebalanceDifficultyHitObject,
     PerformanceCalculator as RebalancePerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 
@@ -12,8 +16,15 @@ import {
  * A structure for implementing performance calculation results.
  */
 export interface IPerformanceCalculationResult<
-    D extends DifficultyCalculator | RebalanceDifficultyCalculator,
-    P extends PerformanceCalculator | RebalancePerformanceCalculator
+    D extends
+        | DifficultyCalculator<DifficultyHitObject, DifficultyAttributes>
+        | RebalanceDifficultyCalculator<
+              RebalanceDifficultyHitObject,
+              RebalanceDifficultyAttributes
+          >,
+    P extends
+        | PerformanceCalculator<DifficultyAttributes>
+        | RebalancePerformanceCalculator<RebalanceDifficultyAttributes>,
 > {
     /**
      * The calculation parameters.

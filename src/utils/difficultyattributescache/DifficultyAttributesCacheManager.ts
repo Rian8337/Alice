@@ -1,12 +1,12 @@
-import { CachedDifficultyAttributes } from "@alice-structures/difficultyattributes/CachedDifficultyAttributes";
 import { mkdir, readdir, readFile, writeFile } from "fs/promises";
 import { join } from "path";
-import { Collection } from "discord.js";
+import { Collection } from "@discordjs/collection";
 import { MapInfo, Mod, Modes } from "@rian8337/osu-base";
+import { CacheableDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
+import { CachedDifficultyAttributes } from "@alice-structures/difficultyattributes/CachedDifficultyAttributes";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 /**
  * A cache manager for difficulty attributes.
@@ -27,16 +27,18 @@ export abstract class DifficultyAttributesCacheManager<
     /**
      * The difficulty attributes cache.
      */
-    private readonly cache: Collection<number, CachedDifficultyAttributes<T>> =
-        new Collection();
+    private readonly cache = new Collection<
+        number,
+        CachedDifficultyAttributes<T>
+    >();
 
     /**
      * The cache that needs to be saved to disk.
      */
-    private readonly cacheToSave: Collection<
+    private readonly cacheToSave = new Collection<
         number,
         CachedDifficultyAttributes<T>
-    > = new Collection();
+    >();
 
     private get folderPath(): string {
         let attributeTypeFolder: string;
@@ -67,11 +69,6 @@ export abstract class DifficultyAttributesCacheManager<
             attributeTypeFolder,
             gamemodeFolder,
         );
-    }
-
-    constructor() {
-        setImmediate(async () => await this.readCacheFromDisk());
-        setInterval(async () => await this.saveToDisk(), 60 * 5 * 1000);
     }
 
     /**
@@ -108,7 +105,9 @@ export abstract class DifficultyAttributesCacheManager<
      * @param difficultyAttributes The difficulty attributes to add.
      * @param oldStatistics Whether the difficulty attributes uses old statistics (pre-1.6.8 pre-release).
      * @param customSpeedMultiplier The custom speed multiplier that was used to generate the attributes.
-     * @param customForceAR The custom force AR that was used to generate the attributes.
+     * @param forceCS The force CS that was used to generate the attributes.
+     * @param forceAR The force AR that was used to generate the attributes.
+     * @param forceOD The force OD that was used to generate the attributes.
      * @returns The difficulty attributes that were cached.
      */
     addAttribute(
@@ -116,7 +115,9 @@ export abstract class DifficultyAttributesCacheManager<
         difficultyAttributes: T,
         oldStatistics: boolean = false,
         customSpeedMultiplier: number = 1,
-        customForceAR?: number,
+        forceCS?: number,
+        forceAR?: number,
+        forceOD?: number,
     ): CacheableDifficultyAttributes<T> {
         const cache: CachedDifficultyAttributes<T> = this.getBeatmapAttributes(
             beatmapInfo,
@@ -129,7 +130,9 @@ export abstract class DifficultyAttributesCacheManager<
             difficultyAttributes.mods,
             oldStatistics,
             customSpeedMultiplier,
-            customForceAR,
+            forceCS,
+            forceAR,
+            forceOD,
         );
 
         cache.difficultyAttributes[attributeName] = {
@@ -149,15 +152,19 @@ export abstract class DifficultyAttributesCacheManager<
      * @param mods The mods to construct with.
      * @param oldStatistics Whether the attribute uses old statistics (pre-1.6.8 pre-release).
      * @param customSpeedMultiplier The custom speed multiplier to construct with.
-     * @param customForceAR The custom force AR to construct with.
+     * @param forceAR The force CS to construct with.
+     * @param forceAR The force AR to construct with.
+     * @param forceOD The force OD to construct with.
      */
     getAttributeName(
         mods: Mod[] = [],
         oldStatistics: boolean = false,
         customSpeedMultiplier: number = 1,
-        customForceAR?: number,
+        forceCS?: number,
+        forceAR?: number,
+        forceOD?: number,
     ): string {
-        let attributeName: string = "";
+        let attributeName = "";
 
         switch (this.mode) {
             case Modes.droid:
@@ -185,8 +192,16 @@ export abstract class DifficultyAttributesCacheManager<
             attributeName += `|${customSpeedMultiplier.toFixed(2)}x`;
         }
 
-        if (customForceAR) {
-            attributeName += `|AR${customForceAR}`;
+        if (forceCS !== undefined) {
+            attributeName += `|CS${forceCS}`;
+        }
+
+        if (forceAR !== undefined) {
+            attributeName += `|AR${forceAR}`;
+        }
+
+        if (forceOD !== undefined) {
+            attributeName += `OD|${forceOD}`;
         }
 
         if (oldStatistics) {
@@ -199,7 +214,16 @@ export abstract class DifficultyAttributesCacheManager<
     /**
      * Reads the existing cache from the disk.
      */
-    private async readCacheFromDisk(): Promise<void> {
+    async readCacheFromDisk(): Promise<void> {
+        console.log(
+            "Reading difficulty cache of attribute type",
+            PPCalculationMethod[this.attributeType],
+            "and gamemode",
+            this.mode,
+        );
+
+        const start = process.hrtime.bigint();
+
         try {
             for (const fileName of await readdir(this.folderPath)) {
                 const beatmapId = parseInt(fileName);
@@ -225,6 +249,20 @@ export abstract class DifficultyAttributesCacheManager<
                 // Ignore mkdir error.
             }
         }
+
+        const end = process.hrtime.bigint();
+
+        setInterval(async () => await this.saveToDisk(), 60 * 5 * 1000);
+
+        console.log(
+            "Reading difficulty cache of attribute type",
+            PPCalculationMethod[this.attributeType],
+            "and gamemode",
+            this.mode,
+            "complete (took",
+            Number(end - start) / 1e6,
+            "ms)",
+        );
     }
 
     /**
@@ -236,9 +274,9 @@ export abstract class DifficultyAttributesCacheManager<
                 join(this.folderPath, `${beatmapId}.json`),
                 JSON.stringify(cache),
             );
-        }
 
-        this.cacheToSave.clear();
+            this.cacheToSave.delete(beatmapId);
+        }
     }
 
     /**
@@ -251,9 +289,7 @@ export abstract class DifficultyAttributesCacheManager<
     private getCache(
         beatmapInfo: MapInfo,
     ): CachedDifficultyAttributes<T> | null {
-        const cache: CachedDifficultyAttributes<T> | undefined = this.cache.get(
-            beatmapInfo.beatmapId,
-        );
+        const cache = this.cache.get(beatmapInfo.beatmapId);
 
         if (!cache) {
             return null;
@@ -273,8 +309,7 @@ export abstract class DifficultyAttributesCacheManager<
      * @param beatmapId The ID of the beatmap to invalidate.
      */
     private invalidateCache(beatmapId: number): void {
-        const cache: CachedDifficultyAttributes<T> | undefined =
-            this.cache.get(beatmapId);
+        const cache = this.cache.get(beatmapId);
 
         if (!cache) {
             return;

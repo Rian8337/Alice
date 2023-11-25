@@ -82,8 +82,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     // Get calculation parameters
+    const forceCS: number | undefined =
+        interaction.options.getNumber("circlesize") ?? undefined;
     const forceAR: number | undefined =
         interaction.options.getNumber("approachrate") ?? undefined;
+    const forceOD: number | undefined =
+        interaction.options.getNumber("overalldifficulty") ?? undefined;
 
     const calcParams: PerformanceCalculationParameters =
         new PerformanceCalculationParameters(
@@ -105,10 +109,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 mods: ModUtil.pcStringToMods(
                     interaction.options.getString("mods") ?? "",
                 ),
+                cs: forceCS,
                 ar: forceAR,
+                od: forceOD,
                 speedMultiplier:
                     interaction.options.getNumber("speedmultiplier") ?? 1,
-                isForceAR: !isNaN(<number>forceAR),
+                forceCS: !isNaN(<number>forceCS),
+                forceAR: !isNaN(<number>forceAR),
+                forceOD: !isNaN(<number>forceOD),
             }),
         );
 
@@ -287,12 +295,28 @@ export const config: SlashCommand["config"] = {
             minValue: 0,
         },
         {
+            name: "circlesize",
+            type: ApplicationCommandOptionType.Number,
+            description:
+                "The Circle Size (CS) to be forced in calculation, from 0 to 11. Defaults to the beatmap's CS.",
+            minValue: 0,
+            maxValue: 11,
+        },
+        {
             name: "approachrate",
             type: ApplicationCommandOptionType.Number,
             description:
                 "The Approach Rate (AR) to be forced in calculation, from 0 to 12.5. Defaults to the beatmap's AR.",
             minValue: 0,
             maxValue: 12.5,
+        },
+        {
+            name: "overalldifficulty",
+            type: ApplicationCommandOptionType.Number,
+            description:
+                "The Overall Difficulty (OD) to be forced in calculation, from 0 to 11. Defaults to the beatmap's OD.",
+            minValue: 0,
+            maxValue: 11,
         },
         {
             name: "speedmultiplier",

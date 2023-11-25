@@ -16,13 +16,13 @@ import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
 import { YouTubeVideoInformation } from "@alice-structures/youtube/YouTubeVideoInformation";
 import { MapInfo, MapStats, Modes } from "@rian8337/osu-base";
 import {
+    CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 

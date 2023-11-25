@@ -11,6 +11,7 @@ import {
 import {
     MapInfo,
     MapStats,
+    MapStatsInit,
     Modes,
     OsuAPIRequestBuilder,
     OsuAPIResponse,
@@ -429,22 +430,31 @@ export abstract class BeatmapManager extends Manager {
         option: number,
         stats?: MapStats,
     ): string {
-        const mapParams = {
+        const mapParams: MapStatsInit = {
             cs: beatmapInfo.cs,
             ar: beatmapInfo.ar,
             od: beatmapInfo.od,
             hp: beatmapInfo.hp,
             mods: stats?.mods ?? [],
-            isForceAR: false,
-            speedMultiplier: 1,
+            speedMultiplier: stats?.speedMultiplier ?? 1,
+            forceCS: stats?.forceCS ?? false,
+            forceAR: stats?.forceAR ?? false,
+            forceOD: stats?.forceOD ?? false,
+            forceHP: stats?.forceOD ?? false,
+            oldStatistics: stats?.oldStatistics ?? false,
         };
-        if (stats) {
-            if (stats.isForceAR) {
-                mapParams.ar = stats.ar ?? mapParams.ar;
-            }
-            mapParams.isForceAR = stats.isForceAR ?? mapParams.isForceAR;
-            mapParams.speedMultiplier =
-                stats.speedMultiplier ?? mapParams.speedMultiplier;
+
+        if (stats?.forceCS) {
+            mapParams.cs = stats.cs ?? mapParams.cs;
+        }
+        if (stats?.forceAR) {
+            mapParams.ar = stats.ar ?? mapParams.ar;
+        }
+        if (stats?.forceOD) {
+            mapParams.od = stats.od ?? mapParams.od;
+        }
+        if (stats?.forceHP) {
+            mapParams.hp = stats.hp ?? mapParams.hp;
         }
 
         switch (option) {
@@ -460,22 +470,33 @@ export abstract class BeatmapManager extends Manager {
                               .join("")}`
                         : ""
                 }`;
-                if (
-                    mapParams.speedMultiplier !== 1 ||
-                    mapStatistics.isForceAR
-                ) {
-                    string += " (";
-                    if (mapStatistics.isForceAR) {
-                        string += `AR${mapStatistics.ar}`;
-                    }
-                    if (mapParams.speedMultiplier !== 1) {
-                        if (mapStatistics.isForceAR) {
-                            string += ", ";
-                        }
-                        string += `${mapParams.speedMultiplier}x`;
-                    }
-                    string += ")";
+
+                const customStats: string[] = [];
+
+                if (mapParams.speedMultiplier !== 1) {
+                    customStats.push(`${mapParams.speedMultiplier}x`);
                 }
+
+                if (mapStatistics.forceCS) {
+                    customStats.push(`CS${mapStatistics.cs}`);
+                }
+
+                if (mapStatistics.forceAR) {
+                    customStats.push(`AR${mapStatistics.ar}`);
+                }
+
+                if (mapStatistics.forceOD) {
+                    customStats.push(`OD${mapStatistics.od}`);
+                }
+
+                if (mapStatistics.forceHP) {
+                    customStats.push(`HP${mapStatistics.hp}`);
+                }
+
+                if (customStats.length > 0) {
+                    string += ` (${customStats.join(", ")})`;
+                }
+
                 return string;
             }
             case 1: {

@@ -79,20 +79,23 @@ export class MissAnalyzer {
         this.data = data;
 
         const circleSize: number = new MapStats({
-            cs: beatmap.difficulty.cs,
+            cs: data.forceCS ?? beatmap.difficulty.cs,
             mods: data.convertedMods,
+            forceCS: data.forceCS !== undefined,
         }).calculate({ mode: Modes.droid }).cs!;
         this.trueObjectScale =
             CircleSizeCalculator.standardCSToStandardScale(circleSize);
 
         const stats: MapStats = new MapStats({
-            ar: beatmap.difficulty.ar,
-            od: beatmap.difficulty.od,
+            ar: data.forceAR ?? beatmap.difficulty.ar,
+            od: data.forceOD ?? beatmap.difficulty.od,
             mods: ModUtil.removeSpeedChangingMods(data.convertedMods),
+            forceAR: data.forceAR !== undefined,
+            forceOD: data.forceOD !== undefined,
         }).calculate({ mode: Modes.droid, convertDroidOD: false });
 
         this.isPrecise = data.convertedMods.some(
-            (m) => m instanceof ModPrecise
+            (m) => m instanceof ModPrecise,
         );
         this.hitWindow = new DroidHitWindow(stats.od!);
         this.hitWindow50 = this.hitWindow.hitWindowFor50(this.isPrecise);
@@ -114,18 +117,18 @@ export class MissAnalyzer {
         const missInformations: MissInformation[] = [];
 
         const stats: MapStats = new MapStats({
-            speedMultiplier: this.data.speedModification,
+            speedMultiplier: this.data.speedMultiplier,
             mods: this.data.convertedMods,
         }).calculate();
         const flipObjects: boolean = this.data.convertedMods.some(
-            (m) => m instanceof ModHardRock
+            (m) => m instanceof ModHardRock,
         );
 
         const createMissInformation = (
             objectIndex: number,
             verdict?: string,
             cursorPosition?: Vector2,
-            closestHit?: number
+            closestHit?: number,
         ): MissInformation => {
             const object: PlaceableHitObject = this.objects[objectIndex];
             const previousObjects: PlaceableHitObject[] = [];
@@ -184,7 +187,7 @@ export class MissAnalyzer {
                 this.isPrecise,
                 verdict,
                 cursorPosition,
-                closestHit
+                closestHit,
             );
         };
 
@@ -207,7 +210,7 @@ export class MissAnalyzer {
             if (object instanceof Spinner) {
                 // Spinner misses are simple. They just didn't spin enough.
                 missInformations.push(
-                    createMissInformation(i, "Didn't spin enough")
+                    createMissInformation(i, "Didn't spin enough"),
                 );
 
                 continue;
@@ -225,7 +228,7 @@ export class MissAnalyzer {
                         j,
                         i > 0 &&
                             this.data.hitObjectData[i - 1].result ===
-                                HitResult.miss
+                                HitResult.miss,
                     );
 
                 if (cursorOccurrenceInfo === null) {
@@ -250,8 +253,8 @@ export class MissAnalyzer {
                         i,
                         verdict,
                         closestCursorPosition,
-                        closestHit
-                    )
+                        closestHit,
+                    ),
                 );
             } else {
                 missInformations.push(createMissInformation(i));
@@ -273,7 +276,7 @@ export class MissAnalyzer {
     private getCursorOccurrenceClosestToObject(
         object: PlaceableHitObject,
         cursorIndex: number,
-        includeNotelockVerdict: boolean
+        includeNotelockVerdict: boolean,
     ): { position: Vector2; closestHit: number; verdict: string } | null {
         if (object.droidScale !== this.trueObjectScale) {
             // Deep clone the object so that we can assign scale properly.
@@ -287,7 +290,7 @@ export class MissAnalyzer {
         // Add a cap to better assess smaller objects.
         let closestDistance: number = Math.max(
             2.5 * object.getRadius(Modes.droid),
-            80
+            80,
         );
         let closestHit: number = Number.POSITIVE_INFINITY;
         let closestCursorPosition: Vector2 | null = null;
@@ -375,13 +378,13 @@ export class MissAnalyzer {
                                           Interpolation.lerp(
                                               occurrence.position.x,
                                               nextOccurrence.position.x,
-                                              t
+                                              t,
                                           ),
                                           Interpolation.lerp(
                                               occurrence.position.y,
                                               nextOccurrence.position.y,
-                                              t
-                                          )
+                                              t,
+                                          ),
                                       )
                                     : occurrence.position;
 

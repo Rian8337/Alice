@@ -2,8 +2,8 @@ import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/
 import { Accuracy, MapStats, ModUtil, Precision } from "@rian8337/osu-base";
 import { SliderCheeseInformation } from "@rian8337/osu-droid-replay-analyzer";
 import { DifficultyCalculationParameters } from "./DifficultyCalculationParameters";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { CloneablePerformanceCalculationParameters } from "@alice-structures/dpp/CloneablePerformanceCalculationParameters";
+import { CacheableDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 
 /**
  * Represents a parameter to alter performance calculation result.
@@ -99,7 +99,9 @@ export class PerformanceCalculationParameters extends DifficultyCalculationParam
      * @param attributes The difficulty attributes.
      */
     applyFromAttributes(
-        attributes: CacheableDifficultyAttributes<RawDifficultyAttributes>,
+        attributes:
+            | CacheableDifficultyAttributes<RawDifficultyAttributes>
+            | RawDifficultyAttributes,
     ): void {
         const objectCount: number =
             attributes.hitCircleCount +

@@ -12,9 +12,9 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import {
     Collection,
-    ForumChannel,
     GuildTextBasedChannel,
     Snowflake,
+    ThreadOnlyChannel,
 } from "discord.js";
 
 /**
@@ -91,17 +91,17 @@ export abstract class CommandUtilManager extends Manager {
                         "channelSettings.disabledCommands": 1,
                         "channelSettings.disabledEventUtils": 1,
                     },
-                }
+                },
             );
 
         for (const guildSetting of guildSettings.values()) {
             this.guildDisabledCommands.set(
                 guildSetting.id,
-                guildSetting.disabledCommands
+                guildSetting.disabledCommands,
             );
             this.guildDisabledEventUtils.set(
                 guildSetting.id,
-                guildSetting.disabledEventUtils
+                guildSetting.disabledEventUtils,
             );
 
             for (const channelSetting of guildSetting.channelSettings.values()) {
@@ -109,12 +109,12 @@ export abstract class CommandUtilManager extends Manager {
                     channelSetting.id,
                     ArrayHelper.arrayToCollection(
                         channelSetting.disabledCommands,
-                        "name"
-                    )
+                        "name",
+                    ),
                 );
                 this.channelDisabledEventUtils.set(
                     channelSetting.id,
-                    channelSetting.disabledEventUtils
+                    channelSetting.disabledEventUtils,
                 );
             }
         }
@@ -129,9 +129,9 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about database operation.
      */
     static async disableUtilityInChannel(
-        channel: GuildTextBasedChannel | ForumChannel,
+        channel: GuildTextBasedChannel | ThreadOnlyChannel,
         event: string,
-        utility: string
+        utility: string,
     ): Promise<OperationResult> {
         const channelEventUtilSettings: DisabledEventUtil[] | undefined =
             this.channelDisabledEventUtils.get(channel.id);
@@ -144,7 +144,7 @@ export abstract class CommandUtilManager extends Manager {
         if (channelEventUtilSettings) {
             if (
                 channelEventUtilSettings.find(
-                    (v) => v.event === event && v.name === utility
+                    (v) => v.event === event && v.name === utility,
                 )
             ) {
                 return this.createOperationResult(true);
@@ -160,7 +160,7 @@ export abstract class CommandUtilManager extends Manager {
                             _id: 0,
                             "channelSettings.$": 1,
                         },
-                    }
+                    },
                 ))!;
 
             const channelSettings = guildSettings.channelSettings;
@@ -179,7 +179,7 @@ export abstract class CommandUtilManager extends Manager {
                 },
                 {
                     arrayFilters: [{ "channelFilter.id": channel.id }],
-                }
+                },
             );
         } else {
             this.channelDisabledEventUtils.set(channel.id, [
@@ -211,7 +211,7 @@ export abstract class CommandUtilManager extends Manager {
                 guildSettings.channelSettings;
 
             const channelSetting: GuildChannelSettings = channelSettings.get(
-                channel.id
+                channel.id,
             ) ?? {
                 id: channel.id,
                 disabledCommands: [],
@@ -232,7 +232,7 @@ export abstract class CommandUtilManager extends Manager {
                 },
                 {
                     arrayFilters: [{ "channelFilter.id": channel.id }],
-                }
+                },
             );
         }
     }
@@ -248,14 +248,14 @@ export abstract class CommandUtilManager extends Manager {
     static async disableUtilityInGuild(
         guildId: Snowflake,
         event: string,
-        utility: string
+        utility: string,
     ): Promise<OperationResult> {
         const guildEventUtilSettings: DisabledEventUtil[] =
             this.guildDisabledEventUtils.get(guildId) ?? [];
 
         if (
             guildEventUtilSettings.find(
-                (v) => v.event === event && v.name === utility
+                (v) => v.event === event && v.name === utility,
             )
         ) {
             return this.createOperationResult(true);
@@ -281,7 +281,7 @@ export abstract class CommandUtilManager extends Manager {
                     disabledCommands: [],
                 },
             },
-            { upsert: true }
+            { upsert: true },
         );
     }
 
@@ -309,9 +309,9 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about the operation.
      */
     static async enableUtilityInChannel(
-        channel: GuildTextBasedChannel | ForumChannel,
+        channel: GuildTextBasedChannel | ThreadOnlyChannel,
         event: string,
-        utility: string
+        utility: string,
     ): Promise<OperationResult> {
         const channelEventUtilSettings: DisabledEventUtil[] | undefined =
             this.channelDisabledEventUtils.get(channel.id);
@@ -321,7 +321,7 @@ export abstract class CommandUtilManager extends Manager {
         }
 
         const settingIndex: number = channelEventUtilSettings.findIndex(
-            (v) => v.event === event && v.name === utility
+            (v) => v.event === event && v.name === utility,
         );
 
         if (settingIndex === -1) {
@@ -360,7 +360,7 @@ export abstract class CommandUtilManager extends Manager {
             },
             {
                 arrayFilters: [{ "channelFilter.id": channel.id }],
-            }
+            },
         );
     }
 
@@ -375,7 +375,7 @@ export abstract class CommandUtilManager extends Manager {
     static async enableUtilityInGuild(
         guildId: Snowflake,
         event: string,
-        utility: string
+        utility: string,
     ): Promise<OperationResult> {
         const guildEventUtilSettings: DisabledEventUtil[] | undefined =
             this.guildDisabledEventUtils.get(guildId);
@@ -385,7 +385,7 @@ export abstract class CommandUtilManager extends Manager {
         }
 
         const settingIndex: number = guildEventUtilSettings.findIndex(
-            (v) => v.event === event && v.name === utility
+            (v) => v.event === event && v.name === utility,
         );
 
         if (settingIndex === -1) {
@@ -405,7 +405,7 @@ export abstract class CommandUtilManager extends Manager {
                         name: utility,
                     },
                 },
-            }
+            },
         );
     }
 
@@ -436,10 +436,10 @@ export abstract class CommandUtilManager extends Manager {
      * @returns An object containing information about the operation.
      */
     static async setCommandCooldownInChannel(
-        channel: GuildTextBasedChannel | ForumChannel,
+        channel: GuildTextBasedChannel | ThreadOnlyChannel,
         commandName: string,
         cooldown: number,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: CommandUtilManagerLocalization =
             this.getLocalization(language);
@@ -450,7 +450,7 @@ export abstract class CommandUtilManager extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("cooldownOutOfRange")
+                localization.getTranslation("cooldownOutOfRange"),
             );
         }
 
@@ -473,7 +473,7 @@ export abstract class CommandUtilManager extends Manager {
 
             this.channelDisabledCommands.set(
                 channel.id,
-                channelDisabledCommands
+                channelDisabledCommands,
             );
 
             const guildSettings: GuildSettings =
@@ -493,7 +493,7 @@ export abstract class CommandUtilManager extends Manager {
                                 disabledEventUtils: [],
                             },
                         },
-                    }
+                    },
                 );
             }
 
@@ -507,7 +507,7 @@ export abstract class CommandUtilManager extends Manager {
                 },
                 {
                     arrayFilters: [{ "channelFilter.id": channel.id }],
-                }
+                },
             );
         } else {
             if (cooldown === 0) {
@@ -521,7 +521,7 @@ export abstract class CommandUtilManager extends Manager {
 
             this.channelDisabledCommands.set(
                 channel.id,
-                new Collection([[commandName, disabledCommand]])
+                new Collection([[commandName, disabledCommand]]),
             );
 
             const guildSettings: GuildSettings | null =
@@ -551,7 +551,7 @@ export abstract class CommandUtilManager extends Manager {
                                 disabledEventUtils: [],
                             },
                         },
-                    }
+                    },
                 );
             }
 
@@ -565,7 +565,7 @@ export abstract class CommandUtilManager extends Manager {
                 },
                 {
                     arrayFilters: [{ "channelFilter.id": channel.id }],
-                }
+                },
             );
         }
     }
@@ -582,7 +582,7 @@ export abstract class CommandUtilManager extends Manager {
         guildId: Snowflake,
         commandName: string,
         cooldown: number,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: CommandUtilManagerLocalization =
             this.getLocalization(language);
@@ -593,7 +593,7 @@ export abstract class CommandUtilManager extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("cooldownOutOfRange")
+                localization.getTranslation("cooldownOutOfRange"),
             );
         }
 
@@ -601,7 +601,7 @@ export abstract class CommandUtilManager extends Manager {
             this.guildDisabledCommands.get(guildId) ?? new Collection();
 
         const guildDisabledCommand: DisabledCommand = guildDisabledCommands.get(
-            commandName
+            commandName,
         ) ?? {
             name: commandName,
             cooldown: cooldown,
@@ -622,7 +622,7 @@ export abstract class CommandUtilManager extends Manager {
                     $push: {
                         disabledCommands: guildDisabledCommand,
                     },
-                }
+                },
             );
         }
 
@@ -639,7 +639,7 @@ export abstract class CommandUtilManager extends Manager {
             },
             {
                 arrayFilters: [{ "commandFilter.name": commandName }],
-            }
+            },
         );
     }
 
@@ -651,7 +651,7 @@ export abstract class CommandUtilManager extends Manager {
      */
     static setCommandCooldownGlobally(
         commandName: string,
-        cooldown: number
+        cooldown: number,
     ): void {
         if (cooldown !== 0) {
             this.globallyDisabledCommands.set(commandName, cooldown);
@@ -666,7 +666,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param language The language to localize.
      */
     private static getLocalization(
-        language: Language
+        language: Language,
     ): CommandUtilManagerLocalization {
         return new CommandUtilManagerLocalization(language);
     }

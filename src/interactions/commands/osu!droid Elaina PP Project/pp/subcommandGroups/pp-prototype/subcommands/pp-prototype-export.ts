@@ -10,7 +10,7 @@ import { PPLocalization } from "@alice-localization/interactions/commands/osu!dr
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     if (interaction.options.data.length > 1) {
@@ -18,7 +18,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -43,7 +43,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         default:
             // If no arguments are specified, default to self
             ppInfo = await dbManager.getFromUser(
-                discordid ?? interaction.user.id
+                discordid ?? interaction.user.id,
             );
     }
 
@@ -53,8 +53,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     uid || username || discordid
                         ? "userInfoNotAvailable"
-                        : "selfInfoNotAvailable"
-                )
+                        : "selfInfoNotAvailable",
+                ),
             ),
         });
     }
@@ -63,7 +63,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         'UID,Username,"Total PP","Previous Total PP",Diff,"Last Update"\n';
 
     csvString += `${ppInfo.uid},${ppInfo.username},${ppInfo.pptotal.toFixed(
-        2
+        2,
     )},${ppInfo.prevpptotal.toFixed(2)},${(
         ppInfo.pptotal - ppInfo.prevpptotal
     ).toFixed(2)},"${new Date(ppInfo.lastUpdate).toUTCString()}"\n\n`;
@@ -73,19 +73,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     for (const pp of ppInfo.pp.values()) {
         let modstring = pp.mods ? `${pp.mods}` : "NM";
-        if (pp.forcedAR || (pp.speedMultiplier && pp.speedMultiplier !== 1)) {
+        if (pp.forceAR || (pp.speedMultiplier && pp.speedMultiplier !== 1)) {
             if (pp.mods) {
                 modstring += " ";
             }
 
             modstring += "(";
 
-            if (pp.forcedAR) {
-                modstring += `AR${pp.forcedAR}`;
+            if (pp.forceAR) {
+                modstring += `AR${pp.forceAR}`;
             }
 
             if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
-                if (pp.forcedAR) {
+                if (pp.forceAR) {
                     modstring += ", ";
                 }
 
@@ -104,7 +104,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const attachment: AttachmentBuilder = new AttachmentBuilder(
         Buffer.from(csvString),
-        { name: `prototype_${ppInfo.uid}_${new Date().toUTCString()}.csv` }
+        { name: `prototype_${ppInfo.uid}_${new Date().toUTCString()}.csv` },
     );
 
     InteractionHelper.reply(interaction, {

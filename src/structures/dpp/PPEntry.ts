@@ -43,9 +43,24 @@ export interface PPEntry {
     miss: number;
 
     /**
-     * The forced AR used in the score.
+     * The force CS used in the score.
      */
-    forcedAR?: number;
+    forceCS?: number;
+
+    /**
+     * The force AR used in the score.
+     */
+    forceAR?: number;
+
+    /**
+     * The force OD used in the score.
+     */
+    forceOD?: number;
+
+    /**
+     * The force HP used in the score.
+     */
+    forceHP?: number;
 
     /**
      * The custom speed multiplier used in the score.

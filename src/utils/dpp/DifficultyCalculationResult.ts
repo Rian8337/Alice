@@ -1,9 +1,10 @@
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { IDifficultyCalculationResult } from "@alice-structures/utils/IDifficultyCalculationResult";
 import { MapInfo } from "@rian8337/osu-base";
 import {
+    CacheableDifficultyAttributes,
     DifficultyAttributes,
     DifficultyCalculator,
+    DifficultyHitObject,
 } from "@rian8337/osu-difficulty-calculator";
 
 /**
@@ -11,7 +12,7 @@ import {
  */
 export class DifficultyCalculationResult<
     DA extends DifficultyAttributes,
-    D extends DifficultyCalculator
+    D extends DifficultyCalculator<DifficultyHitObject, DA>,
 > implements IDifficultyCalculationResult<DA, D>
 {
     readonly map: MapInfo<true>;
@@ -21,7 +22,7 @@ export class DifficultyCalculationResult<
     constructor(
         map: MapInfo<true>,
         result: D,
-        cachedAttributes: CacheableDifficultyAttributes<DA>
+        cachedAttributes: CacheableDifficultyAttributes<DA>,
     ) {
         this.map = map;
         this.result = result;

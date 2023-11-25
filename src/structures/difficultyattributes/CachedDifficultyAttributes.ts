@@ -1,4 +1,4 @@
-import { CacheableDifficultyAttributes } from "./CacheableDifficultyAttributes";
+import { CacheableDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { RawDifficultyAttributes } from "./RawDifficultyAttributes";
 
 /**

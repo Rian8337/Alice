@@ -11,6 +11,7 @@ import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendR
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { Accuracy, MapInfo, RankedStatus, Utils } from "@rian8337/osu-base";
 import {
+    CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
@@ -28,7 +29,6 @@ import {
 } from "discord.js";
 import { CommandHelper } from "./CommandHelper";
 import { NumberHelper } from "./NumberHelper";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
@@ -79,8 +79,11 @@ export abstract class DPPHelper {
 
         switch (true) {
             case beatmapOrScore instanceof Score &&
-                beatmapOrScore.forcedAR !== undefined:
-                return DPPSubmissionValidity.scoreUsesForceAR;
+                (beatmapOrScore.forceCS !== undefined ||
+                    beatmapOrScore.forceAR !== undefined ||
+                    beatmapOrScore.forceOD !== undefined ||
+                    beatmapOrScore.forceHP !== undefined):
+                return DPPSubmissionValidity.scoreUsesCustomStats;
             case beatmapInfo.approved === RankedStatus.loved &&
                 (beatmapInfo.hitLength < 30 ||
                     beatmapInfo.hitLength / beatmapInfo.totalLength < 0.6):
@@ -132,7 +135,7 @@ export abstract class DPPHelper {
                 if (pp) {
                     let modstring = pp.mods ? `+${pp.mods}` : "";
                     if (
-                        pp.forcedAR ||
+                        pp.forceAR ||
                         (pp.speedMultiplier && pp.speedMultiplier !== 1)
                     ) {
                         if (pp.mods) {
@@ -141,12 +144,12 @@ export abstract class DPPHelper {
 
                         modstring += "(";
 
-                        if (pp.forcedAR) {
-                            modstring += `AR${pp.forcedAR}`;
+                        if (pp.forceAR) {
+                            modstring += `AR${pp.forceAR}`;
                         }
 
                         if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
-                            if (pp.forcedAR) {
+                            if (pp.forceAR) {
                                 modstring += ", ";
                             }
 

@@ -72,9 +72,24 @@ export class RecentPlay extends Manager {
     readonly speedMultiplier?: number;
 
     /**
-     * The forced AR of this play.
+     * The force CS of this play.
      */
-    readonly forcedAR?: number;
+    readonly forceCS?: number;
+
+    /**
+     * The force AR of this play.
+     */
+    readonly forceAR?: number;
+
+    /**
+     * The force OD of this play.
+     */
+    readonly forceOD?: number;
+
+    /**
+     * The force HP of this play.
+     */
+    readonly forceHP?: number;
 
     /**
      * Information about this play's hit error.
@@ -115,24 +130,30 @@ export class RecentPlay extends Manager {
             this.mods.length > 0 ? this.mods.map((v) => v.acronym) : "No Mod"
         }`;
 
-        if (
-            this.forcedAR !== undefined ||
-            (this.speedMultiplier != undefined && this.speedMultiplier !== 1)
-        ) {
-            finalString += " (";
-            if (this.forcedAR !== undefined) {
-                finalString += `AR${this.forcedAR}`;
-            }
-            if (
-                this.speedMultiplier !== undefined &&
-                this.speedMultiplier !== 1
-            ) {
-                if (this.forcedAR !== undefined) {
-                    finalString += ", ";
-                }
-                finalString += `${this.speedMultiplier}x`;
-            }
-            finalString += ")";
+        const customStats: string[] = [];
+
+        if (this.speedMultiplier !== undefined && this.speedMultiplier !== 1) {
+            customStats.push(`${this.speedMultiplier}x`);
+        }
+
+        if (this.forceCS !== undefined) {
+            customStats.push(`CS${this.forceCS}`);
+        }
+
+        if (this.forceAR !== undefined) {
+            customStats.push(`AR${this.forceAR}`);
+        }
+
+        if (this.forceOD !== undefined) {
+            customStats.push(`OD${this.forceOD}`);
+        }
+
+        if (this.forceHP !== undefined) {
+            customStats.push(`HP${this.forceHP}`);
+        }
+
+        if (customStats.length > 0) {
+            finalString += ` (${customStats.join(", ")})`;
         }
 
         return finalString;
@@ -156,7 +177,10 @@ export class RecentPlay extends Manager {
         );
         this.hash = data.hash;
         this.speedMultiplier = data.speedMultiplier;
-        this.forcedAR = data.forcedAR;
+        this.forceCS = data.forceCS;
+        this.forceAR = data.forceAR;
+        this.forceOD = data.forceOD;
+        this.forceHP = data.forceHP;
         this.hitError = data.hitError;
         this.sliderTickInformation = data.sliderTickInformation;
         this.sliderEndInformation = data.sliderEndInformation;

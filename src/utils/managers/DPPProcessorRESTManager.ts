@@ -2,9 +2,9 @@ import { Config } from "@alice-core/Config";
 import { RESTManager } from "./RESTManager";
 import { Modes, RequestResponse } from "@rian8337/osu-base";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
 import {
+    CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
@@ -134,10 +134,24 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             }
 
             if (
-                customStatistics?.isForceAR &&
+                customStatistics?.forceCS &&
+                customStatistics.cs !== undefined
+            ) {
+                url.searchParams.set("forcecs", customStatistics.cs.toString());
+            }
+
+            if (
+                customStatistics?.forceAR &&
                 customStatistics.ar !== undefined
             ) {
                 url.searchParams.set("forcear", customStatistics.ar.toString());
+            }
+
+            if (
+                customStatistics?.forceOD &&
+                customStatistics.od !== undefined
+            ) {
+                url.searchParams.set("forceod", customStatistics.od.toString());
             }
         }
 
@@ -273,10 +287,24 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             }
 
             if (
-                customStatistics?.isForceAR &&
+                customStatistics?.forceCS &&
+                customStatistics.cs !== undefined
+            ) {
+                url.searchParams.set("forcecs", customStatistics.cs.toString());
+            }
+
+            if (
+                customStatistics?.forceAR &&
                 customStatistics.ar !== undefined
             ) {
                 url.searchParams.set("forcear", customStatistics.ar.toString());
+            }
+
+            if (
+                customStatistics?.forceOD &&
+                customStatistics.od !== undefined
+            ) {
+                url.searchParams.set("forceod", customStatistics.od.toString());
             }
 
             url.searchParams.set(

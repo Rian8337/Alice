@@ -173,7 +173,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID ?? hash,
-        { checkFile: false },
+        {
+            checkFile: false,
+        },
     );
 
     if (!beatmap) {
@@ -219,9 +221,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await ReplayHelper.analyzeReplay(score);
+    const replay = await ReplayHelper.analyzeReplay(score);
 
-    if (!score.replay?.data) {
+    if (!replay.data) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
@@ -242,7 +244,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    score.replay.beatmap ??= beatmap.beatmap!;
+    replay.beatmap ??= beatmap.beatmap!;
 
     // Simulate replay given the mods input.
     // For the moment, we're not gonna check for cursor position in sliders as the operation will be too expensive.
@@ -378,7 +380,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     for (let i = 0; i < beatmap.beatmap!.hitObjects.objects.length; ++i) {
         const object: PlaceableHitObject =
             beatmap.beatmap!.hitObjects.objects[i];
-        const objectData: ReplayObjectData = score.replay.data.hitObjectData[i];
+        const objectData: ReplayObjectData = replay.data.hitObjectData[i];
         const hitAccuracy: number = Math.abs(objectData.accuracy);
 
         if (object instanceof Circle) {
@@ -551,10 +553,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             undefined,
             new MapStats({
                 mods: mods,
-                ar: score.forcedAR,
+                cs: score.forceCS,
+                ar: score.forceAR,
+                od: score.forceOD,
+                hp: score.forceHP,
                 speedMultiplier:
                     interaction.options.getNumber("speedmultiplier") ?? 1,
-                isForceAR: !isNaN(<number>score.forcedAR),
+                forceCS: !isNaN(<number>score.forceCS),
+                forceAR: !isNaN(<number>score.forceAR),
+                forceOD: !isNaN(<number>score.forceOD),
+                forceHP: !isNaN(<number>score.forceHP),
             }),
         );
 

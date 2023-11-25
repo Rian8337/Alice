@@ -12,6 +12,7 @@ import {
     UpdateFilter,
     UpdateOptions,
     UpdateResult,
+    Document,
 } from "mongodb";
 
 /**
@@ -19,7 +20,7 @@ import {
  */
 export abstract class DatabaseCollectionManager<
     T extends BaseDocument,
-    C extends Manager
+    C extends Manager,
 > extends Manager {
     /**
      * The collection that this manager is responsible for.
@@ -63,12 +64,12 @@ export abstract class DatabaseCollectionManager<
     async updateMany(
         filter: Filter<T>,
         query: UpdateFilter<T> | Partial<T>,
-        options: UpdateOptions = {}
+        options: UpdateOptions = {},
     ): Promise<OperationResult> {
         const result: UpdateResult = await this.collection.updateMany(
             filter,
             query,
-            options
+            options,
         );
 
         return this.createOperationResult(result.acknowledged);
@@ -85,12 +86,12 @@ export abstract class DatabaseCollectionManager<
     async updateOne(
         filter: Filter<T>,
         query: UpdateFilter<T> | Partial<T>,
-        options: UpdateOptions = {}
+        options: UpdateOptions = {},
     ): Promise<OperationResult> {
         const result: UpdateResult = await this.collection.updateOne(
             filter,
             query,
-            options
+            options,
         );
 
         return this.createOperationResult(result.acknowledged);
@@ -108,7 +109,7 @@ export abstract class DatabaseCollectionManager<
     async get<K extends keyof T>(
         key: K,
         filter: Filter<T> = {},
-        options?: FindOptions<T>
+        options?: FindOptions<T>,
     ): Promise<DiscordCollection<NonNullable<T[K]>, C>> {
         if (options?.projection?.[<keyof Document>key] === 0) {
             // Prevent cases where key is undefined.
@@ -129,7 +130,7 @@ export abstract class DatabaseCollectionManager<
         for (const data of res) {
             collection.set(
                 <NonNullable<T[K]>>data[key],
-                new this.utilityInstance(data)
+                new this.utilityInstance(data),
             );
         }
 
@@ -146,11 +147,11 @@ export abstract class DatabaseCollectionManager<
      */
     async getOne(
         filter: Filter<T> = {},
-        options?: FindOptions<T>
+        options?: FindOptions<T>,
     ): Promise<C | null> {
         const res: T | null = await this.collection.findOne(
             filter,
-            this.processFindOptions(options)
+            this.processFindOptions(options),
         );
 
         return res ? new this.utilityInstance(res) : null;
@@ -191,8 +192,8 @@ export abstract class DatabaseCollectionManager<
                 (v) =>
                     <OptionalUnlessRequiredId<T>>(
                         Object.assign(this.defaultDocument, v)
-                    )
-            )
+                    ),
+            ),
         );
 
         return this.createOperationResult(result.acknowledged);
@@ -204,7 +205,7 @@ export abstract class DatabaseCollectionManager<
      * @param options The options.
      */
     protected processFindOptions(
-        options?: FindOptions<T>
+        options?: FindOptions<T>,
     ): FindOptions<T> | undefined {
         return options;
     }

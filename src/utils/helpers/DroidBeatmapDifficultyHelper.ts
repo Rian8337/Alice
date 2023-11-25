@@ -14,6 +14,7 @@ import {
 import { Score } from "@rian8337/osu-droid-utilities";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import {
+    ReplayAnalyzer,
     SliderCheeseInformation,
     ThreeFingerChecker,
 } from "@rian8337/osu-droid-replay-analyzer";
@@ -27,12 +28,12 @@ import { Beatmap } from "@rian8337/osu-base";
  * A helper class for calculating osu!droid difficulty and performance of beatmaps or scores.
  */
 export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
+    DroidDifficultyAttributes,
+    RebalanceDroidDifficultyAttributes,
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
     RebalanceDroidDifficultyCalculator,
-    RebalanceDroidPerformanceCalculator,
-    DroidDifficultyAttributes,
-    RebalanceDroidDifficultyAttributes
+    RebalanceDroidPerformanceCalculator
 > {
     protected override readonly difficultyCalculator =
         DroidDifficultyCalculator;
@@ -53,6 +54,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * @param score The score associated to the calculation result.
      * @param beatmap The beatmap associated with the score.
      * @param calcResult The calculation result to apply the tap penalty to.
+     * @param replay The existing replay analyzer instance, if any.
      */
     static async applyTapPenalty(
         score: Score,
@@ -65,7 +67,8 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             | RebalancePerformanceCalculationResult<
                   RebalanceDroidDifficultyCalculator,
                   RebalanceDroidPerformanceCalculator
-              >
+              >,
+        replay?: ReplayAnalyzer,
     ): Promise<void> {
         const difficultyAttributes = <
             | ExtendedDroidDifficultyAttributes
@@ -75,20 +78,20 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             return;
         }
 
-        await ReplayHelper.analyzeReplay(score);
+        replay ??= await ReplayHelper.analyzeReplay(score);
 
-        if (!score.replay?.data) {
+        if (!replay.data) {
             return;
         }
 
-        if (!score.replay.hasBeenCheckedFor3Finger) {
-            score.replay.beatmap ??= beatmap;
-            score.replay.difficultyAttributes = difficultyAttributes;
-            score.replay.checkFor3Finger();
-            calcResult.params.tapPenalty = score.replay.tapPenalty;
+        if (!replay.hasBeenCheckedFor3Finger) {
+            replay.beatmap ??= beatmap;
+            replay.difficultyAttributes = difficultyAttributes;
+            replay.checkFor3Finger();
+            calcResult.params.tapPenalty = replay.tapPenalty;
         }
 
-        calcResult.result.applyTapPenalty(score.replay.tapPenalty);
+        calcResult.result.applyTapPenalty(replay.tapPenalty);
     }
 
     /**
@@ -98,13 +101,15 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * @param difficultyCalculator The difficulty calculator of the score.
      * @param tapPenalty The tap penalty to preemptively apply.
      * @param sliderCheesePenalty The slider cheese penalty to preemptively apply.
+     * @param replay The existing replay analyzer instance, if any.
      * @returns The performance calculation result.
      */
     static async applyAimPenalty(
         score: Score,
         difficultyCalculator: DroidDifficultyCalculator,
         tapPenalty?: number,
-        sliderCheesePenalty?: SliderCheeseInformation
+        sliderCheesePenalty?: SliderCheeseInformation,
+        replay?: ReplayAnalyzer,
     ): Promise<
         PerformanceCalculationResult<
             DroidDifficultyCalculator,
@@ -119,13 +124,15 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * @param difficultyCalculator The difficulty calculator of the score.
      * @param tapPenalty The tap penalty to preemptively apply.
      * @param sliderCheesePenalty The slider cheese penalty to preemptively apply.
+     * @param replay The existing replay analyzer instance, if any.
      * @returns The performance calculation result.
      */
     static async applyAimPenalty(
         score: Score,
         difficultyCalculator: RebalanceDroidDifficultyCalculator,
         tapPenalty?: number,
-        sliderCheesePenalty?: SliderCheeseInformation
+        sliderCheesePenalty?: SliderCheeseInformation,
+        replay?: ReplayAnalyzer,
     ): Promise<
         RebalancePerformanceCalculationResult<
             RebalanceDroidDifficultyCalculator,
@@ -139,7 +146,8 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             | DroidDifficultyCalculator
             | RebalanceDroidDifficultyCalculator,
         tapPenalty: number = 1,
-        sliderCheesePenalty?: SliderCheeseInformation
+        sliderCheesePenalty?: SliderCheeseInformation,
+        replay?: ReplayAnalyzer,
     ): Promise<
         | PerformanceCalculationResult<
               DroidDifficultyCalculator,
@@ -150,11 +158,11 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
               RebalanceDroidPerformanceCalculator
           >
     > {
-        await ReplayHelper.analyzeReplay(score);
+        replay ??= await ReplayHelper.analyzeReplay(score);
 
-        if (score.replay && !score.replay.hasBeenCheckedFor2Hand) {
-            score.replay.beatmap = difficultyCalculator;
-            score.replay.checkFor2Hand();
+        if (!replay.hasBeenCheckedFor2Hand) {
+            replay.beatmap = difficultyCalculator;
+            replay.checkFor2Hand();
         }
 
         const diffCalcHelper: DroidBeatmapDifficultyHelper =
@@ -167,12 +175,12 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         if (difficultyCalculator instanceof DroidDifficultyCalculator) {
             return diffCalcHelper.calculateBeatmapPerformance(
                 difficultyCalculator.attributes,
-                calculationParams
+                calculationParams,
             );
         } else {
             return diffCalcHelper.calculateBeatmapRebalancePerformance(
                 difficultyCalculator.attributes,
-                calculationParams
+                calculationParams,
             );
         }
     }
@@ -183,6 +191,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
      * @param score The score associated to the calculation result.
      * @param beatmap The beatmap associated with the score.
      * @param calcResult The calculation result to apply the slider cheese penalty to.
+     * @param replay The existing replay analyzer instance, if any.
      */
     static async applySliderCheesePenalty(
         score: Score,
@@ -195,33 +204,33 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             | RebalancePerformanceCalculationResult<
                   RebalanceDroidDifficultyCalculator,
                   RebalanceDroidPerformanceCalculator
-              >
+              >,
+        replay?: ReplayAnalyzer,
     ): Promise<void> {
         if (beatmap.hitObjects.sliders === 0) {
             return;
         }
 
-        await ReplayHelper.analyzeReplay(score);
+        replay ??= await ReplayHelper.analyzeReplay(score);
 
-        if (!score.replay?.data) {
+        if (!replay.data) {
             return;
         }
 
-        if (!score.replay.hasBeenCheckedForSliderCheesing) {
-            score.replay.beatmap ??= beatmap;
-            score.replay.checkForSliderCheesing();
-            calcResult.params.sliderCheesePenalty =
-                score.replay.sliderCheesePenalty;
+        if (!replay.hasBeenCheckedForSliderCheesing) {
+            replay.beatmap ??= beatmap;
+            replay.checkForSliderCheesing();
+            calcResult.params.sliderCheesePenalty = replay.sliderCheesePenalty;
         }
 
         calcResult.result.applyAimSliderCheesePenalty(
-            score.replay.sliderCheesePenalty.aimPenalty
+            replay.sliderCheesePenalty.aimPenalty,
         );
         calcResult.result.applyFlashlightSliderCheesePenalty(
-            score.replay.sliderCheesePenalty.flashlightPenalty
+            replay.sliderCheesePenalty.flashlightPenalty,
         );
         calcResult.result.applyVisualSliderCheesePenalty(
-            score.replay.sliderCheesePenalty.visualPenalty
+            replay.sliderCheesePenalty.visualPenalty,
         );
     }
 }

@@ -18,7 +18,7 @@ import { Player, Score } from "@rian8337/osu-droid-utilities";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const type: ChallengeType =
@@ -26,13 +26,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const challenge: Challenge | null =
         await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(
-            type
+            type,
         );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noOngoingChallenge")
+                localization.getTranslation("noOngoingChallenge"),
             ),
         });
     }
@@ -46,7 +46,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     uid: 1,
                     clan: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
@@ -58,13 +58,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const player: Player | null = await Player.getInformation(bindInfo.uid);
 
     const score: Score | undefined = player?.recentPlays.find(
-        (s) => s.hash === challenge.hash
+        (s) => s.hash === challenge.hash,
     );
 
     if (!player || !score) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("scoreNotFound")
+                localization.getTranslation("scoreNotFound"),
             ),
         });
     }
@@ -72,13 +72,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const completionStatus: OperationResult =
-        await challenge.checkScoreCompletion(score, localization.language);
+        await challenge.checkScoreCompletion(
+            score,
+            undefined,
+            localization.language,
+        );
 
     if (!completionStatus.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("challengeNotCompleted"),
-                completionStatus.reason!
+                completionStatus.reason!,
             ),
         });
     }
@@ -97,7 +101,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 points: 1,
                 challenges: 1,
             },
-        }
+        },
     );
 
     // Keep track of how many points are gained
@@ -121,7 +125,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             challengeData.highestLevel = Math.max(
                 bonusLevel,
-                challengeData.highestLevel
+                challengeData.highestLevel,
             );
 
             await playerInfoDbManager.updateOne(
@@ -140,7 +144,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     arrayFilters: [
                         { "challengeFilter.id": challenge.challengeid },
                     ],
-                }
+                },
             );
         } else {
             playerInfo.challenges.set(challenge.challengeid, challengeData);
@@ -155,7 +159,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         alicecoins: pointsGained * 2,
                         points: pointsGained,
                     },
-                }
+                },
             );
         }
     } else {
@@ -177,7 +181,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (bindInfo.clan) {
         const clan: Clan =
             (await DatabaseManager.elainaDb.collections.clan.getFromName(
-                bindInfo.clan
+                bindInfo.clan,
             ))!;
 
         clan.incrementPower(pointsGained);
@@ -196,8 +200,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             (pointsGained * 2).toLocaleString(BCP47),
             ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(BCP47),
             ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString(
-                BCP47
-            )
+                BCP47,
+            ),
         ),
     });
 };

@@ -84,9 +84,24 @@ export interface DatabaseRecentPlay extends BaseDocument {
     speedMultiplier?: number;
 
     /**
-     * The forced AR of this play.
+     * The force CS of this play.
      */
-    forcedAR?: number;
+    forceCS?: number;
+
+    /**
+     * The force AR of this play.
+     */
+    forceAR?: number;
+
+    /**
+     * The force OD of this play.
+     */
+    forceOD?: number;
+
+    /**
+     * The force HP of this play.
+     */
+    forceHP?: number;
 
     /**
      * Information about this play's hit error.

@@ -1,12 +1,14 @@
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { MapInfo } from "@rian8337/osu-base";
 import {
     DifficultyCalculator,
     DifficultyAttributes,
+    DifficultyHitObject,
+    CacheableDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     DifficultyCalculator as RebalanceDifficultyCalculator,
     DifficultyAttributes as RebalanceDifficultyAttributes,
+    DifficultyHitObject as RebalanceDifficultyHitObject,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 
 /**
@@ -14,7 +16,12 @@ import {
  */
 export interface IDifficultyCalculationResult<
     DA extends DifficultyAttributes | RebalanceDifficultyAttributes,
-    D extends DifficultyCalculator | RebalanceDifficultyCalculator
+    D extends
+        | DifficultyCalculator<DifficultyHitObject, DifficultyAttributes>
+        | RebalanceDifficultyCalculator<
+              RebalanceDifficultyHitObject,
+              RebalanceDifficultyAttributes
+          >,
 > {
     /**
      * The beatmap being calculated.

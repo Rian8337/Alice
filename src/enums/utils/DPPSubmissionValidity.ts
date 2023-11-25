@@ -6,7 +6,6 @@ export enum DPPSubmissionValidity {
     beatmapTooShort,
     beatmapIsBlacklisted,
     beatmapNotWhitelisted,
-    scoreUsesForceAR,
-    scoreUsesCustomSpeed,
+    scoreUsesCustomStats,
     valid,
 }

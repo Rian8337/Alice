@@ -45,6 +45,7 @@ import {
     Modes,
 } from "@rian8337/osu-base";
 import {
+    CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
@@ -53,7 +54,6 @@ import {
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import {
-    ReplayData,
     ReplayObjectData,
     HitResult,
     HitErrorInformation,
@@ -66,7 +66,6 @@ import {
 } from "@alice-localization/utils/creators/EmbedCreator/EmbedCreatorLocalization";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
@@ -675,25 +674,23 @@ export abstract class EmbedCreator {
         let hitError: HitErrorInformation | null | undefined;
 
         if (score instanceof Score) {
-            await ReplayHelper.analyzeReplay(score);
+            const replay = await ReplayHelper.analyzeReplay(score);
+            const { data } = replay;
 
-            const replayData: ReplayData | undefined | null =
-                score.replay?.data;
             await beatmap.retrieveBeatmapFile();
 
-            if (replayData && beatmap.hasDownloadedBeatmap()) {
-                score.replay!.beatmap ??= beatmap.beatmap!;
+            if (data && beatmap.hasDownloadedBeatmap()) {
+                replay.beatmap ??= beatmap.beatmap!;
 
                 // Get amount of slider ticks and ends hit
                 let collectedSliderTicks: number = 0;
                 let collectedSliderEnds: number = 0;
 
-                for (let i = 0; i < replayData.hitObjectData.length; ++i) {
+                for (let i = 0; i < data.hitObjectData.length; ++i) {
                     // Using droid star rating as legacy slider tail doesn't exist.
                     const object: HitObject =
                         beatmap.beatmap!.hitObjects.objects[i];
-                    const objectData: ReplayObjectData =
-                        replayData.hitObjectData[i];
+                    const objectData: ReplayObjectData = data.hitObjectData[i];
 
                     if (
                         objectData.result === HitResult.miss ||
@@ -727,7 +724,7 @@ export abstract class EmbedCreator {
                 } ${localization.getTranslation("sliderEnds")}`;
 
                 // Get hit error average and UR
-                hitError = score.replay!.calculateHitError()!;
+                hitError = replay.calculateHitError()!;
             }
         } else {
             hitError = score.hitError;

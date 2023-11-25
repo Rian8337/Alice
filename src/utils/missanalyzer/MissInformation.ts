@@ -21,7 +21,7 @@ import {
     MovementType,
     ReplayObjectData,
 } from "@rian8337/osu-droid-replay-analyzer";
-import { Canvas, CanvasRenderingContext2D } from "canvas";
+import { Canvas, CanvasGradient, CanvasRenderingContext2D } from "canvas";
 
 /**
  * Represents an information about a miss.
@@ -169,7 +169,7 @@ export class MissInformation {
         isPrecise: boolean,
         verdict?: string,
         closestCursorPosition?: Vector2,
-        closestHit?: number
+        closestHit?: number,
     ) {
         this.metadata = metadata;
         this.trueObjectScale = trueObjectScale;
@@ -247,21 +247,21 @@ export class MissInformation {
         context.fillText(
             `${this.metadata.artist} - ${this.metadata.title} [${this.metadata.version}]`,
             textPadding,
-            textPadding + 10
+            textPadding + 10,
         );
         context.fillText(
             `Object ${this.objectIndex + 1} of ${this.totalObjects}`,
             5,
-            textPadding + 40
+            textPadding + 40,
         );
         context.fillText(
             `Miss ${this.missIndex + 1} of ${this.totalMisses}`,
             5,
-            textPadding + 70
+            textPadding + 70,
         );
 
         let startTime: number = Math.floor(
-            this.object.startTime / this.clockRate
+            this.object.startTime / this.clockRate,
         );
 
         const minutes: number = Math.floor(startTime / 60000);
@@ -275,7 +275,7 @@ export class MissInformation {
                 .toString()
                 .padStart(2, "0")}.${startTime.toString().padStart(3, "0")}`,
             textPadding,
-            985 - textPadding
+            985 - textPadding,
         );
 
         if (this.verdict) {
@@ -285,7 +285,7 @@ export class MissInformation {
                 this.canvas.width -
                     textPadding -
                     context.measureText(verdictText).width,
-                (this.closestHit !== undefined ? 955 : 985) - textPadding
+                (this.closestHit !== undefined ? 955 : 985) - textPadding,
             );
         }
 
@@ -298,14 +298,14 @@ export class MissInformation {
                 this.closestHit > 0
                     ? " late"
                     : this.closestHit < 0
-                    ? " early"
-                    : ""
+                      ? " early"
+                      : ""
             }`;
 
             if (this.closestCursorPosition) {
                 const distanceToObject: number =
                     this.closestCursorPosition.getDistance(
-                        this.object.getStackedPosition(Modes.droid)
+                        this.object.getStackedPosition(Modes.droid),
                     ) - this.object.getRadius(Modes.droid);
 
                 if (distanceToObject > 0) {
@@ -322,7 +322,7 @@ export class MissInformation {
                 this.canvas.width -
                     textPadding -
                     context.measureText(closestHitText).width,
-                985 - textPadding
+                985 - textPadding,
             );
         }
 
@@ -349,7 +349,7 @@ export class MissInformation {
         context.translate(
             // Put (0, 0) in the top-left corner of the playfield.
             (this.canvas.width - scaledPlayfieldX) / 2,
-            (this.canvas.height - scaledPlayfieldY) / 2
+            (this.canvas.height - scaledPlayfieldY) / 2,
         );
         context.scale(this.playfieldScale, this.playfieldScale);
         context.lineWidth = 3;
@@ -366,7 +366,7 @@ export class MissInformation {
             if (this.previousObjects[i].droidScale !== this.trueObjectScale) {
                 // Deep clone the object so that we can assign scale properly.
                 this.previousObjects[i] = Utils.deepCopy(
-                    this.previousObjects[i]
+                    this.previousObjects[i],
                 );
                 this.previousObjects[i].droidScale = this.trueObjectScale;
             }
@@ -374,14 +374,14 @@ export class MissInformation {
             this.drawObject(
                 this.previousObjects[i],
                 this.previousObjectData[i].result,
-                i + 1
+                i + 1,
             );
         }
 
         this.drawObject(
             this.object,
             HitResult.miss,
-            this.previousObjects.length + 1
+            this.previousObjects.length + 1,
         );
     }
 
@@ -395,7 +395,7 @@ export class MissInformation {
     private drawObject(
         object: PlaceableHitObject,
         objectHitResult: HitResult,
-        objectIndex: number
+        objectIndex: number,
     ): void {
         if (!this.canvas) {
             return;
@@ -438,7 +438,7 @@ export class MissInformation {
 
         const stackOffset: Vector2 = object.getStackOffset(Modes.droid);
         const startPosition: Vector2 = this.flipVectorVertically(
-            object.position
+            object.position,
         ).add(stackOffset);
         const radius: number = object.getRadius(Modes.droid);
         const circleBorder: number = radius / 8;
@@ -455,12 +455,15 @@ export class MissInformation {
 
             for (const path of object.path.calculatedPath) {
                 const drawPosition: Vector2 = this.flipVectorVertically(
-                    object.position
+                    object.position,
                 )
                     .add(
                         // Because path is an offset of the start position, we are not using
                         // flipVectorVertically here.
-                        new Vector2(path.x, this.drawFlipped ? -path.y : path.y)
+                        new Vector2(
+                            path.x,
+                            this.drawFlipped ? -path.y : path.y,
+                        ),
                     )
                     .add(stackOffset);
 
@@ -502,7 +505,7 @@ export class MissInformation {
                 }
 
                 const drawPosition: Vector2 = this.flipVectorVertically(
-                    nestedObject.position
+                    nestedObject.position,
                 ).add(stackOffset);
 
                 context.beginPath();
@@ -511,7 +514,7 @@ export class MissInformation {
                     drawPosition.y,
                     radius / 16,
                     0,
-                    2 * Math.PI
+                    2 * Math.PI,
                 );
                 context.stroke();
                 context.closePath();
@@ -528,7 +531,7 @@ export class MissInformation {
             startPosition.y,
             radius - circleBorder / 2,
             0,
-            2 * Math.PI
+            2 * Math.PI,
         );
         context.fill();
 
@@ -546,7 +549,7 @@ export class MissInformation {
         context.fillText(
             objectIndex.toString(),
             startPosition.x,
-            startPosition.y
+            startPosition.y,
         );
     }
 
@@ -561,7 +564,7 @@ export class MissInformation {
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
         const centerCoordinate: Vector2 = new Vector2(
             Playfield.baseSize.x / 2,
-            Playfield.baseSize.y * 1.1
+            Playfield.baseSize.y * 1.1,
         );
 
         context.globalAlpha = 1;
@@ -578,7 +581,7 @@ export class MissInformation {
 
         const drawBar = (
             ms: number,
-            hitResult: Exclude<HitResult, HitResult.miss>
+            hitResult: Exclude<HitResult, HitResult.miss>,
         ): void => {
             const drawDistance: number = calculateDrawDistance(ms);
 
@@ -586,11 +589,11 @@ export class MissInformation {
             context.beginPath();
             context.moveTo(
                 centerCoordinate.x - drawDistance,
-                centerCoordinate.y
+                centerCoordinate.y,
             );
             context.lineTo(
                 centerCoordinate.x + drawDistance,
-                centerCoordinate.y
+                centerCoordinate.y,
             );
             context.stroke();
             context.closePath();
@@ -601,7 +604,7 @@ export class MissInformation {
         drawBar(this.hitWindow.hitWindowFor100(this.isPrecise), HitResult.good);
         drawBar(
             this.hitWindow.hitWindowFor300(this.isPrecise),
-            HitResult.great
+            HitResult.great,
         );
 
         // Draw middle line.
@@ -610,11 +613,11 @@ export class MissInformation {
         context.beginPath();
         context.moveTo(
             centerCoordinate.x,
-            centerCoordinate.y - Playfield.baseSize.y / 20
+            centerCoordinate.y - Playfield.baseSize.y / 20,
         );
         context.lineTo(
             centerCoordinate.x,
-            centerCoordinate.y + Playfield.baseSize.y / 20
+            centerCoordinate.y + Playfield.baseSize.y / 20,
         );
         context.stroke();
         context.closePath();
@@ -645,7 +648,7 @@ export class MissInformation {
             }
 
             const distanceFromCenter: number = calculateDrawDistance(
-                objectData.accuracy
+                objectData.accuracy,
             );
 
             context.globalAlpha = NumberHelper.clamp(
@@ -653,20 +656,20 @@ export class MissInformation {
                     Math.pow(
                         (this.object.startTime - prevObject.startTime) /
                             this.approachRateTime,
-                        2
+                        2,
                     ),
                 0.15,
-                1
+                1,
             );
             context.strokeStyle = `rgb(${this.hitColors[objectData.result]})`;
             context.beginPath();
             context.moveTo(
                 centerCoordinate.x + distanceFromCenter,
-                centerCoordinate.y - Playfield.baseSize.y / 30
+                centerCoordinate.y - Playfield.baseSize.y / 30,
             );
             context.lineTo(
                 centerCoordinate.x + distanceFromCenter,
-                centerCoordinate.y + Playfield.baseSize.y / 30
+                centerCoordinate.y + Playfield.baseSize.y / 30,
             );
             context.stroke();
             context.closePath();
@@ -752,7 +755,7 @@ export class MissInformation {
                     }
 
                     const drawPosition: Vector2 = this.flipVectorVertically(
-                        occurrence.position
+                        occurrence.position,
                     );
 
                     if (occurrence.id === MovementType.down) {
@@ -765,7 +768,7 @@ export class MissInformation {
                             drawPosition.y,
                             5,
                             0,
-                            2 * Math.PI
+                            2 * Math.PI,
                         );
                         context.fill();
                         context.closePath();
@@ -776,7 +779,7 @@ export class MissInformation {
                             this.flipVectorVertically(prevOccurrence.position);
 
                         travelDistance += occurrence.position.getDistance(
-                            prevOccurrence.position
+                            prevOccurrence.position,
                         );
 
                         applyHitColor(prevOccurrence.time);
@@ -784,7 +787,7 @@ export class MissInformation {
                         context.beginPath();
                         context.moveTo(
                             previousDrawPosition.x,
-                            previousDrawPosition.y
+                            previousDrawPosition.y,
                         );
                         context.lineTo(drawPosition.x, drawPosition.y);
                         context.stroke();
@@ -817,13 +820,13 @@ export class MissInformation {
                                     Interpolation.lerp(
                                         prevOccurrence.position.x,
                                         occurrence.position.x,
-                                        t
+                                        t,
                                     ),
                                     Interpolation.lerp(
                                         prevOccurrence.position.y,
                                         occurrence.position.y,
-                                        t
-                                    )
+                                        t,
+                                    ),
                                 );
 
                                 const cursorDrawPosition: Vector2 =
@@ -838,7 +841,7 @@ export class MissInformation {
                                     cursorDrawPosition.y,
                                     5,
                                     0,
-                                    2 * Math.PI
+                                    2 * Math.PI,
                                 );
                                 context.stroke();
                                 context.closePath();
@@ -850,13 +853,13 @@ export class MissInformation {
                             // Draw direction arrow.
                             const displacement: Vector2 =
                                 occurrence.position.subtract(
-                                    prevOccurrence.position
+                                    prevOccurrence.position,
                                 );
                             const drawDisplacement: Vector2 =
                                 drawPosition.subtract(previousDrawPosition);
                             const angle: number = Math.atan2(
                                 drawDisplacement.y,
-                                drawDisplacement.x
+                                drawDisplacement.x,
                             );
 
                             const prevDistanceTravelled: number =
@@ -874,7 +877,7 @@ export class MissInformation {
                                 const cursorTime: number = Interpolation.lerp(
                                     prevOccurrence.time,
                                     occurrence.time,
-                                    t
+                                    t,
                                 );
                                 const timeOffset: number =
                                     cursorTime - this.object.startTime;
@@ -889,33 +892,33 @@ export class MissInformation {
                                             Interpolation.lerp(
                                                 prevOccurrence.position.x,
                                                 occurrence.position.x,
-                                                t
+                                                t,
                                             ),
                                             Interpolation.lerp(
                                                 prevOccurrence.position.y,
                                                 occurrence.position.y,
-                                                t
-                                            )
-                                        )
+                                                t,
+                                            ),
+                                        ),
                                     );
                                 const headLength: number = 10;
 
                                 switch (true) {
                                     case timeOffset <=
                                         this.hitWindow.hitWindowFor300(
-                                            this.isPrecise
+                                            this.isPrecise,
                                         ):
                                         context.strokeStyle = greatArrowColor;
                                         break;
                                     case timeOffset <=
                                         this.hitWindow.hitWindowFor100(
-                                            this.isPrecise
+                                            this.isPrecise,
                                         ):
                                         context.strokeStyle = goodArrowColor;
                                         break;
                                     case timeOffset <=
                                         this.hitWindow.hitWindowFor50(
-                                            this.isPrecise
+                                            this.isPrecise,
                                         ):
                                         context.strokeStyle = mehArrowColor;
                                         break;
@@ -926,7 +929,7 @@ export class MissInformation {
                                 context.beginPath();
                                 context.moveTo(
                                     cursorDrawPosition.x,
-                                    cursorDrawPosition.y
+                                    cursorDrawPosition.y,
                                 );
                                 context.lineTo(
                                     cursorDrawPosition.x -
@@ -934,11 +937,11 @@ export class MissInformation {
                                             Math.cos(angle - Math.PI / 6),
                                     cursorDrawPosition.y -
                                         headLength *
-                                            Math.sin(angle - Math.PI / 6)
+                                            Math.sin(angle - Math.PI / 6),
                                 );
                                 context.moveTo(
                                     cursorDrawPosition.x,
-                                    cursorDrawPosition.y
+                                    cursorDrawPosition.y,
                                 );
                                 context.lineTo(
                                     cursorDrawPosition.x -
@@ -946,7 +949,7 @@ export class MissInformation {
                                             Math.cos(angle + Math.PI / 6),
                                     cursorDrawPosition.y -
                                         headLength *
-                                            Math.sin(angle + Math.PI / 6)
+                                            Math.sin(angle + Math.PI / 6),
                                 );
                                 context.stroke();
                                 context.closePath();
@@ -971,7 +974,7 @@ export class MissInformation {
         const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
 
         const drawPosition: Vector2 = this.flipVectorVertically(
-            this.closestCursorPosition
+            this.closestCursorPosition,
         );
 
         const gradient: CanvasGradient = context.createRadialGradient(
@@ -980,7 +983,7 @@ export class MissInformation {
             0,
             drawPosition.x,
             drawPosition.y,
-            10
+            10,
         );
 
         gradient.addColorStop(0, "#ffffff");

@@ -24,13 +24,13 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MapInfo, Modes } from "@rian8337/osu-base";
 import {
+    CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import { InteractionHelper } from "./InteractionHelper";
 import { ScoreHelper } from "./ScoreHelper";
 import { CommandHelper } from "./CommandHelper";
-import { CacheableDifficultyAttributes } from "@alice-structures/difficultyattributes/CacheableDifficultyAttributes";
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";

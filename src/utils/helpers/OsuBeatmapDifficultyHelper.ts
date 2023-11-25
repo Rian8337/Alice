@@ -15,12 +15,12 @@ import { CacheManager } from "@alice-utils/managers/CacheManager";
  * A helper class for calculating osu!standard difficulty and performance of beatmaps or scores.
  */
 export class OsuBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
+    OsuDifficultyAttributes,
+    RebalanceOsuDifficultyAttributes,
     OsuDifficultyCalculator,
     OsuPerformanceCalculator,
     RebalanceOsuDifficultyCalculator,
-    RebalanceOsuPerformanceCalculator,
-    OsuDifficultyAttributes,
-    RebalanceOsuDifficultyAttributes
+    RebalanceOsuPerformanceCalculator
 > {
     protected override readonly difficultyCalculator = OsuDifficultyCalculator;
     protected override readonly rebalanceDifficultyCalculator =

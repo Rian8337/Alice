@@ -25,7 +25,6 @@ import { CompleteCalculationAttributes } from "@alice-structures/difficultyattri
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 
@@ -166,11 +165,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     };
 
     if (score instanceof Score) {
-        score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
+        const replay = await ReplayHelper.analyzeReplay(score);
 
-        await ReplayHelper.analyzeReplay(score);
-
-        if (!score.replay.data) {
+        if (!replay.data) {
             return InteractionHelper.reply(interaction, options);
         }
 
@@ -182,7 +179,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 interaction,
                 options,
                 beatmapInfo.beatmap,
-                score.replay.data,
+                replay.data,
             );
         } else {
             InteractionHelper.reply(interaction, options);

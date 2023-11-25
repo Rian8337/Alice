@@ -25,11 +25,10 @@ import { CompleteCalculationAttributes } from "@alice-structures/difficultyattri
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CompareLocalization = new CompareLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const cachedBeatmapHash: string | undefined =
@@ -40,7 +39,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noCachedBeatmap")
+                localization.getTranslation("noCachedBeatmap"),
             ),
         });
     }
@@ -50,7 +49,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -91,19 +90,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         _id: 0,
                         uid: 1,
                     },
-                }
+                },
             );
 
             if (!bindInfo) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
-                            localization.language
+                            localization.language,
                         ).getTranslation(
                             discordid
                                 ? Constants.userNotBindedReject
-                                : Constants.selfNotBindedReject
-                        )
+                                : Constants.selfNotBindedReject,
+                        ),
                     ),
                 });
             }
@@ -114,14 +113,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerNotFound")
+                localization.getTranslation("playerNotFound"),
             ),
         });
     }
 
     const score: Score | null = await Score.getFromHash(
         player.uid,
-        cachedBeatmapHash
+        cachedBeatmapHash,
     );
 
     if (!score) {
@@ -130,8 +129,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     uid || discordid || username
                         ? "userScoreNotFound"
-                        : "selfScoreNotFound"
-                )
+                        : "selfScoreNotFound",
+                ),
             ),
         });
     }
@@ -142,7 +141,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
         score.scoreID,
         Modes.droid,
-        PPCalculationMethod.live
+        PPCalculationMethod.live,
     );
 
     const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
@@ -151,21 +150,20 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,
         undefined,
-        localization.language
+        localization.language,
     );
 
     const options: InteractionReplyOptions = {
         content: MessageCreator.createAccept(
             localization.getTranslation("comparePlayDisplay"),
-            player.username
+            player.username,
         ),
         embeds: [embed],
     };
 
-    score.replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
-    await ReplayHelper.analyzeReplay(score);
+    const replay = await ReplayHelper.analyzeReplay(score);
 
-    if (!score.replay.data) {
+    if (!replay.data) {
         return InteractionHelper.reply(interaction, options);
     }
 
@@ -173,7 +171,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         score.hash,
         {
             checkFile: true,
-        }
+        },
     );
 
     if (beatmapInfo?.hasDownloadedBeatmap()) {
@@ -181,7 +179,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             interaction,
             options,
             beatmapInfo.beatmap,
-            score.replay.data
+            replay.data,
         );
     } else {
         InteractionHelper.reply(interaction, options);

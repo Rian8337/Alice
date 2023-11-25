@@ -13,7 +13,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { IModApplicableToDroid, MapInfo, Mod, Modes } from "@rian8337/osu-base";
+import { MapInfo, Modes } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
@@ -38,7 +38,7 @@ import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyH
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: FetchreplayLocalization = new FetchreplayLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const beatmapLink: string = interaction.options.getString("beatmap", true);
@@ -54,7 +54,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!beatmapID && !hash) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotProvided")
+                localization.getTranslation("beatmapNotProvided"),
             ),
         });
     }
@@ -68,13 +68,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         _id: 0,
                         uid: 1,
                     },
-                }
+                },
             );
 
         if (!bindInfo) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    Constants.selfNotBindedReject
+                    Constants.selfNotBindedReject,
                 ),
             });
         }
@@ -86,7 +86,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         hash ? hash : beatmapID,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (beatmapInfo) {
@@ -101,27 +101,41 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     interaction.options.getInteger("uid")
                         ? "userScoreNotFound"
-                        : "selfScoreNotFound"
-                )
+                        : "selfScoreNotFound",
+                ),
             ),
         });
     }
 
-    await ReplayHelper.analyzeReplay(score);
+    const replay = await ReplayHelper.analyzeReplay(score);
 
-    if (!score.replay?.data) {
+    if (!replay.data) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noReplayFound")
+                localization.getTranslation("noReplayFound"),
             ),
         });
     }
 
-    const { data } = score.replay;
+    const { data } = replay;
 
     const zip: AdmZip = new AdmZip();
 
-    zip.addFile(`${score.scoreID}.odr`, score.replay!.originalODR!);
+    zip.addFile(`${score.scoreID}.odr`, replay.originalODR!);
+
+    let modstring = score.mods.map((v) => v.droidString).join("");
+    if (score.forceCS !== undefined) {
+        modstring += `|CS${score.forceCS}`;
+    }
+    if (score.forceAR !== undefined) {
+        modstring += `|AR${score.forceAR}`;
+    }
+    if (score.forceOD !== undefined) {
+        modstring += `|OD${score.forceOD}`;
+    }
+    if (score.forceHP !== undefined) {
+        modstring += `|HP${score.forceHP}`;
+    }
 
     const json: ExportedReplayJSON = {
         version: 1,
@@ -130,11 +144,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             playername:
                 data.replayVersion < 3 ? score.username : data.playerName,
             replayfile: `${score.scoreID}.odr`,
-            mod: `${(<(Mod & IModApplicableToDroid)[]>score.mods)
-                .map((v) => v.droidString)
-                .join("")}${
-                score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""
-            }${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
+            mod: modstring,
             score: score.score,
             combo: score.combo,
             mark: score.rank,
@@ -152,8 +162,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         ? 1
                         : 0
                     : data.isFullCombo
-                    ? 1
-                    : 0,
+                      ? 1
+                      : 0,
         },
     };
 
@@ -165,7 +175,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             name: `${data.fileName.substring(0, data.fileName.length - 4)} [${
                 data.playerName
             }]-${json.replaydata.time}.edr`,
-        }
+        },
     );
 
     if (!beatmapInfo) {
@@ -174,14 +184,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation("fetchReplayNoBeatmapSuccessful"),
                 score.rank,
                 score.score.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
+                    LocaleHelper.convertToBCP47(localization.language),
                 ),
                 score.combo.toString(),
                 (score.accuracy.value() * 100).toFixed(2),
                 score.accuracy.n300.toString(),
                 score.accuracy.n100.toString(),
                 score.accuracy.n50.toString(),
-                score.accuracy.nmiss.toString()
+                score.accuracy.nmiss.toString(),
             ),
             files: [replayAttachment],
         });
@@ -193,7 +203,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
         score.scoreID,
         Modes.droid,
-        PPCalculationMethod.live
+        PPCalculationMethod.live,
     );
 
     if (!droidAttribs) {
@@ -202,14 +212,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation("fetchReplayNoBeatmapSuccessful"),
                 score.rank,
                 score.score.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
+                    LocaleHelper.convertToBCP47(localization.language),
                 ),
                 score.combo.toString(),
                 (score.accuracy.value() * 100).toFixed(2),
                 score.accuracy.n300.toString(),
                 score.accuracy.n100.toString(),
                 score.accuracy.n50.toString(),
-                score.accuracy.nmiss.toString()
+                score.accuracy.nmiss.toString(),
             ),
             files: [replayAttachment],
         });
@@ -221,7 +231,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
         score.scoreID,
         Modes.osu,
-        PPCalculationMethod.live
+        PPCalculationMethod.live,
     );
 
     if (!osuAttribs) {
@@ -230,14 +240,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 localization.getTranslation("fetchReplayNoBeatmapSuccessful"),
                 score.rank,
                 score.score.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
+                    LocaleHelper.convertToBCP47(localization.language),
                 ),
                 score.combo.toString(),
                 (score.accuracy.value() * 100).toFixed(2),
                 score.accuracy.n300.toString(),
                 score.accuracy.n100.toString(),
                 score.accuracy.n50.toString(),
-                score.accuracy.nmiss.toString()
+                score.accuracy.nmiss.toString(),
             ),
             files: [replayAttachment],
         });
@@ -251,20 +261,20 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             osuAttribs.difficulty,
             droidAttribs.performance,
             osuAttribs.performance,
-            localization.language
+            localization.language,
         );
 
-    score.replay.beatmap ??= beatmapInfo.beatmap ?? undefined;
+    replay.beatmap ??= beatmapInfo.beatmap ?? undefined;
 
     const hitErrorInformation: HitErrorInformation | null =
-        score.replay.calculateHitError();
+        replay.calculateHitError();
 
     const embed: EmbedBuilder = EmbedBuilder.from(calcEmbedOptions.embeds![0]);
 
     embed.setAuthor({
         name: StringHelper.formatString(
             localization.getTranslation("playInfo"),
-            score.username
+            score.username,
         ),
         iconURL: embed.data.author?.icon_url,
     });
@@ -273,11 +283,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embed.addFields({
             name: localization.getTranslation("hitErrorInfo"),
             value: `${hitErrorInformation.negativeAvg.toFixed(
-                2
+                2,
             )}ms - ${hitErrorInformation.positiveAvg.toFixed(
-                2
+                2,
             )}ms ${localization.getTranslation(
-                "hitErrorAvg"
+                "hitErrorAvg",
             )} | ${hitErrorInformation.unstableRate.toFixed(2)} UR`,
         });
     }

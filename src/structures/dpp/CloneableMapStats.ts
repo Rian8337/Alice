@@ -5,6 +5,26 @@ import { Optional } from "@alice-structures/utils/Optional";
  */
 export interface CloneableMapStats<TFromCalculation extends boolean = boolean> {
     /**
+     * The circle size that was calculated.
+     */
+    cs: Optional<TFromCalculation, number>;
+
+    /**
+     * The approach rate that was calculated.
+     */
+    ar: Optional<TFromCalculation, number>;
+
+    /**
+     * The overall difficulty that was calculated.
+     */
+    od: Optional<TFromCalculation, number>;
+
+    /**
+     * The health drain rate that was calculated.
+     */
+    hp: Optional<TFromCalculation, number>;
+
+    /**
      * The enabled modifications.
      */
     mods: Optional<TFromCalculation, string>;
@@ -15,9 +35,24 @@ export interface CloneableMapStats<TFromCalculation extends boolean = boolean> {
     speedMultiplier: Optional<TFromCalculation, number>;
 
     /**
-     * Whether or not this map statistics uses forced AR.
+     * Whether this map statistics uses force CS.
      */
-    isForceAR: Optional<TFromCalculation, boolean>;
+    forceCS: Optional<TFromCalculation, boolean>;
+
+    /**
+     * Whether this map statistics uses force AR.
+     */
+    forceAR: Optional<TFromCalculation, boolean>;
+
+    /**
+     * Whether this map statistics uses force OD.
+     */
+    forceOD: Optional<TFromCalculation, boolean>;
+
+    /**
+     * Whether this map statistics uses force HP.
+     */
+    forceHP: Optional<TFromCalculation, boolean>;
 
     /**
      * Whether to calculate for old statistics for osu!droid gamemode (1.6.7 and older).
