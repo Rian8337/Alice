@@ -13,7 +13,7 @@ import { Player } from "@rian8337/osu-droid-utilities";
 export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
     const localization: ViewDroidProfileLocalization =
         new ViewDroidProfileLocalization(
-            await CommandHelper.getLocale(interaction)
+            await CommandHelper.getLocale(interaction),
         );
 
     const isSelfExecution: boolean =
@@ -30,7 +30,7 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                     clan: 1,
                     weightedAccuracy: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
@@ -39,8 +39,8 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                 new ConstantsLocalization(localization.language).getTranslation(
                     isSelfExecution
                         ? Constants.selfNotBindedReject
-                        : Constants.userNotBindedReject
-                )
+                        : Constants.userNotBindedReject,
+                ),
             ),
         });
     }
@@ -55,8 +55,8 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     isSelfExecution
                         ? "selfProfileNotFound"
-                        : "userProfileNotFound"
-                )
+                        : "userProfileNotFound",
+                ),
             ),
         });
     }
@@ -67,14 +67,14 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
         bindInfo,
         undefined,
         false,
-        localization.language
+        localization.language,
     ))!;
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("viewingProfile"),
-            player.username,
-            ProfileManager.getProfileLink(player.uid).toString()
+            `${player.username} (${player.uid})`,
+            ProfileManager.getProfileLink(player.uid).toString(),
         ),
         files: [profileImage],
     });
