@@ -21,7 +21,7 @@ export class NamechangeKRTranslation extends Translation<NamechangeStrings> {
             "죄송해요, 아직 쿨다운 상태에요! 다음 날짜에 유저네임 변경을 요청 할 수 있어요: %s.",
         currentBindedAccountDoesntExist:
             "죄송해요, 당신이 osu!droid 서버에 바인딩된 계정을 찾을 수 없어요!",
-        newUsernameContainsUnicode:
+        newUsernameContainsInvalidCharacters:
             "죄송해요, 유저네임은 문자, 숫자, 언더바(_)만 포함할 수 있어요!",
         newUsernameTooLong:
             "죄송해요, 유저네임은 최소 2글자에서 최대 20글자까지만 가능해요!",

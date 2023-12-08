@@ -10,10 +10,11 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { UserbindLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { Constants } from "@alice-core/Constants";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: UserbindLocalization = new UserbindLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     await InteractionHelper.deferReply(interaction);
@@ -25,25 +26,33 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
 
+    if (!StringHelper.isUsernameValid(username)) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("profileNotFound"),
+            ),
+        });
+    }
+
     const player: Player | null = await Player.getInformation(username);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("profileNotFound")
+                localization.getTranslation("profileNotFound"),
             ),
         });
     }
 
     const uidBindInfo: UserBind | null = await dbManager.getFromUid(
         player.uid,
-        { projection: { _id: 0 } }
+        { projection: { _id: 0 } },
     );
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("accountHasBeenBindedError")
+                localization.getTranslation("accountHasBeenBindedError"),
             ),
         });
     }
@@ -55,7 +64,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 _id: 0,
                 previous_bind: 1,
             },
-        }
+        },
     );
 
     if (userBindInfo) {
@@ -66,8 +75,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation(
-                            "newAccountBindNotInMainServer"
-                        )
+                            "newAccountBindNotInMainServer",
+                        ),
                     ),
                 });
             }
@@ -75,7 +84,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (!email) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("emailNotSpecified")
+                        localization.getTranslation("emailNotSpecified"),
                     ),
                 });
             }
@@ -83,7 +92,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (email !== player.email) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("incorrectEmail")
+                        localization.getTranslation("incorrectEmail"),
                     ),
                 });
             }
@@ -94,14 +103,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     {
                         content: MessageCreator.createWarn(
                             localization.getTranslation(
-                                "newAccountUsernameBindConfirmation"
+                                "newAccountUsernameBindConfirmation",
                             ),
-                            username
+                            username,
                         ),
                     },
                     [interaction.user.id],
                     10,
-                    localization.language
+                    localization.language,
                 );
 
             if (!confirmation) {
@@ -111,7 +120,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         const result: OperationResult = await userBindInfo.bind(
             player,
-            localization.language
+            localization.language,
         );
 
         if (!result.success) {
@@ -119,7 +128,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 content: MessageCreator.createReject(
                     localization.getTranslation("accountUsernameBindError"),
                     player.username,
-                    result.reason!
+                    result.reason!,
                 ),
             });
         }
@@ -128,19 +137,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation(
-                        "oldAccountUsernameBindSuccessful"
+                        "oldAccountUsernameBindSuccessful",
                     ),
-                    player.username
+                    player.username,
                 ),
             });
         } else {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation(
-                        "newAccountUsernameBindSuccessful"
+                        "newAccountUsernameBindSuccessful",
                     ),
                     player.username,
-                    (1 - userBindInfo.previous_bind.length).toString()
+                    (1 - userBindInfo.previous_bind.length).toString(),
                 ),
             });
         }
@@ -148,7 +157,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         if (interaction.guild?.id !== Constants.mainServer) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("newAccountBindNotInMainServer")
+                    localization.getTranslation(
+                        "newAccountBindNotInMainServer",
+                    ),
                 ),
             });
         }
@@ -156,7 +167,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         if (!email) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("emailNotSpecified")
+                    localization.getTranslation("emailNotSpecified"),
                 ),
             });
         }
@@ -164,7 +175,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         if (email !== player.email) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("incorrectEmail")
+                    localization.getTranslation("incorrectEmail"),
                 ),
             });
         }
@@ -180,7 +191,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("accountUsernameBindError"),
-                    result.reason!
+                    result.reason!,
                 ),
             });
         }
@@ -189,7 +200,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createAccept(
                 localization.getTranslation("newAccountUsernameBindSuccessful"),
                 player.username,
-                "1"
+                "1",
             ),
         });
     }

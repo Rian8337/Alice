@@ -25,6 +25,7 @@ import { CompleteCalculationAttributes } from "@alice-structures/difficultyattri
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CompareLocalization = new CompareLocalization(
@@ -76,7 +77,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             break;
         case !!username:
-            player = await Player.getInformation(username!);
+            if (!StringHelper.isUsernameValid(username)) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("playerNotFound"),
+                    ),
+                });
+            }
+
+            player = await Player.getInformation(username);
 
             uid ??= player?.uid;
 

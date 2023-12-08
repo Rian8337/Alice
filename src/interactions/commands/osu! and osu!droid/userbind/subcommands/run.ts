@@ -1,24 +1,26 @@
+import { Player } from "@rian8337/osu-droid-utilities";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { OnboardingAccountBindLocalization } from "@alice-localization/interactions/modals/Onboarding/OnboardingAccountBindLocalization";
-import { ModalCommand } from "@alice-structures/core/ModalCommand";
-import { OperationResult } from "@alice-structures/core/OperationResult";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { OperationResult } from "structures/core/OperationResult";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { UserbindLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/userbind/UserbindLocalization";
+import { Constants } from "@alice-core/Constants";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Player } from "@rian8337/osu-droid-utilities";
 
-export const run: ModalCommand["run"] = async (_, interaction) => {
-    const localization: OnboardingAccountBindLocalization =
-        new OnboardingAccountBindLocalization(
-            await CommandHelper.getLocale(interaction),
-        );
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
+    const localization: UserbindLocalization = new UserbindLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
-    const email: string = interaction.fields.getTextInputValue("email");
-    const username: string = interaction.fields.getTextInputValue("username");
+    await InteractionHelper.deferReply(interaction);
+
+    const username: string = interaction.options.getString("username", true);
+
+    const email: string | null = interaction.options.getString("email");
 
     const dbManager: UserBindCollectionManager =
         DatabaseManager.elainaDb.collections.userBind;
@@ -26,7 +28,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     if (!StringHelper.isUsernameValid(username)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("profileNotFound"),
+                localization.getTranslation("userProfileNotFound"),
             ),
         });
     }
@@ -68,6 +70,24 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         const isUidBinded: boolean = userBindInfo.isUidBinded(player.uid);
 
         if (!isUidBinded) {
+            if (interaction.guild?.id !== Constants.mainServer) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation(
+                            "newAccountBindNotInMainServer",
+                        ),
+                    ),
+                });
+            }
+
+            if (!email) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("emailNotSpecified"),
+                    ),
+                });
+            }
+
             if (email !== player.email) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -82,7 +102,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
                     {
                         content: MessageCreator.createWarn(
                             localization.getTranslation(
-                                "newAccountBindConfirmation",
+                                "newAccountUsernameBindConfirmation",
                             ),
                             username,
                         ),
@@ -105,7 +125,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("accountBindError"),
+                    localization.getTranslation("accountUsernameBindError"),
                     player.username,
                     result.reason!,
                 ),
@@ -115,20 +135,42 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         if (isUidBinded) {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
-                    localization.getTranslation("oldAccountBindSuccessful"),
+                    localization.getTranslation(
+                        "oldAccountUsernameBindSuccessful",
+                    ),
                     player.username,
                 ),
             });
         } else {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
-                    localization.getTranslation("newAccountBindSuccessful"),
+                    localization.getTranslation(
+                        "newAccountUsernameBindSuccessful",
+                    ),
                     player.username,
                     (1 - userBindInfo.previous_bind.length).toString(),
                 ),
             });
         }
     } else {
+        if (interaction.guild?.id !== Constants.mainServer) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation(
+                        "newAccountBindNotInMainServer",
+                    ),
+                ),
+            });
+        }
+
+        if (!email) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("emailNotSpecified"),
+                ),
+            });
+        }
+
         if (email !== player.email) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
@@ -147,7 +189,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("accountBindError"),
+                    localization.getTranslation("accountUsernameBindError"),
                     result.reason!,
                 ),
             });
@@ -155,14 +197,10 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
-                localization.getTranslation("newAccountBindSuccessful"),
+                localization.getTranslation("newAccountUsernameBindSuccessful"),
                 player.username,
                 "1",
             ),
         });
     }
-};
-
-export const config: ModalCommand["config"] = {
-    replyEphemeral: true,
 };

@@ -22,7 +22,7 @@ export class NamechangeENTranslation extends Translation<NamechangeStrings> {
             "I'm sorry, you're still in cooldown! You will be able to send a name change request in `%s`.",
         currentBindedAccountDoesntExist:
             "I'm sorry, I cannot find your currently binded account in osu!droid server!",
-        newUsernameContainsUnicode:
+        newUsernameContainsInvalidCharacters:
             "I'm sorry, usernames can only contain letters, numbers, and underscores!",
         newUsernameTooLong:
             "I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!",

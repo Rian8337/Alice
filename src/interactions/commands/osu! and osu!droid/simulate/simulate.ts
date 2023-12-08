@@ -121,7 +121,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             break;
         case !!username:
-            player = await Player.getInformation(username!);
+            if (!StringHelper.isUsernameValid(username)) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("playerNotFound"),
+                    ),
+                });
+            }
+
+            player = await Player.getInformation(username);
 
             uid ??= player?.uid;
 

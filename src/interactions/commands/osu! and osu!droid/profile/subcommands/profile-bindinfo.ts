@@ -17,7 +17,7 @@ import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind"
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     if (interaction.options.data.length > 1) {
@@ -25,7 +25,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -61,7 +61,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             break;
         case !!username:
-            player = await Player.getInformation(username!);
+            if (!StringHelper.isUsernameValid(username!)) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("userProfileNotFound"),
+                    ),
+                });
+            }
+
+            player = await Player.getInformation(username);
 
             if (player?.uid) {
                 bindInfo = await dbManager.getFromUid(player.uid, findOptions);
@@ -72,7 +80,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
-                findOptions
+                findOptions,
             );
 
             if (bindInfo?.uid) {
@@ -85,7 +93,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userProfileNotFound")
+                localization.getTranslation("userProfileNotFound"),
             ),
         });
     }
@@ -100,7 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         .setAuthor({
             name: StringHelper.formatString(
                 localization.getTranslation("playerBindInfo"),
-                player.username
+                player.username,
             ),
             iconURL: interaction.user.avatarURL()!,
             url: ProfileManager.getProfileLink(player.uid).toString(),
@@ -112,10 +120,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             })\n\n` +
                 `${bold(localization.getTranslation("uid"))}: ${player.uid}\n` +
                 `${bold(
-                    localization.getTranslation("rank")
+                    localization.getTranslation("rank"),
                 )}: ${player.rank.toLocaleString(BCP47)}\n` +
                 `${bold(
-                    localization.getTranslation("playCount")
+                    localization.getTranslation("playCount"),
                 )}: ${player.playCount.toLocaleString(BCP47)}\n` +
                 `${bold(localization.getTranslation("country"))}: ${
                     player.location
@@ -125,10 +133,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         ? StringHelper.formatString(
                               localization.getTranslation("binded"),
                               bindInfo.discordid,
-                              bindInfo.discordid
+                              bindInfo.discordid,
                           )
                         : localization.getTranslation("notBinded")
-                }`
+                }`,
         );
 
     InteractionHelper.reply(interaction, {

@@ -14,7 +14,7 @@ export interface NamechangeStrings {
     readonly activeRequestExists: string;
     readonly requestCooldownNotExpired: string;
     readonly currentBindedAccountDoesntExist: string;
-    readonly newUsernameContainsUnicode: string;
+    readonly newUsernameContainsInvalidCharacters: string;
     readonly newUsernameTooLong: string;
     readonly emailNotEqualToBindedAccount: string;
     readonly requestSuccess: string;

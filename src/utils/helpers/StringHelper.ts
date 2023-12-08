@@ -157,4 +157,14 @@ export abstract class StringHelper {
     static escapeRegexCharacters(str: string): string {
         return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
+
+    /**
+     * Determines if an osu!droid username is valid.
+     *
+     * @param username The username to validate.
+     * @returns Whether the osu!droid username is valid.
+     */
+    static isUsernameValid(username: string): boolean {
+        return /^[a-zA-Z0-9]+$/g.test(username);
+    }
 }

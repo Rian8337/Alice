@@ -15,10 +15,11 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: Recent5Localization = new Recent5Localization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const discordid: Snowflake | undefined =
@@ -33,7 +34,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -55,7 +56,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             break;
         case !!username:
-            player = await Player.getInformation(username!);
+            if (!StringHelper.isUsernameValid(username)) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("playerNotFound"),
+                    ),
+                });
+            }
+
+            player = await Player.getInformation(username);
 
             uid ??= player?.uid;
 
@@ -69,19 +78,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         _id: 0,
                         uid: 1,
                     },
-                }
+                },
             );
 
             if (!bindInfo) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
-                            localization.language
+                            localization.language,
                         ).getTranslation(
                             discordid
                                 ? Constants.userNotBindedReject
-                                : Constants.selfNotBindedReject
-                        )
+                                : Constants.selfNotBindedReject,
+                        ),
                     ),
                 });
             }
@@ -92,7 +101,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerNotFound")
+                localization.getTranslation("playerNotFound"),
             ),
         });
     }
@@ -104,7 +113,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerHasNoRecentPlays")
+                localization.getTranslation("playerHasNoRecentPlays"),
             ),
         });
     }
@@ -113,7 +122,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         interaction,
         player.username,
         recentPlays,
-        interaction.options.getInteger("page") ?? undefined
+        interaction.options.getInteger("page") ?? undefined,
     );
 };
 

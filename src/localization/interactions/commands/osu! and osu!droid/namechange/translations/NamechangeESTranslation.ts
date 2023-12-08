@@ -21,7 +21,7 @@ export class NamechangeESTranslation extends Translation<NamechangeStrings> {
             "Lo siento, continuas en espera! Podrás solicitar un cambio de nick en %s",
         currentBindedAccountDoesntExist:
             "Lo siento, no puedo encontrar tu cuenta enlazada en el servidor de osu!droid!",
-        newUsernameContainsUnicode:
+        newUsernameContainsInvalidCharacters:
             "Lo siento, los nicks solo pueden contener letras, numeros y guiones!",
         newUsernameTooLong:
             "Lo siento, el nick debe de tener al menos 2 caracteres y no pasarse de los 20!",

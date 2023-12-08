@@ -22,10 +22,10 @@ import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const discordid: Snowflake | undefined =
@@ -54,23 +54,20 @@ export const run: SlashSubcommand<true>["run"] = async (
             playerInfo = await dbManager.getFromUid(uid!, findOptions);
             break;
         case !!username:
-            playerInfo = await dbManager.getFromUsername(
-                username!,
-                findOptions
-            );
+            playerInfo = await dbManager.getFromUsername(username, findOptions);
             break;
         default:
             // If no arguments are specified, default to self
             playerInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
-                findOptions
+                findOptions,
             );
     }
 
     if (!playerInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userHasNotPlayedAnyChallenge")
+                localization.getTranslation("userHasNotPlayedAnyChallenge"),
             ),
         });
     }
@@ -83,7 +80,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         .setAuthor({
             name: StringHelper.formatString(
                 localization.getTranslation("profile"),
-                playerInfo.username
+                playerInfo.username,
             ),
             iconURL: "https://image.frl/p/beyefgeq5m7tobjg.jpg",
             url: ProfileManager.getProfileLink(playerInfo.uid).toString(),
@@ -93,7 +90,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             value: `${bold(localization.getTranslation("points"))}: ${
                 playerInfo.points
             }\n${bold("Alice Coins")}: ${coin}${playerInfo.alicecoins}\n${bold(
-                localization.getTranslation("challengesCompleted")
+                localization.getTranslation("challengesCompleted"),
             )}: ${playerInfo.challenges.size}`,
         });
 

@@ -12,10 +12,11 @@ import { ProfileLocalization } from "@alice-localization/interactions/commands/o
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { createHash } from "crypto";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     if (interaction.options.data.length > 1) {
@@ -23,14 +24,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
 
     await InteractionHelper.deferReply(
         interaction,
-        interaction.options.getBoolean("showhashedemail") ?? false
+        interaction.options.getBoolean("showhashedemail") ?? false,
     );
 
     const discordid: Snowflake | undefined =
@@ -54,21 +55,29 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("userProfileNotFound")
+                        localization.getTranslation("userProfileNotFound"),
                     ),
                 });
             }
 
             break;
         case !!username:
-            player = await Player.getInformation(username!);
+            if (!StringHelper.isUsernameValid(username)) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("userProfileNotFound"),
+                    ),
+                });
+            }
+
+            player = await Player.getInformation(username);
 
             uid ??= player?.uid;
 
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("userProfileNotFound")
+                        localization.getTranslation("userProfileNotFound"),
                     ),
                 });
             }
@@ -85,7 +94,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         clan: 1,
                         weightedAccuracy: 1,
                     },
-                }
+                },
             );
 
             uid = bindInfo?.uid;
@@ -94,12 +103,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         new ConstantsLocalization(
-                            localization.language
+                            localization.language,
                         ).getTranslation(
                             discordid
                                 ? Constants.userNotBindedReject
-                                : Constants.selfNotBindedReject
-                        )
+                                : Constants.selfNotBindedReject,
+                        ),
                     ),
                 });
             }
@@ -113,8 +122,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     uid || username || discordid
                         ? "userProfileNotFound"
-                        : "selfProfileNotFound"
-                )
+                        : "selfProfileNotFound",
+                ),
             ),
         });
     }
@@ -125,7 +134,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         bindInfo,
         undefined,
         (interaction.options.getString("type") ?? "simplified") === "detailed",
-        localization.language
+        localization.language,
     ))!;
 
     if (
@@ -140,7 +149,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("viewingProfileWithEmail"),
                 `${player.username} (${player.uid})`,
                 ProfileManager.getProfileLink(player.uid).toString(),
-                createHash("md5").update(player.email).digest("hex")
+                createHash("md5").update(player.email).digest("hex"),
             ),
             files: [profileImage],
         });
@@ -149,7 +158,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createAccept(
                 localization.getTranslation("viewingProfile"),
                 `${player.username} (${player.uid})`,
-                ProfileManager.getProfileLink(player.uid).toString()
+                ProfileManager.getProfileLink(player.uid).toString(),
             ),
             files: [profileImage],
         });
