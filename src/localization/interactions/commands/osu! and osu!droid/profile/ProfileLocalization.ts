@@ -85,7 +85,7 @@ export interface ProfileStrings {
     readonly playCount: string;
     readonly country: string;
     readonly bindInformation: string;
-    readonly binded: string;
+    readonly bound: string;
     readonly notBinded: string;
     readonly playerCredentialsInfo: string;
     readonly username: string;

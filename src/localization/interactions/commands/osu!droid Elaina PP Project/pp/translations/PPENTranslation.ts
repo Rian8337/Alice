@@ -10,7 +10,7 @@ export class PPENTranslation extends Translation<PPStrings> {
             "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
         cannotCompareSamePlayers:
             "Hey, you cannot compare two of the same players!",
-        playerNotBinded: 'I\'m sorry, the %s "%s" is not binded!',
+        playerNotBinded: 'I\'m sorry, the %s "%s" is not bound!',
         uid: "uid",
         username: "username",
         user: "user",
@@ -31,7 +31,7 @@ export class PPENTranslation extends Translation<PPStrings> {
         commandNotAllowed:
             "I'm sorry, this command is not available in this channel.",
         uidIsBanned:
-            "I'm sorry, your currently binded osu!droid account has been disallowed from submitting dpp.",
+            "I'm sorry, your currently bound osu!droid account has been disallowed from submitting dpp.",
         beatmapNotFound: "Hey, please give me a valid beatmap to submit!",
         beatmapIsBlacklisted: "I'm sorry, this beatmap has been blacklisted.",
         beatmapNotWhitelisted:

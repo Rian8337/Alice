@@ -37,7 +37,7 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         replayInvalid:
             "Hey, please provide the proper download link to your replay!",
         replayDoesntHaveSameUsername:
-            "I'm sorry, that replay file does not contain the same username as your binded osu!droid account!",
+            "I'm sorry, that replay file does not contain the same username as your bound osu!droid account!",
         replayTooOld: "I'm sorry, that replay's format version is too old!",
         manualSubmissionConfirmation:
             "Please ask a staff member to confirm your manual submission!",

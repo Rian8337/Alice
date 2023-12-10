@@ -8,11 +8,11 @@ import { OnboardingPlayerProfileActionStrings } from "../OnboardingPlayerProfile
 export class OnboardingPlayerProfileActionENTranslation extends Translation<OnboardingPlayerProfileActionStrings> {
     override readonly translations: OnboardingPlayerProfileActionStrings = {
         userNotBinded:
-            "I'm sorry, you have not binded an osu!droid account! Please follow the procedure outlined above to bind your osu!droid account.",
+            "I'm sorry, you have not bound an osu!droid account! Please follow the procedure outlined above to bind your osu!droid account.",
         profileNotFound: "I'm sorry, I cannot find your profile!",
         viewingProfile: `osu!droid profile for ${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}:`,
     };
 }

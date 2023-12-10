@@ -27,8 +27,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 constantsLocalization.getTranslation(
-                    Constants.notAvailableInServerReject
-                )
+                    Constants.notAvailableInServerReject,
+                ),
             ),
         });
     }
@@ -37,8 +37,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 constantsLocalization.getTranslation(
-                    Constants.noPermissionReject
-                )
+                    Constants.noPermissionReject,
+                ),
             ),
         });
     }
@@ -122,7 +122,7 @@ export const config: SlashCommand["config"] = {
                     name: "id",
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The ID of the match. Defaults to the match in current binded thread.",
+                        "The ID of the match. Defaults to the match in current bound thread.",
                 },
             ],
         },
@@ -135,7 +135,7 @@ export const config: SlashCommand["config"] = {
                     name: "id",
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The ID of the match. Defaults to the match in current binded thread.",
+                        "The ID of the match. Defaults to the match in current bound thread.",
                 },
             ],
         },
@@ -189,7 +189,7 @@ export const config: SlashCommand["config"] = {
             name: "start",
             type: ApplicationCommandOptionType.Subcommand,
             description:
-                "Starts a round in a match. This can only be done in a binded thread (see /match bind).",
+                "Starts a round in a match. This can only be done in a bound thread (see /match bind).",
             options: [
                 {
                     name: "pick",
@@ -209,7 +209,7 @@ export const config: SlashCommand["config"] = {
                     name: "id",
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The ID of the match. Defaults to the match in current binded thread.",
+                        "The ID of the match. Defaults to the match in current bound thread.",
                 },
                 {
                     name: "pick",
@@ -229,7 +229,7 @@ export const config: SlashCommand["config"] = {
                     name: "id",
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The ID of the match. Defaults to the match in current binded thread.",
+                        "The ID of the match. Defaults to the match in current bound thread.",
                 },
             ],
         },
@@ -242,7 +242,7 @@ export const config: SlashCommand["config"] = {
                     name: "id",
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The match to undo. Defaults to the match in current binded channel.",
+                        "The match to undo. Defaults to the match in current bound channel.",
                 },
             ],
         },

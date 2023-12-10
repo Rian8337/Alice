@@ -19,7 +19,7 @@ export const config: SlashCommand["config"] = {
             name: "uid",
             type: ApplicationCommandOptionType.Subcommand,
             description:
-                "Switches your currently binded osu!droid account or binds an osu!droid account using its uid.",
+                "Switches your currently bound osu!droid account or binds an osu!droid account using its uid.",
             options: [
                 {
                     name: "uid",
@@ -40,7 +40,7 @@ export const config: SlashCommand["config"] = {
             name: "username",
             type: ApplicationCommandOptionType.Subcommand,
             description:
-                "Switches your currently binded osu!droid account or binds an osu!droid account using its username.",
+                "Switches your currently bound osu!droid account or binds an osu!droid account using its username.",
             options: [
                 {
                     name: "username",

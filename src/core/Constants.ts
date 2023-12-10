@@ -12,7 +12,7 @@ export class Constants {
         "noPermissionToExecuteCommand";
 
     /**
-     * Default message to send when a Discord user doesn't have a binded osu!droid account.
+     * Default message to send when a Discord user doesn't have a bound osu!droid account.
      */
     static readonly selfNotBindedReject: keyof ConstantsStrings =
         "selfAccountNotBinded";
@@ -30,7 +30,7 @@ export class Constants {
         "commandNotAvailableInChannel";
 
     /**
-     * Default message to send when a user (third-person) doesn't have a binded osu!droid account.
+     * Default message to send when a user (third-person) doesn't have a bound osu!droid account.
      */
     static readonly userNotBindedReject: keyof ConstantsStrings =
         "userAccountNotBinded";

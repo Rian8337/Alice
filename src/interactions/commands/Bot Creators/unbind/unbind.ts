@@ -14,7 +14,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: UnbindLocalization = new UnbindLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const uid: number = interaction.options.getInteger("uid", true);
@@ -24,7 +24,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             uid,
             Constants.uidMinLimit,
             Constants.uidMaxLimit,
-            true
+            true,
         )
     ) {
         return InteractionHelper.reply(interaction, {
@@ -42,21 +42,21 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("uidNotBinded")
+                localization.getTranslation("uidNotBinded"),
             ),
         });
     }
 
     const result: OperationResult = await bindInfo.unbind(
         uid,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("unbindFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -64,7 +64,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("unbindSuccessful"),
-            uid.toString()
+            uid.toString(),
         ),
     });
 };
@@ -93,7 +93,7 @@ export const config: SlashCommand["config"] = {
                 },
             ],
             description:
-                "will unbind the osu!droid account with uid 51076 if it is binded to a Discord account.",
+                "will unbind the osu!droid account with uid 51076 if it is bound to a Discord account.",
         },
     ],
     permissions: ["BotOwner"],

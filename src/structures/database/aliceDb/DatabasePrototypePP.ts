@@ -7,7 +7,7 @@ import { BaseDocument } from "../BaseDocument";
  */
 export interface DatabasePrototypePP extends BaseDocument {
     /**
-     * The Discord ID binded to the osu!droid account.
+     * The Discord ID bound to the osu!droid account.
      */
     discordid: Snowflake;
 
@@ -38,7 +38,7 @@ export interface DatabasePrototypePP extends BaseDocument {
     uid: number;
 
     /**
-     * The UID of osu!droid accounts that are binded to the user.
+     * The UID of osu!droid accounts that are bound to the user.
      *
      * A user can only bind up to 2 osu!droid accounts, therefore
      * the maximum length of this array will never exceed 2.

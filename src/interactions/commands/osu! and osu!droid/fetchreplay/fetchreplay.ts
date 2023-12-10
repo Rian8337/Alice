@@ -314,7 +314,7 @@ export const config: SlashCommand["config"] = {
             name: "uid",
             type: ApplicationCommandOptionType.Integer,
             description:
-                "The uid of the player. Defaults to your current binded uid.",
+                "The uid of the player. Defaults to your current bound uid.",
             minValue: Constants.uidMinLimit,
         },
     ],
@@ -328,7 +328,7 @@ export const config: SlashCommand["config"] = {
                 },
             ],
             description:
-                "will fetch the replay from the uid you're currently binded on in the beatmap with ID 1884658.",
+                "will fetch the replay from the uid you're currently bound on in the beatmap with ID 1884658.",
         },
         {
             command: "fetchreplay",
@@ -339,7 +339,7 @@ export const config: SlashCommand["config"] = {
                 },
             ],
             description:
-                "will fetch the replay from the uid you're currently binded on in the linked beatmap.",
+                "will fetch the replay from the uid you're currently bound on in the linked beatmap.",
         },
         {
             command: "fetchreplay",

@@ -11,7 +11,7 @@ export class ClanENTranslation extends Translation<ClanStrings> {
         userInAnotherClan: "user is already in another clan",
         userInCooldownForOldClan: "user is still in cooldown to join old clan",
         userInCooldownForClan: "user is still in cooldown to join a clan",
-        userBindedAccountNotFound: "user's binded accounts not found",
+        userBindedAccountNotFound: "user's bound accounts not found",
         clanLeaderCannotLeaveClan: "clan leader cannot leave the clan",
         userNotInClan: "user is not in the clan",
         leaderIsTheSame: "new leader is the same as the old leader",

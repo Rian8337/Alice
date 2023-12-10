@@ -12,7 +12,7 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
     PlayerInfo
 > {
     protected override readonly utilityInstance: new (
-        data: DatabasePlayerInfo
+        data: DatabasePlayerInfo,
     ) => PlayerInfo = PlayerInfo;
 
     override get defaultDocument(): DatabasePlayerInfo {
@@ -44,28 +44,28 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
 
     /**
      * Gets a Discord user's info with respect to bot-related features
-     * using its binded uid.
+     * using its bound uid.
      *
-     * @param uid The uid of the binded osu!droid account.
+     * @param uid The uid of the bound osu!droid account.
      * @param options Options for the retrieval of the user info.
      */
     getFromUid(
         uid: number,
-        options?: FindOptions<DatabasePlayerInfo>
+        options?: FindOptions<DatabasePlayerInfo>,
     ): Promise<PlayerInfo | null> {
         return this.getOne({ uid: uid }, options);
     }
 
     /**
      * Gets a Discord user's info with respect to bot-related features
-     * using its binded username.
+     * using its bound username.
      *
-     * @param username The username of the binded osu!droid account.
+     * @param username The username of the bound osu!droid account.
      * @param options Options for the retrieval of the user info.
      */
     getFromUsername(
         username: string,
-        options?: FindOptions<DatabasePlayerInfo>
+        options?: FindOptions<DatabasePlayerInfo>,
     ): Promise<PlayerInfo | null> {
         return this.getOne({ username: username }, options);
     }
@@ -78,7 +78,7 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         id: Snowflake,
-        options?: FindOptions<DatabasePlayerInfo>
+        options?: FindOptions<DatabasePlayerInfo>,
     ): Promise<PlayerInfo | null>;
 
     /**
@@ -89,23 +89,23 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
      */
     getFromUser(
         user: User,
-        options?: FindOptions<DatabasePlayerInfo>
+        options?: FindOptions<DatabasePlayerInfo>,
     ): Promise<PlayerInfo | null>;
 
     getFromUser(
         userOrId: Snowflake | User,
-        options?: FindOptions<DatabasePlayerInfo>
+        options?: FindOptions<DatabasePlayerInfo>,
     ): Promise<PlayerInfo | null> {
         return this.getOne(
             {
                 discordid: userOrId instanceof User ? userOrId.id : userOrId,
             },
-            options
+            options,
         );
     }
 
     protected override processFindOptions(
-        options?: FindOptions<DatabasePlayerInfo>
+        options?: FindOptions<DatabasePlayerInfo>,
     ): FindOptions<DatabasePlayerInfo> | undefined {
         if (options?.projection) {
             options.projection.discordid = 1;

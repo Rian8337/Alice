@@ -141,7 +141,7 @@ export class ClanENTranslation extends Translation<ClanStrings> {
             "I'm sorry, the clan to transfer power points to is not in match mode!",
         clanHasPowerupActive: "%s has a `%s` powerup active!",
         profileNotFound:
-            "I'm sorry, I cannot find your binded osu!droid account's profile!",
+            "I'm sorry, I cannot find your bound osu!droid account's profile!",
         clanUpkeepInformation:
             "Your upkeep cost is somewhere between %s Alice coins, which will be taken from you in %s. Your clan's estimated total weekly upkeep cost is %s Alice coins.",
         clanDescriptionTooLong:

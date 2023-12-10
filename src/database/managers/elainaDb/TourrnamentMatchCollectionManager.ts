@@ -11,7 +11,7 @@ export class TournamentMatchCollectionManager extends DatabaseCollectionManager<
     TournamentMatch
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseTournamentMatch
+        data: DatabaseTournamentMatch,
     ) => TournamentMatch = TournamentMatch;
 
     override get defaultDocument(): DatabaseTournamentMatch {
@@ -37,7 +37,7 @@ export class TournamentMatchCollectionManager extends DatabaseCollectionManager<
     }
 
     /**
-     * Gets a match by its binded channel.
+     * Gets a match by its bound channel.
      *
      * @param channelId The ID of the channel.
      * @returns The match, `null` if not found.

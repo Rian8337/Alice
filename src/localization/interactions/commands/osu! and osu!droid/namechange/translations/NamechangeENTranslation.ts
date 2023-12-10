@@ -6,7 +6,7 @@ import { NamechangeStrings } from "../NamechangeLocalization";
  */
 export class NamechangeENTranslation extends Translation<NamechangeStrings> {
     override readonly translations: NamechangeStrings = {
-        userNotBindedToUid: "I'm sorry, you are not binded to that uid!",
+        userNotBindedToUid: "I'm sorry, you are not bound to that uid!",
         noActiveRequest:
             "I'm sorry, there is no active name change request now!",
         invalidUid: "Hey, please enter a valid uid!",
@@ -21,13 +21,13 @@ export class NamechangeENTranslation extends Translation<NamechangeStrings> {
         requestCooldownNotExpired:
             "I'm sorry, you're still in cooldown! You will be able to send a name change request in `%s`.",
         currentBindedAccountDoesntExist:
-            "I'm sorry, I cannot find your currently binded account in osu!droid server!",
+            "I'm sorry, I cannot find your currently bound account in osu!droid server!",
         newUsernameContainsInvalidCharacters:
             "I'm sorry, usernames can only contain letters, numbers, and underscores!",
         newUsernameTooLong:
             "I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!",
         emailNotEqualToBindedAccount:
-            "I'm sorry, the email you have provided is not the same as the email registered to your binded osu!droid account!",
+            "I'm sorry, the email you have provided is not the same as the email registered to your bound osu!droid account!",
         requestSuccess:
             "Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your Direct Messages or else you won't get notified of your name change request status!",
         userHasNoHistory:

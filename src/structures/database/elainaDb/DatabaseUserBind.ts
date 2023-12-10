@@ -4,7 +4,7 @@ import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 
 /**
- * Represents a Discord user who has at least one osu!droid account binded.
+ * Represents a Discord user who has at least one osu!droid account bound.
  */
 export interface DatabaseUserBind extends BaseDocument {
     /**
@@ -13,12 +13,12 @@ export interface DatabaseUserBind extends BaseDocument {
     discordid: Snowflake;
 
     /**
-     * The UID of the osu!droid account binded to the user.
+     * The UID of the osu!droid account bound to the user.
      */
     uid: number;
 
     /**
-     * The username of the osu!droid account binded to the user.
+     * The username of the osu!droid account bound to the user.
      */
     username: string;
 
@@ -48,7 +48,7 @@ export interface DatabaseUserBind extends BaseDocument {
     clan?: string;
 
     /**
-     * The UID of osu!droid accounts that are binded to the user.
+     * The UID of osu!droid accounts that are bound to the user.
      *
      * A user can only bind up to 2 osu!droid accounts, therefore
      * the maximum length of this array will never exceed 2.

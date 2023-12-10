@@ -6,7 +6,7 @@ import { UserBindStrings } from "../UserBindLocalization";
  */
 export class UserBindENTranslation extends Translation<UserBindStrings> {
     override readonly translations: UserBindStrings = {
-        uidNotBindedToAccount: "uid is not binded to this Discord account",
+        uidNotBindedToAccount: "uid is not bound to this Discord account",
         cannotRebindToSameAccount: "cannot rebind to the same Discord account",
         bindLimitReachedInOtherAccount:
             "bind limit reached in other Discord account",

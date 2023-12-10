@@ -7,7 +7,7 @@ import { Constants } from "@alice-core/Constants";
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(
         interaction,
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 };
 
@@ -83,7 +83,7 @@ export const config: SlashCommand["config"] = {
                     name: "user",
                     type: ApplicationCommandOptionType.Subcommand,
                     description:
-                        "Compares two players' droid pp (dpp) profile using their binded Discord account.",
+                        "Compares two players' droid pp (dpp) profile using their bound Discord account.",
                     options: [
                         {
                             name: "usertocompare",

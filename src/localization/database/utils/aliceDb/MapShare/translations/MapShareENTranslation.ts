@@ -8,6 +8,6 @@ export class MapShareENTranslation extends Translation<MapShareStrings> {
     override readonly translations: MapShareStrings = {
         submissionNotAccepted: "submission is not accepted yet",
         beatmapNotFound: "beatmap not found",
-        submitterNotBinded: "submitter is not binded",
+        submitterNotBinded: "submitter is not bound",
     };
 }

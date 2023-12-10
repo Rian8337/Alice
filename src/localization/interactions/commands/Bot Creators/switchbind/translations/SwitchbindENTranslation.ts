@@ -7,7 +7,7 @@ import { SwitchbindStrings } from "../SwitchbindLocalization";
 export class SwitchbindENTranslation extends Translation<SwitchbindStrings> {
     override readonly translations: SwitchbindStrings = {
         invalidUid: "Hey, please enter a valid uid!",
-        uidNotBinded: "I'm sorry, this uid is not binded to anyone!",
+        uidNotBinded: "I'm sorry, this uid is not bound to anyone!",
         switchFailed: "I'm sorry, I'm unable to switch the bind: %s.",
         switchSuccessful: "Successfully switched bind.",
     };

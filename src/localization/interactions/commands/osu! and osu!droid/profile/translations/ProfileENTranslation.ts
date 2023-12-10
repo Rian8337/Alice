@@ -13,11 +13,11 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         userProfileNotFound: "I'm sorry, I cannot find the player's profile!",
         viewingProfile: `osu!droid profile for ${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}:`,
         viewingProfileWithEmail: `osu!droid profile for ${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}:\nHashed Email: ${inlineCode("%s")}`,
         invalidRGBAformat: "I'm sorry, that's an invalid RGBA color format!",
         invalidHexCode: "I'm sorry, that's an invalid hex code!",
@@ -54,7 +54,7 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         userCannotClaimBadge:
             "I'm sorry, you do not fulfill the requirement to get the badge!",
         claimBadgeSuccess: "%s, successfully claimed badge `%s`.",
-        userNotBindedToAccount: "I'm sorry, you are not binded to that uid!",
+        userNotBindedToAccount: "I'm sorry, you are not bound to that uid!",
         playerCredentialsNotFound:
             "I'm sorry, you have no osu!droid accounts that were affected by the deletion incident!",
         chooseBackground: "Choose the background that you want to use.",
@@ -123,8 +123,8 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         playCount: "Play Count",
         country: "Country",
         bindInformation: "Bind Information",
-        binded: `Binded to ${userMention("%s")} (user ID: %s)`,
-        notBinded: "Not binded",
+        bound: `Binded to ${userMention("%s")} (user ID: %s)`,
+        notBinded: "Not bound",
         playerCredentialsInfo: "Player Credentials",
         username: "Username",
         password: "Password",
@@ -132,7 +132,7 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
             "Do not share these credentials with everyone else until you have changed your password.",
         changeCredentialsDirection: `Please login to ${hyperlink(
             "this",
-            "%s"
+            "%s",
         )} site using these credentials and change your email and password.`,
     };
 }

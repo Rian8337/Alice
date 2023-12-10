@@ -241,14 +241,14 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
     }
 
     /**
-     * Checks whether a Discord user is binded.
+     * Checks whether a Discord user is bound.
      *
      * @param user The user.
      */
     async isUserBinded(user: User): Promise<boolean>;
 
     /**
-     * Checks whether a Discord user is binded.
+     * Checks whether a Discord user is bound.
      *
      * @param userId The ID of the user.
      */

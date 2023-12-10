@@ -72,7 +72,7 @@ export const config: SlashCommand["config"] = {
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The email that is connected to your currently binded osu!droid account.",
+                        "The email that is connected to your currently bound osu!droid account.",
                 },
                 {
                     name: "newusername",

@@ -48,7 +48,7 @@ export class ElainaDBCollection {
     readonly playerTracking: PlayerTrackingCollectionManager;
 
     /**
-     * The database collection for Discord users who have their osu!droid account(s) binded.
+     * The database collection for Discord users who have their osu!droid account(s) bound.
      */
     readonly userBind: UserBindCollectionManager;
 
@@ -58,23 +58,23 @@ export class ElainaDBCollection {
     constructor(elainaDb: Db) {
         this.clan = new ClanCollectionManager(elainaDb.collection("clandb"));
         this.mapBlacklist = new MapBlacklistCollectionManager(
-            elainaDb.collection("mapblacklist")
+            elainaDb.collection("mapblacklist"),
         );
         this.tournamentMappool = new TournamentMappoolCollectionManager(
-            elainaDb.collection("mapinfo")
+            elainaDb.collection("mapinfo"),
         );
         this.tournamentMatch = new TournamentMatchCollectionManager(
-            elainaDb.collection("matchinfo")
+            elainaDb.collection("matchinfo"),
         );
         this.mapWhitelist = new MapWhitelistCollectionManager(
-            elainaDb.collection("mapwhitelist")
+            elainaDb.collection("mapwhitelist"),
         );
         this.dppBan = new DPPBanCollectionManager(elainaDb.collection("ppban"));
         this.playerTracking = new PlayerTrackingCollectionManager(
-            elainaDb.collection("tracking")
+            elainaDb.collection("tracking"),
         );
         this.userBind = new UserBindCollectionManager(
-            elainaDb.collection("userbind")
+            elainaDb.collection("userbind"),
         );
     }
 }

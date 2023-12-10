@@ -16,7 +16,7 @@ export class MatchENTranslation extends Translation<MatchStrings> {
         invalidChannelToBind:
             "Hey, you can only bind matches in a text channel!",
         matchDoesntExist:
-            "I'm sorry, that match doesn't exist or this channel/thread is not binded to a match!",
+            "I'm sorry, that match doesn't exist or this channel/thread is not bound to a match!",
         matchHasEnded: "I'm sorry, this match has ended!",
         matchHasNoResult: "I'm sorry, this match doesn't have any result yet!",
         mappoolNotFound: "I'm sorry, I cannot find the mappool!",
@@ -36,7 +36,7 @@ export class MatchENTranslation extends Translation<MatchStrings> {
         addMatchSuccessful: "Successfully added match `%s`.",
         bindMatchFailed: "I'm sorry, I couldn't bind the match: %s.",
         bindMatchSuccessful:
-            "Successfully binded match `%s` to this channel. Please check threads section.",
+            "Successfully bound match `%s` to this channel. Please check threads section.",
         endMatchFailed: "I'm sorry, I couldn't end the match: %s.",
         endMatchSuccessful: "Successfully ended match `%s`.",
         removeMatchFailed: "I'm sorry, I couldn't remove the match: %s.",

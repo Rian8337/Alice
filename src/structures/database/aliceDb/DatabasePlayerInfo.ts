@@ -10,12 +10,12 @@ import { BaseDocument } from "../BaseDocument";
  */
 export interface DatabasePlayerInfo extends BaseDocument {
     /**
-     * The username of the osu!droid account binded to the user.
+     * The username of the osu!droid account bound to the user.
      */
     username: string;
 
     /**
-     * The UID of the osu!droid account binded to the user.
+     * The UID of the osu!droid account bound to the user.
      */
     uid: number;
 

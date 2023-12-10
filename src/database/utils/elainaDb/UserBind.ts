@@ -37,7 +37,7 @@ import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 
 /**
- * Represents a Discord user who has at least one osu!droid account binded.
+ * Represents a Discord user who has at least one osu!droid account bound.
  */
 export class UserBind extends Manager {
     /**
@@ -46,12 +46,12 @@ export class UserBind extends Manager {
     discordid: Snowflake;
 
     /**
-     * The UID of the osu!droid account binded to the user.
+     * The UID of the osu!droid account bound to the user.
      */
     uid: number;
 
     /**
-     * The username of the osu!droid account binded to the user.
+     * The username of the osu!droid account bound to the user.
      */
     username: string;
 
@@ -81,7 +81,7 @@ export class UserBind extends Manager {
     clan?: string;
 
     /**
-     * The UID of osu!droid accounts that are binded to the user.
+     * The UID of osu!droid accounts that are bound to the user.
      *
      * A user can only bind up to 2 osu!droid accounts, therefore
      * the maximum length of this array will never exceed 2.
@@ -744,7 +744,7 @@ export class UserBind extends Manager {
     }
 
     /**
-     * Moves the bind of a binded osu!droid account in this Discord account to another
+     * Moves the bind of a bound osu!droid account in this Discord account to another
      * Discord account.
      *
      * @param uid The uid of the osu!droid account.
@@ -1099,7 +1099,7 @@ export class UserBind extends Manager {
     }
 
     /**
-     * Determines whether a uid has been binded to this Discord account.
+     * Determines whether a uid has been bound to this Discord account.
      *
      * @param uid The uid to determine.
      */

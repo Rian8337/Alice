@@ -14,7 +14,7 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
             "Maaf, aku tidak dapat menemukan profile pemain tersebut!",
         viewingProfile: `Profil osu!droid untuk ${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}:`,
         viewingProfileWithEmail: "",
         invalidRGBAformat: "Maaf, format warna RGBA tersebut tidak benar!",
@@ -122,7 +122,7 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
         playCount: "Jumlah Main",
         country: "Negara",
         bindInformation: "Informasi Hubungan",
-        binded: `Terhubung ke ${userMention("%s")} (ID pengguna: %s)`,
+        bound: `Terhubung ke ${userMention("%s")} (ID pengguna: %s)`,
         notBinded: "Tidak terhubung",
         playerCredentialsInfo: "",
         username: "Nama Pemain",
@@ -131,7 +131,7 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
             "Jangan berikan kredensial ini ke siapapun sebelum kamu mengubah kata sandi kamu.",
         changeCredentialsDirection: `Silakan masuk ke ${hyperlink(
             "laman ini",
-            "%s"
+            "%s",
         )} menggunakan kredensial ini dan ubah email dan kata sandi kamu.`,
     };
 }

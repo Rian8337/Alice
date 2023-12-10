@@ -36,7 +36,7 @@ export class ProfileCardCreator {
     private readonly bindInfo?: UserBind | null;
 
     /**
-     * Information about the binded Discord account of the player.
+     * Information about the bound Discord account of the player.
      */
     private readonly playerInfo?: PlayerInfo | null;
 
@@ -65,7 +65,7 @@ export class ProfileCardCreator {
      * @param detailed Whether to show detailed statistics in the profile card.
      * @param bindInfo The bind information of the player.
      * @param rankedScoreInfo The ranked score information of the player.
-     * @param playerInfo Information about the binded Discord account of the player.
+     * @param playerInfo Information about the bound Discord account of the player.
      */
     constructor(
         player: Player,
@@ -74,7 +74,7 @@ export class ProfileCardCreator {
         playerInfo?: PlayerInfo | null,
         // Disable temporarily while finding a solution for unicode characters
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        language: Language = "en"
+        language: Language = "en",
     ) {
         this.player = player;
         this.detailed = detailed;
@@ -118,7 +118,7 @@ export class ProfileCardCreator {
     private resetCanvas(): void {
         this.canvas = createCanvas(
             500,
-            this.detailed || this.template ? 500 : 200
+            this.detailed || this.template ? 500 : 200,
         );
     }
 
@@ -131,7 +131,7 @@ export class ProfileCardCreator {
         const backgroundImageID: string =
             this.playerInfo?.picture_config.activeBackground.id ?? "default";
         const bg: Image = await loadImage(
-            `${process.cwd()}/files/images/backgrounds/${backgroundImageID}.png`
+            `${process.cwd()}/files/images/backgrounds/${backgroundImageID}.png`,
         );
         this.context.drawImage(bg, 0, 0);
 
@@ -219,7 +219,7 @@ export class ProfileCardCreator {
                     440,
                     15,
                     flagImage.width / 1.5,
-                    flagImage.height / 1.5
+                    flagImage.height / 1.5,
                 );
 
                 this.context.textAlign = "center";
@@ -230,7 +230,7 @@ export class ProfileCardCreator {
                 this.context.fillText(
                     this.player.location,
                     440 + flagImage.width / 3,
-                    flagImage.height + 15
+                    flagImage.height + 15,
                 );
             }
             // eslint-disable-next-line no-empty
@@ -270,7 +270,7 @@ export class ProfileCardCreator {
         this.context.fillText(
             `#${this.player.rank.toLocaleString(this.BCP47)}`,
             12,
-            187
+            187,
         );
 
         this.context.restore();
@@ -303,7 +303,7 @@ export class ProfileCardCreator {
 
         // Level progress
         const level: number = ScoreHelper.calculateProfileLevel(
-            this.player.score
+            this.player.score,
         );
         const progress: number = level - Math.floor(level);
         if (progress > 0) {
@@ -325,7 +325,7 @@ export class ProfileCardCreator {
             this.context.fillText(
                 `${(progress * 100).toFixed(2)}%`,
                 279.5,
-                221
+                221,
             );
             this.context.fillText(`Lv${Math.floor(level)}`, 43, 221);
         } else {
@@ -333,7 +333,7 @@ export class ProfileCardCreator {
             this.context.fillText(
                 `${(progress * 100).toFixed(2)}%`,
                 348.5,
-                167
+                167,
             );
             this.context.fillText(`Lv${Math.floor(level)}`, 189.5, 167);
         }
@@ -357,7 +357,7 @@ export class ProfileCardCreator {
             this.player.username,
             x,
             this.detailed || this.template ? 45 : 30,
-            243
+            243,
         );
 
         let yOffset: number = 0;
@@ -370,10 +370,10 @@ export class ProfileCardCreator {
             this.detailed || this.template ? "18px Exo" : "16px Exo";
         this.context.fillText(
             `${this.localization.getTranslation(
-                "totalScore"
+                "totalScore",
             )}: ${this.player.score.toLocaleString(this.BCP47)}`,
             x,
-            y + yOffset
+            y + yOffset,
         );
         increaseYOffset();
 
@@ -383,7 +383,7 @@ export class ProfileCardCreator {
                     this.player.accuracy
                 }% | ${this.bindInfo.weightedAccuracy.toFixed(2)}%`,
                 x,
-                y + yOffset
+                y + yOffset,
             );
         } else {
             this.context.fillText(
@@ -391,17 +391,17 @@ export class ProfileCardCreator {
                     this.player.accuracy
                 }%`,
                 x,
-                y + yOffset
+                y + yOffset,
             );
         }
         increaseYOffset();
 
         this.context.fillText(
             `${this.localization.getTranslation(
-                "playCount"
+                "playCount",
             )}: ${this.player.playCount.toLocaleString(this.BCP47)}`,
             x,
-            y + yOffset
+            y + yOffset,
         );
         increaseYOffset();
 
@@ -409,12 +409,12 @@ export class ProfileCardCreator {
             const ppRank: number = await this.getPlayerPPRank(this.bindInfo);
             this.context.fillText(
                 `${this.localization.getTranslation(
-                    "droidPP"
+                    "droidPP",
                 )}: ${this.bindInfo.pptotal.toFixed(
-                    2
+                    2,
                 )}pp (#${ppRank.toLocaleString(this.BCP47)})`,
                 x,
-                y + yOffset
+                y + yOffset,
             );
             increaseYOffset();
 
@@ -424,7 +424,7 @@ export class ProfileCardCreator {
                         this.bindInfo.clan
                     }`,
                     x,
-                    y + yOffset
+                    y + yOffset,
                 );
                 increaseYOffset();
             }
@@ -469,7 +469,7 @@ export class ProfileCardCreator {
             }
 
             const badgeImage: Image = await loadImage(
-                `${process.cwd()}/files/images/badges/${profileBadge.id}.png`
+                `${process.cwd()}/files/images/badges/${profileBadge.id}.png`,
             );
             if (i / 5 < 1) {
                 this.context.drawImage(badgeImage, i * 94 + 19.5, 312, 85, 85);
@@ -479,7 +479,7 @@ export class ProfileCardCreator {
                     (i - 5) * 94 + 19.5,
                     397,
                     85,
-                    85
+                    85,
                 );
             }
         }
@@ -522,7 +522,7 @@ export class ProfileCardCreator {
                 this.context.fillText(
                     (i + 1).toString(),
                     54.5 + (i - 5) * 94,
-                    439.5
+                    439.5,
                 );
             }
         }
@@ -537,7 +537,7 @@ export class ProfileCardCreator {
         this.context.save();
 
         const coinImage: Image = await loadImage(
-            `${process.cwd()}/files/images/alicecoin.png`
+            `${process.cwd()}/files/images/alicecoin.png`,
         );
 
         this.context.drawImage(coinImage, 15, 255, 50, 50);
@@ -547,12 +547,12 @@ export class ProfileCardCreator {
 
         this.context.fillText(
             `${(this.playerInfo?.alicecoins ?? 0).toLocaleString(
-                this.BCP47
+                this.BCP47,
             )} Alice Coins | ${(this.playerInfo?.points ?? 0).toLocaleString(
-                this.BCP47
+                this.BCP47,
             )} ${this.localization.getTranslation("challengePoints")}`,
             75,
-            280
+            280,
         );
 
         this.context.restore();
@@ -564,7 +564,7 @@ export class ProfileCardCreator {
     private async getPlayerPPRank(bindInfo: UserBind): Promise<number> {
         return (
             (await DatabaseManager.elainaDb?.collections.userBind.getUserDPPRank(
-                bindInfo.pptotal
+                bindInfo.pptotal,
             )) ?? 0
         );
     }

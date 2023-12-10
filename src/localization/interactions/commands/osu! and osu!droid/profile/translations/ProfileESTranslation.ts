@@ -14,7 +14,7 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
             "Lo siento, no puede encontrar el perfil de ese jugador!",
         viewingProfile: `Perfil de osu!droid de ${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}:`,
         viewingProfileWithEmail: "",
         invalidRGBAformat: "Lo siento, ese es un formato RGBA inválido!",
@@ -123,7 +123,7 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
         playCount: "Jugadas",
         country: "Pais",
         bindInformation: "Información Enlazada",
-        binded: "Enlazado a %s (ID del usuario: %s)",
+        bound: "Enlazado a %s (ID del usuario: %s)",
         notBinded: "No enlazado",
         playerCredentialsInfo: "",
         username: "",

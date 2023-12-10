@@ -40,7 +40,7 @@ export class MusicInfo {
     readonly player: AudioPlayer = createAudioPlayer();
 
     /**
-     * The channel this music information is binded to.
+     * The channel this music information is bound to.
      */
     readonly executionChannel: GuildTextBasedChannel;
 
@@ -88,7 +88,7 @@ export class MusicInfo {
     constructor(
         connection: VoiceConnection,
         voiceChannelId: Snowflake,
-        executionChannel: GuildTextBasedChannel
+        executionChannel: GuildTextBasedChannel,
     ) {
         this.connection = connection;
         this.voiceChannelId = voiceChannelId;
@@ -108,7 +108,7 @@ export class MusicInfo {
                             await entersState(
                                 this.connection,
                                 VoiceConnectionStatus.Connecting,
-                                5e3
+                                5e3,
                             );
                         } catch {
                             // Probably removed from voice channel.
@@ -116,7 +116,7 @@ export class MusicInfo {
                         }
                     } else if (this.connection.rejoinAttempts < 5) {
                         await HelperFunctions.sleep(
-                            (this.connection.rejoinAttempts + 1) * 5e3
+                            (this.connection.rejoinAttempts + 1) * 5e3,
                         );
                         this.connection.rejoin();
                     } else {
@@ -138,7 +138,7 @@ export class MusicInfo {
                             await entersState(
                                 this.connection,
                                 VoiceConnectionStatus.Ready,
-                                2e4
+                                2e4,
                             );
                         } catch {
                             if (
@@ -163,7 +163,7 @@ export class MusicInfo {
                 // Idle state is entered from a nonidle state. This means that an audio resource has finished playing.
                 // Process the queue to start playing the next queue, if one is available.
                 this.processQueue(
-                    (<AudioResource<MusicQueue>>oldState.resource).metadata
+                    (<AudioResource<MusicQueue>>oldState.resource).metadata,
                 );
             } else if (
                 oldState.status !== AudioPlayerStatus.Paused &&
@@ -174,7 +174,7 @@ export class MusicInfo {
                     embeds: [
                         EmbedCreator.createMusicQueueEmbed(
                             (<AudioResource<MusicQueue>>newState.resource)
-                                .metadata
+                                .metadata,
                         ),
                     ],
                 });
@@ -185,7 +185,7 @@ export class MusicInfo {
             this.executionChannel.send({
                 content: MessageCreator.createReject(
                     `The audio player emitted an error: \`%s\`.`,
-                    err.message
+                    err.message,
                 ),
             });
         });
@@ -246,7 +246,7 @@ export class MusicInfo {
         if (this.queue.length === 0 && !repeatAndNotSkip) {
             this.idleTimeout ??= setTimeout(
                 () => this.connection.destroy(),
-                60 * 10 * 1000
+                60 * 10 * 1000,
             );
             return;
         }
@@ -286,7 +286,7 @@ export class MusicInfo {
                 content: MessageCreator.createReject(
                     `An error occurred while trying to play %s: \`%s\`.`,
                     nextQueue.information.title,
-                    (<Error>err).message
+                    (<Error>err).message,
                 ),
             });
 

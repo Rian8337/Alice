@@ -131,7 +131,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 `${bold(localization.getTranslation("bindInformation"))}: ${
                     bindInfo
                         ? StringHelper.formatString(
-                              localization.getTranslation("binded"),
+                              localization.getTranslation("bound"),
                               bindInfo.discordid,
                               bindInfo.discordid,
                           )

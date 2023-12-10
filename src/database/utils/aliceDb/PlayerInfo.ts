@@ -19,12 +19,12 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
  */
 export class PlayerInfo extends Manager {
     /**
-     * The username of the osu!droid account binded to the user.
+     * The username of the osu!droid account bound to the user.
      */
     username: string;
 
     /**
-     * The UID of the osu!droid account binded to the user.
+     * The UID of the osu!droid account bound to the user.
      */
     uid: number;
 
@@ -93,7 +93,7 @@ export class PlayerInfo extends Manager {
 
     constructor(
         data: DatabasePlayerInfo = DatabaseManager.aliceDb?.collections
-            .playerInfo.defaultDocument ?? {}
+            .playerInfo.defaultDocument ?? {},
     ) {
         super();
 
@@ -103,7 +103,7 @@ export class PlayerInfo extends Manager {
         this.uid = data.uid;
         this.challenges = ArrayHelper.arrayToCollection(
             data.challenges ?? [],
-            "id"
+            "id",
         );
         this.points = data.points;
         this.alicecoins = data.alicecoins;
@@ -125,7 +125,7 @@ export class PlayerInfo extends Manager {
      */
     async incrementCoins(
         amount: number,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: PlayerInfoLocalization =
             this.getLocalization(language);
@@ -137,9 +137,9 @@ export class PlayerInfo extends Manager {
                 StringHelper.formatString(
                     localization.getTranslation("tooMuchCoinDeduction"),
                     this.alicecoins.toLocaleString(
-                        LocaleHelper.convertToBCP47(language)
-                    )
-                )
+                        LocaleHelper.convertToBCP47(language),
+                    ),
+                ),
             );
         }
 
@@ -147,7 +147,7 @@ export class PlayerInfo extends Manager {
 
         return DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: this.discordid },
-            { $set: { alicecoins: this.alicecoins } }
+            { $set: { alicecoins: this.alicecoins } },
         );
     }
 
@@ -159,7 +159,7 @@ export class PlayerInfo extends Manager {
      */
     async claimDailyCoins(
         coinAmount: number,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: PlayerInfoLocalization =
             this.getLocalization(language);
@@ -167,7 +167,7 @@ export class PlayerInfo extends Manager {
         if (this.hasClaimedDaily) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("dailyClaimUsed")
+                localization.getTranslation("dailyClaimUsed"),
             );
         }
 
@@ -191,7 +191,7 @@ export class PlayerInfo extends Manager {
                     hasClaimedDaily: this.hasClaimedDaily,
                     streak: this.streak,
                 },
-            }
+            },
         );
     }
 
@@ -208,7 +208,7 @@ export class PlayerInfo extends Manager {
         amount: number,
         thisPlayer: Player,
         to: PlayerInfo,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: PlayerInfoLocalization =
             this.getLocalization(language);
@@ -237,7 +237,7 @@ export class PlayerInfo extends Manager {
                 amount + this.transferred,
                 0,
                 limit,
-                true
+                true,
             )
         ) {
             return this.createOperationResult(
@@ -245,15 +245,15 @@ export class PlayerInfo extends Manager {
                 StringHelper.formatString(
                     localization.getTranslation("dailyLimitReached"),
                     (limit - this.transferred).toLocaleString(
-                        LocaleHelper.convertToBCP47(language)
-                    )
-                )
+                        LocaleHelper.convertToBCP47(language),
+                    ),
+                ),
             );
         }
 
         await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: this.discordid },
-            { $inc: { transferred: amount, alicecoins: -amount } }
+            { $inc: { transferred: amount, alicecoins: -amount } },
         );
 
         return to.incrementCoins(amount);

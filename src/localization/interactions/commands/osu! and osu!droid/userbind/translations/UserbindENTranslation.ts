@@ -18,18 +18,18 @@ export class UserbindENTranslation extends Translation<UserbindStrings> {
         newAccountUsernameBindConfirmation:
             "Are you sure you want to bind your account to username %s?",
         newAccountUidBindSuccessful:
-            "Successfully binded your account to uid %s. You can bind %s more osu!droid account(s).",
+            "Successfully bound your account to uid %s. You can bind %s more osu!droid account(s).",
         newAccountUsernameBindSuccessful:
-            "Successfully binded your account to username %s. You can bind %s more osu!droid account(s).",
+            "Successfully bound your account to username %s. You can bind %s more osu!droid account(s).",
         accountUidBindError:
             "I'm sorry, I couldn't bind your account to uid %s: %s.",
         accountUsernameBindError:
             "I'm sorry, I couldn't bind your account to username %s: %s.",
         accountHasBeenBindedError:
-            "I'm sorry, that osu!droid account has been binded to another Discord account!",
+            "I'm sorry, that osu!droid account has been bound to another Discord account!",
         oldAccountUidBindSuccessful:
-            "Successfully binded your account to uid %s.",
+            "Successfully bound your account to uid %s.",
         oldAccountUsernameBindSuccessful:
-            "Successfully binded your account to username %s.",
+            "Successfully bound your account to username %s.",
     };
 }

@@ -11,7 +11,7 @@ import { Collection, Snowflake } from "discord.js";
  */
 export class PrototypePP extends Manager {
     /**
-     * The Discord ID binded to the osu!droid account.
+     * The Discord ID bound to the osu!droid account.
      */
     discordid: Snowflake;
 
@@ -42,7 +42,7 @@ export class PrototypePP extends Manager {
     uid: number;
 
     /**
-     * The UID of osu!droid accounts that are binded to the user.
+     * The UID of osu!droid accounts that are bound to the user.
      *
      * A user can only bind up to 2 osu!droid accounts, therefore
      * the maximum length of this array will never exceed 2.
@@ -66,7 +66,7 @@ export class PrototypePP extends Manager {
 
     constructor(
         data: DatabasePrototypePP = DatabaseManager.aliceDb?.collections
-            .prototypePP.defaultDocument ?? {}
+            .prototypePP.defaultDocument ?? {},
     ) {
         super();
 

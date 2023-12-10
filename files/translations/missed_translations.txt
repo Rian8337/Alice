@@ -224,7 +224,7 @@ profile-bindinfo.ts (9)
 23.6. Bind Information
 23.7. Binded to %s (user ID: %s)
 23.8. Has played verification beatmap
-23.9. Not binded
+23.9. Not bound
 
 ============================================
 

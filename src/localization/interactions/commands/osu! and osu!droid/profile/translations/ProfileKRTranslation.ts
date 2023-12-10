@@ -13,7 +13,7 @@ export class ProfileKRTranslation extends Translation<ProfileStrings> {
         userProfileNotFound: "죄송해요, 그 유저의 프로필을 찾을 수 없었어요!",
         viewingProfile: `${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}의 osu!droid 프로필:`,
         viewingProfileWithEmail: "",
         invalidRGBAformat: "죄송해요, 그건 유효하지 않은 RGBA 색상 형식이에요!",
@@ -112,7 +112,7 @@ export class ProfileKRTranslation extends Translation<ProfileStrings> {
         playCount: "플레이 횟수",
         country: "국적",
         bindInformation: "바인딩 정보",
-        binded: "%s에게 바인딩됨 (user ID: %s)",
+        bound: "%s에게 바인딩됨 (user ID: %s)",
         notBinded: "바인딩 되어있지 않음",
         playerCredentialsInfo: "",
         username: "",

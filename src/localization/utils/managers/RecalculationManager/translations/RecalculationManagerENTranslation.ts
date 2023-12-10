@@ -8,7 +8,7 @@ export class RecalculationManagerENTranslation extends Translation<Recalculation
     override readonly translations: RecalculationManagerStrings = {
         recalculationSuccessful: "%s, successfully recalculated %s.",
         recalculationFailed: "%s, recalculation for %s failed: %s.",
-        userNotBinded: "user is not binded",
+        userNotBinded: "user is not bound",
         userHasAskedForRecalc: "user has asked for recalculation",
         userDPPBanned: "user was DPP banned",
     };

@@ -60,7 +60,7 @@ scan.ts (2)
 switchbind.ts (4)
 
 7.1. Hey, please enter a valid uid!
-7.2. I'm sorry, this uid is not binded to anyone!
+7.2. I'm sorry, this uid is not bound to anyone!
 7.3. I'm sorry, I'm unable to switch the bind: %s.
 7.4. Successfully switched bind.
 
@@ -69,7 +69,7 @@ switchbind.ts (4)
 unbind.ts (4)
 
 8.1. Hey, please enter a valid uid!
-8.2. I'm sorry, the uid is not binded!
+8.2. I'm sorry, the uid is not bound!
 8.3. I'm sorry, I couldn't unbind the uid: %s.
 8.4. Successfully unbinded uid %s.
 
@@ -423,7 +423,7 @@ clan.ts (158)
 22.88. I'm sorry, the clan to transfer power points to is not in match mode!
 22.89. %s has a %s powerup active!
     (e.g. clan 1 has a `superbuff` powerup active!)
-22.90. I'm sorry, I cannot find your binded osu!droid account's profile!
+22.90. I'm sorry, I cannot find your bound osu!droid account's profile!
 22.91. Your upkeep cost is somewhere between %s Alice coins, which will be taken from you in %s. Your clan's estimated total weekly upkeep cost is %s Alice coins.
     (e.g. Your upkeep cost is somewhere between 5000 Alice coins, which will be taken from you in 2 days, 1 hours, 11 minutes, 58 seconds. Your clan's estimated total weekly upkeep cost is 10000 Alice coins.)
 22.92. I'm sorry, clan description must be less than 2000 characters!
@@ -528,7 +528,7 @@ daily.ts (30)
 24.14. Hey, please enter a valid URL!
 24.15. I'm sorry, I couldn't download your replay!
 24.16. Hey, please provide the proper download link to your replay!
-24.17. I'm sorry, that replay file does not contain the same username as your binded osu!droid account!
+24.17. I'm sorry, that replay file does not contain the same username as your bound osu!droid account!
 24.18. I'm sorry, that replay's format version is too old!
 24.19. Please ask a staff member to confirm your manual submission!
 24.20. osu!droid Daily/Weekly Challenges
@@ -659,10 +659,10 @@ namechange.ts (32)
 31.6. Hey, you currently have an active request! Please wait for that one to get reviewed before submitting another one!
 31.7. I'm sorry, you're still in cooldown! You will be able to send a name change request in %s.
     (e.g. I'm sorry, you're still in cooldown! You will be able to send a name change request in `Jan 26 2019`.)
-31.8. I'm sorry, I cannot find your currently binded account in osu!droid server!
+31.8. I'm sorry, I cannot find your currently bound account in osu!droid server!
 31.9. I'm sorry, usernames can only contain letters, numbers, and underscores!
 31.10. I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!
-31.11. I'm sorry, the email you have provided is not the same as the email registered to your binded osu!droid account!
+31.11. I'm sorry, the email you have provided is not the same as the email registered to your bound osu!droid account!
 31.12. Successfully requested name change. Please wait for it to get reviewed!
 31.13. Remember to not disable your Direct Messages or else you won't get notified of your name change request status!
 31.14. I'm sorry, this player doesn't have any name change history!
@@ -769,11 +769,11 @@ userbind.ts (12)
 36.4. I'm sorry, you must be a verified member to use this command!
 36.5. Are you sure you want to bind your account to uid %s?
 36.6. Are you sure you want to bind your account to username %s?
-36.7. Successfully binded your account to uid %s. You can bind %s more osu!droid account(s).
-36.8. Successfully binded your account to username %s. You can bind %s more osu!droid account(s).
+36.7. Successfully bound your account to uid %s. You can bind %s more osu!droid account(s).
+36.8. Successfully bound your account to username %s. You can bind %s more osu!droid account(s).
 36.9. I'm sorry, I couldn't bind your account to uid %s: %s.
 36.10. I'm sorry, I couldn't bind your account to username %s: %s.
-36.11. I'm sorry, that osu!droid account has been binded to another Discord account!
+36.11. I'm sorry, that osu!droid account has been bound to another Discord account!
 36.12. Use this beatmap to verify that you are the owner of an osu!droid account. This is required if you want to bind it for the first time.
 
 ============================================
@@ -788,9 +788,9 @@ ppcheck.ts (2)
 ppcompare.ts (5)
 
 38.1. Hey, you cannot compare two of the same players!
-38.2. I'm sorry, the uid "%s" is not binded!
-38.3. I'm sorry, the user "%s" is not binded!
-38.4. I'm sorry, the username "%s" is not binded!
+38.2. I'm sorry, the uid "%s" is not bound!
+38.3. I'm sorry, the user "%s" is not bound!
+38.4. I'm sorry, the username "%s" is not bound!
 38.5. I'm sorry, both players do not have any intersecting top plays!
 
 ============================================
@@ -828,7 +828,7 @@ recalc.ts (7)
 submit.ts (26)
 
 41.1. I'm sorry, this command is not available in this channel.
-41.2. I'm sorry, your currently binded osu!droid account has been disallowed from submitting dpp.
+41.2. I'm sorry, your currently bound osu!droid account has been disallowed from submitting dpp.
 41.3. Hey, please give me a valid beatmap to submit!
 41.4. I'm sorry, this beatmap has been blacklisted.
 41.5. I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved beatmaps right now!
@@ -1021,7 +1021,7 @@ match.ts (39)
 52.3. I'm sorry, the player count difference between both teams must not exceed 1!
 52.4. I'm sorry, this player information is not correct: %s.
 52.5. Hey, you can only bind matches in a text channel!
-52.6. I'm sorry, that match doesn't exist or this channel/thread is not binded to a match!
+52.6. I'm sorry, that match doesn't exist or this channel/thread is not bound to a match!
 52.7. I'm sorry, this match has ended!
 52.8. I'm sorry, this match doesn't have any result yet!
 52.9. I'm sorry, I cannot find the mappool!
@@ -1037,7 +1037,7 @@ match.ts (39)
 52.18. I'm sorry, I couldn't add the match: %s.
 52.19. Successfully added match %s.
 52.20. I'm sorry, I couldn't bind the match: %s.
-52.21. Successfully binded match %s to this channel. Please check threads section.
+52.21. Successfully bound match %s to this channel. Please check threads section.
 52.22. I'm sorry, I couldn't end the match: %s.
 52.23. Successfully ended match %s.
 52.24. I'm sorry, I couldn't remove the match: %s.
@@ -1072,10 +1072,10 @@ pool.ts (2)
 Constants.ts (4)
 
 54.1. I'm sorry, you do not have the permission to execute this command.
-54.2. I'm sorry, your account is not binded. You need to bind your account using `/userbind` first.
+54.2. I'm sorry, your account is not bound. You need to bind your account using `/userbind` first.
 54.3. I'm sorry, this command is not available in this server.
 54.4. I'm sorry, this command is not available in this channel.
-54.5. I'm sorry, that account is not binded. The user needs to bind his/her account using `/userbind` first.
+54.5. I'm sorry, that account is not bound. The user needs to bind his/her account using `/userbind` first.
 
 ============================================
 
@@ -1137,7 +1137,7 @@ MapShare.ts (3)
 
 57.1. submission is not accepted yet
 57.2. beatmap not found
-57.3. submitter is not binded
+57.3. submitter is not bound
 
 ============================================
 
@@ -1176,7 +1176,7 @@ Clan.ts (18)
 60.3. user is already in another clan
 60.4. user is still in cooldown to join old clan
 60.5. user is still in cooldown to join a clan
-60.6. user's binded accounts not found
+60.6. user's bound accounts not found
 60.7. clan leader cannot leave the clan
 60.8. user is not in the clan
 60.9. new leader is the same as the old leader
@@ -1207,7 +1207,7 @@ TournamentMatch.ts (6)
 
 UserBind.ts (8)
 
-62.1. uid is not binded to this Discord account
+62.1. uid is not bound to this Discord account
 62.2. cannot rebind to the same Discord account
 62.3. bind limit reached in other Discord account
 62.4. player not found
@@ -1356,7 +1356,7 @@ RecalculationManager.ts (5)
 
 73.1. %s, successfully recalculated %s.
 73.2. %s, recalculation for %s failed: %s.
-73.3. user is not binded
+73.3. user is not bound
 73.4. user has asked for recalculation
 73.5. user was DPP banned
 

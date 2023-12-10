@@ -7,7 +7,7 @@ import { Constants } from "@alice-core/Constants";
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(
         interaction,
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 };
 
@@ -70,7 +70,7 @@ export const config: SlashCommand["config"] = {
             name: "restoreaccount",
             type: ApplicationCommandOptionType.Subcommand,
             description:
-                "Gives the credentials of your binded osu!droid accounts that were deleted in the deletion incident.",
+                "Gives the credentials of your bound osu!droid accounts that were deleted in the deletion incident.",
         },
         {
             name: "view",
@@ -126,7 +126,7 @@ export const config: SlashCommand["config"] = {
         {
             command: "profile view",
             description:
-                "will view your currently binded osu!droid account's profile.",
+                "will view your currently bound osu!droid account's profile.",
         },
         {
             command: "profile bindinfo",
@@ -147,7 +147,7 @@ export const config: SlashCommand["config"] = {
                 },
             ],
             description:
-                "will view the currently binded osu!droid account's profile of the user with that Discord ID.",
+                "will view the currently bound osu!droid account's profile of the user with that Discord ID.",
         },
         {
             command: "profile bindinfo",
