@@ -497,6 +497,8 @@ export class UserBind extends Manager {
             newList.set(ppEntry.hash, entry);
         }
 
+        newList.sort((a, b) => b.pp - a.pp);
+
         const newTotal = DPPHelper.calculateFinalPerformancePoints(
             newList,
             this.playc,
