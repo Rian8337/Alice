@@ -144,7 +144,7 @@ export abstract class BeatmapDifficultyHelper<
                     forceCS = NumberHelper.clamp(
                         NumberHelper.round(newForceCS, 2),
                         0,
-                        11,
+                        15,
                     );
                 }
             }

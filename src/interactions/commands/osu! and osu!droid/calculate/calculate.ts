@@ -300,7 +300,7 @@ export const config: SlashCommand["config"] = {
             description:
                 "The Circle Size (CS) to be forced in calculation, from 0 to 11. Defaults to the beatmap's CS.",
             minValue: 0,
-            maxValue: 11,
+            maxValue: 15,
         },
         {
             name: "approachrate",
