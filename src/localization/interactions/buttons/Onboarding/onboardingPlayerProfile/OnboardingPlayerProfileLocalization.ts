@@ -8,6 +8,7 @@ export interface OnboardingPlayerProfileStrings {
     readonly playerProfileConstraint: string;
     readonly accountRegistrationQuote: string;
     readonly profileCommandExplanation: string;
+    readonly commandInBotGroundQuote: string;
     readonly accountBindConvenienceQuote: string;
     readonly tryCommandForBindedAccount: string;
     readonly showOwnProfile: string;

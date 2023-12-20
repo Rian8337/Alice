@@ -8,7 +8,7 @@ import { EmbedBuilder, quote } from "discord.js";
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization: OnboardingScoreComparisonLocalization =
         new OnboardingScoreComparisonLocalization(
-            await CommandHelper.getLocale(interaction)
+            await CommandHelper.getLocale(interaction),
         );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -27,9 +27,11 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 "\n\n" +
                 localization.getTranslation("compareCommandExplanation") +
                 "\n\n" +
+                quote(localization.getTranslation("commandInChannelsQuote")) +
+                "\n\n" +
                 quote(
-                    localization.getTranslation("accountBindConvenienceQuote")
-                )
+                    localization.getTranslation("accountBindConvenienceQuote"),
+                ),
         );
 
     InteractionHelper.reply(interaction, {

@@ -1,5 +1,9 @@
 import { Translation } from "@alice-localization/base/Translation";
-import { chatInputApplicationCommandMention, hyperlink } from "discord.js";
+import {
+    channelMention,
+    chatInputApplicationCommandMention,
+    hyperlink,
+} from "discord.js";
 import { OnboardingScoreComparisonStrings } from "../OnboardingScoreComparisonLocalization";
 
 /**
@@ -12,19 +16,24 @@ export class OnboardingScoreComparisonENTranslation extends Translation<Onboardi
             "Comparing your scores with other players in a beatmap has never been easier. With additional information (if available) such as pp obtained, hit error, and unstable rate (UR), there are a lot of things you can compare.",
         scoreComparisonConstraint: `This feature is accessible via the ${chatInputApplicationCommandMention(
             "compare",
-            "881018535978074173"
+            "881018535978074173",
         )} command. This only works if there is a conversation regarding a score or beatmap. Additionally, the score must be submitted to the server, which requires an osu!droid account.`,
+        commandInChannelsQuote: `Be sure to do use this command in the bot channel (${channelMention(
+            "325827427446161413",
+        )}), or in ${channelMention(
+            "316547304763162624",
+        )} if you would like to compare your scores with other players!`,
         accountRegistrationQuote: `Don't have a registered osu!droid account yet? Register one ${hyperlink(
             "here",
-            "https://osudroid.moe/user/?action=register"
+            "https://osudroid.moe/user/?action=register",
         )}.`,
         compareCommandExplanation: `The ${chatInputApplicationCommandMention(
             "compare",
-            "881018535978074173"
+            "881018535978074173",
         )} command can be used to compare any scores from any player with additional information if available, such as pp obtained, hit error, and unstable rate (UR).`,
         accountBindConvenienceQuote: `The ${chatInputApplicationCommandMention(
             "compare",
-            "881018535978074173"
+            "881018535978074173",
         )} command is more convenient to use if you bind your osu!droid account to Discord account. For more information, please refer to the "Bind osu!droid account" button in the first introduction menu.`,
     };
 }

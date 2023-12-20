@@ -15,7 +15,7 @@ import {
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization: OnboardingPlayerProfileLocalization =
         new OnboardingPlayerProfileLocalization(
-            await CommandHelper.getLocale(interaction)
+            await CommandHelper.getLocale(interaction),
         );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -34,11 +34,13 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 "\n\n" +
                 localization.getTranslation("profileCommandExplanation") +
                 "\n\n" +
+                quote(localization.getTranslation("commandInBotGroundQuote")) +
+                "\n\n" +
                 quote(
-                    localization.getTranslation("accountBindConvenienceQuote")
+                    localization.getTranslation("accountBindConvenienceQuote"),
                 ) +
                 "\n\n" +
-                localization.getTranslation("tryCommandForBindedAccount")
+                localization.getTranslation("tryCommandForBindedAccount"),
         );
 
     const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder();
@@ -47,7 +49,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             .setCustomId("onboardingPlayerProfileAction")
             .setEmoji(Symbols.framedPicture)
             .setStyle(ButtonStyle.Primary)
-            .setLabel(localization.getTranslation("showOwnProfile"))
+            .setLabel(localization.getTranslation("showOwnProfile")),
     );
 
     InteractionHelper.reply(interaction, {

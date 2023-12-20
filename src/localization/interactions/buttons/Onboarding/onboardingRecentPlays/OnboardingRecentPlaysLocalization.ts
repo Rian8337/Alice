@@ -8,6 +8,7 @@ export interface OnboardingRecentPlaysStrings {
     readonly accountRegistrationQuote: string;
     readonly recentCommandExplanation: string;
     readonly recent5CommandExplanation: string;
+    readonly commandInBotGroundQuote: string;
     readonly accountBindConvenienceQuote: string;
     readonly tryCommandsForBindedAccount: string;
     readonly showMostRecentPlay: string;

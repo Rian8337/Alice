@@ -1,5 +1,9 @@
 import { Translation } from "@alice-localization/base/Translation";
-import { chatInputApplicationCommandMention, hyperlink } from "discord.js";
+import {
+    channelMention,
+    chatInputApplicationCommandMention,
+    hyperlink,
+} from "discord.js";
 import { OnboardingRecentPlaysStrings } from "../OnboardingRecentPlaysLocalization";
 
 /**
@@ -27,6 +31,9 @@ export class OnboardingRecentPlaysENTranslation extends Translation<OnboardingRe
             "recent5",
             "881019186137169970",
         )} command will show your 50 most recent plays in a paginated way, each page containing 5 plays. Unlike the previous command, this command displays less information to keep the response short and concise.`,
+        commandInBotGroundQuote: `Be sure to do these commands in the bot channel (${channelMention(
+            "325827427446161413",
+        )})!`,
         accountBindConvenienceQuote:
             'These features are more convenient to use if you bind your osu!droid account to Discord account. For more information, please refer to the "Bind osu!droid account" button in the first introduction menu.',
         tryCommandsForBindedAccount:

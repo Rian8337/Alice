@@ -1,5 +1,9 @@
 import { Translation } from "@alice-localization/base/Translation";
-import { chatInputApplicationCommandMention, hyperlink } from "discord.js";
+import {
+    channelMention,
+    chatInputApplicationCommandMention,
+    hyperlink,
+} from "discord.js";
 import { OnboardingPlayerProfileStrings } from "../OnboardingPlayerProfileLocalization";
 
 /**
@@ -23,6 +27,9 @@ export class OnboardingPlayerProfileENTranslation extends Translation<Onboarding
             "view",
             "881019145267859536",
         )} will display the profile card of a player (by default it's yourself). Options can be used to display the profile card of another player.`,
+        commandInBotGroundQuote: `Be sure to do the command in the bot channel (${channelMention(
+            "325827427446161413",
+        )})!`,
         accountBindConvenienceQuote:
             'This feature is more convenient to use if you bind your osu!droid account to Discord account. For more information, please refer to the "Bind osu!droid account" button in the first introduction menu.',
         tryCommandForBindedAccount:

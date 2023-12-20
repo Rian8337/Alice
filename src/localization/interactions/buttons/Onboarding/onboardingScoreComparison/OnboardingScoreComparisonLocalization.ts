@@ -6,6 +6,7 @@ export interface OnboardingScoreComparisonStrings {
     readonly embedTitle: string;
     readonly scoreComparisonIntroduction: string;
     readonly scoreComparisonConstraint: string;
+    readonly commandInChannelsQuote: string;
     readonly accountRegistrationQuote: string;
     readonly compareCommandExplanation: string;
     readonly accountBindConvenienceQuote: string;

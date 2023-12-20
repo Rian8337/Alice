@@ -15,7 +15,7 @@ import {
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization: OnboardingRecentPlaysLocalization =
         new OnboardingRecentPlaysLocalization(
-            await CommandHelper.getLocale(interaction)
+            await CommandHelper.getLocale(interaction),
         );
 
     // TODO: singular recent, 5-play recent
@@ -35,11 +35,13 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 "\n\n" +
                 localization.getTranslation("recent5CommandExplanation") +
                 "\n\n" +
+                quote(localization.getTranslation("commandInBotGroundQuote")) +
+                "\n\n" +
                 quote(
-                    localization.getTranslation("accountBindConvenienceQuote")
+                    localization.getTranslation("accountBindConvenienceQuote"),
                 ) +
                 "\n\n" +
-                localization.getTranslation("tryCommandsForBindedAccount")
+                localization.getTranslation("tryCommandsForBindedAccount"),
         );
 
     const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder();
@@ -54,7 +56,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             .setCustomId("onboardingShowRecentPlays")
             .setEmoji(Symbols.memo)
             .setStyle(ButtonStyle.Primary)
-            .setLabel(localization.getTranslation("showRecentPlays"))
+            .setLabel(localization.getTranslation("showRecentPlays")),
     );
 
     InteractionHelper.reply(interaction, {
