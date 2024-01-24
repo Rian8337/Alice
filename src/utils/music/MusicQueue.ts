@@ -40,7 +40,7 @@ export class MusicQueue {
                     format: "bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio",
                     limitRate: "250K",
                 },
-                { stdio: ["ignore", "pipe", "ignore"] }
+                { stdio: ["ignore", "pipe", "ignore"] },
             );
 
             if (!process.stdout) {
@@ -63,12 +63,12 @@ export class MusicQueue {
                                 createAudioResource(probe.stream, {
                                     metadata: this,
                                     inputType: probe.type,
-                                })
-                            )
+                                }),
+                            ),
                         )
                         .catch(onError);
                 })
-                .catch(onError);
+                .once("error", onError);
         });
     }
 }
