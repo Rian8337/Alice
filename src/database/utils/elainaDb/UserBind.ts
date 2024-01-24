@@ -368,6 +368,7 @@ export class UserBind extends Manager {
      * Calculates this player's dpp into the prototype dpp database.
      */
     async calculatePrototypeDPP(): Promise<OperationResult> {
+        const currentList = new Collection<string, PPEntry>();
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
         for (const ppEntry of this.pp.values()) {
@@ -422,7 +423,18 @@ export class UserBind extends Manager {
             const { customStatistics, accuracy: accuracyData } = params;
             const accuracy = new Accuracy(accuracyData);
 
-            const entry: PrototypePPEntry = {
+            const currentEntry: PPEntry = {
+                uid: score.uid,
+                hash: beatmapInfo.hash,
+                title: beatmapInfo.fullTitle,
+                pp: NumberHelper.round(perfResult.total, 2),
+                mods: liveAttribs.difficulty.mods,
+                accuracy: NumberHelper.round(accuracy.value() * 100, 2),
+                combo: params.combo,
+                miss: accuracy.nmiss,
+            };
+
+            const prototypeEntry: PrototypePPEntry = {
                 uid: score.uid,
                 hash: beatmapInfo.hash,
                 title: beatmapInfo.fullTitle,
@@ -470,20 +482,26 @@ export class UserBind extends Manager {
             };
 
             consola.info(
-                `${beatmapInfo.fullTitle} ${score.completeModString}: ${entry.prevPP} ⮕  ${entry.pp}`,
+                `${beatmapInfo.fullTitle} ${score.completeModString}: ${prototypeEntry.prevPP} ⮕  ${prototypeEntry.pp}`,
             );
 
-            newList.set(ppEntry.hash, entry);
+            currentList.set(ppEntry.hash, currentEntry);
+            newList.set(ppEntry.hash, prototypeEntry);
         }
 
+        currentList.sort((a, b) => b.pp - a.pp);
         newList.sort((a, b) => b.pp - a.pp);
 
+        const currentTotal = DPPHelper.calculateFinalPerformancePoints(
+            currentList,
+            this.playc,
+        );
         const newTotal = DPPHelper.calculateFinalPerformancePoints(
             newList,
             this.playc,
         );
 
-        consola.info(`${this.pptotal} ⮕  ${newTotal.toFixed(2)}`);
+        consola.info(`${currentTotal.toFixed(2)} ⮕  ${newTotal.toFixed(2)}`);
 
         return DatabaseManager.aliceDb.collections.prototypePP.updateOne(
             { discordid: this.discordid },
@@ -491,7 +509,7 @@ export class UserBind extends Manager {
                 $set: {
                     pp: [...newList.values()],
                     pptotal: newTotal,
-                    prevpptotal: this.pptotal,
+                    prevpptotal: currentTotal,
                     lastUpdate: Date.now(),
                     previous_bind: this.previous_bind,
                     uid: this.uid,
