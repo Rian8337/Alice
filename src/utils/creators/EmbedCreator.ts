@@ -9,7 +9,6 @@ import {
     GuildMember,
     BaseMessageOptions,
     RepliableInteraction,
-    User,
     bold,
     userMention,
     underscore,
@@ -73,6 +72,7 @@ import { CompleteCalculationAttributes } from "@alice-structures/difficultyattri
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { NormalEmbedOptions } from "@alice-structures/utils/NormalEmbedOptions";
 
 /**
  * Utility to create message embeds.
@@ -86,27 +86,7 @@ export abstract class EmbedCreator {
      * @param embedOptions Options to override default message embed behavior.
      */
     static createNormalEmbed(
-        embedOptions: {
-            /**
-             * The author of the embed.
-             */
-            author?: User;
-
-            /**
-             * The color of the embed.
-             */
-            color?: ColorResolvable;
-
-            /**
-             * The footer text of the embed. If specified, will be written before bot's sign.
-             */
-            footerText?: string;
-
-            /**
-             * Whether to use a timestamp.
-             */
-            timestamp?: boolean;
-        } = {},
+        embedOptions?: Partial<NormalEmbedOptions>,
     ): EmbedBuilder {
         const iconURL: string = ArrayHelper.getRandomArrayElement(
             Config.avatarList,
@@ -117,25 +97,25 @@ export abstract class EmbedCreator {
             iconURL: iconURL,
         });
 
-        if (embedOptions.author) {
+        if (embedOptions?.author) {
             embed.setAuthor({
                 name: embedOptions.author.tag,
                 iconURL: embedOptions.author.avatarURL()!,
             });
         }
 
-        if (embedOptions.color) {
+        if (embedOptions?.color) {
             embed.setColor(embedOptions.color);
         }
 
-        if (embedOptions.footerText) {
+        if (embedOptions?.footerText) {
             embed.setFooter({
                 text: `${embedOptions.footerText} | ${this.botSign}`,
                 iconURL: iconURL,
             });
         }
 
-        if (embedOptions.timestamp) {
+        if (embedOptions?.timestamp) {
             embed.setTimestamp(new Date());
         }
 

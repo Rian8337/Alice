@@ -28,6 +28,7 @@ import { DanCourseCollectionManager } from "./managers/aliceDb/DanCourseCollecti
 import { DanCourseLeaderboardScoreCollectionManager } from "./managers/aliceDb/DanCourseLeaderboardScoreCollectionManager";
 import { DanCourseScoreCollectionManager } from "./managers/aliceDb/DanCourseScoreCollectionManager";
 import { RecentPlaysCollectionManager } from "./managers/aliceDb/RecentPlaysCollectionManager";
+import { SupportTicketCollectionManager } from "./managers/aliceDb/SupportTicketCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -182,6 +183,11 @@ export class AliceDBCollection {
     readonly recentPlays: RecentPlaysCollectionManager;
 
     /**
+     * The database collection for support tickets.
+     */
+    readonly supportTicket: SupportTicketCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -271,6 +277,9 @@ export class AliceDBCollection {
         );
         this.recentPlays = new RecentPlaysCollectionManager(
             aliceDb.collection("recentplays"),
+        );
+        this.supportTicket = new SupportTicketCollectionManager(
+            aliceDb.collection("supportticket"),
         );
     }
 }
