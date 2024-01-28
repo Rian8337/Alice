@@ -21,9 +21,9 @@ import {
     RequestResponse,
     Precision,
     Accuracy,
+    Modes,
 } from "@rian8337/osu-base";
 import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
-import { DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -34,7 +34,6 @@ import { CompleteCalculationAttributes } from "@alice-structures/difficultyattri
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 
 /**
  * Represents a Discord user who has at least one osu!droid account bound.
@@ -372,45 +371,37 @@ export class UserBind extends Manager {
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
         for (const ppEntry of this.pp.values()) {
-            const score: Score | null = await Score.getFromHash(
-                ppEntry.uid,
-                ppEntry.hash,
-            );
+            const score = await Score.getFromHash(ppEntry.uid, ppEntry.hash);
 
             if (!score) {
                 continue;
             }
 
-            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
-                score.hash,
-                { checkFile: false },
-            );
+            const beatmapInfo = await BeatmapManager.getBeatmap(score.hash, {
+                checkFile: false,
+            });
 
             if (!beatmapInfo) {
                 continue;
             }
 
-            const liveAttribs: CompleteCalculationAttributes<
-                DroidDifficultyAttributes,
-                DroidPerformanceAttributes
-            > | null = await DPPProcessorRESTManager.getBestScorePerformance(
-                ppEntry.uid,
-                beatmapInfo.hash,
-                PPCalculationMethod.live,
-            );
+            const liveAttribs =
+                await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                    score.scoreID,
+                    Modes.droid,
+                    PPCalculationMethod.live,
+                );
 
             if (!liveAttribs) {
                 continue;
             }
 
-            const rebalAttribs: CompleteCalculationAttributes<
-                RebalanceDroidDifficultyAttributes,
-                RebalanceDroidPerformanceAttributes
-            > | null = await DPPProcessorRESTManager.getBestScorePerformance(
-                ppEntry.uid,
-                beatmapInfo.hash,
-                PPCalculationMethod.rebalance,
-            );
+            const rebalAttribs =
+                await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                    score.scoreID,
+                    Modes.droid,
+                    PPCalculationMethod.rebalance,
+                );
 
             if (!rebalAttribs) {
                 continue;
