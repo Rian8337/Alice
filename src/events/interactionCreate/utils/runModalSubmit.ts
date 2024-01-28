@@ -11,7 +11,7 @@ import { consola } from "consola";
 
 export const run: EventUtil["run"] = async (
     client,
-    interaction: ModalSubmitInteraction
+    interaction: ModalSubmitInteraction,
 ) => {
     if (interaction.type !== InteractionType.ModalSubmit) {
         return;
@@ -20,7 +20,7 @@ export const run: EventUtil["run"] = async (
     // 3 seconds should be enough to get the user's locale
     const localization: RunModalSubmitLocalization =
         new RunModalSubmitLocalization(
-            await CommandHelper.getLocale(interaction)
+            await CommandHelper.getLocale(interaction),
         );
 
     const botOwnerExecution: boolean =
@@ -29,19 +29,19 @@ export const run: EventUtil["run"] = async (
     if (Config.isDebug && !botOwnerExecution) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                localization.getTranslation("debugModeActive")
+                localization.getTranslation("debugModeActive"),
             ),
             ephemeral: true,
         });
     }
 
     const command: ModalCommand | undefined =
-        client.interactions.modalSubmit.get(interaction.customId);
+        client.interactions.modalSubmit.get(interaction.customId.split("#")[0]);
 
     if (!command) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                localization.getTranslation("commandNotFound")
+                localization.getTranslation("commandNotFound"),
             ),
             ephemeral: true,
         });
@@ -53,8 +53,8 @@ export const run: EventUtil["run"] = async (
             content: MessageCreator.createReject(
                 StringHelper.formatString(
                     localization.getTranslation("maintenanceMode"),
-                    Config.maintenanceReason
-                )
+                    Config.maintenanceReason,
+                ),
             ),
             ephemeral: true,
         });
@@ -66,7 +66,7 @@ export const run: EventUtil["run"] = async (
             interaction.channel!.isDMBased()
                 ? "DM"
                 : `#${interaction.channel!.name}`
-        }): ${interaction.customId}`
+        }): ${interaction.customId}`,
     );
 
     interaction.ephemeral =
@@ -82,7 +82,7 @@ export const run: EventUtil["run"] = async (
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("commandExecutionFailed"),
-                e.message
+                e.message,
             ),
         });
 
