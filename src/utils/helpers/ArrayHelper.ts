@@ -10,7 +10,7 @@ export abstract class ArrayHelper {
      * @param array The array to get the element from.
      * @returns A random element of the array.
      */
-    static getRandomArrayElement<T>(array: T[]): T {
+    static getRandomArrayElement<T>(array: readonly T[]): T {
         return array[Math.floor(Math.random() * array.length)];
     }
 
@@ -43,7 +43,7 @@ export abstract class ArrayHelper {
      * @returns The array from the collection.
      */
     static collectionToArray<K, V>(
-        collection: Collection<K, V>
+        collection: Collection<K, V>,
     ): { key: K; value: V }[] {
         return collection.map((value, key) => {
             return { key, value };
@@ -59,7 +59,7 @@ export abstract class ArrayHelper {
      */
     static arrayToCollection<K extends keyof V, V>(
         array: V[],
-        key: K
+        key: K,
     ): Collection<V[K], V> {
         const collection: Collection<V[K], V> = new Collection();
 

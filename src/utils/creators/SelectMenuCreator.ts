@@ -41,8 +41,8 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         interaction: RepliableInteraction,
         options: InteractionReplyOptions,
         choices: SelectMenuComponentOptionData[],
-        users: Snowflake[],
-        duration: number
+        users: readonly Snowflake[],
+        duration: number,
     ): Promise<StringSelectMenuInteraction | null> {
         const localization: SelectMenuCreatorLocalization =
             this.getLocalization(await CommandHelper.getLocale(interaction));
@@ -54,12 +54,12 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
 
         const component: ActionRowBuilder<StringSelectMenuBuilder> =
             new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
-                selectMenu
+                selectMenu,
             );
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             selectMenu.setOptions(
-                choices.slice(25 * (page - 1), 25 + 25 * (page - 1))
+                choices.slice(25 * (page - 1), 25 + 25 * (page - 1)),
             );
 
             component.setComponents(selectMenu);
@@ -76,7 +76,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 1,
                 Math.ceil(choices.length / 25),
                 duration,
-                onPageChange
+                onPageChange,
             );
 
         const collectorOptions =
@@ -91,7 +91,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     const row:
                         | ActionRow<MessageActionRowComponent>
                         | undefined = m.components.find(
-                        (c) => c.components.length === 1
+                        (c) => c.components.length === 1,
                     );
 
                     if (!row) {
@@ -103,7 +103,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                             StringSelectMenuComponent &&
                         row.components[0].customId === selectMenu.data.custom_id
                     );
-                }
+                },
             );
 
         const { collector } = collectorOptions;
@@ -137,12 +137,12 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     interaction.isMessageComponent()
                         ? await InteractionHelper.update(interaction, {
                               content: MessageCreator.createReject(
-                                  localization.getTranslation("timedOut")
+                                  localization.getTranslation("timedOut"),
                               ),
                           })
                         : await InteractionHelper.reply(interaction, {
                               content: MessageCreator.createReject(
-                                  localization.getTranslation("timedOut")
+                                  localization.getTranslation("timedOut"),
                               ),
                           });
 
@@ -164,7 +164,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * @param language The language to localize.
      */
     private static getLocalization(
-        language: Language
+        language: Language,
     ): SelectMenuCreatorLocalization {
         return new SelectMenuCreatorLocalization(language);
     }
