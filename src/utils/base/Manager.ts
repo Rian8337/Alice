@@ -30,18 +30,71 @@ export abstract class Manager {
      * Creates an operation result object.
      *
      * @param success Whether the operation was successful.
+     * @returns The operation result object.
+     */
+    protected static createOperationResult(
+        success: true,
+    ): OperationResult<true>;
+
+    /**
+     * Creates an operation result object.
+     *
+     * @param success Whether the operation was successful.
+     * @param reason The reason for why the operation failed.
+     * @returns The operation result object.
+     */
+    protected static createOperationResult(
+        success: false,
+        reason: string,
+    ): OperationResult;
+
+    /**
+     * Creates an operation result object.
+     *
+     * @param success Whether the operation was successful.
      * @param reason The reason for why the operation failed.
      * @returns The operation result object.
      */
     protected static createOperationResult(
         success: boolean,
-        reason?: string
+        reason?: string,
+    ): OperationResult;
+
+    protected static createOperationResult(
+        success: boolean,
+        reason?: string,
     ): OperationResult {
         return {
             success: success,
             reason: reason,
+            isSuccessful() {
+                return this.success;
+            },
+            failed() {
+                return !this.success;
+            },
         };
     }
+
+    /**
+     * Creates an operation result object.
+     *
+     * @param success Whether the operation was successful.
+     * @returns The operation result object.
+     */
+    protected createOperationResult(success: true): OperationResult<true>;
+
+    /**
+     * Creates an operation result object.
+     *
+     * @param success Whether the operation was successful.
+     * @param reason The reason for why the operation failed.
+     * @returns The operation result object.
+     */
+    protected createOperationResult(
+        success: false,
+        reason: string,
+    ): OperationResult;
 
     /**
      * Creates an operation result object.
@@ -52,11 +105,22 @@ export abstract class Manager {
      */
     protected createOperationResult(
         success: boolean,
-        reason?: string
+        reason?: string,
+    ): OperationResult;
+
+    protected createOperationResult(
+        success: boolean,
+        reason?: string,
     ): OperationResult {
         return {
             success: success,
             reason: reason,
+            isSuccessful() {
+                return this.success;
+            },
+            failed() {
+                return !this.success;
+            },
         };
     }
 }

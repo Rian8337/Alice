@@ -1,14 +1,30 @@
+import { If } from "discord.js";
+
 /**
- * Represents an operation result.
+ * Represents the result of an operation.
  */
-export interface OperationResult {
+export interface OperationResult<TSuccess extends boolean = boolean> {
     /**
-     * Whether the operation was successful.
+     * Whether this operation was successful.
      */
-    success: boolean;
+    readonly success: TSuccess;
 
     /**
-     * The reason for why the operation failed.
+     * The reason for why this operation failed.
      */
-    reason?: string;
+    readonly reason: If<TSuccess, undefined, string>;
+
+    /**
+     * Whether this operation was successful.
+     *
+     * This method provides type narrowing.
+     */
+    isSuccessful(): this is OperationResult<true>;
+
+    /**
+     * Whether this operation failed.
+     *
+     * This method provides type narrowing.
+     */
+    failed(): this is OperationResult<false>;
 }
