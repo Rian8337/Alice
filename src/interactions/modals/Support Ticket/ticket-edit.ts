@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TicketEditLocalization } from "@alice-localization/interactions/modals/General/ticket-edit/TicketEditLocalization";
+import { TicketEditLocalization } from "@alice-localization/interactions/modals/Support Ticket/ticket-edit/TicketEditLocalization";
 import { ModalCommand } from "@alice-structures/core/ModalCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -11,8 +11,8 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction),
     );
 
-    const id = parseInt(interaction.customId.split("#")[1]);
-    const ticket = await dbManager.getFromId(id, {
+    const ticketThreadChannelId = interaction.customId.split("#")[1];
+    const ticket = await dbManager.getFromChannel(ticketThreadChannelId, {
         projection: { _id: 0, id: 1 },
     });
 
@@ -28,7 +28,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     const description = interaction.fields.getTextInputValue("description");
 
     const result = await dbManager.updateOne(
-        { id: id },
+        { threadChannelId: ticketThreadChannelId },
         {
             $set: {
                 title: title,
@@ -37,7 +37,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         },
     );
 
-    if (!result.success) {
+    if (result.failed()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("editTicketFailed"),

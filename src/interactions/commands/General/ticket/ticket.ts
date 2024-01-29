@@ -22,8 +22,12 @@ export const config: SlashCommand["config"] = {
             description: "Closes a ticket.",
             options: [
                 {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description: "The user who opened the ticket.",
+                },
+                {
                     name: "id",
-                    required: true,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1,
                     description: "The ID of the ticket.",
@@ -41,8 +45,12 @@ export const config: SlashCommand["config"] = {
             description: "Edits a ticket.",
             options: [
                 {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description: "The user who opened the ticket.",
+                },
+                {
                     name: "id",
-                    required: true,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1,
                     description: "The ID of the ticket.",
@@ -55,8 +63,12 @@ export const config: SlashCommand["config"] = {
             description: "Reopens a ticket.",
             options: [
                 {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description: "The user who originally opened the ticket.",
+                },
+                {
                     name: "id",
-                    required: true,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1,
                     description: "The ID of the ticket.",
@@ -69,8 +81,12 @@ export const config: SlashCommand["config"] = {
             description: "Views a ticket.",
             options: [
                 {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description: "The user who opened the ticket.",
+                },
+                {
                     name: "id",
-                    required: true,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1,
                     description: "The ID of the ticket.",
@@ -81,4 +97,5 @@ export const config: SlashCommand["config"] = {
     example: [],
     permissions: [],
     scope: "GUILD_CHANNEL",
+    replyEphemeral: true,
 };

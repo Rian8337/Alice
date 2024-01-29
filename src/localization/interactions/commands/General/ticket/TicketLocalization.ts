@@ -8,6 +8,7 @@ export interface TicketStrings {
     readonly ticketCreateModalTitle: string;
     readonly ticketModalTitleLabel: string;
     readonly ticketModalDescriptionLabel: string;
+    readonly ticketIsNotOpen: string;
     readonly closeTicketFailed: string;
     readonly closeTicketSuccess: string;
     readonly reopenTicketFailed: string;

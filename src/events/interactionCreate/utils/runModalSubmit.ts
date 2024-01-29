@@ -1,6 +1,5 @@
 import { Config } from "@alice-core/Config";
 import { EventUtil } from "structures/core/EventUtil";
-import { ModalCommand } from "structures/core/ModalCommand";
 import { RunModalSubmitLocalization } from "@alice-localization/events/interactionCreate/runModalSubmit/RunModalSubmitLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -18,13 +17,11 @@ export const run: EventUtil["run"] = async (
     }
 
     // 3 seconds should be enough to get the user's locale
-    const localization: RunModalSubmitLocalization =
-        new RunModalSubmitLocalization(
-            await CommandHelper.getLocale(interaction),
-        );
+    const localization = new RunModalSubmitLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
-    const botOwnerExecution: boolean =
-        CommandHelper.isExecutedByBotOwner(interaction);
+    const botOwnerExecution = CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
         return interaction.reply({
@@ -35,8 +32,8 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    const command: ModalCommand | undefined =
-        client.interactions.modalSubmit.get(interaction.customId.split("#")[0]);
+    const commandName = interaction.customId.split("#")[0];
+    const command = client.interactions.modalSubmit.get(commandName);
 
     if (!command) {
         return interaction.reply({
@@ -66,7 +63,7 @@ export const run: EventUtil["run"] = async (
             interaction.channel!.isDMBased()
                 ? "DM"
                 : `#${interaction.channel!.name}`
-        }): ${interaction.customId}`,
+        }): ${commandName}`,
     );
 
     interaction.ephemeral =

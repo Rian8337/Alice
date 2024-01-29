@@ -46,19 +46,7 @@ export abstract class Manager {
     protected static createOperationResult(
         success: false,
         reason: string,
-    ): OperationResult;
-
-    /**
-     * Creates an operation result object.
-     *
-     * @param success Whether the operation was successful.
-     * @param reason The reason for why the operation failed.
-     * @returns The operation result object.
-     */
-    protected static createOperationResult(
-        success: boolean,
-        reason?: string,
-    ): OperationResult;
+    ): OperationResult<false>;
 
     protected static createOperationResult(
         success: boolean,
@@ -94,19 +82,7 @@ export abstract class Manager {
     protected createOperationResult(
         success: false,
         reason: string,
-    ): OperationResult;
-
-    /**
-     * Creates an operation result object.
-     *
-     * @param success Whether the operation was successful.
-     * @param reason The reason for why the operation failed.
-     * @returns The operation result object.
-     */
-    protected createOperationResult(
-        success: boolean,
-        reason?: string,
-    ): OperationResult;
+    ): OperationResult<false>;
 
     protected createOperationResult(
         success: boolean,

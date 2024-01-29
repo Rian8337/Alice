@@ -17,25 +17,45 @@ export class SupportTicketCollectionManager extends DatabaseCollectionManager<
     override get defaultDocument(): DatabaseSupportTicket {
         return {
             id: 0,
-            author: "",
+            assigneeIds: [],
+            authorId: "",
+            controlPanelMessageId: "",
             createdAt: Date.now(),
             description: "",
             status: SupportTicketStatus.open,
+            threadChannelId: "",
             title: "",
+            trackingMessageId: "",
         };
     }
 
     /**
-     * Gets a support ticket by its ID.
+     * Gets a support ticket by its thread channel.
      *
-     * @param id The ID of the support ticket.
+     * @param id The ID of the thread channel.
+     * @param options Options for the query.
      * @returns The support ticket, `null` if not found.
      */
-    getFromId(
-        id: number,
+    getFromChannel(
+        id: Snowflake,
         options?: FindOptions<DatabaseSupportTicket>,
     ): Promise<SupportTicket | null> {
-        return this.getOne({ id: id }, options);
+        return this.getOne({ threadChannelId: id }, options);
+    }
+
+    /**
+     * Gets a support ticket from a user by its ID.
+     *
+     * @param userId The ID of the user.
+     * @param ticketId The ID of the support ticket.
+     * @returns The support ticket, `null` if not found.
+     */
+    getFromUser(
+        userId: Snowflake,
+        ticketId: number,
+        options?: FindOptions<DatabaseSupportTicket>,
+    ): Promise<SupportTicket | null> {
+        return this.getOne({ authorId: userId, id: ticketId }, options);
     }
 
     /**

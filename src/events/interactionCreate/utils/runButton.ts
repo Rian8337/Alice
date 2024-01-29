@@ -1,6 +1,5 @@
 import { Config } from "@alice-core/Config";
 import { RunButtonLocalization } from "@alice-localization/events/interactionCreate/runButton/RunButtonLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { GlobalCooldownKey } from "@alice-structures/core/CooldownKey";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -14,19 +13,21 @@ import { EventUtil } from "structures/core/EventUtil";
 
 export const run: EventUtil["run"] = async (
     client,
-    interaction: BaseInteraction
+    interaction: BaseInteraction,
 ) => {
     if (!interaction.isButton()) {
         return;
     }
 
-    if (CacheManager.exemptedButtonCustomIds.has(interaction.customId)) {
+    const commandName = interaction.customId.split("#")[0];
+
+    if (CacheManager.exemptedButtonCustomIds.has(commandName)) {
         return;
     }
 
     // 3 seconds should be enough to get the user's locale
-    const localization: RunButtonLocalization = new RunButtonLocalization(
-        await CommandHelper.getLocale(interaction)
+    const localization = new RunButtonLocalization(
+        await CommandHelper.getLocale(interaction),
     );
 
     const botOwnerExecution: boolean =
@@ -35,20 +36,17 @@ export const run: EventUtil["run"] = async (
     if (Config.isDebug && !botOwnerExecution) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                localization.getTranslation("debugModeActive")
+                localization.getTranslation("debugModeActive"),
             ),
             ephemeral: true,
         });
     }
 
-    const command: ButtonCommand | undefined = client.interactions.button.get(
-        interaction.customId
-    );
-
+    const command = client.interactions.button.get(commandName);
     if (!command) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                localization.getTranslation("commandNotFound")
+                localization.getTranslation("commandNotFound"),
             ),
             ephemeral: true,
         });
@@ -60,8 +58,8 @@ export const run: EventUtil["run"] = async (
             content: MessageCreator.createReject(
                 StringHelper.formatString(
                     localization.getTranslation("maintenanceMode"),
-                    Config.maintenanceReason
-                )
+                    Config.maintenanceReason,
+                ),
             ),
             ephemeral: true,
         });
@@ -74,7 +72,7 @@ export const run: EventUtil["run"] = async (
         if (CommandHelper.isCooldownActive(cooldownKey)) {
             return interaction.reply({
                 content: MessageCreator.createReject(
-                    localization.getTranslation("commandInCooldown")
+                    localization.getTranslation("commandInCooldown"),
                 ),
                 ephemeral: true,
             });
@@ -84,8 +82,8 @@ export const run: EventUtil["run"] = async (
             cooldownKey,
             Math.max(
                 command.config?.cooldown ?? 0,
-                CommandUtilManager.globalCommandCooldown
-            )
+                CommandUtilManager.globalCommandCooldown,
+            ),
         );
     }
 
@@ -95,7 +93,7 @@ export const run: EventUtil["run"] = async (
             interaction.channel!.isDMBased()
                 ? "DM"
                 : `#${interaction.channel!.name}`
-        }): ${interaction.customId}`
+        }): ${commandName}`,
     );
 
     interaction.ephemeral =
@@ -111,7 +109,7 @@ export const run: EventUtil["run"] = async (
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("commandExecutionFailed"),
-                e.message
+                e.message,
             ),
         });
 

@@ -6,12 +6,24 @@ export interface SupportTicketStrings {
     readonly embedAuthor: string;
     readonly embedCreationDate: string;
     readonly embedStatus: string;
+    readonly embedTicketAssignees: string;
     readonly embedTicketOpen: string;
     readonly embedTicketClosed: string;
     readonly embedTicketTitle: string;
     readonly embedTicketDescription: string;
-    readonly ticketIsClosed: string;
     readonly ticketIsOpen: string;
+    readonly ticketIsNotOpen: string;
+    readonly userIsAlreadyAssigned: string;
+    readonly userIsNotAssigned: string;
+    readonly cannotGetTicketMessage: string;
+    readonly userControlPanelEditButtonLabel: string;
+    readonly userControlPanelCloseButtonLabel: string;
+    readonly userControlPanelOpenButtonLabel: string;
+    readonly userControlPanelTrackingMessageButtonLabel: string;
+    readonly trackingMessageAssignButtonLabel: string;
+    readonly trackingMessageUnassignButtonLabel: string;
+    readonly trackingMessageTicketChannelButtonLabel: string;
+    readonly none: string;
 }
 
 /**

@@ -94,6 +94,18 @@ export class Constants {
         "999480010459070505" satisfies Snowflake;
 
     /**
+     * The ID of the channel that tracks support ticket statuses for staff members.
+     */
+    static readonly supportTicketStaffChannel =
+        "1201375042223751289" satisfies Snowflake;
+
+    /**
+     * The ID of the support ticket channel for users.
+     */
+    static readonly supportTicketUserChannel =
+        "1201421169061019738" satisfies Snowflake;
+
+    /**
      * The ID of the linked role for displaying dpp statistics in user profiles.
      */
     static readonly dppProfileDisplayerRole =
