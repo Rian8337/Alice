@@ -112,6 +112,7 @@ export abstract class Manager {
         success: boolean,
         reason?: string,
     ): OperationResult {
+        // TODO: refactor everything that non-nulls reason
         return {
             success: success,
             reason: reason,
