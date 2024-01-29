@@ -48,6 +48,18 @@ export abstract class Manager {
         reason: string,
     ): OperationResult<false>;
 
+    /**
+     * Creates an operation result object.
+     *
+     * @param success Whether the operation was successful.
+     * @param reason The reason for why the operation failed.
+     * @returns The operation result object.
+     */
+    protected static createOperationResult(
+        success: boolean,
+        reason?: string,
+    ): OperationResult;
+
     protected static createOperationResult(
         success: boolean,
         reason?: string,
@@ -83,6 +95,18 @@ export abstract class Manager {
         success: false,
         reason: string,
     ): OperationResult<false>;
+
+    /**
+     * Creates an operation result object.
+     *
+     * @param success Whether the operation was successful.
+     * @param reason The reason for why the operation failed.
+     * @returns The operation result object.
+     */
+    protected createOperationResult(
+        success: boolean,
+        reason?: string,
+    ): OperationResult;
 
     protected createOperationResult(
         success: boolean,
