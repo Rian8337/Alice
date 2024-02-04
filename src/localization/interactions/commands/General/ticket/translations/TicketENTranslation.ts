@@ -7,6 +7,7 @@ import { TicketStrings } from "../TicketLocalization";
 export class TicketENTranslation extends Translation<TicketStrings> {
     override readonly translations: TicketStrings = {
         ticketNotFound: "I'm sorry, I could not find the ticket!",
+        noTicketsFound: "I'm sorry, I could not find any tickets!",
         ticketEditModalTitle: "Edit Ticket",
         ticketCreateModalTitle: "Create Ticket",
         ticketModalTitleLabel: "Enter the title of the ticket.",
@@ -16,5 +17,11 @@ export class TicketENTranslation extends Translation<TicketStrings> {
         closeTicketSuccess: "Successfully closed the ticket.",
         reopenTicketFailed: "I'm sorry, I was unable to reopen the ticket: %s.",
         reopenTicketSuccess: "Successfully reopened the ticket.",
+        moveTicketConfirm: "Are you sure you want to move this ticket to %s?",
+        moveTicketFailed: "I'm sorry, I could not move the ticket: %s.",
+        moveTicketSuccess: "Successfully moved the ticket to %s.",
+        ticketListEmbedTitle: "Tickets from %s",
+        ticketStatus: "Status",
+        ticketGoToChannel: "Go to Ticket Channel",
     };
 }

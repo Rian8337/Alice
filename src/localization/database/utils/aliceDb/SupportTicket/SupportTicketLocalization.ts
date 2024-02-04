@@ -3,6 +3,7 @@ import { Translations } from "@alice-localization/base/Translations";
 import { SupportTicketENTranslation } from "./translations/SupportTicketENTranslation";
 
 export interface SupportTicketStrings {
+    readonly ticketMovedNotice: string;
     readonly embedAuthor: string;
     readonly embedCreationDate: string;
     readonly embedStatus: string;
@@ -16,6 +17,7 @@ export interface SupportTicketStrings {
     readonly userIsAlreadyAssigned: string;
     readonly userIsNotAssigned: string;
     readonly cannotGetTicketMessage: string;
+    readonly cannotCreateThread: string;
     readonly userControlPanelEditButtonLabel: string;
     readonly userControlPanelCloseButtonLabel: string;
     readonly userControlPanelOpenButtonLabel: string;

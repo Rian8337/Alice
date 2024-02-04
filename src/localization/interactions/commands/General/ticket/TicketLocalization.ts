@@ -4,6 +4,7 @@ import { TicketENTranslation } from "./translations/TicketENTranslation";
 
 export interface TicketStrings {
     readonly ticketNotFound: string;
+    readonly noTicketsFound: string;
     readonly ticketEditModalTitle: string;
     readonly ticketCreateModalTitle: string;
     readonly ticketModalTitleLabel: string;
@@ -13,6 +14,12 @@ export interface TicketStrings {
     readonly closeTicketSuccess: string;
     readonly reopenTicketFailed: string;
     readonly reopenTicketSuccess: string;
+    readonly moveTicketConfirm: string;
+    readonly moveTicketFailed: string;
+    readonly moveTicketSuccess: string;
+    readonly ticketListEmbedTitle: string;
+    readonly ticketStatus: string;
+    readonly ticketGoToChannel: string;
 }
 
 /**

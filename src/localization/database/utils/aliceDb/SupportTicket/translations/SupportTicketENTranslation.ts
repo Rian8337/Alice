@@ -6,6 +6,7 @@ import { SupportTicketStrings } from "../SupportTicketLocalization";
  */
 export class SupportTicketENTranslation extends Translation<SupportTicketStrings> {
     override readonly translations: SupportTicketStrings = {
+        ticketMovedNotice: "This ticket has been moved to %s.",
         embedAuthor: "Author",
         embedCreationDate: "Creation Date",
         embedStatus: "Status",
@@ -19,6 +20,8 @@ export class SupportTicketENTranslation extends Translation<SupportTicketStrings
         userIsAlreadyAssigned: "already assigned to ticket",
         userIsNotAssigned: "not assigned to ticket",
         cannotGetTicketMessage: "could not get ticket embed header",
+        cannotCreateThread:
+            "could not create a thread in the designated channel",
         userControlPanelEditButtonLabel: "Edit",
         userControlPanelCloseButtonLabel: "Close",
         userControlPanelOpenButtonLabel: "Open",

@@ -9,11 +9,15 @@ import { OperationResult } from "@alice-structures/core/OperationResult";
 import { DatabaseSupportTicket } from "@alice-structures/database/aliceDb/DatabaseSupportTicket";
 import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import {
     ActionRowBuilder,
+    AnyThreadChannel,
     ButtonBuilder,
     ButtonStyle,
+    ChannelType,
     EmbedBuilder,
+    ForumChannel,
     Message,
     Snowflake,
     TextChannel,
@@ -45,14 +49,19 @@ export class SupportTicket extends Manager {
     readonly authorId: Snowflake;
 
     /**
+     * The ID of the guild channel of this ticket.
+     */
+    guildChannelId: Snowflake;
+
+    /**
      * The ID of the thread channel of this ticket.
      */
-    readonly threadChannelId: Snowflake;
+    threadChannelId: Snowflake;
 
     /**
      * The ID of the "control panel" message of this ticket in the thread channel.
      */
-    readonly controlPanelMessageId: Snowflake;
+    controlPanelMessageId: Snowflake;
 
     /**
      * The ID of the message that tracks this ticket in the tracking text channel.
@@ -79,12 +88,36 @@ export class SupportTicket extends Manager {
      */
     status: SupportTicketStatus;
 
+    /**
+     * Whether this ticket is open.
+     */
     get isOpen() {
         return this.status === SupportTicketStatus.open;
     }
 
+    /**
+     * Whether this ticket is closed.
+     */
     get isClosed() {
         return this.status === SupportTicketStatus.closed;
+    }
+
+    /**
+     * The URL to the thread channel containing this ticket.
+     */
+    get threadChannelURL() {
+        return channelLink(this.threadChannelId, Constants.mainServer);
+    }
+
+    /**
+     * The URL to the staff tracking message of this ticket.
+     */
+    get trackingMessageURL() {
+        return messageLink(
+            Constants.supportTicketStaffChannel,
+            this.trackingMessageId,
+            Constants.mainServer,
+        );
     }
 
     readonly _id?: ObjectId;
@@ -104,6 +137,7 @@ export class SupportTicket extends Manager {
         this.assigneeIds = data.assigneeIds ?? [];
         this.authorId = data.authorId;
         this.description = data.description;
+        this.guildChannelId = data.guildChannelId;
         this.controlPanelMessageId = data.controlPanelMessageId;
         this.createdAt = new Date(data.createdAt);
         this.status = data.status;
@@ -138,13 +172,21 @@ export class SupportTicket extends Manager {
             );
         }
 
-        return this.dbManager.updateOne(
+        const result = await this.dbManager.updateOne(
             {
                 id: this.id,
                 authorId: this.authorId,
             },
             { $set: { status: SupportTicketStatus.closed } },
         );
+
+        if (result.failed()) {
+            return result;
+        }
+
+        await this.updateMessages(language);
+
+        return this.createOperationResult(true);
     }
 
     /**
@@ -164,12 +206,107 @@ export class SupportTicket extends Manager {
             );
         }
 
-        return this.dbManager.updateOne(
+        const result = await this.dbManager.updateOne(
             {
                 id: this.id,
                 authorId: this.authorId,
             },
             { $set: { status: SupportTicketStatus.open } },
+        );
+
+        if (result.failed()) {
+            return result;
+        }
+
+        await this.updateMessages(language);
+
+        return this.createOperationResult(true);
+    }
+
+    /**
+     * Moves this ticket to a channel.
+     *
+     * @param channel The channel to move this ticket to.
+     * @param language The language of the user who performed this operation. Defaults to English.
+     * @returns An object containing information about the operation.
+     */
+    async move(
+        channel: TextChannel | ForumChannel,
+        language: Language = "en",
+    ): Promise<OperationResult> {
+        const localization = this.getLocalization(language);
+
+        if (!this.isOpen) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("ticketIsNotOpen"),
+            );
+        }
+
+        const currentThreadChannel = await this.getThreadChannel();
+        if (!currentThreadChannel) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("cannotGetTicketMessage"),
+            );
+        }
+
+        const newThreadChannel = await channel.threads
+            .create({
+                name: `Ticket #${this.id} ${this.authorId}`,
+                message: {
+                    embeds: [this.toUserEmbed(language)],
+                    components: this.createUserControlPanelButtons(language),
+                },
+                invitable: false,
+                type:
+                    channel instanceof TextChannel
+                        ? ChannelType.PrivateThread
+                        : ChannelType.PublicThread,
+            })
+            .catch(() => null);
+        if (!newThreadChannel) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("cannotCreateThread"),
+            );
+        }
+
+        const result = await this.dbManager.updateOne(
+            {
+                id: this.id,
+            },
+            {
+                $set: {
+                    guildChannelId: channel.id,
+                    threadChannelId: newThreadChannel.id,
+                    controlPanelMessageId: newThreadChannel.id,
+                },
+            },
+        );
+
+        if (result.failed()) {
+            await newThreadChannel.delete("Ticket movement failed");
+
+            return result;
+        }
+
+        await currentThreadChannel.send({
+            content: MessageCreator.createWarn(
+                localization.getTranslation("ticketMovedNotice"),
+                currentThreadChannel.toString(),
+            ),
+        });
+        await currentThreadChannel.setLocked(true, "Ticket moved");
+
+        this.guildChannelId = channel.id;
+        this.threadChannelId = newThreadChannel.id;
+        // Starter message ID = thread ID
+        this.controlPanelMessageId = newThreadChannel.id;
+
+        return this.createOperationResult(
+            await this.updateMessages(language),
+            localization.getTranslation("cannotGetTicketMessage"),
         );
     }
 
@@ -306,9 +443,7 @@ export class SupportTicket extends Manager {
             },
             {
                 name: localization.getTranslation("embedStatus"),
-                value: localization.getTranslation(
-                    this.isOpen ? "embedTicketOpen" : "embedTicketClosed",
-                ),
+                value: this.statusToString(language),
                 inline: true,
             },
             {
@@ -350,9 +485,7 @@ export class SupportTicket extends Manager {
             },
             {
                 name: localization.getTranslation("embedStatus"),
-                value: localization.getTranslation(
-                    this.isOpen ? "embedTicketOpen" : "embedTicketClosed",
-                ),
+                value: this.statusToString(),
                 inline: true,
             },
             {
@@ -437,13 +570,7 @@ export class SupportTicket extends Manager {
                         "userControlPanelTrackingMessageButtonLabel",
                     ),
                 )
-                .setURL(
-                    messageLink(
-                        Constants.supportTicketStaffChannel,
-                        this.trackingMessageId,
-                        Constants.mainServer,
-                    ),
-                ),
+                .setURL(this.trackingMessageURL),
         );
 
         return [rowBuilder];
@@ -529,15 +656,51 @@ export class SupportTicket extends Manager {
                         "trackingMessageTicketChannelButtonLabel",
                     ),
                 )
-                .setURL(
-                    channelLink(
-                        Constants.supportTicketUserChannel,
-                        Constants.mainServer,
-                    ),
-                ),
+                .setURL(this.threadChannelURL),
         );
 
         return [firstRowBuilder, secondRowBuilder];
+    }
+
+    /**
+     * Converts the status of this ticket to its string equivalent.
+     *
+     * @param language The language to get the string from.
+     * @returns The string representation.
+     */
+    statusToString(language: Language = "en") {
+        const localization = this.getLocalization(language);
+
+        switch (this.status) {
+            case SupportTicketStatus.open:
+                return localization.getTranslation("embedTicketOpen");
+            case SupportTicketStatus.closed:
+                return localization.getTranslation("embedTicketClosed");
+        }
+    }
+
+    private async getThreadChannel(): Promise<AnyThreadChannel | null> {
+        const guild = await this.client.guilds
+            .fetch(Constants.mainServer)
+            .catch(() => null);
+
+        if (!guild) {
+            return null;
+        }
+
+        const channel = await guild.channels
+            .fetch(this.guildChannelId)
+            .catch(() => null);
+
+        if (
+            !channel ||
+            (channel.type !== ChannelType.GuildText &&
+                channel.type !== ChannelType.GuildForum)
+        ) {
+            return null;
+        }
+
+        return channel.threads.fetch(this.threadChannelId).catch(() => null);
     }
 
     private async updateMessages(language: Language = "en"): Promise<boolean> {
@@ -565,32 +728,13 @@ export class SupportTicket extends Manager {
     }
 
     private async getUserControlPanelMessage(): Promise<Message<true> | null> {
-        const guild = await this.client.guilds
-            .fetch(Constants.mainServer)
-            .catch(() => null);
+        const thread = await this.getThreadChannel();
 
-        if (!guild) {
-            return null;
-        }
-
-        const channel = await guild.channels
-            .fetch(Constants.supportTicketUserChannel)
-            .catch(() => null);
-
-        if (!(channel instanceof TextChannel)) {
-            return null;
-        }
-
-        const thread = await channel.threads
-            .fetch(this.threadChannelId)
-            .catch(() => null);
-        if (!thread?.isThread()) {
-            return null;
-        }
-
-        return thread.messages
-            .fetch(this.controlPanelMessageId)
-            .catch(() => null);
+        return (
+            thread?.messages
+                .fetch(this.controlPanelMessageId)
+                .catch(() => null) ?? null
+        );
     }
 
     private async getTrackingMessage(): Promise<Message<true> | null> {

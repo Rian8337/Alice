@@ -22,6 +22,11 @@ export interface DatabaseSupportTicket extends BaseDocument {
     readonly authorId: Snowflake;
 
     /**
+     * The ID of the guild channel of this ticket.
+     */
+    readonly guildChannelId: Snowflake;
+
+    /**
      * The ID of the thread channel of this ticket.
      */
     readonly threadChannelId: Snowflake;

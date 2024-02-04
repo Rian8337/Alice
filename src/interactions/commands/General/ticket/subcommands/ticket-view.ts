@@ -12,6 +12,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
+
     const dbManager = DatabaseManager.aliceDb.collections.supportTicket;
     const language = await CommandHelper.getLocale(interaction);
     const localization = new TicketLocalization(language);
@@ -45,7 +49,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    if (!Config.verifyPerm.includes(interaction.user.id)) {
+    if (
+        ticket.authorId !== interaction.user.id &&
+        !interaction.member.roles.cache.hasAny(...Config.verifyPerm)
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(

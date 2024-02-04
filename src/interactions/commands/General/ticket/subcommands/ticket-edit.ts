@@ -30,8 +30,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         },
     };
 
-    await InteractionHelper.deferReply(interaction);
-
     if (author !== null && ticketId !== null) {
         ticket = await dbManager.getFromUser(author.id, ticketId, findOptions);
     } else {

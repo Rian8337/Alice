@@ -58,6 +58,7 @@ export const run: ModalCommand["run"] = async (client, interaction) => {
         createdAt: Date.now(),
         description: description,
         id: ticketId,
+        guildChannelId: Constants.supportTicketUserChannel,
         status: SupportTicketStatus.open,
         title: title,
         threadChannelId: threadChannel.id,

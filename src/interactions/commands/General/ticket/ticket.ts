@@ -1,10 +1,11 @@
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { SupportTicketStatus } from "@alice-enums/ticket/SupportTicketStatus";
 import { SlashCommand } from "@alice-structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    CommandHelper.runSlashSubcommandOrGroup(
+    CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
         await CommandHelper.getLocale(interaction),
     );
@@ -24,13 +25,15 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "author",
                     type: ApplicationCommandOptionType.User,
-                    description: "The user who opened the ticket.",
+                    description:
+                        "The user who opened the ticket. If unspecified, will default to the ticket in the channel.",
                 },
                 {
                     name: "id",
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1,
-                    description: "The ID of the ticket.",
+                    description:
+                        "The ID of the ticket. If unspecified, will default to the ticket in the channel.",
                 },
             ],
         },
@@ -47,13 +50,74 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "author",
                     type: ApplicationCommandOptionType.User,
-                    description: "The user who opened the ticket.",
+                    description:
+                        "The user who opened the ticket. If unspecified, will default to the ticket in the channel.",
                 },
                 {
                     name: "id",
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1,
-                    description: "The ID of the ticket.",
+                    description:
+                        "The ID of the ticket. If unspecified, will default to the ticket in the channel.",
+                },
+            ],
+        },
+        {
+            name: "move",
+            type: ApplicationCommandOptionType.Subcommand,
+            description: "Moves a ticket to a channel.",
+            options: [
+                {
+                    name: "channel",
+                    required: true,
+                    type: ApplicationCommandOptionType.Channel,
+                    description: "The channel to move the ticket to.",
+                    channelTypes: [
+                        ChannelType.GuildText,
+                        ChannelType.GuildForum,
+                    ],
+                },
+                {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description:
+                        "The user who originally opened the ticket. If unspecified, will default to the ticket in the channel.",
+                },
+                {
+                    name: "id",
+                    type: ApplicationCommandOptionType.Integer,
+                    minValue: 1,
+                    description:
+                        "The ID of the ticket. If unspecified, will default to the ticket in the channel.",
+                },
+            ],
+        },
+        {
+            name: "list",
+            type: ApplicationCommandOptionType.Subcommand,
+            description: "Lists all tickets from you or a user.",
+            options: [
+                {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description:
+                        "The user who opened the ticket. Defaults to yourself.",
+                },
+                {
+                    name: "status",
+                    type: ApplicationCommandOptionType.Integer,
+                    description:
+                        "The ticket status to filter for. If unspecified, no status filter is applied.",
+                    choices: [
+                        {
+                            name: "Open",
+                            value: SupportTicketStatus.open,
+                        },
+                        {
+                            name: "Closed",
+                            value: SupportTicketStatus.closed,
+                        },
+                    ],
                 },
             ],
         },
@@ -65,13 +129,15 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "author",
                     type: ApplicationCommandOptionType.User,
-                    description: "The user who originally opened the ticket.",
+                    description:
+                        "The user who originally opened the ticket. If unspecified, will default to the ticket in the channel.",
                 },
                 {
                     name: "id",
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1,
-                    description: "The ID of the ticket.",
+                    description:
+                        "The ID of the ticket. If unspecified, will default to the ticket in the channel.",
                 },
             ],
         },
@@ -83,13 +149,15 @@ export const config: SlashCommand["config"] = {
                 {
                     name: "author",
                     type: ApplicationCommandOptionType.User,
-                    description: "The user who opened the ticket.",
+                    description:
+                        "The user who opened the ticket. If unspecified, will default to the ticket in the channel.",
                 },
                 {
                     name: "id",
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1,
-                    description: "The ID of the ticket.",
+                    description:
+                        "The ID of the ticket. If unspecified, will default to the ticket in the channel.",
                 },
             ],
         },
