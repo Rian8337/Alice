@@ -62,7 +62,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             },
             [ChannelType.GuildText, ChannelType.GuildForum],
             [interaction.user.id],
-            20,
+            30,
         );
 
     if (!selectMenuInteraction) {
