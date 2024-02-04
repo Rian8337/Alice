@@ -37,7 +37,7 @@ export const run: ModalCommand["run"] = async (client, interaction) => {
 
     const ticketId = await dbManager.getNewId(interaction.user.id);
     const threadChannel = await userChannel.threads.create({
-        name: `Ticket #${ticketId} ${interaction.user.id}`,
+        name: `Ticket #${ticketId} (${interaction.user.id})`,
         invitable: false,
         type: ChannelType.PrivateThread,
         reason: "New ticket opened",

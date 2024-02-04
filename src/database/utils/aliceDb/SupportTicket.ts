@@ -321,7 +321,7 @@ export class SupportTicket extends Manager {
 
         const newThreadChannel = await channel.threads
             .create({
-                name: `Ticket #${this.id} ${this.authorId}`,
+                name: `Ticket #${this.id} (${this.authorId})`,
                 message: {
                     embeds: [this.toUserEmbed(language)],
                     components: this.createUserControlPanelButtons(language),
