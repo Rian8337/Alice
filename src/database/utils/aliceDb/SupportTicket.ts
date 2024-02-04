@@ -602,7 +602,7 @@ export class SupportTicket extends Manager {
                 new ButtonBuilder()
                     .setCustomId(`editSupportTicket#${this.threadChannelId}`)
                     .setEmoji(Symbols.pencil)
-                    .setStyle(ButtonStyle.Secondary)
+                    .setStyle(ButtonStyle.Primary)
                     .setDisabled(!this.isOpen)
                     .setLabel(
                         localization.getTranslation(
