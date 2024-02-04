@@ -224,6 +224,48 @@ export class SupportTicket extends Manager {
     }
 
     /**
+     * Edits the details of this ticket.
+     *
+     * @param title The title of the ticket.
+     * @param description The description of the ticket.
+     * @param language The language of the user who performed this operation. Defaults to English.
+     * @returns An object containing information about the operation.
+     */
+    async edit(
+        title: string,
+        description: string,
+        language: Language = "en",
+    ): Promise<OperationResult> {
+        const localization = this.getLocalization(language);
+
+        if (!this.isOpen) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("ticketIsNotOpen"),
+            );
+        }
+
+        this.title = title;
+        this.description = description;
+
+        const result = await this.dbManager.updateOne(
+            {
+                id: this.id,
+                authorId: this.authorId,
+            },
+            { $set: { title: title, description: description } },
+        );
+
+        if (result.failed()) {
+            return result;
+        }
+
+        await this.updateMessages(language);
+
+        return this.createOperationResult(true);
+    }
+
+    /**
      * Moves this ticket to a channel.
      *
      * @param channel The channel to move this ticket to.

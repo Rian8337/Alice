@@ -6,15 +6,14 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
-    const dbManager = DatabaseManager.aliceDb.collections.supportTicket;
-    const localization = new TicketEditLocalization(
-        await CommandHelper.getLocale(interaction),
-    );
+    const language = await CommandHelper.getLocale(interaction);
+    const localization = new TicketEditLocalization(language);
 
     const ticketThreadChannelId = interaction.customId.split("#")[1];
-    const ticket = await dbManager.getFromChannel(ticketThreadChannelId, {
-        projection: { _id: 0, id: 1 },
-    });
+    const ticket =
+        await DatabaseManager.aliceDb.collections.supportTicket.getFromChannel(
+            ticketThreadChannelId,
+        );
 
     if (!ticket) {
         return InteractionHelper.reply(interaction, {
@@ -26,16 +25,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     const title = interaction.fields.getTextInputValue("title");
     const description = interaction.fields.getTextInputValue("description");
-
-    const result = await dbManager.updateOne(
-        { threadChannelId: ticketThreadChannelId },
-        {
-            $set: {
-                title: title,
-                description: description,
-            },
-        },
-    );
+    const result = await ticket.edit(title, description, language);
 
     if (result.failed()) {
         return InteractionHelper.reply(interaction, {
