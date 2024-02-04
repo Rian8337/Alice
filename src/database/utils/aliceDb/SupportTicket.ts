@@ -587,22 +587,28 @@ export class SupportTicket extends Manager {
     ): ActionRowBuilder<ButtonBuilder>[] {
         const localization = this.getLocalization(language);
         const rowBuilder = new ActionRowBuilder<ButtonBuilder>();
-
-        rowBuilder.addComponents(
-            new ButtonBuilder()
-                .setCustomId(`editSupportTicket#${this.threadChannelId}`)
-                .setEmoji(Symbols.pencil)
-                .setStyle(ButtonStyle.Secondary)
-                .setDisabled(!this.isOpen)
-                .setLabel(
-                    localization.getTranslation(
-                        "userControlPanelEditButtonLabel",
-                    ),
+        const trackingChannelButton = new ButtonBuilder()
+            .setEmoji(Symbols.magnifyingGlassTiltedRight)
+            .setStyle(ButtonStyle.Link)
+            .setLabel(
+                localization.getTranslation(
+                    "userControlPanelTrackingMessageButtonLabel",
                 ),
-        );
+            )
+            .setURL(this.trackingMessageURL);
 
         if (this.isOpen) {
             rowBuilder.addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`editSupportTicket#${this.threadChannelId}`)
+                    .setEmoji(Symbols.pencil)
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(!this.isOpen)
+                    .setLabel(
+                        localization.getTranslation(
+                            "userControlPanelEditButtonLabel",
+                        ),
+                    ),
                 new ButtonBuilder()
                     .setCustomId(`closeSupportTicket#${this.threadChannelId}`)
                     .setEmoji(Symbols.inboxTray)
@@ -612,6 +618,16 @@ export class SupportTicket extends Manager {
                             "userControlPanelCloseButtonLabel",
                         ),
                     ),
+                new ButtonBuilder()
+                    .setCustomId(`moveSupportTicket#${this.threadChannelId}`)
+                    .setEmoji(Symbols.books)
+                    .setStyle(ButtonStyle.Danger)
+                    .setLabel(
+                        localization.getTranslation(
+                            "userControlPanelMoveButtonLabel",
+                        ),
+                    ),
+                trackingChannelButton,
             );
         } else {
             rowBuilder.addComponents(
@@ -624,29 +640,9 @@ export class SupportTicket extends Manager {
                             "userControlPanelOpenButtonLabel",
                         ),
                     ),
+                trackingChannelButton,
             );
         }
-
-        rowBuilder.addComponents(
-            new ButtonBuilder()
-                .setEmoji(Symbols.magnifyingGlassTiltedRight)
-                .setStyle(ButtonStyle.Link)
-                .setLabel(
-                    localization.getTranslation(
-                        "userControlPanelTrackingMessageButtonLabel",
-                    ),
-                )
-                .setURL(this.trackingMessageURL),
-            new ButtonBuilder()
-                .setCustomId(`moveSupportTicket#${this.threadChannelId}`)
-                .setEmoji(Symbols.books)
-                .setStyle(ButtonStyle.Danger)
-                .setLabel(
-                    localization.getTranslation(
-                        "userControlPanelMoveButtonLabel",
-                    ),
-                ),
-        );
 
         return [rowBuilder];
     }
@@ -658,46 +654,63 @@ export class SupportTicket extends Manager {
      */
     createTrackingMessageButtons(): ActionRowBuilder<ButtonBuilder>[] {
         const localization = this.getLocalization("en");
-        const firstRowBuilder = new ActionRowBuilder<ButtonBuilder>();
-        const secondRowBuilder = new ActionRowBuilder<ButtonBuilder>();
-
-        firstRowBuilder.addComponents(
-            new ButtonBuilder()
-                .setCustomId(`assignSupportTicket#${this.threadChannelId}`)
-                .setEmoji(Symbols.bookmark)
-                .setStyle(
-                    this.isOpen ? ButtonStyle.Primary : ButtonStyle.Secondary,
-                )
-                .setDisabled(!this.isOpen)
-                .setLabel(
-                    localization.getTranslation(
-                        "trackingMessageAssignButtonLabel",
-                    ),
+        const rowBuilders: ActionRowBuilder<ButtonBuilder>[] = [];
+        const ticketChannelButton = new ButtonBuilder()
+            .setEmoji(Symbols.magnifyingGlassTiltedRight)
+            .setStyle(ButtonStyle.Link)
+            .setLabel(
+                localization.getTranslation(
+                    "trackingMessageTicketChannelButtonLabel",
                 ),
-            new ButtonBuilder()
-                .setCustomId(`unassignSupportTicket#${this.threadChannelId}`)
-                .setEmoji(Symbols.label)
-                .setStyle(ButtonStyle.Secondary)
-                .setDisabled(!this.isOpen)
-                .setLabel(
-                    localization.getTranslation(
-                        "trackingMessageUnassignButtonLabel",
-                    ),
-                ),
-            new ButtonBuilder()
-                .setCustomId(`editSupportTicket#${this.threadChannelId}`)
-                .setEmoji(Symbols.pencil)
-                .setStyle(ButtonStyle.Secondary)
-                .setDisabled(!this.isOpen)
-                .setLabel(
-                    localization.getTranslation(
-                        "userControlPanelEditButtonLabel",
-                    ),
-                ),
-        );
+            )
+            .setURL(this.threadChannelURL);
 
         if (this.isOpen) {
+            const firstRowBuilder = new ActionRowBuilder<ButtonBuilder>();
+            const secondRowBuilder = new ActionRowBuilder<ButtonBuilder>();
+
             firstRowBuilder.addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`assignSupportTicket#${this.threadChannelId}`)
+                    .setEmoji(Symbols.bookmark)
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(!this.isOpen)
+                    .setLabel(
+                        localization.getTranslation(
+                            "trackingMessageAssignButtonLabel",
+                        ),
+                    ),
+                new ButtonBuilder()
+                    .setCustomId(
+                        `unassignSupportTicket#${this.threadChannelId}`,
+                    )
+                    .setEmoji(Symbols.label)
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(!this.isOpen)
+                    .setLabel(
+                        localization.getTranslation(
+                            "trackingMessageUnassignButtonLabel",
+                        ),
+                    ),
+                new ButtonBuilder()
+                    .setCustomId(`editSupportTicket#${this.threadChannelId}`)
+                    .setEmoji(Symbols.pencil)
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(!this.isOpen)
+                    .setLabel(
+                        localization.getTranslation(
+                            "userControlPanelEditButtonLabel",
+                        ),
+                    ),
+                new ButtonBuilder()
+                    .setCustomId(`moveSupportTicket#${this.threadChannelId}`)
+                    .setEmoji(Symbols.books)
+                    .setStyle(ButtonStyle.Danger)
+                    .setLabel(
+                        localization.getTranslation(
+                            "trackingMessageMoveButtonLabel",
+                        ),
+                    ),
                 new ButtonBuilder()
                     .setCustomId(`closeSupportTicket#${this.threadChannelId}`)
                     .setEmoji(Symbols.inboxTray)
@@ -708,8 +721,14 @@ export class SupportTicket extends Manager {
                         ),
                     ),
             );
+
+            secondRowBuilder.addComponents(ticketChannelButton);
+
+            rowBuilders.push(firstRowBuilder, secondRowBuilder);
         } else {
-            firstRowBuilder.addComponents(
+            const rowBuilder = new ActionRowBuilder<ButtonBuilder>();
+
+            rowBuilder.addComponents(
                 new ButtonBuilder()
                     .setCustomId(`reopenSupportTicket#${this.threadChannelId}`)
                     .setEmoji(Symbols.outboxTray)
@@ -719,34 +738,13 @@ export class SupportTicket extends Manager {
                             "userControlPanelOpenButtonLabel",
                         ),
                     ),
+                ticketChannelButton,
             );
+
+            rowBuilders.push(rowBuilder);
         }
 
-        firstRowBuilder.addComponents(
-            new ButtonBuilder()
-                .setCustomId(`moveSupportTicket#${this.threadChannelId}`)
-                .setEmoji(Symbols.books)
-                .setStyle(ButtonStyle.Danger)
-                .setLabel(
-                    localization.getTranslation(
-                        "trackingMessageMoveButtonLabel",
-                    ),
-                ),
-        );
-
-        secondRowBuilder.addComponents(
-            new ButtonBuilder()
-                .setEmoji(Symbols.magnifyingGlassTiltedRight)
-                .setStyle(ButtonStyle.Link)
-                .setLabel(
-                    localization.getTranslation(
-                        "trackingMessageTicketChannelButtonLabel",
-                    ),
-                )
-                .setURL(this.threadChannelURL),
-        );
-
-        return [firstRowBuilder, secondRowBuilder];
+        return rowBuilders;
     }
 
     /**
