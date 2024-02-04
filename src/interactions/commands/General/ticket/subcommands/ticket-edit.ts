@@ -26,7 +26,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             _id: 0,
             id: 1,
             authorId: 1,
+            description: 1,
             status: 1,
+            threadChannelId: 1,
+            title: 1,
         },
     };
 
@@ -59,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     ModalCreator.createModal(
         interaction,
-        `ticket-edit#${ticket.id}`,
+        `ticket-edit#${ticket.threadChannelId}`,
         localization.getTranslation("ticketEditModalTitle"),
         new TextInputBuilder()
             .setCustomId("title")
