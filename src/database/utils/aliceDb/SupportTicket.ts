@@ -172,12 +172,22 @@ export class SupportTicket extends Manager {
             );
         }
 
+        const threadChannel = await this.getThreadChannel();
+        if (!threadChannel) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("cannotGetTicketMessage"),
+            );
+        }
+
+        this.status = SupportTicketStatus.closed;
+
         const result = await this.dbManager.updateOne(
             {
                 id: this.id,
                 authorId: this.authorId,
             },
-            { $set: { status: SupportTicketStatus.closed } },
+            { $set: { status: this.status } },
         );
 
         if (result.failed()) {
@@ -185,6 +195,9 @@ export class SupportTicket extends Manager {
         }
 
         await this.updateMessages(language);
+
+        await threadChannel.setLocked(true, "Ticket closed");
+        await threadChannel.setArchived(true, "Ticket closed");
 
         return this.createOperationResult(true);
     }
@@ -206,12 +219,22 @@ export class SupportTicket extends Manager {
             );
         }
 
+        const threadChannel = await this.getThreadChannel();
+        if (!threadChannel) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("cannotGetTicketMessage"),
+            );
+        }
+
+        this.status = SupportTicketStatus.open;
+
         const result = await this.dbManager.updateOne(
             {
                 id: this.id,
                 authorId: this.authorId,
             },
-            { $set: { status: SupportTicketStatus.open } },
+            { $set: { status: this.status } },
         );
 
         if (result.failed()) {
@@ -219,6 +242,9 @@ export class SupportTicket extends Manager {
         }
 
         await this.updateMessages(language);
+
+        await threadChannel.setLocked(false, "Ticket reopened");
+        await threadChannel.setArchived(false, "Ticket reopened");
 
         return this.createOperationResult(true);
     }
@@ -339,7 +365,9 @@ export class SupportTicket extends Manager {
                 currentThreadChannel.toString(),
             ),
         });
+
         await currentThreadChannel.setLocked(true, "Ticket moved");
+        await currentThreadChannel.setArchived(true, "Ticket moved");
 
         this.guildChannelId = channel.id;
         this.threadChannelId = newThreadChannel.id;
