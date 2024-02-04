@@ -25,11 +25,12 @@ export class SupportTicketENTranslation extends Translation<SupportTicketStrings
         userControlPanelEditButtonLabel: "Edit",
         userControlPanelCloseButtonLabel: "Close",
         userControlPanelOpenButtonLabel: "Open",
-        userControlPanelMoveButtonLabel: "Move",
+        userControlPanelMoveButtonLabel: "Move (Staff Only)",
         userControlPanelTrackingMessageButtonLabel: "Tracker (Staff Only)",
         trackingMessageAssignButtonLabel: "Assign",
         trackingMessageUnassignButtonLabel: "Unassign",
         trackingMessageTicketChannelButtonLabel: "Ticket Channel",
+        trackingMessageMoveButtonLabel: "Move",
         none: "None",
     };
 }
