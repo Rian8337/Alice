@@ -571,6 +571,15 @@ export class SupportTicket extends Manager {
                     ),
                 )
                 .setURL(this.trackingMessageURL),
+            new ButtonBuilder()
+                .setCustomId(`moveSupportTicket#${this.threadChannelId}`)
+                .setEmoji(Symbols.books)
+                .setStyle(ButtonStyle.Danger)
+                .setLabel(
+                    localization.getTranslation(
+                        "userControlPanelMoveButtonLabel",
+                    ),
+                ),
         );
 
         return [rowBuilder];
@@ -636,7 +645,7 @@ export class SupportTicket extends Manager {
                 new ButtonBuilder()
                     .setCustomId(`reopenSupportTicket#${this.threadChannelId}`)
                     .setEmoji(Symbols.outboxTray)
-                    .setStyle(ButtonStyle.Primary)
+                    .setStyle(ButtonStyle.Secondary)
                     .setLabel(
                         localization.getTranslation(
                             "userControlPanelOpenButtonLabel",
@@ -644,8 +653,6 @@ export class SupportTicket extends Manager {
                     ),
             );
         }
-
-        // TODO: transfer button
 
         secondRowBuilder.addComponents(
             new ButtonBuilder()
@@ -657,6 +664,15 @@ export class SupportTicket extends Manager {
                     ),
                 )
                 .setURL(this.threadChannelURL),
+            new ButtonBuilder()
+                .setCustomId(`moveSupportTicket#${this.threadChannelId}`)
+                .setEmoji(Symbols.books)
+                .setStyle(ButtonStyle.Danger)
+                .setLabel(
+                    localization.getTranslation(
+                        "userControlPanelMoveButtonLabel",
+                    ),
+                ),
         );
 
         return [firstRowBuilder, secondRowBuilder];

@@ -21,6 +21,7 @@ export interface SupportTicketStrings {
     readonly userControlPanelEditButtonLabel: string;
     readonly userControlPanelCloseButtonLabel: string;
     readonly userControlPanelOpenButtonLabel: string;
+    readonly userControlPanelMoveButtonLabel: string;
     readonly userControlPanelTrackingMessageButtonLabel: string;
     readonly trackingMessageAssignButtonLabel: string;
     readonly trackingMessageUnassignButtonLabel: string;

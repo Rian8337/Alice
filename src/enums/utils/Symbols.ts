@@ -37,4 +37,5 @@ export enum Symbols {
     pencil = "✏️",
     label = "🏷️",
     laptop = "💻",
+    books = "📚",
 }

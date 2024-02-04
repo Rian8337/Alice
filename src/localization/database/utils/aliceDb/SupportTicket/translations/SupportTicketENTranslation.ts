@@ -25,6 +25,7 @@ export class SupportTicketENTranslation extends Translation<SupportTicketStrings
         userControlPanelEditButtonLabel: "Edit",
         userControlPanelCloseButtonLabel: "Close",
         userControlPanelOpenButtonLabel: "Open",
+        userControlPanelMoveButtonLabel: "Move",
         userControlPanelTrackingMessageButtonLabel: "Tracker (Staff Only)",
         trackingMessageAssignButtonLabel: "Assign",
         trackingMessageUnassignButtonLabel: "Unassign",
