@@ -472,38 +472,36 @@ export class SupportTicket extends Manager {
 
         return EmbedCreator.createNormalEmbed({
             color: "LuminousVividPink",
-        }).setFields(
-            {
-                name: localization.getTranslation("embedAuthor"),
-                value: `${userMention(this.authorId)} (${this.authorId})`,
-                inline: true,
-            },
-            {
-                name: localization.getTranslation("embedCreationDate"),
-                value: time(this.createdAt, TimestampStyles.LongDateTime),
-                inline: true,
-            },
-            {
-                name: localization.getTranslation("embedStatus"),
-                value: this.statusToString(language),
-                inline: true,
-            },
-            {
-                name: localization.getTranslation("embedTicketAssignees"),
-                value:
-                    this.assigneeIds
-                        .map((v) => `- ${userMention(v)} (${v})`)
-                        .join("\n") || localization.getTranslation("none"),
-            },
-            {
-                name: localization.getTranslation("embedTicketTitle"),
-                value: this.title,
-            },
-            {
-                name: localization.getTranslation("embedTicketDescription"),
-                value: this.description,
-            },
-        );
+        })
+            .setTitle(this.title)
+            .setFields(
+                {
+                    name: localization.getTranslation("embedAuthor"),
+                    value: `${userMention(this.authorId)} (${this.authorId})`,
+                    inline: true,
+                },
+                {
+                    name: localization.getTranslation("embedCreationDate"),
+                    value: time(this.createdAt, TimestampStyles.LongDateTime),
+                    inline: true,
+                },
+                {
+                    name: localization.getTranslation("embedStatus"),
+                    value: this.statusToString(language),
+                    inline: true,
+                },
+                {
+                    name: localization.getTranslation("embedTicketAssignees"),
+                    value:
+                        this.assigneeIds
+                            .map((v) => `- ${userMention(v)} (${v})`)
+                            .join("\n") || localization.getTranslation("none"),
+                },
+                {
+                    name: localization.getTranslation("embedTicketDescription"),
+                    value: this.description,
+                },
+            );
     }
 
     /**
@@ -514,42 +512,40 @@ export class SupportTicket extends Manager {
 
         return EmbedCreator.createNormalEmbed({
             color: "Orange",
-        }).setFields(
-            {
-                name: localization.getTranslation("embedAuthor"),
-                value: `${userMention(this.authorId)} (${this.authorId})`,
-                inline: true,
-            },
-            {
-                name: localization.getTranslation("embedCreationDate"),
-                value: time(this.createdAt, TimestampStyles.LongDateTime),
-                inline: true,
-            },
-            {
-                name: localization.getTranslation("embedStatus"),
-                value: this.statusToString(),
-                inline: true,
-            },
-            {
-                name: localization.getTranslation("embedTicketAssignees"),
-                value:
-                    this.assigneeIds
-                        .map((v) => `- ${userMention(v)} (${v})`)
-                        .join("\n") || localization.getTranslation("none"),
-            },
-            {
-                name: localization.getTranslation("embedTicketTitle"),
-                value: this.title,
-            },
-            {
-                name: localization.getTranslation("embedTicketDescription"),
-                // Truncate the description for staff embeds.
-                value:
-                    this.description.length > 250
-                        ? this.description.substring(0, 248) + "..."
-                        : this.description,
-            },
-        );
+        })
+            .setTitle(this.title)
+            .setFields(
+                {
+                    name: localization.getTranslation("embedAuthor"),
+                    value: `${userMention(this.authorId)} (${this.authorId})`,
+                    inline: true,
+                },
+                {
+                    name: localization.getTranslation("embedCreationDate"),
+                    value: time(this.createdAt, TimestampStyles.LongDateTime),
+                    inline: true,
+                },
+                {
+                    name: localization.getTranslation("embedStatus"),
+                    value: this.statusToString(),
+                    inline: true,
+                },
+                {
+                    name: localization.getTranslation("embedTicketAssignees"),
+                    value:
+                        this.assigneeIds
+                            .map((v) => `- ${userMention(v)} (${v})`)
+                            .join("\n") || localization.getTranslation("none"),
+                },
+                {
+                    name: localization.getTranslation("embedTicketDescription"),
+                    // Truncate the description for staff embeds.
+                    value:
+                        this.description.length > 250
+                            ? this.description.substring(0, 248) + "..."
+                            : this.description,
+                },
+            );
     }
 
     /**

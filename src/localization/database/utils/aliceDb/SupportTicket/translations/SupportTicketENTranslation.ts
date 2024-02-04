@@ -13,7 +13,6 @@ export class SupportTicketENTranslation extends Translation<SupportTicketStrings
         embedTicketAssignees: "Assignees",
         embedTicketOpen: "Open",
         embedTicketClosed: "Closed",
-        embedTicketTitle: "Title",
         embedTicketDescription: "Description",
         ticketIsOpen: "ticket is already open",
         ticketIsNotOpen: "ticket is not open",

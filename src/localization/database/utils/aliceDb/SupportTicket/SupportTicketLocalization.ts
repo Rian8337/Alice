@@ -10,7 +10,6 @@ export interface SupportTicketStrings {
     readonly embedTicketAssignees: string;
     readonly embedTicketOpen: string;
     readonly embedTicketClosed: string;
-    readonly embedTicketTitle: string;
     readonly embedTicketDescription: string;
     readonly ticketIsOpen: string;
     readonly ticketIsNotOpen: string;
