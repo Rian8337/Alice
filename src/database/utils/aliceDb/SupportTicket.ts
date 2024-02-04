@@ -665,7 +665,9 @@ export class SupportTicket extends Manager {
             new ButtonBuilder()
                 .setCustomId(`assignSupportTicket#${this.threadChannelId}`)
                 .setEmoji(Symbols.bookmark)
-                .setStyle(ButtonStyle.Primary)
+                .setStyle(
+                    this.isOpen ? ButtonStyle.Primary : ButtonStyle.Secondary,
+                )
                 .setDisabled(!this.isOpen)
                 .setLabel(
                     localization.getTranslation(
@@ -711,7 +713,7 @@ export class SupportTicket extends Manager {
                 new ButtonBuilder()
                     .setCustomId(`reopenSupportTicket#${this.threadChannelId}`)
                     .setEmoji(Symbols.outboxTray)
-                    .setStyle(ButtonStyle.Secondary)
+                    .setStyle(ButtonStyle.Primary)
                     .setLabel(
                         localization.getTranslation(
                             "userControlPanelOpenButtonLabel",
