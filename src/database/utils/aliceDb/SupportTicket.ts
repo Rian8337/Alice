@@ -241,10 +241,10 @@ export class SupportTicket extends Manager {
             return result;
         }
 
-        await this.updateMessages(language);
-
-        await threadChannel.setLocked(false, "Ticket reopened");
         await threadChannel.setArchived(false, "Ticket reopened");
+        await threadChannel.setLocked(false, "Ticket reopened");
+
+        await this.updateMessages(language);
 
         return this.createOperationResult(true);
     }
