@@ -1,3 +1,4 @@
+import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -8,6 +9,10 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
+
     const language = await CommandHelper.getLocale(interaction);
     const localization = new CloseSupportTicketLocalization(language);
 
@@ -27,7 +32,10 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (!ticket.canModify(interaction.user.id)) {
+    if (
+        ticket.authorId !== interaction.user.id &&
+        !interaction.member.roles.cache.hasAny(...Config.verifyPerm)
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
