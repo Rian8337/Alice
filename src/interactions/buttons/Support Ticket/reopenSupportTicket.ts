@@ -54,6 +54,12 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             ),
         });
     }
+
+    InteractionHelper.reply(interaction, {
+        content: MessageCreator.createAccept(
+            localization.getTranslation("reopenTicketSuccess"),
+        ),
+    });
 };
 
 export const config: ButtonCommand["config"] = {
