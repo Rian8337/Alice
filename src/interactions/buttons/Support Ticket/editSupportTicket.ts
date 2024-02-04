@@ -22,7 +22,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                     _id: 0,
                     description: 1,
                     title: 1,
-                    threadChannelId: 1,
+                    status: 1,
                 },
             },
         );
@@ -55,7 +55,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 
     ModalCreator.createModal(
         interaction,
-        `ticket-edit#${ticket.threadChannelId}`,
+        `ticket-edit#${threadChannelId}`,
         localization.getTranslation("modalTitle"),
         new TextInputBuilder()
             .setCustomId("title")
