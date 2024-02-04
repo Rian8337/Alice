@@ -562,10 +562,9 @@ export class SupportTicket extends Manager {
         language: Language = "en",
     ): ActionRowBuilder<ButtonBuilder>[] {
         const localization = this.getLocalization(language);
-        const firstRowBuilder = new ActionRowBuilder<ButtonBuilder>();
-        const secondRowBuilder = new ActionRowBuilder<ButtonBuilder>();
+        const rowBuilder = new ActionRowBuilder<ButtonBuilder>();
 
-        firstRowBuilder.addComponents(
+        rowBuilder.addComponents(
             new ButtonBuilder()
                 .setCustomId(`editSupportTicket#${this.threadChannelId}`)
                 .setEmoji(Symbols.pencil)
@@ -579,7 +578,7 @@ export class SupportTicket extends Manager {
         );
 
         if (this.isOpen) {
-            firstRowBuilder.addComponents(
+            rowBuilder.addComponents(
                 new ButtonBuilder()
                     .setCustomId(`closeSupportTicket#${this.threadChannelId}`)
                     .setEmoji(Symbols.inboxTray)
@@ -590,8 +589,8 @@ export class SupportTicket extends Manager {
                         ),
                     ),
             );
-        } else if (this.isClosed) {
-            firstRowBuilder.addComponents(
+        } else {
+            rowBuilder.addComponents(
                 new ButtonBuilder()
                     .setCustomId(`reopenSupportTicket#${this.threadChannelId}`)
                     .setEmoji(Symbols.outboxTray)
@@ -604,7 +603,7 @@ export class SupportTicket extends Manager {
             );
         }
 
-        secondRowBuilder.addComponents(
+        rowBuilder.addComponents(
             new ButtonBuilder()
                 .setEmoji(Symbols.magnifyingGlassTiltedRight)
                 .setStyle(ButtonStyle.Link)
@@ -625,7 +624,7 @@ export class SupportTicket extends Manager {
                 ),
         );
 
-        return [firstRowBuilder, secondRowBuilder];
+        return [rowBuilder];
     }
 
     /**
@@ -683,7 +682,7 @@ export class SupportTicket extends Manager {
                         ),
                     ),
             );
-        } else if (this.isClosed) {
+        } else {
             firstRowBuilder.addComponents(
                 new ButtonBuilder()
                     .setCustomId(`reopenSupportTicket#${this.threadChannelId}`)
