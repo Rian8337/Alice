@@ -66,17 +66,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .setRequired(true)
             .setStyle(TextInputStyle.Short)
             .setMaxLength(100)
+            .setPlaceholder(
+                localization.getTranslation("ticketModalTitlePlaceholder"),
+            )
             .setLabel(localization.getTranslation("ticketModalTitleLabel"))
-            .setPlaceholder(ticket.title),
+            .setValue(ticket.title),
         new TextInputBuilder()
             .setCustomId("description")
             .setRequired(true)
             .setStyle(TextInputStyle.Paragraph)
             .setMaxLength(1500)
+            .setPlaceholder(
+                localization.getTranslation(
+                    "ticketModalDescriptionPlaceholder",
+                ),
+            )
             .setLabel(
                 localization.getTranslation("ticketModalDescriptionLabel"),
             )
-            .setPlaceholder(ticket.description),
+            .setValue(ticket.description),
     );
 };
 

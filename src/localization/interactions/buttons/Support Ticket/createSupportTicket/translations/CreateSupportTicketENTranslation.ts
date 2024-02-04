@@ -7,7 +7,9 @@ import { CreateSupportTicketStrings } from "../CreateSupportTicketLocalization";
 export class CreateSupportTicketENTranslation extends Translation<CreateSupportTicketStrings> {
     override readonly translations: CreateSupportTicketStrings = {
         modalTitle: "Create Ticket",
-        modalTitleLabel: "Enter the title of the ticket.",
-        modalDescriptionLabel: "Enter the description of the ticket.",
+        modalTitleLabel: "Title",
+        modalTitlePlaceholder: "Enter the title of the ticket.",
+        modalDescriptionLabel: "Description",
+        modalDescriptionPlaceholder: "Enter the description of the ticket.",
     };
 }

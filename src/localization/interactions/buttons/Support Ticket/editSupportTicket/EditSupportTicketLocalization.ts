@@ -7,7 +7,9 @@ export interface EditSupportTicketStrings {
     readonly ticketIsNotOpen: string;
     readonly modalTitle: string;
     readonly modalTitleLabel: string;
+    readonly modalTitlePlaceholder: string;
     readonly modalDescriptionLabel: string;
+    readonly modalDescriptionPlaceholder: string;
 }
 
 /**

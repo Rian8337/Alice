@@ -10,8 +10,11 @@ export class TicketENTranslation extends Translation<TicketStrings> {
         noTicketsFound: "I'm sorry, I could not find any tickets!",
         ticketEditModalTitle: "Edit Ticket",
         ticketCreateModalTitle: "Create Ticket",
-        ticketModalTitleLabel: "Enter the title of the ticket.",
-        ticketModalDescriptionLabel: "Enter the description of the ticket.",
+        ticketModalTitleLabel: "Title",
+        ticketModalTitlePlaceholder: "Enter the title of the ticket.",
+        ticketModalDescriptionLabel: "Description",
+        ticketModalDescriptionPlaceholder:
+            "Enter the description of the ticket.",
         ticketIsNotOpen: "I'm sorry, the ticket is not open!",
         closeTicketFailed: "I'm sorry, I was unable to close the ticket: %s.",
         closeTicketSuccess: "Successfully closed the ticket.",

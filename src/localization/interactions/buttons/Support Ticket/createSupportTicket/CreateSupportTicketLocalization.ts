@@ -5,7 +5,9 @@ import { CreateSupportTicketENTranslation } from "./translations/CreateSupportTi
 export interface CreateSupportTicketStrings {
     readonly modalTitle: string;
     readonly modalTitleLabel: string;
+    readonly modalTitlePlaceholder: string;
     readonly modalDescriptionLabel: string;
+    readonly modalDescriptionPlaceholder: string;
 }
 
 /**

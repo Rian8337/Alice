@@ -10,7 +10,9 @@ export class EditSupportTicketENTranslation extends Translation<EditSupportTicke
             "I'm sorry, I could not find the ticket that is associated to this channel!",
         ticketIsNotOpen: "I'm sorry, the ticket is not open!",
         modalTitle: "Edit Ticket",
-        modalTitleLabel: "Enter the title of the ticket.",
-        modalDescriptionLabel: "Enter the description of the ticket.",
+        modalTitleLabel: "Title",
+        modalTitlePlaceholder: "Enter the title of the ticket.",
+        modalDescriptionLabel: "Description",
+        modalDescriptionPlaceholder: "Enter the description of the ticket.",
     };
 }

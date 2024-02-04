@@ -62,15 +62,21 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             .setRequired(true)
             .setStyle(TextInputStyle.Short)
             .setMaxLength(100)
+            .setPlaceholder(
+                localization.getTranslation("modalTitlePlaceholder"),
+            )
             .setLabel(localization.getTranslation("modalTitleLabel"))
-            .setPlaceholder(ticket.title),
+            .setValue(ticket.title),
         new TextInputBuilder()
             .setCustomId("description")
             .setRequired(true)
             .setStyle(TextInputStyle.Paragraph)
             .setMaxLength(1500)
+            .setPlaceholder(
+                localization.getTranslation("modalDescriptionPlaceholder"),
+            )
             .setLabel(localization.getTranslation("modalDescriptionLabel"))
-            .setPlaceholder(ticket.description),
+            .setValue(ticket.description),
     );
 };
 
