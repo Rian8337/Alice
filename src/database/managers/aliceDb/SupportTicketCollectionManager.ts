@@ -66,6 +66,6 @@ export class SupportTicketCollectionManager extends DatabaseCollectionManager<
      * @returns The ticket ID.
      */
     async getNewId(userId: Snowflake): Promise<number> {
-        return (await this.collection.countDocuments({ author: userId })) + 1;
+        return (await this.collection.countDocuments({ authorId: userId })) + 1;
     }
 }
