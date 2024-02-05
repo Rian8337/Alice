@@ -67,7 +67,7 @@ export const run: EventUtil["run"] = async (
 
     // Command cooldown
     if (!botOwnerExecution) {
-        const cooldownKey: GlobalCooldownKey = `${interaction.user.id}:${interaction.customId}`;
+        const cooldownKey: GlobalCooldownKey = `${interaction.user.id}:${commandName}`;
 
         if (CommandHelper.isCooldownActive(cooldownKey)) {
             return interaction.reply({
