@@ -1,7 +1,10 @@
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TicketLocalization } from "@alice-localization/interactions/commands/General/ticket/TicketLocalization";
 import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ModalCreator } from "@alice-utils/creators/ModalCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -9,7 +12,29 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         await CommandHelper.getLocale(interaction),
     );
 
-    // TODO: ticket presets
+    const presetName = interaction.options.getString("preset");
+
+    let prefilledTitle = "";
+    let prefilledDescription = "";
+
+    if (presetName) {
+        const preset =
+            await DatabaseManager.aliceDb.collections.supportTicketPreset.getOne(
+                { name: presetName },
+                { projection: { _id: 0, title: 1, description: 1 } },
+            );
+
+        if (!preset) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("presetNotFound"),
+                ),
+            });
+        }
+
+        prefilledTitle = preset.title;
+        prefilledDescription = preset.description;
+    }
 
     ModalCreator.createModal(
         interaction,
@@ -20,19 +45,30 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .setRequired(true)
             .setStyle(TextInputStyle.Short)
             .setMaxLength(100)
-            .setLabel(localization.getTranslation("ticketModalTitleLabel")),
+            .setPlaceholder(
+                localization.getTranslation("ticketModalTitlePlaceholder"),
+            )
+            .setLabel(localization.getTranslation("ticketModalTitleLabel"))
+            .setValue(prefilledTitle),
         new TextInputBuilder()
             .setCustomId("description")
             .setRequired(true)
             .setStyle(TextInputStyle.Paragraph)
             .setMaxLength(1500)
+            .setPlaceholder(
+                localization.getTranslation(
+                    "ticketModalDescriptionPlaceholder",
+                ),
+            )
             .setLabel(
                 localization.getTranslation("ticketModalDescriptionLabel"),
-            ),
+            )
+            .setValue(prefilledDescription),
     );
 };
 
 export const config: SlashSubcommand["config"] = {
     permissions: [],
     cooldown: 30,
+    instantDeferInDebug: false,
 };

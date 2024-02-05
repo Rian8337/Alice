@@ -4,6 +4,7 @@ import { TicketENTranslation } from "./translations/TicketENTranslation";
 
 export interface TicketStrings {
     readonly ticketNotFound: string;
+    readonly presetNotFound: string;
     readonly noTicketsFound: string;
     readonly ticketEditModalTitle: string;
     readonly ticketCreateModalTitle: string;

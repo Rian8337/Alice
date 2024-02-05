@@ -29,6 +29,7 @@ import { DanCourseLeaderboardScoreCollectionManager } from "./managers/aliceDb/D
 import { DanCourseScoreCollectionManager } from "./managers/aliceDb/DanCourseScoreCollectionManager";
 import { RecentPlaysCollectionManager } from "./managers/aliceDb/RecentPlaysCollectionManager";
 import { SupportTicketCollectionManager } from "./managers/aliceDb/SupportTicketCollectionManager";
+import { SupportTicketPresetCollectionManager } from "./managers/aliceDb/SupportTicketPresetCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -188,6 +189,11 @@ export class AliceDBCollection {
     readonly supportTicket: SupportTicketCollectionManager;
 
     /**
+     * The database collection for support ticket presets.
+     */
+    readonly supportTicketPreset: SupportTicketPresetCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -280,6 +286,9 @@ export class AliceDBCollection {
         );
         this.supportTicket = new SupportTicketCollectionManager(
             aliceDb.collection("supportticket"),
+        );
+        this.supportTicketPreset = new SupportTicketPresetCollectionManager(
+            aliceDb.collection("supportticketpreset"),
         );
     }
 }

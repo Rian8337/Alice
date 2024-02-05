@@ -7,6 +7,7 @@ import { TicketStrings } from "../TicketLocalization";
 export class TicketENTranslation extends Translation<TicketStrings> {
     override readonly translations: TicketStrings = {
         ticketNotFound: "I'm sorry, I could not find the ticket!",
+        presetNotFound: "I'm sorry, I could not find the preset!",
         noTicketsFound: "I'm sorry, I could not find any tickets!",
         ticketEditModalTitle: "Edit Ticket",
         ticketCreateModalTitle: "Create Ticket",

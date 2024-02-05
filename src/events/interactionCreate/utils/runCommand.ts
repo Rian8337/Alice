@@ -250,6 +250,8 @@ export const run: EventUtil["run"] = async (
             ),
         });
 
+        consola.error(e);
+
         client.emit("error", e);
     });
 };

@@ -41,6 +41,14 @@ export const config: SlashCommand["config"] = {
             name: "create",
             type: ApplicationCommandOptionType.Subcommand,
             description: "Creates a new ticket.",
+            options: [
+                {
+                    name: "preset",
+                    type: ApplicationCommandOptionType.String,
+                    description: "The preset to use.",
+                    autocomplete: true,
+                },
+            ],
         },
         {
             name: "edit",
@@ -81,7 +89,7 @@ export const config: SlashCommand["config"] = {
                     name: "author",
                     type: ApplicationCommandOptionType.User,
                     description:
-                        "The user who originally opened the ticket. If unspecified, will default to the ticket in the channel.",
+                        "The user who opened the ticket. If unspecified, will default to the ticket in the channel.",
                 },
                 {
                     name: "id",
@@ -130,7 +138,7 @@ export const config: SlashCommand["config"] = {
                     name: "author",
                     type: ApplicationCommandOptionType.User,
                     description:
-                        "The user who originally opened the ticket. If unspecified, will default to the ticket in the channel.",
+                        "The user who opened the ticket. If unspecified, will default to the ticket in the channel.",
                 },
                 {
                     name: "id",
