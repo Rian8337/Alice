@@ -18,6 +18,55 @@ export const config: SlashCommand["config"] = {
     description: "Primary interface of the ticket system.",
     options: [
         {
+            name: "assign",
+            type: ApplicationCommandOptionType.Subcommand,
+            description: "Assigns yourself to a ticket.",
+            options: [
+                {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description:
+                        "The user who opened the ticket. If unspecified, will default to the ticket in the channel.",
+                },
+                {
+                    name: "id",
+                    type: ApplicationCommandOptionType.Integer,
+                    minValue: 1,
+                    description:
+                        "The ID of the ticket. If unspecified, will default to the ticket in the channel.",
+                },
+            ],
+        },
+        {
+            name: "assigned",
+            type: ApplicationCommandOptionType.Subcommand,
+            description: "Lists all tickets that you are assigned to.",
+            options: [
+                {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description:
+                        "The ticket author to list for. If unspecified, all ticket authors will be listed.",
+                },
+                {
+                    name: "status",
+                    type: ApplicationCommandOptionType.Integer,
+                    description:
+                        "The ticket status to filter for. If unspecified, no status filter is applied.",
+                    choices: [
+                        {
+                            name: "Open",
+                            value: SupportTicketStatus.open,
+                        },
+                        {
+                            name: "Closed",
+                            value: SupportTicketStatus.closed,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
             name: "close",
             type: ApplicationCommandOptionType.Subcommand,
             description: "Closes a ticket.",
@@ -133,6 +182,26 @@ export const config: SlashCommand["config"] = {
             name: "reopen",
             type: ApplicationCommandOptionType.Subcommand,
             description: "Reopens a ticket.",
+            options: [
+                {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description:
+                        "The user who opened the ticket. If unspecified, will default to the ticket in the channel.",
+                },
+                {
+                    name: "id",
+                    type: ApplicationCommandOptionType.Integer,
+                    minValue: 1,
+                    description:
+                        "The ID of the ticket. If unspecified, will default to the ticket in the channel.",
+                },
+            ],
+        },
+        {
+            name: "unassign",
+            type: ApplicationCommandOptionType.Subcommand,
+            description: "Unassigns a yourself from a ticket.",
             options: [
                 {
                     name: "author",

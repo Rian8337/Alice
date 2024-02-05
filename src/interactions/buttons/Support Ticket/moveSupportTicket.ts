@@ -100,5 +100,6 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 };
 
 export const config: ButtonCommand["config"] = {
+    cooldown: 30,
     replyEphemeral: true,
 };

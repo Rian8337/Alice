@@ -20,15 +20,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const language = await CommandHelper.getLocale(interaction);
-    const author = interaction.options.getUser("author") ?? interaction.user;
-    const status = <SupportTicketStatus | null>(
-        interaction.options.getInteger("status")
-    );
 
-    if (
-        author.id !== interaction.user.id &&
-        !interaction.member.roles.cache.hasAny(...Config.verifyPerm)
-    ) {
+    if (!interaction.member.roles.cache.hasAny(...Config.verifyPerm)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
@@ -38,27 +31,29 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.deferReply(interaction);
+
     const localization = new TicketLocalization(language);
+    const author = interaction.options.getUser("author");
+    const status = <SupportTicketStatus | null>(
+        interaction.options.getInteger("status")
+    );
+
     const tickets = await DatabaseManager.aliceDb.collections.supportTicket.get(
         "id",
         {
-            authorId: author.id,
-            status: status ?? undefined,
-        },
-        {
-            projection: {
-                id: 1,
-                title: 1,
-                status: 1,
-                threadChannelId: 1,
+            assigneeIds: {
+                $in: [interaction.user.id],
             },
+            authorId: author?.id,
+            status: status ?? undefined,
         },
     );
 
     if (tickets.size === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noTicketsFound"),
+                localization.getTranslation("noTicketsAssigned"),
             ),
         });
     }
@@ -72,8 +67,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     embed.setTitle(
         StringHelper.formatString(
-            localization.getTranslation("ticketListEmbedTitle"),
-            author.username,
+            localization.getTranslation("assignedTicketListEmbedTitle"),
+            interaction.user.username,
         ),
     );
 

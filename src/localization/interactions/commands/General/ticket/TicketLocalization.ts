@@ -6,6 +6,7 @@ export interface TicketStrings {
     readonly ticketNotFound: string;
     readonly presetNotFound: string;
     readonly noTicketsFound: string;
+    readonly noTicketsAssigned: string;
     readonly ticketEditModalTitle: string;
     readonly ticketCreateModalTitle: string;
     readonly ticketModalTitleLabel: string;
@@ -20,7 +21,12 @@ export interface TicketStrings {
     readonly moveTicketConfirm: string;
     readonly moveTicketFailed: string;
     readonly moveTicketSuccess: string;
+    readonly assignTicketFailed: string;
+    readonly assignTicketSuccess: string;
+    readonly unassignTicketFailed: string;
+    readonly unassignTicketSuccess: string;
     readonly ticketListEmbedTitle: string;
+    readonly assignedTicketListEmbedTitle: string;
     readonly ticketStatus: string;
     readonly ticketGoToChannel: string;
 }
