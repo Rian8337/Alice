@@ -13,6 +13,7 @@ export class RunContextMenuKRTranslation extends Translation<RunContextMenuStrin
             "죄송해요, 전 다음 이유로 점검중이에요: `%s`. 나중에 다시 시도해 주세요!",
         commandInCooldown:
             "저기, 명령어를 천천히 사용해 주세요! 아시다시피, 저도 좀 쉬어야죠.",
-        commandExecutionFailed: "명령어 실행 불가: %s",
+        commandExecutionFailed:
+            "죄송합니다, 명령을 처리하는 중에 오류가 발생했습니다.",
     };
 }

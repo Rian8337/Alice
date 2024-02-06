@@ -30,8 +30,7 @@ export const run: EventUtil["run"] = async (
         await CommandHelper.getLocale(interaction),
     );
 
-    const botOwnerExecution: boolean =
-        CommandHelper.isExecutedByBotOwner(interaction);
+    const botOwnerExecution = CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
         return interaction.reply({
@@ -109,7 +108,6 @@ export const run: EventUtil["run"] = async (
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("commandExecutionFailed"),
-                e.message,
             ),
         });
 

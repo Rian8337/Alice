@@ -5,14 +5,14 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { InteractionType, ModalSubmitInteraction } from "discord.js";
+import { ModalSubmitInteraction } from "discord.js";
 import { consola } from "consola";
 
 export const run: EventUtil["run"] = async (
     client,
     interaction: ModalSubmitInteraction,
 ) => {
-    if (interaction.type !== InteractionType.ModalSubmit) {
+    if (!interaction.isModalSubmit()) {
         return;
     }
 
@@ -79,7 +79,6 @@ export const run: EventUtil["run"] = async (
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("commandExecutionFailed"),
-                e.message,
             ),
         });
 

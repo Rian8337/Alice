@@ -11,6 +11,7 @@ export class RunModalSubmitENTranslation extends Translation<RunModalSubmitStrin
         commandNotFound: "I'm sorry, I cannot find the command with that name.",
         maintenanceMode:
             "I'm sorry, I'm currently under maintenance due to `%s`. Please try again later!",
-        commandExecutionFailed: "Unable to execute command: %s",
+        commandExecutionFailed:
+            "I'm sorry, I encountered an error when processing the command.",
     };
 }

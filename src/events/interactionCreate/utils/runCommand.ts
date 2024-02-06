@@ -1,8 +1,6 @@
 import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
-import { SlashCommand } from "structures/core/SlashCommand";
 import { EventUtil } from "structures/core/EventUtil";
-import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { RunCommandLocalization } from "@alice-localization/events/interactionCreate/runCommand/RunCommandLocalization";
 import {
@@ -31,12 +29,11 @@ export const run: EventUtil["run"] = async (
     }
 
     // 3 seconds should be enough to get the user's locale
-    const localization: RunCommandLocalization = new RunCommandLocalization(
+    const localization = new RunCommandLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const botOwnerExecution: boolean =
-        CommandHelper.isExecutedByBotOwner(interaction);
+    const botOwnerExecution = CommandHelper.isExecutedByBotOwner(interaction);
 
     if (Config.isDebug && !botOwnerExecution) {
         return interaction.reply({
@@ -47,9 +44,7 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    const command: SlashCommand | undefined = client.interactions.chatInput.get(
-        interaction.commandName,
-    );
+    const command = client.interactions.chatInput.get(interaction.commandName);
 
     if (!command) {
         return interaction.reply({
@@ -110,10 +105,8 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    const subcommand: SlashSubcommand | undefined =
-        CommandHelper.getSlashSubcommand(interaction);
-    const subcommandGroup: SlashSubcommand | undefined =
-        CommandHelper.getSlashSubcommandGroup(interaction);
+    const subcommand = CommandHelper.getSlashSubcommand(interaction);
+    const subcommandGroup = CommandHelper.getSlashSubcommandGroup(interaction);
 
     // Command cooldown
     if (!botOwnerExecution) {
@@ -132,7 +125,7 @@ export const run: EventUtil["run"] = async (
             });
         }
 
-        const channelCooldown: number = Math.max(
+        const channelCooldown = Math.max(
             // Local command cooldown
             command.config.cooldown ?? 0,
             // Local subcommand cooldown
@@ -149,7 +142,7 @@ export const run: EventUtil["run"] = async (
                 ?.get(interaction.commandName)?.cooldown ?? 0,
         );
 
-        const globalCooldown: number = Math.max(
+        const globalCooldown = Math.max(
             // Global command cooldown
             CommandUtilManager.globallyDisabledCommands.get(
                 interaction.commandName,
@@ -172,7 +165,7 @@ export const run: EventUtil["run"] = async (
     }
 
     // Log used command along with its subcommand group, subcommand, and options
-    let logMessage: string = `Slash: ${interaction.user.tag} (${
+    let logMessage = `Slash: ${interaction.user.tag} (${
         interaction.channel!.isDMBased()
             ? "DM"
             : `#${interaction.channel!.name}`
@@ -196,9 +189,9 @@ export const run: EventUtil["run"] = async (
         usedOptions = interaction.options.data;
     }
 
-    const optionsStr: string = usedOptions
+    const optionsStr = usedOptions
         .map((v) => {
-            let str: string = `${v.name}:`;
+            let str = `${v.name}:`;
 
             switch (true) {
                 case !!v.channel:
@@ -232,7 +225,7 @@ export const run: EventUtil["run"] = async (
 
     if (Config.isDebug) {
         // Attempt to instantly defer in debug mode (slower internet).
-        const instantDefer: boolean =
+        const instantDefer =
             command.config.instantDeferInDebug !== false &&
             subcommandGroup?.config.instantDeferInDebug !== false &&
             subcommand?.config.instantDeferInDebug !== false;
@@ -249,8 +242,6 @@ export const run: EventUtil["run"] = async (
                 localization.getTranslation("commandExecutionFailed"),
             ),
         });
-
-        consola.error(e);
 
         client.emit("error", e);
     });

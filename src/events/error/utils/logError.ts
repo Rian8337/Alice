@@ -15,7 +15,7 @@ export const run: EventUtil["run"] = async (client, error: Error) => {
 
     const attachment: AttachmentBuilder = new AttachmentBuilder(
         Buffer.from(error.stack!),
-        { name: "stack.txt" }
+        { name: "stack.txt" },
     );
 
     errorLogChannel.send({
@@ -30,4 +30,5 @@ export const config: EventUtil["config"] = {
     description: "Responsible for logging errors to the error log channel.",
     togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
+    debugEnabled: true,
 };

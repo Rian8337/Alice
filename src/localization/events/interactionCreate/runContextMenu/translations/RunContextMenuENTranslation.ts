@@ -13,6 +13,7 @@ export class RunContextMenuENTranslation extends Translation<RunContextMenuStrin
             "I'm sorry, I'm currently under maintenance due to `%s`. Please try again later!",
         commandInCooldown:
             "Hey, calm down with the command! I need to rest too, you know.",
-        commandExecutionFailed: "Unable to execute command: %s",
+        commandExecutionFailed:
+            "I'm sorry, I encountered an error when processing the command.",
     };
 }

@@ -12,6 +12,7 @@ export class RunModalSubmitESTranslation extends Translation<RunModalSubmitStrin
             "Lo siento, no puedo encontrar el comando con ese nombre.",
         maintenanceMode:
             "Lo siento, me encuentro en mantenimiento con motivo de `%s`. Por favor, intenta de nuevo más tarde!",
-        commandExecutionFailed: "No puedo ejecutar el comando: %s.",
+        commandExecutionFailed:
+            "Lo siento, encontré un error al procesar el comando.",
     };
 }

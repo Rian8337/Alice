@@ -14,6 +14,7 @@ export class RunButtonESTranslation extends Translation<RunButtonStrings> {
             "Lo siento, me encuentro en mantenimiento con motivo de `%s`. Por favor, intenta de nuevo más tarde!",
         commandInCooldown:
             "Hey, tranquilo con los comandos! Necesito descansar no?",
-        commandExecutionFailed: "No puedo ejecutar el comando: %s.",
+        commandExecutionFailed:
+            "Lo siento, encontré un error al procesar el comando.",
     };
 }
