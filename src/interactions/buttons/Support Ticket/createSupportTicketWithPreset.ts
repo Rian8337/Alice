@@ -62,11 +62,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (!(await preset.validate(selectMenuInteraction))) {
-        return;
-    }
-
-    await selectMenuInteraction.showModal(preset.buildModal(language));
+    await preset.createProcessor().process(selectMenuInteraction, preset);
 
     // Delete the left-over select menu, which is a reply to the original interaction.
     await interaction.deleteReply();

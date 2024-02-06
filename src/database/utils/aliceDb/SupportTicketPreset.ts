@@ -3,6 +3,7 @@ import { DatabaseSupportTicketPreset } from "@alice-structures/database/aliceDb/
 import { Manager } from "@alice-utils/base/Manager";
 import { AccountRebindTicketPresetProcessor } from "@alice-utils/ticket/presets/AccountRebindTicketPresetProcessor";
 import { BaseTicketPresetProcessor } from "@alice-utils/ticket/presets/BaseTicketPresetProcessor";
+import { RecalcTicketPresetProcessor } from "@alice-utils/ticket/presets/RecalcTicketPresetProcessor";
 import { ObjectId } from "mongodb";
 
 export class SupportTicketPreset
@@ -27,16 +28,27 @@ export class SupportTicketPreset
     }
 
     /**
-     * Creates a processor for this ticket preset.
+     * Creates a processor based on the ID of a ticket preset.
+     *
+     * @param id The ID of the ticket preset.
      */
-    createProcessor(): BaseTicketPresetProcessor {
-        switch (this.id) {
+    static createProcessor(id: number): BaseTicketPresetProcessor {
+        switch (id) {
             case 1:
                 return new AccountRebindTicketPresetProcessor();
+            case 2:
+                return new RecalcTicketPresetProcessor();
             default:
                 throw new Error(
                     "Unable to determine a processor for this ticket preset.",
                 );
         }
+    }
+
+    /**
+     * Creates a processor for this ticket preset.
+     */
+    createProcessor(): BaseTicketPresetProcessor {
+        return SupportTicketPreset.createProcessor(this.id);
     }
 }

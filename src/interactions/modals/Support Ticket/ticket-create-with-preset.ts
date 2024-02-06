@@ -1,10 +1,10 @@
 import { SupportTicket } from "@alice-database/utils/aliceDb/SupportTicket";
+import { SupportTicketPreset } from "@alice-database/utils/aliceDb/SupportTicketPreset";
 import { TicketCreateWithPresetLocalization } from "@alice-localization/interactions/modals/Support Ticket/ticket-create-with-preset/TicketCreateWithPresetLocalization";
 import { ModalCommand } from "@alice-structures/core/ModalCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { AccountRebindTicketPresetProcessor } from "@alice-utils/ticket/presets/AccountRebindTicketPresetProcessor";
 import { ModalTicketPresetProcessor } from "@alice-utils/ticket/presets/ModalTicketPresetProcessor";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
@@ -14,20 +14,10 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const id = parseInt(interaction.customId.split("#")[1]);
-    let presetProcessor: ModalTicketPresetProcessor;
 
-    switch (id) {
-        case 1:
-            presetProcessor = new AccountRebindTicketPresetProcessor();
-            break;
-        default:
-            return InteractionHelper.reply(interaction, {
-                content: MessageCreator.createReject(
-                    localization.getTranslation("presetNotFound"),
-                ),
-            });
-    }
-
+    const presetProcessor = <ModalTicketPresetProcessor>(
+        SupportTicketPreset.createProcessor(id)
+    );
     const processedPreset =
         await presetProcessor.processModalSubmission(interaction);
 
