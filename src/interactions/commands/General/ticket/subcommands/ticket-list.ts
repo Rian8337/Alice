@@ -79,15 +79,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         const tickets = ticketArray.slice(
+            ticketsPerPage * (page - 1),
             ticketsPerPage * page,
-            ticketsPerPage * (page + 1),
         );
 
         for (let i = 0; i < tickets.length; ++i) {
             const ticket = tickets[i];
 
             embed.addFields({
-                name: `${ticketsPerPage * page + i + 1}. ${ticket.title}`,
+                name: `${ticketsPerPage * (page - 1) + i + 1}. ${ticket.title}`,
                 value: `${localization.getTranslation("ticketStatus")}: ${ticket.statusToString()} | ${hyperlink(localization.getTranslation("ticketGoToChannel"), ticket.threadChannelURL)}`,
             });
         }
