@@ -13,13 +13,13 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: RecalcLocalization = new RecalcLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         !(<GuildMember>interaction.member).roles.cache.hasAny(
-            ...Config.verifyPerm
+            ...Config.verifyPerm,
         )
     ) {
         interaction.ephemeral = true;
@@ -27,8 +27,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.noPermissionReject
-                )
+                    Constants.noPermissionReject,
+                ),
             ),
         });
     }
@@ -37,15 +37,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(user, {
-            projection: { _id: 0, discordid: 1 },
+            projection: { _id: 0, discordid: 1, hasAskedForRecalc: 1 },
         });
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.userNotBindedReject
-                )
+                    Constants.userNotBindedReject,
+                ),
             ),
         });
     }
@@ -53,7 +53,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (bindInfo.hasAskedForRecalc) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userHasRequestedRecalc")
+                localization.getTranslation("userHasRequestedRecalc"),
             ),
         });
     }
@@ -61,7 +61,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (await bindInfo.isDPPBanned()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userIsDPPBanned")
+                localization.getTranslation("userIsDPPBanned"),
             ),
         });
     }
@@ -71,7 +71,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("userQueued"),
-            user.toString()
+            user.toString(),
         ),
     });
 };
