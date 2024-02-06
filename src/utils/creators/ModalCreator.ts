@@ -28,9 +28,9 @@ export abstract class ModalCreator {
             .setCustomId(customId)
             .setTitle(title)
             .addComponents(
-                ...fields.map((v) =>
-                    new ActionRowBuilder<TextInputBuilder>().addComponents(v)
-                )
+                fields.map((v) =>
+                    new ActionRowBuilder<TextInputBuilder>().addComponents(v),
+                ),
             );
 
         await interaction.showModal(modal);
