@@ -1,13 +1,19 @@
 import { EventUtil } from "structures/core/EventUtil";
 import { AttachmentBuilder, TextChannel } from "discord.js";
 import { consola } from "consola";
+import { Config } from "@alice-core/Config";
 
 export const run: EventUtil["run"] = async (client, error: Error) => {
+    consola.error(error);
+
+    // Do not send logs to error log channel while in debug mode.
+    if (Config.isDebug) {
+        return;
+    }
+
     const errorLogChannel: TextChannel = <TextChannel>(
         await client.channels.fetch("833903416475516939")
     );
-
-    consola.error(error);
 
     if (!errorLogChannel) {
         return;
