@@ -22,6 +22,7 @@ export class SupportTicketCollectionManager extends DatabaseCollectionManager<
             controlPanelMessageId: "",
             createdAt: Date.now(),
             description: "",
+            fromPreset: false,
             guildChannelId: "",
             status: SupportTicketStatus.open,
             threadChannelId: "",

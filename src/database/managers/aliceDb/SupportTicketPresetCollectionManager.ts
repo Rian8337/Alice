@@ -14,7 +14,6 @@ export class SupportTicketPresetCollectionManager extends DatabaseCollectionMana
             id: 0,
             name: "",
             title: "",
-            description: "",
         };
     }
 

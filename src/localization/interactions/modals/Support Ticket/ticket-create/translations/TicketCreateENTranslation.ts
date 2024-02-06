@@ -7,7 +7,6 @@ import { bold } from "discord.js";
  */
 export class TicketCreateENTranslation extends Translation<TicketCreateStrings> {
     override readonly translations: TicketCreateStrings = {
-        pleaseWait: "Please wait...",
         createTicketFailed: `I'm sorry, I could not make your ticket. For copying convenience, here were your title and description:\n\n${bold("Title")}: %s\n\n${bold("Description")}: %s`,
         createTicketSuccess: "Successfully created your ticket.",
     };

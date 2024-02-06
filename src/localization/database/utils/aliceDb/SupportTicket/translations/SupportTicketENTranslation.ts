@@ -31,5 +31,6 @@ export class SupportTicketENTranslation extends Translation<SupportTicketStrings
         trackingMessageTicketChannelButtonLabel: "Ticket Channel",
         trackingMessageMoveButtonLabel: "Move",
         none: "None",
+        pleaseWait: "Please wait...",
     };
 }

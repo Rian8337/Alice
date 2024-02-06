@@ -14,9 +14,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const presetName = interaction.options.getString("preset");
 
-    let prefilledTitle = "";
-    let prefilledDescription = "";
-
     if (presetName) {
         const preset =
             await DatabaseManager.aliceDb.collections.supportTicketPreset.getOne(
@@ -32,8 +29,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
         }
 
-        prefilledTitle = preset.title;
-        prefilledDescription = preset.description;
+        if (!(await preset.validate(interaction))) {
+            return;
+        }
+
+        return interaction.showModal(preset.buildModal());
     }
 
     ModalCreator.createModal(
@@ -48,8 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .setPlaceholder(
                 localization.getTranslation("ticketModalTitlePlaceholder"),
             )
-            .setLabel(localization.getTranslation("ticketModalTitleLabel"))
-            .setValue(prefilledTitle),
+            .setLabel(localization.getTranslation("ticketModalTitleLabel")),
         new TextInputBuilder()
             .setCustomId("description")
             .setRequired(true)
@@ -62,8 +61,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             )
             .setLabel(
                 localization.getTranslation("ticketModalDescriptionLabel"),
-            )
-            .setValue(prefilledDescription),
+            ),
     );
 };
 

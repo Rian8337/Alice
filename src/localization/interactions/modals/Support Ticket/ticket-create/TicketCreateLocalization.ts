@@ -3,7 +3,6 @@ import { Translations } from "@alice-localization/base/Translations";
 import { TicketCreateENTranslation } from "./translations/TicketCreateENTranslation";
 
 export interface TicketCreateStrings {
-    readonly pleaseWait: string;
     readonly createTicketFailed: string;
     readonly createTicketSuccess: string;
 }

@@ -18,9 +18,4 @@ export interface DatabaseSupportTicketPreset extends BaseDocument {
      * The title of the preset.
      */
     readonly title: string;
-
-    /**
-     * The description of the preset.
-     */
-    readonly description: string;
 }

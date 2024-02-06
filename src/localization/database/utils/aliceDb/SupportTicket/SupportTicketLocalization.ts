@@ -27,6 +27,7 @@ export interface SupportTicketStrings {
     readonly trackingMessageTicketChannelButtonLabel: string;
     readonly trackingMessageMoveButtonLabel: string;
     readonly none: string;
+    readonly pleaseWait: string;
 }
 
 /**

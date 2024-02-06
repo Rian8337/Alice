@@ -89,6 +89,11 @@ export class SupportTicket extends Manager {
     status: SupportTicketStatus;
 
     /**
+     * Whether this ticket was made from a preset.
+     */
+    readonly fromPreset: boolean;
+
+    /**
      * Whether this ticket is open.
      */
     get isOpen() {
@@ -126,6 +131,103 @@ export class SupportTicket extends Manager {
         return DatabaseManager.aliceDb.collections.supportTicket;
     }
 
+    /**
+     * Creates a support ticket and registers it to the database.
+     *
+     * @param authorId The author of the ticket.
+     * @param title The title of the ticket.
+     * @param description The description of the ticket.
+     * @param fromPreset Whether the ticket was from a preset.
+     * @param assignees Users who are assigned to this ticket.
+     * @param language The language to create the ticket for. Defaults to English.
+     */
+    static async create(
+        authorId: Snowflake,
+        title: string,
+        description: string,
+        fromPreset: boolean,
+        assignees: Snowflake[] = [],
+        language: Language = "en",
+    ): Promise<OperationResult> {
+        const guild = await this.client.guilds.fetch(Constants.mainServer);
+        const userChannel = await guild.channels.fetch(
+            Constants.supportTicketUserChannel,
+        );
+        const staffChannel = await guild.channels.fetch(
+            Constants.supportTicketStaffChannel,
+        );
+
+        if (
+            !(userChannel instanceof TextChannel) ||
+            !(staffChannel instanceof TextChannel)
+        ) {
+            return this.createOperationResult(false, "Invalid channel");
+        }
+
+        const dbManager = DatabaseManager.aliceDb.collections.supportTicket;
+        const ticketId = await dbManager.getNewId(authorId);
+        const threadChannel = await userChannel.threads.create({
+            name: `Ticket #${ticketId} (${authorId})`,
+            invitable: false,
+            type: ChannelType.PrivateThread,
+            reason: "New ticket opened",
+        });
+        const localization = new SupportTicketLocalization(language);
+
+        const controlPanelMessage = await threadChannel.send({
+            content: localization.getTranslation("pleaseWait"),
+        });
+
+        const trackingMessage = await staffChannel.send({
+            content: localization.getTranslation("pleaseWait"),
+        });
+
+        const databaseTicket: DatabaseSupportTicket = {
+            authorId: authorId,
+            assigneeIds: assignees,
+            controlPanelMessageId: controlPanelMessage.id,
+            createdAt: Date.now(),
+            description: description,
+            fromPreset: fromPreset,
+            id: ticketId,
+            guildChannelId: Constants.supportTicketUserChannel,
+            status: SupportTicketStatus.open,
+            title: title,
+            threadChannelId: threadChannel.id,
+            trackingMessageId: trackingMessage.id,
+        };
+
+        const result = await dbManager.insert(databaseTicket);
+
+        if (result.failed()) {
+            await threadChannel.delete("Ticket creation failed");
+            await trackingMessage.delete();
+
+            return this.createOperationResult(false);
+        }
+
+        const ticket = new SupportTicket(databaseTicket);
+
+        await controlPanelMessage.edit({
+            content: MessageCreator.createWarn(
+                "You may control your ticket from this message or slash commands.",
+            ),
+            embeds: [ticket.toUserEmbed(language)],
+            components: ticket.createUserControlPanelButtons(language),
+        });
+        await controlPanelMessage.pin();
+
+        await trackingMessage.edit({
+            content: "",
+            embeds: [ticket.toStaffEmbed()],
+            components: ticket.createTrackingMessageButtons(),
+        });
+
+        await threadChannel.members.add(authorId);
+
+        return this.createOperationResult(true);
+    }
+
     constructor(
         data: DatabaseSupportTicket = DatabaseManager.aliceDb?.collections
             .supportTicket.defaultDocument ?? {},
@@ -137,6 +239,7 @@ export class SupportTicket extends Manager {
         this.assigneeIds = data.assigneeIds ?? [];
         this.authorId = data.authorId;
         this.description = data.description;
+        this.fromPreset = data.fromPreset;
         this.guildChannelId = data.guildChannelId;
         this.controlPanelMessageId = data.controlPanelMessageId;
         this.createdAt = new Date(data.createdAt);
