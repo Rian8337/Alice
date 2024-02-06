@@ -54,7 +54,7 @@ export interface DatabaseSupportTicket extends BaseDocument {
     /**
      * The epoch time at which this ticket was created, in milliseconds.
      */
-    readonly createdAt: number;
+    readonly createdAt: Date;
 
     /**
      * The status of this ticket.

@@ -31,65 +31,18 @@ import { ObjectId } from "mongodb";
 /**
  * Represents a support ticket.
  */
-export class SupportTicket extends Manager {
-    /**
-     * The ID of this ticket.
-     */
+export class SupportTicket extends Manager implements DatabaseSupportTicket {
     readonly id: number;
-
-    /**
-     * The IDs of people who are assigned to address this ticket.
-     */
     assigneeIds: Snowflake[];
-
-    /**
-     * The Discord ID of the author of this ticket.
-     */
     readonly authorId: Snowflake;
-
-    /**
-     * The ID of the guild channel of this ticket.
-     */
     guildChannelId: Snowflake;
-
-    /**
-     * The ID of the thread channel of this ticket.
-     */
     threadChannelId: Snowflake;
-
-    /**
-     * The ID of the "control panel" message of this ticket in the thread channel.
-     */
     controlPanelMessageId: Snowflake;
-
-    /**
-     * The ID of the message that tracks this ticket in the tracking text channel.
-     */
     readonly trackingMessageId: Snowflake;
-
-    /**
-     * The title of this ticket.
-     */
     title: string;
-
-    /**
-     * The description of this ticket.
-     */
     description: string;
-
-    /**
-     * The date at which this ticket was created.
-     */
     readonly createdAt: Date;
-
-    /**
-     * The status of this ticket.
-     */
     status: SupportTicketStatus;
-
-    /**
-     * The ID of the ticket preset, if this ticket was made from a preset.
-     */
     readonly presetId?: number;
 
     /**
@@ -185,7 +138,7 @@ export class SupportTicket extends Manager {
             authorId: authorId,
             assigneeIds: assignees,
             controlPanelMessageId: controlPanelMessage.id,
-            createdAt: Date.now(),
+            createdAt: new Date(),
             description: description,
             id: ticketId,
             guildChannelId: Constants.supportTicketUserChannel,
@@ -240,7 +193,7 @@ export class SupportTicket extends Manager {
         this.description = data.description;
         this.guildChannelId = data.guildChannelId;
         this.controlPanelMessageId = data.controlPanelMessageId;
-        this.createdAt = new Date(data.createdAt);
+        this.createdAt = data.createdAt;
         this.presetId = data.presetId;
         this.status = data.status;
         this.title = data.title;

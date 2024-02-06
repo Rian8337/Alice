@@ -20,7 +20,7 @@ export class SupportTicketCollectionManager extends DatabaseCollectionManager<
             assigneeIds: [],
             authorId: "",
             controlPanelMessageId: "",
-            createdAt: Date.now(),
+            createdAt: new Date(),
             description: "",
             guildChannelId: "",
             status: SupportTicketStatus.open,
