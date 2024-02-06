@@ -9,6 +9,8 @@ export class TicketENTranslation extends Translation<TicketStrings> {
         ticketNotFound: "I'm sorry, I could not find the ticket!",
         presetNotFound: "I'm sorry, I could not find the preset!",
         noTicketsFound: "I'm sorry, I could not find any tickets!",
+        noTicketPresetsExist:
+            "I'm sorry, there are no ticket presets as of now!",
         noTicketsAssigned:
             "I'm sorry, you do not have any assigned tickets that match your filter!",
         ticketEditModalTitle: "Edit Ticket",
@@ -34,6 +36,7 @@ export class TicketENTranslation extends Translation<TicketStrings> {
         assignTicketSuccess: "Successfully assigned you to the ticket.",
         ticketListEmbedTitle: "Tickets from %s",
         assignedTicketListEmbedTitle: "Assigned Tickets",
+        ticketPresetListEmbedTitle: "Ticket Presets",
         ticketStatus: "Status",
         ticketGoToChannel: "Go to Ticket Channel",
     };

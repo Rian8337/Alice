@@ -120,6 +120,35 @@ export const config: SlashCommand["config"] = {
             ],
         },
         {
+            name: "list",
+            type: ApplicationCommandOptionType.Subcommand,
+            description: "Lists all tickets from you or a user.",
+            options: [
+                {
+                    name: "author",
+                    type: ApplicationCommandOptionType.User,
+                    description:
+                        "The user who opened the ticket. Defaults to yourself.",
+                },
+                {
+                    name: "status",
+                    type: ApplicationCommandOptionType.Integer,
+                    description:
+                        "The ticket status to filter for. If unspecified, no status filter is applied.",
+                    choices: [
+                        {
+                            name: "Open",
+                            value: SupportTicketStatus.open,
+                        },
+                        {
+                            name: "Closed",
+                            value: SupportTicketStatus.closed,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
             name: "move",
             type: ApplicationCommandOptionType.Subcommand,
             description: "Moves a ticket to a channel.",
@@ -150,33 +179,9 @@ export const config: SlashCommand["config"] = {
             ],
         },
         {
-            name: "list",
+            name: "presets",
             type: ApplicationCommandOptionType.Subcommand,
-            description: "Lists all tickets from you or a user.",
-            options: [
-                {
-                    name: "author",
-                    type: ApplicationCommandOptionType.User,
-                    description:
-                        "The user who opened the ticket. Defaults to yourself.",
-                },
-                {
-                    name: "status",
-                    type: ApplicationCommandOptionType.Integer,
-                    description:
-                        "The ticket status to filter for. If unspecified, no status filter is applied.",
-                    choices: [
-                        {
-                            name: "Open",
-                            value: SupportTicketStatus.open,
-                        },
-                        {
-                            name: "Closed",
-                            value: SupportTicketStatus.closed,
-                        },
-                    ],
-                },
-            ],
+            description: "Lists all available ticket presets.",
         },
         {
             name: "reopen",
