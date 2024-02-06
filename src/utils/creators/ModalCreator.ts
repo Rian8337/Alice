@@ -1,10 +1,5 @@
-import {
-    ActionRowBuilder,
-    ModalBuilder,
-    ModalSubmitInteraction,
-    RepliableInteraction,
-    TextInputBuilder,
-} from "discord.js";
+import { ModalRepliableInteraction } from "@alice-structures/core/ModalRepliableInteraction";
+import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "discord.js";
 
 /**
  * A utility to create modals for interactions.
@@ -19,7 +14,7 @@ export abstract class ModalCreator {
      * @param fields The fields in the modal.
      */
     static async createModal(
-        interaction: Exclude<RepliableInteraction, ModalSubmitInteraction>,
+        interaction: ModalRepliableInteraction,
         customId: string,
         title: string,
         ...fields: TextInputBuilder[]

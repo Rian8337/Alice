@@ -4,8 +4,8 @@ import { ModalCommand } from "@alice-structures/core/ModalCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { AccountRebindTicketPresetProcessor } from "@alice-utils/ticket/presets/processors/AccountRebindTicketPresetProcessor";
-import { BaseTicketPresetProcessor } from "@alice-utils/ticket/presets/processors/BaseTicketPresetProcessor";
+import { AccountRebindTicketPresetProcessor } from "@alice-utils/ticket/presets/AccountRebindTicketPresetProcessor";
+import { ModalTicketPresetProcessor } from "@alice-utils/ticket/presets/ModalTicketPresetProcessor";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const language = await CommandHelper.getLocale(interaction);
@@ -14,7 +14,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const id = parseInt(interaction.customId.split("#")[1]);
-    let presetProcessor: BaseTicketPresetProcessor | undefined;
+    let presetProcessor: ModalTicketPresetProcessor;
 
     switch (id) {
         case 1:
@@ -28,12 +28,9 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
             });
     }
 
-    if (!presetProcessor) {
-        return;
-    }
-
     const processedPreset =
-        await presetProcessor.processModalFields(interaction);
+        await presetProcessor.processModalSubmission(interaction);
+
     if (!processedPreset) {
         return;
     }

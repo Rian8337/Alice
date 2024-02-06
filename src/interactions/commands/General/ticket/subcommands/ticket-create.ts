@@ -29,11 +29,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
         }
 
-        if (!(await preset.validate(interaction))) {
-            return;
-        }
-
-        return interaction.showModal(preset.buildModal());
+        return preset.createProcessor().process(interaction, preset);
     }
 
     ModalCreator.createModal(
