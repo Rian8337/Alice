@@ -62,7 +62,7 @@ export interface DatabaseSupportTicket extends BaseDocument {
     readonly status: SupportTicketStatus;
 
     /**
-     * Whether this ticket was made from a preset.
+     * The ID of the ticket preset, if this ticket was made from a preset.
      */
-    readonly fromPreset: boolean;
+    readonly presetId?: number;
 }

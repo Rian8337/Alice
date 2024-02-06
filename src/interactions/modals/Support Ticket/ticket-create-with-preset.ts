@@ -42,8 +42,8 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         interaction.user.id,
         processedPreset.title,
         processedPreset.description,
-        true,
         processedPreset.assignees,
+        id,
         language,
     );
 

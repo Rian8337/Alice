@@ -8,8 +8,8 @@ export class SupportTicketENTranslation extends Translation<SupportTicketStrings
     override readonly translations: SupportTicketStrings = {
         ticketMovedNotice: "This ticket has been moved to %s.",
         embedAuthor: "Author",
-        embedCreationDate: "Creation Date",
         embedStatus: "Status",
+        embedTicketFromPreset: "Created from preset ID %s",
         embedTicketAssignees: "Assignees",
         embedTicketOpen: "Open",
         embedTicketClosed: "Closed",

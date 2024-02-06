@@ -5,8 +5,8 @@ import { SupportTicketENTranslation } from "./translations/SupportTicketENTransl
 export interface SupportTicketStrings {
     readonly ticketMovedNotice: string;
     readonly embedAuthor: string;
-    readonly embedCreationDate: string;
     readonly embedStatus: string;
+    readonly embedTicketFromPreset: string;
     readonly embedTicketAssignees: string;
     readonly embedTicketOpen: string;
     readonly embedTicketClosed: string;

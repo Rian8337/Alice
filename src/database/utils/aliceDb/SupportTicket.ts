@@ -10,6 +10,7 @@ import { DatabaseSupportTicket } from "@alice-structures/database/aliceDb/Databa
 import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import {
     ActionRowBuilder,
     AnyThreadChannel,
@@ -21,10 +22,8 @@ import {
     Message,
     Snowflake,
     TextChannel,
-    TimestampStyles,
     channelLink,
     messageLink,
-    time,
     userMention,
 } from "discord.js";
 import { ObjectId } from "mongodb";
@@ -89,9 +88,9 @@ export class SupportTicket extends Manager {
     status: SupportTicketStatus;
 
     /**
-     * Whether this ticket was made from a preset.
+     * The ID of the ticket preset, if this ticket was made from a preset.
      */
-    readonly fromPreset: boolean;
+    readonly presetId?: number;
 
     /**
      * Whether this ticket is open.
@@ -137,16 +136,16 @@ export class SupportTicket extends Manager {
      * @param authorId The author of the ticket.
      * @param title The title of the ticket.
      * @param description The description of the ticket.
-     * @param fromPreset Whether the ticket was from a preset.
-     * @param assignees Users who are assigned to this ticket.
+     * @param assignees Users who are assigned to the ticket.
+     * @param presetId The ID of the ticket preset, if the ticket was made from a preset.
      * @param language The language to create the ticket for. Defaults to English.
      */
     static async create(
         authorId: Snowflake,
         title: string,
         description: string,
-        fromPreset: boolean,
         assignees: Snowflake[] = [],
+        presetId?: number,
         language: Language = "en",
     ): Promise<OperationResult> {
         const guild = await this.client.guilds.fetch(Constants.mainServer);
@@ -188,9 +187,9 @@ export class SupportTicket extends Manager {
             controlPanelMessageId: controlPanelMessage.id,
             createdAt: Date.now(),
             description: description,
-            fromPreset: fromPreset,
             id: ticketId,
             guildChannelId: Constants.supportTicketUserChannel,
+            presetId: presetId,
             status: SupportTicketStatus.open,
             title: title,
             threadChannelId: threadChannel.id,
@@ -239,10 +238,10 @@ export class SupportTicket extends Manager {
         this.assigneeIds = data.assigneeIds ?? [];
         this.authorId = data.authorId;
         this.description = data.description;
-        this.fromPreset = data.fromPreset;
         this.guildChannelId = data.guildChannelId;
         this.controlPanelMessageId = data.controlPanelMessageId;
         this.createdAt = new Date(data.createdAt);
+        this.presetId = data.presetId;
         this.status = data.status;
         this.title = data.title;
         this.threadChannelId = data.threadChannelId;
@@ -602,23 +601,19 @@ export class SupportTicket extends Manager {
         const localization = this.getLocalization(language);
 
         return EmbedCreator.createNormalEmbed({
-            color: "LuminousVividPink",
+            footerText:
+                `${localization.getTranslation("embedStatus")}: ${this.statusToString(language)}` +
+                (this.presetId !== undefined
+                    ? ` | ${StringHelper.formatString(localization.getTranslation("embedTicketFromPreset"), this.presetId.toString())}`
+                    : ""),
         })
             .setTitle(this.title)
+            .setColor(this.isOpen ? "LuminousVividPink" : "Purple")
+            .setTimestamp(this.createdAt)
             .setFields(
                 {
                     name: localization.getTranslation("embedAuthor"),
                     value: `${userMention(this.authorId)} (${this.authorId})`,
-                    inline: true,
-                },
-                {
-                    name: localization.getTranslation("embedCreationDate"),
-                    value: time(this.createdAt, TimestampStyles.LongDateTime),
-                    inline: true,
-                },
-                {
-                    name: localization.getTranslation("embedStatus"),
-                    value: this.statusToString(language),
                     inline: true,
                 },
                 {
@@ -642,23 +637,19 @@ export class SupportTicket extends Manager {
         const localization = this.getLocalization("en");
 
         return EmbedCreator.createNormalEmbed({
-            color: "Orange",
+            footerText:
+                `${localization.getTranslation("embedStatus")}: ${this.statusToString()}` +
+                (this.presetId !== undefined
+                    ? ` | ${StringHelper.formatString(localization.getTranslation("embedTicketFromPreset"), this.presetId.toString())}`
+                    : ""),
         })
             .setTitle(this.title)
+            .setColor(this.isOpen ? "Green" : "Purple")
+            .setTimestamp(this.createdAt)
             .setFields(
                 {
                     name: localization.getTranslation("embedAuthor"),
                     value: `${userMention(this.authorId)} (${this.authorId})`,
-                    inline: true,
-                },
-                {
-                    name: localization.getTranslation("embedCreationDate"),
-                    value: time(this.createdAt, TimestampStyles.LongDateTime),
-                    inline: true,
-                },
-                {
-                    name: localization.getTranslation("embedStatus"),
-                    value: this.statusToString(),
                     inline: true,
                 },
                 {

@@ -18,7 +18,7 @@ export const run: ModalCommand["run"] = async (client, interaction) => {
         interaction.user.id,
         title,
         description,
-        false,
+        undefined,
         undefined,
         language,
     );
