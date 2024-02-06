@@ -46,6 +46,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             status: status ?? undefined,
         },
         {
+            sort: { createdAt: -1 },
             projection: {
                 id: 1,
                 title: 1,

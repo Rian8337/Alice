@@ -48,6 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             authorId: author?.id,
             status: status ?? undefined,
         },
+        { sort: { createdAt: -1 } },
     );
 
     if (tickets.size === 0) {
