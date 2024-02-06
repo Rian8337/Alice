@@ -28,7 +28,7 @@ export class SupportTicketENTranslation extends Translation<SupportTicketStrings
         userControlPanelTrackingMessageButtonLabel: "Tracker (Staff Only)",
         trackingMessageAssignButtonLabel: "Assign",
         trackingMessageUnassignButtonLabel: "Unassign",
-        trackingMessageTicketChannelButtonLabel: "Ticket Channel",
+        trackingMessageTicketChannelButtonLabel: "User Ticket Channel",
         trackingMessageMoveButtonLabel: "Move",
         none: "None",
         pleaseWait: "Please wait...",

@@ -38,6 +38,9 @@ export interface DatabaseSupportTicket extends BaseDocument {
 
     /**
      * The ID of the message that tracks this ticket in the tracking text channel.
+     *
+     * It is also the ID of the staff thread channel that tracks this ticket in
+     * the tracking text channel.
      */
     readonly trackingMessageId: Snowflake;
 

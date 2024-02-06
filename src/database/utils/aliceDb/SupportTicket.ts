@@ -20,6 +20,7 @@ import {
     EmbedBuilder,
     ForumChannel,
     Message,
+    PublicThreadChannel,
     Snowflake,
     TextChannel,
     channelLink,
@@ -44,6 +45,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
     readonly createdAt: Date;
     status: SupportTicketStatus;
     readonly presetId?: number;
+    readonly _id?: ObjectId;
 
     /**
      * Whether this ticket is open.
@@ -76,8 +78,6 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             Constants.mainServer,
         );
     }
-
-    readonly _id?: ObjectId;
 
     private get dbManager() {
         return DatabaseManager.aliceDb.collections.supportTicket;
@@ -175,6 +175,11 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             components: ticket.createTrackingMessageButtons(),
         });
 
+        await trackingMessage.startThread({
+            name: threadChannel.name + " - Staff Discussion",
+            reason: "New ticket opened",
+        });
+
         await threadChannel.members.add(authorId);
 
         return this.createOperationResult(true);
@@ -227,8 +232,16 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             );
         }
 
-        const threadChannel = await this.getThreadChannel();
-        if (!threadChannel) {
+        const userThreadChannel = await this.getUserThreadChannel();
+        if (!userThreadChannel) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("cannotGetTicketMessage"),
+            );
+        }
+
+        const staffThreadChannel = await this.getStaffThreadChannel();
+        if (!staffThreadChannel) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("cannotGetTicketMessage"),
@@ -251,8 +264,11 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
 
         await this.updateMessages(language);
 
-        await threadChannel.setLocked(true, "Ticket closed");
-        await threadChannel.setArchived(true, "Ticket closed");
+        await userThreadChannel.setLocked(true, "Ticket closed");
+        await userThreadChannel.setArchived(true, "Ticket closed");
+
+        await staffThreadChannel.setLocked(true, "Ticket closed");
+        await staffThreadChannel.setArchived(true, "Ticket closed");
 
         return this.createOperationResult(true);
     }
@@ -274,8 +290,16 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             );
         }
 
-        const threadChannel = await this.getThreadChannel();
-        if (!threadChannel) {
+        const userThreadChannel = await this.getUserThreadChannel();
+        if (!userThreadChannel) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("cannotGetTicketMessage"),
+            );
+        }
+
+        const staffThreadChannel = await this.getStaffThreadChannel();
+        if (!staffThreadChannel) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("cannotGetTicketMessage"),
@@ -296,8 +320,11 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             return result;
         }
 
-        await threadChannel.setArchived(false, "Ticket reopened");
-        await threadChannel.setLocked(false, "Ticket reopened");
+        await userThreadChannel.setArchived(false, "Ticket reopened");
+        await userThreadChannel.setLocked(false, "Ticket reopened");
+
+        await staffThreadChannel.setArchived(false, "Ticket reopened");
+        await staffThreadChannel.setLocked(false, "Ticket reopened");
 
         await this.updateMessages(language);
 
@@ -366,15 +393,15 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             );
         }
 
-        const currentThreadChannel = await this.getThreadChannel();
-        if (!currentThreadChannel) {
+        const currentUserThreadChannel = await this.getUserThreadChannel();
+        if (!currentUserThreadChannel) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("cannotGetTicketMessage"),
             );
         }
 
-        const newThreadChannel = await channel.threads
+        const newUserThreadChannel = await channel.threads
             .create({
                 name: `Ticket #${this.id} (${this.authorId})`,
                 message: {
@@ -388,7 +415,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
                         : ChannelType.PublicThread,
             })
             .catch(() => null);
-        if (!newThreadChannel) {
+        if (!newUserThreadChannel) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("cannotCreateThread"),
@@ -402,32 +429,32 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             {
                 $set: {
                     guildChannelId: channel.id,
-                    threadChannelId: newThreadChannel.id,
-                    controlPanelMessageId: newThreadChannel.id,
+                    threadChannelId: newUserThreadChannel.id,
+                    controlPanelMessageId: newUserThreadChannel.id,
                 },
             },
         );
 
         if (result.failed()) {
-            await newThreadChannel.delete("Ticket movement failed");
+            await newUserThreadChannel.delete("Ticket movement failed");
 
             return result;
         }
 
-        await currentThreadChannel.send({
+        await currentUserThreadChannel.send({
             content: MessageCreator.createWarn(
                 localization.getTranslation("ticketMovedNotice"),
-                currentThreadChannel.toString(),
+                currentUserThreadChannel.toString(),
             ),
         });
 
-        await currentThreadChannel.setLocked(true, "Ticket moved");
-        await currentThreadChannel.setArchived(true, "Ticket moved");
+        await currentUserThreadChannel.setLocked(true, "Ticket moved");
+        await currentUserThreadChannel.setArchived(true, "Ticket moved");
 
         this.guildChannelId = channel.id;
-        this.threadChannelId = newThreadChannel.id;
+        this.threadChannelId = newUserThreadChannel.id;
         // Starter message ID = thread ID
-        this.controlPanelMessageId = newThreadChannel.id;
+        this.controlPanelMessageId = newUserThreadChannel.id;
 
         return this.createOperationResult(
             await this.updateMessages(language),
@@ -629,20 +656,11 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
      * @param language The language to create the buttons for.
      * @returns An array of {@link ActionRowBuilder} containing the buttons.
      */
-    createUserControlPanelButtons(
+    private createUserControlPanelButtons(
         language: Language = "en",
     ): ActionRowBuilder<ButtonBuilder>[] {
         const localization = this.getLocalization(language);
         const rowBuilder = new ActionRowBuilder<ButtonBuilder>();
-        const trackingChannelButton = new ButtonBuilder()
-            .setEmoji(Symbols.magnifyingGlassTiltedRight)
-            .setStyle(ButtonStyle.Link)
-            .setLabel(
-                localization.getTranslation(
-                    "userControlPanelTrackingMessageButtonLabel",
-                ),
-            )
-            .setURL(this.trackingMessageURL);
 
         if (this.isOpen) {
             rowBuilder.addComponents(
@@ -674,7 +692,6 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
                             "userControlPanelMoveButtonLabel",
                         ),
                     ),
-                trackingChannelButton,
             );
         } else {
             rowBuilder.addComponents(
@@ -687,9 +704,20 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
                             "userControlPanelOpenButtonLabel",
                         ),
                     ),
-                trackingChannelButton,
             );
         }
+
+        rowBuilder.addComponents(
+            new ButtonBuilder()
+                .setEmoji(Symbols.magnifyingGlassTiltedRight)
+                .setStyle(ButtonStyle.Link)
+                .setLabel(
+                    localization.getTranslation(
+                        "userControlPanelTrackingMessageButtonLabel",
+                    ),
+                )
+                .setURL(this.trackingMessageURL),
+        );
 
         return [rowBuilder];
     }
@@ -699,7 +727,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
      *
      * @returns An {@link ActionRowBuilder} containing the buttons.
      */
-    createTrackingMessageButtons(): ActionRowBuilder<ButtonBuilder>[] {
+    private createTrackingMessageButtons(): ActionRowBuilder<ButtonBuilder>[] {
         const localization = this.getLocalization("en");
         const rowBuilders: ActionRowBuilder<ButtonBuilder>[] = [];
         const ticketChannelButton = new ButtonBuilder()
@@ -811,7 +839,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
         }
     }
 
-    private async getThreadChannel(): Promise<AnyThreadChannel | null> {
+    private async getUserThreadChannel(): Promise<AnyThreadChannel | null> {
         const guild = await this.client.guilds
             .fetch(Constants.mainServer)
             .catch(() => null);
@@ -833,6 +861,28 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
         }
 
         return channel.threads.fetch(this.threadChannelId).catch(() => null);
+    }
+
+    private async getStaffThreadChannel(): Promise<PublicThreadChannel<false> | null> {
+        const guild = await this.client.guilds
+            .fetch(Constants.mainServer)
+            .catch(() => null);
+
+        if (!guild) {
+            return null;
+        }
+
+        const channel = await guild.channels
+            .fetch(Constants.supportTicketStaffChannel)
+            .catch(() => null);
+
+        if (!(channel instanceof TextChannel)) {
+            return null;
+        }
+
+        return channel.threads
+            .fetch(this.trackingMessageId)
+            .catch(() => null) as Promise<PublicThreadChannel<false> | null>;
     }
 
     private async updateMessages(language: Language = "en"): Promise<boolean> {
@@ -860,7 +910,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
     }
 
     private async getUserControlPanelMessage(): Promise<Message<true> | null> {
-        const thread = await this.getThreadChannel();
+        const thread = await this.getUserThreadChannel();
 
         return (
             thread?.messages
