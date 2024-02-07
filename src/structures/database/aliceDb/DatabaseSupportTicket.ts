@@ -55,7 +55,7 @@ export interface DatabaseSupportTicket extends BaseDocument {
     readonly description: string;
 
     /**
-     * The epoch time at which this ticket was created, in milliseconds.
+     * The date at which this ticket was created.
      */
     readonly createdAt: Date;
 
@@ -68,4 +68,9 @@ export interface DatabaseSupportTicket extends BaseDocument {
      * The ID of the ticket preset, if this ticket was made from a preset.
      */
     readonly presetId?: number;
+
+    /**
+     * The date at which this ticket was closed.
+     */
+    readonly closedAt?: Date;
 }

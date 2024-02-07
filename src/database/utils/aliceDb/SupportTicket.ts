@@ -10,6 +10,7 @@ import { DatabaseSupportTicket } from "@alice-structures/database/aliceDb/Databa
 import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import {
     ActionRowBuilder,
@@ -23,8 +24,10 @@ import {
     PublicThreadChannel,
     Snowflake,
     TextChannel,
+    TimestampStyles,
     channelLink,
     messageLink,
+    time,
     userMention,
 } from "discord.js";
 import { ObjectId } from "mongodb";
@@ -45,6 +48,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
     readonly createdAt: Date;
     status: SupportTicketStatus;
     readonly presetId?: number;
+    closedAt?: Date;
     readonly _id?: ObjectId;
 
     /**
@@ -59,6 +63,18 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
      */
     get isClosed() {
         return this.status === SupportTicketStatus.closed;
+    }
+
+    /**
+     * Whether this ticket can be reopened if it is closed.
+     */
+    get reopenable() {
+        // Disallow reopen if the ticket was closed a week ago.
+        return (
+            this.closedAt !== undefined &&
+            DateTimeFormatHelper.getTimeDifference(this.closedAt) <
+                -3600 * 24 * 7 * 1000
+        );
     }
 
     /**
@@ -204,6 +220,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
         this.title = data.title;
         this.threadChannelId = data.threadChannelId;
         this.trackingMessageId = data.trackingMessageId;
+        this.closedAt = data.closedAt;
     }
 
     /**
@@ -249,13 +266,14 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
         }
 
         this.status = SupportTicketStatus.closed;
+        this.closedAt = new Date();
 
         const result = await this.dbManager.updateOne(
             {
                 id: this.id,
                 authorId: this.authorId,
             },
-            { $set: { status: this.status } },
+            { $set: { status: this.status, closedAt: this.closedAt } },
         );
 
         if (result.failed()) {
@@ -280,13 +298,19 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
      * @returns An object containing information about the operation.
      */
     async reopen(language: Language = "en"): Promise<OperationResult> {
-        // TODO: disallow reopen if ticket is too old
         const localization = this.getLocalization(language);
 
         if (this.isOpen) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("ticketIsOpen"),
+            );
+        }
+
+        if (!this.reopenable) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("ticketIsTooOldToOpen"),
             );
         }
 
@@ -307,13 +331,14 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
         }
 
         this.status = SupportTicketStatus.open;
+        delete this.closedAt;
 
         const result = await this.dbManager.updateOne(
             {
                 id: this.id,
                 authorId: this.authorId,
             },
-            { $set: { status: this.status } },
+            { $set: { status: this.status }, $unset: { closedAt: 1 } },
         );
 
         if (result.failed()) {
@@ -580,7 +605,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
     toUserEmbed(language: Language = "en"): EmbedBuilder {
         const localization = this.getLocalization(language);
 
-        return EmbedCreator.createNormalEmbed({
+        const embed = EmbedCreator.createNormalEmbed({
             footerText:
                 `${localization.getTranslation("embedStatus")}: ${this.statusToString(language)}` +
                 (this.presetId !== undefined
@@ -590,24 +615,35 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             .setTitle(this.title)
             .setColor(this.isOpen ? "LuminousVividPink" : "Purple")
             .setTimestamp(this.createdAt)
-            .setFields(
-                {
-                    name: localization.getTranslation("embedAuthor"),
-                    value: `${userMention(this.authorId)} (${this.authorId})`,
-                    inline: true,
-                },
-                {
-                    name: localization.getTranslation("embedTicketAssignees"),
-                    value:
-                        this.assigneeIds
-                            .map((v) => `- ${userMention(v)} (${v})`)
-                            .join("\n") || localization.getTranslation("none"),
-                },
-                {
-                    name: localization.getTranslation("embedTicketDescription"),
-                    value: this.description,
-                },
-            );
+            .addFields({
+                name: localization.getTranslation("embedAuthor"),
+                value: `${userMention(this.authorId)} (${this.authorId})`,
+                inline: true,
+            });
+
+        if (this.closedAt) {
+            embed.addFields({
+                name: localization.getTranslation("embedCloseDate"),
+                value: time(this.closedAt, TimestampStyles.LongDateTime),
+                inline: true,
+            });
+        }
+
+        embed.addFields(
+            {
+                name: localization.getTranslation("embedTicketAssignees"),
+                value:
+                    this.assigneeIds
+                        .map((v) => `- ${userMention(v)} (${v})`)
+                        .join("\n") || localization.getTranslation("none"),
+            },
+            {
+                name: localization.getTranslation("embedTicketDescription"),
+                value: this.description,
+            },
+        );
+
+        return embed;
     }
 
     /**
@@ -616,7 +652,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
     toStaffEmbed(): EmbedBuilder {
         const localization = this.getLocalization("en");
 
-        return EmbedCreator.createNormalEmbed({
+        const embed = EmbedCreator.createNormalEmbed({
             footerText:
                 `${localization.getTranslation("embedStatus")}: ${this.statusToString()}` +
                 (this.presetId !== undefined
@@ -626,28 +662,39 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
             .setTitle(this.title)
             .setColor(this.isOpen ? "Green" : "Purple")
             .setTimestamp(this.createdAt)
-            .setFields(
-                {
-                    name: localization.getTranslation("embedAuthor"),
-                    value: `${userMention(this.authorId)} (${this.authorId})`,
-                    inline: true,
-                },
-                {
-                    name: localization.getTranslation("embedTicketAssignees"),
-                    value:
-                        this.assigneeIds
-                            .map((v) => `- ${userMention(v)} (${v})`)
-                            .join("\n") || localization.getTranslation("none"),
-                },
-                {
-                    name: localization.getTranslation("embedTicketDescription"),
-                    // Truncate the description for staff embeds.
-                    value:
-                        this.description.length > 250
-                            ? this.description.substring(0, 248) + "..."
-                            : this.description,
-                },
-            );
+            .addFields({
+                name: localization.getTranslation("embedAuthor"),
+                value: `${userMention(this.authorId)} (${this.authorId})`,
+                inline: true,
+            });
+
+        if (this.closedAt) {
+            embed.addFields({
+                name: localization.getTranslation("embedCloseDate"),
+                value: time(this.closedAt, TimestampStyles.LongDateTime),
+                inline: true,
+            });
+        }
+
+        embed.addFields(
+            {
+                name: localization.getTranslation("embedTicketAssignees"),
+                value:
+                    this.assigneeIds
+                        .map((v) => `- ${userMention(v)} (${v})`)
+                        .join("\n") || localization.getTranslation("none"),
+            },
+            {
+                name: localization.getTranslation("embedTicketDescription"),
+                // Truncate the description for staff embeds.
+                value:
+                    this.description.length > 250
+                        ? this.description.substring(0, 248) + "..."
+                        : this.description,
+            },
+        );
+
+        return embed;
     }
 
     /**
@@ -693,7 +740,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
                         ),
                     ),
             );
-        } else {
+        } else if (this.reopenable) {
             rowBuilder.addComponents(
                 new ButtonBuilder()
                     .setCustomId(`reopenSupportTicket#${this.threadChannelId}`)
@@ -803,18 +850,23 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
         } else {
             const rowBuilder = new ActionRowBuilder<ButtonBuilder>();
 
-            rowBuilder.addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`reopenSupportTicket#${this.threadChannelId}`)
-                    .setEmoji(Symbols.outboxTray)
-                    .setStyle(ButtonStyle.Primary)
-                    .setLabel(
-                        localization.getTranslation(
-                            "userControlPanelOpenButtonLabel",
+            if (this.reopenable) {
+                rowBuilder.addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(
+                            `reopenSupportTicket#${this.threadChannelId}`,
+                        )
+                        .setEmoji(Symbols.outboxTray)
+                        .setStyle(ButtonStyle.Primary)
+                        .setLabel(
+                            localization.getTranslation(
+                                "userControlPanelOpenButtonLabel",
+                            ),
                         ),
-                    ),
-                ticketChannelButton,
-            );
+                );
+            }
+
+            rowBuilder.addComponents(ticketChannelButton);
 
             rowBuilders.push(rowBuilder);
         }

@@ -14,6 +14,8 @@ export class SupportTicketENTranslation extends Translation<SupportTicketStrings
         embedTicketOpen: "Open",
         embedTicketClosed: "Closed",
         embedTicketDescription: "Description",
+        embedCloseDate: "Closed Date",
+        ticketIsTooOldToOpen: "ticket is too old to reopen",
         ticketIsOpen: "ticket is already open",
         ticketIsNotOpen: "ticket is not open",
         userIsAlreadyAssigned: "already assigned to ticket",

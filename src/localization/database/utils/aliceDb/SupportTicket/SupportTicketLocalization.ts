@@ -11,6 +11,8 @@ export interface SupportTicketStrings {
     readonly embedTicketOpen: string;
     readonly embedTicketClosed: string;
     readonly embedTicketDescription: string;
+    readonly embedCloseDate: string;
+    readonly ticketIsTooOldToOpen: string;
     readonly ticketIsOpen: string;
     readonly ticketIsNotOpen: string;
     readonly userIsAlreadyAssigned: string;
