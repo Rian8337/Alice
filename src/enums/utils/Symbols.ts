@@ -38,4 +38,6 @@ export enum Symbols {
     label = "🏷️",
     laptop = "💻",
     books = "📚",
+    house = "🏠",
+    wrench = "🔧",
 }
