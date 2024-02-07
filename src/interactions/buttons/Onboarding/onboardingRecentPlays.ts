@@ -8,18 +8,15 @@ import {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
-    EmbedBuilder,
     quote,
 } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: OnboardingRecentPlaysLocalization =
-        new OnboardingRecentPlaysLocalization(
-            await CommandHelper.getLocale(interaction),
-        );
+    const localization = new OnboardingRecentPlaysLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
-    // TODO: singular recent, 5-play recent
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: "Navy",
     });
@@ -44,7 +41,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 localization.getTranslation("tryCommandsForBindedAccount"),
         );
 
-    const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder();
+    const row = new ActionRowBuilder<ButtonBuilder>();
 
     row.addComponents(
         new ButtonBuilder()
