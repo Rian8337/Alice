@@ -1,11 +1,11 @@
 import { Translation } from "@alice-localization/base/Translation";
-import { InitialOnboardingStrings } from "../InitialOnboardingLocalization";
+import { OnboardingHomeStrings } from "../OnboardingHomeLocalization";
 
 /**
- * The English translation for the `initialOnboarding` button command.
+ * The English translation for the `onboardingHome` button command.
  */
-export class InitialOnboardingENTranslation extends Translation<InitialOnboardingStrings> {
-    override readonly translations: InitialOnboardingStrings = {
+export class OnboardingHomeENTranslation extends Translation<OnboardingHomeStrings> {
+    override readonly translations: OnboardingHomeStrings = {
         welcomeToServer: "Welcome to the server!",
         accidentalDismissPrompt:
             "If this message was accidentally dismissed, feel free to restart the process from your welcome message.",

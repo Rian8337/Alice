@@ -5,10 +5,9 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: OnboardingBindAccountActionLocalization =
-        new OnboardingBindAccountActionLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+    const localization = new OnboardingBindAccountActionLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
     ModalCreator.createModal(
         interaction,
@@ -20,7 +19,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             .setStyle(TextInputStyle.Short)
             .setLabel(localization.getTranslation("bindModalEmailLabel"))
             .setPlaceholder(
-                localization.getTranslation("bindModalEmailPlaceholder")
+                localization.getTranslation("bindModalEmailPlaceholder"),
             ),
         new TextInputBuilder()
             .setCustomId("username")
@@ -30,8 +29,8 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             .setMaxLength(20)
             .setLabel(localization.getTranslation("bindModalUsernameLabel"))
             .setPlaceholder(
-                localization.getTranslation("bindModalUsernamePlaceholder")
-            )
+                localization.getTranslation("bindModalUsernamePlaceholder"),
+            ),
     );
 };
 

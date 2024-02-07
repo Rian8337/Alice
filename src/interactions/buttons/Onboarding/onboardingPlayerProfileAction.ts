@@ -1,5 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OnboardingPlayerProfileActionLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingPlayerProfileAction/OnboardingPlayerProfileActionLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -9,12 +8,13 @@ import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: OnboardingPlayerProfileActionLocalization =
-        new OnboardingPlayerProfileActionLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+    const localization = new OnboardingPlayerProfileActionLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
-    const bindInfo: UserBind | null =
+    await InteractionHelper.deferReply(interaction);
+
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
@@ -25,43 +25,41 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                     clan: 1,
                     weightedAccuracy: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userNotBinded")
+                localization.getTranslation("userNotBinded"),
             ),
         });
     }
 
-    await InteractionHelper.deferReply(interaction);
-
-    const player: Player | null = await Player.getInformation(bindInfo.uid);
+    const player = await Player.getInformation(bindInfo.uid);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("profileNotFound")
+                localization.getTranslation("profileNotFound"),
             ),
         });
     }
 
-    const profileImage: Buffer = (await ProfileManager.getProfileStatistics(
+    const profileImage = (await ProfileManager.getProfileStatistics(
         player.uid,
         player,
         bindInfo,
         undefined,
         false,
-        localization.language
+        localization.language,
     ))!;
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("viewingProfile"),
             player.username,
-            ProfileManager.getProfileLink(player.uid).toString()
+            ProfileManager.getProfileLink(player.uid).toString(),
         ),
         files: [profileImage],
     });

@@ -1,10 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { OnboardingShowMostRecentPlayLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingShowMostRecentPlay/OnboardingShowMostRecentPlayLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -13,20 +10,22 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { MapInfo, Modes } from "@rian8337/osu-base";
-import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
-import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { EmbedBuilder, GuildMember, InteractionReplyOptions } from "discord.js";
+import { Modes } from "@rian8337/osu-base";
+import { Player } from "@rian8337/osu-droid-utilities";
+import { InteractionReplyOptions } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: OnboardingShowMostRecentPlayLocalization =
-        new OnboardingShowMostRecentPlayLocalization(
-            await CommandHelper.getLocale(interaction),
-        );
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
+
+    const localization = new OnboardingShowMostRecentPlayLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
     await InteractionHelper.deferReply(interaction);
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user.id,
             {
@@ -45,7 +44,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player: Player | null = await Player.getInformation(bindInfo.uid);
+    const player = await Player.getInformation(bindInfo.uid);
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -62,20 +61,17 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score: Score = player.recentPlays[0];
-    const scoreAttribs: CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
-    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+    const score = player.recentPlays[0];
+    const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
         score.scoreID,
         Modes.droid,
         PPCalculationMethod.live,
     );
 
-    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
+    const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
-        (<GuildMember | null>interaction.member)?.displayColor,
+        interaction.member.displayColor,
         scoreAttribs,
         undefined,
         localization.language,
@@ -97,10 +93,9 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             return InteractionHelper.reply(interaction, options);
         }
 
-        const beatmapInfo: MapInfo<true> | null =
-            await BeatmapManager.getBeatmap(score.hash, {
-                checkFile: true,
-            });
+        const beatmapInfo = await BeatmapManager.getBeatmap(score.hash, {
+            checkFile: true,
+        });
 
         if (beatmapInfo?.hasDownloadedBeatmap()) {
             MessageButtonCreator.createRecentScoreButton(

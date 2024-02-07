@@ -1,8 +1,8 @@
 import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
-import { InitialOnboardingENTranslation } from "./translations/InitialOnboardingENTranslation";
+import { OnboardingHomeENTranslation } from "./translations/OnboardingHomeENTranslation";
 
-export interface InitialOnboardingStrings {
+export interface OnboardingHomeStrings {
     readonly welcomeToServer: string;
     readonly accidentalDismissPrompt: string;
     readonly botIntroduction: string;
@@ -11,12 +11,12 @@ export interface InitialOnboardingStrings {
 }
 
 /**
- * Localizations for the `initialOnboarding` button command.
+ * Localizations for the `onboardingHome` button command.
  */
-export class InitialOnboardingLocalization extends Localization<InitialOnboardingStrings> {
+export class OnboardingHomeLocalization extends Localization<OnboardingHomeStrings> {
     protected override readonly localizations: Readonly<
-        Translations<InitialOnboardingStrings>
+        Translations<OnboardingHomeStrings>
     > = {
-        en: new InitialOnboardingENTranslation(),
+        en: new OnboardingHomeENTranslation(),
     };
 }

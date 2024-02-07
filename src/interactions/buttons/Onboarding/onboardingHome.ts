@@ -1,5 +1,5 @@
 import { Config } from "@alice-core/Config";
-import { InitialOnboardingLocalization } from "@alice-localization/interactions/buttons/Onboarding/initialOnboarding/InitialOnboardingLocalization";
+import { OnboardingHomeLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingHome/OnboardingHomeLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { createOnboardingNavigationRows } from "@alice-utils/creators/OnboardingNavigationRowCreator";
@@ -10,7 +10,7 @@ import { bold, userMention } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (client, interaction) => {
     const language = await CommandHelper.getLocale(interaction);
-    const localization = new InitialOnboardingLocalization(language);
+    const localization = new OnboardingHomeLocalization(language);
 
     const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
@@ -34,7 +34,7 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
                 localization.getTranslation("beginOnboarding"),
         );
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(interaction, {
         embeds: [embed],
         components: createOnboardingNavigationRows(
             interaction.customId,
@@ -45,4 +45,5 @@ export const run: ButtonCommand["run"] = async (client, interaction) => {
 
 export const config: ButtonCommand["config"] = {
     replyEphemeral: true,
+    instantDeferInDebug: false,
 };

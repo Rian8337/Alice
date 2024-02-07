@@ -2,6 +2,7 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { OnboardingRecentPlaysLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingRecentPlays/OnboardingRecentPlaysLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { createOnboardingNavigationRows } from "@alice-utils/creators/OnboardingNavigationRowCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
@@ -12,9 +13,8 @@ import {
 } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization = new OnboardingRecentPlaysLocalization(
-        await CommandHelper.getLocale(interaction),
-    );
+    const language = await CommandHelper.getLocale(interaction);
+    const localization = new OnboardingRecentPlaysLocalization(language);
 
     const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
@@ -56,12 +56,16 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             .setLabel(localization.getTranslation("showRecentPlays")),
     );
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(interaction, {
         embeds: [embed],
-        components: [row],
+        components: [
+            ...createOnboardingNavigationRows(interaction.customId, language),
+            row,
+        ],
     });
 };
 
 export const config: ButtonCommand["config"] = {
     replyEphemeral: true,
+    instantDeferInDebug: false,
 };

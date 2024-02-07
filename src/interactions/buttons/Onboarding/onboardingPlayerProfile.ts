@@ -2,23 +2,21 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { OnboardingPlayerProfileLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingPlayerProfile/OnboardingPlayerProfileLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { createOnboardingNavigationRows } from "@alice-utils/creators/OnboardingNavigationRowCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
-    EmbedBuilder,
     quote,
 } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: OnboardingPlayerProfileLocalization =
-        new OnboardingPlayerProfileLocalization(
-            await CommandHelper.getLocale(interaction),
-        );
+    const language = await CommandHelper.getLocale(interaction);
+    const localization = new OnboardingPlayerProfileLocalization(language);
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: "Gold",
     });
@@ -43,7 +41,8 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 localization.getTranslation("tryCommandForBindedAccount"),
         );
 
-    const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder();
+    const row = new ActionRowBuilder<ButtonBuilder>();
+
     row.addComponents(
         new ButtonBuilder()
             .setCustomId("onboardingPlayerProfileAction")
@@ -52,12 +51,16 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             .setLabel(localization.getTranslation("showOwnProfile")),
     );
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(interaction, {
         embeds: [embed],
-        components: [row],
+        components: [
+            ...createOnboardingNavigationRows(interaction.customId, language),
+            row,
+        ],
     });
 };
 
 export const config: ButtonCommand["config"] = {
     replyEphemeral: true,
+    instantDeferInDebug: false,
 };

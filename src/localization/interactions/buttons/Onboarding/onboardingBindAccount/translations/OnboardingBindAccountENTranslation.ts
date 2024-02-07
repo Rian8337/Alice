@@ -15,7 +15,7 @@ export class OnboardingBindAccountENTranslation extends Translation<OnboardingBi
         bindingDefinition:
             "Bind your osu!droid account to your Discord account to use most of the features that I offer.",
         bindingConstraints:
-            "An osu!droid account can only bound to a Discord account. Additionally, a Discord account can only bind up to 2 osu!droid accounts.",
+            "An osu!droid account can only be bound to a Discord account. Additionally, a Discord account can only bind up to 2 osu!droid accounts.",
         bindingRequirement:
             "To use this feature, you must have a registered osu!droid account.",
         accountRegistrationQuote: `Don't have a registered osu!droid account yet? Register one ${hyperlink(

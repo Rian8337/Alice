@@ -1,17 +1,16 @@
 import { OnboardingScoreComparisonLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingScoreComparison/OnboardingScoreComparisonLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { createOnboardingNavigationRows } from "@alice-utils/creators/OnboardingNavigationRowCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { EmbedBuilder, quote } from "discord.js";
+import { quote } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const localization: OnboardingScoreComparisonLocalization =
-        new OnboardingScoreComparisonLocalization(
-            await CommandHelper.getLocale(interaction),
-        );
+    const language = await CommandHelper.getLocale(interaction);
+    const localization = new OnboardingScoreComparisonLocalization(language);
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: "DarkPurple",
     });
@@ -34,11 +33,16 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 ),
         );
 
-    InteractionHelper.reply(interaction, {
+    InteractionHelper.update(interaction, {
         embeds: [embed],
+        components: createOnboardingNavigationRows(
+            interaction.customId,
+            language,
+        ),
     });
 };
 
 export const config: ButtonCommand["config"] = {
     replyEphemeral: true,
+    instantDeferInDebug: false,
 };
