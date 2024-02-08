@@ -7,6 +7,7 @@ export interface SupportTicketGuideButtonCreatorStrings {
     readonly purposeButton: string;
     readonly writingTicketButton: string;
     readonly ticketPresetsButton: string;
+    readonly dosAndDontsButton: string;
 }
 
 /**

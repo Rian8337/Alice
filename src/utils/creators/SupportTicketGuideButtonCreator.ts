@@ -22,6 +22,7 @@ export function createSupportTicketGuideButton(
     const purposeButtonId = "supportTicketGuidePurpose";
     const writingTicketButtonId = "supportTicketGuideCreation";
     const ticketPresetsButtonId = "supportTicketGuidePresets";
+    const dosAndDontsButtonId = "supportTicketGuideDosDonts";
 
     return [
         new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -53,6 +54,12 @@ export function createSupportTicketGuideButton(
                 .setStyle(ButtonStyle.Secondary)
                 .setEmoji(Symbols.bookmarkTabs)
                 .setLabel(localization.getTranslation("ticketPresetsButton")),
+            new ButtonBuilder()
+                .setCustomId(dosAndDontsButtonId)
+                .setDisabled(currentCustomId === dosAndDontsButtonId)
+                .setStyle(ButtonStyle.Secondary)
+                .setEmoji(Symbols.bookmarkTabs)
+                .setLabel(localization.getTranslation("dosAndDontsButton")),
         ),
     ];
 }

@@ -10,5 +10,6 @@ export class SupportTicketGuideButtonCreatorENTranslation extends Translation<Su
         purposeButton: "Purpose",
         writingTicketButton: "Writing a Ticket",
         ticketPresetsButton: "Ticket Presets",
+        dosAndDontsButton: "DOs and DON'Ts",
     };
 }

@@ -9,7 +9,5 @@ export class SupportTicketGuideCreationENTranslation extends Translation<Support
     override readonly translations: SupportTicketGuideCreationStrings = {
         embedTitle: "Writing a Ticket",
         howToCreateTicket: `To create a ticket, use the "Create Ticket" button above. Alternatively, you can use the ${chatInputApplicationCommandMention("ticket", "create", "1204482021511135315")} command.`,
-        includeDetails:
-            "Please include as much details as you can when writing a ticket. It will help staff members in assisting you.",
     };
 }

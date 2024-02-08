@@ -20,11 +20,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 
     embed
         .setTitle(localization.getTranslation("embedTitle"))
-        .setDescription(
-            localization.getTranslation("howToCreateTicket") +
-                "\n\n" +
-                localization.getTranslation("includeDetails"),
-        );
+        .setDescription(localization.getTranslation("howToCreateTicket"));
 
     InteractionHelper.update(interaction, {
         embeds: [embed],

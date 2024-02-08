@@ -5,7 +5,6 @@ import { SupportTicketGuideCreationENTranslation } from "./translations/SupportT
 export interface SupportTicketGuideCreationStrings {
     readonly embedTitle: string;
     readonly howToCreateTicket: string;
-    readonly includeDetails: string;
 }
 
 /**
