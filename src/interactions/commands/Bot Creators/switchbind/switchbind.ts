@@ -16,7 +16,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: SwitchbindLocalization = new SwitchbindLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     if (
@@ -29,11 +29,13 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.noPermissionReject
-                )
+                    Constants.noPermissionReject,
+                ),
             ),
         });
     }
+
+    await InteractionHelper.deferReply(interaction);
 
     const uid: number = interaction.options.getInteger("uid", true);
 
@@ -42,7 +44,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             uid,
             Constants.uidMinLimit,
             Constants.uidMaxLimit,
-            true
+            true,
         )
     ) {
         return InteractionHelper.reply(interaction, {
@@ -62,7 +64,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("uidNotBinded")
+                localization.getTranslation("uidNotBinded"),
             ),
         });
     }
@@ -70,21 +72,21 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     const result: OperationResult = await bindInfo.moveBind(
         uid,
         user.id,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("switchFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("switchSuccessful")
+            localization.getTranslation("switchSuccessful"),
         ),
     });
 };
