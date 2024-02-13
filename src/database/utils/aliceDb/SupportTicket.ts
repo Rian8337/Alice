@@ -72,7 +72,7 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
         // Disallow reopen if the ticket was closed a week ago.
         return (
             this.closedAt !== undefined &&
-            DateTimeFormatHelper.getTimeDifference(this.closedAt) <
+            DateTimeFormatHelper.getTimeDifference(this.closedAt) >=
                 -3600 * 24 * 7 * 1000
         );
     }
