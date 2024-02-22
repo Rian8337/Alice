@@ -165,6 +165,6 @@ export abstract class StringHelper {
      * @returns Whether the osu!droid username is valid.
      */
     static isUsernameValid(username: string): boolean {
-        return /^[a-zA-Z0-9]+$/g.test(username);
+        return /^[a-zA-Z0-9_]+$/g.test(username);
     }
 }

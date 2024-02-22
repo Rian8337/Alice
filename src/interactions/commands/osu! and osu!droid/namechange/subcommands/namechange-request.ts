@@ -95,7 +95,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (
         StringHelper.hasUnicode(newUsername) ||
-        !/^[a-zA-Z0-9_]+$/.test(newUsername)
+        !StringHelper.isUsernameValid(newUsername)
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -110,16 +110,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("newUsernameTooLong"),
-            ),
-        });
-    }
-
-    if (!StringHelper.isUsernameValid(newUsername)) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation(
-                    "newUsernameContainsInvalidCharacters",
-                ),
             ),
         });
     }
