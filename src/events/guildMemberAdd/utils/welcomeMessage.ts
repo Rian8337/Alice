@@ -1,5 +1,6 @@
 import {
     ActionRowBuilder,
+    AttachmentBuilder,
     ButtonBuilder,
     ButtonStyle,
     GuildBasedChannel,
@@ -17,7 +18,7 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     }
 
     const general: GuildBasedChannel | null = await member.guild.channels.fetch(
-        Constants.mainServer
+        Constants.mainServer,
     );
 
     if (!general?.isTextBased()) {
@@ -26,14 +27,18 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
 
     const isBinded: boolean =
         await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
-            member.id
+            member.id,
         );
 
     const options: MessageCreateOptions = {
         content: `Welcome ${isBinded ? "back " : ""}to ${
             member.guild.name
         }, ${member}!`,
-        files: [Constants.welcomeImageLink],
+        files: [
+            new AttachmentBuilder(Constants.welcomeImagePath, {
+                name: "welcomeimage.png",
+            }),
+        ],
     };
 
     if (!isBinded) {
@@ -44,7 +49,7 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
                 .setCustomId("initialOnboarding")
                 .setEmoji(Symbols.wavingHand)
                 .setStyle(ButtonStyle.Primary)
-                .setLabel("Bot Introduction")
+                .setLabel("Bot Introduction"),
         );
 
         options.components = [row];

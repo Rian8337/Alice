@@ -1,5 +1,6 @@
 import { ConstantsStrings } from "@alice-localization/core/constants/ConstantsLocalization";
 import { Snowflake } from "discord.js";
+import { join } from "path";
 
 /**
  * Constants that are used throughout the bot.
@@ -58,8 +59,12 @@ export class Constants {
     /**
      * The link to welcome image (used to welcome new members to the server).
      */
-    static readonly welcomeImageLink =
-        "https://cdn.discordapp.com/attachments/316545691545501706/1101147416410984478/LLzteLz.jpg";
+    static readonly welcomeImagePath = join(
+        process.cwd(),
+        "files",
+        "images",
+        "welcomeimage.png",
+    );
 
     /**
      * The uid limit that is used to check if a uid from a user's input is too small.
