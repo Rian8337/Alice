@@ -27,9 +27,7 @@ export class RebalancePerformanceCalculationResult<
         }
 
         const { difficultyAttributes } = this.result;
-        let string: string = `${difficultyAttributes.starRating.toFixed(
-            2,
-        )} stars (`;
+        let string = `${difficultyAttributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
 
         const addDetail = (num: number, suffix: string) =>

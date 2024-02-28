@@ -15,8 +15,6 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import {
     ApplicationCommandOptionChoiceData,
     Collection,
-    GuildEmoji,
-    BaseMessageOptions,
     Snowflake,
     TextChannel,
     bold,
@@ -29,18 +27,13 @@ import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyH
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { UserBind } from "../elainaDb/UserBind";
 import { OperationResult } from "structures/core/OperationResult";
 import {
-    Accuracy,
     Mod,
-    MapInfo,
     ModEasy,
     ModNoFail,
     ModHalfTime,
-    MapStats,
     ModUtil,
-    RequestResponse,
     Modes,
 } from "@rian8337/osu-base";
 import {
@@ -171,7 +164,7 @@ export class Challenge extends Manager {
         return this.status === "finished";
     }
 
-    static readonly challengeManagerRole: Snowflake = "973476729039499284";
+    static readonly challengeManagerRole = "973476729039499284";
 
     static readonly passCommandChoices: ApplicationCommandOptionChoiceData<string>[] =
         [
@@ -226,15 +219,12 @@ export class Challenge extends Manager {
         ];
 
     static readonly bonusCommandChoices: ApplicationCommandOptionChoiceData<string>[] =
-        [
-            ...this.passCommandChoices,
-            {
-                name: "Mods",
-                value: "mod",
-            },
-        ];
+        this.passCommandChoices.concat({
+            name: "Mods",
+            value: "mod",
+        });
 
-    private readonly challengeChannelID: Snowflake = "669221772083724318";
+    private readonly challengeChannelID = "669221772083724318";
 
     constructor(
         data: DatabaseChallenge = DatabaseManager.aliceDb?.collections.challenge
@@ -263,8 +253,7 @@ export class Challenge extends Manager {
      * @returns An object containing information about the operation.
      */
     async start(language: Language = "en"): Promise<OperationResult> {
-        const localization: ChallengeLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (this.status !== "scheduled") {
             return this.createOperationResult(
@@ -290,16 +279,15 @@ export class Challenge extends Manager {
         this.timelimit =
             Math.floor(Date.now() / 1000) + 86400 * (this.isWeekly ? 7 : 1);
 
-        const notificationChannel: TextChannel = <TextChannel>(
+        const notificationChannel = <TextChannel>(
             await this.client.channels.fetch(this.challengeChannelID)
         );
 
-        const challengeEmbedOptions: BaseMessageOptions | null =
-            await EmbedCreator.createChallengeEmbed(
-                this,
-                this.isWeekly ? "#af46db" : "#e3b32d",
-                language,
-            );
+        const challengeEmbedOptions = await EmbedCreator.createChallengeEmbed(
+            this,
+            this.isWeekly ? "#af46db" : "#e3b32d",
+            language,
+        );
 
         if (!challengeEmbedOptions) {
             return this.createOperationResult(
@@ -339,8 +327,7 @@ export class Challenge extends Manager {
         force?: boolean,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: ChallengeLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (!this.isOngoing) {
             return this.createOperationResult(
@@ -361,16 +348,15 @@ export class Challenge extends Manager {
 
         this.status = "finished";
 
-        const notificationChannel: TextChannel = <TextChannel>(
+        const notificationChannel = <TextChannel>(
             await this.client.channels.fetch(this.challengeChannelID)
         );
 
-        const challengeEmbedOptions: BaseMessageOptions | null =
-            await EmbedCreator.createChallengeEmbed(
-                this,
-                this.isWeekly ? "#af46db" : "#e3b32d",
-                language,
-            );
+        const challengeEmbedOptions = await EmbedCreator.createChallengeEmbed(
+            this,
+            this.isWeekly ? "#af46db" : "#e3b32d",
+            language,
+        );
 
         if (!challengeEmbedOptions) {
             return this.createOperationResult(
@@ -392,12 +378,10 @@ export class Challenge extends Manager {
         );
 
         // Award first place in leaderboard
-        const firstPlaceScore: Score | undefined = (
-            await this.getCurrentLeaderboard()
-        ).shift();
+        const firstPlaceScore = (await this.getCurrentLeaderboard()).shift();
 
         if (firstPlaceScore) {
-            const winnerBindInfo: UserBind | null =
+            const winnerBindInfo =
                 await DatabaseManager.elainaDb.collections.userBind.getFromUid(
                     firstPlaceScore.uid,
                     {
@@ -424,7 +408,7 @@ export class Challenge extends Manager {
                     { $inc: { power: this.isWeekly ? 50 : 25 } },
                 );
 
-                const coinEmoji: GuildEmoji = this.client.emojis.cache.get(
+                const coinEmoji = this.client.emojis.cache.get(
                     Constants.aliceCoinEmote,
                 )!;
 
@@ -460,8 +444,7 @@ export class Challenge extends Manager {
         replay?: ReplayAnalyzer,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: ChallengeLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (!this.isConstrainFulfilled(score.mods)) {
             return this.createOperationResult(
@@ -502,17 +485,15 @@ export class Challenge extends Manager {
             );
         }
 
-        const calcParams: PerformanceCalculationParameters =
+        const calcParams =
             BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
-        const droidAttribs: CompleteCalculationAttributes<
-            DroidDifficultyAttributes,
-            DroidPerformanceAttributes
-        > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-            this.beatmapid,
-            Modes.droid,
-            PPCalculationMethod.live,
-            calcParams,
-        );
+        const droidAttribs =
+            await DPPProcessorRESTManager.getPerformanceAttributes(
+                this.beatmapid,
+                Modes.droid,
+                PPCalculationMethod.live,
+                calcParams,
+            );
 
         if (!droidAttribs) {
             return this.createOperationResult(
@@ -521,15 +502,13 @@ export class Challenge extends Manager {
             );
         }
 
-        const osuAttribs: CompleteCalculationAttributes<
-            OsuDifficultyAttributes,
-            OsuPerformanceAttributes
-        > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-            this.beatmapid,
-            Modes.osu,
-            PPCalculationMethod.live,
-            calcParams,
-        );
+        const osuAttribs =
+            await DPPProcessorRESTManager.getPerformanceAttributes(
+                this.beatmapid,
+                Modes.osu,
+                PPCalculationMethod.live,
+                calcParams,
+            );
 
         if (!osuAttribs) {
             return this.createOperationResult(
@@ -538,7 +517,7 @@ export class Challenge extends Manager {
             );
         }
 
-        const pass: boolean = await this.verifyPassCompletion(
+        const pass = await this.verifyPassCompletion(
             score,
             droidAttribs,
             osuAttribs,
@@ -562,8 +541,7 @@ export class Challenge extends Manager {
         replay: ReplayAnalyzer,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: ChallengeLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (!replay.data) {
             await ReplayHelper.analyzeReplay(replay);
@@ -604,18 +582,7 @@ export class Challenge extends Manager {
             );
         }
 
-        const attribs:
-            | [
-                  CompleteCalculationAttributes<
-                      DroidDifficultyAttributes,
-                      DroidPerformanceAttributes
-                  >,
-                  CompleteCalculationAttributes<
-                      OsuDifficultyAttributes,
-                      OsuPerformanceAttributes
-                  >,
-              ]
-            | null = await this.getReplayCalculationResult(replay);
+        const attribs = await this.getReplayCalculationResult(replay);
 
         if (!attribs) {
             return this.createOperationResult(
@@ -624,7 +591,7 @@ export class Challenge extends Manager {
             );
         }
 
-        const pass: boolean = await this.verifyPassCompletion(
+        const pass = await this.verifyPassCompletion(
             replay,
             attribs[0],
             attribs[1],
@@ -673,7 +640,7 @@ export class Challenge extends Manager {
         > | null = null;
 
         if (scoreOrReplay instanceof Score) {
-            const calcParams: PerformanceCalculationParameters =
+            const calcParams =
                 BeatmapDifficultyHelper.getCalculationParamsFromScore(
                     scoreOrReplay,
                 );
@@ -692,22 +659,11 @@ export class Challenge extends Manager {
                 calcParams,
             );
         } else {
-            const attribs:
-                | [
-                      CompleteCalculationAttributes<
-                          DroidDifficultyAttributes,
-                          DroidPerformanceAttributes
-                      >,
-                      CompleteCalculationAttributes<
-                          OsuDifficultyAttributes,
-                          OsuPerformanceAttributes
-                      >,
-                  ]
-                | null = await this.getReplayCalculationResult(scoreOrReplay);
+            const attribs =
+                await this.getReplayCalculationResult(scoreOrReplay);
 
             if (attribs) {
-                droidAttribs = attribs[0];
-                osuAttribs = attribs[1];
+                [droidAttribs, osuAttribs] = attribs;
             }
         }
 
@@ -715,25 +671,24 @@ export class Challenge extends Manager {
             return 0;
         }
 
-        const scoreV2: number =
+        const scoreV2 =
             scoreOrReplay instanceof Score
                 ? await this.calculateChallengeScoreV2(scoreOrReplay)
                 : await this.calculateChallengeScoreV2(scoreOrReplay.data!);
 
-        const hitErrorInformation: HitErrorInformation | null =
-            replay.calculateHitError();
+        const hitErrorInformation = replay.calculateHitError();
 
-        let level: number = 0;
+        let level = 0;
 
         for (const bonus of this.bonus.values()) {
-            let highestLevel: number = 0;
+            let highestLevel = 0;
 
             for (const tier of bonus.list) {
-                let bonusComplete: boolean = false;
+                let bonusComplete = false;
 
                 switch (bonus.id) {
                     case "score": {
-                        const score: number =
+                        const score =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.score
                                 : scoreOrReplay.data!.score;
@@ -741,7 +696,7 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "acc": {
-                        const accuracy: Accuracy =
+                        const accuracy =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy
                                 : scoreOrReplay.data!.accuracy;
@@ -749,7 +704,7 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "miss": {
-                        const miss: number =
+                        const miss =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.nmiss
                                 : scoreOrReplay.data!.accuracy.nmiss;
@@ -757,7 +712,7 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "combo": {
-                        const combo: number =
+                        const combo =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.combo
                                 : scoreOrReplay.data!.maxCombo;
@@ -769,7 +724,7 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "mod": {
-                        const mods: Mod[] =
+                        const mods =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.mods
                                 : scoreOrReplay.data!.convertedMods;
@@ -783,7 +738,7 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "rank": {
-                        const rank: string =
+                        const rank =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.rank
                                 : scoreOrReplay.data!.rank;
@@ -801,7 +756,7 @@ export class Challenge extends Manager {
                             osuAttribs.performance.total >= +tier.value;
                         break;
                     case "m300": {
-                        const n300: number =
+                        const n300 =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n300
                                 : scoreOrReplay.data!.accuracy.n300;
@@ -809,7 +764,7 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "m100": {
-                        const n100: number =
+                        const n100 =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n100
                                 : scoreOrReplay.data!.accuracy.n100;
@@ -817,7 +772,7 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "m50": {
-                        const n50: number =
+                        const n50 =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n50
                                 : scoreOrReplay.data!.accuracy.n50;
@@ -847,12 +802,8 @@ export class Challenge extends Manager {
      *
      * @returns The scores that are in the leaderboard of the challenge, sorted by score.
      */
-    async getCurrentLeaderboard(): Promise<Score[]> {
-        const scores: Score[] = await ScoreHelper.fetchDroidLeaderboard(
-            this.hash,
-        );
-
-        return scores;
+    getCurrentLeaderboard(): Promise<Score[]> {
+        return ScoreHelper.fetchDroidLeaderboard(this.hash);
     }
 
     /**
@@ -874,8 +825,7 @@ export class Challenge extends Manager {
      * @param language The locale to get the information for. Defaults to English.
      */
     getBonusInformation(language: Language = "en"): BonusDescription[] {
-        const localization: ChallengeLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         return this.bonus.map((v) => {
             return {
@@ -907,7 +857,7 @@ export class Challenge extends Manager {
      * @returns The beatmap file, `null` if the beatmap could not be downloaded.
      */
     async getBeatmapFile(): Promise<string | null> {
-        const beatmapFileReq: RequestResponse = await RESTManager.request(
+        const beatmapFileReq = await RESTManager.request(
             `https://osu.ppy.sh/osu/${this.beatmapid}`,
         );
 
@@ -915,10 +865,10 @@ export class Challenge extends Manager {
             return null;
         }
 
-        const lines: string[] = beatmapFileReq.data.toString().split("\n");
+        const lines = beatmapFileReq.data.toString().split("\n");
 
         for (let i = 0; i < lines.length; ++i) {
-            let line: string = lines[i];
+            let line = lines[i];
 
             if (line.startsWith(" ") || line.startsWith("_")) {
                 continue;
@@ -930,19 +880,16 @@ export class Challenge extends Manager {
                 continue;
             }
 
-            const p: string[] = line.split(":").map((s) => s.trim());
+            const p = line.split(":").map((s) => s.trim());
 
             if (p.length < 2) {
                 continue;
             }
 
             if (p[0] === "Version") {
-                const matched: RegExpMatchArray =
-                    this.challengeid.match(/(\d+)$/)!;
-
-                const id: number = parseInt(matched[0]);
-
-                const actualVersion: string = p.slice(1).join(":");
+                const matched = this.challengeid.match(/(\d+)$/)!;
+                const id = parseInt(matched[0]);
+                const actualVersion = p.slice(1).join(":");
 
                 if (this.isWeekly) {
                     lines[i] =
@@ -959,12 +906,10 @@ export class Challenge extends Manager {
             }
         }
 
-        const finalFile: string = lines.join("\n");
+        const finalFile = lines.join("\n");
 
         if (this.isScheduled) {
-            const hash: string = createHash("md5")
-                .update(finalFile)
-                .digest("hex");
+            const hash = createHash("md5").update(finalFile).digest("hex");
 
             if (this.hash !== hash) {
                 await DatabaseManager.aliceDb.collections.challenge.updateOne(
@@ -1064,35 +1009,35 @@ export class Challenge extends Manager {
     ): Promise<boolean> {
         switch (this.pass.id) {
             case "score": {
-                const score: number =
+                const score =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.score
                         : scoreOrReplay.data!.score;
                 return score >= +this.pass.value;
             }
             case "acc": {
-                const accuracy: Accuracy =
+                const accuracy =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy
                         : scoreOrReplay.data!.accuracy;
                 return accuracy.value() * 100 >= +this.pass.value;
             }
             case "miss": {
-                const miss: number =
+                const miss =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.nmiss
                         : scoreOrReplay.data!.accuracy.nmiss;
                 return miss < +this.pass.value || !miss;
             }
             case "combo": {
-                const combo: number =
+                const combo =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.combo
                         : scoreOrReplay.data!.maxCombo;
                 return combo >= +this.pass.value;
             }
             case "scorev2": {
-                const scoreV2: number =
+                const scoreV2 =
                     scoreOrReplay instanceof Score
                         ? await this.calculateChallengeScoreV2(scoreOrReplay)
                         : await this.calculateChallengeScoreV2(
@@ -1101,7 +1046,7 @@ export class Challenge extends Manager {
                 return scoreV2 >= +this.pass.value;
             }
             case "rank": {
-                const rank: string =
+                const rank =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.rank
                         : scoreOrReplay.data!.rank;
@@ -1115,21 +1060,21 @@ export class Challenge extends Manager {
             case "pp":
                 return osuAttribs.performance.total >= +this.pass.value;
             case "m300": {
-                const n300: number =
+                const n300 =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n300
                         : scoreOrReplay.data!.accuracy.n300;
                 return n300 >= +this.pass.value;
             }
             case "m100": {
-                const n100: number =
+                const n100 =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n100
                         : scoreOrReplay.data!.accuracy.n100;
                 return n100 <= +this.pass.value;
             }
             case "m50": {
-                const n50: number =
+                const n50 =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n50
                         : scoreOrReplay.data!.accuracy.n50;
@@ -1190,12 +1135,8 @@ export class Challenge extends Manager {
         value: string | number,
         language: Language = "en",
     ): string {
-        const localization: ChallengeLocalization =
-            this.getLocalization(language);
-
-        const BCP47: string = LocaleHelper.convertToBCP47(
-            localization.language,
-        );
+        const localization = this.getLocalization(language);
+        const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
         switch (id) {
             case "score":
@@ -1318,58 +1259,44 @@ export class Challenge extends Manager {
           ]
         | null
     > {
-        const data: ReplayData | null = replay.data;
-
+        const { data } = replay;
         if (!data) {
             return null;
         }
 
-        const stats: MapStats = new MapStats({
-            mods: data.convertedMods,
-            cs: data.forceCS,
-            ar: data.forceAR,
-            od: data.forceOD,
-            hp: data.forceHP,
-            forceCS: data.forceCS !== undefined,
-            forceAR: data.forceAR !== undefined,
-            forceOD: data.forceOD !== undefined,
-            forceHP: data.forceHP !== undefined,
-            speedMultiplier: data.speedMultiplier,
-            oldStatistics: data.replayVersion <= 3,
-        });
-
         const calcParams: PerformanceCalculationParameters =
-            new PerformanceCalculationParameters(
-                data.accuracy,
-                data.accuracy.value() * 100,
-                data.maxCombo,
-                undefined,
-                stats,
-            );
+            new PerformanceCalculationParameters({
+                accuracy: data.accuracy,
+                inputAccuracy: data.accuracy.value() * 100,
+                combo: data.maxCombo,
+                mods: data.convertedMods,
+                forceCS: data.forceCS,
+                forceAR: data.forceAR,
+                forceOD: data.forceOD,
+                forceHP: data.forceHP,
+                customSpeedMultiplier: data.speedMultiplier,
+                oldStatistics: data.replayVersion <= 3,
+            });
 
-        const droidAttribs: CompleteCalculationAttributes<
-            DroidDifficultyAttributes,
-            DroidPerformanceAttributes
-        > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-            this.beatmapid,
-            Modes.droid,
-            PPCalculationMethod.live,
-            calcParams,
-        );
+        const droidAttribs =
+            await DPPProcessorRESTManager.getPerformanceAttributes(
+                this.beatmapid,
+                Modes.droid,
+                PPCalculationMethod.live,
+                calcParams,
+            );
 
         if (!droidAttribs) {
             return null;
         }
 
-        const osuAttribs: CompleteCalculationAttributes<
-            OsuDifficultyAttributes,
-            OsuPerformanceAttributes
-        > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-            this.beatmapid,
-            Modes.osu,
-            PPCalculationMethod.live,
-            calcParams,
-        );
+        const osuAttribs =
+            await DPPProcessorRESTManager.getPerformanceAttributes(
+                this.beatmapid,
+                Modes.osu,
+                PPCalculationMethod.live,
+                calcParams,
+            );
 
         if (!osuAttribs) {
             return null;
@@ -1397,22 +1324,14 @@ export class Challenge extends Manager {
     private async calculateChallengeScoreV2(
         scoreOrReplay: Score | ReplayData,
     ): Promise<number> {
-        const beatmapInfo: MapInfo<true> = (await BeatmapManager.getBeatmap(
-            this.beatmapid,
-        ))!;
+        const beatmapInfo = (await BeatmapManager.getBeatmap(this.beatmapid))!;
 
-        const maximumScore: number = beatmapInfo.beatmap.maxDroidScore(
-            new MapStats({
-                cs: beatmapInfo.cs,
-                ar: beatmapInfo.ar,
-                od: beatmapInfo.od,
-                hp: beatmapInfo.hp,
-                mods: ModUtil.pcStringToMods(this.constrain),
-                speedMultiplier: scoreOrReplay.speedMultiplier,
-            }),
+        const maximumScore = beatmapInfo.beatmap.maxDroidScore(
+            ModUtil.pcStringToMods(this.constrain),
+            scoreOrReplay.speedMultiplier,
         );
 
-        const tempScoreV2: number =
+        const tempScoreV2 =
             (scoreOrReplay.score / maximumScore) * 6e5 +
             Math.pow(scoreOrReplay.accuracy.value(), 4) * 4e5;
 

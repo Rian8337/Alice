@@ -1,6 +1,6 @@
 import { Config } from "@alice-core/Config";
 import { RESTManager } from "./RESTManager";
-import { Modes, RequestResponse } from "@rian8337/osu-base";
+import { ModUtil, Modes, RequestResponse } from "@rian8337/osu-base";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
 import {
@@ -100,7 +100,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod,
         calculationParams?: DifficultyCalculationParameters,
     ): Promise<CacheableDifficultyAttributes<RawDifficultyAttributes> | null> {
-        const url: URL = new URL(`${this.endpoint}get-difficulty-attributes`);
+        const url = new URL(`${this.endpoint}get-difficulty-attributes`);
+
         url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
         url.searchParams.set("gamemode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
@@ -110,54 +111,57 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         );
 
         if (calculationParams) {
-            const { customStatistics } = calculationParams;
-
-            if (customStatistics?.mods && customStatistics.mods.length > 0) {
+            if (calculationParams.mods && calculationParams.mods.length > 0) {
                 url.searchParams.set(
                     "mods",
-                    customStatistics.mods.reduce((a, v) => a + v.acronym, ""),
+                    ModUtil.modsToOsuString(calculationParams.mods),
                 );
             }
 
-            if (customStatistics?.oldStatistics) {
+            if (calculationParams.oldStatistics) {
                 url.searchParams.set("oldstatistics", "1");
             }
 
             if (
-                customStatistics?.speedMultiplier !== undefined &&
-                customStatistics.speedMultiplier !== 1
+                calculationParams.customSpeedMultiplier !== undefined &&
+                calculationParams.customSpeedMultiplier !== 1
             ) {
                 url.searchParams.set(
                     "customspeedmultiplier",
-                    customStatistics.speedMultiplier.toString(),
+                    calculationParams.customSpeedMultiplier.toString(),
                 );
             }
 
-            if (
-                customStatistics?.forceCS &&
-                customStatistics.cs !== undefined
-            ) {
-                url.searchParams.set("forcecs", customStatistics.cs.toString());
+            if (calculationParams.forceCS !== undefined) {
+                url.searchParams.set(
+                    "forcecs",
+                    calculationParams.forceCS.toString(),
+                );
             }
 
-            if (
-                customStatistics?.forceAR &&
-                customStatistics.ar !== undefined
-            ) {
-                url.searchParams.set("forcear", customStatistics.ar.toString());
+            if (calculationParams.forceAR !== undefined) {
+                url.searchParams.set(
+                    "forcear",
+                    calculationParams.forceAR.toString(),
+                );
             }
 
-            if (
-                customStatistics?.forceOD &&
-                customStatistics.od !== undefined
-            ) {
-                url.searchParams.set("forceod", customStatistics.od.toString());
+            if (calculationParams.forceOD !== undefined) {
+                url.searchParams.set(
+                    "forceod",
+                    calculationParams.forceOD.toString(),
+                );
+            }
+
+            if (calculationParams.forceHP !== undefined) {
+                url.searchParams.set(
+                    "forcehp",
+                    calculationParams.forceHP.toString(),
+                );
             }
         }
 
-        const result: RequestResponse | null = await this.request(url).catch(
-            () => null,
-        );
+        const result = await this.request(url).catch(() => null);
 
         if (result?.statusCode !== 200) {
             this.logError(url, result);
@@ -253,7 +257,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         RawDifficultyAttributes,
         PerformanceAttributes
     > | null> {
-        const url: URL = new URL(`${this.endpoint}get-performance-attributes`);
+        const url = new URL(`${this.endpoint}get-performance-attributes`);
+
         url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
         url.searchParams.set("gamemode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
@@ -263,48 +268,46 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         );
 
         if (calculationParams) {
-            const { customStatistics } = calculationParams;
-
-            if (customStatistics?.mods && customStatistics.mods.length > 0) {
+            if (calculationParams.mods && calculationParams.mods.length > 0) {
                 url.searchParams.set(
                     "mods",
-                    customStatistics.mods.reduce((a, v) => a + v.acronym, ""),
+                    ModUtil.modsToOsuString(calculationParams.mods),
                 );
             }
 
-            if (customStatistics?.oldStatistics) {
+            if (calculationParams.oldStatistics) {
                 url.searchParams.set("oldstatistics", "1");
             }
 
             if (
-                customStatistics?.speedMultiplier !== undefined &&
-                customStatistics.speedMultiplier !== 1
+                calculationParams.customSpeedMultiplier !== undefined &&
+                calculationParams.customSpeedMultiplier !== 1
             ) {
                 url.searchParams.set(
                     "customspeedmultiplier",
-                    customStatistics.speedMultiplier.toString(),
+                    calculationParams.customSpeedMultiplier.toString(),
                 );
             }
 
-            if (
-                customStatistics?.forceCS &&
-                customStatistics.cs !== undefined
-            ) {
-                url.searchParams.set("forcecs", customStatistics.cs.toString());
+            if (calculationParams.forceCS !== undefined) {
+                url.searchParams.set(
+                    "forcecs",
+                    calculationParams.forceCS.toString(),
+                );
             }
 
-            if (
-                customStatistics?.forceAR &&
-                customStatistics.ar !== undefined
-            ) {
-                url.searchParams.set("forcear", customStatistics.ar.toString());
+            if (calculationParams.forceAR !== undefined) {
+                url.searchParams.set(
+                    "forcear",
+                    calculationParams.forceAR.toString(),
+                );
             }
 
-            if (
-                customStatistics?.forceOD &&
-                customStatistics.od !== undefined
-            ) {
-                url.searchParams.set("forceod", customStatistics.od.toString());
+            if (calculationParams.forceOD !== undefined) {
+                url.searchParams.set(
+                    "forceod",
+                    calculationParams.forceOD.toString(),
+                );
             }
 
             url.searchParams.set(
@@ -332,9 +335,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             }
         }
 
-        const result: RequestResponse | null = await this.request(url).catch(
-            () => null,
-        );
+        const result = await this.request(url).catch(() => null);
 
         if (result?.statusCode !== 200) {
             this.logError(url, result);
@@ -421,15 +422,14 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         RawDifficultyAttributes,
         PerformanceAttributes
     > | null> {
-        const url: URL = new URL(`${this.endpoint}get-online-score-attributes`);
+        const url = new URL(`${this.endpoint}get-online-score-attributes`);
+
         url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
         url.searchParams.set("scoreid", scoreId.toString());
         url.searchParams.set("gamemode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
 
-        const result: RequestResponse | null = await this.request(url).catch(
-            () => null,
-        );
+        const result = await this.request(url).catch(() => null);
 
         if (result?.statusCode !== 200) {
             this.logError(url, result);
@@ -484,17 +484,16 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         RawDifficultyAttributes,
         DroidPerformanceAttributes
     > | null> {
-        const url: URL = new URL(
+        const url = new URL(
             `${this.endpoint}get-player-best-score-performance`,
         );
+
         url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
         url.searchParams.set("playerid", playerId.toString());
         url.searchParams.set("beatmaphash", beatmapHash);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
 
-        const result: RequestResponse | null = await this.request(url).catch(
-            () => null,
-        );
+        const result = await this.request(url).catch(() => null);
 
         if (result?.statusCode !== 200) {
             this.logError(url, result);
@@ -516,8 +515,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         playerId: number,
         scoreIds: number[],
     ): Promise<PPSubmissionOperationResult | null> {
-        const url: URL = new URL(`${this.endpoint}submit-scores`);
-        const result: RequestResponse | null = await this.request(url, {
+        const url = new URL(`${this.endpoint}submit-scores`);
+        const result = await this.request(url, {
             method: "POST",
             body: {
                 key: process.env.DROID_SERVER_INTERNAL_KEY,
@@ -549,8 +548,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapHash: string,
         replayHash: string,
     ): Promise<boolean> {
-        const url: URL = new URL(`${this.endpoint}persist-local-replay`);
-        const result: RequestResponse | null = await this.request(url, {
+        const url = new URL(`${this.endpoint}persist-local-replay`);
+        const result = await this.request(url, {
             method: "PUT",
             body: {
                 key: process.env.DROID_SERVER_INTERNAL_KEY,
@@ -596,8 +595,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         playerId: number,
         scoreId: number,
     ): Promise<boolean> {
-        const url: URL = new URL(`${this.endpoint}persist-online-replay`);
-        const result: RequestResponse | null = await this.request(url, {
+        const url = new URL(`${this.endpoint}persist-online-replay`);
+        const result = await this.request(url, {
             method: "PUT",
             body: {
                 key: process.env.DROID_SERVER_INTERNAL_KEY,

@@ -285,8 +285,7 @@ export abstract class DPPHelper {
         >,
     ): PPEntry {
         const { params, difficulty, performance } = attributes;
-        const { customStatistics, accuracy: accuracyData } = params;
-        const accuracy = new Accuracy(accuracyData);
+        const accuracy = new Accuracy(params.accuracy);
 
         return {
             uid: score.uid,
@@ -298,8 +297,8 @@ export abstract class DPPHelper {
             combo: params.combo,
             miss: accuracy.nmiss,
             speedMultiplier:
-                customStatistics.speedMultiplier !== 1
-                    ? customStatistics.speedMultiplier
+                params.customSpeedMultiplier !== 1
+                    ? params.customSpeedMultiplier
                     : undefined,
         };
     }

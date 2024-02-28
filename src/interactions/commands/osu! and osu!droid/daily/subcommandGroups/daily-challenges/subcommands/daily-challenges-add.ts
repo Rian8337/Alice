@@ -1,6 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { PassRequirementType } from "structures/challenge/PassRequirementType";
@@ -10,15 +8,14 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MapInfo, MapStats, ModUtil } from "@rian8337/osu-base";
-import { User } from "discord.js";
+import { MapInfo, ModUtil } from "@rian8337/osu-base";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(
+    const localization = new DailyLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const id: string = interaction.options.getString("id", true);
+    const id = interaction.options.getString("id", true);
 
     if (!id.startsWith("d") && !id.startsWith("w")) {
         return InteractionHelper.reply(interaction, {
@@ -28,7 +25,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const matched: RegExpMatchArray | null = id.match(/(\d+)$/);
+    const matched = id.match(/(\d+)$/);
 
     if (!matched || matched.length === 0) {
         return InteractionHelper.reply(interaction, {
@@ -38,7 +35,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const existingChallenge: Challenge | null =
+    const existingChallenge =
         await DatabaseManager.aliceDb.collections.challenge.getById(id);
 
     if (existingChallenge) {
@@ -49,7 +46,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const beatmapId: number = BeatmapManager.getBeatmapID(
+    const beatmapId = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap", true),
     )[0];
 
@@ -75,9 +72,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const points: number = interaction.options.getInteger("points", true);
+    const points = interaction.options.getInteger("points", true);
 
-    const passRequirement: PassRequirementType = <PassRequirementType>(
+    const passRequirement = <PassRequirementType>(
         interaction.options.getString("passrequirement", true)
     );
 
@@ -86,9 +83,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         true,
     );
 
-    const constrain: string = interaction.options.getString("constrain") ?? "";
-
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const constrain = interaction.options.getString("constrain") ?? "";
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     switch (passRequirement) {
         case "score": {
@@ -104,10 +100,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 });
             }
 
-            const maxScore: number = beatmap.beatmap!.maxDroidScore(
-                new MapStats({
-                    mods: ModUtil.pcStringToMods(constrain),
-                }),
+            const maxScore = beatmap.beatmap!.maxDroidScore(
+                ModUtil.pcStringToMods(constrain),
             );
 
             if (!NumberHelper.isNumberInRange(passValue, 0, maxScore, true)) {
@@ -246,27 +240,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             break;
     }
 
-    const featured: User =
+    const featured =
         interaction.options.getUser("featured") ?? interaction.user;
 
-    const result: OperationResult =
-        await DatabaseManager.aliceDb.collections.challenge.insert({
-            challengeid: id,
-            beatmapid: beatmap.beatmapId,
-            featured: featured.id,
-            link: ["", ""],
-            constrain: constrain,
-            pass: {
-                id: passRequirement,
-                value: passValue,
-            },
-            points: points,
-        });
+    const result = await DatabaseManager.aliceDb.collections.challenge.insert({
+        challengeid: id,
+        beatmapid: beatmap.beatmapId,
+        featured: featured.id,
+        link: ["", ""],
+        constrain: constrain,
+        pass: {
+            id: passRequirement,
+            value: passValue,
+        },
+        points: points,
+    });
 
-    if (!result.success) {
+    if (result.failed()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addNewChallengeFailed"),
+                result.reason,
             ),
         });
     }

@@ -1,22 +1,17 @@
 import {
     Beatmap,
-    BeatmapMetadata,
-    CircleSizeCalculator,
+    BeatmapConverter,
+    calculateDroidDifficultyStatistics,
     DroidHitWindow,
     Interpolation,
-    MapStats,
     Modes,
     ModHardRock,
     ModPrecise,
-    ModUtil,
     PlaceableHitObject,
     Spinner,
-    Utils,
     Vector2,
 } from "@rian8337/osu-base";
 import {
-    CursorData,
-    CursorOccurrence,
     CursorOccurrenceGroup,
     HitResult,
     MovementType,
@@ -30,9 +25,9 @@ import { MissInformation } from "./MissInformation";
  */
 export class MissAnalyzer {
     /**
-     * The beatmap metadata played in the replay.
+     * The beatmap played in the replay.
      */
-    private readonly beatmapMetadata: BeatmapMetadata;
+    private readonly beatmap: Beatmap;
 
     /**
      * The objects of the beatmap played in the replay.
@@ -40,19 +35,9 @@ export class MissAnalyzer {
     private readonly objects: readonly PlaceableHitObject[];
 
     /**
-     * The true scale of objects.
-     */
-    private readonly trueObjectScale: number;
-
-    /**
      * The data of the replay.
      */
     private readonly data: ReplayData;
-
-    /**
-     * Approach rate converted to milliseconds.
-     */
-    private readonly approachRateTime: number;
 
     /**
      * The hit window of the replay.
@@ -70,36 +55,32 @@ export class MissAnalyzer {
     private readonly isPrecise: boolean;
 
     /**
+     * The speed multiplier of the beatmap.
+     */
+    private readonly overallSpeedMultiplier: number;
+
+    /**
      * @param difficultyCalculator The difficulty calculator result of the replay.
      * @param data The data of the replay.
      */
     constructor(beatmap: Beatmap, data: ReplayData) {
-        this.beatmapMetadata = beatmap.metadata;
-        this.objects = beatmap.hitObjects.objects;
-        this.data = data;
-
-        const circleSize: number = new MapStats({
-            cs: data.forceCS ?? beatmap.difficulty.cs,
+        this.beatmap = new BeatmapConverter(beatmap).convert({
+            mode: Modes.droid,
             mods: data.convertedMods,
-            forceCS: data.forceCS !== undefined,
-        }).calculate({ mode: Modes.droid }).cs!;
-        this.trueObjectScale =
-            CircleSizeCalculator.standardCSToStandardScale(circleSize);
+        });
 
-        const stats: MapStats = new MapStats({
-            ar: data.forceAR ?? beatmap.difficulty.ar,
-            od: data.forceOD ?? beatmap.difficulty.od,
-            mods: ModUtil.removeSpeedChangingMods(data.convertedMods),
-            forceAR: data.forceAR !== undefined,
-            forceOD: data.forceOD !== undefined,
-        }).calculate({ mode: Modes.droid, convertDroidOD: false });
+        this.objects = this.beatmap.hitObjects.objects;
+        this.data = data;
 
         this.isPrecise = data.convertedMods.some(
             (m) => m instanceof ModPrecise,
         );
-        this.hitWindow = new DroidHitWindow(stats.od!);
+        this.hitWindow = new DroidHitWindow(this.beatmap.difficulty.od);
         this.hitWindow50 = this.hitWindow.hitWindowFor50(this.isPrecise);
-        this.approachRateTime = MapStats.arToMS(stats.ar!);
+        this.overallSpeedMultiplier = calculateDroidDifficultyStatistics({
+            mods: data.convertedMods,
+            customSpeedMultiplier: data.speedMultiplier,
+        }).overallSpeedMultiplier;
     }
 
     /**
@@ -108,19 +89,15 @@ export class MissAnalyzer {
      * @param missLimit The amount of misses to analyze. Defaults to 10.
      * @returns Information about misses.
      */
-    analyze(missLimit: number = 10): MissInformation[] {
+    analyze(missLimit = 10): MissInformation[] {
         if (this.data.accuracy.nmiss === 0) {
             return [];
         }
 
-        let missIndex: number = 0;
+        let missIndex = 0;
         const missInformations: MissInformation[] = [];
 
-        const stats: MapStats = new MapStats({
-            speedMultiplier: this.data.speedMultiplier,
-            mods: this.data.convertedMods,
-        }).calculate();
-        const flipObjects: boolean = this.data.convertedMods.some(
+        const flipObjects = this.data.convertedMods.some(
             (m) => m instanceof ModHardRock,
         );
 
@@ -130,15 +107,15 @@ export class MissAnalyzer {
             cursorPosition?: Vector2,
             closestHit?: number,
         ): MissInformation => {
-            const object: PlaceableHitObject = this.objects[objectIndex];
+            const object = this.objects[objectIndex];
             const previousObjects: PlaceableHitObject[] = [];
             const previousObjectData: ReplayObjectData[] = [];
 
             for (let i = objectIndex - 1; i >= 0; --i) {
-                const o: PlaceableHitObject = this.objects[i];
-                const timeDifference: number = object.startTime - o.startTime;
+                const o = this.objects[i];
+                const timeDifference = object.startTime - o.startTime;
 
-                if (timeDifference >= this.approachRateTime) {
+                if (timeDifference >= object.timePreempt) {
                     break;
                 }
 
@@ -147,9 +124,9 @@ export class MissAnalyzer {
             }
 
             const cursorGroups: CursorOccurrenceGroup[][] = [];
-            const minCursorGroupAllowableTime: number =
-                object.startTime - this.approachRateTime;
-            const maxCursorGroupAllowableTime: number = object.endTime + 250;
+            const minCursorGroupAllowableTime =
+                object.startTime - object.timePreempt;
+            const maxCursorGroupAllowableTime = object.endTime + 250;
 
             for (const cursorData of this.data.cursorMovement) {
                 const c: CursorOccurrenceGroup[] = [];
@@ -170,19 +147,17 @@ export class MissAnalyzer {
             }
 
             return new MissInformation(
-                this.beatmapMetadata,
+                this.beatmap.metadata,
                 this.objects[objectIndex],
-                this.trueObjectScale,
                 objectIndex,
                 this.objects.length,
                 missIndex++,
                 this.data.accuracy.nmiss,
-                stats.speedMultiplier,
+                this.overallSpeedMultiplier,
                 flipObjects,
                 previousObjects.reverse(),
                 previousObjectData.reverse(),
                 cursorGroups,
-                this.approachRateTime,
                 this.hitWindow,
                 this.isPrecise,
                 verdict,
@@ -199,13 +174,13 @@ export class MissAnalyzer {
                 break;
             }
 
-            const objectData: ReplayObjectData = this.data.hitObjectData[i];
+            const objectData = this.data.hitObjectData[i];
 
             if (objectData.result !== HitResult.miss) {
                 continue;
             }
 
-            const object: PlaceableHitObject = this.objects[i];
+            const object = this.objects[i];
 
             if (object instanceof Spinner) {
                 // Spinner misses are simple. They just didn't spin enough.
@@ -217,7 +192,7 @@ export class MissAnalyzer {
             }
 
             // Find the cursor instance with the closest tap/drag occurrence to the object.
-            let closestHit: number = Number.POSITIVE_INFINITY;
+            let closestHit = Number.POSITIVE_INFINITY;
             let closestCursorPosition: Vector2 | null = null;
             let verdict: string | null = null;
 
@@ -278,25 +253,16 @@ export class MissAnalyzer {
         cursorIndex: number,
         includeNotelockVerdict: boolean,
     ): { position: Vector2; closestHit: number; verdict: string } | null {
-        if (object.droidScale !== this.trueObjectScale) {
-            // Deep clone the object so that we can assign scale properly.
-            object = Utils.deepCopy(object);
-            object.droidScale = this.trueObjectScale;
-        }
-
-        const cursorData: CursorData = this.data.cursorMovement[cursorIndex];
+        const cursorData = this.data.cursorMovement[cursorIndex];
 
         // Limit to cursor occurrences within this distance.
         // Add a cap to better assess smaller objects.
-        let closestDistance: number = Math.max(
-            2.5 * object.getRadius(Modes.droid),
-            80,
-        );
-        let closestHit: number = Number.POSITIVE_INFINITY;
+        let closestDistance = Math.max(2.5 * object.radius, 80);
+        let closestHit = Number.POSITIVE_INFINITY;
         let closestCursorPosition: Vector2 | null = null;
 
-        const minAllowableTapTime: number = object.startTime - this.hitWindow50;
-        const maxAllowableTapTime: number = object.startTime + this.hitWindow50;
+        const minAllowableTapTime = object.startTime - this.hitWindow50;
+        const maxAllowableTapTime = object.startTime + this.hitWindow50;
 
         const acceptDistance = (distance: number): boolean => {
             if (distance > closestDistance) {
@@ -304,7 +270,7 @@ export class MissAnalyzer {
             }
 
             if (!includeNotelockVerdict) {
-                return distance > object.getRadius(Modes.droid);
+                return distance > object.radius;
             }
 
             return true;
@@ -322,7 +288,7 @@ export class MissAnalyzer {
             const { allOccurrences } = group;
 
             for (let i = 0; i < allOccurrences.length; ++i) {
-                const occurrence: CursorOccurrence = allOccurrences[i];
+                const occurrence = allOccurrences[i];
 
                 if (
                     occurrence.time > maxAllowableTapTime ||
@@ -332,7 +298,7 @@ export class MissAnalyzer {
                 }
 
                 if (occurrence.id === MovementType.down) {
-                    const distanceToObject: number = object
+                    const distanceToObject = object
                         .getStackedPosition(Modes.droid)
                         .getDistance(occurrence.position);
 
@@ -343,7 +309,7 @@ export class MissAnalyzer {
                     }
                 }
 
-                const nextOccurrence: CursorOccurrence = allOccurrences[i + 1];
+                const nextOccurrence = allOccurrences[i + 1];
 
                 if (nextOccurrence) {
                     // Check if other cursor instances have a tap occurrence within both occurrences' boundary.
@@ -357,8 +323,7 @@ export class MissAnalyzer {
                             this.data.cursorMovement[j];
 
                         for (const cursorGroup of occurrenceGroups) {
-                            const cursorDownTime: number =
-                                cursorGroup.down.time;
+                            const cursorDownTime = cursorGroup.down.time;
 
                             if (cursorDownTime < minAllowableTapTime) {
                                 continue;
@@ -368,11 +333,11 @@ export class MissAnalyzer {
                                 break;
                             }
 
-                            const t: number =
+                            const t =
                                 (cursorDownTime - occurrence.time) /
                                 (nextOccurrence.time - occurrence.time);
 
-                            const cursorPosition: Vector2 =
+                            const cursorPosition =
                                 nextOccurrence.id === MovementType.move
                                     ? new Vector2(
                                           Interpolation.lerp(
@@ -407,8 +372,8 @@ export class MissAnalyzer {
             return null;
         }
 
-        let verdict: string = "Misaim";
-        if (closestDistance <= object.getRadius(Modes.droid)) {
+        let verdict = "Misaim";
+        if (closestDistance <= object.radius) {
             verdict = "Notelock";
         }
 

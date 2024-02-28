@@ -1,4 +1,3 @@
-import { BaseMessageOptions } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -7,13 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import {
-    MapStats,
-    ModUtil,
-    Accuracy,
-    MapInfo,
-    Modes,
-} from "@rian8337/osu-base";
+import { Accuracy, MapInfo, Modes, MathUtils } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
@@ -35,17 +28,15 @@ import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficult
 import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattributes/ResponseDifficultyAttributes";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: CalculateLocalization = new CalculateLocalization(
+    const localization = new CalculateLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const beatmapID: number = BeatmapManager.getBeatmapID(
+    const beatmapID = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap") ?? "",
     )[0];
 
-    const hash: string | undefined = BeatmapManager.getChannelLatestBeatmap(
-        interaction.channelId,
-    );
+    const hash = BeatmapManager.getChannelLatestBeatmap(interaction.channelId);
 
     if (!beatmapID && !hash) {
         return InteractionHelper.reply(interaction, {
@@ -82,43 +73,32 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     // Get calculation parameters
-    const forceCS: number | undefined =
-        interaction.options.getNumber("circlesize") ?? undefined;
-    const forceAR: number | undefined =
-        interaction.options.getNumber("approachrate") ?? undefined;
-    const forceOD: number | undefined =
+    const forceCS = interaction.options.getNumber("circlesize") ?? undefined;
+    const forceAR = interaction.options.getNumber("approachrate") ?? undefined;
+    const forceOD =
         interaction.options.getNumber("overalldifficulty") ?? undefined;
 
-    const calcParams: PerformanceCalculationParameters =
-        new PerformanceCalculationParameters(
-            new Accuracy({
-                n100: Math.max(0, interaction.options.getInteger("x100") ?? 0),
-                n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
-                nmiss: Math.max(
-                    0,
-                    interaction.options.getInteger("misses") ?? 0,
-                ),
-                nobjects: beatmap.objects,
-            }),
-            interaction.options.getNumber("accuracy") ?? 100,
-            interaction.options.getInteger("combo")
-                ? Math.max(0, interaction.options.getInteger("combo", true))
-                : undefined,
-            undefined,
-            new MapStats({
-                mods: ModUtil.pcStringToMods(
-                    interaction.options.getString("mods") ?? "",
-                ),
-                cs: forceCS,
-                ar: forceAR,
-                od: forceOD,
-                speedMultiplier:
-                    interaction.options.getNumber("speedmultiplier") ?? 1,
-                forceCS: !isNaN(<number>forceCS),
-                forceAR: !isNaN(<number>forceAR),
-                forceOD: !isNaN(<number>forceOD),
-            }),
-        );
+    const calcParams = new PerformanceCalculationParameters({
+        accuracy: new Accuracy({
+            n100: Math.max(0, interaction.options.getInteger("x100") ?? 0),
+            n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
+            nmiss: Math.max(0, interaction.options.getInteger("misses") ?? 0),
+            nobjects: beatmap.objects,
+        }),
+        inputAccuracy: interaction.options.getNumber("accuracy") ?? 100,
+        combo: interaction.options.getInteger("combo")
+            ? MathUtils.clamp(
+                  0,
+                  interaction.options.getInteger("combo", true),
+                  beatmap.maxCombo,
+              )
+            : beatmap.maxCombo,
+        forceCS: forceCS,
+        forceAR: forceAR,
+        forceOD: forceOD,
+        customSpeedMultiplier:
+            interaction.options.getNumber("speedmultiplier") ?? 1,
+    });
 
     calcParams.recalculateAccuracy(beatmap.objects);
 
@@ -180,18 +160,17 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const calcEmbedOptions: BaseMessageOptions =
-        EmbedCreator.createCalculationEmbed(
-            beatmap,
-            calcParams,
-            droidCalcResult.difficulty,
-            osuCalcResult.difficulty,
-            droidCalcResult.performance,
-            osuCalcResult.performance,
-            localization.language,
-        );
+    const calcEmbedOptions = EmbedCreator.createCalculationEmbed(
+        beatmap,
+        calcParams,
+        droidCalcResult.difficulty,
+        osuCalcResult.difficulty,
+        droidCalcResult.performance,
+        osuCalcResult.performance,
+        localization.language,
+    );
 
-    let string: string = "";
+    let string = "";
 
     if (interaction.options.getBoolean("showdroiddetail")) {
         string += `${localization.getTranslation("rawDroidSr")}: ${

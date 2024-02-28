@@ -11,17 +11,15 @@ import {
     SliderRepeat,
     SliderTick,
     Spinner,
-    Utils,
     Vector2,
 } from "@rian8337/osu-base";
 import {
-    CursorOccurrence,
     CursorOccurrenceGroup,
     HitResult,
     MovementType,
     ReplayObjectData,
 } from "@rian8337/osu-droid-replay-analyzer";
-import { Canvas, CanvasGradient, CanvasRenderingContext2D } from "canvas";
+import { Canvas } from "canvas";
 
 /**
  * Represents an information about a miss.
@@ -93,11 +91,6 @@ export class MissInformation {
     readonly previousObjectData: ReplayObjectData[];
 
     /**
-     * The AR of the beatmap, in milliseconds.
-     */
-    readonly approachRateTime: number;
-
-    /**
      * The cursor groups to draw for each cursor instance.
      */
     readonly cursorGroups: CursorOccurrenceGroup[][];
@@ -120,8 +113,7 @@ export class MissInformation {
     }
 
     private canvas?: Canvas;
-    private readonly playfieldScale: number = 1.75;
-    private readonly trueObjectScale: number;
+    private readonly playfieldScale = 1.75;
 
     // Colors are taken from osu!lazer: https://github.com/ppy/osu/blob/daae560ff731bdf49970a5bc6588c0861fac760f/osu.Game/Graphics/OsuColour.cs#L105-L131
     private readonly hitColors: Record<
@@ -154,7 +146,6 @@ export class MissInformation {
     constructor(
         metadata: BeatmapMetadata,
         object: PlaceableHitObject,
-        trueObjectScale: number,
         objectIndex: number,
         totalObjects: number,
         missIndex: number,
@@ -164,7 +155,6 @@ export class MissInformation {
         previousObjects: PlaceableHitObject[],
         previousObjectData: ReplayObjectData[],
         cursorGroups: CursorOccurrenceGroup[][],
-        approachRateTime: number,
         hitWindow: DroidHitWindow,
         isPrecise: boolean,
         verdict?: string,
@@ -172,16 +162,7 @@ export class MissInformation {
         closestHit?: number,
     ) {
         this.metadata = metadata;
-        this.trueObjectScale = trueObjectScale;
-
-        if (object.droidScale !== this.trueObjectScale) {
-            // Deep copy the object so that we can assign scale properly.
-            this.object = Utils.deepCopy(object);
-            this.object.droidScale = this.trueObjectScale;
-        } else {
-            this.object = object;
-        }
-
+        this.object = object;
         this.objectIndex = objectIndex;
         this.totalObjects = totalObjects;
         this.missIndex = missIndex;
@@ -194,7 +175,6 @@ export class MissInformation {
         this.previousObjects = previousObjects;
         this.previousObjectData = previousObjectData;
         this.cursorGroups = cursorGroups;
-        this.approachRateTime = approachRateTime;
         this.hitWindow = hitWindow;
         this.isPrecise = isPrecise;
 
@@ -234,8 +214,8 @@ export class MissInformation {
             return;
         }
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
-        const textPadding: number = 5;
+        const context = this.canvas.getContext("2d");
+        const textPadding = 5;
 
         context.save();
         context.fillStyle = "#ffffff";
@@ -260,14 +240,12 @@ export class MissInformation {
             textPadding + 70,
         );
 
-        let startTime: number = Math.floor(
-            this.object.startTime / this.clockRate,
-        );
+        let startTime = Math.floor(this.object.startTime / this.clockRate);
 
-        const minutes: number = Math.floor(startTime / 60000);
+        const minutes = Math.floor(startTime / 60000);
         startTime -= minutes * 60000;
 
-        const seconds: number = Math.floor(startTime / 1000);
+        const seconds = Math.floor(startTime / 1000);
         startTime -= seconds * 1000;
 
         context.fillText(
@@ -279,7 +257,7 @@ export class MissInformation {
         );
 
         if (this.verdict) {
-            const verdictText: string = `Verdict: ${this.verdict}`;
+            const verdictText = `Verdict: ${this.verdict}`;
             context.fillText(
                 verdictText,
                 this.canvas.width -
@@ -290,7 +268,7 @@ export class MissInformation {
         }
 
         if (this.closestHit !== undefined) {
-            let closestHitText: string = `Closest tap: ${
+            let closestHitText = `Closest tap: ${
                 Number.isInteger(this.closestHit)
                     ? Math.abs(this.closestHit)
                     : Math.abs(this.closestHit).toFixed(2)
@@ -303,10 +281,10 @@ export class MissInformation {
             }`;
 
             if (this.closestCursorPosition) {
-                const distanceToObject: number =
+                const distanceToObject =
                     this.closestCursorPosition.getDistance(
                         this.object.getStackedPosition(Modes.droid),
-                    ) - this.object.getRadius(Modes.droid);
+                    ) - this.object.radius;
 
                 if (distanceToObject > 0) {
                     closestHitText += `, ${
@@ -340,12 +318,10 @@ export class MissInformation {
 
         // The playfield is 512x384. However, since we're drawing on a limited space,
         // we will have to scale the area and objects down.
-        const scaledPlayfieldX: number =
-            Playfield.baseSize.x * this.playfieldScale;
-        const scaledPlayfieldY: number =
-            Playfield.baseSize.y * this.playfieldScale;
+        const scaledPlayfieldX = Playfield.baseSize.x * this.playfieldScale;
+        const scaledPlayfieldY = Playfield.baseSize.y * this.playfieldScale;
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+        const context = this.canvas.getContext("2d");
         context.translate(
             // Put (0, 0) in the top-left corner of the playfield.
             (this.canvas.width - scaledPlayfieldX) / 2,
@@ -363,14 +339,6 @@ export class MissInformation {
      */
     private drawObjects(): void {
         for (let i = 0; i < this.previousObjects.length; ++i) {
-            if (this.previousObjects[i].droidScale !== this.trueObjectScale) {
-                // Deep clone the object so that we can assign scale properly.
-                this.previousObjects[i] = Utils.deepCopy(
-                    this.previousObjects[i],
-                );
-                this.previousObjects[i].droidScale = this.trueObjectScale;
-            }
-
             this.drawObject(
                 this.previousObjects[i],
                 this.previousObjectData[i].result,
@@ -434,15 +402,15 @@ export class MissInformation {
                 break;
         }
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+        const context = this.canvas.getContext("2d");
 
-        const stackOffset: Vector2 = object.getStackOffset(Modes.droid);
-        const startPosition: Vector2 = this.flipVectorVertically(
-            object.position,
-        ).add(stackOffset);
-        const radius: number = object.getRadius(Modes.droid);
-        const circleBorder: number = radius / 8;
-        const shadowBlur: number = radius / 16;
+        const stackOffset = object.getStackOffset(Modes.droid);
+        const startPosition = this.flipVectorVertically(object.position).add(
+            stackOffset,
+        );
+        const { radius } = object;
+        const circleBorder = radius / 8;
+        const shadowBlur = radius / 16;
 
         if (object instanceof Slider) {
             // Draw the path first, then we can apply the slider head.
@@ -454,9 +422,7 @@ export class MissInformation {
             context.beginPath();
 
             for (const path of object.path.calculatedPath) {
-                const drawPosition: Vector2 = this.flipVectorVertically(
-                    object.position,
-                )
+                const drawPosition = this.flipVectorVertically(object.position)
                     .add(
                         // Because path is an offset of the start position, we are not using
                         // flipVectorVertically here.
@@ -504,7 +470,7 @@ export class MissInformation {
                     continue;
                 }
 
-                const drawPosition: Vector2 = this.flipVectorVertically(
+                const drawPosition = this.flipVectorVertically(
                     nestedObject.position,
                 ).add(stackOffset);
 
@@ -561,8 +527,8 @@ export class MissInformation {
             return;
         }
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
-        const centerCoordinate: Vector2 = new Vector2(
+        const context = this.canvas.getContext("2d");
+        const centerCoordinate = new Vector2(
             Playfield.baseSize.x / 2,
             Playfield.baseSize.y * 1.1,
         );
@@ -572,9 +538,9 @@ export class MissInformation {
         context.lineCap = "round";
 
         const calculateDrawDistance = (ms: number): number => {
-            const maxDrawDistance: number = Playfield.baseSize.x / 1.25;
+            const maxDrawDistance = Playfield.baseSize.x / 1.25;
             // The highest hit window the player can achieve with mods.
-            const maxMs: number = new DroidHitWindow(0).hitWindowFor50();
+            const maxMs = new DroidHitWindow(0).hitWindowFor50();
 
             return (ms / maxMs) * maxDrawDistance;
         };
@@ -583,7 +549,7 @@ export class MissInformation {
             ms: number,
             hitResult: Exclude<HitResult, HitResult.miss>,
         ): void => {
-            const drawDistance: number = calculateDrawDistance(ms);
+            const drawDistance = calculateDrawDistance(ms);
 
             context.strokeStyle = `rgb(${this.hitColors[hitResult]})`;
             context.beginPath();
@@ -626,8 +592,8 @@ export class MissInformation {
         context.lineWidth = Playfield.baseSize.x / 125;
 
         for (let i = 0; i < this.previousObjectData.length; ++i) {
-            const prevObject: PlaceableHitObject = this.previousObjects[i];
-            const objectData: ReplayObjectData = this.previousObjectData[i];
+            const prevObject = this.previousObjects[i];
+            const objectData = this.previousObjectData[i];
 
             if (objectData.result === HitResult.miss) {
                 continue;
@@ -647,7 +613,7 @@ export class MissInformation {
                 continue;
             }
 
-            const distanceFromCenter: number = calculateDrawDistance(
+            const distanceFromCenter = calculateDrawDistance(
                 objectData.accuracy,
             );
 
@@ -655,7 +621,7 @@ export class MissInformation {
                 1 -
                     Math.pow(
                         (this.object.startTime - prevObject.startTime) /
-                            this.approachRateTime,
+                            this.object.timePreempt,
                         2,
                     ),
                 0.15,
@@ -688,25 +654,25 @@ export class MissInformation {
             return;
         }
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+        const context = this.canvas.getContext("2d");
 
-        const minTime: number = this.object.startTime - this.approachRateTime;
-        const maxTime: number = this.object.endTime + 200;
+        const minTime = this.object.startTime - this.object.timePreempt;
+        const maxTime = this.object.endTime + 200;
 
         // Draw direction arrow every 50 pixels the cursor has travelled.
-        const arrowDistanceRate: number = 50;
+        const arrowDistanceRate = 50;
 
-        const defaultColor: string = "#cc00cc";
-        const defaultArrowColor: string = "#990099";
-        const mehColor: string = "#e69417";
-        const mehArrowColor: string = "#e6a645";
-        const goodColor: string = "#44b02e";
-        const goodArrowColor: string = "#53d439";
-        const greatColor: string = "#6bbbdb";
-        const greatArrowColor: string = "#78c1de";
+        const defaultColor = "#cc00cc";
+        const defaultArrowColor = "#990099";
+        const mehColor = "#e69417";
+        const mehArrowColor = "#e6a645";
+        const goodColor = "#44b02e";
+        const goodArrowColor = "#53d439";
+        const greatColor = "#6bbbdb";
+        const greatArrowColor = "#78c1de";
 
         const applyHitColor = (hitTime: number): void => {
-            const hitAccuracy: number = hitTime - this.object.startTime;
+            const hitAccuracy = hitTime - this.object.startTime;
 
             switch (true) {
                 case hitAccuracy <=
@@ -738,10 +704,10 @@ export class MissInformation {
 
         for (let i = 0; i < this.cursorGroups.length; ++i) {
             for (const { allOccurrences } of this.cursorGroups[i]) {
-                let travelDistance: number = 0;
+                let travelDistance = 0;
 
                 for (let j = 0; j < allOccurrences.length; ++j) {
-                    const occurrence: CursorOccurrence = allOccurrences[j];
+                    const occurrence = allOccurrences[j];
 
                     if (occurrence.time < minTime) {
                         continue;
@@ -754,7 +720,7 @@ export class MissInformation {
                         break;
                     }
 
-                    const drawPosition: Vector2 = this.flipVectorVertically(
+                    const drawPosition = this.flipVectorVertically(
                         occurrence.position,
                     );
 
@@ -773,10 +739,10 @@ export class MissInformation {
                         context.fill();
                         context.closePath();
                     } else {
-                        const prevOccurrence: CursorOccurrence =
-                            allOccurrences[j - 1];
-                        const previousDrawPosition: Vector2 =
-                            this.flipVectorVertically(prevOccurrence.position);
+                        const prevOccurrence = allOccurrences[j - 1];
+                        const previousDrawPosition = this.flipVectorVertically(
+                            prevOccurrence.position,
+                        );
 
                         travelDistance += occurrence.position.getDistance(
                             prevOccurrence.position,
@@ -801,8 +767,7 @@ export class MissInformation {
                             }
 
                             for (const cursorGroup of this.cursorGroups[k]) {
-                                const cursorDownTime: number =
-                                    cursorGroup.down.time;
+                                const cursorDownTime = cursorGroup.down.time;
 
                                 if (cursorDownTime < prevOccurrence.time) {
                                     continue;
@@ -812,11 +777,11 @@ export class MissInformation {
                                     break;
                                 }
 
-                                const t: number =
+                                const t =
                                     (cursorDownTime - prevOccurrence.time) /
                                     (occurrence.time - prevOccurrence.time);
 
-                                const cursorPosition: Vector2 = new Vector2(
+                                const cursorPosition = new Vector2(
                                     Interpolation.lerp(
                                         prevOccurrence.position.x,
                                         occurrence.position.x,
@@ -829,7 +794,7 @@ export class MissInformation {
                                     ),
                                 );
 
-                                const cursorDrawPosition: Vector2 =
+                                const cursorDrawPosition =
                                     this.flipVectorVertically(cursorPosition);
 
                                 applyHitColor(cursorDownTime);
@@ -851,18 +816,17 @@ export class MissInformation {
 
                         if (travelDistance >= arrowDistanceRate) {
                             // Draw direction arrow.
-                            const displacement: Vector2 =
-                                occurrence.position.subtract(
-                                    prevOccurrence.position,
-                                );
-                            const drawDisplacement: Vector2 =
+                            const displacement = occurrence.position.subtract(
+                                prevOccurrence.position,
+                            );
+                            const drawDisplacement =
                                 drawPosition.subtract(previousDrawPosition);
-                            const angle: number = Math.atan2(
+                            const angle = Math.atan2(
                                 drawDisplacement.y,
                                 drawDisplacement.x,
                             );
 
-                            const prevDistanceTravelled: number =
+                            const prevDistanceTravelled =
                                 travelDistance - displacement.length;
 
                             for (
@@ -870,23 +834,23 @@ export class MissInformation {
                                 distance <= travelDistance;
                                 distance += arrowDistanceRate
                             ) {
-                                const t: number =
+                                const t =
                                     (distance - prevDistanceTravelled) /
                                     (travelDistance - prevDistanceTravelled);
 
-                                const cursorTime: number = Interpolation.lerp(
+                                const cursorTime = Interpolation.lerp(
                                     prevOccurrence.time,
                                     occurrence.time,
                                     t,
                                 );
-                                const timeOffset: number =
+                                const timeOffset =
                                     cursorTime - this.object.startTime;
                                 // Don't draw direction arrow if cursor time is close to object hit time.
                                 if (Math.abs(timeOffset) <= 50) {
                                     continue;
                                 }
 
-                                const cursorDrawPosition: Vector2 =
+                                const cursorDrawPosition =
                                     this.flipVectorVertically(
                                         new Vector2(
                                             Interpolation.lerp(
@@ -901,7 +865,7 @@ export class MissInformation {
                                             ),
                                         ),
                                     );
-                                const headLength: number = 10;
+                                const headLength = 10;
 
                                 switch (true) {
                                     case timeOffset <=
@@ -971,13 +935,13 @@ export class MissInformation {
             return;
         }
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+        const context = this.canvas.getContext("2d");
 
-        const drawPosition: Vector2 = this.flipVectorVertically(
+        const drawPosition = this.flipVectorVertically(
             this.closestCursorPosition,
         );
 
-        const gradient: CanvasGradient = context.createRadialGradient(
+        const gradient = context.createRadialGradient(
             drawPosition.x,
             drawPosition.y,
             0,

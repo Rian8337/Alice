@@ -15,7 +15,6 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         result: "Resultado",
         droidPP: "Droid pp",
         pcPP: "PC pp",
-        estimated: "aproximado",
         droidStars: "droid stars",
         pcStars: "PC stars",
         starRating: "Estrellas",
@@ -43,7 +42,7 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         challengeBonuses: `Usa ${chatInputApplicationCommandMention(
             "daily",
             "bonuses",
-            "1075209201049153617"
+            "1075209201049153617",
         )} para revisar los bonus.`,
         auctionInfo: "Información de la subasta",
         auctionName: "Nombre",
@@ -59,7 +58,7 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         reportBroadcast: "Transmisión",
         reportBroadcast1: `Si tu ves a algún usuario violando las reglas, con mal comportamiento, o siendo molesto de manera malintencionada, por favor reportarlo usando el comando ${chatInputApplicationCommandMention(
             "report",
-            "1075209098997542986"
+            "1075209098997542986",
         )}.`,
         reportBroadcast2:
             "Ten en cuenta que solo miembros del staff pueden ver los reportes, por ende tu privacidad esta a salvo. Apreciamos la ayuda realizada para mantener este lugar con un ambiente amigable!",

@@ -1,6 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { PassRequirementType } from "structures/challenge/PassRequirementType";
@@ -10,14 +8,14 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MapInfo, MapStats, ModUtil } from "@rian8337/osu-base";
+import { MapInfo, ModUtil } from "@rian8337/osu-base";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(
+    const localization = new DailyLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const challenge: Challenge | null =
+    const challenge =
         await DatabaseManager.aliceDb.collections.challenge.getById(
             interaction.options.getString("id", true),
         );
@@ -53,7 +51,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const passRequirement: PassRequirementType = <PassRequirementType>(
+    const passRequirement = <PassRequirementType>(
         interaction.options.getString("type", true)
     );
 
@@ -62,7 +60,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         true,
     );
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     if (
         challenge.pass.id !== passRequirement ||
@@ -82,10 +80,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     });
                 }
 
-                const maxScore: number = beatmap.beatmap!.maxDroidScore(
-                    new MapStats({
-                        mods: ModUtil.pcStringToMods(challenge.constrain),
-                    }),
+                const maxScore = beatmap.beatmap!.maxDroidScore(
+                    ModUtil.pcStringToMods(challenge.constrain),
                 );
 
                 if (
@@ -228,7 +224,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 break;
         }
 
-        const result: OperationResult =
+        const result =
             await DatabaseManager.aliceDb.collections.challenge.updateOne(
                 { challengeid: challenge.challengeid },
                 {
@@ -241,11 +237,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 },
             );
 
-        if (!result.success) {
+        if (result.failed()) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("setPassReqFailed"),
-                    result.reason!,
+                    result.reason,
                 ),
             });
         }

@@ -18,20 +18,16 @@ import { consola } from "consola";
 import {
     MapInfo,
     DroidAPIRequestBuilder,
-    RequestResponse,
     Precision,
     Accuracy,
     Modes,
 } from "@rian8337/osu-base";
-import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Language } from "@alice-localization/base/Language";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 
@@ -210,11 +206,10 @@ export class UserBind extends Manager {
         const hashesToDelete: string[] = [];
 
         for (const ppEntry of this.pp.values()) {
-            const beatmapInfo: MapInfo<false> | null =
-                await BeatmapManager.getBeatmap(ppEntry.hash, {
-                    checkFile: false,
-                    cacheBeatmap: false,
-                });
+            const beatmapInfo = await BeatmapManager.getBeatmap(ppEntry.hash, {
+                checkFile: false,
+                cacheBeatmap: false,
+            });
 
             await HelperFunctions.sleep(0.2);
 
@@ -279,7 +274,7 @@ export class UserBind extends Manager {
      * the current dpp list.
      */
     async recalculateDPP(): Promise<OperationResult> {
-        const newList: Collection<string, PPEntry> = new Collection();
+        const newList = new Collection<string, PPEntry>();
 
         for (const ppEntry of this.pp.values()) {
             const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
@@ -293,7 +288,7 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const score: Score | null = await Score.getFromHash(
+            const score = await Score.getFromHash(
                 ppEntry.uid,
                 beatmapInfo.hash,
             );
@@ -302,14 +297,12 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const attribs: CompleteCalculationAttributes<
-                DroidDifficultyAttributes,
-                DroidPerformanceAttributes
-            > | null = await DPPProcessorRESTManager.getBestScorePerformance(
-                score.uid,
-                beatmapInfo.hash,
-                PPCalculationMethod.live,
-            );
+            const attribs =
+                await DPPProcessorRESTManager.getBestScorePerformance(
+                    score.uid,
+                    beatmapInfo.hash,
+                    PPCalculationMethod.live,
+                );
 
             if (!attribs) {
                 continue;
@@ -357,7 +350,7 @@ export class UserBind extends Manager {
             },
         );
 
-        const metadataOperation: RequestResponse =
+        const metadataOperation =
             await DiscordBackendRESTManager.updateMetadata(this.discordid);
 
         return this.createOperationResult(metadataOperation.statusCode === 200);
@@ -368,7 +361,7 @@ export class UserBind extends Manager {
      */
     async calculatePrototypeDPP(): Promise<OperationResult> {
         const currentList = new Collection<string, PPEntry>();
-        const newList: Collection<string, PrototypePPEntry> = new Collection();
+        const newList = new Collection<string, PrototypePPEntry>();
 
         for (const ppEntry of this.pp.values()) {
             const score = await Score.getFromHash(ppEntry.uid, ppEntry.hash);
@@ -411,8 +404,7 @@ export class UserBind extends Manager {
             const { performance: rebalPerfResult, params: rebalParams } =
                 rebalAttribs;
 
-            const { customStatistics, accuracy: accuracyData } = params;
-            const accuracy = new Accuracy(accuracyData);
+            const accuracy = new Accuracy(params.accuracy);
 
             const currentEntry: PPEntry = {
                 uid: score.uid,
@@ -444,8 +436,8 @@ export class UserBind extends Manager {
                 combo: params.combo,
                 miss: accuracy.nmiss,
                 speedMultiplier:
-                    customStatistics.speedMultiplier !== 1
-                        ? customStatistics.speedMultiplier
+                    rebalParams.customSpeedMultiplier !== 1
+                        ? rebalParams.customSpeedMultiplier
                         : undefined,
                 calculatedUnstableRate: rebalPerfResult.calculatedUnstableRate,
                 estimatedUnstableRate: NumberHelper.round(
@@ -519,29 +511,28 @@ export class UserBind extends Manager {
      * @param isDPPRecalc Whether this recalculation is a part of a full recalculation triggered by bot owners.
      */
     async recalculateAllScores(
-        markAsSlotFulfill: boolean = true,
-        isDPPRecalc: boolean = false,
+        markAsSlotFulfill = true,
+        isDPPRecalc = false,
     ): Promise<OperationResult> {
-        let newList: Collection<string, PPEntry> = new Collection();
-        let playCount: number = 0;
+        let newList = new Collection<string, PPEntry>();
+        let playCount = 0;
 
         const getScores = async (
             uid: number,
             page: number,
         ): Promise<Score[]> => {
-            const apiRequestBuilder: DroidAPIRequestBuilder =
-                new DroidAPIRequestBuilder()
-                    .setEndpoint("scoresearchv2.php")
-                    .addParameter("uid", uid)
-                    .addParameter("page", page - 1);
+            const apiRequestBuilder = new DroidAPIRequestBuilder()
+                .setEndpoint("scoresearchv2.php")
+                .addParameter("uid", uid)
+                .addParameter("page", page - 1);
 
-            const data: RequestResponse = await apiRequestBuilder.sendRequest();
+            const data = await apiRequestBuilder.sendRequest();
 
             if (data.statusCode !== 200) {
                 return [];
             }
 
-            const entries: string[] = data.data.toString("utf-8").split("<br>");
+            const entries = data.data.toString("utf-8").split("<br>");
 
             entries.shift();
 
@@ -549,7 +540,7 @@ export class UserBind extends Manager {
         };
 
         for (let i = 0; i < this.previous_bind.length; ++i) {
-            const uid: number = this.previous_bind[i];
+            const uid = this.previous_bind[i];
 
             if (
                 await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
@@ -567,12 +558,12 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const player: Player | null = await Player.getInformation(uid);
+            const player = await Player.getInformation(uid);
             if (!player) {
                 continue;
             }
 
-            let page: number = 0;
+            let page = 0;
 
             if (isDPPRecalc && this.calculationInfo) {
                 page = this.calculationInfo.page;
@@ -588,7 +579,7 @@ export class UserBind extends Manager {
             let scores: Score[];
 
             while ((scores = await getScores(uid, ++page)).length) {
-                const scoreCount: number = scores.length;
+                const scoreCount = scores.length;
 
                 if (isDPPRecalc) {
                     consola.info(
@@ -608,17 +599,14 @@ export class UserBind extends Manager {
                         continue;
                     }
 
-                    const submissionValidity: DPPSubmissionValidity =
+                    const submissionValidity =
                         await DPPHelper.checkSubmissionValidity(beatmapInfo);
 
                     if (submissionValidity !== DPPSubmissionValidity.valid) {
                         continue;
                     }
 
-                    const attribs: CompleteCalculationAttributes<
-                        DroidDifficultyAttributes,
-                        DroidPerformanceAttributes
-                    > | null =
+                    const attribs =
                         await DPPProcessorRESTManager.getBestScorePerformance(
                             score.uid,
                             beatmapInfo.hash,
@@ -631,7 +619,7 @@ export class UserBind extends Manager {
 
                     this.playc = ++playCount;
 
-                    const ppEntry: PPEntry = DPPHelper.scoreToPPEntry(
+                    const ppEntry = DPPHelper.scoreToPPEntry(
                         beatmapInfo.fullTitle,
                         score,
                         attribs,
@@ -727,7 +715,7 @@ export class UserBind extends Manager {
 
         await this.bindDb.updateOne({ discordid: this.discordid }, query);
 
-        const metadataOperation: RequestResponse =
+        const metadataOperation =
             await DiscordBackendRESTManager.updateMetadata(this.discordid);
 
         return this.createOperationResult(metadataOperation.statusCode === 200);
@@ -747,8 +735,7 @@ export class UserBind extends Manager {
         to: Snowflake,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: UserBindLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (!this.previous_bind.includes(uid)) {
             return this.createOperationResult(
@@ -764,19 +751,16 @@ export class UserBind extends Manager {
             );
         }
 
-        const otherBindInfo: UserBind | null = await this.bindDb.getFromUser(
-            to,
-            {
-                projection: {
-                    _id: 0,
-                    pp: 1,
-                    playc: 1,
-                    previous_bind: 1,
-                },
+        const otherBindInfo = await this.bindDb.getFromUser(to, {
+            projection: {
+                _id: 0,
+                pp: 1,
+                playc: 1,
+                previous_bind: 1,
             },
-        );
+        });
 
-        const otherPreviousBind: number[] = otherBindInfo?.previous_bind ?? [];
+        const otherPreviousBind = otherBindInfo?.previous_bind ?? [];
 
         if (otherPreviousBind.length >= 2) {
             return this.createOperationResult(
@@ -791,7 +775,7 @@ export class UserBind extends Manager {
             this.uid = ArrayHelper.getRandomArrayElement(this.previous_bind);
         }
 
-        const player: Player | null = await Player.getInformation(uid);
+        const player = await Player.getInformation(uid);
 
         if (!player) {
             this.previous_bind.push(uid);
@@ -858,11 +842,8 @@ export class UserBind extends Manager {
                 { upsert: true },
             );
         } else {
-            const newPPEntries: Collection<string, PPEntry> = this.pp.filter(
-                (v) => v.uid === uid,
-            );
-            const oldPPEntries: Collection<string, PPEntry> =
-                this.pp.difference(newPPEntries);
+            const newPPEntries = this.pp.filter((v) => v.uid === uid);
+            const oldPPEntries = this.pp.difference(newPPEntries);
 
             this.playc = Math.max(
                 oldPPEntries.size,
@@ -889,7 +870,7 @@ export class UserBind extends Manager {
                 },
             );
 
-            const otherPlayCount: number =
+            const otherPlayCount =
                 (otherBindInfo?.playc ?? 0) + newPPEntries.size;
 
             await this.bindDb.updateOne(
@@ -958,13 +939,12 @@ export class UserBind extends Manager {
         uidOrUsernameOrPlayer: string | number | Player,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const player: Player | null =
+        const player =
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
                 : await Player.getInformation(uidOrUsernameOrPlayer);
 
-        const localization: UserBindLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (!player) {
             return this.createOperationResult(
@@ -1010,8 +990,7 @@ export class UserBind extends Manager {
         uid: number,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: UserBindLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (!this.isUidBinded(uid)) {
             return this.createOperationResult(
@@ -1051,7 +1030,7 @@ export class UserBind extends Manager {
         if (this.uid === uid) {
             this.uid = ArrayHelper.getRandomArrayElement(this.previous_bind);
 
-            const player: Player = (await Player.getInformation(this.uid))!;
+            const player = (await Player.getInformation(this.uid))!;
 
             this.username = player.username;
         }
@@ -1101,8 +1080,9 @@ export class UserBind extends Manager {
      * Updates the role connection metadata of this user.
      */
     async updateRoleMetadata(): Promise<OperationResult> {
-        const response: RequestResponse =
-            await DiscordBackendRESTManager.updateMetadata(this.discordid);
+        const response = await DiscordBackendRESTManager.updateMetadata(
+            this.discordid,
+        );
 
         if (response.statusCode === 200) {
             return DatabaseManager.elainaDb.collections.userBind.updateOne(

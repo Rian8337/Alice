@@ -38,8 +38,8 @@
     "@types/node": "^20.5.7",
     "@types/request": "^2.48.5",
     "@types/yt-search": "^2.3.2",
-    "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "@typescript-eslint/parser": "^6.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
     "eslint": "^8.3.0",
     "prettier": "^3.0.3",
     "typescript": "^5.0.2"

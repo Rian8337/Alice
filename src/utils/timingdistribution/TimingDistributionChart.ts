@@ -1,21 +1,19 @@
 import {
     Beatmap,
     DroidHitWindow,
-    MapStats,
     Mod,
     ModPrecise,
     ModUtil,
-    Modes,
-    PlaceableHitObject,
     RGBColor,
     Slider,
     Spinner,
+    calculateDroidDifficultyStatistics,
 } from "@rian8337/osu-base";
 import {
     HitResult,
     ReplayObjectData,
 } from "@rian8337/osu-droid-replay-analyzer";
-import { Canvas, CanvasRenderingContext2D, createCanvas } from "canvas";
+import { Canvas, createCanvas } from "canvas";
 
 /**
  * A timing distribution chart.
@@ -42,13 +40,13 @@ export class TimingDistributionChart {
     private readonly isPrecise: boolean;
 
     private canvas?: Canvas;
-    private chartBarInterval: number = 0;
-    private maxFrequency: number = 1;
+    private chartBarInterval = 0;
+    private maxFrequency = 1;
 
-    private readonly barOffset: number = 2.5;
-    private readonly barWidth: number = 5;
-    private readonly barHeight: number = 150;
-    private readonly oneSideBarCount: number = 50;
+    private readonly barOffset = 2.5;
+    private readonly barWidth = 5;
+    private readonly barHeight = 150;
+    private readonly oneSideBarCount = 50;
 
     /**
      * @param beatmap The beatmap that was played.
@@ -58,17 +56,18 @@ export class TimingDistributionChart {
     constructor(
         beatmap: Beatmap,
         mods: Mod[],
-        hitObjectData: ReplayObjectData[]
+        hitObjectData: ReplayObjectData[],
     ) {
         this.beatmap = beatmap;
         this.hitObjectData = hitObjectData;
 
-        const stats: MapStats = new MapStats({
-            od: this.beatmap.difficulty.od,
+        const od = calculateDroidDifficultyStatistics({
+            overallDifficulty: beatmap.difficulty.od,
             mods: ModUtil.removeSpeedChangingMods(mods),
-        }).calculate({ mode: Modes.droid, convertDroidOD: false });
+            convertOverallDifficulty: false,
+        }).overallDifficulty;
 
-        this.hitWindow = new DroidHitWindow(stats.od!);
+        this.hitWindow = new DroidHitWindow(od);
         this.isPrecise = mods.some((m) => m instanceof ModPrecise);
     }
 
@@ -99,7 +98,7 @@ export class TimingDistributionChart {
             return;
         }
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
+        const context = this.canvas.getContext("2d");
 
         context.save();
 
@@ -118,12 +117,11 @@ export class TimingDistributionChart {
         }
 
         const hitValues: Record<number, number> = {};
-        let maxAccuracy: number = 0;
+        let maxAccuracy = 0;
 
         for (let i = 0; i < this.hitObjectData.length; ++i) {
-            const object: PlaceableHitObject =
-                this.beatmap.hitObjects.objects[i];
-            const objectData: ReplayObjectData = this.hitObjectData[i];
+            const object = this.beatmap.hitObjects.objects[i];
+            const objectData = this.hitObjectData[i];
 
             if (objectData.result === HitResult.miss) {
                 continue;
@@ -152,13 +150,13 @@ export class TimingDistributionChart {
 
         this.chartBarInterval = Math.max(
             1,
-            Math.ceil(maxAccuracy / this.oneSideBarCount)
+            Math.ceil(maxAccuracy / this.oneSideBarCount),
         );
 
         // Start from the left.
         const frequencies: number[] = [];
         for (let i = -this.oneSideBarCount; i <= this.oneSideBarCount; ++i) {
-            let frequency: number = 0;
+            let frequency = 0;
 
             for (
                 let j = i * this.chartBarInterval;
@@ -192,12 +190,12 @@ export class TimingDistributionChart {
 
         // Now we draw from the left to right.
         for (let i = -this.oneSideBarCount; i <= this.oneSideBarCount; ++i) {
-            const frequency: number = frequencies[i + this.oneSideBarCount];
+            const frequency = frequencies[i + this.oneSideBarCount];
 
             this.drawBar(
                 frequency,
                 i,
-                getHitResultColor(i * this.chartBarInterval)
+                getHitResultColor(i * this.chartBarInterval),
             );
         }
     }
@@ -212,17 +210,17 @@ export class TimingDistributionChart {
     private drawBar(
         frequency: number,
         positionIndex: number,
-        color: RGBColor
+        color: RGBColor,
     ): void {
         if (!this.canvas) {
             return;
         }
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
-        const barXPosition: number =
+        const context = this.canvas.getContext("2d");
+        const barXPosition =
             this.canvas.width / 2 +
             (this.barWidth + this.barOffset) * positionIndex;
-        const barYPosition: number = this.canvas.height - 20;
+        const barYPosition = this.canvas.height - 20;
 
         context.save();
         context.lineCap = "round";
@@ -236,7 +234,7 @@ export class TimingDistributionChart {
             context.moveTo(barXPosition, barYPosition);
             context.lineTo(
                 barXPosition,
-                barYPosition - (this.barHeight * frequency) / this.maxFrequency
+                barYPosition - (this.barHeight * frequency) / this.maxFrequency,
             );
         } else if (positionIndex !== 0) {
             context.lineWidth = this.barWidth / 2;
@@ -261,7 +259,7 @@ export class TimingDistributionChart {
                 barYPosition -
                     (this.barHeight * (frequency || this.maxFrequency)) /
                         this.maxFrequency /
-                        2
+                        2,
             );
 
             context.stroke();
@@ -279,8 +277,8 @@ export class TimingDistributionChart {
             return;
         }
 
-        const context: CanvasRenderingContext2D = this.canvas.getContext("2d");
-        const textYPosition: number = this.canvas.height - 10;
+        const context = this.canvas.getContext("2d");
+        const textYPosition = this.canvas.height - 10;
 
         context.save();
 
@@ -300,10 +298,10 @@ export class TimingDistributionChart {
             i <= this.oneSideBarCount;
             i += 10
         ) {
-            const textXPosition: number =
+            const textXPosition =
                 this.canvas.width / 2 + (this.barWidth + this.barOffset) * i;
-            const offset: number = this.chartBarInterval * i;
-            let text: string = "";
+            const offset = this.chartBarInterval * i;
+            let text = "";
 
             if (offset > 0) {
                 text += "+";

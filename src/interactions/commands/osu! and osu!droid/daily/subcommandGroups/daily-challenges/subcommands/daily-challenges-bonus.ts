@@ -1,8 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ChallengeCollectionManager } from "@alice-database/managers/aliceDb/ChallengeCollectionManager";
-import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { Bonus } from "structures/challenge/Bonus";
-import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { BonusID } from "structures/challenge/BonusID";
@@ -12,17 +8,16 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MapInfo, MapStats, Mod, ModUtil } from "@rian8337/osu-base";
+import { MapInfo, ModUtil } from "@rian8337/osu-base";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(
+    const localization = new DailyLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const dbManager: ChallengeCollectionManager =
-        DatabaseManager.aliceDb.collections.challenge;
+    const dbManager = DatabaseManager.aliceDb.collections.challenge;
 
-    const challenge: Challenge | null = await dbManager.getById(
+    const challenge = await dbManager.getById(
         interaction.options.getString("id", true),
     );
 
@@ -42,22 +37,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const type: BonusID = <BonusID>interaction.options.getString("type", true);
-
-    const level: number = interaction.options.getInteger("level", true);
-
+    const type = <BonusID>interaction.options.getString("type", true);
+    const level = interaction.options.getInteger("level", true);
     let value: string | number | null = interaction.options.getString("value");
-
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     if (!value) {
         // Value omitted, means the user wants to delete.
-        const bonus: Bonus | undefined = challenge.bonus.get(type);
+        const bonus = challenge.bonus.get(type);
 
         if (bonus) {
-            const index: number = bonus.list.findIndex(
-                (v) => v.level === level,
-            );
+            const index = bonus.list.findIndex((v) => v.level === level);
 
             if (index !== -1) {
                 bonus.list.splice(index, 1);
@@ -66,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     challenge.bonus.delete(type);
                 }
 
-                const result: OperationResult = await dbManager.updateOne(
+                const result = await dbManager.updateOne(
                     { challengeid: challenge.challengeid },
                     {
                         $set: {
@@ -126,10 +116,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 });
             }
 
-            const maxScore: number = beatmap.beatmap!.maxDroidScore(
-                new MapStats({
-                    mods: ModUtil.pcStringToMods(challenge.constrain),
-                }),
+            const maxScore = beatmap.beatmap!.maxDroidScore(
+                ModUtil.pcStringToMods(challenge.constrain),
             );
 
             if (!NumberHelper.isNumberInRange(value, 0, maxScore, true)) {
@@ -197,7 +185,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             break;
         case "mod": {
-            const mods: Mod[] = ModUtil.pcStringToMods(value);
+            const mods = ModUtil.pcStringToMods(value);
 
             if (mods.some((m) => !m.isApplicableToDroid() || !m.droidRanked)) {
                 return InteractionHelper.reply(interaction, {
@@ -269,9 +257,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             break;
     }
 
-    const bonus: Bonus = challenge.bonus.get(type) ?? { id: type, list: [] };
-
-    const index: number = bonus.list.findIndex((v) => v.level === level);
+    const bonus = challenge.bonus.get(type) ?? { id: type, list: [] };
+    const index = bonus.list.findIndex((v) => v.level === level);
 
     if (index !== -1) {
         bonus.list[index].value = value;
@@ -286,7 +273,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     challenge.bonus.set(type, bonus);
 
-    const result: OperationResult = await dbManager.updateOne(
+    const result = await dbManager.updateOne(
         { challengeid: challenge.challengeid },
         {
             $set: {
@@ -295,11 +282,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         },
     );
 
-    if (!result.success) {
+    if (result.failed()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("modifyBonusFailed"),
-                result.reason!,
+                result.reason,
             ),
         });
     }

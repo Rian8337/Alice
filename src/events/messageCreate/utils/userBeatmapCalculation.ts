@@ -9,25 +9,19 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import {
     Message,
     EmbedBuilder,
-    BaseMessageOptions,
     ChannelType,
     bold,
     underscore,
 } from "discord.js";
-import { MapInfo, MapStats, Modes } from "@rian8337/osu-base";
 import {
-    CacheableDifficultyAttributes,
-    DroidDifficultyAttributes,
-    OsuDifficultyAttributes,
-} from "@rian8337/osu-difficulty-calculator";
+    MapInfo,
+    Modes,
+    calculateOsuDifficultyStatistics,
+} from "@rian8337/osu-base";
 import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
@@ -35,17 +29,15 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const localization: UserBeatmapCalculationLocalization =
-        new UserBeatmapCalculationLocalization(
-            message.channel.type === ChannelType.DM
-                ? await CommandHelper.getLocale(message.author)
-                : await CommandHelper.getLocale(message.channel.id),
-        );
+    const localization = new UserBeatmapCalculationLocalization(
+        message.channel.type === ChannelType.DM
+            ? await CommandHelper.getLocale(message.author)
+            : await CommandHelper.getLocale(message.channel.id),
+    );
 
-    const calcParams: PerformanceCalculationParameters =
-        BeatmapDifficultyHelper.getCalculationParamsFromMessage(
-            message.content,
-        );
+    const calcParams = BeatmapDifficultyHelper.getCalculationParamsFromMessage(
+        message.content,
+    );
 
     for (const arg of message.content.split(/\s+/g)) {
         if (
@@ -56,8 +48,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const beatmapId: number = BeatmapManager.getBeatmapID(arg)[0];
-        const beatmapsetID: number = BeatmapManager.getBeatmapsetID(arg)[0];
+        const beatmapId = BeatmapManager.getBeatmapID(arg)[0];
+        const beatmapsetId = BeatmapManager.getBeatmapsetID(arg)[0];
 
         // Prioritize beatmap ID over beatmapset ID
         if (beatmapId) {
@@ -78,46 +70,41 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 beatmapInfo.hash,
             );
 
-            const droidAttribs: CompleteCalculationAttributes<
-                DroidDifficultyAttributes,
-                DroidPerformanceAttributes
-            > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-                beatmapId,
-                Modes.droid,
-                PPCalculationMethod.live,
-                calcParams,
-            );
+            const droidAttribs =
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    beatmapId,
+                    Modes.droid,
+                    PPCalculationMethod.live,
+                    calcParams,
+                );
 
             if (!droidAttribs) {
                 continue;
             }
 
-            const osuAttribs: CompleteCalculationAttributes<
-                OsuDifficultyAttributes,
-                OsuPerformanceAttributes
-            > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-                beatmapId,
-                Modes.osu,
-                PPCalculationMethod.live,
-                calcParams,
-            );
+            const osuAttribs =
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    beatmapId,
+                    Modes.osu,
+                    PPCalculationMethod.live,
+                    calcParams,
+                );
 
             if (!osuAttribs) {
                 continue;
             }
 
-            const calcEmbedOptions: BaseMessageOptions =
-                EmbedCreator.createCalculationEmbed(
-                    beatmapInfo,
-                    calcParams,
-                    droidAttribs.difficulty,
-                    osuAttribs.difficulty,
-                    droidAttribs.performance,
-                    osuAttribs.performance,
-                    localization.language,
-                );
+            const calcEmbedOptions = EmbedCreator.createCalculationEmbed(
+                beatmapInfo,
+                calcParams,
+                droidAttribs.difficulty,
+                osuAttribs.difficulty,
+                droidAttribs.performance,
+                osuAttribs.performance,
+                localization.language,
+            );
 
-            let string: string = "";
+            let string = "";
 
             if (message.content.includes("-d")) {
                 string += `${localization.getTranslation(
@@ -148,10 +135,12 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             }
 
             message.channel.send(calcEmbedOptions);
-        } else if (beatmapsetID) {
+        } else if (beatmapsetId) {
             // Retrieve beatmap file one by one to not overcreate requests
-            const beatmapInformations: MapInfo[] =
-                await BeatmapManager.getBeatmaps(beatmapsetID, false);
+            const beatmapInformations = await BeatmapManager.getBeatmaps(
+                beatmapsetId,
+                false,
+            );
 
             if (beatmapInformations.length === 0) {
                 return;
@@ -161,7 +150,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 (a, b) => (b.totalDifficulty ?? 0) - (a.totalDifficulty ?? 0),
             );
 
-            let string: string = "";
+            let string = "";
 
             if (beatmapInformations.length > 3) {
                 string = MessageCreator.createAccept(
@@ -170,14 +159,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 );
             }
 
-            const firstBeatmap: MapInfo = beatmapInformations[0];
+            const firstBeatmap = beatmapInformations[0];
 
-            const embedOptions: BaseMessageOptions =
-                EmbedCreator.createBeatmapEmbed(
-                    firstBeatmap,
-                    undefined,
-                    localization.language,
-                );
+            const embedOptions = EmbedCreator.createBeatmapEmbed(
+                firstBeatmap,
+                undefined,
+                localization.language,
+            );
 
             if (string) {
                 embedOptions.content = string;
@@ -186,12 +174,14 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             // Empty files first, we will reenter all attachments later
             embedOptions.files = [];
 
-            const embed: EmbedBuilder = EmbedBuilder.from(
-                embedOptions.embeds![0],
-            );
+            const embed = EmbedBuilder.from(embedOptions.embeds![0]);
 
-            const stats: MapStats =
-                calcParams.customStatistics ?? new MapStats();
+            const difficultyStatisticsCalculatorOptions =
+                calcParams.toDifficultyStatisticsCalculatorOptions();
+
+            const speedMultiplier = calculateOsuDifficultyStatistics(
+                difficultyStatisticsCalculatorOptions,
+            ).overallSpeedMultiplier;
 
             embed
                 .spliceFields(0, embed.data.fields!.length)
@@ -205,15 +195,15 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     `${BeatmapManager.showStatistics(
                         firstBeatmap,
                         1,
-                        stats,
+                        difficultyStatisticsCalculatorOptions,
                     )}\n` +
                         `${bold("BPM")}: ${BeatmapManager.convertBPM(
                             firstBeatmap.bpm,
-                            stats,
+                            speedMultiplier,
                         )} - ${bold("Length")}: ${BeatmapManager.convertTime(
                             firstBeatmap.hitLength,
                             firstBeatmap.totalLength,
-                            stats,
+                            speedMultiplier,
                         )}`,
                 );
 
@@ -222,7 +212,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     break;
                 }
 
-                const droidDiffAttribs: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
+                const droidDiffAttribs =
                     await DPPProcessorRESTManager.getDifficultyAttributes(
                         beatmapInfo.hash,
                         Modes.droid,
@@ -230,7 +220,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         calcParams,
                     );
 
-                const osuDiffAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
+                const osuDiffAttribs =
                     await DPPProcessorRESTManager.getDifficultyAttributes(
                         beatmapInfo.hash,
                         Modes.osu,
@@ -254,17 +244,17 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         `${BeatmapManager.showStatistics(
                             beatmapInfo,
                             2,
-                            stats,
+                            difficultyStatisticsCalculatorOptions,
                         )}\n` +
                         `${BeatmapManager.showStatistics(
                             beatmapInfo,
                             3,
-                            stats,
+                            difficultyStatisticsCalculatorOptions,
                         )}\n` +
                         `${BeatmapManager.showStatistics(
                             beatmapInfo,
                             4,
-                            stats,
+                            difficultyStatisticsCalculatorOptions,
                         )}\n` +
                         `${bold(
                             droidDiffAttribs.starRating.toFixed(2),

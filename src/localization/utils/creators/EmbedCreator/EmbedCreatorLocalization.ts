@@ -14,7 +14,6 @@ export interface EmbedCreatorStrings {
     readonly result: string;
     readonly droidPP: string;
     readonly pcPP: string;
-    readonly estimated: string;
     readonly droidStars: string;
     readonly pcStars: string;
     readonly starRating: string;

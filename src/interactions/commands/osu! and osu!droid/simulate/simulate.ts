@@ -1,15 +1,11 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { SimulateLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/simulate/SimulateLocalization";
 import { SlashCommand } from "@alice-structures/core/SlashCommand";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { ScoreRank } from "@alice-structures/utils/ScoreRank";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -23,50 +19,35 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import {
     Accuracy,
+    calculateDroidDifficultyStatistics,
     Circle,
     DroidHitWindow,
     IModApplicableToDroid,
     MapInfo,
-    MapStats,
     Mod,
     Modes,
     ModFlashlight,
     ModHidden,
     ModPrecise,
     ModUtil,
-    PlaceableHitObject,
     Slider,
     SliderNestedHitObject,
     SliderTick,
 } from "@rian8337/osu-base";
-import {
-    DroidDifficultyAttributes,
-    OsuDifficultyAttributes,
-} from "@rian8337/osu-difficulty-calculator";
-import {
-    HitResult,
-    ReplayObjectData,
-} from "@rian8337/osu-droid-replay-analyzer";
+import { HitResult } from "@rian8337/osu-droid-replay-analyzer";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import {
-    ApplicationCommandOptionType,
-    EmbedBuilder,
-    GuildMember,
-    Snowflake,
-} from "discord.js";
+import { ApplicationCommandOptionType, GuildMember } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: SimulateLocalization = new SimulateLocalization(
+    const localization = new SimulateLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const beatmapID: number = BeatmapManager.getBeatmapID(
+    const beatmapID = BeatmapManager.getBeatmapID(
         interaction.options.getString("beatmap") ?? "",
     )[0];
 
-    const hash: string | undefined = BeatmapManager.getChannelLatestBeatmap(
-        interaction.channelId,
-    );
+    const hash = BeatmapManager.getChannelLatestBeatmap(interaction.channelId);
 
     if (!beatmapID && !hash) {
         return InteractionHelper.reply(interaction, {
@@ -87,8 +68,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const modInput: string | null = interaction.options.getString("mods");
-    const speedMultiplierInput: number | null =
+    const modInput = interaction.options.getString("mods");
+    const speedMultiplierInput =
         interaction.options.getNumber("speedmultiplier");
 
     if (!modInput && !speedMultiplierInput) {
@@ -101,13 +82,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
+    const discordid = interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
+    const username = interaction.options.getString("username");
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
 
@@ -194,10 +173,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score: Score | null = await Score.getFromHash(
-        player.uid,
-        beatmap.hash,
-    );
+    const score = await Score.getFromHash(player.uid, beatmap.hash);
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
@@ -211,7 +187,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const mods: Mod[] = ModUtil.pcStringToMods(modInput ?? "");
+    const mods = ModUtil.pcStringToMods(modInput ?? "");
 
     if (
         StringHelper.sortAlphabet(
@@ -256,27 +232,27 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     // Simulate replay given the mods input.
     // For the moment, we're not gonna check for cursor position in sliders as the operation will be too expensive.
-    let scoreMultiplier: number = 1;
+    let scoreMultiplier = 1;
     for (const mod of mods) {
         if (mod.isApplicableToDroid()) {
             scoreMultiplier *= mod.droidScoreMultiplier;
         }
     }
 
-    const speedMultiplier: number = speedMultiplierInput ?? 1;
+    const speedMultiplier = speedMultiplierInput ?? 1;
     if (speedMultiplier >= 1) {
         scoreMultiplier *= 1 + (speedMultiplier - 1) * 0.24;
     } else {
         scoreMultiplier *= Math.pow(0.3, (1 - speedMultiplier) * 4);
     }
 
-    const difficultyMultiplier: number =
+    const difficultyMultiplier =
         1 + beatmap.od / 10 + beatmap.hp / 10 + (beatmap.cs - 3) / 4;
 
-    let totalScore: number = 0;
-    let currentCombo: number = 0;
-    let maxCombo: number = 0;
-    const accuracy: Accuracy = new Accuracy({
+    let totalScore = 0;
+    let currentCombo = 0;
+    let maxCombo = 0;
+    const accuracy = new Accuracy({
         n300: 0,
         n100: 0,
         n50: 0,
@@ -287,54 +263,54 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     // This will be used when comparing accuracy against hit result, as the result was rounded down
     // to the nearest integer, making some hits look like they should receive a 300 but instead they
     // receive a 100. The same can be applied for 100 and 50.
-    const realOD: number = new MapStats({
-        od: beatmap.od,
+    const realOD = calculateDroidDifficultyStatistics({
+        overallDifficulty: beatmap.od,
         mods: score.mods.filter(
             (v) =>
                 !ModUtil.speedChangingMods.some((m) => m.acronym === v.acronym),
         ),
-    }).calculate({ mode: Modes.droid, convertDroidOD: false }).od!;
-    const realHitWindow: DroidHitWindow = new DroidHitWindow(realOD);
-    const realIsPrecise: boolean = score.mods.some(
-        (m) => m instanceof ModPrecise,
-    );
-    const realSpeedMultiplier: number = new MapStats({
-        speedMultiplier: score.speedMultiplier,
+        convertOverallDifficulty: false,
+    }).overallDifficulty;
+
+    const realHitWindow = new DroidHitWindow(realOD);
+    const realIsPrecise = score.mods.some((m) => m instanceof ModPrecise);
+    const realSpeedMultiplier = calculateDroidDifficultyStatistics({
+        customSpeedMultiplier: score.speedMultiplier,
         mods: score.mods,
-    }).calculate().speedMultiplier;
+    }).overallSpeedMultiplier;
 
     // In simulation, it is fine to apply speed-changing mods if they are present.
-    const simulatedOD: number = new MapStats({
-        od: beatmap.od,
+    const simulatedOD = calculateDroidDifficultyStatistics({
+        overallDifficulty: beatmap.od,
         mods: mods.filter(
             (v) =>
                 !ModUtil.speedChangingMods.some((m) => m.acronym === v.acronym),
         ),
-    }).calculate({ mode: Modes.droid, convertDroidOD: false }).od!;
-    const simulatedHitWindow: DroidHitWindow = new DroidHitWindow(simulatedOD);
-    const simulatedIsPrecise: boolean = mods.some(
-        (m) => m instanceof ModPrecise,
-    );
-    const simulatedSpeedMultiplier: number = new MapStats({
-        speedMultiplier: speedMultiplier,
-        mods: mods,
-    }).calculate().speedMultiplier;
+        convertOverallDifficulty: false,
+    }).overallDifficulty;
 
-    const simulatedHitWindow300: number =
+    const simulatedHitWindow = new DroidHitWindow(simulatedOD);
+    const simulatedIsPrecise = mods.some((m) => m instanceof ModPrecise);
+    const simulatedSpeedMultiplier = calculateDroidDifficultyStatistics({
+        customSpeedMultiplier: speedMultiplier,
+        mods: mods,
+    }).overallSpeedMultiplier;
+
+    const simulatedHitWindow300 =
         simulatedHitWindow.hitWindowFor300(simulatedIsPrecise) /
         simulatedSpeedMultiplier;
-    const simulatedHitWindow100: number =
+    const simulatedHitWindow100 =
         simulatedHitWindow.hitWindowFor100(simulatedIsPrecise) /
         simulatedSpeedMultiplier;
-    const simulatedHitWindow50: number =
+    const simulatedHitWindow50 =
         simulatedHitWindow.hitWindowFor50(simulatedIsPrecise) /
         simulatedSpeedMultiplier;
 
-    const spinnerRotationNeeded: number = 2 + (2 * simulatedOD) / 10;
+    const spinnerRotationsNeeded = 2 + (2 * simulatedOD) / 10;
 
     const addSliderNestedResult = (
         object: SliderNestedHitObject,
-        wasHit: boolean = true,
+        wasHit = true,
     ) => {
         if (wasHit) {
             ++currentCombo;
@@ -352,7 +328,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     };
 
     const addHitResult = (result: HitResult) => {
-        let hitWeight: number = 0;
+        let hitWeight = 0;
 
         switch (result) {
             case HitResult.great:
@@ -386,13 +362,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     };
 
     for (let i = 0; i < beatmap.beatmap!.hitObjects.objects.length; ++i) {
-        const object: PlaceableHitObject =
-            beatmap.beatmap!.hitObjects.objects[i];
-        const objectData: ReplayObjectData = replay.data.hitObjectData[i];
-        const hitAccuracy: number = Math.abs(objectData.accuracy);
+        const object = beatmap.beatmap!.hitObjects.objects[i];
+        const objectData = replay.data.hitObjectData[i];
+        const hitAccuracy = Math.abs(objectData.accuracy);
 
         if (object instanceof Circle) {
-            let wasRounded: boolean = false;
+            let wasRounded = false;
 
             switch (objectData.result) {
                 case HitResult.good:
@@ -407,7 +382,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     break;
             }
 
-            const realHitAccuracy: number = hitAccuracy / realSpeedMultiplier;
+            const realHitAccuracy = hitAccuracy / realSpeedMultiplier;
 
             switch (true) {
                 case wasRounded
@@ -473,16 +448,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             addHitResult(objectData.result);
         } else {
             // Spinners require a bit of special case.
-            const rotations: number = Math.floor(hitAccuracy / 4);
+            const rotations = Math.floor(hitAccuracy / 4);
 
             // Add 100 for every slider rotation.
             // Source: https://github.com/osudroid/osu-droid/blob/cd4a1e543616cc205841681bcf15302269377cb7/src/ru/nsu/ccfit/zuev/osu/game/Spinner.java#L318-L324
             totalScore +=
-                100 * Math.min(rotations, Math.floor(spinnerRotationNeeded));
+                100 * Math.min(rotations, Math.floor(spinnerRotationsNeeded));
 
             // Then, for every bonus rotation, add 1000 as spinner bonus.
             for (let i = 0; i < rotations; ++i) {
-                if (i < spinnerRotationNeeded) {
+                if (i < spinnerRotationsNeeded) {
                     continue;
                 }
 
@@ -490,7 +465,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             }
 
             // After adding bonuses, register hit.
-            const percentFill: number = rotations / spinnerRotationNeeded;
+            const percentFill = rotations / spinnerRotationsNeeded;
             switch (true) {
                 case percentFill >= 1:
                     addHitResult(HitResult.great);
@@ -515,10 +490,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     // Reprocess rank.
     let rank: ScoreRank;
-    const isHidden: boolean = mods.some(
+    const isHidden = mods.some(
         (m) => m instanceof ModHidden || m instanceof ModFlashlight,
     );
-    const hit300Ratio: number = accuracy.n300 / beatmap.objects;
+    const hit300Ratio = accuracy.n300 / beatmap.objects;
 
     switch (true) {
         case accuracy.value() === 1:
@@ -553,41 +528,27 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     score.rank = rank;
 
     // Construct calculation
-    const calcParams: PerformanceCalculationParameters =
-        new PerformanceCalculationParameters(
-            accuracy,
-            accuracy.value() * 100,
-            maxCombo,
-            undefined,
-            new MapStats({
-                mods: mods,
-                cs: score.forceCS,
-                ar: score.forceAR,
-                od: score.forceOD,
-                hp: score.forceHP,
-                speedMultiplier:
-                    interaction.options.getNumber("speedmultiplier") ?? 1,
-                forceCS: !isNaN(<number>score.forceCS),
-                forceAR: !isNaN(<number>score.forceAR),
-                forceOD: !isNaN(<number>score.forceOD),
-                forceHP: !isNaN(<number>score.forceHP),
-            }),
-        );
+    const calcParams = new PerformanceCalculationParameters({
+        accuracy: accuracy,
+        combo: maxCombo,
+        forceCS: score.forceCS,
+        forceAR: score.forceAR,
+        forceOD: score.forceOD,
+        forceHP: score.forceHP,
+        mods: score.mods,
+        oldStatistics: score.oldStatistics,
+        customSpeedMultiplier:
+            interaction.options.getNumber("speedmultiplier") ?? 1,
+    });
 
-    const droidAttribs: CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
-    > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
+    const droidAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
         beatmap.beatmapId,
         Modes.droid,
         PPCalculationMethod.live,
         calcParams,
     );
 
-    const osuAttribs: CompleteCalculationAttributes<
-        OsuDifficultyAttributes,
-        OsuPerformanceAttributes
-    > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
+    const osuAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
         beatmap.beatmapId,
         Modes.osu,
         PPCalculationMethod.live,
@@ -596,7 +557,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     BeatmapManager.setChannelLatestBeatmap(interaction.channelId, score.hash);
 
-    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
+    const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
         player.avatarURL,
         (<GuildMember | null>interaction.member)?.displayColor,

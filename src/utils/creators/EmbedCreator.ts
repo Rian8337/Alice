@@ -34,9 +34,7 @@ import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyH
 import {
     MapInfo,
     Accuracy,
-    MapStats,
     Precision,
-    HitObject,
     Slider,
     SliderTick,
     SliderTail,
@@ -53,7 +51,6 @@ import {
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import {
-    ReplayObjectData,
     HitResult,
     HitErrorInformation,
 } from "@rian8337/osu-droid-replay-analyzer";
@@ -78,7 +75,7 @@ import { NormalEmbedOptions } from "@alice-structures/utils/NormalEmbedOptions";
  * Utility to create message embeds.
  */
 export abstract class EmbedCreator {
-    private static readonly botSign: string = "Alice Synthesis Thirty";
+    private static readonly botSign = "Alice Synthesis Thirty";
 
     /**
      * Creates a normal embed.
@@ -88,11 +85,9 @@ export abstract class EmbedCreator {
     static createNormalEmbed(
         embedOptions?: Partial<NormalEmbedOptions>,
     ): EmbedBuilder {
-        const iconURL: string = ArrayHelper.getRandomArrayElement(
-            Config.avatarList,
-        );
+        const iconURL = ArrayHelper.getRandomArrayElement(Config.avatarList);
 
-        const embed: EmbedBuilder = new EmbedBuilder().setFooter({
+        const embed = new EmbedBuilder().setFooter({
             text: this.botSign,
             iconURL: iconURL,
         });
@@ -134,10 +129,9 @@ export abstract class EmbedCreator {
         calculationParams?: DifficultyCalculationParameters,
         language: Language = "en",
     ): BaseMessageOptions {
-        const localization: EmbedCreatorLocalization =
-            new EmbedCreatorLocalization(language);
+        const localization = new EmbedCreatorLocalization(language);
 
-        const embed: EmbedBuilder = this.createNormalEmbed({
+        const embed = this.createNormalEmbed({
             color: <ColorResolvable>(
                 BeatmapManager.getBeatmapDifficultyColor(
                     parseFloat((beatmapInfo.totalDifficulty ?? 0).toFixed(2)),
@@ -145,7 +139,9 @@ export abstract class EmbedCreator {
             ),
         });
 
-        const totalDifficulty: number = beatmapInfo.totalDifficulty ?? 0;
+        const totalDifficulty = beatmapInfo.totalDifficulty ?? 0;
+        const diffStatOptions =
+            calculationParams?.toDifficultyStatisticsCalculatorOptions();
 
         embed
             .setAuthor({
@@ -153,23 +149,15 @@ export abstract class EmbedCreator {
                 iconURL: `attachment://osu-${totalDifficulty.toFixed(2)}.png`,
             })
             .setTitle(
-                BeatmapManager.showStatistics(
-                    beatmapInfo,
-                    0,
-                    calculationParams?.customStatistics,
-                ),
+                BeatmapManager.showStatistics(beatmapInfo, 0, diffStatOptions),
             )
             .setDescription(
-                BeatmapManager.showStatistics(
-                    beatmapInfo,
-                    1,
-                    calculationParams?.customStatistics,
-                ) +
+                BeatmapManager.showStatistics(beatmapInfo, 1, diffStatOptions) +
                     "\n" +
                     BeatmapManager.showStatistics(
                         beatmapInfo,
                         2,
-                        calculationParams?.customStatistics,
+                        diffStatOptions,
                     ),
             )
             .setURL(beatmapInfo.beatmapLink)
@@ -181,7 +169,7 @@ export abstract class EmbedCreator {
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         3,
-                        calculationParams?.customStatistics,
+                        diffStatOptions,
                     ),
                 },
                 {
@@ -191,7 +179,7 @@ export abstract class EmbedCreator {
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         4,
-                        calculationParams?.customStatistics,
+                        diffStatOptions,
                     ),
                 },
                 {
@@ -201,19 +189,19 @@ export abstract class EmbedCreator {
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         5,
-                        calculationParams?.customStatistics,
+                        diffStatOptions,
                     ),
                 },
                 {
                     name: BeatmapManager.showStatistics(
                         beatmapInfo,
                         6,
-                        calculationParams?.customStatistics,
+                        diffStatOptions,
                     ),
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         7,
-                        calculationParams?.customStatistics,
+                        diffStatOptions,
                     ),
                 },
                 {
@@ -253,10 +241,9 @@ export abstract class EmbedCreator {
         ppRank?: number,
         language: Language = "en",
     ): Promise<EmbedBuilder> {
-        const localization: EmbedCreatorLocalization =
-            new EmbedCreatorLocalization(language);
+        const localization = new EmbedCreatorLocalization(language);
 
-        const embed: EmbedBuilder = this.createNormalEmbed({
+        const embed = this.createNormalEmbed({
             author: interaction.user,
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
@@ -311,7 +298,7 @@ export abstract class EmbedCreator {
         description: string,
         language: Language = "en",
     ): EmbedBuilder {
-        const embed: EmbedBuilder = this.createNormalEmbed({
+        const embed = this.createNormalEmbed({
             author: interaction.user,
             color: (<GuildMember | null>interaction.member)?.displayColor,
             footerText:
@@ -348,32 +335,31 @@ export abstract class EmbedCreator {
         osuPerfAttribs?: OsuPerformanceAttributes,
         language: Language = "en",
     ): BaseMessageOptions {
-        const localization: EmbedCreatorLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
-        const embedOptions: BaseMessageOptions = this.createBeatmapEmbed(
+        const embedOptions = this.createBeatmapEmbed(
             beatmap,
             calculationParams,
             language,
         );
 
-        const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
-        const files: NonNullable<BaseMessageOptions["files"]> =
-            embedOptions.files!;
+        const embed = EmbedBuilder.from(embedOptions.embeds![0]);
+        const files = embedOptions.files!;
 
         if (
             calculationParams instanceof PerformanceCalculationParameters &&
             droidPerfAttribs &&
             osuPerfAttribs
         ) {
-            const combo: number =
-                calculationParams.combo ?? droidDiffAttribs.maxCombo;
+            const combo = calculationParams.combo ?? droidDiffAttribs.maxCombo;
             // Recompute accuracy to consider amount of objects.
             calculationParams.accuracy = new Accuracy({
                 ...calculationParams.accuracy,
                 nobjects: beatmap.objects,
             });
-            const { accuracy, customStatistics } = calculationParams;
+            const { accuracy } = calculationParams;
+            const diffStatOptions =
+                calculationParams.toDifficultyStatisticsCalculatorOptions();
 
             embed
                 .setColor(
@@ -389,12 +375,12 @@ export abstract class EmbedCreator {
                         name: BeatmapManager.showStatistics(
                             beatmap,
                             6,
-                            customStatistics,
+                            diffStatOptions,
                         ),
                         value: `${BeatmapManager.showStatistics(
                             beatmap,
                             7,
-                            customStatistics,
+                            diffStatOptions,
                         )}\n${bold(
                             `${localization.getTranslation("result")}`,
                         )}: ${combo}/${droidDiffAttribs.maxCombo}x | ${(
@@ -408,24 +394,12 @@ export abstract class EmbedCreator {
                             localization.getTranslation("droidPP"),
                         )}: ${underscore(
                             `${droidPerfAttribs.total.toFixed(2)} pp`,
-                        )}${
-                            calculationParams.isEstimated
-                                ? ` (${localization.getTranslation(
-                                      "estimated",
-                                  )})`
-                                : ""
-                        } - ${droidDiffAttribs.starRating.toFixed(2)}${
+                        )} - ${droidDiffAttribs.starRating.toFixed(2)}${
                             Symbols.star
                         }`,
                         value: `${bold(
                             localization.getTranslation("pcPP"),
-                        )}: ${osuPerfAttribs.total.toFixed(2)} pp${
-                            calculationParams.isEstimated
-                                ? ` (${localization.getTranslation(
-                                      "estimated",
-                                  )})`
-                                : ""
-                        } - ${osuDiffAttribs.starRating.toFixed(2)}${
+                        )}: ${osuPerfAttribs.total.toFixed(2)} pp - ${osuDiffAttribs.starRating.toFixed(2)}${
                             Symbols.star
                         }`,
                     },
@@ -514,14 +488,11 @@ export abstract class EmbedCreator {
         > | null,
         language: Language = "en",
     ): Promise<EmbedBuilder> {
-        const localization: EmbedCreatorLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
+        const BCP47 = LocaleHelper.convertToBCP47(language);
+        const arrow = Symbols.rightArrowSmall;
 
-        const BCP47: string = LocaleHelper.convertToBCP47(language);
-
-        const arrow: Symbols = Symbols.rightArrowSmall;
-
-        const embed: EmbedBuilder = this.createNormalEmbed({
+        const embed = this.createNormalEmbed({
             color: embedColor,
             footerText: StringHelper.formatString(
                 localization.getTranslation("dateAchieved"),
@@ -556,7 +527,7 @@ export abstract class EmbedCreator {
                     : score.osuAttribs;
         }
 
-        let beatmapInformation: string = `${arrow} ${BeatmapManager.getRankEmote(
+        let beatmapInformation = `${arrow} ${BeatmapManager.getRankEmote(
             <ScoreRank>score.rank,
         )} ${arrow} `;
 
@@ -598,10 +569,10 @@ export abstract class EmbedCreator {
         )} | ${bold(`${osuAttribs.performance.total.toFixed(2)}PP`)} `;
 
         // Some beatmaps return `null` max combo from osu! API, i.e. /b/1462961.
-        const maxCombo: number = droidAttribs.difficulty.maxCombo;
+        const { maxCombo } = droidAttribs.difficulty;
 
         if (score.accuracy.nmiss > 0 || score.combo < maxCombo) {
-            const calcParams: PerformanceCalculationParameters =
+            const calcParams =
                 BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
 
             calcParams.combo = maxCombo;
@@ -612,25 +583,21 @@ export abstract class EmbedCreator {
                 nmiss: 0,
             });
 
-            const droidFcAttribs: CompleteCalculationAttributes<
-                DroidDifficultyAttributes,
-                DroidPerformanceAttributes
-            > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-                score.hash,
-                Modes.droid,
-                PPCalculationMethod.live,
-                calcParams,
-            );
+            const droidFcAttribs =
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    score.hash,
+                    Modes.droid,
+                    PPCalculationMethod.live,
+                    calcParams,
+                );
 
-            const osuFcAttribs: CompleteCalculationAttributes<
-                OsuDifficultyAttributes,
-                OsuPerformanceAttributes
-            > | null = await DPPProcessorRESTManager.getPerformanceAttributes(
-                score.hash,
-                Modes.osu,
-                PPCalculationMethod.live,
-                calcParams,
-            );
+            const osuFcAttribs =
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    score.hash,
+                    Modes.osu,
+                    PPCalculationMethod.live,
+                    calcParams,
+                );
 
             if (droidFcAttribs && osuFcAttribs) {
                 beatmapInformation += `(${droidFcAttribs.performance.total.toFixed(
@@ -663,14 +630,13 @@ export abstract class EmbedCreator {
                 replay.beatmap ??= beatmap.beatmap!;
 
                 // Get amount of slider ticks and ends hit
-                let collectedSliderTicks: number = 0;
-                let collectedSliderEnds: number = 0;
+                let collectedSliderTicks = 0;
+                let collectedSliderEnds = 0;
 
                 for (let i = 0; i < data.hitObjectData.length; ++i) {
                     // Using droid star rating as legacy slider tail doesn't exist.
-                    const object: HitObject =
-                        beatmap.beatmap!.hitObjects.objects[i];
-                    const objectData: ReplayObjectData = data.hitObjectData[i];
+                    const object = beatmap.beatmap!.hitObjects.objects[i];
+                    const objectData = data.hitObjectData[i];
 
                     if (
                         objectData.result === HitResult.miss ||
@@ -681,7 +647,7 @@ export abstract class EmbedCreator {
 
                     // Exclude the head circle.
                     for (let j = 1; j < object.nestedHitObjects.length; ++j) {
-                        const nested: HitObject = object.nestedHitObjects[j];
+                        const nested = object.nestedHitObjects[j];
 
                         if (!objectData.tickset[j - 1]) {
                             continue;
@@ -747,8 +713,8 @@ export abstract class EmbedCreator {
             visualSliderCheesePenalty,
         } = droidAttribs.performance;
 
-        const isThreeFinger: boolean = tapPenalty !== 1;
-        const isSliderCheese: boolean = [
+        const isThreeFinger = tapPenalty !== 1;
+        const isSliderCheese = [
             aimSliderCheesePenalty,
             flashlightSliderCheesePenalty,
             visualSliderCheesePenalty,
@@ -787,8 +753,7 @@ export abstract class EmbedCreator {
         graphColor?: string,
         language: Language = "en",
     ): Promise<BaseMessageOptions | null> {
-        const localization: EmbedCreatorLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
             challenge.beatmapid,
@@ -799,14 +764,11 @@ export abstract class EmbedCreator {
             return null;
         }
 
-        const calcParams: DifficultyCalculationParameters =
-            new DifficultyCalculationParameters(
-                new MapStats({
-                    mods: ModUtil.pcStringToMods(challenge.constrain),
-                }),
-            );
+        const calcParams = new DifficultyCalculationParameters({
+            mods: ModUtil.pcStringToMods(challenge.constrain),
+        });
 
-        const droidDiffAttribs: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
+        const droidDiffAttribs =
             await DPPProcessorRESTManager.getDifficultyAttributes(
                 challenge.beatmapid,
                 Modes.droid,
@@ -818,7 +780,7 @@ export abstract class EmbedCreator {
             return null;
         }
 
-        const osuDiffAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
+        const osuDiffAttribs =
             await DPPProcessorRESTManager.getDifficultyAttributes(
                 challenge.beatmapid,
                 Modes.osu,
@@ -830,7 +792,7 @@ export abstract class EmbedCreator {
             return null;
         }
 
-        const embedOptions: BaseMessageOptions = this.createCalculationEmbed(
+        const embedOptions = this.createCalculationEmbed(
             beatmapInfo,
             calcParams,
             droidDiffAttribs,
@@ -840,7 +802,7 @@ export abstract class EmbedCreator {
             language,
         );
 
-        const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
+        const embed = EmbedBuilder.from(embedOptions.embeds![0]);
 
         embed
             .spliceFields(embed.data.fields!.length - 2, 2)
@@ -908,14 +870,13 @@ export abstract class EmbedCreator {
                     localization.getTranslation("challengeBonuses"),
             });
 
-        const actionRow: ActionRowBuilder<ButtonBuilder> =
-            new ActionRowBuilder<ButtonBuilder>().addComponents(
-                new ButtonBuilder()
-                    .setURL(challenge.link[0])
-                    .setEmoji(Symbols.inboxTray)
-                    .setStyle(ButtonStyle.Link)
-                    .setLabel("Download"),
-            );
+        const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+                .setURL(challenge.link[0])
+                .setEmoji(Symbols.inboxTray)
+                .setStyle(ButtonStyle.Link)
+                .setLabel("Download"),
+        );
 
         if (challenge.link[1]) {
             actionRow.addComponents(
@@ -946,14 +907,13 @@ export abstract class EmbedCreator {
         coinEmoji: GuildEmoji,
         language: Language = "en",
     ): EmbedBuilder {
-        const localization: EmbedCreatorLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
-        const embed: EmbedBuilder = this.createNormalEmbed({
+        const embed = this.createNormalEmbed({
             color: "#cb9000",
         });
 
-        const BCP47: string = LocaleHelper.convertToBCP47(language);
+        const BCP47 = LocaleHelper.convertToBCP47(language);
 
         embed
             .setTitle(localization.getTranslation("auctionInfo"))
@@ -1021,10 +981,9 @@ export abstract class EmbedCreator {
         guild: Guild,
         language: Language = "en",
     ): EmbedBuilder {
-        const localization: EmbedCreatorLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
-        const embed: EmbedBuilder = this.createNormalEmbed({
+        const embed = this.createNormalEmbed({
             color: "#b566ff",
         });
 
@@ -1049,7 +1008,7 @@ export abstract class EmbedCreator {
      * @returns The embed.
      */
     static createMatchSummaryEmbed(match: TournamentMatch): EmbedBuilder {
-        const embed: EmbedBuilder = this.createNormalEmbed({
+        const embed = this.createNormalEmbed({
             color: match.matchColorCode,
         });
 
@@ -1079,8 +1038,7 @@ export abstract class EmbedCreator {
         submission: MapShare,
         language: Language = "en",
     ): Promise<BaseMessageOptions | null> {
-        const localization: EmbedCreatorLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
             submission.beatmap_id,
@@ -1091,10 +1049,9 @@ export abstract class EmbedCreator {
             return null;
         }
 
-        const calcParams: DifficultyCalculationParameters =
-            new DifficultyCalculationParameters();
+        const calcParams = new DifficultyCalculationParameters();
 
-        const droidDiffAttribs: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
+        const droidDiffAttribs =
             await DPPProcessorRESTManager.getDifficultyAttributes(
                 submission.beatmap_id,
                 Modes.droid,
@@ -1114,7 +1071,7 @@ export abstract class EmbedCreator {
             return null;
         }
 
-        const embedOptions: BaseMessageOptions = this.createCalculationEmbed(
+        const embedOptions = this.createCalculationEmbed(
             beatmapInfo,
             calcParams,
             droidDiffAttribs,
@@ -1124,7 +1081,7 @@ export abstract class EmbedCreator {
             language,
         );
 
-        const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);
+        const embed = EmbedBuilder.from(embedOptions.embeds![0]);
 
         embed
             .setImage("attachment://chart.png")
@@ -1191,10 +1148,8 @@ export abstract class EmbedCreator {
         queue: MusicQueue,
         language: Language = "en",
     ): EmbedBuilder {
-        const localization: EmbedCreatorLocalization =
-            this.getLocalization(language);
-
-        const embed: EmbedBuilder = this.createNormalEmbed();
+        const localization = this.getLocalization(language);
+        const embed = this.createNormalEmbed();
 
         embed
             .setTitle(queue.information.title)
@@ -1224,10 +1179,9 @@ export abstract class EmbedCreator {
         warning: Warning,
         language: Language = "en",
     ): EmbedBuilder {
-        const localization: EmbedCreatorLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
-        const embed: EmbedBuilder = this.createNormalEmbed({
+        const embed = this.createNormalEmbed({
             color: "Blurple",
             footerText: `${localization.getTranslation("warningId")}: ${
                 warning.guildSpecificId

@@ -15,7 +15,6 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         result: "Hasil",
         droidPP: "Droid PP",
         pcPP: "PC pp",
-        estimated: "estimasi",
         droidStars: "droid star",
         pcStars: "PC star",
         starRating: "Star Rating",
@@ -44,7 +43,7 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         challengeBonuses: `Gunakan ${chatInputApplicationCommandMention(
             "daily",
             "bonuses",
-            "1075209201049153617"
+            "1075209201049153617",
         )} untuk mengecek bonus.`,
         auctionInfo: "Informasi Lelangan",
         auctionName: "Nama",
@@ -60,7 +59,7 @@ export class EmbedCreatorIDTranslation extends Translation<EmbedCreatorStrings> 
         reportBroadcast: "Siaran",
         reportBroadcast1: `Apabila kamu melihat pengguna yang melanggar peraturan, bertingkah laku tidak benar, atau mencoba memberi kekesalan secara sengaja, mohon laporkan pengguna tersebut menggunakan perintah ${chatInputApplicationCommandMention(
             "report",
-            "1075209098997542986"
+            "1075209098997542986",
         )}.`,
         reportBroadcast2:
             "Perlu diingat bahwa hanya anggota staff yang dapat melihat laporan, sehingga privasimu akan terjaga. Kami menghargai kontribusimu dalam membawa lingkungan yang bersahabat!",

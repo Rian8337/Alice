@@ -3,7 +3,6 @@ import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalc
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { Beatmap, Modes } from "@rian8337/osu-base";
 import {
-    DifficultyCalculationOptions,
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
     OsuDifficultyCalculator,
@@ -25,101 +24,99 @@ export abstract class LocalBeatmapDifficultyHelper {
      * Calculates the difficulty of a beatmap.
      *
      * @param beatmap The beatmap to calculate.
-     * @param calculationParams The calculation parameters.
      * @param mode The gamemode to calculate.
      * @param method The calculation method to use.
+     * @param calculationParams The calculation parameters.
      * @returns The calculator instance that calculated the beatmap.
      */
     static calculateDifficulty(
         beatmap: Beatmap,
-        calculationParams: DifficultyCalculationParameters,
         mode: Modes.droid,
-        method: PPCalculationMethod.live
+        method: PPCalculationMethod.live,
+        calculationParams?: DifficultyCalculationParameters,
     ): DroidDifficultyCalculator;
 
     /**
      * Calculates the difficulty of a beatmap.
      *
      * @param beatmap The beatmap to calculate.
-     * @param calculationParams The calculation parameters.
      * @param mode The gamemode to calculate.
      * @param method The calculation method to use.
+     * @param calculationParams The calculation parameters.
      * @returns The calculator instance that calculated the beatmap.
      */
     static calculateDifficulty(
         beatmap: Beatmap,
-        calculationParams: DifficultyCalculationParameters,
         mode: Modes.osu,
-        method: PPCalculationMethod.live
+        method: PPCalculationMethod.live,
+        calculationParams?: DifficultyCalculationParameters,
     ): OsuDifficultyCalculator;
 
     /**
      * Calculates the difficulty of a beatmap.
      *
      * @param beatmap The beatmap to calculate.
-     * @param calculationParams The calculation parameters.
      * @param mode The gamemode to calculate.
      * @param method The calculation method to use.
+     * @param calculationParams The calculation parameters.
      * @returns The calculator instance that calculated the beatmap.
      */
     static calculateDifficulty(
         beatmap: Beatmap,
-        calculationParams: DifficultyCalculationParameters,
         mode: Modes.droid,
-        method: PPCalculationMethod.rebalance
+        method: PPCalculationMethod.rebalance,
+        calculationParams?: DifficultyCalculationParameters,
     ): RebalanceDroidDifficultyCalculator;
 
     /**
      * Calculates the difficulty of a beatmap.
      *
      * @param beatmap The beatmap to calculate.
-     * @param calculationParams The calculation parameters.
      * @param mode The gamemode to calculate.
      * @param method The calculation method to use.
+     * @param calculationParams The calculation parameters.
      * @returns The calculator instance that calculated the beatmap.
      */
     static calculateDifficulty(
         beatmap: Beatmap,
-        calculationParams: DifficultyCalculationParameters,
         mode: Modes.osu,
-        method: PPCalculationMethod.rebalance
+        method: PPCalculationMethod.rebalance,
+        calculationParams?: DifficultyCalculationParameters,
     ): RebalanceOsuDifficultyCalculator;
 
     static calculateDifficulty(
         beatmap: Beatmap,
-        calculationParams: DifficultyCalculationParameters,
         mode: Modes,
-        method: PPCalculationMethod
+        method: PPCalculationMethod,
+        calculationParams?: DifficultyCalculationParameters,
     ):
         | DroidDifficultyCalculator
         | OsuDifficultyCalculator
         | RebalanceDroidDifficultyCalculator
         | RebalanceOsuDifficultyCalculator {
-        const calculationOptions: DifficultyCalculationOptions = {
-            mods: calculationParams.customStatistics?.mods,
-            stats: calculationParams.customStatistics,
-        };
+        const calculationOptions =
+            calculationParams?.toDroidDifficultyCalculationOptions();
 
         if (mode === Modes.droid) {
             switch (method) {
                 case PPCalculationMethod.live:
                     return new DroidDifficultyCalculator(beatmap).calculate(
-                        calculationOptions
+                        calculationOptions,
                     );
                 case PPCalculationMethod.rebalance:
                     return new RebalanceDroidDifficultyCalculator(
-                        beatmap
+                        beatmap,
                     ).calculate(calculationOptions);
             }
         } else {
             switch (method) {
                 case PPCalculationMethod.rebalance:
                     return new RebalanceOsuDifficultyCalculator(
-                        beatmap
+                        beatmap,
                     ).calculate(calculationOptions);
                 default:
                     return new OsuDifficultyCalculator(beatmap).calculate(
-                        calculationOptions
+                        calculationOptions,
                     );
             }
         }
@@ -134,7 +131,7 @@ export abstract class LocalBeatmapDifficultyHelper {
      */
     static calculatePerformance(
         calculator: DroidDifficultyCalculator,
-        calculationParams: PerformanceCalculationParameters
+        calculationParams: PerformanceCalculationParameters,
     ): DroidPerformanceCalculator;
 
     /**
@@ -146,7 +143,7 @@ export abstract class LocalBeatmapDifficultyHelper {
      */
     static calculatePerformance(
         calculator: RebalanceDroidDifficultyCalculator,
-        calculationParams: PerformanceCalculationParameters
+        calculationParams: PerformanceCalculationParameters,
     ): RebalanceDroidPerformanceCalculator;
 
     /**
@@ -158,7 +155,7 @@ export abstract class LocalBeatmapDifficultyHelper {
      */
     static calculatePerformance(
         calculator: OsuDifficultyCalculator,
-        calculationParams: PerformanceCalculationParameters
+        calculationParams: PerformanceCalculationParameters,
     ): OsuPerformanceCalculator;
 
     /**
@@ -170,7 +167,7 @@ export abstract class LocalBeatmapDifficultyHelper {
      */
     static calculatePerformance(
         calculator: RebalanceOsuDifficultyCalculator,
-        calculationParams: PerformanceCalculationParameters
+        calculationParams: PerformanceCalculationParameters,
     ): RebalanceOsuPerformanceCalculator;
 
     static calculatePerformance(
@@ -179,7 +176,7 @@ export abstract class LocalBeatmapDifficultyHelper {
             | RebalanceDroidDifficultyCalculator
             | OsuDifficultyCalculator
             | RebalanceOsuDifficultyCalculator,
-        calculationParams: PerformanceCalculationParameters
+        calculationParams: PerformanceCalculationParameters,
     ):
         | DroidPerformanceCalculator
         | RebalanceDroidPerformanceCalculator
@@ -195,19 +192,19 @@ export abstract class LocalBeatmapDifficultyHelper {
 
         if (calculator instanceof DroidDifficultyCalculator) {
             return new DroidPerformanceCalculator(
-                calculator.attributes
+                calculator.attributes,
             ).calculate(calculationOptions);
         } else if (calculator instanceof OsuDifficultyCalculator) {
             return new OsuPerformanceCalculator(
-                calculator.attributes
+                calculator.attributes,
             ).calculate(calculationOptions);
         } else if (calculator instanceof RebalanceDroidDifficultyCalculator) {
             return new RebalanceDroidPerformanceCalculator(
-                calculator.attributes
+                calculator.attributes,
             ).calculate(calculationOptions);
         } else {
             return new RebalanceOsuPerformanceCalculator(
-                calculator.attributes
+                calculator.attributes,
             ).calculate(calculationOptions);
         }
     }

@@ -88,6 +88,10 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             replay.beatmap ??= beatmap;
             replay.difficultyAttributes = difficultyAttributes;
             replay.checkFor3Finger();
+
+            if (replay.tapPenalty > 1) {
+                calcResult.params;
+            }
             calcResult.params.tapPenalty = replay.tapPenalty;
         }
 

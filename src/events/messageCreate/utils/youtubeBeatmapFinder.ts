@@ -1,7 +1,6 @@
 import {
     Message,
     EmbedBuilder,
-    BaseMessageOptions,
     ChannelType,
     bold,
     underscore,
@@ -13,16 +12,9 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
-import { YouTubeVideoInformation } from "@alice-structures/youtube/YouTubeVideoInformation";
-import { MapInfo, MapStats, Modes } from "@rian8337/osu-base";
-import {
-    CacheableDifficultyAttributes,
-    DroidDifficultyAttributes,
-    OsuDifficultyAttributes,
-} from "@rian8337/osu-difficulty-calculator";
+import { Modes } from "@rian8337/osu-base";
 import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 
@@ -31,45 +23,42 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const localization: YoutubeBeatmapFinderLocalization =
-        new YoutubeBeatmapFinderLocalization(
-            message.channel.type === ChannelType.DM
-                ? await CommandHelper.getLocale(message.author)
-                : await CommandHelper.getLocale(message.channel.id),
-        );
+    const localization = new YoutubeBeatmapFinderLocalization(
+        message.channel.type === ChannelType.DM
+            ? await CommandHelper.getLocale(message.author)
+            : await CommandHelper.getLocale(message.channel.id),
+    );
 
-    const ytRegex: RegExp =
+    const ytRegex =
         /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]+).*/;
 
-    const calcParams: PerformanceCalculationParameters =
-        BeatmapDifficultyHelper.getCalculationParamsFromMessage(
-            message.content,
-        );
+    const calcParams = BeatmapDifficultyHelper.getCalculationParamsFromMessage(
+        message.content,
+    );
 
     for (const arg of message.content.split(/\s+/g)) {
-        const match: RegExpMatchArray | null = arg.match(ytRegex);
+        const match = arg.match(ytRegex);
 
         if (!match) {
             continue;
         }
 
-        const videoId: string = match[1];
+        const videoId = match[1];
 
         if (!videoId) {
             continue;
         }
 
-        const data: YouTubeVideoInformation | null =
-            await YouTubeRESTManager.getInformation(videoId);
+        const data = await YouTubeRESTManager.getInformation(videoId);
 
         if (!data) {
             continue;
         }
 
-        const description: string = data.snippet.description;
+        const { description } = data.snippet;
 
         // Limit to 3 beatmaps to prevent spam
-        let validCount: number = 0;
+        let validCount = 0;
 
         for (const link of description.split(/\s+/g)) {
             if (!link.startsWith("https://osu.ppy.sh/")) {
@@ -80,16 +69,14 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 break;
             }
 
-            const beatmapID: number = BeatmapManager.getBeatmapID(link)[0];
-            const beatmapsetID: number =
-                BeatmapManager.getBeatmapsetID(link)[0];
+            const beatmapID = BeatmapManager.getBeatmapID(link)[0];
+            const beatmapsetID = BeatmapManager.getBeatmapsetID(link)[0];
 
             // Prioritize beatmap ID over beatmapset ID
             if (beatmapID) {
-                const beatmapInfo: MapInfo<false> | null =
-                    await BeatmapManager.getBeatmap(beatmapID, {
-                        checkFile: false,
-                    });
+                const beatmapInfo = await BeatmapManager.getBeatmap(beatmapID, {
+                    checkFile: false,
+                });
 
                 if (!beatmapInfo) {
                     continue;
@@ -101,24 +88,23 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     beatmapInfo.hash,
                 );
 
-                const embedOptions: BaseMessageOptions =
-                    EmbedCreator.createBeatmapEmbed(
-                        beatmapInfo,
-                        undefined,
-                        localization.language,
-                    );
-
-                const embed: EmbedBuilder = <EmbedBuilder>(
-                    embedOptions.embeds![0]
+                const embedOptions = EmbedCreator.createBeatmapEmbed(
+                    beatmapInfo,
+                    calcParams,
+                    localization.language,
                 );
+
+                const embed = <EmbedBuilder>embedOptions.embeds![0];
 
                 embed.spliceFields(0, embed.data.fields!.length);
 
                 message.channel.send(embedOptions);
             } else if (beatmapsetID) {
                 // Retrieve beatmap file one by one to not overcreate requests
-                const beatmapInformations: MapInfo[] =
-                    await BeatmapManager.getBeatmaps(beatmapsetID, false);
+                const beatmapInformations = await BeatmapManager.getBeatmaps(
+                    beatmapsetID,
+                    false,
+                );
 
                 if (beatmapInformations.length === 0) {
                     return;
@@ -129,7 +115,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         (b.totalDifficulty ?? 0) - (a.totalDifficulty ?? 0),
                 );
 
-                let string: string = "";
+                let string = "";
 
                 if (beatmapInformations.length > 3) {
                     string = MessageCreator.createAccept(
@@ -138,14 +124,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     );
                 }
 
-                const firstBeatmap: MapInfo = beatmapInformations[0];
+                const firstBeatmap = beatmapInformations[0];
 
-                const embedOptions: BaseMessageOptions =
-                    EmbedCreator.createBeatmapEmbed(
-                        firstBeatmap,
-                        undefined,
-                        localization.language,
-                    );
+                const embedOptions = EmbedCreator.createBeatmapEmbed(
+                    firstBeatmap,
+                    undefined,
+                    localization.language,
+                );
 
                 if (string) {
                     embedOptions.content = string;
@@ -154,12 +139,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 // Empty files, we don't need it here.
                 embedOptions.files = [];
 
-                const embed: EmbedBuilder = <EmbedBuilder>(
-                    embedOptions.embeds![0]
-                );
-
-                const stats: MapStats =
-                    calcParams.customStatistics ?? new MapStats();
+                const embed = <EmbedBuilder>embedOptions.embeds![0];
 
                 embed
                     .spliceFields(0, embed.data.fields!.length)
@@ -172,20 +152,14 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     .setAuthor({ name: "Beatmap Information" })
                     .setURL(firstBeatmap.beatmapSetLink)
                     .setDescription(
-                        `${BeatmapManager.showStatistics(
-                            firstBeatmap,
-                            1,
-                            stats,
-                        )}\n` +
+                        `${BeatmapManager.showStatistics(firstBeatmap, 1)}\n` +
                             `${bold("BPM")}: ${BeatmapManager.convertBPM(
                                 firstBeatmap.bpm,
-                                stats,
                             )} - ${bold(
                                 "Length",
                             )}: ${BeatmapManager.convertTime(
                                 firstBeatmap.hitLength,
                                 firstBeatmap.totalLength,
-                                stats,
                             )}`,
                     );
 
@@ -194,24 +168,22 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         break;
                     }
 
-                    const droidAttribs: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
+                    const droidAttribs =
                         await DPPProcessorRESTManager.getDifficultyAttributes(
                             beatmapInfo.beatmapId,
                             Modes.droid,
                             PPCalculationMethod.live,
-                            calcParams,
                         );
 
                     if (!droidAttribs) {
                         continue;
                     }
 
-                    const osuAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
+                    const osuAttribs =
                         await DPPProcessorRESTManager.getDifficultyAttributes(
                             beatmapInfo.beatmapId,
                             Modes.osu,
                             PPCalculationMethod.live,
-                            calcParams,
                         );
 
                     if (!osuAttribs) {
@@ -230,17 +202,14 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                             `${BeatmapManager.showStatistics(
                                 beatmapInfo,
                                 2,
-                                stats,
                             )}\n` +
                             `${BeatmapManager.showStatistics(
                                 beatmapInfo,
                                 3,
-                                stats,
                             )}\n` +
                             `${BeatmapManager.showStatistics(
                                 beatmapInfo,
                                 4,
-                                stats,
                             )}\n` +
                             `${bold(
                                 droidAttribs.starRating.toFixed(2),
