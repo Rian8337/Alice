@@ -225,7 +225,7 @@ export class UserBind extends Manager {
         }
 
         // Even if there are no deletions, still update to keep track of scan progress.
-        const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
+        const totalPP = DPPHelper.calculateFinalPerformancePoints(
             this.pp,
             this.playc,
         );
