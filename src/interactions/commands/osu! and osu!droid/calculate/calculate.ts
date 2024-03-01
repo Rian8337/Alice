@@ -6,7 +6,13 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { Accuracy, MapInfo, Modes, MathUtils } from "@rian8337/osu-base";
+import {
+    Accuracy,
+    MapInfo,
+    Modes,
+    MathUtils,
+    ModUtil,
+} from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
@@ -79,6 +85,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         interaction.options.getNumber("overalldifficulty") ?? undefined;
 
     const calcParams = new PerformanceCalculationParameters({
+        mods: ModUtil.pcStringToMods(
+            interaction.options.getString("mods") ?? "",
+        ),
         accuracy: new Accuracy({
             n100: Math.max(0, interaction.options.getInteger("x100") ?? 0),
             n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
