@@ -79,11 +79,6 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     // Get calculation parameters
-    const forceCS = interaction.options.getNumber("circlesize") ?? undefined;
-    const forceAR = interaction.options.getNumber("approachrate") ?? undefined;
-    const forceOD =
-        interaction.options.getNumber("overalldifficulty") ?? undefined;
-
     const calcParams = new PerformanceCalculationParameters({
         mods: ModUtil.pcStringToMods(
             interaction.options.getString("mods") ?? "",
@@ -102,9 +97,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                   beatmap.maxCombo,
               )
             : beatmap.maxCombo,
-        forceCS: forceCS,
-        forceAR: forceAR,
-        forceOD: forceOD,
+        forceCS: interaction.options.getNumber("circlesize") ?? undefined,
+        forceAR: interaction.options.getNumber("approachrate") ?? undefined,
+        forceOD:
+            interaction.options.getNumber("overalldifficulty") ?? undefined,
         customSpeedMultiplier:
             interaction.options.getNumber("speedmultiplier") ?? 1,
     });
