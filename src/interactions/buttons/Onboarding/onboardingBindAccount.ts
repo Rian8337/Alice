@@ -51,6 +51,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         embeds: [embed],
         components: [
             ...createOnboardingNavigationRows(interaction.customId, language),
+            row,
         ],
     });
 };
