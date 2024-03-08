@@ -70,6 +70,7 @@ import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTM
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { NormalEmbedOptions } from "@alice-structures/utils/NormalEmbedOptions";
+import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 
 /**
  * Utility to create message embeds.
@@ -253,6 +254,10 @@ export abstract class EmbedCreator {
                 playerInfo.pptotal,
             );
 
+        const bonusPP = DPPHelper.calculateBonusPerformancePoints(
+            playerInfo.playc,
+        );
+
         embed.setDescription(
             `${bold(
                 `${StringHelper.formatString(
@@ -269,6 +274,9 @@ export abstract class EmbedCreator {
                         LocaleHelper.convertToBCP47(language),
                     )})`,
                 )}\n` +
+                `${localization.getTranslation("totalPPNoBonus")}: ${bold(
+                    `${(playerInfo.pptotal - bonusPP).toFixed(2)} pp`,
+                )} (-${bonusPP.toFixed(2)} pp)\n` +
                 `${localization.getTranslation(
                     "recommendedStarRating",
                 )}: ${bold(

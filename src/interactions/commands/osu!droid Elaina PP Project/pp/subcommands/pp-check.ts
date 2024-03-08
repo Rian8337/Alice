@@ -1,6 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
@@ -10,18 +9,16 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: PPLocalization = new PPLocalization(
+    const localization = new PPLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
-    const uid: number | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
+    const discordid = interaction.options.getUser("user")?.id;
+    const uid = interaction.options.getInteger("uid");
+    const username = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         interaction.ephemeral = true;
@@ -33,8 +30,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     let playerInfo: UserBind | null;
 
@@ -43,6 +39,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             _id: 0,
             uid: 1,
             username: 1,
+            playc: 1,
             pp: 1,
             pptotal: 1,
         },

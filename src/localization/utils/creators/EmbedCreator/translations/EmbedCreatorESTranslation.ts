@@ -75,6 +75,7 @@ export class EmbedCreatorESTranslation extends Translation<EmbedCreatorStrings> 
         musicQueuer: "Solicitado por %s",
         ppProfileTitle: "Perfil de PP de %s",
         totalPP: "PP total",
+        totalPPNoBonus: "PP total (sin bonus)",
         ppProfile: "Perfil de Rendimiento (PP)",
         warningInfo: "",
         warnedUser: "",

@@ -20,13 +20,7 @@ import {
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
-import {
-    Collection,
-    EmbedBuilder,
-    RepliableInteraction,
-    Snowflake,
-    underscore,
-} from "discord.js";
+import { Collection, RepliableInteraction, underscore } from "discord.js";
 import { CommandHelper } from "./CommandHelper";
 import { NumberHelper } from "./NumberHelper";
 import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
@@ -41,7 +35,7 @@ export abstract class DPPHelper {
     /**
      * The ID of the role that permits pp-related moderation actions.
      */
-    static readonly ppModeratorRole: Snowflake = "551662194270404644";
+    static readonly ppModeratorRole = "551662194270404644";
 
     /**
      * Checks a beatmap's submission validity.
@@ -66,7 +60,7 @@ export abstract class DPPHelper {
     static async checkSubmissionValidity(
         beatmapOrScore: Score | MapInfo,
     ): Promise<DPPSubmissionValidity> {
-        const beatmapInfo: MapInfo | null =
+        const beatmapInfo =
             beatmapOrScore instanceof MapInfo
                 ? beatmapOrScore
                 : await BeatmapManager.getBeatmap(beatmapOrScore.hash, {
@@ -114,23 +108,23 @@ export abstract class DPPHelper {
         playerInfo: UserBind,
         page: number,
     ): Promise<void> {
-        const ppRank: number =
+        const ppRank =
             await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
                 playerInfo.pptotal,
             );
 
-        const embed: EmbedBuilder = await EmbedCreator.createDPPListEmbed(
+        const embed = await EmbedCreator.createDPPListEmbed(
             interaction,
             playerInfo,
             ppRank,
             await CommandHelper.getLocale(interaction),
         );
 
-        const list: PPEntry[] = [...playerInfo.pp.values()];
+        const list = [...playerInfo.pp.values()];
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-                const pp: PPEntry | undefined = list[i];
+                const pp = list.at(i);
 
                 if (pp) {
                     let modstring = pp.mods ? `+${pp.mods}` : "";
@@ -197,7 +191,7 @@ export abstract class DPPHelper {
         dppList: Collection<string, PPEntry>,
         entries: PPEntry[],
     ): boolean[] {
-        let needsSorting: boolean = false;
+        let needsSorting = false;
 
         for (const entry of entries) {
             if (isNaN(entry.pp)) {
@@ -220,13 +214,10 @@ export abstract class DPPHelper {
             dppList.sort((a, b) => b.pp - a.pp);
         }
 
-        const wasInserted: boolean[] = Utils.initializeArray(
-            entries.length,
-            true,
-        );
+        const wasInserted = Utils.initializeArray(entries.length, true);
 
         while (dppList.size > 75) {
-            const lastEntry: PPEntry = dppList.last()!;
+            const lastEntry = dppList.last()!;
 
             for (let i = 0; i < entries.length; ++i) {
                 if (lastEntry.hash !== entries[i].hash) {
@@ -345,10 +336,18 @@ export abstract class DPPHelper {
                 .sort((a, b) => b.pp - a.pp)
                 .reduce((a, v, i) => a + v.pp * Math.pow(0.95, i), 0) +
             // Bonus pp portion
-            // TODO: uncomment this after rebalance
-            // (1250 / 3) * (1 - Math.pow(0.9992, playCount))
-            0
+            this.calculateBonusPerformancePoints(playCount)
         );
+    }
+
+    /**
+     * Calculates the bonus performance points of a player.
+     *
+     * @param playCount The play count of the player.
+     * @returns The bonus performance points.
+     */
+    static calculateBonusPerformancePoints(playCount: number): number {
+        return (1250 / 3) * (1 - Math.pow(0.9992, playCount));
     }
 
     /**
@@ -357,7 +356,7 @@ export abstract class DPPHelper {
      * @param hash The beatmap's hash.
      */
     static async deletePlays(hash: string): Promise<void> {
-        const toUpdateList: Collection<string, UserBind> =
+        const toUpdateList =
             await DatabaseManager.elainaDb.collections.userBind.get(
                 "discordid",
                 { "pp.hash": hash },
@@ -456,7 +455,7 @@ export abstract class DPPHelper {
             | OsuDifficultyAttributes
             | CacheableDifficultyAttributes<OsuDifficultyAttributes>,
     ): string {
-        let string: string = `${attributes.starRating.toFixed(2)} stars (`;
+        let string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
 
         const addDetail = (num: number, suffix: string) =>
@@ -482,7 +481,7 @@ export abstract class DPPHelper {
             | RebalanceOsuDifficultyAttributes
             | ResponseDifficultyAttributes<RebalanceOsuDifficultyAttributes>,
     ): string {
-        let string: string = `${attributes.starRating.toFixed(2)} stars (`;
+        let string = `${attributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
 
         const addDetail = (num: number, suffix: string) =>
@@ -506,7 +505,7 @@ export abstract class DPPHelper {
     static getDroidPerformanceAttributesInfo(
         attributes: DroidPerformanceAttributes,
     ): string {
-        let string: string = `${attributes.total.toFixed(2)} pp (`;
+        let string = `${attributes.total.toFixed(2)} pp (`;
         const starRatingDetails: string[] = [];
 
         const addDetail = (num: number, suffix: string) =>
@@ -532,7 +531,7 @@ export abstract class DPPHelper {
     static getOsuPerformanceAttributesInfo(
         attributes: OsuPerformanceAttributes,
     ): string {
-        let string: string = `${attributes.total.toFixed(2)} pp (`;
+        let string = `${attributes.total.toFixed(2)} pp (`;
         const starRatingDetails: string[] = [];
 
         const addDetail = (num: number, suffix: string) =>

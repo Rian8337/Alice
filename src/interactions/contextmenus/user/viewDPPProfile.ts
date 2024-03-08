@@ -17,6 +17,7 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                     _id: 0,
                     uid: 1,
                     username: 1,
+                    playc: 1,
                     pp: 1,
                     pptotal: 1,
                 },

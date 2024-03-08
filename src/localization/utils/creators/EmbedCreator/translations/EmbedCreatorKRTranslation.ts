@@ -75,6 +75,7 @@ export class EmbedCreatorKRTranslation extends Translation<EmbedCreatorStrings> 
         musicQueuer: "%s에 의해 요청됨/재생목록에 넣어짐",
         ppProfileTitle: "%s의 PP 프로필",
         totalPP: "총 PP",
+        totalPPNoBonus: "총 PP(보너스 제외)",
         ppProfile: "PP 프로필",
         warningInfo: "",
         warningId: "",
