@@ -15,6 +15,7 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
             {
                 projection: {
                     _id: 0,
+                    dppRecalcComplete: 1,
                     uid: 1,
                     username: 1,
                     playc: 1,
