@@ -29,5 +29,5 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
 
 export const config: SlashSubcommandGroup["config"] = {
     permissions: [],
-    cooldown: 15,
+    cooldown: 5,
 };
