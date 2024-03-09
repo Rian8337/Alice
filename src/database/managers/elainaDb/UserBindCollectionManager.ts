@@ -5,8 +5,6 @@ import { Filter, FindOptions, WithId } from "mongodb";
 import {
     ApplicationCommandOptionChoiceData,
     Collection as DiscordCollection,
-    Guild,
-    Role,
     Snowflake,
     User,
 } from "discord.js";
@@ -28,7 +26,6 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
     override get defaultDocument(): DatabaseUserBind {
         return {
             discordid: "",
-            hasAskedForRecalc: false,
             playc: 0,
             pp: [],
             weightedAccuracy: 0,
@@ -62,7 +59,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
         amount: number,
         options?: FindOptions<DatabaseUserBind>,
     ): Promise<DiscordCollection<Snowflake, UserBind>> {
-        const userBind: DatabaseUserBind[] = await this.collection
+        const userBind = await this.collection
             .find(
                 { dppScanComplete: { $ne: true } },
                 this.processFindOptions(options),
@@ -105,7 +102,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
         amount: number,
         options?: FindOptions<DatabaseUserBind>,
     ): Promise<DiscordCollection<Snowflake, UserBind> | UserBind | null> {
-        const userBind: DatabaseUserBind[] = await this.collection
+        const userBind = await this.collection
             .find(
                 { dppRecalcComplete: { $ne: true } },
                 this.processFindOptions(options),
@@ -218,7 +215,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
             query.clan = clan;
         }
 
-        const userBind: DatabaseUserBind[] = await this.collection
+        const userBind = await this.collection
             .find(
                 query,
                 this.processFindOptions({
@@ -285,7 +282,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
             return [];
         }
 
-        const result: DatabaseUserBind[] = await this.collection
+        const result = await this.collection
             .find({ username: regExp }, { projection: { _id: 0, username: 1 } })
             .limit(amount)
             .toArray();
@@ -302,19 +299,15 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      * Updates the role connection metadata of users.
      */
     async updateRoleConnectionMetadata(): Promise<OperationResult> {
-        const guild: Guild = await this.client.guilds.fetch(
-            Constants.mainServer,
-        );
-        const role: Role | null = await guild.roles.fetch(
-            Constants.dppProfileDisplayerRole,
-        );
+        const guild = await this.client.guilds.fetch(Constants.mainServer);
+        const role = await guild.roles.fetch(Constants.dppProfileDisplayerRole);
 
         if (!role) {
             return this.createOperationResult(true);
         }
 
-        const userIDs: Snowflake[] = [...role.members.keys()];
-        const users: DatabaseUserBind[] = await this.collection
+        const userIDs = [...role.members.keys()];
+        const users = await this.collection
             .find(
                 {
                     discordid: {

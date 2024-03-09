@@ -1,5 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { RecalcLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/recalc/RecalcLocalization";
@@ -7,19 +6,17 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { Message } from "discord.js";
 import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
     interaction,
 ) => {
-    const localization: RecalcLocalization = new RecalcLocalization(
+    const localization = new RecalcLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
@@ -27,17 +24,13 @@ export const run: SlashSubcommand<true>["run"] = async (
         ),
     });
 
-    let calculatedCount: number =
-        await dbManager.getRecalcCalculatedPlayerCount();
-
-    const uncalculatedCount: number =
+    let calculatedCount = await dbManager.getRecalcCalculatedPlayerCount();
+    const uncalculatedCount =
         await dbManager.getRecalcUncalculatedPlayerCount();
+    const total = calculatedCount + uncalculatedCount;
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
-    const total: number = calculatedCount + uncalculatedCount;
-
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
-
-    const message: Message = await interaction.channel!.send({
+    const message = await interaction.channel!.send({
         content: MessageCreator.createWarn(
             localization.getTranslation("fullRecalcTrackProgress"),
             calculatedCount.toLocaleString(BCP47),
@@ -62,7 +55,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         consola.info(`Now calculating ID ${player.discordid}`);
 
         if (interaction.options.getBoolean("full")) {
-            await player.recalculateAllScores(false, true);
+            await player.recalculateAllScores(true);
         } else {
             await player.recalculateDPP();
         }
