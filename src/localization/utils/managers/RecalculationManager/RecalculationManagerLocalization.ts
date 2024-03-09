@@ -2,14 +2,12 @@ import { Localization } from "@alice-localization/base/Localization";
 import { Translations } from "@alice-localization/base/Translations";
 import { RecalculationManagerENTranslation } from "./translations/RecalculationManagerENTranslation";
 import { RecalculationManagerESTranslation } from "./translations/RecalculationManagerESTranslation";
-import { RecalculationManagerIDTranslation } from "./translations/RecalculationManagerIDTranslation";
 import { RecalculationManagerKRTranslation } from "./translations/RecalculationManagerKRTranslation";
 
 export interface RecalculationManagerStrings {
     readonly recalculationSuccessful: string;
     readonly recalculationFailed: string;
     readonly userNotBinded: string;
-    readonly userHasAskedForRecalc: string;
     readonly userDPPBanned: string;
 }
 
@@ -22,7 +20,6 @@ export class RecalculationManagerLocalization extends Localization<Recalculation
     > = {
         en: new RecalculationManagerENTranslation(),
         kr: new RecalculationManagerKRTranslation(),
-        id: new RecalculationManagerIDTranslation(),
         es: new RecalculationManagerESTranslation(),
     };
 }

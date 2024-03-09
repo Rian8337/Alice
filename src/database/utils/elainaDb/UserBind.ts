@@ -99,11 +99,6 @@ export class UserBind extends Manager {
     oldjoincooldown?: number;
 
     /**
-     * Whether the user has asked for droid performance points and ranked score recalculation.
-     */
-    hasAskedForRecalc: boolean;
-
-    /**
      * Whether the ongoing dpp scan is completed for this user.
      */
     dppScanComplete?: boolean;
@@ -151,7 +146,6 @@ export class UserBind extends Manager {
         this.joincooldown = data.joincooldown;
         this.oldclan = data.oldclan;
         this.oldjoincooldown = data.oldjoincooldown;
-        this.hasAskedForRecalc = data.hasAskedForRecalc;
         this.dppScanComplete = data.dppScanComplete;
         this.dppRecalcComplete = data.dppRecalcComplete;
         this.calculationInfo = data.calculationInfo;
@@ -507,13 +501,9 @@ export class UserBind extends Manager {
     /**
      * Recalculates all of the player's scores for dpp and ranked score.
      *
-     * @param markAsSlotFulfill Whether to set `hasAskedForRecalc` to `true`.
-     * @param isDPPRecalc Whether this recalculation is a part of a full recalculation triggered by bot owners.
+     * @param isDPPRecalc Whether this recalculation is a part of a full recalculation triggered by bot owners. Defaults to `false`.
      */
-    async recalculateAllScores(
-        markAsSlotFulfill = true,
-        isDPPRecalc = false,
-    ): Promise<OperationResult> {
+    async recalculateAllScores(isDPPRecalc = false): Promise<OperationResult> {
         let newList = new Collection<string, PPEntry>();
         let playCount = 0;
 
@@ -696,8 +686,6 @@ export class UserBind extends Manager {
                 pptotal: this.pptotal,
                 playc: this.playc,
                 weightedAccuracy: this.weightedAccuracy,
-                // Only set to true if hasAskedForRecalc is originally false
-                hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc,
             },
             $unset: {
                 calculationInfo: "",
@@ -833,7 +821,6 @@ export class UserBind extends Manager {
                         clan: this.clan,
                         oldclan: this.oldclan,
                         oldjoincooldown: this.oldjoincooldown ?? undefined,
-                        hasAskedForRecalc: this.hasAskedForRecalc,
                         dppScanComplete: this.dppScanComplete ?? undefined,
                         dppRecalcComplete: this.dppRecalcComplete ?? undefined,
                         calculationInfo: this.calculationInfo ?? undefined,

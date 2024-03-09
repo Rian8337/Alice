@@ -1,6 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { OperationResult } from "structures/core/OperationResult";
 import { Language } from "@alice-localization/base/Language";
 import {
     RecalculationManagerLocalization,
@@ -23,18 +22,18 @@ export abstract class RecalculationManager extends Manager {
     /**
      * Recalculation queue for per-user recalculation, mapped by user ID.
      */
-    private static readonly recalculationQueue: Collection<
+    private static readonly recalculationQueue = new Collection<
         Snowflake,
         CommandInteraction
-    > = new Collection();
+    >();
 
     /**
      * Recalculation queue for per-user prototype recalculation, mapped by user ID.
      */
-    private static readonly prototypeRecalculationQueue: Collection<
+    private static readonly prototypeRecalculationQueue = new Collection<
         Snowflake,
         CommandInteraction
-    > = new Collection();
+    >();
 
     private static readonly calculationSuccessResponse: keyof RecalculationManagerStrings =
         "recalculationSuccessful";
@@ -82,15 +81,12 @@ export abstract class RecalculationManager extends Manager {
         this.calculationIsProgressing = true;
 
         while (this.recalculationQueue.size > 0) {
-            const calculatedUser: Snowflake =
-                this.recalculationQueue.firstKey()!;
-            const calculatedUserMention: string = userMention(calculatedUser);
-            const interaction: CommandInteraction =
-                this.recalculationQueue.first()!;
-            const localization: RecalculationManagerLocalization =
-                this.getLocalization(
-                    await CommandHelper.getUserPreferredLocale(interaction),
-                );
+            const calculatedUser = this.recalculationQueue.firstKey()!;
+            const calculatedUserMention = userMention(calculatedUser);
+            const interaction = this.recalculationQueue.first()!;
+            const localization = this.getLocalization(
+                await CommandHelper.getUserPreferredLocale(interaction),
+            );
 
             this.recalculationQueue.delete(calculatedUser);
 
@@ -115,23 +111,6 @@ export abstract class RecalculationManager extends Manager {
                     continue;
                 }
 
-                if (bindInfo.hasAskedForRecalc) {
-                    await interaction.channel!.send({
-                        content: MessageCreator.createReject(
-                            localization.getTranslation(
-                                this.calculationFailedResponse,
-                            ),
-                            interaction.user.toString(),
-                            calculatedUserMention,
-                            localization.getTranslation(
-                                "userHasAskedForRecalc",
-                            ),
-                        ),
-                    });
-
-                    continue;
-                }
-
                 if (await bindInfo.isDPPBanned()) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
@@ -147,10 +126,9 @@ export abstract class RecalculationManager extends Manager {
                     continue;
                 }
 
-                const result: OperationResult =
-                    await bindInfo.recalculateAllScores();
+                const result = await bindInfo.recalculateAllScores();
 
-                if (result.success) {
+                if (result.isSuccessful()) {
                     await interaction.channel!.send({
                         content: MessageCreator.createAccept(
                             localization.getTranslation(
@@ -160,7 +138,7 @@ export abstract class RecalculationManager extends Manager {
                             calculatedUserMention,
                         ),
                     });
-                } else {
+                } else if (result.failed()) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
                             localization.getTranslation(
@@ -168,7 +146,7 @@ export abstract class RecalculationManager extends Manager {
                             ),
                             interaction.user.toString(),
                             calculatedUserMention,
-                            result.reason!,
+                            result.reason,
                         ),
                     });
                 }
@@ -200,19 +178,16 @@ export abstract class RecalculationManager extends Manager {
         this.prototypeCalculationIsProgressing = true;
 
         while (this.prototypeRecalculationQueue.size > 0) {
-            const calculatedUser: Snowflake =
-                this.prototypeRecalculationQueue.firstKey()!;
-            const interaction: CommandInteraction =
-                this.prototypeRecalculationQueue.first()!;
-            const localization: RecalculationManagerLocalization =
-                this.getLocalization(
-                    await CommandHelper.getUserPreferredLocale(interaction),
-                );
+            const calculatedUser = this.prototypeRecalculationQueue.firstKey()!;
+            const interaction = this.prototypeRecalculationQueue.first()!;
+            const localization = this.getLocalization(
+                await CommandHelper.getUserPreferredLocale(interaction),
+            );
 
             this.prototypeRecalculationQueue.delete(calculatedUser);
 
             try {
-                const bindInfo: UserBind | null =
+                const bindInfo =
                     await DatabaseManager.elainaDb.collections.userBind.getFromUser(
                         calculatedUser,
                         {
@@ -258,10 +233,9 @@ export abstract class RecalculationManager extends Manager {
                     continue;
                 }
 
-                const result: OperationResult =
-                    await bindInfo.calculatePrototypeDPP();
+                const result = await bindInfo.calculatePrototypeDPP();
 
-                if (result.success) {
+                if (result.isSuccessful()) {
                     await interaction.channel!.send({
                         content: MessageCreator.createAccept(
                             localization.getTranslation(
@@ -271,7 +245,7 @@ export abstract class RecalculationManager extends Manager {
                             `uid ${bindInfo.uid}`,
                         ),
                     });
-                } else {
+                } else if (result.failed()) {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject(
                             localization.getTranslation(
@@ -279,7 +253,7 @@ export abstract class RecalculationManager extends Manager {
                             ),
                             interaction.user.toString(),
                             `uid ${bindInfo.uid}`,
-                            result.reason!,
+                            result.reason,
                         ),
                     });
                 }

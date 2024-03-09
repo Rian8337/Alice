@@ -71,11 +71,6 @@ export interface DatabaseUserBind extends BaseDocument {
     oldjoincooldown?: number;
 
     /**
-     * Whether the user has asked for droid performance points and ranked score recalculation.
-     */
-    hasAskedForRecalc: boolean;
-
-    /**
      * Whether the ongoing dpp scan is completed for this user.
      */
     dppScanComplete?: boolean;
