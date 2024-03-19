@@ -276,7 +276,7 @@ export abstract class EmbedCreator {
                 )}\n` +
                 `${localization.getTranslation("totalPPNoBonus")}: ${bold(
                     `${(playerInfo.pptotal - bonusPP).toFixed(2)} pp`,
-                )} (-${bonusPP.toFixed(2)} pp)\n` +
+                )}\n` +
                 `${localization.getTranslation(
                     "recommendedStarRating",
                 )}: ${bold(
