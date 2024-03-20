@@ -37,7 +37,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const findOptions: FindOptions<DatabaseUserBind> = {
         projection: {
             _id: 0,
-            dppRecalcComplete: 1,
             uid: 1,
             username: 1,
             playc: 1,
