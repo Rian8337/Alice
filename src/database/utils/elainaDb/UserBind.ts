@@ -499,7 +499,7 @@ export class UserBind extends Manager {
                         $setOnInsert: {
                             pp: prototypePP.calculationInfo.currentPPEntries,
                             pptotal: prototypePP.pptotal,
-                            prevpptotal: prototypePP.pptotal,
+                            prevpptotal: this.pptotal,
                             lastUpdate: Date.now(),
                             previous_bind: this.previous_bind,
                             uid: this.uid,
@@ -533,7 +533,7 @@ export class UserBind extends Manager {
                         $setOnInsert: {
                             pp: prototypePP.calculationInfo.currentPPEntries,
                             pptotal: prototypePP.pptotal,
-                            prevpptotal: prototypePP.pptotal,
+                            prevpptotal: this.pptotal,
                             lastUpdate: Date.now(),
                             previous_bind: this.previous_bind,
                             uid: this.uid,
@@ -555,7 +555,7 @@ export class UserBind extends Manager {
             $set: {
                 pp: [...newList.values()],
                 pptotal: prototypePP.pptotal,
-                prevpptotal: prototypePP.pptotal,
+                prevpptotal: this.pptotal,
                 scanDone: true,
             },
             $setOnInsert: {
