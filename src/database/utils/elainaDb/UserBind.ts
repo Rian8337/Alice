@@ -21,6 +21,7 @@ import {
     Precision,
     Accuracy,
     Modes,
+    RankedStatus,
 } from "@rian8337/osu-base";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
 import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
@@ -30,6 +31,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { DatabasePrototypePP } from "@alice-structures/database/aliceDb/DatabasePrototypePP";
 
 /**
  * Represents a Discord user who has at least one osu!droid account bound.
@@ -111,7 +113,7 @@ export class UserBind extends Manager {
     /**
      * Progress of ongoing dpp calculation.
      */
-    calculationInfo?: RecalculationProgress;
+    calculationInfo?: RecalculationProgress<PPEntry>;
 
     /**
      * Whether the daily role connection metadata for this user has been completed.
@@ -354,148 +356,222 @@ export class UserBind extends Manager {
      * Calculates this player's dpp into the prototype dpp database.
      */
     async calculatePrototypeDPP(): Promise<OperationResult> {
-        const currentList = new Collection<string, PPEntry>();
-        const newList = new Collection<string, PrototypePPEntry>();
+        const prototypeDb = DatabaseManager.aliceDb.collections.prototypePP;
+        const prototypePP =
+            (await prototypeDb.getFromUser(this.discordid)) ??
+            prototypeDb.defaultInstance;
 
-        for (const ppEntry of this.pp.values()) {
-            const score = await Score.getFromHash(ppEntry.uid, ppEntry.hash);
+        prototypePP.discordid = this.discordid;
 
-            if (!score) {
+        let newList = new Collection<string, PrototypePPEntry>();
+        let playCount = 0;
+
+        const getScores = async (
+            uid: number,
+            page: number,
+        ): Promise<Score[]> => {
+            const apiRequestBuilder = new DroidAPIRequestBuilder()
+                .setEndpoint("scoresearchv2.php")
+                .addParameter("uid", uid)
+                .addParameter("page", page - 1);
+
+            const data = await apiRequestBuilder.sendRequest();
+
+            if (data.statusCode !== 200) {
+                return [];
+            }
+
+            const entries = data.data.toString("utf-8").split("<br>");
+
+            entries.shift();
+
+            return entries.map((v) => new Score().fillInformation(v));
+        };
+
+        for (let i = 0; i < this.previous_bind.length; ++i) {
+            const uid = this.previous_bind[i];
+
+            if (
+                await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(
+                    uid,
+                )
+            ) {
                 continue;
             }
 
-            const beatmapInfo = await BeatmapManager.getBeatmap(score.hash, {
-                checkFile: false,
-            });
-
-            if (!beatmapInfo) {
+            if (this.calculationInfo && uid !== this.calculationInfo.uid) {
                 continue;
             }
 
-            const liveAttribs =
-                await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                    score.scoreID,
-                    Modes.droid,
-                    PPCalculationMethod.live,
+            const player = await Player.getInformation(uid);
+            if (!player) {
+                continue;
+            }
+
+            let page = 0;
+
+            if (prototypePP.calculationInfo) {
+                page = prototypePP.calculationInfo.page;
+                playCount = prototypePP.calculationInfo.playc;
+                newList = new Collection(
+                    prototypePP.calculationInfo.currentPPEntries.map((v) => [
+                        v.hash,
+                        v,
+                    ]),
+                );
+            }
+
+            let scores: Score[];
+
+            while ((scores = await getScores(uid, ++page)).length) {
+                const scoreCount = scores.length;
+
+                consola.info(
+                    `Calculating ${scoreCount} scores from page ${page} for prototype`,
                 );
 
-            if (!liveAttribs) {
-                continue;
+                let score: Score | undefined;
+
+                while ((score = scores.shift())) {
+                    const beatmapInfo: MapInfo | null =
+                        await BeatmapManager.getBeatmap(score.hash, {
+                            checkFile: false,
+                        }).catch(() => null);
+
+                    if (!beatmapInfo) {
+                        continue;
+                    }
+
+                    if (
+                        beatmapInfo.approved !== RankedStatus.ranked &&
+                        beatmapInfo.approved !== RankedStatus.approved
+                    ) {
+                        continue;
+                    }
+
+                    const attribs =
+                        await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                            score.uid,
+                            Modes.droid,
+                            PPCalculationMethod.live,
+                        );
+
+                    if (!attribs) {
+                        continue;
+                    }
+
+                    ++playCount;
+
+                    const { difficulty, performance, params } = attribs;
+                    const accuracy = new Accuracy(params.accuracy);
+
+                    const ppEntry: PrototypePPEntry = {
+                        uid: score.uid,
+                        hash: beatmapInfo.hash,
+                        title: beatmapInfo.fullTitle,
+                        pp: NumberHelper.round(performance.total, 2),
+                        mods: difficulty.mods,
+                        accuracy: NumberHelper.round(accuracy.value() * 100, 2),
+                        combo: attribs.params.combo,
+                        miss: accuracy.nmiss,
+                        speedMultiplier:
+                            params.customSpeedMultiplier !== 1
+                                ? params.customSpeedMultiplier
+                                : undefined,
+                    };
+
+                    DPPHelper.insertScore(newList, [ppEntry]);
+                }
+
+                prototypePP.calculationInfo = {
+                    uid: uid,
+                    page: page,
+                    playc: playCount,
+                    currentPPEntries: [...newList.values()],
+                };
+
+                await prototypeDb.updateOne(
+                    { discordid: this.discordid },
+                    {
+                        $set: {
+                            calculationInfo: prototypePP.calculationInfo,
+                        },
+                        $setOnInsert: {
+                            pp: prototypePP.calculationInfo.currentPPEntries,
+                            pptotal: prototypePP.pptotal,
+                            prevpptotal: prototypePP.pptotal,
+                            lastUpdate: Date.now(),
+                            previous_bind: this.previous_bind,
+                            uid: this.uid,
+                            username: this.username,
+                        },
+                    },
+                    { upsert: true },
+                );
             }
 
-            const rebalAttribs =
-                await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                    score.scoreID,
-                    Modes.droid,
-                    PPCalculationMethod.rebalance,
+            if (this.previous_bind[i + 1]) {
+                prototypePP.calculationInfo = {
+                    uid: this.previous_bind[i + 1],
+                    page: 0,
+                    playc: playCount,
+                    currentPPEntries: [...newList.values()],
+                };
+
+                prototypePP.pptotal = DPPHelper.calculateFinalPerformancePoints(
+                    newList,
+                    // In-game pp will not have bonus pp, so let's pretend it doesn't exist.
+                    0,
                 );
 
-            if (!rebalAttribs) {
-                continue;
+                await prototypeDb.updateOne(
+                    { discordid: this.discordid },
+                    {
+                        $set: {
+                            calculationInfo: prototypePP.calculationInfo,
+                        },
+                        $setOnInsert: {
+                            pp: prototypePP.calculationInfo.currentPPEntries,
+                            pptotal: prototypePP.pptotal,
+                            prevpptotal: prototypePP.pptotal,
+                            lastUpdate: Date.now(),
+                            previous_bind: this.previous_bind,
+                            uid: this.uid,
+                            username: this.username,
+                        },
+                    },
+                );
             }
-
-            const { performance: perfResult, params } = liveAttribs;
-            const { performance: rebalPerfResult, params: rebalParams } =
-                rebalAttribs;
-
-            const accuracy = new Accuracy(params.accuracy);
-
-            const currentEntry: PPEntry = {
-                uid: score.uid,
-                hash: beatmapInfo.hash,
-                title: beatmapInfo.fullTitle,
-                pp: NumberHelper.round(perfResult.total, 2),
-                mods: liveAttribs.difficulty.mods,
-                accuracy: NumberHelper.round(accuracy.value() * 100, 2),
-                combo: params.combo,
-                miss: accuracy.nmiss,
-            };
-
-            const prototypeEntry: PrototypePPEntry = {
-                uid: score.uid,
-                hash: beatmapInfo.hash,
-                title: beatmapInfo.fullTitle,
-                pp: NumberHelper.round(rebalPerfResult.total, 2),
-                newAim: NumberHelper.round(rebalPerfResult.aim, 2),
-                newTap: NumberHelper.round(rebalPerfResult.tap, 2),
-                newAccuracy: NumberHelper.round(rebalPerfResult.accuracy, 2),
-                newVisual: NumberHelper.round(rebalPerfResult.visual, 2),
-                prevPP: NumberHelper.round(perfResult.total, 2),
-                prevAim: NumberHelper.round(perfResult.aim, 2),
-                prevTap: NumberHelper.round(perfResult.tap, 2),
-                prevAccuracy: NumberHelper.round(perfResult.accuracy, 2),
-                prevVisual: NumberHelper.round(perfResult.visual, 2),
-                mods: rebalAttribs.difficulty.mods,
-                accuracy: NumberHelper.round(accuracy.value() * 100, 2),
-                combo: params.combo,
-                miss: accuracy.nmiss,
-                speedMultiplier:
-                    rebalParams.customSpeedMultiplier !== 1
-                        ? rebalParams.customSpeedMultiplier
-                        : undefined,
-                calculatedUnstableRate: rebalPerfResult.calculatedUnstableRate,
-                estimatedUnstableRate: NumberHelper.round(
-                    rebalPerfResult.deviation * 10,
-                    2,
-                ),
-                estimatedSpeedUnstableRate: NumberHelper.round(
-                    rebalPerfResult.tapDeviation * 10,
-                    2,
-                ),
-                overallDifficulty: rebalAttribs.difficulty.overallDifficulty,
-                hit300: accuracy.n300,
-                hit100: accuracy.n100,
-                hit50: accuracy.n50,
-                aimSliderCheesePenalty: rebalPerfResult.aimSliderCheesePenalty,
-                flashlightSliderCheesePenalty:
-                    rebalPerfResult.flashlightSliderCheesePenalty,
-                visualSliderCheesePenalty:
-                    rebalPerfResult.visualSliderCheesePenalty,
-                speedNoteCount: rebalAttribs.difficulty.speedNoteCount,
-                liveTapPenalty: params.tapPenalty,
-                rebalanceTapPenalty: rebalParams.tapPenalty,
-                averageBPM:
-                    60000 / 4 / rebalAttribs.difficulty.averageSpeedDeltaTime,
-            };
-
-            consola.info(
-                `${beatmapInfo.fullTitle} ${score.completeModString}: ${prototypeEntry.prevPP} ⮕  ${prototypeEntry.pp}`,
-            );
-
-            currentList.set(ppEntry.hash, currentEntry);
-            newList.set(ppEntry.hash, prototypeEntry);
         }
 
-        currentList.sort((a, b) => b.pp - a.pp);
-        newList.sort((a, b) => b.pp - a.pp);
-
-        const currentTotal = DPPHelper.calculateFinalPerformancePoints(
-            currentList,
-            this.playc,
-        );
-        const newTotal = DPPHelper.calculateFinalPerformancePoints(
+        prototypePP.pp = newList;
+        prototypePP.pptotal = DPPHelper.calculateFinalPerformancePoints(
             newList,
-            this.playc,
+            // In-game pp will not have bonus pp, so let's pretend it doesn't exist.
+            0,
         );
 
-        consola.info(`${currentTotal.toFixed(2)} ⮕  ${newTotal.toFixed(2)}`);
-
-        return DatabaseManager.aliceDb.collections.prototypePP.updateOne(
-            { discordid: this.discordid },
-            {
-                $set: {
-                    pp: [...newList.values()],
-                    pptotal: newTotal,
-                    prevpptotal: currentTotal,
-                    lastUpdate: Date.now(),
-                    previous_bind: this.previous_bind,
-                    uid: this.uid,
-                    username: this.username,
-                    scanDone: true,
-                },
+        const query: UpdateFilter<DatabasePrototypePP> = {
+            $set: {
+                pp: [...newList.values()],
+                pptotal: prototypePP.pptotal,
+                prevpptotal: prototypePP.pptotal,
+                scanDone: true,
             },
-            { upsert: true },
-        );
+            $setOnInsert: {
+                lastUpdate: Date.now(),
+                previous_bind: this.previous_bind,
+                uid: this.uid,
+                username: this.username,
+            },
+            $unset: {
+                calculationInfo: "",
+            },
+        };
+
+        return prototypeDb.updateOne({ discordid: this.discordid }, query, {
+            upsert: true,
+        });
     }
 
     /**
@@ -573,7 +649,7 @@ export class UserBind extends Manager {
 
                 if (isDPPRecalc) {
                     consola.info(
-                        `Calculating ${scoreCount} scores from page ${page}`,
+                        `Calculating ${scoreCount} scores from page ${page} for live`,
                     );
                 }
 

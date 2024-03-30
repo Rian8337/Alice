@@ -43,6 +43,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                 {
                     projection: {
                         _id: 0,
+                        discordid: 1,
                         pp: 1,
                         playc: 1,
                         pptotal: 1,

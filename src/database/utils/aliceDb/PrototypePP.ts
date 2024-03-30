@@ -5,6 +5,7 @@ import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
+import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
 
 /**
  * Represents the prototype droid performance point (dpp) entry of an osu!droid account.
@@ -58,6 +59,11 @@ export class PrototypePP extends Manager {
      * Whether this prototype entry has been calculated against the latest changes.
      */
     scanDone: boolean;
+
+    /**
+     * Progress of ongoing dpp calculation.
+     */
+    calculationInfo?: RecalculationProgress<PrototypePPEntry>;
 
     /**
      * The BSON object ID of this document in the database.

@@ -1,6 +1,7 @@
 import { Snowflake } from "discord.js";
 import { PrototypePPEntry } from "@alice-structures/dpp/PrototypePPEntry";
 import { BaseDocument } from "../BaseDocument";
+import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
 
 /**
  * Represents the prototype droid performance point (dpp) entry of an osu!droid account.
@@ -54,4 +55,9 @@ export interface DatabasePrototypePP extends BaseDocument {
      * Whether this prototype entry has been calculated against the latest changes.
      */
     scanDone: boolean;
+
+    /**
+     * Progress of ongoing dpp calculation.
+     */
+    calculationInfo?: RecalculationProgress<PrototypePPEntry>;
 }

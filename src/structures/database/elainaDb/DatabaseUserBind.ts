@@ -83,7 +83,7 @@ export interface DatabaseUserBind extends BaseDocument {
     /**
      * Progress of ongoing dpp calculation.
      */
-    calculationInfo?: RecalculationProgress;
+    calculationInfo?: RecalculationProgress<PPEntry>;
 
     /**
      * Whether the daily role connection metadata for this user has been completed.

@@ -3,7 +3,7 @@ import { PPEntry } from "./PPEntry";
 /**
  * Contains information about ongoing dpp recalculation.
  */
-export interface RecalculationProgress {
+export interface RecalculationProgress<T extends PPEntry> {
     /**
      * The uid that is being calculated.
      */
@@ -22,5 +22,5 @@ export interface RecalculationProgress {
     /**
      * The current pp entries that contains scores that have been processed up to this point.
      */
-    currentPPEntries: PPEntry[];
+    currentPPEntries: T[];
 }
