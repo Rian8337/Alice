@@ -550,6 +550,17 @@ export class UserBind extends Manager {
             0,
         );
 
+        await this.bindDb.updateOne(
+            {
+                discordid: this.discordid,
+            },
+            {
+                $set: {
+                    dppRecalcComplete: true,
+                },
+            },
+        );
+
         const query: UpdateFilter<DatabasePrototypePP> = {
             $set: {
                 pp: [...newList.values()],
