@@ -17,12 +17,13 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
     PrototypePP
 > {
     protected override readonly utilityInstance: new (
-        data: DatabasePrototypePP
+        data: DatabasePrototypePP,
     ) => PrototypePP = PrototypePP;
     override get defaultDocument(): DatabasePrototypePP {
         return {
             discordid: "",
             lastUpdate: Date.now(),
+            playc: 0,
             pp: [],
             pptotal: 0,
             prevpptotal: 0,
@@ -56,7 +57,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
                 projection: {
                     "pp.cursorIndexes": 0,
                 },
-            }
+            },
         );
     }
 
@@ -72,7 +73,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
                 projection: {
                     "pp.cursorIndexes": 0,
                 },
-            }
+            },
         );
     }
 
@@ -88,7 +89,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
                 projection: {
                     "pp.cursorIndexes": 0,
                 },
-            }
+            },
         );
     }
 
@@ -123,14 +124,14 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
                         playc: 1,
                         username: 1,
                     },
-                }
+                },
             )
             .sort({ pptotal: -1 })
             .toArray();
 
         return ArrayHelper.arrayToCollection(
             prototypeEntries.map((v) => new PrototypePP(v)),
-            "discordid"
+            "discordid",
         );
     }
 
@@ -144,12 +145,12 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      * @returns The players.
      */
     async getUnscannedPlayers(
-        amount: number
+        amount: number,
     ): Promise<DiscordCollection<Snowflake, PrototypePP>> {
         const prototypeEntries: DatabasePrototypePP[] = await this.collection
             .find(
                 { scanDone: { $ne: true } },
-                { projection: { _id: 0, discordid: 1, pptotal: 1 } }
+                { projection: { _id: 0, discordid: 1, pptotal: 1 } },
             )
             .sort({ pptotal: -1 })
             .limit(amount)
@@ -157,7 +158,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
 
         return ArrayHelper.arrayToCollection(
             prototypeEntries.map((v) => new PrototypePP(v)),
-            "discordid"
+            "discordid",
         );
     }
 
@@ -170,12 +171,12 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      */
     async searchPlayersForAutocomplete(
         searchQuery: string | RegExp,
-        amount: number = 25
+        amount: number = 25,
     ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
         const result: DatabasePrototypePP[] = await this.collection
             .find(
                 { username: new RegExp(searchQuery, "i") },
-                { projection: { _id: 0, username: 1 } }
+                { projection: { _id: 0, username: 1 } },
             )
             .limit(amount)
             .toArray();

@@ -29,6 +29,11 @@ export interface DatabasePrototypePP extends BaseDocument {
     pptotal: number;
 
     /**
+     * The play count of the user (how many scores the user have submitted into the dpp system).
+     */
+    playc: number;
+
+    /**
      * The total droid performance points (dpp) of the account before recalculation.
      */
     prevpptotal: number;

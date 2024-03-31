@@ -398,7 +398,10 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            if (this.calculationInfo && uid !== this.calculationInfo.uid) {
+            if (
+                prototypePP.calculationInfo &&
+                uid !== prototypePP.calculationInfo.uid
+            ) {
                 continue;
             }
 
@@ -489,17 +492,23 @@ export class UserBind extends Manager {
                     currentPPEntries: [...newList.values()],
                 };
 
+                prototypePP.pptotal = DPPHelper.calculateFinalPerformancePoints(
+                    newList,
+                    playCount,
+                );
+
                 await prototypeDb.updateOne(
                     { discordid: this.discordid },
                     {
                         $set: {
+                            lastUpdate: Date.now(),
                             calculationInfo: prototypePP.calculationInfo,
-                        },
-                        $setOnInsert: {
+                            playc: playCount,
                             pp: prototypePP.calculationInfo.currentPPEntries,
                             pptotal: prototypePP.pptotal,
                             prevpptotal: this.pptotal,
-                            lastUpdate: Date.now(),
+                        },
+                        $setOnInsert: {
                             previous_bind: this.previous_bind,
                             uid: this.uid,
                             username: this.username,
@@ -527,13 +536,13 @@ export class UserBind extends Manager {
                     { discordid: this.discordid },
                     {
                         $set: {
+                            lastUpdate: Date.now(),
                             calculationInfo: prototypePP.calculationInfo,
-                        },
-                        $setOnInsert: {
                             pp: prototypePP.calculationInfo.currentPPEntries,
                             pptotal: prototypePP.pptotal,
                             prevpptotal: this.pptotal,
-                            lastUpdate: Date.now(),
+                        },
+                        $setOnInsert: {
                             previous_bind: this.previous_bind,
                             uid: this.uid,
                             username: this.username,
@@ -543,11 +552,11 @@ export class UserBind extends Manager {
             }
         }
 
+        prototypePP.playc = playCount;
         prototypePP.pp = newList;
         prototypePP.pptotal = DPPHelper.calculateFinalPerformancePoints(
             newList,
-            // In-game pp will not have bonus pp, so let's pretend it doesn't exist.
-            0,
+            playCount,
         );
 
         await this.bindDb.updateOne(
@@ -563,13 +572,14 @@ export class UserBind extends Manager {
 
         const query: UpdateFilter<DatabasePrototypePP> = {
             $set: {
+                lastUpdate: Date.now(),
+                playc: playCount,
                 pp: [...newList.values()],
                 pptotal: prototypePP.pptotal,
                 prevpptotal: this.pptotal,
                 scanDone: true,
             },
             $setOnInsert: {
-                lastUpdate: Date.now(),
                 previous_bind: this.previous_bind,
                 uid: this.uid,
                 username: this.username,
