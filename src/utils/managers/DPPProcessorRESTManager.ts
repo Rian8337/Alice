@@ -505,6 +505,137 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     }
 
     /**
+     * Get the performance of a player's persisted replay in a beatmap.
+     *
+     * @param playerId The ID of the player.
+     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param mods The mods used in the replay.
+     * @param customSpeedMultiplier The custom speed multiplier used in the replay.
+     * @param gamemode The gamemode to calculate.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes representing the difficulty and performance
+     * of the replay, `null` if the attributes cannot be retrieved.
+     */
+    static async calculatePersistedReplay(
+        playerId: number,
+        beatmapHash: string,
+        mods: string,
+        customSpeedMultiplier: number,
+        gamemode: Modes.droid,
+        calculationMethod: PPCalculationMethod.live,
+    ): Promise<CompleteCalculationAttributes<
+        DroidDifficultyAttributes,
+        DroidPerformanceAttributes
+    > | null>;
+
+    /**
+     * Get the performance of a player's persisted replay in a beatmap.
+     *
+     * @param playerId The ID of the player.
+     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param mods The mods used in the replay.
+     * @param customSpeedMultiplier The custom speed multiplier used in the replay.
+     * @param gamemode The gamemode to calculate.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes representing the difficulty and performance
+     * of the replay, `null` if the attributes cannot be retrieved.
+     */
+    static async calculatePersistedReplay(
+        playerId: number,
+        beatmapHash: string,
+        mods: string,
+        customSpeedMultiplier: number,
+        gamemode: Modes.droid,
+        calculationMethod: PPCalculationMethod.rebalance,
+    ): Promise<CompleteCalculationAttributes<
+        RebalanceDroidDifficultyAttributes,
+        RebalanceDroidPerformanceAttributes
+    > | null>;
+
+    /**
+     * Get the performance of a player's persisted replay in a beatmap.
+     *
+     * @param playerId The ID of the player.
+     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param mods The mods used in the replay.
+     * @param customSpeedMultiplier The custom speed multiplier used in the replay.
+     * @param gamemode The gamemode to calculate.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes representing the difficulty and performance
+     * of the replay, `null` if the attributes cannot be retrieved.
+     */
+    static async calculatePersistedReplay(
+        playerId: number,
+        beatmapHash: string,
+        mods: string,
+        customSpeedMultiplier: number,
+        gamemode: Modes.osu,
+        calculationMethod: PPCalculationMethod.live,
+    ): Promise<CompleteCalculationAttributes<
+        OsuDifficultyAttributes,
+        OsuPerformanceAttributes
+    > | null>;
+
+    /**
+     * Get the performance of a player's persisted replay in a beatmap.
+     *
+     * @param playerId The ID of the player.
+     * @param beatmapHash The MD5 hash of the beatmap.
+     * @param mods The mods used in the replay.
+     * @param customSpeedMultiplier The custom speed multiplier used in the replay.
+     * @param gamemode The gamemode to calculate.
+     * @param calculationMethod The calculation method to use.
+     * @returns The difficulty and performance attributes representing the difficulty and performance
+     * of the replay, `null` if the attributes cannot be retrieved.
+     */
+    static async calculatePersistedReplay(
+        playerId: number,
+        beatmapHash: string,
+        mods: string,
+        customSpeedMultiplier: number,
+        gamemode: Modes.osu,
+        calculationMethod: PPCalculationMethod.rebalance,
+    ): Promise<CompleteCalculationAttributes<
+        RebalanceOsuDifficultyAttributes,
+        OsuPerformanceAttributes
+    > | null>;
+
+    static async calculatePersistedReplay(
+        playerId: number,
+        beatmapHash: string,
+        mods: string,
+        customSpeedMultiplier: number,
+        gamemode: Modes,
+        calculationMethod: PPCalculationMethod,
+    ): Promise<CompleteCalculationAttributes<
+        RawDifficultyAttributes,
+        PerformanceAttributes
+    > | null> {
+        const url = new URL(`${this.endpoint}calculate-persisted-replay`);
+
+        url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
+        url.searchParams.set("playerid", playerId.toString());
+        url.searchParams.set("beatmaphash", beatmapHash);
+        url.searchParams.set("mods", mods);
+        url.searchParams.set(
+            "customspeedmultiplier",
+            customSpeedMultiplier.toString(),
+        );
+        url.searchParams.set("gamemode", gamemode);
+        url.searchParams.set("calculationmethod", calculationMethod.toString());
+
+        const result = await this.request(url).catch(() => null);
+
+        if (result?.statusCode !== 200) {
+            this.logError(url, result);
+
+            return null;
+        }
+
+        return JSON.parse(result.data.toString("utf-8"));
+    }
+
+    /**
      * Sends a score submission request to the backend.
      *
      * @param playerId The ID of the player of which the score belongs to.
