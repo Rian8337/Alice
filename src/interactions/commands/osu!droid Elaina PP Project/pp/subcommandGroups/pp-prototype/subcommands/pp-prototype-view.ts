@@ -147,9 +147,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     name: `${i + 1}. ${pp.title} ${modstring}`,
                     value: `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${
                         pp.miss
-                    } ❌ | ${bold(pp.prevPP.toString())} ⮕ ${bold(
-                        pp.pp.toString(),
-                    )} pp (${(pp.pp - pp.prevPP).toFixed(2)} pp)`,
+                    } ❌ | ${bold(pp.pp.toString())} pp`,
                 });
             } else {
                 embed.addFields({ name: `${i + 1}. -`, value: "-" });

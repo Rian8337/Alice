@@ -97,9 +97,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         csvString += `"${pp.title.replace(/"/g, '""')}","${modstring}",${
             pp.combo
-        },${pp.accuracy},${pp.miss},${pp.prevPP},${pp.pp},${(
-            pp.pp - pp.prevPP
-        ).toFixed(2)}\n`;
+        },${pp.accuracy},${pp.miss},${pp.pp},${pp.pp},0\n`;
     }
 
     const attachment: AttachmentBuilder = new AttachmentBuilder(
