@@ -20,7 +20,6 @@ import {
     DroidAPIRequestBuilder,
     Precision,
     Accuracy,
-    Modes,
     RankedStatus,
 } from "@rian8337/osu-base";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
@@ -450,9 +449,9 @@ export class UserBind extends Manager {
                     }
 
                     const attribs =
-                        await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                        await DPPProcessorRESTManager.getBestScorePerformance(
                             score.uid,
-                            Modes.droid,
+                            score.hash,
                             PPCalculationMethod.live,
                         );
 
