@@ -185,11 +185,13 @@ export abstract class DPPHelper {
      *
      * @param dppList The list of dpp plays, mapped by hash.
      * @param entries The plays to add.
+     * @param sizeLimit The maximum size of the list. Defaults to 75.
      * @returns An array of booleans denoting whether the scores were inserted.
      */
     static insertScore(
         dppList: Collection<string, PPEntry>,
         entries: PPEntry[],
+        sizeLimit = 75,
     ): boolean[] {
         let needsSorting = false;
 
@@ -200,7 +202,7 @@ export abstract class DPPHelper {
 
             if (
                 (dppList.get(entry.hash)?.pp ?? 0) >= entry.pp ||
-                (dppList.size === 75 && dppList.last()!.pp >= entry.pp)
+                (dppList.size === sizeLimit && dppList.last()!.pp >= entry.pp)
             ) {
                 continue;
             }
@@ -216,7 +218,7 @@ export abstract class DPPHelper {
 
         const wasInserted = Utils.initializeArray(entries.length, true);
 
-        while (dppList.size > 75) {
+        while (dppList.size > sizeLimit) {
             const lastEntry = dppList.last()!;
 
             for (let i = 0; i < entries.length; ++i) {

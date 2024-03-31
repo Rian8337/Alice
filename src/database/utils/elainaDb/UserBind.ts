@@ -482,7 +482,7 @@ export class UserBind extends Manager {
                                 : undefined,
                     };
 
-                    DPPHelper.insertScore(newList, [ppEntry]);
+                    DPPHelper.insertScore(newList, [ppEntry], 100);
                 }
 
                 prototypePP.calculationInfo = {
