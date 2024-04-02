@@ -1,15 +1,17 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabasePrototypePP } from "structures/database/aliceDb/DatabasePrototypePP";
-import { PrototypePPEntry } from "@alice-structures/dpp/PrototypePPEntry";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
+import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
+import { DatabaseInGamePP } from "@alice-structures/database/aliceDb/DatabaseInGamePP";
+import { PPEntry } from "@alice-structures/dpp/PPEntry";
 
 /**
- * Represents the prototype droid performance point (dpp) entry of an osu!droid account.
+ * Represents the droid performance point (dpp) entry of an osu!droid account that corresponds
+ * to the future in-game dpp system.
  */
-export class PrototypePP extends Manager {
+export class InGamePP extends Manager {
     /**
      * The Discord ID bound to the osu!droid account.
      */
@@ -29,7 +31,7 @@ export class PrototypePP extends Manager {
     /**
      * The prototype droid performance points (dpp) entries of the account, mapped by their hash.
      */
-    pp: Collection<string, PrototypePPEntry>;
+    pp: Collection<string, PPEntry>;
 
     /**
      * The total droid performance points (dpp) of the account after recalculation.
@@ -65,13 +67,18 @@ export class PrototypePP extends Manager {
     scanDone: boolean;
 
     /**
+     * Progress of ongoing dpp calculation.
+     */
+    calculationInfo?: RecalculationProgress<PPEntry>;
+
+    /**
      * The BSON object ID of this document in the database.
      */
     readonly _id?: ObjectId;
 
     constructor(
-        data: DatabasePrototypePP = DatabaseManager.aliceDb?.collections
-            .prototypePP.defaultDocument ?? {},
+        data: DatabaseInGamePP = DatabaseManager.aliceDb?.collections.inGamePP
+            .defaultDocument ?? {},
     ) {
         super();
 

@@ -1,5 +1,3 @@
-import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
-import { DatabasePrototypePP } from "structures/database/aliceDb/DatabasePrototypePP";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import {
     ApplicationCommandOptionChoiceData,
@@ -8,18 +6,21 @@ import {
     User,
 } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { DatabaseInGamePP } from "@alice-structures/database/aliceDb/DatabaseInGamePP";
+import { InGamePP } from "@alice-database/utils/aliceDb/InGamePP";
 
 /**
- * A manager for the `prototypepp` collection.
+ * A manager for the `ingamepp` collection.
  */
-export class PrototypePPCollectionManager extends DatabaseCollectionManager<
-    DatabasePrototypePP,
-    PrototypePP
+export class InGamePPCollectionManager extends DatabaseCollectionManager<
+    DatabaseInGamePP,
+    InGamePP
 > {
     protected override readonly utilityInstance: new (
-        data: DatabasePrototypePP,
-    ) => PrototypePP = PrototypePP;
-    override get defaultDocument(): DatabasePrototypePP {
+        data: DatabaseInGamePP,
+    ) => InGamePP = InGamePP;
+
+    override get defaultDocument(): DatabaseInGamePP {
         return {
             discordid: "",
             lastUpdate: Date.now(),
@@ -35,40 +36,40 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
     }
 
     /**
-     * Gets the prototype droid performance points (dpp) information of a Discord user.
+     * Gets the in-game droid performance points (dpp) information of a Discord user.
      *
      * @param user The user.
      */
-    getFromUser(user: User): Promise<PrototypePP | null>;
+    getFromUser(user: User): Promise<InGamePP | null>;
 
     /**
-     * Gets the prototype droid performance points (dpp) information of a Discord user.
+     * Gets the in-game droid performance points (dpp) information of a Discord user.
      *
      * @param userId The ID of the user.
      */
-    getFromUser(userId: Snowflake): Promise<PrototypePP | null>;
+    getFromUser(userId: Snowflake): Promise<InGamePP | null>;
 
-    getFromUser(userOrId: User | Snowflake): Promise<PrototypePP | null> {
+    getFromUser(userOrId: User | Snowflake): Promise<InGamePP | null> {
         return this.getOne({
             discordid: userOrId instanceof User ? userOrId.id : userOrId,
         });
     }
 
     /**
-     * Gets the prototype droid performance points (dpp) information of an osu!droid account from its uid.
+     * Gets the in-game droid performance points (dpp) information of an osu!droid account from its uid.
      *
      * @param uid The uid of the osu!droid account.
      */
-    getFromUid(uid: number): Promise<PrototypePP | null> {
+    getFromUid(uid: number): Promise<InGamePP | null> {
         return this.getOne({ previous_bind: { $all: [uid] } });
     }
 
     /**
-     * Gets the prototype droid performance points (dpp) information of an osu!droid account from its username.
+     * Gets the in-game droid performance points (dpp) information of an osu!droid account from its username.
      *
      * @param username The username of the osu!droid account.
      */
-    getFromUsername(username: string): Promise<PrototypePP | null> {
+    getFromUsername(username: string): Promise<InGamePP | null> {
         return this.getOne({ username: username });
     }
 
@@ -90,8 +91,8 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      *
      * @returns The leaderboard, mapped by the player's Discord ID.
      */
-    async getLeaderboard(): Promise<DiscordCollection<Snowflake, PrototypePP>> {
-        const prototypeEntries: DatabasePrototypePP[] = await this.collection
+    async getLeaderboard(): Promise<DiscordCollection<Snowflake, InGamePP>> {
+        const inGamePPEntries: DatabaseInGamePP[] = await this.collection
             .find(
                 {},
                 {
@@ -109,7 +110,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
             .toArray();
 
         return ArrayHelper.arrayToCollection(
-            prototypeEntries.map((v) => new PrototypePP(v)),
+            inGamePPEntries.map((v) => new InGamePP(v)),
             "discordid",
         );
     }
@@ -125,8 +126,8 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      */
     async getUnscannedPlayers(
         amount: number,
-    ): Promise<DiscordCollection<Snowflake, PrototypePP>> {
-        const prototypeEntries: DatabasePrototypePP[] = await this.collection
+    ): Promise<DiscordCollection<Snowflake, InGamePP>> {
+        const inGamePPEntries: DatabaseInGamePP[] = await this.collection
             .find(
                 { scanDone: { $ne: true } },
                 { projection: { _id: 0, discordid: 1, pptotal: 1 } },
@@ -136,7 +137,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
             .toArray();
 
         return ArrayHelper.arrayToCollection(
-            prototypeEntries.map((v) => new PrototypePP(v)),
+            inGamePPEntries.map((v) => new InGamePP(v)),
             "discordid",
         );
     }
@@ -152,7 +153,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
         searchQuery: string | RegExp,
         amount: number = 25,
     ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
-        const result: DatabasePrototypePP[] = await this.collection
+        const result: DatabaseInGamePP[] = await this.collection
             .find(
                 { username: new RegExp(searchQuery, "i") },
                 { projection: { _id: 0, username: 1 } },

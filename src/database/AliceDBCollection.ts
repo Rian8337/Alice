@@ -30,6 +30,7 @@ import { DanCourseScoreCollectionManager } from "./managers/aliceDb/DanCourseSco
 import { RecentPlaysCollectionManager } from "./managers/aliceDb/RecentPlaysCollectionManager";
 import { SupportTicketCollectionManager } from "./managers/aliceDb/SupportTicketCollectionManager";
 import { SupportTicketPresetCollectionManager } from "./managers/aliceDb/SupportTicketPresetCollectionManager";
+import { InGamePPCollectionManager } from "./managers/aliceDb/InGamePPCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -194,6 +195,11 @@ export class AliceDBCollection {
     readonly supportTicketPreset: SupportTicketPresetCollectionManager;
 
     /**
+     * The database collection for in-game performance points (pp) entries of osu!droid players.
+     */
+    readonly inGamePP: InGamePPCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -289,6 +295,9 @@ export class AliceDBCollection {
         );
         this.supportTicketPreset = new SupportTicketPresetCollectionManager(
             aliceDb.collection("supportticketpreset"),
+        );
+        this.inGamePP = new InGamePPCollectionManager(
+            aliceDb.collection("ingamepp"),
         );
     }
 }

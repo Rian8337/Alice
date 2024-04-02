@@ -1,11 +1,13 @@
 import { Snowflake } from "discord.js";
-import { PrototypePPEntry } from "@alice-structures/dpp/PrototypePPEntry";
 import { BaseDocument } from "../BaseDocument";
+import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
+import { PPEntry } from "@alice-structures/dpp/PPEntry";
 
 /**
- * Represents the prototype droid performance point (dpp) entry of an osu!droid account.
+ * Represents the droid performance point (dpp) entry of an osu!droid account that corresponds
+ * to the future in-game dpp system.
  */
-export interface DatabasePrototypePP extends BaseDocument {
+export interface DatabaseInGamePP extends BaseDocument {
     /**
      * The Discord ID bound to the osu!droid account.
      */
@@ -18,9 +20,9 @@ export interface DatabasePrototypePP extends BaseDocument {
     lastUpdate: number;
 
     /**
-     * The prototype droid performance points (dpp) entries of the account.
+     * The droid performance points (dpp) entries of the account.
      */
-    pp: PrototypePPEntry[];
+    pp: PPEntry[];
 
     /**
      * The total droid performance points (dpp) of the account after recalculation.
@@ -59,4 +61,9 @@ export interface DatabasePrototypePP extends BaseDocument {
      * Whether this prototype entry has been calculated against the latest changes.
      */
     scanDone: boolean;
+
+    /**
+     * Progress of ongoing dpp calculation.
+     */
+    calculationInfo?: RecalculationProgress<PPEntry>;
 }
