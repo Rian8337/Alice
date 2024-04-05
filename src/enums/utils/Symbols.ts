@@ -40,4 +40,6 @@ export enum Symbols {
     books = "📚",
     house = "🏠",
     wrench = "🔧",
+    speaker = "🔊",
+    music = "🎵",
 }
