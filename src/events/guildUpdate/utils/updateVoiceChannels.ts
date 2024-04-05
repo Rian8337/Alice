@@ -299,8 +299,14 @@ export const run: EventUtil["run"] = async (
             continue;
         }
 
-        await voiceChannel.setName(voiceChannelSetting.name);
-        await voiceChannel.setBitrate(voiceChannelSetting.bitrate);
+        await voiceChannel.setName(
+            voiceChannelSetting.name,
+            "Server boost level change",
+        );
+        await voiceChannel.setBitrate(
+            voiceChannelSetting.bitrate,
+            "Server boost level change",
+        );
     }
 };
 
