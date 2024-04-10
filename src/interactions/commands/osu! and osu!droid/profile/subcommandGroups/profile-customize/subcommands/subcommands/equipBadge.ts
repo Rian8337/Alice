@@ -20,7 +20,7 @@ import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerIn
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const playerInfoDbManager: PlayerInfoCollectionManager =
@@ -33,15 +33,15 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -54,7 +54,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 "picture_config.badges": 1,
                 "picture_config.activeBadges": 1,
             },
-        }
+        },
     );
 
     const pictureConfig: ProfileImageConfig =
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     if (ownedBadges.length === 0) {
         return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userDoesntOwnAnyBadge")
+                localization.getTranslation("userDoesntOwnAnyBadge"),
             ),
         });
     }
@@ -76,17 +76,19 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    localization.getTranslation("chooseEquipBadge")
+                    localization.getTranslation("chooseEquipBadge"),
                 ),
             },
-            ownedBadges.map((v) => {
-                return {
-                    label: v.name,
-                    value: v.id,
-                };
-            }),
+            ownedBadges
+                .map((v) => {
+                    return {
+                        label: v.name,
+                        value: v.id,
+                    };
+                })
+                .sort((a, b) => a.label.localeCompare(b.label)),
             [interaction.user.id],
-            30
+            30,
         );
 
     if (!selectMenuInteraction) {
@@ -95,26 +97,26 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
 
     const badgeID: string = selectMenuInteraction.values[0];
     const badge: PartialProfileBackground = ownedBadges.find(
-        (v) => v.id === badgeID
+        (v) => v.id === badgeID,
     )!;
 
     selectMenuInteraction = await SelectMenuCreator.createStringSelectMenu(
         selectMenuInteraction,
         {
             content: MessageCreator.createWarn(
-                "Choose the slot number where you want to put the badge on."
+                "Choose the slot number where you want to put the badge on.",
             ),
         },
         ArrayHelper.initializeArray(10, 1).map((v, i) => {
             return {
                 label: (v + i).toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
+                    LocaleHelper.convertToBCP47(localization.language),
                 ),
                 value: (v + i).toString(),
             };
         }),
         [interaction.user.id],
-        20
+        20,
     );
 
     if (!selectMenuInteraction) {
@@ -138,12 +140,12 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             configurable: true,
             enumerable: true,
             writable: true,
-        }
+        },
     );
 
     await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: interaction.user.id },
-        query
+        query,
     );
 
     InteractionHelper.update(selectMenuInteraction, {
@@ -151,7 +153,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             localization.getTranslation("equipBadgeSuccess"),
             interaction.user.toString(),
             badge.id,
-            (badgeIndex + 1).toString()
+            (badgeIndex + 1).toString(),
         ),
         embeds: [],
     });
