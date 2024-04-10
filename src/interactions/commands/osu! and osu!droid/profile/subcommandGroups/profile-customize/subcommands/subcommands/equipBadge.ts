@@ -1,11 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { PartialProfileBackground } from "@alice-structures/profile/PartialProfileBackground";
-import { ProfileImageConfig } from "@alice-structures/profile/ProfileImageConfig";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -14,19 +9,17 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { StringSelectMenuInteraction } from "discord.js";
 import { UpdateFilter } from "mongodb";
 import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerInfo";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
-    const localization: ProfileLocalization = new ProfileLocalization(
+    const localization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const playerInfoDbManager: PlayerInfoCollectionManager =
-        DatabaseManager.aliceDb.collections.playerInfo;
+    const playerInfoDbManager = DatabaseManager.aliceDb.collections.playerInfo;
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
@@ -46,22 +39,19 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user,
-        {
-            projection: {
-                _id: 0,
-                "picture_config.badges": 1,
-                "picture_config.activeBadges": 1,
-            },
+    const playerInfo = await playerInfoDbManager.getFromUser(interaction.user, {
+        projection: {
+            _id: 0,
+            "picture_config.badges": 1,
+            "picture_config.activeBadges": 1,
         },
-    );
+    });
 
-    const pictureConfig: ProfileImageConfig =
+    const pictureConfig =
         playerInfo?.picture_config ??
         playerInfoDbManager.defaultDocument.picture_config;
 
-    const ownedBadges: PartialProfileBackground[] = pictureConfig.badges;
+    const ownedBadges = pictureConfig.badges;
 
     if (ownedBadges.length === 0) {
         return InteractionHelper.update(interaction, {
@@ -71,34 +61,31 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    let selectMenuInteraction: StringSelectMenuInteraction | null =
-        await SelectMenuCreator.createStringSelectMenu(
-            interaction,
-            {
-                content: MessageCreator.createWarn(
-                    localization.getTranslation("chooseEquipBadge"),
-                ),
-            },
-            ownedBadges
-                .map((v) => {
-                    return {
-                        label: v.name,
-                        value: v.id,
-                    };
-                })
-                .sort((a, b) => a.label.localeCompare(b.label)),
-            [interaction.user.id],
-            30,
-        );
+    let selectMenuInteraction = await SelectMenuCreator.createStringSelectMenu(
+        interaction,
+        {
+            content: MessageCreator.createWarn(
+                localization.getTranslation("chooseEquipBadge"),
+            ),
+        },
+        ownedBadges
+            .map((v) => {
+                return {
+                    label: v.name,
+                    value: v.id,
+                };
+            })
+            .sort((a, b) => a.label.localeCompare(b.label)),
+        [interaction.user.id],
+        30,
+    );
 
     if (!selectMenuInteraction) {
         return;
     }
 
-    const badgeID: string = selectMenuInteraction.values[0];
-    const badge: PartialProfileBackground = ownedBadges.find(
-        (v) => v.id === badgeID,
-    )!;
+    const badgeID = selectMenuInteraction.values[0];
+    const badge = ownedBadges.find((v) => v.id === badgeID)!;
 
     selectMenuInteraction = await SelectMenuCreator.createStringSelectMenu(
         selectMenuInteraction,
@@ -123,7 +110,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         return;
     }
 
-    const badgeIndex: number = parseInt(selectMenuInteraction.values[0]) - 1;
+    const badgeIndex = parseInt(selectMenuInteraction.values[0]) - 1;
 
     const query: UpdateFilter<DatabasePlayerInfo> = {
         $set: {},
