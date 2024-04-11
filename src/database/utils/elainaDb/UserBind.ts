@@ -947,6 +947,25 @@ export class UserBind extends Manager {
 
         await this.bindDb.updateOne({ discordid: this.discordid }, query);
 
+        await DatabaseManager.aliceDb.collections.inGamePP.updateOne(
+            { discordid: this.discordid },
+            {
+                $set: {
+                    playc: this.playc,
+                    prevpptotal: this.pptotal,
+                },
+                $setOnInsert: {
+                    previous_bind: this.previous_bind,
+                    uid: this.uid,
+                    username: this.username,
+                    pptotal: 0,
+                    pp: [],
+                    lastUpdate: Date.now(),
+                },
+            },
+            { upsert: true },
+        );
+
         const metadataOperation =
             await DiscordBackendRESTManager.updateMetadata(this.discordid);
 
