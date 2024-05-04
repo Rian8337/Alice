@@ -11,10 +11,11 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { GuildMember, EmbedBuilder, bold } from "discord.js";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
-        await CommandHelper.getLocale(interaction)
+        await CommandHelper.getLocale(interaction),
     );
 
     const uid: number = interaction.options.getInteger("uid", true);
@@ -23,12 +24,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         !NumberHelper.isNumberInRange(
             uid,
             Constants.uidMinLimit,
-            Constants.uidMaxLimit
+            Constants.uidMaxLimit,
         )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidUid")
+                localization.getTranslation("invalidUid"),
             ),
         });
     }
@@ -39,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!nameChange) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userHasNoHistory")
+                localization.getTranslation("userHasNoHistory"),
             ),
         });
     }
@@ -53,12 +54,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.addFields({
-            name: localization.getTranslation("nameHistory"),
+            name: StringHelper.formatString(
+                localization.getTranslation("nameHistory"),
+                uid.toString(),
+            ),
             value: nameChange.previous_usernames
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map(
                     (v, i) =>
-                        `${bold((10 * (page - 1) + i + 1).toString())}. ${v}`
+                        `${bold((10 * (page - 1) + i + 1).toString())}. ${v}`,
                 )
                 .join("\n"),
         });
@@ -71,7 +75,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(nameChange.previous_usernames.length / 10),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 
