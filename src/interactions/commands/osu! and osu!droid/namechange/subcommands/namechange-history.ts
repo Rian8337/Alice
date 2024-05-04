@@ -1,6 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { NamechangeLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
@@ -10,15 +9,15 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { GuildMember, EmbedBuilder, bold } from "discord.js";
+import { GuildMember, bold } from "discord.js";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: NamechangeLocalization = new NamechangeLocalization(
+    const localization = new NamechangeLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const uid: number = interaction.options.getInteger("uid", true);
+    const uid = interaction.options.getInteger("uid", true);
 
     if (
         !NumberHelper.isNumberInRange(
@@ -34,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const nameChange: NameChange | null =
+    const nameChange =
         await DatabaseManager.aliceDb.collections.nameChange.getFromUid(uid);
 
     if (!nameChange) {
@@ -45,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
