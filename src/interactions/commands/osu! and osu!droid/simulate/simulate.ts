@@ -401,7 +401,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             if (objectData.result === HitResult.miss) {
                 // Missing a slider means missing everything, so we can ignore nested objects.
                 addHitResult(objectData.result);
-                break;
+                continue;
             }
 
             if (objectData.result === HitResult.great) {
