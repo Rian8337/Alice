@@ -5,7 +5,6 @@ import { MessageButtonCreatorLocalization } from "@alice-localization/utils/crea
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
-    ButtonInteraction,
     InteractionReplyOptions,
     Message,
     Snowflake,
@@ -24,7 +23,6 @@ import {
 import { MessageCreator } from "./MessageCreator";
 import { MissAnalyzer } from "@alice-utils/missanalyzer/MissAnalyzer";
 import { ReplayData } from "@rian8337/osu-droid-replay-analyzer";
-import { MissInformation } from "@alice-utils/missanalyzer/MissInformation";
 import { OnButtonPressed } from "@alice-structures/utils/OnButtonPressed";
 import { OnButtonCollectorEnd } from "@alice-structures/utils/OnButtonCollectorEnd";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
@@ -122,10 +120,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         duration: number,
         language: Language = "en",
     ): Promise<boolean> {
-        const localization: MessageButtonCreatorLocalization =
-            this.getLocalization(language);
-
-        const buttons: ButtonBuilder[] = this.createConfirmationButtons();
+        const localization = this.getLocalization(language);
+        const buttons = this.createConfirmationButtons();
 
         return new Promise((resolve) =>
             this.createLimitedTimeButtons(
@@ -140,8 +136,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     c.stop();
                 },
                 async (c) => {
-                    const pressed: ButtonInteraction | undefined =
-                        c.collector.collected.first();
+                    const pressed = c.collector.collected.first();
 
                     if (pressed) {
                         if (pressed.customId === "confirmationYes") {
@@ -188,9 +183,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             }
                         }
 
-                        const index: number = (<
-                            ActionRowBuilder<ButtonBuilder>[]
-                        >options.components).findIndex((v) => {
+                        const index = (<ActionRowBuilder<ButtonBuilder>[]>(
+                            options.components
+                        )).findIndex((v) => {
                             return (
                                 v.components.length === buttons.length &&
                                 v.components.every(
@@ -245,16 +240,16 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         beatmap: Beatmap,
         replayData: ReplayData,
     ): Promise<Message> {
-        const missAnalyzerButtonId: string = "analyzeMissesFromRecent";
-        const missAnalyzerButton: ButtonBuilder = new ButtonBuilder()
+        const missAnalyzerButtonId = "analyzeMissesFromRecent";
+        const missAnalyzerButton = new ButtonBuilder()
             .setDisabled(replayData.accuracy.nmiss === 0)
             .setCustomId(missAnalyzerButtonId)
             .setLabel("Analyze First 10 Misses")
             .setStyle(ButtonStyle.Primary)
             .setEmoji(Symbols.magnifyingGlassTiltedRight);
 
-        const timingDistributionButtonId: string = "timingDistribution";
-        const timingDistributionButton: ButtonBuilder = new ButtonBuilder()
+        const timingDistributionButtonId = "timingDistribution";
+        const timingDistributionButton = new ButtonBuilder()
             .setCustomId(timingDistributionButtonId)
             .setLabel("View Timing Distribution")
             .setStyle(ButtonStyle.Primary)
@@ -274,12 +269,11 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
                 switch (i.customId) {
                     case missAnalyzerButtonId: {
-                        const missAnalyzer: MissAnalyzer = new MissAnalyzer(
+                        const missAnalyzer = new MissAnalyzer(
                             beatmap,
                             replayData,
                         );
-                        const missInformations: MissInformation[] =
-                            missAnalyzer.analyze();
+                        const missInformations = missAnalyzer.analyze();
 
                         const options: InteractionReplyOptions = {
                             files: [
@@ -298,7 +292,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         const buttons: ButtonBuilder[] = [];
 
                         for (let i = 0; i < missInformations.length; ++i) {
-                            const id: string = missAnalyzerButtonId + (i + 1);
+                            const id = missAnalyzerButtonId + (i + 1);
 
                             CacheManager.exemptedButtonCustomIds.add(id);
 
@@ -325,19 +319,18 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                             async (_, i) => {
                                 await i.deferUpdate();
 
-                                const pressedIndex: number = parseInt(
+                                const pressedIndex = parseInt(
                                     i.customId.replace(
                                         missAnalyzerButtonId,
                                         "",
                                     ),
                                 );
-                                const attachment: AttachmentBuilder =
-                                    new AttachmentBuilder(
-                                        missInformations[pressedIndex - 1]
-                                            .draw()
-                                            .toBuffer(),
-                                        { name: `miss-${pressedIndex}.png` },
-                                    );
+                                const attachment = new AttachmentBuilder(
+                                    missInformations[pressedIndex - 1]
+                                        .draw()
+                                        .toBuffer(),
+                                    { name: `miss-${pressedIndex}.png` },
+                                );
 
                                 for (let i = 0; i < buttons.length; ++i) {
                                     buttons[i]
@@ -376,20 +369,18 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         break;
                     }
                     case timingDistributionButtonId: {
-                        const timingDistributionChart: TimingDistributionChart =
+                        const timingDistributionChart =
                             new TimingDistributionChart(
                                 beatmap,
                                 replayData.convertedMods,
                                 replayData.hitObjectData,
                             );
 
-                        const chart: Buffer =
-                            timingDistributionChart.generate();
+                        const chart = timingDistributionChart.generate();
 
-                        const attachment: AttachmentBuilder =
-                            new AttachmentBuilder(chart, {
-                                name: "timingDistribution.png",
-                            });
+                        const attachment = new AttachmentBuilder(chart, {
+                            name: "timingDistribution.png",
+                        });
 
                         await i.editReply({ files: [attachment] });
 
@@ -439,7 +430,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             },
             async (c) => {
                 // Remove the row
-                const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
+                const index = (<ActionRowBuilder<ButtonBuilder>[]>(
                     options.components
                 )).findIndex((v) => {
                     if (v.components.length !== 2) {
@@ -522,7 +513,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         options.components ??= [];
         options.components = options.components.slice().concat(components);
 
-        const message: Message = interaction.isMessageComponent()
+        const message = interaction.isMessageComponent()
             ? await InteractionHelper.update(interaction, options)
             : await InteractionHelper.reply(interaction, options);
 
@@ -541,7 +532,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 ) && users.includes(i.user.id),
             (m) => {
                 for (const component of components) {
-                    let isFulfilled: boolean = false;
+                    let isFulfilled = false;
 
                     for (const row of m.components) {
                         if (
@@ -612,12 +603,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         maxPage: number,
         ...onPageChangeArgs: unknown[]
     ): Promise<Message> {
-        let currentPage: number = Math.min(startPage, maxPage);
-
-        const buttons: ButtonBuilder[] = this.createPagingButtons(
-            currentPage,
-            maxPage,
-        );
+        let currentPage = Math.min(startPage, maxPage);
+        const buttons = this.createPagingButtons(currentPage, maxPage);
 
         await onPageChange(options, startPage, ...onPageChangeArgs);
 
@@ -698,7 +685,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 await i.editReply(options);
             },
             async (c) => {
-                const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
+                const index = (<ActionRowBuilder<ButtonBuilder>[]>(
                     options.components
                 )).findIndex((v) => {
                     return (
