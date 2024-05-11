@@ -293,7 +293,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     calcEmbedOptions.files ??= [];
-    calcEmbedOptions.files.push(replayAttachment);
+    calcEmbedOptions.files = calcEmbedOptions.files.concat(replayAttachment);
 
     InteractionHelper.reply(interaction, calcEmbedOptions);
 };

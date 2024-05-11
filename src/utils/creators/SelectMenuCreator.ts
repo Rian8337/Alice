@@ -67,7 +67,12 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         };
 
         options.components ??= [];
-        options.components.push(component);
+
+        // Necessary workaround as options.components is readonly
+        const components = options.components.slice();
+        components.push(component);
+
+        options.components = components;
 
         const message =
             await MessageButtonCreator.createLimitedButtonBasedPaging(
@@ -129,7 +134,9 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     });
 
                     if (index !== -1) {
-                        options.components!.splice(index, 1);
+                        options.components = options.components
+                            ?.slice()
+                            .splice(index, 1);
                     }
                 } else {
                     interaction.isMessageComponent()
@@ -187,7 +194,12 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
             );
 
         options.components ??= [];
-        options.components.push(component);
+
+        // Necessary workaround as options.components is readonly
+        const components = options.components.slice();
+        components.push(component);
+
+        options.components = components;
 
         const message = interaction.isMessageComponent()
             ? await InteractionHelper.update(interaction, options)
@@ -242,7 +254,9 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     });
 
                     if (index !== -1) {
-                        options.components!.splice(index, 1);
+                        options.components = options.components
+                            ?.slice()
+                            .splice(index, 1);
                     }
                 } else {
                     interaction.isMessageComponent()

@@ -352,7 +352,7 @@ export abstract class EmbedCreator {
         );
 
         const embed = EmbedBuilder.from(embedOptions.embeds![0]);
-        const files = embedOptions.files!;
+        const files = embedOptions.files?.slice() ?? [];
 
         if (
             calculationParams instanceof PerformanceCalculationParameters &&
