@@ -187,14 +187,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const mods = ModUtil.pcStringToMods(modInput ?? "");
+    const simulatedMods = ModUtil.pcStringToMods(modInput ?? "");
 
     if (
         StringHelper.sortAlphabet(
             score.mods.reduce((a, v) => a + v.acronym, ""),
         ) ===
             StringHelper.sortAlphabet(
-                mods.reduce((a, v) => a + v.acronym, ""),
+                simulatedMods.reduce((a, v) => a + v.acronym, ""),
             ) &&
         (speedMultiplierInput ?? 1) === score.speedMultiplier
     ) {
@@ -232,27 +232,30 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     // Simulate replay given the mods input.
     // For the moment, we're not gonna check for cursor position in sliders as the operation will be too expensive.
-    let scoreMultiplier = 1;
-    for (const mod of mods) {
+    let simulatedScoreMultiplier = 1;
+    for (const mod of simulatedMods) {
         if (mod.isApplicableToDroid()) {
-            scoreMultiplier *= mod.droidScoreMultiplier;
+            simulatedScoreMultiplier *= mod.droidScoreMultiplier;
         }
     }
 
-    const speedMultiplier = speedMultiplierInput ?? 1;
-    if (speedMultiplier >= 1) {
-        scoreMultiplier *= 1 + (speedMultiplier - 1) * 0.24;
+    const simulatedSpeedMultiplier = speedMultiplierInput ?? 1;
+    if (simulatedSpeedMultiplier >= 1) {
+        simulatedScoreMultiplier *= 1 + (simulatedSpeedMultiplier - 1) * 0.24;
     } else {
-        scoreMultiplier *= Math.pow(0.3, (1 - speedMultiplier) * 4);
+        simulatedScoreMultiplier *= Math.pow(
+            0.3,
+            (1 - simulatedSpeedMultiplier) * 4,
+        );
     }
 
     const difficultyMultiplier =
         1 + beatmap.od / 10 + beatmap.hp / 10 + (beatmap.cs - 3) / 4;
 
-    let totalScore = 0;
-    let currentCombo = 0;
-    let maxCombo = 0;
-    const accuracy = new Accuracy({
+    let simulatedTotalScore = 0;
+    let simulatedCurrentCombo = 0;
+    let simulatedMaxCombo = 0;
+    const simulatedAccuracy = new Accuracy({
         n300: 0,
         n100: 0,
         n50: 0,
@@ -265,46 +268,35 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     // receive a 100. The same can be applied for 100 and 50.
     const realOD = calculateDroidDifficultyStatistics({
         overallDifficulty: beatmap.od,
-        mods: score.mods.filter(
-            (v) =>
-                !ModUtil.speedChangingMods.some((m) => m.acronym === v.acronym),
-        ),
+        // Do not apply speed-changing mods as they will affect the hit window.
+        mods: ModUtil.removeSpeedChangingMods(score.mods),
         convertOverallDifficulty: false,
     }).overallDifficulty;
 
     const realHitWindow = new DroidHitWindow(realOD);
     const realIsPrecise = score.mods.some((m) => m instanceof ModPrecise);
-    const realSpeedMultiplier = calculateDroidDifficultyStatistics({
-        customSpeedMultiplier: score.speedMultiplier,
-        mods: score.mods,
-    }).overallSpeedMultiplier;
 
-    // In simulation, it is fine to apply speed-changing mods if they are present.
+    const realHitWindow300 = realHitWindow.hitWindowFor300(realIsPrecise);
+    const realHitWindow100 = realHitWindow.hitWindowFor100(realIsPrecise);
+
     const simulatedOD = calculateDroidDifficultyStatistics({
         overallDifficulty: beatmap.od,
-        mods: mods.filter(
-            (v) =>
-                !ModUtil.speedChangingMods.some((m) => m.acronym === v.acronym),
-        ),
+        // Do not apply speed-changing mods as they will affect the hit window and required spinner rotations.
+        mods: ModUtil.removeSpeedChangingMods(simulatedMods),
         convertOverallDifficulty: false,
     }).overallDifficulty;
 
     const simulatedHitWindow = new DroidHitWindow(simulatedOD);
-    const simulatedIsPrecise = mods.some((m) => m instanceof ModPrecise);
-    const simulatedSpeedMultiplier = calculateDroidDifficultyStatistics({
-        customSpeedMultiplier: speedMultiplier,
-        mods: mods,
-    }).overallSpeedMultiplier;
+    const simulatedIsPrecise = simulatedMods.some(
+        (m) => m instanceof ModPrecise,
+    );
 
     const simulatedHitWindow300 =
-        simulatedHitWindow.hitWindowFor300(simulatedIsPrecise) /
-        simulatedSpeedMultiplier;
+        simulatedHitWindow.hitWindowFor300(simulatedIsPrecise);
     const simulatedHitWindow100 =
-        simulatedHitWindow.hitWindowFor100(simulatedIsPrecise) /
-        simulatedSpeedMultiplier;
+        simulatedHitWindow.hitWindowFor100(simulatedIsPrecise);
     const simulatedHitWindow50 =
-        simulatedHitWindow.hitWindowFor50(simulatedIsPrecise) /
-        simulatedSpeedMultiplier;
+        simulatedHitWindow.hitWindowFor50(simulatedIsPrecise);
 
     const spinnerRotationsNeeded = 2 + (2 * simulatedOD) / 10;
 
@@ -313,18 +305,18 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         wasHit = true,
     ) => {
         if (wasHit) {
-            ++currentCombo;
+            ++simulatedCurrentCombo;
 
             if (object instanceof SliderTick) {
-                totalScore += 10;
+                simulatedTotalScore += 10;
             } else {
-                totalScore += 30;
+                simulatedTotalScore += 30;
             }
         } else {
-            currentCombo = 0;
+            simulatedCurrentCombo = 0;
         }
 
-        maxCombo = Math.max(maxCombo, currentCombo);
+        simulatedMaxCombo = Math.max(simulatedMaxCombo, simulatedCurrentCombo);
     };
 
     const addHitResult = (result: HitResult) => {
@@ -332,33 +324,35 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
         switch (result) {
             case HitResult.great:
-                ++accuracy.n300;
+                ++simulatedAccuracy.n300;
                 hitWeight = 300;
                 break;
             case HitResult.good:
-                ++accuracy.n100;
+                ++simulatedAccuracy.n100;
                 hitWeight = 100;
                 break;
             case HitResult.meh:
-                ++accuracy.n50;
+                ++simulatedAccuracy.n50;
                 hitWeight = 50;
                 break;
             default:
-                ++accuracy.nmiss;
+                ++simulatedAccuracy.nmiss;
                 break;
         }
 
-        totalScore +=
+        simulatedTotalScore +=
             hitWeight +
-            Math.floor((hitWeight * currentCombo * difficultyMultiplier) / 25);
+            Math.floor(
+                (hitWeight * simulatedCurrentCombo * difficultyMultiplier) / 25,
+            );
 
         if (hitWeight > 0) {
-            ++currentCombo;
+            ++simulatedCurrentCombo;
         } else {
-            currentCombo = 0;
+            simulatedCurrentCombo = 0;
         }
 
-        maxCombo = Math.max(maxCombo, currentCombo);
+        simulatedMaxCombo = Math.max(simulatedMaxCombo, simulatedCurrentCombo);
     };
 
     for (let i = 0; i < beatmap.beatmap!.hitObjects.objects.length; ++i) {
@@ -371,42 +365,38 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             switch (objectData.result) {
                 case HitResult.good:
-                    wasRounded =
-                        hitAccuracy ===
-                        realHitWindow.hitWindowFor300(realIsPrecise);
+                    wasRounded = hitAccuracy === realHitWindow300;
                     break;
                 case HitResult.meh:
-                    wasRounded =
-                        hitAccuracy ===
-                        realHitWindow.hitWindowFor100(realIsPrecise);
+                    wasRounded = hitAccuracy === realHitWindow100;
                     break;
             }
 
-            const realHitAccuracy = hitAccuracy / realSpeedMultiplier;
+            let hitResult: HitResult;
 
             switch (true) {
                 case wasRounded
-                    ? realHitAccuracy < simulatedHitWindow300
-                    : realHitAccuracy <= simulatedHitWindow300:
-                    addHitResult(HitResult.great);
-                    objectData.result = HitResult.great;
+                    ? hitAccuracy < simulatedHitWindow300
+                    : hitAccuracy <= simulatedHitWindow300:
+                    hitResult = HitResult.great;
                     break;
                 case wasRounded
-                    ? realHitAccuracy < simulatedHitWindow100
-                    : realHitAccuracy <= simulatedHitWindow100:
-                    addHitResult(HitResult.good);
-                    objectData.result = HitResult.good;
+                    ? hitAccuracy < simulatedHitWindow100
+                    : hitAccuracy <= simulatedHitWindow100:
+                    hitResult = HitResult.good;
                     break;
                 case wasRounded
-                    ? realHitAccuracy < simulatedHitWindow50
-                    : realHitAccuracy <= simulatedHitWindow50:
-                    addHitResult(HitResult.meh);
-                    objectData.result = HitResult.meh;
+                    ? hitAccuracy < simulatedHitWindow50
+                    : hitAccuracy <= simulatedHitWindow50:
+                    hitResult = HitResult.meh;
                     break;
                 default:
-                    addHitResult(HitResult.miss);
-                    objectData.result = HitResult.miss;
+                    hitResult = HitResult.miss;
+                    break;
             }
+
+            addHitResult(hitResult);
+            objectData.result = hitResult;
         } else if (object instanceof Slider) {
             if (objectData.result === HitResult.miss) {
                 // Missing a slider means missing everything, so we can ignore nested objects.
@@ -432,12 +422,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             // Start with slider head first.
             addSliderNestedResult(
                 object.nestedHitObjects[0],
-                Math.abs(hitAccuracy) !==
-                    Math.floor(
-                        simulatedHitWindow.hitWindowFor50(simulatedIsPrecise),
-                    ) +
-                        13,
+                Math.abs(hitAccuracy) !== Math.floor(simulatedHitWindow50) + 13,
             );
+
+            // Then, handle the slider ticks and repeats.
             for (let i = 1; i < object.nestedHitObjects.length - 1; ++i) {
                 addSliderNestedResult(
                     object.nestedHitObjects[i],
@@ -445,6 +433,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 );
             }
 
+            // Finally, the slider end.
             addHitResult(objectData.result);
         } else {
             // Spinners require a bit of special case.
@@ -452,7 +441,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             // Add 100 for every slider rotation.
             // Source: https://github.com/osudroid/osu-droid/blob/cd4a1e543616cc205841681bcf15302269377cb7/src/ru/nsu/ccfit/zuev/osu/game/Spinner.java#L318-L324
-            totalScore +=
+            simulatedTotalScore +=
                 100 * Math.min(rotations, Math.floor(spinnerRotationsNeeded));
 
             // Then, for every bonus rotation, add 1000 as spinner bonus.
@@ -461,53 +450,59 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     continue;
                 }
 
-                totalScore += 1000;
+                simulatedTotalScore += 1000;
             }
 
             // After adding bonuses, register hit.
+            let hitResult: HitResult;
             const percentFill = rotations / spinnerRotationsNeeded;
+
             switch (true) {
                 case percentFill >= 1:
-                    addHitResult(HitResult.great);
-                    objectData.result = HitResult.great;
+                    hitResult = HitResult.great;
                     break;
                 case percentFill > 0.95:
-                    addHitResult(HitResult.good);
-                    objectData.result = HitResult.good;
+                    hitResult = HitResult.good;
                     break;
                 case percentFill > 0.9:
-                    addHitResult(HitResult.meh);
-                    objectData.result = HitResult.meh;
+                    hitResult = HitResult.meh;
                     break;
                 default:
-                    addHitResult(HitResult.miss);
-                    objectData.result = HitResult.miss;
+                    hitResult = HitResult.miss;
+                    break;
             }
+
+            addHitResult(hitResult);
+            objectData.result = hitResult;
         }
     }
 
-    totalScore = Math.floor(totalScore * scoreMultiplier);
+    simulatedTotalScore = Math.floor(
+        simulatedTotalScore * simulatedScoreMultiplier,
+    );
 
     // Reprocess rank.
     let rank: ScoreRank;
-    const isHidden = mods.some(
+    const isHidden = simulatedMods.some(
         (m) => m instanceof ModHidden || m instanceof ModFlashlight,
     );
-    const hit300Ratio = accuracy.n300 / beatmap.objects;
+    const hit300Ratio = simulatedAccuracy.n300 / beatmap.objects;
 
     switch (true) {
-        case accuracy.value() === 1:
+        case simulatedAccuracy.value() === 1:
             rank = isHidden ? "XH" : "X";
             break;
         case hit300Ratio > 0.9 &&
-            accuracy.n50 / beatmap.objects < 0.01 &&
-            accuracy.nmiss === 0:
+            simulatedAccuracy.n50 / beatmap.objects < 0.01 &&
+            simulatedAccuracy.nmiss === 0:
             rank = isHidden ? "SH" : "S";
             break;
-        case (hit300Ratio > 0.8 && accuracy.nmiss === 0) || hit300Ratio > 0.9:
+        case (hit300Ratio > 0.8 && simulatedAccuracy.nmiss === 0) ||
+            hit300Ratio > 0.9:
             rank = "A";
             break;
-        case (hit300Ratio > 0.7 && accuracy.nmiss === 0) || hit300Ratio > 0.8:
+        case (hit300Ratio > 0.7 && simulatedAccuracy.nmiss === 0) ||
+            hit300Ratio > 0.8:
             rank = "B";
             break;
         case hit300Ratio > 0.6:
@@ -518,27 +513,26 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     // Assign calculated properties to the score object.
-    score.accuracy = accuracy;
-    score.combo = maxCombo;
-    score.score = totalScore;
-    score.speedMultiplier = speedMultiplier;
+    score.accuracy = simulatedAccuracy;
+    score.combo = simulatedMaxCombo;
+    score.score = simulatedTotalScore;
+    score.speedMultiplier = simulatedSpeedMultiplier;
     score.mods = <(Mod & IModApplicableToDroid)[]>(
-        mods.filter((m) => m.isApplicableToDroid())
+        simulatedMods.filter((m) => m.isApplicableToDroid())
     );
     score.rank = rank;
 
     // Construct calculation
     const calcParams = new PerformanceCalculationParameters({
-        accuracy: accuracy,
-        combo: maxCombo,
+        accuracy: simulatedAccuracy,
+        combo: simulatedMaxCombo,
         forceCS: score.forceCS,
         forceAR: score.forceAR,
         forceOD: score.forceOD,
         forceHP: score.forceHP,
         mods: score.mods,
         oldStatistics: score.oldStatistics,
-        customSpeedMultiplier:
-            interaction.options.getNumber("speedmultiplier") ?? 1,
+        customSpeedMultiplier: simulatedSpeedMultiplier,
     });
 
     const droidAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
