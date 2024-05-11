@@ -426,10 +426,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             );
 
             // Then, handle the slider ticks and repeats.
-            for (let i = 1; i < object.nestedHitObjects.length - 1; ++i) {
+            for (let j = 1; j < object.nestedHitObjects.length - 1; ++j) {
                 addSliderNestedResult(
-                    object.nestedHitObjects[i],
-                    objectData.tickset[i - 1],
+                    object.nestedHitObjects[j],
+                    objectData.tickset[j - 1],
                 );
             }
 
@@ -445,8 +445,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 100 * Math.min(rotations, Math.floor(spinnerRotationsNeeded));
 
             // Then, for every bonus rotation, add 1000 as spinner bonus.
-            for (let i = 0; i < rotations; ++i) {
-                if (i < spinnerRotationsNeeded) {
+            for (let j = 0; j < rotations; ++j) {
+                if (j < spinnerRotationsNeeded) {
                     continue;
                 }
 
