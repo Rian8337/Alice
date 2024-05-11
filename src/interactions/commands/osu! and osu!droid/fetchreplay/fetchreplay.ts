@@ -1,9 +1,5 @@
 import AdmZip from "adm-zip";
-import {
-    EmbedBuilder,
-    BaseMessageOptions,
-    AttachmentBuilder,
-} from "discord.js";
+import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ApplicationCommandOptionType } from "discord.js";
@@ -12,16 +8,8 @@ import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { MapInfo, Modes } from "@rian8337/osu-base";
-import {
-    DroidDifficultyAttributes,
-    OsuDifficultyAttributes,
-} from "@rian8337/osu-difficulty-calculator";
-import {
-    ExportedReplayJSON,
-    HitErrorInformation,
-} from "@rian8337/osu-droid-replay-analyzer";
+import { ExportedReplayJSON } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { FetchreplayLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/fetchreplay/FetchreplayLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -29,27 +17,19 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: FetchreplayLocalization = new FetchreplayLocalization(
+    const localization = new FetchreplayLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const beatmapLink: string = interaction.options.getString("beatmap", true);
-
-    const beatmapID: number = BeatmapManager.getBeatmapID(beatmapLink)[0];
-
-    let uid: number | null = interaction.options.getInteger("uid");
-
-    let hash: string = beatmapLink?.startsWith("h:")
-        ? beatmapLink.slice(2)
-        : "";
+    const beatmapLink = interaction.options.getString("beatmap", true);
+    const beatmapID = BeatmapManager.getBeatmapID(beatmapLink)[0];
+    let uid = interaction.options.getInteger("uid");
+    let hash = beatmapLink?.startsWith("h:") ? beatmapLink.slice(2) : "";
 
     if (!beatmapID && !hash) {
         return InteractionHelper.reply(interaction, {
@@ -60,7 +40,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     if (!uid) {
-        const bindInfo: UserBind | null =
+        const bindInfo =
             await DatabaseManager.elainaDb.collections.userBind.getFromUser(
                 interaction.user,
                 {
@@ -93,7 +73,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         hash = beatmapInfo.hash;
     }
 
-    const score: Score | null = await Score.getFromHash(uid, hash);
+    const score = await Score.getFromHash(uid, hash);
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
@@ -119,7 +99,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const { data } = replay;
 
-    const zip: AdmZip = new AdmZip();
+    const zip = new AdmZip();
 
     zip.addFile(`${score.scoreID}.odr`, replay.originalODR!);
 
@@ -169,14 +149,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     zip.addFile("entry.json", Buffer.from(JSON.stringify(json, null, 2)));
 
-    const replayAttachment: AttachmentBuilder = new AttachmentBuilder(
-        zip.toBuffer(),
-        {
-            name: `${data.fileName.substring(0, data.fileName.length - 4)} [${
-                data.playerName
-            }]-${json.replaydata.time}.edr`,
-        },
-    );
+    const replayAttachment = new AttachmentBuilder(zip.toBuffer(), {
+        name: `${data.fileName.substring(0, data.fileName.length - 4)} [${
+            data.playerName
+        }]-${json.replaydata.time}.edr`,
+    });
 
     if (!beatmapInfo) {
         return InteractionHelper.reply(interaction, {
@@ -197,10 +174,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const droidAttribs: CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
-    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+    const droidAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
         score.scoreID,
         Modes.droid,
         PPCalculationMethod.live,
@@ -225,10 +199,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const osuAttribs: CompleteCalculationAttributes<
-        OsuDifficultyAttributes,
-        OsuPerformanceAttributes
-    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+    const osuAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
         score.scoreID,
         Modes.osu,
         PPCalculationMethod.live,
@@ -253,23 +224,20 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const calcEmbedOptions: BaseMessageOptions =
-        EmbedCreator.createCalculationEmbed(
-            beatmapInfo,
-            BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
-            droidAttribs.difficulty,
-            osuAttribs.difficulty,
-            droidAttribs.performance,
-            osuAttribs.performance,
-            localization.language,
-        );
+    const calcEmbedOptions = EmbedCreator.createCalculationEmbed(
+        beatmapInfo,
+        BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+        droidAttribs.difficulty,
+        osuAttribs.difficulty,
+        droidAttribs.performance,
+        osuAttribs.performance,
+        localization.language,
+    );
 
     replay.beatmap ??= beatmapInfo.beatmap ?? undefined;
 
-    const hitErrorInformation: HitErrorInformation | null =
-        replay.calculateHitError();
-
-    const embed: EmbedBuilder = EmbedBuilder.from(calcEmbedOptions.embeds![0]);
+    const hitErrorInformation = replay.calculateHitError();
+    const embed = EmbedBuilder.from(calcEmbedOptions.embeds![0]);
 
     embed.setAuthor({
         name: StringHelper.formatString(
