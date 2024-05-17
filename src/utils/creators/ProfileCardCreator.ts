@@ -269,7 +269,7 @@ export class ProfileCardCreator {
         const rank =
             this.player instanceof Player
                 ? this.player.rank
-                : (await DroidHelper.getPlayerRank(this.player.id)) ?? 0;
+                : (await DroidHelper.getPlayerRank(this.player.score)) ?? 0;
 
         this.context.save();
 
