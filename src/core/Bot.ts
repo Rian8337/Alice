@@ -29,6 +29,7 @@ import { Config } from "./Config";
 import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler";
 import { AutocompleteSubhandler } from "@alice-structures/core/AutocompleteSubhandler";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
+import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 /**
  * The starting point of the bot.
@@ -53,13 +54,15 @@ export class Bot extends Client<true> {
     /**
      * The event utilities that this bot has, mapped by the event's name, and each utility mapped by its name.
      */
-    readonly eventUtilities: Collection<string, Collection<string, EventUtil>> =
-        new Collection();
+    readonly eventUtilities = new Collection<
+        string,
+        Collection<string, EventUtil>
+    >();
 
     /**
      * Whether the bot has been initialized.
      */
-    private isInitialized: boolean = false;
+    private isInitialized = false;
 
     constructor() {
         super({
@@ -107,9 +110,12 @@ export class Bot extends Client<true> {
         await this.loadButtonCommands();
         await this.loadEvents();
         await DatabaseManager.init();
+        await LocaleHelper.loadLocales();
 
         await super.login(
-            Config.isDebug ? process.env.DEBUG_BOT_TOKEN : process.env.BOT_TOKEN
+            Config.isDebug
+                ? process.env.DEBUG_BOT_TOKEN
+                : process.env.BOT_TOKEN,
         );
 
         await this.initUtils();
@@ -125,28 +131,22 @@ export class Bot extends Client<true> {
     private async loadSlashCommands(): Promise<void> {
         consola.info("Loading slash commands");
 
-        const commandPath: string = join(
-            __dirname,
-            "..",
-            "interactions",
-            "commands"
-        );
-
-        const folders: string[] = await readdir(commandPath);
+        const commandPath = join(__dirname, "..", "interactions", "commands");
+        const folders = await readdir(commandPath);
 
         let i = 0;
 
         for (const folder of folders) {
             consola.info("%d. Loading folder %s", ++i, folder);
 
-            const commands: string[] = await readdir(join(commandPath, folder));
+            const commands = await readdir(join(commandPath, folder));
 
             let j = 0;
 
             for (const command of commands) {
                 consola.success("%d.%d. %s loaded", i, ++j, command);
 
-                const filePath: string = join(commandPath, folder, command);
+                const filePath = join(commandPath, folder, command);
 
                 const file: SlashCommand = await import(
                     `${filePath}/${command}`
@@ -177,12 +177,9 @@ export class Bot extends Client<true> {
      */
     private async loadSlashSubcommandGroups(
         commandName: string,
-        commandDirectory: string
+        commandDirectory: string,
     ): Promise<void> {
-        const subcommandGroupPath: string = join(
-            commandDirectory,
-            "subcommandGroups"
-        );
+        const subcommandGroupPath = join(commandDirectory, "subcommandGroups");
         let subcommandGroups: string[];
 
         try {
@@ -191,11 +188,11 @@ export class Bot extends Client<true> {
             return;
         }
 
-        const collection: Collection<string, SlashSubcommand> =
+        const collection =
             this.interactions.chatInput.get(commandName)!.subcommandGroups;
 
         for (const subcommandGroup of subcommandGroups) {
-            const filePath: string = `${subcommandGroupPath}/${subcommandGroup}`;
+            const filePath = `${subcommandGroupPath}/${subcommandGroup}`;
 
             const file: SlashSubcommand = await import(
                 join(filePath, subcommandGroup)
@@ -215,9 +212,9 @@ export class Bot extends Client<true> {
      */
     private async loadSlashSubcommands(
         commandName: string,
-        commandDirectory: string
+        commandDirectory: string,
     ): Promise<void> {
-        const subcommandPath: string = join(commandDirectory, "subcommands");
+        const subcommandPath = join(commandDirectory, "subcommands");
         let subcommands: string[];
 
         try {
@@ -226,12 +223,11 @@ export class Bot extends Client<true> {
             return;
         }
 
-        const collection: Collection<string, SlashSubcommand> =
+        const collection =
             this.interactions.chatInput.get(commandName)!.subcommands;
 
         for (const subcommand of subcommands.filter((v) => v.endsWith(".js"))) {
-            const filePath: string = join(subcommandPath, subcommand);
-
+            const filePath = join(subcommandPath, subcommand);
             const fileStat = await lstat(filePath);
 
             if (fileStat.isDirectory()) {
@@ -242,7 +238,7 @@ export class Bot extends Client<true> {
 
             collection.set(
                 subcommand.substring(0, subcommand.length - 3),
-                file
+                file,
             );
         }
     }
@@ -251,18 +247,18 @@ export class Bot extends Client<true> {
      * Loads context menu commands from `interactions/contextmenus` directory.
      */
     private async loadContextMenuCommands(): Promise<void> {
-        const commandPath: string = join(
+        const commandPath = join(
             __dirname,
             "..",
             "interactions",
-            "contextmenus"
+            "contextmenus",
         );
 
         const loadCommands = async (
             collection: Collection<string, ContextMenuCommand>,
-            folder: string
+            folder: string,
         ): Promise<void> => {
-            const commands: string[] = await readdir(join(commandPath, folder));
+            const commands = await readdir(join(commandPath, folder));
 
             consola.info("Loading %s context menu commands", folder);
 
@@ -272,7 +268,7 @@ export class Bot extends Client<true> {
                 consola.success(
                     "%d. %s loaded",
                     ++i,
-                    command.substring(0, command.length - 3)
+                    command.substring(0, command.length - 3),
                 );
 
                 const file: ContextMenuCommand = await import(
@@ -293,21 +289,15 @@ export class Bot extends Client<true> {
     private async loadModalCommands(): Promise<void> {
         consola.info("Loading modal submit commands");
 
-        const commandPath: string = join(
-            __dirname,
-            "..",
-            "interactions",
-            "modals"
-        );
-
-        const folders: string[] = await readdir(commandPath);
+        const commandPath = join(__dirname, "..", "interactions", "modals");
+        const folders = await readdir(commandPath);
 
         let i = 0;
 
         for (const folder of folders) {
             consola.info("%d. Loading folder %s", ++i, folder);
 
-            const commands: string[] = await readdir(join(commandPath, folder));
+            const commands = await readdir(join(commandPath, folder));
 
             let j = 0;
 
@@ -316,7 +306,7 @@ export class Bot extends Client<true> {
                     "%d.%d. %s loaded",
                     i,
                     ++j,
-                    command.substring(0, command.length - 3)
+                    command.substring(0, command.length - 3),
                 );
 
                 const file: ModalCommand = await import(
@@ -325,7 +315,7 @@ export class Bot extends Client<true> {
 
                 this.interactions.modalSubmit.set(
                     command.substring(0, command.length - 3),
-                    file
+                    file,
                 );
             }
         }
@@ -337,28 +327,28 @@ export class Bot extends Client<true> {
     private async loadAutocompleteHandlers(): Promise<void> {
         consola.info("Loading autocomplete handlers");
 
-        const commandPath: string = join(
+        const commandPath = join(
             __dirname,
             "..",
             "interactions",
-            "autocomplete"
+            "autocomplete",
         );
 
-        const folders: string[] = await readdir(commandPath);
+        const folders = await readdir(commandPath);
 
         let i = 0;
 
         for (const folder of folders) {
             consola.info("%d. Loading folder %s", ++i, folder);
 
-            const handlers: string[] = await readdir(join(commandPath, folder));
+            const handlers = await readdir(join(commandPath, folder));
 
             let j = 0;
 
             for (const handler of handlers) {
                 consola.success("%d.%d. %s loaded", i, ++j, handler);
 
-                const filePath: string = join(commandPath, folder, handler);
+                const filePath = join(commandPath, folder, handler);
 
                 const file: AutocompleteHandler = await import(
                     `${filePath}/${handler}`
@@ -372,12 +362,12 @@ export class Bot extends Client<true> {
 
                 await this.loadSubcommandGroupAutocompleteHandlers(
                     handler,
-                    filePath
+                    filePath,
                 );
 
                 await this.loadSubcommandAutocompleteHandlers(
                     handler,
-                    filePath
+                    filePath,
                 );
             }
         }
@@ -391,11 +381,11 @@ export class Bot extends Client<true> {
      */
     private async loadSubcommandGroupAutocompleteHandlers(
         handlerName: string,
-        handlerDirectory: string
+        handlerDirectory: string,
     ): Promise<void> {
-        const subcommandGroupHandlerPath: string = join(
+        const subcommandGroupHandlerPath = join(
             handlerDirectory,
-            "subcommandGroups"
+            "subcommandGroups",
         );
         let subcommandGroupHandlers: string[];
 
@@ -405,11 +395,11 @@ export class Bot extends Client<true> {
             return;
         }
 
-        const collection: Collection<string, AutocompleteSubhandler> =
+        const collection =
             this.interactions.autocomplete.get(handlerName)!.subcommandGroups;
 
         for (const s of subcommandGroupHandlers) {
-            const filePath: string = `${subcommandGroupHandlerPath}/${s}`;
+            const filePath = `${subcommandGroupHandlerPath}/${s}`;
 
             const file: AutocompleteSubhandler = await import(
                 join(filePath, s)
@@ -419,7 +409,7 @@ export class Bot extends Client<true> {
 
             await this.loadSubcommandAutocompleteHandlers(
                 handlerName,
-                filePath
+                filePath,
             );
         }
     }
@@ -432,12 +422,9 @@ export class Bot extends Client<true> {
      */
     private async loadSubcommandAutocompleteHandlers(
         handlerName: string,
-        handlerDirectory: string
+        handlerDirectory: string,
     ): Promise<void> {
-        const subcommandHandlersPath: string = join(
-            handlerDirectory,
-            "subcommands"
-        );
+        const subcommandHandlersPath = join(handlerDirectory, "subcommands");
         let subcommandHandlers: string[];
 
         try {
@@ -446,12 +433,11 @@ export class Bot extends Client<true> {
             return;
         }
 
-        const collection: Collection<string, AutocompleteSubhandler> =
+        const collection =
             this.interactions.autocomplete.get(handlerName)!.subcommands;
 
         for (const s of subcommandHandlers.filter((v) => v.endsWith(".js"))) {
-            const filePath: string = join(subcommandHandlersPath, s);
-
+            const filePath = join(subcommandHandlersPath, s);
             const fileStat = await lstat(filePath);
 
             if (fileStat.isDirectory()) {
@@ -470,19 +456,15 @@ export class Bot extends Client<true> {
     private async loadButtonCommands(): Promise<void> {
         consola.info("Loading button commands");
 
-        const commandPath: string = join(
-            __dirname,
-            "..",
-            "interactions",
-            "buttons"
-        );
-        const folders: string[] = await readdir(commandPath);
+        const commandPath = join(__dirname, "..", "interactions", "buttons");
+        const folders = await readdir(commandPath);
 
         let i = 0;
 
         for (const folder of folders) {
             consola.info("%d. Loading folder %s", ++i, folder);
-            const commands: string[] = await readdir(join(commandPath, folder));
+
+            const commands = await readdir(join(commandPath, folder));
             let j = 0;
 
             for (const command of commands.filter((v) => v.endsWith(".js"))) {
@@ -490,7 +472,7 @@ export class Bot extends Client<true> {
                     "%d.%d. %s loaded",
                     i,
                     ++j,
-                    command.substring(0, command.length - 3)
+                    command.substring(0, command.length - 3),
                 );
 
                 const file: ButtonCommand = await import(
@@ -499,7 +481,7 @@ export class Bot extends Client<true> {
 
                 this.interactions.button.set(
                     command.substring(0, command.length - 3),
-                    file
+                    file,
                 );
             }
         }
@@ -511,9 +493,8 @@ export class Bot extends Client<true> {
     private async loadEvents(): Promise<void> {
         consola.info("Loading events and event utilities");
 
-        const eventsPath: string = join(__dirname, "..", "events");
-
-        const events: string[] = await readdir(eventsPath);
+        const eventsPath = join(__dirname, "..", "events");
+        const events = await readdir(eventsPath);
 
         let i = 0;
 
@@ -522,9 +503,7 @@ export class Bot extends Client<true> {
 
             super.on(event, file.run.bind(null, this));
 
-            const eventUtils: string[] = await readdir(
-                join(eventsPath, event, "utils")
-            );
+            const eventUtils = await readdir(join(eventsPath, event, "utils"));
 
             this.eventUtilities.set(event, new Collection());
 
@@ -540,7 +519,7 @@ export class Bot extends Client<true> {
                     i,
                     ++j,
                     event,
-                    eventUtil
+                    eventUtil,
                 );
 
                 const eventUtility: EventUtil = await import(
@@ -570,14 +549,14 @@ export class Bot extends Client<true> {
      * @param forceRegister Whether to force register the commands.
      */
     private async registerDeployCommands(
-        forceRegister?: boolean
+        forceRegister?: boolean,
     ): Promise<void> {
-        const deployCommandID: Snowflake = <Snowflake>(
+        const deployCommandID = <Snowflake>(
             (Config.isDebug
                 ? process.env.DEBUG_BOT_DEPLOY_ID
                 : process.env.BOT_DEPLOY_ID)
         );
-        const undeployCommandID: Snowflake = <Snowflake>(
+        const undeployCommandID = <Snowflake>(
             (Config.isDebug
                 ? process.env.DEBUG_BOT_UNDEPLOY_ID
                 : process.env.BOT_UNDEPLOY_ID)
@@ -586,8 +565,7 @@ export class Bot extends Client<true> {
         const registerCommand = async (name: string): Promise<void> => {
             consola.info(`Registering ${name} command`);
 
-            const command: SlashCommand =
-                this.interactions.chatInput.get(name)!;
+            const command = this.interactions.chatInput.get(name)!;
 
             const data: ApplicationCommandData = {
                 name: command.config.name,
@@ -595,16 +573,15 @@ export class Bot extends Client<true> {
                 options: command.config.options,
             };
 
-            const applicationCommand = await this.application.commands.create(
-                data
+            const applicationCommand =
+                await this.application.commands.create(data);
+
+            consola.info(
+                `Command ${name} registered with ID ${applicationCommand?.id}`,
             );
 
             consola.info(
-                `Command ${name} registered with ID ${applicationCommand?.id}`
-            );
-
-            consola.info(
-                `${StringHelper.capitalizeString(name)} command registered`
+                `${StringHelper.capitalizeString(name)} command registered`,
             );
         };
 

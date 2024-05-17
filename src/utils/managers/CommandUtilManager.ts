@@ -86,11 +86,9 @@ export abstract class CommandUtilManager extends Manager {
                     _id: 0,
                     disabledCommands: 1,
                     disabledEventUtils: 1,
-                    preferredLocale: 1,
                     "channelSettings.id": 1,
                     "channelSettings.disabledCommands": 1,
                     "channelSettings.disabledEventUtils": 1,
-                    "channelSettings.preferredLocale": 1,
                 },
             },
         );
@@ -105,11 +103,6 @@ export abstract class CommandUtilManager extends Manager {
                 guildSetting.disabledEventUtils,
             );
 
-            CacheManager.guildLocale.set(
-                guildSetting.id,
-                guildSetting.preferredLocale,
-            );
-
             for (const channelSetting of guildSetting.channelSettings.values()) {
                 this.channelDisabledCommands.set(
                     channelSetting.id,
@@ -122,25 +115,7 @@ export abstract class CommandUtilManager extends Manager {
                     channelSetting.id,
                     channelSetting.disabledEventUtils,
                 );
-
-                CacheManager.channelLocale.set(
-                    channelSetting.id,
-                    channelSetting.preferredLocale ?? "en",
-                );
             }
-        }
-
-        // Also initialize user locales while we're at it.
-        const userLocales =
-            await DatabaseManager.aliceDb.collections.userLocale.get(
-                "discordId",
-            );
-
-        for (const userLocale of userLocales.values()) {
-            CacheManager.userLocale.set(
-                userLocale.discordId,
-                userLocale.locale,
-            );
         }
     }
 
