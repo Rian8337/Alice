@@ -17,7 +17,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MapInfo, Modes } from "@rian8337/osu-base";
+import { Modes } from "@rian8337/osu-base";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
@@ -57,7 +57,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const discordid = interaction.options.getUser("user")?.id;
-    let uid: number | undefined | null = interaction.options.getInteger("uid");
+    let uid = interaction.options.getInteger("uid");
     const username = interaction.options.getString("username");
 
     const dbManager = DatabaseManager.elainaDb.collections.userBind;
@@ -70,7 +70,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         case !!uid:
             player = await DroidHelper.getPlayer(uid!, ["id", "username"]);
 
-            uid ??= player instanceof Player ? player.uid : player?.id;
+            uid ??= player instanceof Player ? player.uid : player?.id ?? null;
 
             break;
         case !!username:
@@ -84,7 +84,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             player = await DroidHelper.getPlayer(username, ["id", "username"]);
 
-            uid ??= player instanceof Player ? player.uid : player?.id;
+            uid ??= player instanceof Player ? player.uid : player?.id ?? null;
 
             break;
         default:
@@ -189,12 +189,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, options);
     }
 
-    const beatmapInfo: MapInfo<true> | null = await BeatmapManager.getBeatmap(
-        score.hash,
-        {
-            checkFile: true,
-        },
-    );
+    const beatmapInfo = await BeatmapManager.getBeatmap(score.hash, {
+        checkFile: true,
+    });
 
     if (beatmapInfo?.hasDownloadedBeatmap()) {
         MessageButtonCreator.createRecentScoreButton(

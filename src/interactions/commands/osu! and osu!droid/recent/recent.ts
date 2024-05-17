@@ -221,7 +221,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (score instanceof Score) {
+    if (score instanceof Score || !(score instanceof RecentPlay)) {
         const replay = await ReplayHelper.analyzeReplay(score);
 
         if (!replay.data) {
