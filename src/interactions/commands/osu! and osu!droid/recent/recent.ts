@@ -221,25 +221,25 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (score instanceof Score || !(score instanceof RecentPlay)) {
-        const replay = await ReplayHelper.analyzeReplay(score);
+    if (score instanceof RecentPlay) {
+        return InteractionHelper.reply(interaction, options);
+    }
 
-        if (!replay.data) {
-            return InteractionHelper.reply(interaction, options);
-        }
+    const replay = await ReplayHelper.analyzeReplay(score);
 
-        const beatmapInfo = await BeatmapManager.getBeatmap(score.hash);
+    if (!replay.data) {
+        return InteractionHelper.reply(interaction, options);
+    }
 
-        if (beatmapInfo?.hasDownloadedBeatmap()) {
-            MessageButtonCreator.createRecentScoreButton(
-                interaction,
-                options,
-                beatmapInfo.beatmap,
-                replay.data,
-            );
-        } else {
-            InteractionHelper.reply(interaction, options);
-        }
+    const beatmapInfo = await BeatmapManager.getBeatmap(score.hash);
+
+    if (beatmapInfo?.hasDownloadedBeatmap()) {
+        MessageButtonCreator.createRecentScoreButton(
+            interaction,
+            options,
+            beatmapInfo.beatmap,
+            replay.data,
+        );
     } else {
         InteractionHelper.reply(interaction, options);
     }
