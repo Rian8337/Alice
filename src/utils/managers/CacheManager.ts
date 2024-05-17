@@ -20,80 +20,86 @@ export abstract class CacheManager {
     /**
      * The beatmaps that have been cached, mapped by beatmap ID.
      */
-    static readonly beatmapCache: LimitedCapacityCollection<number, MapInfo> =
-        new LimitedCapacityCollection(150, 600);
+    static readonly beatmapCache = new LimitedCapacityCollection<
+        number,
+        MapInfo
+    >(150, 600);
 
     /**
      * The beatmap cache of each channel, mapped by channel ID.
      */
-    static readonly channelMapCache: LimitedCapacityCollection<
+    static readonly channelMapCache = new LimitedCapacityCollection<
         Snowflake,
         string
-    > = new LimitedCapacityCollection(100, 1800);
+    >(100, 1800);
 
     /**
      * The command cooldowns that are currently active.
      */
-    static readonly activeCommandCooldowns: Set<
+    static readonly activeCommandCooldowns = new Set<
         ChannelCooldownKey | GlobalCooldownKey
-    > = new Set();
+    >();
 
     /**
      * The users/channels that still have a math game active.
      *
      * This is used to prevent users from starting more than one game at once.
      */
-    static readonly stillHasMathGameActive: Set<Snowflake> = new Set();
+    static readonly stillHasMathGameActive = new Set<Snowflake>();
 
     /**
      * The channels that still have a trivia question active.
      */
-    static readonly stillHasQuestionTriviaActive: Set<Snowflake> = new Set();
+    static readonly stillHasQuestionTriviaActive = new Set<Snowflake>();
 
     /**
      * Answers for a trivia question in a channel, mapped by channel ID,
      * and each answer mapped by the answerer's ID.
      */
-    static readonly questionTriviaFillInTheBlankAnswers: Collection<
+    static readonly questionTriviaFillInTheBlankAnswers = new Collection<
         Snowflake,
         Collection<Snowflake, TriviaQuestionCachedAnswer>
-    > = new Collection();
+    >();
 
     /**
      * Answers for a trivia question in a channel, mapped by channel ID,
      * and each answer mapped by the answerer's ID.
      */
-    static readonly mapTriviaAnswers: Collection<
+    static readonly mapTriviaAnswers = new Collection<
         Snowflake,
         Collection<Snowflake, TriviaMapCachedAnswer>
-    > = new Collection();
+    >();
 
     /**
      * The users that still has a verification menu open.
      *
      * This is used to prevent collector creation spam.
      */
-    static readonly userHasActiveVerificationMenu: Set<Snowflake> = new Set();
+    static readonly userHasActiveVerificationMenu = new Set<Snowflake>();
 
     /**
      * The locales that a user has, mapped by user ID.
      */
-    static readonly userLocale: LimitedCapacityCollection<Snowflake, Language> =
-        new LimitedCapacityCollection(150, 300);
+    static readonly userLocale = new LimitedCapacityCollection<
+        Snowflake,
+        Language
+    >(150, 300);
 
     /**
      * The locales that a guild text channel has, mapped by channel ID.
      */
-    static readonly channelLocale: LimitedCapacityCollection<
+    static readonly channelLocale = new LimitedCapacityCollection<
         Snowflake,
         Language
-    > = new LimitedCapacityCollection(100, 300);
+    >(100, 300);
 
     /**
      * The timers for a multiplayer room, mapped by channel ID.
      */
-    static readonly multiplayerTimers: Collection<Snowflake, NodeJS.Timeout[]> =
-        new Collection();
+    static readonly multiplayerTimers = new Collection<
+        Snowflake,
+        NodeJS.Timeout[]
+    >();
 
     /**
      * Cache for difficulty attributes.
@@ -112,5 +118,5 @@ export abstract class CacheManager {
     /**
      * IDs of buttons that will not be listened by the `runButton` event utility.
      */
-    static readonly exemptedButtonCustomIds: Set<string> = new Set();
+    static readonly exemptedButtonCustomIds = new Set<string>();
 }
