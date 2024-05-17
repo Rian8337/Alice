@@ -90,7 +90,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE uid = ? AND score > 0 ORDER BY id DESC LIMIT ? OFFSET ?;`,
+            )} WHERE uid = ? AND score > 0 ORDER BY date DESC LIMIT ? OFFSET ?;`,
             [uid, amount, offset],
         );
 
