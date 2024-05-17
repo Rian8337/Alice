@@ -13,7 +13,7 @@ import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new NamechangeLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const bindInfo =

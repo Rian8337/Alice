@@ -11,18 +11,18 @@ import { AttachmentBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const challenge: Challenge | null =
         await DatabaseManager.aliceDb.collections.challenge.getById(
-            interaction.options.getString("id", true)
+            interaction.options.getString("id", true),
         );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeNotFound")
+                localization.getTranslation("challengeNotFound"),
             ),
         });
     }
@@ -31,13 +31,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const beatmap: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         challenge.beatmapid,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmap) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -47,14 +47,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!beatmapFile) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapDownloadFailed")
+                localization.getTranslation("beatmapDownloadFailed"),
             ),
         });
     }
 
     const attachment: AttachmentBuilder = new AttachmentBuilder(
         Buffer.from(beatmapFile),
-        { name: `${beatmap.fullTitle}.osu` }
+        { name: `${beatmap.fullTitle}.osu` },
     );
 
     InteractionHelper.reply(interaction, {

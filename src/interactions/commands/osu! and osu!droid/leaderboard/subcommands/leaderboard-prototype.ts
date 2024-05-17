@@ -13,7 +13,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const res: Collection<Snowflake, PrototypePP> =
@@ -22,7 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (res.size === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noPrototypeEntriesFound")
+                localization.getTranslation("noPrototypeEntriesFound"),
             ),
         });
     }
@@ -30,7 +30,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const page: number = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,
         1,
-        Math.ceil(res.size / 20)
+        Math.ceil(res.size / 20),
     );
 
     const entries: PrototypePP[] = [...res.values()];
@@ -44,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ++i
         ) {
             usernameLengths.push(
-                StringHelper.getUnicodeStringLength(entries[i].username.trim())
+                StringHelper.getUnicodeStringLength(entries[i].username.trim()),
             );
         }
 
@@ -67,7 +67,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     .padEnd(6)} | ${player.pptotal.toFixed(2)}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
-                    longestUsernameLength
+                    longestUsernameLength,
                 )} | ${"-".padEnd(6)} | -`;
             }
 
@@ -84,7 +84,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         page,
         Math.ceil(res.size / 20),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

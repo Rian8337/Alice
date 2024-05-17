@@ -12,21 +12,21 @@ import { Attachment, Channel, Message } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: SkinLocalization = new SkinLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const skin: PlayerSkin | null =
         await DatabaseManager.aliceDb.collections.playerSkins.getFromName(
-            interaction.options.getString("name", true)
+            interaction.options.getString("name", true),
         );
 
     if (!skin) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("skinNotFound")
+                localization.getTranslation("skinNotFound"),
             ),
         });
     }
@@ -38,7 +38,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("skinNotOwnedByUser")
+                localization.getTranslation("skinNotOwnedByUser"),
             ),
         });
     }
@@ -54,7 +54,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         if (image.size > 8e6) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("previewImageTooBig")
+                    localization.getTranslation("previewImageTooBig"),
                 ),
             });
         }
@@ -62,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         if (!image.height) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("invalidPreviewImage")
+                    localization.getTranslation("invalidPreviewImage"),
                 ),
             });
         }
@@ -72,7 +72,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         await InteractionHelper.deferReply(interaction);
 
         const skinChannel: Channel | null = await client.channels.fetch(
-            Constants.skinPreviewChannel
+            Constants.skinPreviewChannel,
         );
 
         if (!skinChannel?.isTextBased()) {
@@ -101,7 +101,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         await InteractionHelper.deferReply(interaction);
 
         const skinChannel: Channel | null = await client.channels.fetch(
-            Constants.skinPreviewChannel
+            Constants.skinPreviewChannel,
         );
 
         if (!skinChannel?.isTextBased()) {
@@ -132,14 +132,14 @@ export const run: SlashSubcommand<true>["run"] = async (
                           $unset: {
                               previews: "",
                           },
-                      }
+                      },
             );
 
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("editSkinFailed"),
-                    result.reason!
+                    result.reason!,
                 ),
             });
         }
@@ -147,7 +147,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("editSkinSuccess")
+            localization.getTranslation("editSkinSuccess"),
         ),
     });
 };

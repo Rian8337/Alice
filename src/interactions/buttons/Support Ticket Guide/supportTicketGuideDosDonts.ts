@@ -11,7 +11,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new SupportTicketGuideDosDontsLocalization(language);
 
     const embed = EmbedCreator.createNormalEmbed({

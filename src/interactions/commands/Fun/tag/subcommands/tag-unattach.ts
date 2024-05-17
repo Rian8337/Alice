@@ -15,14 +15,14 @@ import {
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     if (!interaction.inGuild()) {
         return;
     }
 
     const localization: TagLocalization = new TagLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
@@ -32,13 +32,13 @@ export const run: SlashSubcommand<true>["run"] = async (
     const tag: GuildTag | null =
         await DatabaseManager.aliceDb.collections.guildTags.getByName(
             interaction.guildId,
-            name
+            name,
         );
 
     if (!tag) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tagDoesntExist")
+                localization.getTranslation("tagDoesntExist"),
             ),
         });
     }
@@ -48,12 +48,12 @@ export const run: SlashSubcommand<true>["run"] = async (
         tag.author !== interaction.user.id &&
         !CommandHelper.checkPermission(
             interaction,
-            PermissionsBitField.Flags.Administrator
+            PermissionsBitField.Flags.Administrator,
         )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("notTagOwner")
+                localization.getTranslation("notTagOwner"),
             ),
         });
     }
@@ -61,7 +61,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!tag.attachment_message) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tagDoesntHaveAttachments")
+                localization.getTranslation("tagDoesntHaveAttachments"),
             ),
         });
     }
@@ -70,7 +70,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("deleteTagIndexOutOfBounds"),
-                tag.attachments.length.toString()
+                tag.attachments.length.toString(),
             ),
         });
     }
@@ -80,7 +80,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     );
 
     const message: Message = await channel.messages.fetch(
-        tag.attachment_message
+        tag.attachment_message,
     );
 
     if (tag.attachments.length > 0) {
@@ -91,7 +91,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                 (v, i) =>
                     new AttachmentBuilder(v, {
                         name: `attachment-${i + 1}.png`,
-                    })
+                    }),
             ),
         });
     } else {
@@ -105,7 +105,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("deleteTagAttachmentSuccessful")
+            localization.getTranslation("deleteTagAttachmentSuccessful"),
         ),
     });
 };

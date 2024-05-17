@@ -13,10 +13,10 @@ import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: MatchLocalization = new MatchLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const pick: string = interaction.options
@@ -25,13 +25,13 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const match: TournamentMatch | null =
         await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-            interaction.channelId
+            interaction.channelId,
         );
 
     if (!match) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("matchDoesntExist")
+                localization.getTranslation("matchDoesntExist"),
             ),
         });
     }
@@ -40,13 +40,13 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const pool: TournamentMappool | null =
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
-            poolId
+            poolId,
         );
 
     if (!pool) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("mappoolNotFound")
+                localization.getTranslation("mappoolNotFound"),
             ),
         });
     }
@@ -56,13 +56,13 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!map) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("mapNotFound")
+                localization.getTranslation("mapNotFound"),
             ),
         });
     }
 
     const timeLimit: number = Math.ceil(
-        map.duration / (pick.includes("DT") ? 1.5 : 1)
+        map.duration / (pick.includes("DT") ? 1.5 : 1),
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -85,15 +85,15 @@ export const run: SlashSubcommand<true>["run"] = async (
             name: localization.getTranslation("mapLength"),
             value: DateTimeFormatHelper.secondsToDHMS(
                 timeLimit,
-                localization.language
+                localization.language,
             ),
             inline: true,
-        }
+        },
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("roundInitiated")
+            localization.getTranslation("roundInitiated"),
         ),
         embeds: [embed],
     });
@@ -102,7 +102,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         setTimeout(() => {
             interaction.channel!.send({
                 content: MessageCreator.createAccept(
-                    localization.getTranslation("roundEnded")
+                    localization.getTranslation("roundEnded"),
                 ),
             });
 
@@ -114,7 +114,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
         interaction.channel!.send({
             content: MessageCreator.createAccept(
-                localization.getTranslation("roundCountdownFinished")
+                localization.getTranslation("roundCountdownFinished"),
             ),
         });
     }, timeLimit * 1000);

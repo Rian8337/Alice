@@ -20,7 +20,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: ReportLocalization = new ReportLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     if (
@@ -32,8 +32,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.notAvailableInServerReject
-                )
+                    Constants.notAvailableInServerReject,
+                ),
             ),
         });
     }
@@ -45,7 +45,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!toReport) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userToReportNotFound")
+                localization.getTranslation("userToReportNotFound"),
             ),
         });
     }
@@ -56,7 +56,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userNotReportable")
+                localization.getTranslation("userNotReportable"),
             ),
         });
     }
@@ -64,7 +64,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (toReport.id === interaction.user.id) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfReportError")
+                localization.getTranslation("selfReportError"),
             ),
         });
     }
@@ -86,12 +86,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 `${bold(localization.getTranslation("channel"))}: ${
                     interaction.channel
                 }\n` +
-                `${bold(localization.getTranslation("reason"))}: ${reason}`
+                `${bold(localization.getTranslation("reason"))}: ${reason}`,
         );
 
     const reportChannel: TextChannel = <TextChannel>(
         interaction.guild!.channels.cache.find(
-            (c) => c.name === Config.reportChannel
+            (c) => c.name === Config.reportChannel,
         )
     );
 
@@ -99,7 +99,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         content: MessageCreator.createWarn(
             `${Config.verifyPerm
                 .map((v) => roleMention(v))
-                .join(" ")} user report in ${interaction.channel}`
+                .join(" ")} user report in ${interaction.channel}`,
         ),
         embeds: [embed],
     });
@@ -121,18 +121,18 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     interaction.channel
                 }\n` +
                 `${bold(
-                    localization.getTranslation("reason")
+                    localization.getTranslation("reason"),
                 )}: ${reason}\n\n` +
-                localization.getTranslation("saveEvidence")
+                localization.getTranslation("saveEvidence"),
         );
 
     interaction.user.send({ embeds: [replyEmbed] }).catch(() =>
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createWarn(
                 localization.getTranslation("reporterDmLocked"),
-                interaction.user.toString()
+                interaction.user.toString(),
             ),
-        })
+        }),
     );
 };
 

@@ -12,20 +12,20 @@ import { Collection } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const players: Collection<number, PlayerInfo> =
         await DatabaseManager.aliceDb.collections.playerInfo.get(
             "uid",
             {},
-            { projection: { _id: 0, uid: 1, points: 1, username: 1 } }
+            { projection: { _id: 0, uid: 1, points: 1, username: 1 } },
         );
 
     const page: number = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,
         1,
-        Math.ceil(players.size / 20)
+        Math.ceil(players.size / 20),
     );
 
     players.sort((a, b) => b.points - a.points);
@@ -40,8 +40,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ) {
             usernameLengths.push(
                 StringHelper.getUnicodeStringLength(
-                    players.at(i)!.username.trim()
-                )
+                    players.at(i)!.username.trim(),
+                ),
             );
         }
 
@@ -62,11 +62,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     .padEnd(longestUsernameLength)} | ${player.uid
                     .toString()
                     .padEnd(6)} | ${player.points.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
+                    LocaleHelper.convertToBCP47(localization.language),
                 )}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
-                    longestUsernameLength
+                    longestUsernameLength,
                 )} | ${"-".padEnd(6)} | ${"-".padEnd(4)}`;
             }
 
@@ -83,7 +83,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         page,
         Math.ceil(players.size / 20),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

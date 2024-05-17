@@ -14,7 +14,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
@@ -27,7 +27,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!auction) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("auctionDoesntExist")
+                localization.getTranslation("auctionDoesntExist"),
             ),
         });
     }
@@ -35,20 +35,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!NumberHelper.isPositive(amount)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidClanAuctionBidAmount")
+                localization.getTranslation("invalidClanAuctionBidAmount"),
             ),
         });
     }
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -61,7 +61,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     alicecoins: 1,
                 },
-            }
+            },
         );
 
     if (!playerInfo || playerInfo.alicecoins < amount) {
@@ -70,8 +70,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("notEnoughCoins"),
                 localization.getTranslation("bidToAuction"),
                 amount.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                    LocaleHelper.convertToBCP47(localization.language),
+                ),
             ),
         });
     }
@@ -80,12 +80,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("clanAuctionBidConfirmation")
+                localization.getTranslation("clanAuctionBidConfirmation"),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -101,7 +101,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionBidFailed"),
-                coinDeductionResult.reason!
+                coinDeductionResult.reason!,
             ),
         });
     }
@@ -112,14 +112,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionBidFailed"),
-                finalResult.reason!
+                finalResult.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("clanAuctionBidSuccessful")
+            localization.getTranslation("clanAuctionBidSuccessful"),
         ),
     });
 };

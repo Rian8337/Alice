@@ -20,7 +20,7 @@ import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialD
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new Recent5Localization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const discordid = interaction.options.getUser("user")?.id;

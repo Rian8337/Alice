@@ -6,7 +6,7 @@ import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     ModalCreator.createModal(
@@ -19,7 +19,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .setStyle(TextInputStyle.Short)
             .setLabel(localization.getTranslation("submitModalBeatmapLabel"))
             .setPlaceholder(
-                localization.getTranslation("submitModalBeatmapPlaceholder")
+                localization.getTranslation("submitModalBeatmapPlaceholder"),
             ),
         new TextInputBuilder()
             .setCustomId("summary")
@@ -27,10 +27,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .setStyle(TextInputStyle.Paragraph)
             .setLabel(localization.getTranslation("submitModalSummaryLabel"))
             .setPlaceholder(
-                localization.getTranslation("submitModalSummaryPlaceholder")
+                localization.getTranslation("submitModalSummaryPlaceholder"),
             )
             .setMinLength(100)
-            .setMaxLength(900)
+            .setMaxLength(900),
     );
 };
 

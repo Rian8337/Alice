@@ -15,7 +15,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     _id: 0,
                     "picture_config.bgColor": 1,
                 },
-            }
+            },
         );
 
     const color: string = playerInfo?.picture_config.bgColor ?? "#008BFF";
@@ -23,9 +23,9 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new ProfileLocalization(
-                await CommandHelper.getLocale(interaction)
+                CommandHelper.getLocale(interaction),
             ).getTranslation("infoBoxBackgroundColorInfo"),
-            color
+            color,
         ),
     });
 };

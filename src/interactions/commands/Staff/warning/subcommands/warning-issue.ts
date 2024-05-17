@@ -9,7 +9,7 @@ import { GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const member: GuildMember | null = await interaction
@@ -19,7 +19,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!member) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userNotFoundInServer")
+                localization.getTranslation("userNotFoundInServer"),
             ),
         });
     }
@@ -27,7 +27,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const points: number = interaction.options.getInteger("points", true);
 
     const duration: number = CommandHelper.convertStringTimeFormat(
-        interaction.options.getString("validduration", true)
+        interaction.options.getString("validduration", true),
     );
 
     const reason: string = interaction.options.getString("reason", true);
@@ -39,21 +39,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         member,
         points,
         duration,
-        reason
+        reason,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warnIssueFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("warnIssueSuccess")
+            localization.getTranslation("warnIssueSuccess"),
         ),
     });
 };

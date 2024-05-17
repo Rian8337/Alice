@@ -15,10 +15,10 @@ import { Collection, GuildMember, Snowflake, User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const toKick: User = interaction.options.getUser("member", true);
@@ -37,8 +37,8 @@ export const run: SlashSubcommand<true>["run"] = async (
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     new ConstantsLocalization(
-                        localization.language
-                    ).getTranslation(Constants.noPermissionReject)
+                        localization.language,
+                    ).getTranslation(Constants.noPermissionReject),
                 ),
             });
         }
@@ -55,15 +55,15 @@ export const run: SlashSubcommand<true>["run"] = async (
                         _id: 0,
                         clan: 1,
                     },
-                }
+                },
             );
 
         if (!bindInfo) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     new ConstantsLocalization(
-                        localization.language
-                    ).getTranslation(Constants.selfNotBindedReject)
+                        localization.language,
+                    ).getTranslation(Constants.selfNotBindedReject),
                 ),
             });
         }
@@ -71,7 +71,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         if (!bindInfo.clan) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("selfIsNotInClan")
+                    localization.getTranslation("selfIsNotInClan"),
                 ),
             });
         }
@@ -87,7 +87,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanDoesntExist")
+                localization.getTranslation("clanDoesntExist"),
             ),
         });
     }
@@ -99,7 +99,9 @@ export const run: SlashSubcommand<true>["run"] = async (
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
@@ -108,12 +110,12 @@ export const run: SlashSubcommand<true>["run"] = async (
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("kickMemberConfirmation")
+                localization.getTranslation("kickMemberConfirmation"),
             ),
         },
         allowedConfirmations,
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -126,7 +128,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("kickMemberFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -134,7 +136,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("kickMemberSuccessful"),
-            toKick.toString()
+            toKick.toString(),
         ),
     });
 };

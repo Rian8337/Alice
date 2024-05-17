@@ -24,7 +24,7 @@ import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new FetchreplayLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const beatmapLink = interaction.options.getString("beatmap", true);

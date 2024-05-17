@@ -28,7 +28,7 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(
-                    await CommandHelper.getLocale(interaction),
+                    CommandHelper.getLocale(interaction),
                 ).getTranslation(
                     interaction.user.id === interaction.targetUser.id
                         ? Constants.selfNotBindedReject

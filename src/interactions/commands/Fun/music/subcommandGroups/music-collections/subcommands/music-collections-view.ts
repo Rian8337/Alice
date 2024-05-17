@@ -11,18 +11,18 @@ import { GuildMember, EmbedBuilder, userMention } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const collection: MusicCollection | null =
         await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
-            interaction.options.getString("name", true)
+            interaction.options.getString("name", true),
         );
 
     if (!collection) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noCollectionWithName")
+                localization.getTranslation("noCollectionWithName"),
             ),
         });
     }
@@ -41,7 +41,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             name: localization.getTranslation("creationDate"),
             value: DateTimeFormatHelper.dateToLocaleString(
                 new Date(collection.createdAt),
-                localization.language
+                localization.language,
             ),
         },
         {
@@ -49,7 +49,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             value: collection.videoIds
                 .map((v, i) => `${i + 1}. ${v}`)
                 .join("\n"),
-        }
+        },
     );
 
     InteractionHelper.reply(interaction, {

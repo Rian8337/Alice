@@ -13,7 +13,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const clan: string | null = interaction.options.getString("clan");

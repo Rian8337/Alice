@@ -21,7 +21,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction,
 ) => {
     const localization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const bindInfo =

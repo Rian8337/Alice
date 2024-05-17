@@ -4,7 +4,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     CommandHelper.runSlashSubcommandNotFromInteraction(
@@ -15,34 +15,34 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 label: localization.getTranslation("viewBackgroundColorLabel"),
                 value: "viewInfoBoxBackgroundColor",
                 description: localization.getTranslation(
-                    "viewBackgroundColorDescription"
+                    "viewBackgroundColorDescription",
                 ),
             },
             {
                 label: localization.getTranslation(
-                    "changeBackgroundColorLabel"
+                    "changeBackgroundColorLabel",
                 ),
                 value: "changeInfoBoxBackgroundColor",
                 description: localization.getTranslation(
-                    "changeBackgroundColorDescription"
+                    "changeBackgroundColorDescription",
                 ),
             },
             {
                 label: localization.getTranslation("viewTextColorLabel"),
                 value: "viewInfoBoxTextColor",
                 description: localization.getTranslation(
-                    "viewTextColorDescription"
+                    "viewTextColorDescription",
                 ),
             },
             {
                 label: localization.getTranslation("changeTextColorLabel"),
                 value: "changeInfoBoxTextColor",
                 description: localization.getTranslation(
-                    "changeTextColorDescription"
+                    "changeTextColorDescription",
                 ),
             },
         ],
-        localization.getTranslation("customizationPlaceholder")
+        localization.getTranslation("customizationPlaceholder"),
     );
 };
 

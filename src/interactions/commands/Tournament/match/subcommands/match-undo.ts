@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const id: string | null = interaction.options.getString("id");
@@ -17,13 +17,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const match: TournamentMatch | null = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-              interaction.channelId
+              interaction.channelId,
           );
 
     if (!match) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("matchDoesntExist")
+                localization.getTranslation("matchDoesntExist"),
             ),
         });
     }
@@ -31,7 +31,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!match.result[0]) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("matchHasNoResult")
+                localization.getTranslation("matchHasNoResult"),
             ),
         });
     }
@@ -58,7 +58,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("undoMatchFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("undoMatchSuccessful"),
-            match.matchid
+            match.matchid,
         ),
     });
 };

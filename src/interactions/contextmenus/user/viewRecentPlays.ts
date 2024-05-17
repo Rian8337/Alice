@@ -14,7 +14,7 @@ import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialD
 
 export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
     const localization = new ViewRecentPlaysLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     if (interaction.targetUser.bot) {

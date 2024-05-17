@@ -188,7 +188,7 @@ function getMatchingCharacterCount(str1: string, str2: string): number {
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: TriviaLocalization = new TriviaLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     if (CacheManager.mapTriviaAnswers.has(interaction.channelId)) {
@@ -446,7 +446,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 i.ephemeral = true;
 
                 const playerLocalization: TriviaLocalization =
-                    new TriviaLocalization(await CommandHelper.getLocale(i));
+                    new TriviaLocalization(CommandHelper.getLocale(i));
 
                 const answer: TriviaMapCachedAnswer | undefined =
                     answerCollection.get(i.user.id);

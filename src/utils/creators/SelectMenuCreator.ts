@@ -46,7 +46,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         duration: number,
     ): Promise<StringSelectMenuInteraction | null> {
         const localization = this.getLocalization(
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
         const selectMenu = new StringSelectMenuBuilder()
@@ -181,7 +181,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
         duration: number,
     ): Promise<ChannelSelectMenuInteraction | null> {
         const localization = this.getLocalization(
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
         const selectMenu = new ChannelSelectMenuBuilder()

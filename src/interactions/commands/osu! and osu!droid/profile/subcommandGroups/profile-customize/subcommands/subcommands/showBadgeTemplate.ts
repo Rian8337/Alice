@@ -11,7 +11,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
+    const language: Language = CommandHelper.getLocale(interaction);
 
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
@@ -24,15 +24,15 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     clan: 1,
                     weightedAccuracy: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -43,13 +43,13 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         bindInfo.uid,
         bindInfo,
         undefined,
-        language
+        language,
     );
 
     if (!template) {
         return InteractionHelper.update(interaction, {
             content: new ProfileLocalization(language).getTranslation(
-                "selfProfileNotFound"
+                "selfProfileNotFound",
             ),
         });
     }

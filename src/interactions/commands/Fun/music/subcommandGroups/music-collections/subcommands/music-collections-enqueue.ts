@@ -18,20 +18,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
         await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
-            name
+            name,
         );
 
     if (!collection) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noCollectionWithName")
+                localization.getTranslation("noCollectionWithName"),
             ),
         });
     }
@@ -44,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const result: OperationResult = await MusicManager.enqueue(
             (<GuildMember>interaction.member).voice.channel!,
             interaction.channel!,
-            new MusicQueue({ type: "video", ...info }, interaction.user.id)
+            new MusicQueue({ type: "video", ...info }, interaction.user.id),
         );
 
         if (!result.success) {
@@ -58,8 +58,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("enqueueFromCollectionSuccess"),
             enqueuedCount.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )
+                LocaleHelper.convertToBCP47(localization.language),
+            ),
         ),
     });
 };

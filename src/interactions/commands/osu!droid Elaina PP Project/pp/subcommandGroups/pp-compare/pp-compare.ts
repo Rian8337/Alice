@@ -21,7 +21,7 @@ import { User, Collection, GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const dbManager: UserBindCollectionManager =

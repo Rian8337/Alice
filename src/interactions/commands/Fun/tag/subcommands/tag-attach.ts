@@ -17,27 +17,27 @@ import {
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     if (!interaction.inGuild()) {
         return;
     }
 
     const localization: TagLocalization = new TagLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
 
     const attachment: Attachment = interaction.options.getAttachment(
         "attachment",
-        true
+        true,
     );
 
     if (!StringHelper.isValidImage(attachment.url)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tagAttachmentURLInvalid")
+                localization.getTranslation("tagAttachmentURLInvalid"),
             ),
         });
     }
@@ -45,13 +45,13 @@ export const run: SlashSubcommand<true>["run"] = async (
     const tag: GuildTag | null =
         await DatabaseManager.aliceDb.collections.guildTags.getByName(
             interaction.guildId,
-            name
+            name,
         );
 
     if (!tag) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tagDoesntExist")
+                localization.getTranslation("tagDoesntExist"),
             ),
         });
     }
@@ -59,7 +59,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (tag.author !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("notTagOwner")
+                localization.getTranslation("notTagOwner"),
             ),
         });
     }
@@ -67,7 +67,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (tag.attachments.length >= 3) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noTagAttachmentSlot")
+                localization.getTranslation("noTagAttachmentSlot"),
             ),
         });
     }
@@ -76,7 +76,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const builder: AttachmentBuilder = new AttachmentBuilder(attachment.url, {
         name: `${tag.attachments.length + 1}${attachment.url.substring(
-            attachment.url.lastIndexOf(".")
+            attachment.url.lastIndexOf("."),
         )}`,
     });
 
@@ -86,12 +86,12 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     if (tag.attachments.length > 0) {
         const message: Message = await channel.messages.fetch(
-            tag.attachment_message
+            tag.attachment_message,
         );
 
         const finalAttachments: AttachmentBuilder[] = tag.attachments.map(
             (v, i) =>
-                new AttachmentBuilder(v, { name: `attachment-${i + 1}.png` })
+                new AttachmentBuilder(v, { name: `attachment-${i + 1}.png` }),
         );
 
         finalAttachments.push(builder);
@@ -108,13 +108,13 @@ export const run: SlashSubcommand<true>["run"] = async (
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("attachToTagSuccessful"),
-                    name
+                    name,
                 ),
             });
         } catch {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("tagAttachmentTooBig")
+                    localization.getTranslation("tagAttachmentTooBig"),
                 ),
             });
         }
@@ -137,13 +137,13 @@ export const run: SlashSubcommand<true>["run"] = async (
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("attachToTagSuccessful"),
-                    name
+                    name,
                 ),
             });
         } catch {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("tagAttachmentTooBig")
+                    localization.getTranslation("tagAttachmentTooBig"),
                 ),
             });
         }

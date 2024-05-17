@@ -10,30 +10,30 @@ import { MapInfo } from "@rian8337/osu-base";
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     const localization: ViewBeatmapLeaderboardLocalization =
         new ViewBeatmapLeaderboardLocalization(
-            await CommandHelper.getLocale(interaction)
+            CommandHelper.getLocale(interaction),
         );
 
     const beatmapId: number | null = BeatmapManager.getBeatmapIDFromMessage(
-        interaction.targetMessage
+        interaction.targetMessage,
     );
 
     if (!beatmapId) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
 
     const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         beatmapId,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmapInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -42,7 +42,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         interaction,
         beatmapInfo.hash,
         1,
-        false
+        false,
     );
 };
 

@@ -10,7 +10,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: ColorLocalization = new ColorLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const color: string = interaction.options.getString("hexcode", true);
@@ -18,7 +18,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!StringHelper.isValidHexCode(color)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidHexCode")
+                localization.getTranslation("invalidHexCode"),
             ),
         });
     }
@@ -30,13 +30,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     c.fillRect(0, 0, 75, 75);
 
     const attachment: AttachmentBuilder = new AttachmentBuilder(
-        canvas.toBuffer()
+        canvas.toBuffer(),
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("showingHexColor"),
-            color
+            color,
         ),
         files: [attachment],
     });

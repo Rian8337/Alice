@@ -14,7 +14,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     if (!CommandHelper.isExecutedByBotOwner(interaction)) {
@@ -26,8 +26,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 constantsLocalization.getTranslation(
-                    Constants.noPermissionReject
-                )
+                    Constants.noPermissionReject,
+                ),
             ),
         });
     }
@@ -39,7 +39,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!NumberHelper.isPositive(addAmount)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("addAmountInvalid")
+                localization.getTranslation("addAmountInvalid"),
             ),
         });
     }
@@ -52,27 +52,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     alicecoins: 1,
                 },
-            }
+            },
         );
 
     if (!playerInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("otherUserDoesntHaveCoinsInfo")
+                localization.getTranslation("otherUserDoesntHaveCoinsInfo"),
             ),
         });
     }
 
     const result: OperationResult = await playerInfo.incrementCoins(
         addAmount,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addCoinFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -83,7 +83,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("addCoinSuccess"),
             addAmount.toLocaleString(BCP47),
-            (playerInfo.alicecoins + addAmount).toLocaleString(BCP47)
+            (playerInfo.alicecoins + addAmount).toLocaleString(BCP47),
         ),
     });
 };

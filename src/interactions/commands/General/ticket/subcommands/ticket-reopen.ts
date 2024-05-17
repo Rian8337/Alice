@@ -12,7 +12,7 @@ import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const dbManager = DatabaseManager.aliceDb.collections.supportTicket;
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new TicketLocalization(language);
 
     const author = interaction.options.getUser("author");

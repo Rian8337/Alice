@@ -10,7 +10,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const id: string = interaction.options.getString("id", true);
@@ -20,7 +20,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!(channel instanceof TextChannel)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidChannelToBind")
+                localization.getTranslation("invalidChannelToBind"),
             ),
         });
     }
@@ -31,7 +31,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!match) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("matchDoesntExist")
+                localization.getTranslation("matchDoesntExist"),
             ),
         });
     }
@@ -41,7 +41,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await channel.threads.fetchArchived();
 
     let thread: ThreadChannel | undefined = channel.threads.cache.find(
-        (c) => c.name === `${match.matchid} ${match.name}`
+        (c) => c.name === `${match.matchid} ${match.name}`,
     );
 
     if (!thread) {
@@ -60,7 +60,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("bindMatchFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -68,7 +68,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("bindMatchSuccessful"),
-            id
+            id,
         ),
     });
 };

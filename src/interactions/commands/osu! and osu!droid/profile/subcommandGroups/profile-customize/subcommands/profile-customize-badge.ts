@@ -4,7 +4,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     CommandHelper.runSlashSubcommandNotFromInteraction(
@@ -15,39 +15,39 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 label: localization.getTranslation("showBadgeTemplateLabel"),
                 value: "showBadgeTemplate",
                 description: localization.getTranslation(
-                    "showBadgeTemplateDescription"
+                    "showBadgeTemplateDescription",
                 ),
             },
             {
                 label: localization.getTranslation("claimBadgeLabel"),
                 value: "claimBadge",
                 description: localization.getTranslation(
-                    "claimBadgeDescription"
+                    "claimBadgeDescription",
                 ),
             },
             {
                 label: localization.getTranslation("equipBadgeLabel"),
                 value: "equipBadge",
                 description: localization.getTranslation(
-                    "equipBadgeDescription"
+                    "equipBadgeDescription",
                 ),
             },
             {
                 label: localization.getTranslation("unequipBadgeLabel"),
                 value: "unequipBadge",
                 description: localization.getTranslation(
-                    "unequipBadgeDescription"
+                    "unequipBadgeDescription",
                 ),
             },
             {
                 label: localization.getTranslation("listBadgeLabel"),
                 value: "listBadges",
                 description: localization.getTranslation(
-                    "listBadgeDescription"
+                    "listBadgeDescription",
                 ),
             },
         ],
-        localization.getTranslation("customizationPlaceholder")
+        localization.getTranslation("customizationPlaceholder"),
     );
 };
 

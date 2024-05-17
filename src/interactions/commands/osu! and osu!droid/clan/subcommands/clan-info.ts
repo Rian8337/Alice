@@ -28,10 +28,10 @@ import {
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const dbManager: ClanCollectionManager =
@@ -39,7 +39,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const clan: Clan | null = interaction.options.getString("name")
         ? await dbManager.getFromName(
-              interaction.options.getString("name", true)
+              interaction.options.getString("name", true),
           )
         : await dbManager.getFromUser(interaction.user);
 
@@ -49,8 +49,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                 localization.getTranslation(
                     interaction.options.getString("name")
                         ? "clanDoesntExist"
-                        : "selfIsNotInClan"
-                )
+                        : "selfIsNotInClan",
+                ),
             ),
         });
     }
@@ -63,7 +63,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     });
 
     const coinEmoji: GuildEmoji = client.emojis.cache.get(
-        Constants.aliceCoinEmote
+        Constants.aliceCoinEmote,
     )!;
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
@@ -88,7 +88,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             name: localization.getTranslation("creationDate"),
             value: DateTimeFormatHelper.dateToLocaleString(
                 new Date(clan.createdAt * 1000),
-                localization.language
+                localization.language,
             ),
             inline: true,
         },
@@ -98,7 +98,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                 .calculateOverallUpkeep()
                 .toLocaleString(BCP47)} Alice coins`,
             inline: true,
-        }
+        },
     );
 
     if (clan.iconURL) {
@@ -129,12 +129,12 @@ export const run: SlashSubcommand<true>["run"] = async (
             0,
             0,
             900,
-            250
+            250,
         );
 
         const attachment: AttachmentBuilder = new AttachmentBuilder(
             canvas.toBuffer(),
-            { name: "banner.png" }
+            { name: "banner.png" },
         );
 
         embed.setImage("attachment://banner.png");

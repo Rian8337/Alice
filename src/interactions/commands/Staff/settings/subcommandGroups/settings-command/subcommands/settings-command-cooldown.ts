@@ -19,7 +19,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     }
 
     const localization: SettingsLocalization = new SettingsLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const constantsLocalization: ConstantsLocalization =

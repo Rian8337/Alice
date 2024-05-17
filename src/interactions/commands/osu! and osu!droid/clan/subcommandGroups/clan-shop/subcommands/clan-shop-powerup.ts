@@ -14,18 +14,18 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -38,7 +38,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     alicecoins: 1,
                 },
-            }
+            },
         );
 
     const cost: number = 100;
@@ -51,9 +51,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("notEnoughCoins"),
                 StringHelper.formatString(
                     localization.getTranslation("buyShopItem"),
-                    localization.getTranslation("clanPowerup")
+                    localization.getTranslation("clanPowerup"),
                 ),
-                cost.toLocaleString(BCP47)
+                cost.toLocaleString(BCP47),
             ),
         });
     }
@@ -64,12 +64,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 localization.getTranslation("buyShopItemConfirmation"),
                 localization.getTranslation("clanPowerup"),
-                cost.toLocaleString(BCP47)
+                cost.toLocaleString(BCP47),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -83,7 +83,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("buyShopItemFailed"),
-                coinDeductionResult.reason!
+                coinDeductionResult.reason!,
             ),
         });
     }
@@ -125,7 +125,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!powerup) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("powerupGachaNoResult")
+                localization.getTranslation("powerupGachaNoResult"),
             ),
         });
     }
@@ -138,7 +138,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("buyShopItemFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -147,11 +147,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         content: [
             MessageCreator.createAccept(
                 localization.getTranslation("powerupGachaWin"),
-                powerup
+                powerup,
             ),
             MessageCreator.createAccept(
                 localization.getTranslation("buyShopItemSuccessful"),
-                cost.toLocaleString(BCP47)
+                cost.toLocaleString(BCP47),
             ),
         ].join("\n"),
     });

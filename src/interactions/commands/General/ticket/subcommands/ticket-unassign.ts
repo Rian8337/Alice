@@ -14,7 +14,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return;
     }
 
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
 
     if (!interaction.member.roles.cache.hasAny(...Config.verifyPerm)) {
         return InteractionHelper.reply(interaction, {

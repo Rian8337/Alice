@@ -10,7 +10,7 @@ import { User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const fromUser: User = interaction.options.getUser("from", true);
@@ -20,7 +20,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (fromUser.id === toUser.id) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("cannotTransferToSamePerson")
+                localization.getTranslation("cannotTransferToSamePerson"),
             ),
         });
     }
@@ -31,12 +31,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("transferWarningConfirmation")
+                localization.getTranslation("transferWarningConfirmation"),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -47,21 +47,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         fromUser.id,
         toUser.id,
-        reason
+        reason,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warnTransferFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("warnTransferSuccess")
+            localization.getTranslation("warnTransferSuccess"),
         ),
     });
 };

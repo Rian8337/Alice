@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ModalTicketPresetProcessor } from "@alice-utils/ticket/presets/ModalTicketPresetProcessor";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new TicketCreateWithPresetLocalization(language);
 
     await InteractionHelper.deferReply(interaction);

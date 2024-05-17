@@ -10,7 +10,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const constantsLocalization: ConstantsLocalization =
-        new ConstantsLocalization(await CommandHelper.getLocale(interaction));
+        new ConstantsLocalization(CommandHelper.getLocale(interaction));
 
     const whitelistedGuilds: Snowflake[] = [
         Constants.mainServer,

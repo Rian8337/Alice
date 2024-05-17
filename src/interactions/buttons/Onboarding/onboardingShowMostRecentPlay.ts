@@ -21,7 +21,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     }
 
     const localization = new OnboardingShowMostRecentPlayLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     await InteractionHelper.deferReply(interaction);

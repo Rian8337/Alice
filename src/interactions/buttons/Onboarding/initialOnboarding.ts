@@ -9,7 +9,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { bold, userMention } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (client, interaction) => {
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new InitialOnboardingLocalization(language);
 
     const embed = EmbedCreator.createNormalEmbed({

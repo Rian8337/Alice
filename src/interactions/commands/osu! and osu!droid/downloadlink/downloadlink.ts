@@ -11,7 +11,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: DownloadlinkLocalization = new DownloadlinkLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const beatmapHash: string | undefined =
@@ -20,7 +20,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!beatmapHash) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noCachedBeatmap")
+                localization.getTranslation("noCachedBeatmap"),
             ),
         });
     }
@@ -29,13 +29,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         beatmapHash,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmapInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotAvailable")
+                localization.getTranslation("beatmapNotAvailable"),
             ),
         });
     }
@@ -43,7 +43,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const embedOptions: BaseMessageOptions = EmbedCreator.createBeatmapEmbed(
         beatmapInfo,
         undefined,
-        localization.language
+        localization.language,
     );
 
     const embed: EmbedBuilder = EmbedBuilder.from(embedOptions.embeds![0]);

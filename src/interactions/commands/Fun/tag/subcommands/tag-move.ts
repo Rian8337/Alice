@@ -24,16 +24,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             $set: {
                 author: newUser.id,
             },
-        }
+        },
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new TagLocalization(
-                await CommandHelper.getLocale(interaction)
+                CommandHelper.getLocale(interaction),
             ).getTranslation("transferTagSuccessful"),
             oldUser.toString(),
-            newUser.toString()
+            newUser.toString(),
         ),
     });
 };

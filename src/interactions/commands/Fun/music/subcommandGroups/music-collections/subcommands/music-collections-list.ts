@@ -13,14 +13,14 @@ import { Collection, GuildMember, EmbedBuilder, User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const collections: Collection<string, MusicCollection> =
         await DatabaseManager.aliceDb.collections.musicCollection.getUserCollections(
-            user
+            user,
         );
 
     if (collections.size === 0) {
@@ -29,8 +29,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     user.id === interaction.user.id
                         ? "selfHasNoCollection"
-                        : "userHasNoCollection"
-                )
+                        : "userHasNoCollection",
+                ),
             ),
         });
     }
@@ -43,7 +43,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed.setDescription(
         `${localization.getTranslation("totalCollections")}: ${
             collections.size
-        }`
+        }`,
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -56,10 +56,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embed.addFields({
                 name: `${i + 1}. ${item.name}`,
                 value: `${localization.getTranslation(
-                    "createdAt"
+                    "createdAt",
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(item.createdAt),
-                    localization.language
+                    localization.language,
                 )}`,
             });
         }
@@ -72,7 +72,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(collections.size / 10),
         90,
-        onPageChange
+        onPageChange,
     );
 };
 

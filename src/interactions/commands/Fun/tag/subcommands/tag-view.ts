@@ -13,7 +13,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const localization: TagLocalization = new TagLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
@@ -21,13 +21,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const tag: GuildTag | null =
         await DatabaseManager.aliceDb.collections.guildTags.getByName(
             interaction.guildId,
-            name
+            name,
         );
 
     if (!tag) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tagDoesntExist")
+                localization.getTranslation("tagDoesntExist"),
             ),
         });
     }
@@ -36,8 +36,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation(
-                    "tagDoesntHaveContentAndAttachments"
-                )
+                    "tagDoesntHaveContentAndAttachments",
+                ),
             ),
         });
     }

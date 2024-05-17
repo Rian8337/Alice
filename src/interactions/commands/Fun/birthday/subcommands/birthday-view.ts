@@ -11,14 +11,14 @@ import { GuildMember, EmbedBuilder, User, underscore, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: BirthdayLocalization = new BirthdayLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const birthday: Birthday | null =
         await DatabaseManager.aliceDb.collections.birthday.getUserBirthday(
-            user.id
+            user.id,
         );
 
     if (!birthday) {
@@ -27,8 +27,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     user.id === interaction.user.id
                         ? "selfBirthdayNotExist"
-                        : "userBirthdayNotExist"
-                )
+                        : "userBirthdayNotExist",
+                ),
             ),
         });
     }
@@ -43,9 +43,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             bold(
                 StringHelper.formatString(
                     localization.getTranslation("birthdayInfo"),
-                    user.toString()
-                )
-            )
+                    user.toString(),
+                ),
+            ),
         )}\n` +
             `${bold(localization.getTranslation("date"))}: ${birthday.date}/${
                 birthday.month + 1
@@ -54,7 +54,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 birthday.timezone >= 0
                     ? `+${birthday.timezone}`
                     : birthday.timezone
-            }`
+            }`,
     );
 
     InteractionHelper.reply(interaction, {

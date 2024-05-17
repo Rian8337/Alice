@@ -16,7 +16,7 @@ import { Collection, GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const status: MapShareSubmissionStatus =
@@ -30,7 +30,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("noSubmissionWithStatus"),
-                status
+                status,
             ),
         });
     }
@@ -38,7 +38,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const page: number = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,
         1,
-        Math.ceil(submissions.size / 10)
+        Math.ceil(submissions.size / 10),
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -49,8 +49,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed.setTitle(
         StringHelper.formatString(
             localization.getTranslation("submissionStatusList"),
-            StringHelper.capitalizeString(status)
-        )
+            StringHelper.capitalizeString(status),
+        ),
     );
 
     const entries: MapShare[] = [...submissions.values()];
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embed.addFields({
                 name: `${i + 1}. ${StringHelper.formatString(
                     localization.getTranslation("submissionFromUser"),
-                    submission.submitter
+                    submission.submitter,
                 )}`,
                 value:
                     `${bold(localization.getTranslation("userId"))}: ${
@@ -75,13 +75,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     `${bold(localization.getTranslation("beatmapId"))}: ${
                         submission.beatmap_id
                     } ([${localization.getTranslation(
-                        "beatmapLink"
+                        "beatmapLink",
                     )}](https://osu.ppy.sh/b/${submission.beatmap_id}))\n` +
                     `${bold(
-                        localization.getTranslation("creationDate")
+                        localization.getTranslation("creationDate"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(submission.date * 1000),
-                        localization.language
+                        localization.language,
                     )}`,
             });
         }
@@ -94,7 +94,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         page,
         Math.ceil(submissions.size / 10),
         90,
-        onPageChange
+        onPageChange,
     );
 };
 

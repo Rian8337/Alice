@@ -12,14 +12,14 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     if (!interaction.inGuild()) {
         return;
     }
 
     const localization: SettingsLocalization = new SettingsLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const constantsLocalization: ConstantsLocalization =
@@ -36,7 +36,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!command) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("commandNotFound")
+                localization.getTranslation("commandNotFound"),
             ),
         });
     }
@@ -55,8 +55,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                     ? interaction.channel.parent!
                     : interaction.channel!,
                 commandName,
-                0
+                0,
             );
             break;
         case "guild":
@@ -80,8 +80,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
@@ -89,7 +89,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             result = await CommandUtilManager.setCommandCooldownInGuild(
                 interaction.guildId!,
                 commandName,
-                0
+                0,
             );
             break;
         case "global":
@@ -100,8 +100,8 @@ export const run: SlashSubcommand<true>["run"] = async (
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
@@ -114,7 +114,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("enableCommandFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -122,7 +122,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("enableCommandSuccess"),
-            commandName
+            commandName,
         ),
     });
 };

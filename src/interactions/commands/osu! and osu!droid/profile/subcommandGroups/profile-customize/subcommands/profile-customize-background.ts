@@ -4,7 +4,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     CommandHelper.runSlashSubcommandNotFromInteraction(
@@ -15,18 +15,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 label: localization.getTranslation("changeBackgroundLabel"),
                 value: "changeBackground",
                 description: localization.getTranslation(
-                    "changeBackgroundDescription"
+                    "changeBackgroundDescription",
                 ),
             },
             {
                 label: localization.getTranslation("listBackgroundLabel"),
                 value: "listBackgrounds",
                 description: localization.getTranslation(
-                    "listBackgroundDescription"
+                    "listBackgroundDescription",
                 ),
             },
         ],
-        localization.getTranslation("customizationPlaceholder")
+        localization.getTranslation("customizationPlaceholder"),
     );
 };
 

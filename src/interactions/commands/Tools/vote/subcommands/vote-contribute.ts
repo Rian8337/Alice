@@ -14,18 +14,18 @@ import { TatsuRESTManager } from "@alice-utils/managers/TatsuRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const voteInfo: Voting | null =
         await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
-            interaction.channelId
+            interaction.channelId,
         );
 
     if (!voteInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noOngoingVoteInChannel")
+                localization.getTranslation("noOngoingVoteInChannel"),
             ),
         });
     }
@@ -40,12 +40,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             pickedChoice,
             0,
             voteInfo.choices.length - 1,
-            true
+            true,
         )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidVoteChoice")
+                localization.getTranslation("invalidVoteChoice"),
             ),
         });
     }
@@ -54,13 +54,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // we want to move the choice to the one that is picked
     // in this command execution
     const choiceIndex: number = choices.findIndex((c) =>
-        c.voters.includes(interaction.user.id)
+        c.voters.includes(interaction.user.id),
     );
 
     if (pickedChoice === choiceIndex) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("voteChoiceIsSameAsBefore")
+                localization.getTranslation("voteChoiceIsSameAsBefore"),
             ),
         });
     }
@@ -68,13 +68,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (voteInfo.xpReq) {
         const userXP: number | null = await TatsuRESTManager.getUserTatsuXP(
             interaction.guildId!,
-            interaction.user.id
+            interaction.user.id,
         );
 
         if (userXP === null) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("cannotRetrieveTatsuXP")
+                    localization.getTranslation("cannotRetrieveTatsuXP"),
                 ),
             });
         }
@@ -82,7 +82,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         if (userXP < voteInfo.xpReq) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("tatsuXPTooSmall")
+                    localization.getTranslation("tatsuXPTooSmall"),
                 ),
             });
         }
@@ -102,7 +102,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (choiceIndex !== -1) {
         choices[choiceIndex].voters.splice(
             choices[choiceIndex].voters.indexOf(interaction.user.id),
-            1
+            1,
         );
 
         query.$pull = {};
@@ -119,11 +119,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await DatabaseManager.aliceDb.collections.voting.updateOne(
         { channel: interaction.channelId },
-        query
+        query,
     );
 
     let string: string = `${bold(
-        `${localization.getTranslation("topic")}: ${voteInfo.topic}`
+        `${localization.getTranslation("topic")}: ${voteInfo.topic}`,
     )}\n\n`;
 
     for (let i = 0; i < voteInfo.choices.length; ++i) {
@@ -139,7 +139,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content:
                 MessageCreator.createAccept(
                     localization.getTranslation("voteRegistered"),
-                    interaction.user.toString()
+                    interaction.user.toString(),
                 ) + `\n${string}`,
         });
     } else {
@@ -149,7 +149,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     localization.getTranslation("voteMoved"),
                     interaction.user.toString(),
                     (choiceIndex + 1).toString(),
-                    (pickedChoice + 1).toString()
+                    (pickedChoice + 1).toString(),
                 ) + `\n${string}`,
         });
     }

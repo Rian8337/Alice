@@ -11,7 +11,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: GamestatsLocalization = new GamestatsLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const apiRequestBuilder: DroidAPIRequestBuilder =
@@ -22,7 +22,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (result.statusCode !== 200) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("cannotRetrieveGameStatistics")
+                localization.getTranslation("cannotRetrieveGameStatistics"),
             ),
         });
     }
@@ -51,25 +51,25 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             name: localization.getTranslation("registeredAccounts"),
             value:
                 `${bold(
-                    localization.getTranslation("totalRegisteredAccounts")
+                    localization.getTranslation("totalRegisteredAccounts"),
                 )}: ${totalUserCount.toLocaleString(BCP47)}\n` +
                 `${bold(
-                    localization.getTranslation("moreThan5ScoresAcc")
+                    localization.getTranslation("moreThan5ScoresAcc"),
                 )}: ${userCountAbove5Scores.toLocaleString(BCP47)}\n` +
                 `${bold(
-                    localization.getTranslation("moreThan20ScoresAcc")
+                    localization.getTranslation("moreThan20ScoresAcc"),
                 )}: ${userCountAbove20Scores.toLocaleString(BCP47)}\n` +
                 `${bold(
-                    localization.getTranslation("moreThan100ScoresAcc")
+                    localization.getTranslation("moreThan100ScoresAcc"),
                 )}: ${userCountAbove100Scores.toLocaleString(BCP47)}\n` +
                 `${bold(
-                    localization.getTranslation("moreThan200ScoresAcc")
+                    localization.getTranslation("moreThan200ScoresAcc"),
                 )}: ${userCountAbove200Scores.toLocaleString(BCP47)}`,
         },
         {
             name: localization.getTranslation("totalScores"),
             value: totalScoreCount.toLocaleString(BCP47),
-        }
+        },
     );
 
     InteractionHelper.reply(interaction, {

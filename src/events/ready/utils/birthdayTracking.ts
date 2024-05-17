@@ -8,11 +8,10 @@ import { BirthdayTrackingLocalization } from "@alice-localization/events/ready/b
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
 import { consola } from "consola";
 
 export const run: EventUtil["run"] = async (client) => {
-    const interval: NodeJS.Timeout = setInterval(async () => {
+    const interval = setInterval(async () => {
         if (
             Config.maintenance ||
             CommandUtilManager.globallyDisabledEventUtils
@@ -22,19 +21,18 @@ export const run: EventUtil["run"] = async (client) => {
             return;
         }
 
-        const guild: Guild = await client.guilds.fetch(Constants.mainServer);
+        const guild = await client.guilds.fetch(Constants.mainServer);
 
-        const role: Role | undefined =
-            guild.roles.cache.get("695201338182860860");
+        const role = guild.roles.cache.get("695201338182860860");
 
         if (!role) {
             clearInterval(interval);
             return;
         }
 
-        const queryDate: Date = new Date();
+        const queryDate = new Date();
 
-        const birthdays: Collection<Snowflake, DatabaseBirthday> =
+        const birthdays =
             await DatabaseManager.aliceDb.collections.birthday.get(
                 "discordid",
                 {
@@ -52,13 +50,13 @@ export const run: EventUtil["run"] = async (client) => {
                             },
                         },
                     ],
-                }
+                },
             );
 
         const validBirthdays: DatabaseBirthday[] = [];
 
         for (let timezone = -12; timezone < 15; ++timezone) {
-            const d: Date = new Date();
+            const d = new Date();
 
             // Check if it's leap year and if it is check if current date is 29 Feb
             if (
@@ -72,8 +70,9 @@ export const run: EventUtil["run"] = async (client) => {
 
             d.setUTCHours(d.getUTCHours() + timezone);
 
-            const timezoneEntries: Collection<Snowflake, DatabaseBirthday> =
-                birthdays.filter((v) => v.timezone === timezone);
+            const timezoneEntries = birthdays.filter(
+                (v) => v.timezone === timezone,
+            );
 
             for (const timezoneEntry of timezoneEntries.values()) {
                 if (
@@ -93,7 +92,7 @@ export const run: EventUtil["run"] = async (client) => {
         }
 
         for (const birthday of validBirthdays) {
-            const user: GuildMember | null = await guild.members
+            const user = await guild.members
                 .fetch(birthday.discordid)
                 .catch(() => null);
 
@@ -116,16 +115,16 @@ export const run: EventUtil["run"] = async (client) => {
                 .send(
                     MessageCreator.createPrefixedMessage(
                         new BirthdayTrackingLocalization(
-                            await CommandHelper.getLocale(user.id)
+                            CommandHelper.getLocale(user.id),
                         ).getTranslation("happyBirthday"),
-                        Symbols.cake
-                    )
+                        Symbols.cake,
+                    ),
                 )
                 .catch(consola.error);
 
             await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
                 { discordid: user.id },
-                { $inc: { alicecoins: 1000 } }
+                { $inc: { alicecoins: 1000 } },
             );
         }
     }, 20 * 1000);

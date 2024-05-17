@@ -11,7 +11,7 @@ import { AttachmentBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const id: string = interaction.options.getString("id", true);
@@ -20,13 +20,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const pool: TournamentMappool | null =
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
-            id
+            id,
         );
 
     if (!pool) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("poolNotFound")
+                localization.getTranslation("poolNotFound"),
             ),
         });
     }
@@ -36,7 +36,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!map) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("mapNotFound")
+                localization.getTranslation("mapNotFound"),
             ),
         });
     }
@@ -48,7 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (scores.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapHasNoScores")
+                localization.getTranslation("beatmapHasNoScores"),
             ),
         });
     }
@@ -63,17 +63,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             pick,
             score.score.score,
             score.score.accuracy.nmiss,
-            score.score.mods
+            score.score.mods,
         )},${pool.calculateAccuracyPortionScoreV2(
             pick,
             score.score.accuracy.value(),
             score.score.accuracy.nmiss,
-            score.score.mods
+            score.score.mods,
         )},${score.score.score},${score.score.mods.reduce(
             (a, v) => a + v.acronym,
-            ""
+            "",
         )},${score.score.combo},${(score.score.accuracy.value() * 100).toFixed(
-            2
+            2,
         )},${score.score.accuracy.n300},${score.score.accuracy.n100},${
             score.score.accuracy.n50
         },${score.score.accuracy.nmiss},"${score.score.date.toUTCString()}"\n`;
@@ -81,7 +81,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const attachment: AttachmentBuilder = new AttachmentBuilder(
         Buffer.from(csvString),
-        { name: `leaderboard_${map.name}.csv` }
+        { name: `leaderboard_${map.name}.csv` },
     );
 
     InteractionHelper.reply(interaction, {

@@ -14,7 +14,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
@@ -23,33 +23,33 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.notAvailableInChannelReject
-                )
+                    Constants.notAvailableInChannelReject,
+                ),
             ),
         });
     }
 
     const beatmapId: number = BeatmapManager.getBeatmapID(
-        interaction.options.getString("beatmap", true)
+        interaction.options.getString("beatmap", true),
     )[0];
 
     if (!beatmapId) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapFound")
+                localization.getTranslation("noBeatmapFound"),
             ),
         });
     }
 
     const submission: MapShare | null =
         await DatabaseManager.aliceDb.collections.mapShare.getByBeatmapId(
-            beatmapId
+            beatmapId,
         );
 
     if (!submission) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noSubmissionWithBeatmap")
+                localization.getTranslation("noSubmissionWithBeatmap"),
             ),
         });
     }
@@ -58,7 +58,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         beatmapId,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (
@@ -70,7 +70,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapIsOutdated")
+                localization.getTranslation("beatmapIsOutdated"),
             ),
         });
     }
@@ -78,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const embedOptions: BaseMessageOptions =
         (await EmbedCreator.createMapShareEmbed(
             submission,
-            localization.language
+            localization.language,
         ))!;
 
     InteractionHelper.reply(interaction, embedOptions);

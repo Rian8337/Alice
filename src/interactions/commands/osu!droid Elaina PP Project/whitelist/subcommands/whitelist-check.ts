@@ -10,21 +10,21 @@ import { MapInfo } from "@rian8337/osu-base";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     // Prioritize beatmap ID over hash
     const beatmapID: number = BeatmapManager.getBeatmapID(
-        interaction.options.getString("beatmap") ?? ""
+        interaction.options.getString("beatmap") ?? "",
     )[0];
     const hash: string = BeatmapManager.getChannelLatestBeatmap(
-        interaction.channelId
+        interaction.channelId,
     )!;
 
     if (!beatmapID && !hash) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noCachedBeatmapFound")
+                localization.getTranslation("noCachedBeatmapFound"),
             ),
         });
     }
@@ -33,13 +33,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID || hash,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmapInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -47,7 +47,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapDoesntNeedWhitelist")
+                localization.getTranslation("beatmapDoesntNeedWhitelist"),
             ),
         });
     }
@@ -61,7 +61,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("whitelistStatus"),
                     beatmapInfo.fullTitle,
-                    localization.getTranslation("whitelistedAndUpdated")
+                    localization.getTranslation("whitelistedAndUpdated"),
                 ),
             });
             break;
@@ -70,7 +70,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("whitelistStatus"),
                     beatmapInfo.fullTitle,
-                    localization.getTranslation("whitelistedNotUpdated")
+                    localization.getTranslation("whitelistedNotUpdated"),
                 ),
             });
             break;
@@ -79,7 +79,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("whitelistStatus"),
                     beatmapInfo.fullTitle,
-                    localization.getTranslation("notWhitelisted")
+                    localization.getTranslation("notWhitelisted"),
                 ),
             });
             break;

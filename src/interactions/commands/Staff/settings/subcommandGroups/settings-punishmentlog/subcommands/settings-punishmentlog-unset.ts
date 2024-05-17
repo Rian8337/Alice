@@ -7,14 +7,14 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.guildPunishmentConfig.unsetGuildLogChannel(
-        interaction.guildId!
+        interaction.guildId!,
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new SettingsLocalization(
-                await CommandHelper.getLocale(interaction)
-            ).getTranslation("unsetLogChannelSuccess")
+                CommandHelper.getLocale(interaction),
+            ).getTranslation("unsetLogChannelSuccess"),
         ),
     });
 };

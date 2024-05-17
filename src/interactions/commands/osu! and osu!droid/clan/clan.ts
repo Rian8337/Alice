@@ -9,12 +9,12 @@ import { Language } from "@alice-localization/base/Language";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const language: Language = await CommandHelper.getLocale(interaction);
+    const language: Language = CommandHelper.getLocale(interaction);
 
     if (interaction.guildId! !== Constants.mainServer) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                new ClanLocalization(language).getTranslation("notInMainGuild")
+                new ClanLocalization(language).getTranslation("notInMainGuild"),
             ),
         });
     }

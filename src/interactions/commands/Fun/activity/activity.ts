@@ -20,7 +20,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     const localization: ActivityLocalization = new ActivityLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const channel: VoiceChannel = <VoiceChannel>(
@@ -48,7 +48,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("serverBoostTierTooLow")
+                localization.getTranslation("serverBoostTierTooLow"),
             ),
         });
     }
@@ -64,7 +64,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             localization.getTranslation("inviteLinkResponse"),
             invite.targetApplication!.name!,
             channel.name,
-            invite.url
+            invite.url,
         ),
     });
 };

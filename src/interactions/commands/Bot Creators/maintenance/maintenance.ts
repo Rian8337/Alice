@@ -24,10 +24,10 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new MaintenanceLocalization(
-                await CommandHelper.getLocale(interaction)
+                CommandHelper.getLocale(interaction),
             ).getTranslation("maintenanceToggle"),
             String(Config.maintenance),
-            Config.maintenanceReason
+            Config.maintenanceReason,
         ),
     });
 };

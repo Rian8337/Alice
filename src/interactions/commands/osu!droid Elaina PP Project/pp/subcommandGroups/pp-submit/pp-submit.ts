@@ -15,7 +15,7 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new PPLocalization(
-                    await CommandHelper.getLocale(interaction),
+                    CommandHelper.getLocale(interaction),
                 ).getTranslation("commandNotAllowed"),
             ),
         });
@@ -23,7 +23,7 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
 
     CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 };
 

@@ -15,7 +15,7 @@ import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind"
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: RecalcLocalization = new RecalcLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     if (interaction.options.data.length > 1) {
@@ -23,7 +23,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -57,7 +57,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
-                findOptions
+                findOptions,
             );
     }
 
@@ -67,8 +67,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 new ConstantsLocalization(localization.language).getTranslation(
                     uid || username || discordid
                         ? Constants.userNotBindedReject
-                        : Constants.selfNotBindedReject
-                )
+                        : Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -76,7 +76,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (await bindInfo.isDPPBanned()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userIsDPPBanned")
+                localization.getTranslation("userIsDPPBanned"),
             ),
         });
     }
@@ -86,7 +86,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("userQueued"),
-            `uid ${bindInfo.uid}`
+            `uid ${bindInfo.uid}`,
         ),
     });
 };

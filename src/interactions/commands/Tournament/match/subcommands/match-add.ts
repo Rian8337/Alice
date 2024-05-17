@@ -10,7 +10,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const matchId: string = interaction.options.getString("id", true);
@@ -23,31 +23,31 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const team1Players: string = interaction.options.getString(
         "team1players",
-        true
+        true,
     );
 
     const team2Players: string = interaction.options.getString(
         "team2players",
-        true
+        true,
     );
 
     if (matchId.split(".").length !== 2) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidMatchID")
+                localization.getTranslation("invalidMatchID"),
             ),
         });
     }
 
     const existingMatchCheck: TournamentMatch | null =
         await DatabaseManager.elainaDb.collections.tournamentMatch.getById(
-            matchId
+            matchId,
         );
 
     if (existingMatchCheck) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("matchIDAlreadyTaken")
+                localization.getTranslation("matchIDAlreadyTaken"),
             ),
         });
     }
@@ -78,12 +78,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Ensure the player difference between both teams don't exceed 1
     if (
         Math.abs(
-            team1PlayersInformation.length - team2PlayersInformation.length
+            team1PlayersInformation.length - team2PlayersInformation.length,
         ) > 1
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("teamPlayerCountDoNotBalance")
+                localization.getTranslation("teamPlayerCountDoNotBalance"),
             ),
         });
     }
@@ -104,7 +104,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("invalidPlayerInformation"),
-                    teamInfo.join(" ")
+                    teamInfo.join(" "),
                 ),
             });
         }
@@ -115,14 +115,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const result: OperationResult =
         await DatabaseManager.elainaDb.collections.tournamentMatch.insert(
-            matchData
+            matchData,
         );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addMatchFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -130,7 +130,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("addMatchSuccessful"),
-            matchId
+            matchId,
         ),
     });
 };

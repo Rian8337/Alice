@@ -13,7 +13,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const playerInfo: PlayerInfo | null =
@@ -26,7 +26,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     alicecoins: 1,
                     hasClaimedDaily: 1,
                 },
-            }
+            },
         );
 
     if (playerInfo) {
@@ -40,20 +40,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         const result: OperationResult = await playerInfo.claimDailyCoins(
             dailyCoin,
-            localization.language
+            localization.language,
         );
 
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("dailyClaimFailed"),
-                    result.reason!
+                    result.reason!,
                 ),
             });
         }
 
         const BCP47: string = LocaleHelper.convertToBCP47(
-            localization.language
+            localization.language,
         );
 
         InteractionHelper.reply(interaction, {
@@ -61,11 +61,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     streakComplete
                         ? "dailyClaimWithStreakSuccess"
-                        : "dailyClaimSuccess"
+                        : "dailyClaimSuccess",
                 ),
                 dailyCoin.toLocaleString(BCP47),
                 streak.toString(),
-                (playerInfo.alicecoins + dailyCoin).toLocaleString(BCP47)
+                (playerInfo.alicecoins + dailyCoin).toLocaleString(BCP47),
             ),
         });
     } else {
@@ -78,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         uid: 1,
                         username: 1,
                     },
-                }
+                },
             );
 
         if (!bindInfo) {
@@ -88,8 +88,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     constantsLocalization.getTranslation(
-                        Constants.selfNotBindedReject
-                    )
+                        Constants.selfNotBindedReject,
+                    ),
                 ),
             });
         }
@@ -108,7 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("dailyClaimFailed"),
-                    result.reason!
+                    result.reason!,
                 ),
             });
         }
@@ -118,7 +118,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("dailyClaimSuccess"),
                 "50",
                 "1",
-                "50"
+                "50",
             ),
         });
     }

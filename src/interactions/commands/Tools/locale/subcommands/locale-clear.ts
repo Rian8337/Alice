@@ -10,7 +10,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LocaleLocalization = new LocaleLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const constantsLocalization: ConstantsLocalization =
@@ -33,8 +33,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
@@ -42,7 +42,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             result =
                 await DatabaseManager.aliceDb.collections.guildSettings.setServerLocale(
                     interaction.guildId,
-                    "en"
+                    "en",
                 );
 
             break;
@@ -58,8 +58,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
@@ -68,7 +68,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 await DatabaseManager.aliceDb.collections.guildSettings.setChannelLocale(
                     interaction.guildId,
                     interaction.channelId,
-                    "en"
+                    "en",
                 );
 
             break;
@@ -76,7 +76,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             result =
                 await DatabaseManager.aliceDb.collections.userLocale.setUserLocale(
                     interaction.user.id,
-                    "en"
+                    "en",
                 );
     }
 
@@ -84,14 +84,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clearLocaleFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("clearLocaleSuccess")
+            localization.getTranslation("clearLocaleSuccess"),
         ),
     });
 };

@@ -42,7 +42,7 @@ import { ApplicationCommandOptionType, GuildMember } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new SimulateLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const beatmapID = BeatmapManager.getBeatmapID(

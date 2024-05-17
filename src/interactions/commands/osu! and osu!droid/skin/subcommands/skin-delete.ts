@@ -9,18 +9,18 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: SkinLocalization = new SkinLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const skin: PlayerSkin | null =
         await DatabaseManager.aliceDb.collections.playerSkins.getFromName(
-            interaction.options.getString("name", true)
+            interaction.options.getString("name", true),
         );
 
     if (!skin) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("skinNotFound")
+                localization.getTranslation("skinNotFound"),
             ),
         });
     }
@@ -32,7 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("skinNotOwnedByUser")
+                localization.getTranslation("skinNotOwnedByUser"),
             ),
         });
     }
@@ -43,14 +43,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("deleteSkinFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("deleteSkinSuccess")
+            localization.getTranslation("deleteSkinSuccess"),
         ),
     });
 };

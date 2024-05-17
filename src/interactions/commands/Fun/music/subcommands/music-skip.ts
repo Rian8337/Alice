@@ -9,26 +9,26 @@ import { GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const result: OperationResult = await MusicManager.skip(
         (<GuildMember>interaction.member).voice.channel!,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("skipTrackFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("skipTrackSuccess")
+            localization.getTranslation("skipTrackSuccess"),
         ),
     });
 };

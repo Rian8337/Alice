@@ -11,7 +11,6 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Collection, Snowflake } from "discord.js";
-import { Clan } from "./Clan";
 import { ObjectId, UpdateFilter } from "mongodb";
 import { consola } from "consola";
 import {
@@ -1270,7 +1269,7 @@ export class UserBind extends Manager {
         if (this.previous_bind.length === 0) {
             // Kick the user from any clan
             if (this.clan) {
-                const clan: Clan | null =
+                const clan =
                     await DatabaseManager.elainaDb.collections.clan.getFromName(
                         this.clan,
                     );
@@ -1281,7 +1280,7 @@ export class UserBind extends Manager {
                     if (!clan.exists) {
                         await clan.notifyLeader(
                             new UserBindLocalization(
-                                await CommandHelper.getLocale(this.discordid),
+                                CommandHelper.getLocale(this.discordid),
                             ).getTranslation("unbindClanDisbandNotification"),
                         );
                     }

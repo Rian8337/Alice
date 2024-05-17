@@ -1,49 +1,34 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { EventUtil } from "structures/core/EventUtil";
 import { ManualTimeoutCheckLocalization } from "@alice-localization/events/guildMemberUpdate/manualTimeoutCheck/ManualTimeoutCheckLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
-import {
-    GuildAuditLogs,
-    GuildAuditLogsEntry,
-    GuildMember,
-    EmbedBuilder,
-    AuditLogEvent,
-    GuildBasedChannel,
-    bold,
-} from "discord.js";
+import { GuildMember, EmbedBuilder, AuditLogEvent, bold } from "discord.js";
 
 export const run: EventUtil["run"] = async (
     client,
     oldMember: GuildMember,
-    newMember: GuildMember
+    newMember: GuildMember,
 ) => {
-    const localization: ManualTimeoutCheckLocalization =
-        new ManualTimeoutCheckLocalization("en");
-
-    const userLocalization: ManualTimeoutCheckLocalization =
-        new ManualTimeoutCheckLocalization(
-            await CommandHelper.getLocale(newMember.user)
-        );
+    const localization = new ManualTimeoutCheckLocalization("en");
+    const userLocalization = new ManualTimeoutCheckLocalization(
+        CommandHelper.getLocale(newMember.user),
+    );
 
     if (
         !oldMember.communicationDisabledUntil &&
         newMember.communicationDisabledUntil
     ) {
         // Member was timeouted
-        const auditLogEntries: GuildAuditLogs<AuditLogEvent.MemberUpdate> =
-            await newMember.guild.fetchAuditLogs({
-                limit: 1,
-                type: AuditLogEvent.MemberUpdate,
-            });
+        const auditLogEntries = await newMember.guild.fetchAuditLogs({
+            limit: 1,
+            type: AuditLogEvent.MemberUpdate,
+        });
 
-        const auditLog:
-            | GuildAuditLogsEntry<AuditLogEvent.MemberUpdate, "Update", "User">
-            | undefined = auditLogEntries.entries.first();
+        const auditLog = auditLogEntries.entries.first();
 
         if (
             !auditLog ||
@@ -60,29 +45,30 @@ export const run: EventUtil["run"] = async (
             return;
         }
 
-        const guildConfig: GuildPunishmentConfig | null =
+        const guildConfig =
             await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-                newMember.guild
+                newMember.guild,
             );
 
         if (!guildConfig) {
             return;
         }
 
-        const logChannel: GuildBasedChannel | null =
-            await guildConfig.getGuildLogChannel(newMember.guild);
+        const logChannel = await guildConfig.getGuildLogChannel(
+            newMember.guild,
+        );
 
         if (!logChannel?.isTextBased()) {
             return;
         }
 
-        const timeoutDate: Date = new Date(<string>auditLog.changes[0].new);
+        const timeoutDate = new Date(<string>auditLog.changes[0].new);
 
-        const timeDifference: number = Math.ceil(
-            DateTimeFormatHelper.getTimeDifference(timeoutDate) / 1000
+        const timeDifference = Math.ceil(
+            DateTimeFormatHelper.getTimeDifference(timeoutDate) / 1000,
         );
 
-        const timeoutEmbed: EmbedBuilder = new EmbedBuilder()
+        const timeoutEmbed = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
                 iconURL: auditLog.executor.avatarURL()!,
@@ -98,16 +84,16 @@ export const run: EventUtil["run"] = async (
                 `${bold(
                     `${newMember}: ${DateTimeFormatHelper.secondsToDHMS(
                         timeDifference,
-                        localization.language
-                    )}`
+                        localization.language,
+                    )}`,
                 )}\n\n` +
                     `=========================\n\n` +
                     `${bold(localization.getTranslation("reason"))}:\n` +
                     (auditLog.reason ??
-                        localization.getTranslation("notSpecified"))
+                        localization.getTranslation("notSpecified")),
             );
 
-        const userTimeoutEmbed: EmbedBuilder = new EmbedBuilder()
+        const userTimeoutEmbed = new EmbedBuilder()
             .setAuthor({
                 name: newMember.user.tag,
                 iconURL: newMember.user.avatarURL()!,
@@ -123,13 +109,13 @@ export const run: EventUtil["run"] = async (
                 `${bold(
                     `${newMember}: ${DateTimeFormatHelper.secondsToDHMS(
                         timeDifference,
-                        userLocalization.language
-                    )}`
+                        userLocalization.language,
+                    )}`,
                 )}\n\n` +
                     `=========================\n\n` +
                     `${bold(userLocalization.getTranslation("reason"))}:\n` +
                     (auditLog.reason ??
-                        userLocalization.getTranslation("notSpecified"))
+                        userLocalization.getTranslation("notSpecified")),
             );
 
         try {
@@ -138,10 +124,10 @@ export const run: EventUtil["run"] = async (
                     userLocalization.getTranslation("timeoutUserNotification"),
                     DateTimeFormatHelper.secondsToDHMS(
                         timeDifference,
-                        userLocalization.language
+                        userLocalization.language,
                     ),
                     auditLog.reason ??
-                        userLocalization.getTranslation("notSpecified")
+                        userLocalization.getTranslation("notSpecified"),
                 ),
                 embeds: [userTimeoutEmbed],
             });
@@ -155,7 +141,7 @@ export const run: EventUtil["run"] = async (
             await LoungeLockManager.lock(
                 newMember.id,
                 "Timeouted for 6 hours or longer",
-                30 * 24 * 3600
+                30 * 24 * 3600,
             );
         }
 
@@ -165,15 +151,12 @@ export const run: EventUtil["run"] = async (
         !newMember.communicationDisabledUntil
     ) {
         // Member was untimeouted
-        const auditLogEntries: GuildAuditLogs<AuditLogEvent.MemberUpdate> =
-            await newMember.guild.fetchAuditLogs({
-                limit: 1,
-                type: AuditLogEvent.MemberUpdate,
-            });
+        const auditLogEntries = await newMember.guild.fetchAuditLogs({
+            limit: 1,
+            type: AuditLogEvent.MemberUpdate,
+        });
 
-        const auditLog:
-            | GuildAuditLogsEntry<AuditLogEvent.MemberUpdate, "Update", "User">
-            | undefined = auditLogEntries.entries.first();
+        const auditLog = auditLogEntries.entries.first();
 
         if (
             !auditLog ||
@@ -190,23 +173,24 @@ export const run: EventUtil["run"] = async (
             return;
         }
 
-        const guildConfig: GuildPunishmentConfig | null =
+        const guildConfig =
             await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-                newMember.guild
+                newMember.guild,
             );
 
         if (!guildConfig) {
             return;
         }
 
-        const logChannel: GuildBasedChannel | null =
-            await guildConfig.getGuildLogChannel(newMember.guild);
+        const logChannel = await guildConfig.getGuildLogChannel(
+            newMember.guild,
+        );
 
         if (!logChannel?.isTextBased()) {
             return;
         }
 
-        const untimeoutEmbed: EmbedBuilder = new EmbedBuilder()
+        const untimeoutEmbed = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
                 iconURL: auditLog.executor.avatarURL()!,
@@ -221,10 +205,10 @@ export const run: EventUtil["run"] = async (
             .setDescription(
                 `${bold(localization.getTranslation("userId"))}:\n` +
                     (auditLog.target?.id ??
-                        localization.getTranslation("notSpecified"))
+                        localization.getTranslation("notSpecified")),
             );
 
-        const userUntimeoutEmbed: EmbedBuilder = new EmbedBuilder()
+        const userUntimeoutEmbed = new EmbedBuilder()
             .setAuthor({
                 name: auditLog.executor.tag,
                 iconURL: auditLog.executor.avatarURL()!,
@@ -239,17 +223,17 @@ export const run: EventUtil["run"] = async (
             .setDescription(
                 `${bold(userLocalization.getTranslation("userId"))}:\n` +
                     (auditLog.reason ??
-                        userLocalization.getTranslation("notSpecified"))
+                        userLocalization.getTranslation("notSpecified")),
             );
 
         try {
             newMember.send({
                 content: MessageCreator.createWarn(
                     userLocalization.getTranslation(
-                        "untimeoutUserNotification"
+                        "untimeoutUserNotification",
                     ),
                     auditLog.reason ??
-                        localization.getTranslation("notSpecified")
+                        localization.getTranslation("notSpecified"),
                 ),
                 embeds: [userUntimeoutEmbed],
             });

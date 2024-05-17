@@ -12,23 +12,23 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: TimeoutLocalization = new TimeoutLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const toTimeout: GuildMember = await interaction.guild!.members.fetch(
-        interaction.options.getUser("user", true)
+        interaction.options.getUser("user", true),
     );
 
     if (!toTimeout) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userToTimeoutNotFound")
+                localization.getTranslation("userToTimeoutNotFound"),
             ),
         });
     }
 
     const duration: number = CommandHelper.convertStringTimeFormat(
-        interaction.options.getString("duration", true)
+        interaction.options.getString("duration", true),
     );
 
     const reason: string = interaction.options.getString("reason", true);
@@ -40,14 +40,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         toTimeout,
         reason,
         duration,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("timeoutFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -55,7 +55,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("timeoutSuccess"),
-            DateTimeFormatHelper.secondsToDHMS(duration, localization.language)
+            DateTimeFormatHelper.secondsToDHMS(duration, localization.language),
         ),
     });
 };

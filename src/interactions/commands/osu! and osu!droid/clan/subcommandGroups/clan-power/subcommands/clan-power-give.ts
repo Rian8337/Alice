@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
@@ -22,21 +22,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanDoesntExist")
+                localization.getTranslation("clanDoesntExist"),
             ),
         });
     }
 
     const incrementResult: OperationResult = clan.incrementPower(
         amount,
-        localization.language
+        localization.language,
     );
 
     if (!incrementResult.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("modifyClanPowerFailed"),
-                incrementResult.reason!
+                incrementResult.reason!,
             ),
         });
     }
@@ -47,14 +47,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("modifyClanPowerFailed"),
-                finalResult.reason!
+                finalResult.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("modifyClanPowerSuccessful")
+            localization.getTranslation("modifyClanPowerSuccessful"),
         ),
     });
 };

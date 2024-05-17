@@ -12,7 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const musicInformation: MusicInfo | undefined =
@@ -23,7 +23,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (queue.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("queueIsEmpty")
+                localization.getTranslation("queueIsEmpty"),
             ),
         });
     }
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             name: `${i + 1}. ${queue[i].information.title}`,
             value: StringHelper.formatString(
                 localization.getTranslation("requestedBy"),
-                userMention(queue[i].queuer)
+                userMention(queue[i].queuer),
             ),
         });
     }

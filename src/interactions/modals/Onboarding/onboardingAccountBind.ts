@@ -12,7 +12,7 @@ import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const localization = new OnboardingAccountBindLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const email = interaction.fields.getTextInputValue("email");

@@ -11,7 +11,7 @@ import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
     const localization = new ViewDroidProfileLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const isSelfExecution = interaction.user.id === interaction.targetUser.id;

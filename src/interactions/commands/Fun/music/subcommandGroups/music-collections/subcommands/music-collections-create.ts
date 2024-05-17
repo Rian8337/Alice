@@ -12,26 +12,26 @@ import yts, { SearchResult, VideoSearchResult } from "yt-search";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
         await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
-            name
+            name,
         );
 
     if (collection) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("collectionWithNameAlreadyExists")
+                localization.getTranslation("collectionWithNameAlreadyExists"),
             ),
         });
     }
 
     const searchResult: SearchResult = await yts(
-        interaction.options.getString("query", true)
+        interaction.options.getString("query", true),
     );
 
     const videos: VideoSearchResult[] = searchResult.videos;
@@ -39,7 +39,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (videos.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noTracksFound")
+                localization.getTranslation("noTracksFound"),
             ),
         });
     }
@@ -49,7 +49,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    localization.getTranslation("chooseVideo")
+                    localization.getTranslation("chooseVideo"),
                 ),
             },
             videos.map((v) => {
@@ -60,7 +60,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 };
             }),
             [interaction.user.id],
-            30
+            30,
         );
 
     if (!selectMenuInteraction) {
@@ -68,7 +68,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const info: VideoSearchResult = videos.find(
-        (v) => v.videoId === selectMenuInteraction.values[0]
+        (v) => v.videoId === selectMenuInteraction.values[0],
     )!;
 
     const result: OperationResult =
@@ -82,7 +82,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.update(selectMenuInteraction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("createCollectionFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -90,7 +90,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("createCollectionSuccess"),
-            name
+            name,
         ),
     });
 };

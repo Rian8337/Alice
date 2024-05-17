@@ -10,7 +10,7 @@ import { Role, userMention } from "discord.js";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const localization: ClanAnnounceLocalization = new ClanAnnounceLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const announcementMessage: string =
@@ -18,13 +18,13 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -32,7 +32,9 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     if (!clan.hasAdministrativePower(interaction.user)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
@@ -41,12 +43,12 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("announcementMessageConfirmation")
+                localization.getTranslation("announcementMessageConfirmation"),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -56,7 +58,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     let finalMessage: string = "";
 
     const clanRole: Role | undefined = interaction.guild!.roles.cache.find(
-        (r) => r.name === clan.name
+        (r) => r.name === clan.name,
     );
 
     if (clanRole) {

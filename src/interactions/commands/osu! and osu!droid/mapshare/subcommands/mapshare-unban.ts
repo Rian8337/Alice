@@ -12,7 +12,7 @@ import { User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     if (interaction.channelId !== Constants.mapShareChannel) {
@@ -21,8 +21,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.notAvailableInServerReject
-                )
+                    Constants.notAvailableInServerReject,
+                ),
             ),
         });
     }
@@ -39,7 +39,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!playerInfo?.isBannedFromMapShare) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userIsNotBanned")
+                localization.getTranslation("userIsNotBanned"),
             ),
         });
     }
@@ -52,21 +52,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             $set: {
                 isBannedFromMapShare: false,
             },
-        }
+        },
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("unbanFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("unbanSuccess")
+            localization.getTranslation("unbanSuccess"),
         ),
     });
 };

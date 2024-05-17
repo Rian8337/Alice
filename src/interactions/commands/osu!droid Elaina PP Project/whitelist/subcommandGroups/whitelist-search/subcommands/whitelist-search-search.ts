@@ -15,7 +15,7 @@ import { Filter, Sort } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const query: string | null = interaction.options.getString("query");
@@ -41,7 +41,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const getComparisonObject = (
         comparison: Comparison,
-        value: number
+        value: number,
     ): object => {
         return Object.defineProperty({}, getComparisonText(comparison), {
             value,
@@ -83,13 +83,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                 writable: true,
                                 configurable: true,
                                 enumerable: true,
-                            }
+                            },
                         );
                     } else {
                         Object.defineProperty(mapQuery, `diffstat.${key}`, {
                             value: getComparisonObject(
                                 comparison,
-                                parseFloat(value)
+                                parseFloat(value),
                             ),
                             writable: true,
                             configurable: true,
@@ -109,13 +109,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                                 writable: true,
                                 configurable: true,
                                 enumerable: true,
-                            }
+                            },
                         );
                     } else {
                         Object.defineProperty(mapQuery, "diffstat.sr", {
                             value: getComparisonObject(
                                 comparison,
-                                parseFloat(value)
+                                parseFloat(value),
                             ),
                             writable: true,
                             configurable: true,
@@ -156,7 +156,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                             Object.defineProperty(
                                 sort,
                                 `diffstat.${value}`,
-                                attributes
+                                attributes,
                             );
                             break;
                         case "sr":
@@ -165,7 +165,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                             Object.defineProperty(
                                 sort,
                                 "diffstat.sr",
-                                attributes
+                                attributes,
                             );
                             break;
                         case "date":
@@ -225,15 +225,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const beatmapsFound: number =
         await DatabaseManager.elainaDb.collections.mapWhitelist.getWhitelistQueryResultCount(
-            mapQuery
+            mapQuery,
         );
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     embed.setDescription(
         `${bold(
-            localization.getTranslation("beatmapsFound")
-        )}: ${beatmapsFound.toLocaleString(BCP47)}`
+            localization.getTranslation("beatmapsFound"),
+        )}: ${beatmapsFound.toLocaleString(BCP47)}`,
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -241,7 +241,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             await DatabaseManager.elainaDb.collections.mapWhitelist.getWhitelistedBeatmaps(
                 page,
                 mapQuery,
-                sort
+                sort,
             );
 
         embed.addFields(
@@ -250,21 +250,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     name: v.mapname,
                     value: `${hyperlink(
                         localization.getTranslation("beatmapLink"),
-                        `https://osu.ppy.sh/b/${v.mapid}`
+                        `https://osu.ppy.sh/b/${v.mapid}`,
                     )}\n${bold("CS")}: ${v.diffstat.cs} - ${bold("AR")}: ${
                         v.diffstat.ar
                     } - ${bold("OD")}: ${v.diffstat.od} - ${bold("HP")}: ${
                         v.diffstat.hp
                     } - ${bold("BPM")}: ${v.diffstat.bpm.toLocaleString(
-                        BCP47
+                        BCP47,
                     )}\n${bold(
-                        localization.getTranslation("dateWhitelisted")
+                        localization.getTranslation("dateWhitelisted"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         v._id!.getTimestamp(),
-                        localization.language
+                        localization.language,
                     )}`,
                 };
-            })
+            }),
         );
     };
 
@@ -277,7 +277,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction.options.getInteger("page") ?? 1,
         Math.ceil(beatmapsFound / 10),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: BirthdayLocalization = new BirthdayLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const date: number = interaction.options.getInteger("date", true);
@@ -23,14 +23,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             date,
             month,
             timezone,
-            localization.language
+            localization.language,
         );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setBirthdayFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             localization.getTranslation("setBirthdaySuccess"),
             date.toString(),
             (month + 1).toString(),
-            timezone >= 0 ? `+${timezone}` : timezone.toString()
+            timezone >= 0 ? `+${timezone}` : timezone.toString(),
         ),
     });
 };

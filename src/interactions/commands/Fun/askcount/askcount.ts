@@ -10,18 +10,18 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: AskcountLocalization = new AskcountLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const askCount: AskCount | null =
         await DatabaseManager.aliceDb.collections.askCount.getUserAskCount(
-            interaction.user.id
+            interaction.user.id,
         );
 
     if (!askCount) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("haveNotAsked")
+                localization.getTranslation("haveNotAsked"),
             ),
         });
     }
@@ -32,8 +32,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("askCount"),
             count.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )
+                LocaleHelper.convertToBCP47(localization.language),
+            ),
         ),
     });
 };

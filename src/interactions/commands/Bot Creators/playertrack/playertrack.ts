@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: PlayertrackLocalization = new PlayertrackLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const uid: number = interaction.options.getInteger("uid", true);
@@ -19,7 +19,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             uid,
             Constants.uidMinLimit,
             Constants.uidMaxLimit,
-            true
+            true,
         )
     ) {
         return InteractionHelper.reply(interaction, {
@@ -29,7 +29,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
-        localization.language
+        localization.language,
     );
 };
 

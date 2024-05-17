@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: UndeployLocalization = new UndeployLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const commandName: string = interaction.options.getString("command", true);
@@ -30,19 +30,19 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     if (!command) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("commandNotFound")
+                localization.getTranslation("commandNotFound"),
             ),
         });
     }
 
     await (isDebug ? interaction.guild! : client.application!).commands.delete(
-        command
+        command,
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("commandUndeploySuccessful"),
-            commandName
+            commandName,
         ),
     });
 };

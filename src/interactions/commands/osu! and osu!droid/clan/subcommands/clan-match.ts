@@ -13,10 +13,10 @@ import { Collection, GuildMember, Snowflake } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const staffMembers: Collection<Snowflake, GuildMember> =
@@ -24,7 +24,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     if (
         !(<GuildMember>interaction.member).roles.cache.find(
-            (r) => r.name === "Referee"
+            (r) => r.name === "Referee",
         ) ||
         !staffMembers.get(interaction.user.id)
     ) {
@@ -33,8 +33,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.noPermissionReject
-                )
+                    Constants.noPermissionReject,
+                ),
             ),
         });
     }
@@ -43,7 +43,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const isMatch: boolean = interaction.options.getBoolean(
         "ismatchmode",
-        true
+        true,
     );
 
     const clan: Clan | null =
@@ -52,7 +52,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanDoesntExist")
+                localization.getTranslation("clanDoesntExist"),
             ),
         });
     }
@@ -65,14 +65,14 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setClanMatchModeFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("setClanMatchModeSuccess")
+            localization.getTranslation("setClanMatchModeSuccess"),
         ),
     });
 };

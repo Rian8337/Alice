@@ -7,7 +7,7 @@ import { EmbedBuilder, GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("examplesDescription3"),
                 localization.getTranslation("examplesDescription4"),
             ].join("\n\n"),
-        }
+        },
     );
 
     InteractionHelper.reply(interaction, {

@@ -9,7 +9,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: FancyLocalization = new FancyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const user: User = interaction.options.getUser("user", true);
@@ -19,21 +19,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const result: OperationResult = await LoungeLockManager.unlock(
         user.id,
         reason,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("unlockProcessFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("unlockProcessSuccessful")
+            localization.getTranslation("unlockProcessSuccessful"),
         ),
     });
 };

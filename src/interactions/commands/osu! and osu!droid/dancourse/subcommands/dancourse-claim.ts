@@ -18,7 +18,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return;
     }
 
-    const language: Language = await CommandHelper.getLocale(interaction);
+    const language: Language = CommandHelper.getLocale(interaction);
 
     if (interaction.channelId !== "1054373588871958558") {
         interaction.ephemeral = true;
@@ -26,25 +26,25 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
-                    Constants.notAvailableInChannelReject
-                )
+                    Constants.notAvailableInChannelReject,
+                ),
             ),
         });
     }
 
     const localization: DanCourseLocalization = new DanCourseLocalization(
-        language
+        language,
     );
 
     const course: DanCourse | null =
         await DatabaseManager.aliceDb.collections.danCourses.getCourse(
-            interaction.options.getString("name", true)
+            interaction.options.getString("name", true),
         );
 
     if (!course) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("courseNotFound")
+                localization.getTranslation("courseNotFound"),
             ),
         });
     }
@@ -52,15 +52,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const bindInfo: UserBind | null =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
-            { projection: { _id: 0, uid: 1 } }
+            { projection: { _id: 0, uid: 1 } },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -68,7 +68,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const score: DanCourseLeaderboardScore | null =
         await DatabaseManager.aliceDb.collections.danCourseLeaderboardScores.getScore(
             bindInfo.uid,
-            course.hash
+            course.hash,
         );
 
     if (!score) {
@@ -76,7 +76,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const existingScore: boolean =
             await DatabaseManager.aliceDb.collections.danCourseScores.checkExistingScore(
                 bindInfo.uid,
-                course.hash
+                course.hash,
             );
 
         return InteractionHelper.reply(interaction, {
@@ -84,8 +84,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     existingScore
                         ? "threeFingerOrNonPassScoresSubmitted"
-                        : "noScoresSubmitted"
-                )
+                        : "noScoresSubmitted",
+                ),
             ),
         });
     }
@@ -97,13 +97,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("userPassedDanCourseFailed"),
                 course.courseName,
-                passStatus.reason!
+                passStatus.reason!,
             ),
         });
     }
 
     const role: Role | null = await interaction.guild.roles.fetch(
-        course.roleId
+        course.roleId,
     );
 
     if (role && !interaction.member.roles.cache.has(role.id)) {
@@ -113,7 +113,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("userPassedDanCourseSuccess"),
-            course.courseName
+            course.courseName,
         ),
     });
 };

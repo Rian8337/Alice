@@ -16,10 +16,10 @@ import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: ScanLocalization = new ScanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const whitelistDb: MapWhitelistCollectionManager =
@@ -27,7 +27,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("scanStarted")
+            localization.getTranslation("scanStarted"),
         ),
     });
 
@@ -70,7 +70,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                                 hashid: entry.hashid,
                                 whitelistScanDone: true,
                             },
-                        }
+                        },
                     );
             }
         }
@@ -81,7 +81,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction.channel!.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("scanComplete"),
-            interaction.user.toString()
+            interaction.user.toString(),
         ),
     });
 };

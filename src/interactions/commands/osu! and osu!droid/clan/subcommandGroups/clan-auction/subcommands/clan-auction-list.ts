@@ -16,7 +16,7 @@ import { Collection, GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const auctions: Collection<string, ClanAuction> =
@@ -25,7 +25,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (auctions.size === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noActiveAuctions")
+                localization.getTranslation("noActiveAuctions"),
             ),
         });
     }
@@ -33,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const page: number = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,
         1,
-        Math.ceil(auctions.size / 5)
+        Math.ceil(auctions.size / 5),
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -55,33 +55,33 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 name: bold(`${i + 1}. ${auction.name}`),
                 value:
                     `${bold(
-                        localization.getTranslation("auctionAuctioneer")
+                        localization.getTranslation("auctionAuctioneer"),
                     )}: ${auction.auctioneer}\n` +
                     `${bold(
-                        localization.getTranslation("creationDate")
+                        localization.getTranslation("creationDate"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(auction.creationdate * 1000),
-                        localization.language
+                        localization.language,
                     )}\n` +
                     `${bold(
-                        localization.getTranslation("expirationDate")
+                        localization.getTranslation("expirationDate"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(auction.expirydate * 1000),
-                        localization.language
+                        localization.language,
                     )}\n\n` +
                     `${bold(
-                        localization.getTranslation("auctionPowerup")
+                        localization.getTranslation("auctionPowerup"),
                     )}: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                     `${bold(
-                        localization.getTranslation("auctionAmount")
+                        localization.getTranslation("auctionAmount"),
                     )}: ${auction.amount.toLocaleString(BCP47)}\n` +
                     `${bold(
-                        localization.getTranslation("auctionMinimumBid")
+                        localization.getTranslation("auctionMinimumBid"),
                     )}: ${auction.min_price.toLocaleString(
-                        BCP47
+                        BCP47,
                     )} Alice coins\n` +
                     `${bold(
-                        localization.getTranslation("auctionBidders")
+                        localization.getTranslation("auctionBidders"),
                     )}: ${auction.bids.size.toLocaleString(BCP47)}`,
             });
         }
@@ -94,7 +94,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         page,
         Math.ceil(auctions.size / 5),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

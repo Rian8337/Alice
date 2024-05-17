@@ -10,7 +10,7 @@ import { PPLocalization } from "@alice-localization/interactions/commands/osu!dr
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     if (interaction.options.data.length > 1) {

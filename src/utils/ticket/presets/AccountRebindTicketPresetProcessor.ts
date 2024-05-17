@@ -27,7 +27,7 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
         interaction: ModalSubmitInteraction,
     ): Promise<ProcessedSupportTicketPreset | null> {
         const localization = this.getLocalization(
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
         const username = interaction.fields.getTextInputValue("username");
@@ -88,7 +88,7 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
         preset: DatabaseSupportTicketPreset,
     ): Promise<unknown> {
         const localization = this.getLocalization(
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
         const bindInfo =

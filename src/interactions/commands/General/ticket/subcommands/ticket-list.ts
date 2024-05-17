@@ -19,7 +19,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return;
     }
 
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const author = interaction.options.getUser("author") ?? interaction.user;
     const status = <SupportTicketStatus | null>(
         interaction.options.getInteger("status")

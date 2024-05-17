@@ -9,13 +9,13 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: FancyLocalization = new FancyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const user: User = interaction.options.getUser("user", true);
 
     const duration: number = CommandHelper.convertStringTimeFormat(
-        interaction.options.getString("duration", true)
+        interaction.options.getString("duration", true),
     );
 
     const reason: string = interaction.options.getString("reason", true);
@@ -23,7 +23,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!Number.isFinite(duration)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("durationError")
+                localization.getTranslation("durationError"),
             ),
         });
     }
@@ -32,21 +32,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         user.id,
         reason,
         duration,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("lockProcessFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("lockProcessSuccessful")
+            localization.getTranslation("lockProcessSuccessful"),
         ),
     });
 };

@@ -9,7 +9,7 @@ import { GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const repeatMode: boolean = interaction.options.getBoolean("repeat", true);
@@ -17,14 +17,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const result: OperationResult = MusicManager.setRepeat(
         (<GuildMember>interaction.member).voice.channel!,
         repeatMode,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("repeatModeFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -34,8 +34,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             localization.getTranslation(
                 repeatMode
                     ? "repeatModeEnableSuccess"
-                    : "repeatModeDisableSuccess"
-            )
+                    : "repeatModeDisableSuccess",
+            ),
         ),
     });
 };

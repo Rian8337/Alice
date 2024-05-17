@@ -8,7 +8,7 @@ import { GuildChannel } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: SettingsLocalization = new SettingsLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const channel: GuildChannel = <GuildChannel>(
@@ -18,20 +18,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!channel.isTextBased()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("chosenChannelIsNotText")
+                localization.getTranslation("chosenChannelIsNotText"),
             ),
         });
     }
 
     await DatabaseManager.aliceDb.collections.guildPunishmentConfig.setGuildLogChannel(
         interaction.guildId!,
-        channel.id
+        channel.id,
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("setLogChannelSuccess"),
-            channel.toString()
+            channel.toString(),
         ),
     });
 };

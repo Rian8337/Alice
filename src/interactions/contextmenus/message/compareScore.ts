@@ -19,7 +19,7 @@ import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     const localization = new CompareScoreLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const beatmapId = BeatmapManager.getBeatmapIDFromMessage(

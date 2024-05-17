@@ -8,8 +8,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createReject(
             new ClanLocalization(
-                await CommandHelper.getLocale(interaction)
-            ).getTranslation("noSpecialClanShopEvent")
+                CommandHelper.getLocale(interaction),
+            ).getTranslation("noSpecialClanShopEvent"),
         ),
     });
 };

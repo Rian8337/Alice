@@ -18,10 +18,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
@@ -34,17 +34,17 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const minBidAmount: number = interaction.options.getInteger(
         "minimumbidamount",
-        true
+        true,
     );
 
     const duration: number = CommandHelper.convertStringTimeFormat(
-        interaction.options.getString("duration", true)
+        interaction.options.getString("duration", true),
     );
 
     if (name.length > 20) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanAuctionNameIsTooLong")
+                localization.getTranslation("clanAuctionNameIsTooLong"),
             ),
         });
     }
@@ -52,7 +52,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!NumberHelper.isPositive(amount)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidClanAuctionAmount")
+                localization.getTranslation("invalidClanAuctionAmount"),
             ),
         });
     }
@@ -60,7 +60,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!NumberHelper.isPositive(minBidAmount)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidClanAuctionMinimumBid")
+                localization.getTranslation("invalidClanAuctionMinimumBid"),
             ),
         });
     }
@@ -68,20 +68,20 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!NumberHelper.isNumberInRange(duration, 60, 86400, true)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidClanAuctionDuration")
+                localization.getTranslation("invalidClanAuctionDuration"),
             ),
         });
     }
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -89,7 +89,9 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!clan.hasAdministrativePower(interaction.user)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
@@ -99,15 +101,15 @@ export const run: SlashSubcommand<true>["run"] = async (
             amount,
             1,
             clan.powerups.get(powerup)?.amount ?? 0,
-            true
+            true,
         )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionAmountOutOfBounds"),
                 (clan.powerups.get(powerup)?.amount ?? 0).toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
-                )
+                    LocaleHelper.convertToBCP47(localization.language),
+                ),
             ),
         });
     }
@@ -118,7 +120,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (auctionCheck) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("auctionNameIsTaken")
+                localization.getTranslation("auctionNameIsTaken"),
             ),
         });
     }
@@ -127,12 +129,12 @@ export const run: SlashSubcommand<true>["run"] = async (
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("clanAuctionCreateConfirmation")
+                localization.getTranslation("clanAuctionCreateConfirmation"),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -147,7 +149,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanAuctionCreateFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -167,33 +169,33 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const newAuction: ClanAuction = Object.assign(
         DatabaseManager.aliceDb.collections.clanAuction.defaultInstance,
-        partialData
+        partialData,
     );
 
     await DatabaseManager.aliceDb.collections.clanAuction.insert(partialData);
 
     const coinEmoji: GuildEmoji = client.emojis.cache.get(
-        Constants.aliceCoinEmote
+        Constants.aliceCoinEmote,
     )!;
 
     const embed: EmbedBuilder = EmbedCreator.createClanAuctionEmbed(
         newAuction,
         coinEmoji,
-        localization.language
+        localization.language,
     );
 
     embed.spliceFields(embed.data.fields!.length - 1, 1);
 
     await notificationChannel.send({
         content: MessageCreator.createWarn(
-            "An auction has started with the following details:"
+            "An auction has started with the following details:",
         ),
         embeds: [embed],
     });
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createReject(
-            localization.getTranslation("clanAuctionCreateSuccessful")
+            localization.getTranslation("clanAuctionCreateSuccessful"),
         ),
     });
 };

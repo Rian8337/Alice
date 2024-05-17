@@ -36,7 +36,7 @@ export class RecalcTicketPresetProcessor extends ModalTicketPresetProcessor {
         preset: DatabaseSupportTicketPreset,
     ): Promise<unknown> {
         const localization = this.getLocalization(
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
         const bindInfo =

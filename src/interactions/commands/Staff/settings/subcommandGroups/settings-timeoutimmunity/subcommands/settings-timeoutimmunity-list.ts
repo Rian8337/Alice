@@ -16,18 +16,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const localization: SettingsLocalization = new SettingsLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-            interaction.guildId
+            interaction.guildId,
         );
 
     if (!guildConfig) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noLogChannelConfigured")
+                localization.getTranslation("noLogChannelConfigured"),
             ),
         });
     }
@@ -46,7 +46,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             immuneTimeoutRoles
                 .slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map((v) => `- ${roleMention(v)}`)
-                .join("\n")
+                .join("\n"),
         );
     };
 
@@ -57,7 +57,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(immuneTimeoutRoles.length / 10),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

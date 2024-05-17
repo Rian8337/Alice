@@ -9,7 +9,7 @@ import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization = new OnboardingPlayerProfileActionLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     await InteractionHelper.deferReply(interaction);

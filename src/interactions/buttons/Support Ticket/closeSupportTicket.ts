@@ -13,7 +13,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new CloseSupportTicketLocalization(language);
 
     await InteractionHelper.deferReply(interaction);

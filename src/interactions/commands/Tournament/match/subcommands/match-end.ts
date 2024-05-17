@@ -11,7 +11,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const id: string | null = interaction.options.getString("id");
@@ -19,13 +19,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const match: TournamentMatch | null = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-              interaction.channelId
+              interaction.channelId,
           );
 
     if (!match) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("matchDoesntExist")
+                localization.getTranslation("matchDoesntExist"),
             ),
         });
     }
@@ -38,7 +38,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("endMatchFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -48,7 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("endMatchSuccessful"),
-            match.matchid
+            match.matchid,
         ),
         embeds: [embed],
     });

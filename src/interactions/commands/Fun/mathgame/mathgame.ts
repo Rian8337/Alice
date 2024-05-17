@@ -35,7 +35,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 function generateEquation(
     level: number,
     operatorAmount: number,
-    callback: (mathEquation: MathEquation, ...args: unknown[]) => unknown
+    callback: (mathEquation: MathEquation, ...args: unknown[]) => unknown,
 ) {
     callback(MathEquationCreator.createEquation(level, operatorAmount));
 }
@@ -59,7 +59,7 @@ function endGame(
     level: number,
     operatorCount: number,
     endMessage: string,
-    localization: MathgameLocalization
+    localization: MathgameLocalization,
 ): void {
     gameStats.sort((a, b) => b - a);
 
@@ -68,13 +68,13 @@ function endGame(
             (v, i) =>
                 `#${i + 1}: ${userMention(v.key)} - ${
                     v.value
-                } ${localization.getTranslation("answers")}`
+                } ${localization.getTranslation("answers")}`,
         )
         .join("\n");
 
     const totalAnswers: number = [...gameStats.values()].reduce(
         (acc, value) => acc + value,
-        0
+        0,
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -89,36 +89,36 @@ function endGame(
                 interaction.user
             }\n` +
                 `${bold(
-                    localization.getTranslation("timeStarted")
+                    localization.getTranslation("timeStarted"),
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
                     interaction.createdAt,
-                    localization.language
+                    localization.language,
                 )}\n` +
                 `${bold(
-                    localization.getTranslation("duration")
+                    localization.getTranslation("duration"),
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     Math.floor(
-                        (Date.now() - interaction.createdTimestamp) / 1000
+                        (Date.now() - interaction.createdTimestamp) / 1000,
                     ),
-                    localization.language
+                    localization.language,
                 )}\n` +
                 `${bold(
-                    localization.getTranslation("levelReached")
+                    localization.getTranslation("levelReached"),
                 )}: ${localization.getTranslation(
-                    "operatorCount"
+                    "operatorCount",
                 )} ${operatorCount}, ${localization.getTranslation(
-                    "level"
+                    "level",
                 )} ${level}\n\n` +
                 `${bold(
-                    localization.getTranslation("totalCorrectAnswers")
+                    localization.getTranslation("totalCorrectAnswers"),
                 )}: ${totalAnswers} ${localization.getTranslation(
-                    "answers"
+                    "answers",
                 )}}\n` +
-                answerString
+                answerString,
         );
 
     CacheManager.stillHasMathGameActive.delete(
-        mode === "single" ? interaction.user.id : interaction.channelId
+        mode === "single" ? interaction.user.id : interaction.channelId,
     );
 
     interaction.channel!.send({
@@ -129,7 +129,7 @@ function endGame(
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: MathgameLocalization = new MathgameLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const mode: MathGameType = <MathGameType>(
@@ -143,7 +143,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("userHasOngoingGame")
+                        localization.getTranslation("userHasOngoingGame"),
                     ),
                 });
             }
@@ -156,7 +156,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             ) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("channelHasOngoingGame")
+                        localization.getTranslation("channelHasOngoingGame"),
                     ),
                 });
             }
@@ -184,13 +184,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     return generateEquation(
                         level,
                         operatorAmount,
-                        createCollector
+                        createCollector,
                     );
                 }
 
                 const endString: string = StringHelper.formatString(
                     localization.getTranslation("couldNotFetchEquationGameEnd"),
-                    (fetchAttempt * 500).toString()
+                    (fetchAttempt * 500).toString(),
                 );
 
                 return endGame(
@@ -200,7 +200,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     level,
                     operatorAmount,
                     endString,
-                    localization
+                    localization,
                 );
             }
 
@@ -213,20 +213,20 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                           interaction.user.toString(),
                           operatorAmount.toString(),
                           level.toString(),
-                          realEquation
+                          realEquation,
                       )
                     : StringHelper.formatString(
                           localization.getTranslation("multiGamemodeQuestion"),
                           level.toString(),
                           operatorAmount.toString(),
-                          realEquation
-                      )
+                          realEquation,
+                      ),
             );
 
             if (!interaction.replied) {
                 await InteractionHelper.reply(interaction, {
                     content: MessageCreator.createAccept(
-                        localization.getTranslation("gameStartedNotification")
+                        localization.getTranslation("gameStartedNotification"),
                     ),
                 });
             }
@@ -256,7 +256,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
                     gameStats.set(
                         m.author.id,
-                        (gameStats.get(m.author.id) ?? 0) + 1
+                        (gameStats.get(m.author.id) ?? 0) + 1,
                     );
 
                     msg.channel.send(
@@ -268,8 +268,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                                 1000
                             ).toString(),
                             realEquation,
-                            answer.toString()
-                        )
+                            answer.toString(),
+                        ),
                     );
 
                     collector.stop();
@@ -285,7 +285,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                                 ? "Game ended"
                                 : `${interaction.user}, game ended`,
                             realEquation,
-                            answer.toString()
+                            answer.toString(),
                         );
 
                         return endGame(
@@ -295,7 +295,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                             level,
                             operatorAmount,
                             endString,
-                            localization
+                            localization,
                         );
                     }
 
@@ -313,7 +313,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     generateEquation(level, operatorAmount, createCollector);
                 });
             });
-        }
+        },
     );
 };
 

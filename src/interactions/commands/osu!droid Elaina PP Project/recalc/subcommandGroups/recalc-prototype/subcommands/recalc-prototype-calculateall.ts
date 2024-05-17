@@ -14,7 +14,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction,
 ) => {
     const localization: RecalcLocalization = new RecalcLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const dbManager: PrototypePPCollectionManager =

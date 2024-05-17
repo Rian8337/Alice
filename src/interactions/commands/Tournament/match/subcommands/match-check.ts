@@ -14,15 +14,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const match: TournamentMatch | null = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-              interaction.channelId
+              interaction.channelId,
           );
 
     if (!match) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new MatchLocalization(
-                    await CommandHelper.getLocale(interaction)
-                ).getTranslation("matchDoesntExist")
+                    CommandHelper.getLocale(interaction),
+                ).getTranslation("matchDoesntExist"),
             ),
         });
     }

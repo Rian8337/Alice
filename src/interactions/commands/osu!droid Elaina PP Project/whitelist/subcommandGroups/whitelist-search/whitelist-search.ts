@@ -4,7 +4,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 };
 

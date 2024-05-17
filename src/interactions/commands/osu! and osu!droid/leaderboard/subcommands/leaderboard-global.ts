@@ -37,7 +37,7 @@ async function retrieveLeaderboard(page: number): Promise<string[]> {
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const page: number = interaction.options.getInteger("page") ?? 1;
@@ -45,7 +45,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!NumberHelper.isPositive(page)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidPage")
+                localization.getTranslation("invalidPage"),
             ),
         });
     }
@@ -69,7 +69,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ...scores
                 .slice(20 * pageRemainder, 20 + 20 * pageRemainder)
                 .map((v) => StringHelper.getUnicodeStringLength(v[1].trim())),
-            16
+            16,
         );
 
         let output: string = `${"#".padEnd(4)} | ${localization
@@ -79,7 +79,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .padEnd(6)} | ${localization
             .getTranslation("playCount")
             .padEnd(5)} | ${localization.getTranslation(
-            "accuracy"
+            "accuracy",
         )} | ${localization.getTranslation("score")}\n`;
 
         for (
@@ -94,11 +94,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             output += `${(actualPage * 100 + i + 1)
                 .toString()
                 .padEnd(4)} | ${c[1].padEnd(
-                longestUsernameLength
+                longestUsernameLength,
             )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
                 (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
             ).padEnd(8)} | ${parseInt(c[3]).toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
+                LocaleHelper.convertToBCP47(localization.language),
             )}\n`;
         }
 
@@ -111,7 +111,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         [interaction.user.id],
         page,
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

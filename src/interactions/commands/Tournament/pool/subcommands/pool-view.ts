@@ -15,20 +15,20 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const id: string = interaction.options.getString("id", true);
 
     const pool: TournamentMappool | null =
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
-            id
+            id,
         );
 
     if (!pool) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("poolNotFound")
+                localization.getTranslation("poolNotFound"),
             ),
         });
     }
@@ -49,14 +49,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             embed.addFields({
                 name: map.name,
                 value: `${bold(
-                    localization.getTranslation("length")
+                    localization.getTranslation("length"),
                 )}: ${DateTimeFormatHelper.secondsToDHMS(
                     map.duration,
-                    localization.language
+                    localization.language,
                 )}\n${bold(
-                    localization.getTranslation("maxScore")
+                    localization.getTranslation("maxScore"),
                 )}: ${map.maxScore.toLocaleString(
-                    LocaleHelper.convertToBCP47(localization.language)
+                    LocaleHelper.convertToBCP47(localization.language),
                 )}`,
             });
         }
@@ -69,7 +69,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(pool.maps.size / 5),
         60,
-        onPageChange
+        onPageChange,
     );
 };
 

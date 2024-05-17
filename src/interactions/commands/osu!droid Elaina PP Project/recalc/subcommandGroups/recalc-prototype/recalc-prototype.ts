@@ -11,7 +11,7 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
         !(<GuildMember>interaction.member).roles.cache.has(
-            DPPHelper.ppModeratorRole
+            DPPHelper.ppModeratorRole,
         )
     ) {
         interaction.ephemeral = true;
@@ -19,8 +19,8 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(
-                    await CommandHelper.getLocale(interaction)
-                ).getTranslation(Constants.noPermissionReject)
+                    CommandHelper.getLocale(interaction),
+                ).getTranslation(Constants.noPermissionReject),
             ),
         });
     }

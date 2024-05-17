@@ -16,7 +16,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const localization: TagLocalization = new TagLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
@@ -24,7 +24,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const tags: Collection<string, GuildTag> =
         await DatabaseManager.aliceDb.collections.guildTags.getUserGuildTags(
             interaction.guildId,
-            user.id
+            user.id,
         );
 
     if (tags.size === 0) {
@@ -33,8 +33,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     user.id === interaction.user.id
                         ? "selfDoesntHaveTags"
-                        : "userDoesntHaveTags"
-                )
+                        : "userDoesntHaveTags",
+                ),
             ),
         });
     }
@@ -59,12 +59,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             `${bold(
                 `${localization.getTranslation("tagsForUser")} ${
                     interaction.user
-                }`
+                }`,
             )}\n` +
                 `${bold(localization.getTranslation("totalTags"))}: ${
                     tags.size
                 }\n\n` +
-                tagList.join("\n")
+                tagList.join("\n"),
         );
     };
 
@@ -75,7 +75,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(tags.size / 10),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

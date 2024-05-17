@@ -13,7 +13,7 @@ import {
 } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new OnboardingPlayerProfileLocalization(language);
 
     const embed = EmbedCreator.createNormalEmbed({

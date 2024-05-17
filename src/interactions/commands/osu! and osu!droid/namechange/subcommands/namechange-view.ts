@@ -13,7 +13,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const nameChanges: Collection<number, NameChange> =
@@ -22,7 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (nameChanges.size === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noActiveRequest")
+                localization.getTranslation("noActiveRequest"),
             ),
         });
     }
@@ -49,22 +49,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (content) {
                 embed.addFields({
                     name: `${bold((i + 1).toString())}. ${bold(
-                        `Uid ${content.uid}`
+                        `Uid ${content.uid}`,
                     )}`,
                     value:
                         `${bold(
-                            localization.getTranslation("discordAccount")
+                            localization.getTranslation("discordAccount"),
                         )}: ${userMention(content.discordid)} (${
                             content.discordid
                         })\n` +
                         `${bold(
-                            localization.getTranslation("usernameRequested")
+                            localization.getTranslation("usernameRequested"),
                         )}: ${content.new_username}\n` +
                         `${bold(
-                            localization.getTranslation("creationDate")
+                            localization.getTranslation("creationDate"),
                         )}: ${DateTimeFormatHelper.dateToLocaleString(
                             new Date((content.cooldown - 86400 * 30) * 1000),
-                            localization.language
+                            localization.language,
                         )}`,
                 });
             }
@@ -78,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(nameChanges.size / 10),
         60,
-        onPageChange
+        onPageChange,
     );
 };
 

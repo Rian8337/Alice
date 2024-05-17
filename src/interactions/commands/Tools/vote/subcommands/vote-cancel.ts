@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const voteInfo: Voting | null =
@@ -22,13 +22,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         },
                     },
                 },
-            }
+            },
         );
 
     if (!voteInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noOngoingVoteInChannel")
+                localization.getTranslation("noOngoingVoteInChannel"),
             ),
         });
     }
@@ -36,7 +36,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!voteInfo.choices[0]) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("notVotedYet")
+                localization.getTranslation("notVotedYet"),
             ),
         });
     }
@@ -52,13 +52,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             arrayFilters: [
                 { "choiceFilter.choice": voteInfo.choices[0].choice },
             ],
-        }
+        },
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("voteCancelled"),
-            interaction.user.toString()
+            interaction.user.toString(),
         ),
     });
 };

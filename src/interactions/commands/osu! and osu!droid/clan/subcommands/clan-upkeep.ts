@@ -10,18 +10,18 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanDoesntExist")
+                localization.getTranslation("clanDoesntExist"),
             ),
         });
     }
@@ -38,9 +38,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             upkeep.toLocaleString(BCP47),
             DateTimeFormatHelper.dateToLocaleString(
                 new Date(clan.weeklyfee * 1000),
-                localization.language
+                localization.language,
             ),
-            totalUpkeep.toLocaleString(BCP47)
+            totalUpkeep.toLocaleString(BCP47),
         ),
     });
 };

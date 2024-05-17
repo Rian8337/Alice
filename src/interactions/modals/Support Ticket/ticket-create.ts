@@ -6,7 +6,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: ModalCommand["run"] = async (client, interaction) => {
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new TicketCreateLocalization(language);
 
     await InteractionHelper.deferReply(interaction);

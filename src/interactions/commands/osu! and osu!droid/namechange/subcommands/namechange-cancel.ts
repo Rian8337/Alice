@@ -9,18 +9,18 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const nameChange: NameChange | null =
         await DatabaseManager.aliceDb.collections.nameChange.getFromUid(
-            interaction.options.getInteger("uid", true)
+            interaction.options.getInteger("uid", true),
         );
 
     if (!nameChange || nameChange.isProcessed) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userHasNoActiveRequest")
+                localization.getTranslation("userHasNoActiveRequest"),
             ),
         });
     }
@@ -28,7 +28,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (nameChange.discordid !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userNotBindedToUid")
+                localization.getTranslation("userNotBindedToUid"),
             ),
         });
     }
@@ -38,14 +38,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("cancelFailed")
+                localization.getTranslation("cancelFailed"),
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createReject(
-            localization.getTranslation("cancelSuccess")
+            localization.getTranslation("cancelSuccess"),
         ),
     });
 };

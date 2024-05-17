@@ -20,7 +20,7 @@ import { UpdateFilter } from "mongodb";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const bindInfo: UserBind | null =
@@ -30,15 +30,15 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -54,7 +54,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 "picture_config.badges": 1,
                 "picture_config.activeBadges": 1,
             },
-        }
+        },
     );
 
     const pictureConfig: ProfileImageConfig =
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     if (ownedBadges.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userDoesntOwnAnyBadge")
+                localization.getTranslation("userDoesntOwnAnyBadge"),
             ),
         });
     }
@@ -76,19 +76,19 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    localization.getTranslation("unequipBadge")
+                    localization.getTranslation("unequipBadge"),
                 ),
             },
             ArrayHelper.initializeArray(10, 1).map((v, i) => {
                 return {
                     label: (v + i).toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
+                        LocaleHelper.convertToBCP47(localization.language),
                     ),
                     value: (v + i).toString(),
                 };
             }),
             [interaction.user.id],
-            20
+            20,
         );
 
     if (!selectMenuInteraction) {
@@ -109,19 +109,19 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             configurable: true,
             enumerable: true,
             writable: true,
-        }
+        },
     );
 
     await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: interaction.user.id },
-        query
+        query,
     );
 
     InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("unequipBadgeSuccess"),
             interaction.user.toString(),
-            (badgeIndex + 1).toString()
+            (badgeIndex + 1).toString(),
         ),
     });
 };

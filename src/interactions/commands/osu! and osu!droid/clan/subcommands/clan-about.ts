@@ -13,10 +13,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     embed.setDescription(
         new ClanLocalization(
-            await CommandHelper.getLocale(interaction)
+            CommandHelper.getLocale(interaction),
         ).getTranslation("guidelineWebsite") +
             "\n" +
-            "https://osudroidfaq.wordpress.com/clans/"
+            "https://osudroidfaq.wordpress.com/clans/",
     );
 
     InteractionHelper.reply(interaction, {

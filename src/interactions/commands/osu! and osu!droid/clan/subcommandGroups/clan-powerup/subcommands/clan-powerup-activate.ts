@@ -12,7 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const powerupType: PowerupType = <PowerupType>(
@@ -21,13 +21,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -35,7 +35,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!clan.hasAdministrativePower(interaction.user)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
@@ -43,7 +45,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (clan.isMatch) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("powerupActivateInMatchMode")
+                localization.getTranslation("powerupActivateInMatchMode"),
             ),
         });
     }
@@ -51,7 +53,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (clan.active_powerups.includes(powerupType)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("powerupIsAlreadyActive")
+                localization.getTranslation("powerupIsAlreadyActive"),
             ),
         });
     }
@@ -61,12 +63,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         {
             content: MessageCreator.createWarn(
                 localization.getTranslation("activatePowerupConfirmation"),
-                powerupType
+                powerupType,
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -78,7 +80,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!powerup || powerup.amount === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanDoesntHavePowerup")
+                localization.getTranslation("clanDoesntHavePowerup"),
             ),
         });
     }
@@ -93,14 +95,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("activatePowerupFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("activatePowerupSuccessful")
+            localization.getTranslation("activatePowerupSuccessful"),
         ),
     });
 };

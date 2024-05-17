@@ -14,7 +14,7 @@ import { User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const type: "battle" | "join" = <"battle" | "join">(
@@ -39,8 +39,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 new ConstantsLocalization(localization.language).getTranslation(
                     interaction.options.getUser("user")
                         ? Constants.userNotBindedReject
-                        : Constants.selfNotBindedReject
-                )
+                        : Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -53,15 +53,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         localization.getTranslation(
                             interaction.options.getUser("user")
                                 ? "userIsNotInClan"
-                                : "selfIsNotInClan"
-                        )
+                                : "selfIsNotInClan",
+                        ),
                     ),
                 });
             }
 
             const clan: Clan =
                 (await DatabaseManager.elainaDb.collections.clan.getFromUser(
-                    user
+                    user,
                 ))!;
 
             const member: ClanMember = clan.member_list.get(user.id)!;
@@ -75,11 +75,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         localization.getTranslation(
                             interaction.options.getUser("user")
                                 ? "userInBattleCooldown"
-                                : "selfInBattleCooldown"
+                                : "selfInBattleCooldown",
                         ),
                         DateTimeFormatHelper.secondsToDHMS(
-                            Math.ceil(battleCooldownDifference / 1000)
-                        )
+                            Math.ceil(battleCooldownDifference / 1000),
+                        ),
                     ),
                 });
             } else {
@@ -88,8 +88,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         localization.getTranslation(
                             interaction.options.getUser("user")
                                 ? "userNotInBattleCooldown"
-                                : "selfNotInBattleCooldown"
-                        )
+                                : "selfNotInBattleCooldown",
+                        ),
                     ),
                 });
             }
@@ -100,7 +100,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             if (bindInfo.clan) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("userIsAlreadyInClan")
+                        localization.getTranslation("userIsAlreadyInClan"),
                     ),
                 });
             }
@@ -109,7 +109,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             const oldJoinCooldownDifference =
                 DateTimeFormatHelper.getTimeDifference(
-                    (bindInfo.oldjoincooldown ?? 0) * 1000
+                    (bindInfo.oldjoincooldown ?? 0) * 1000,
                 );
 
             if (oldJoinCooldownDifference > 0) {
@@ -118,12 +118,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         localization.getTranslation(
                             interaction.options.getUser("user")
                                 ? "userInOldJoinCooldown"
-                                : "selfInOldJoinCooldown"
+                                : "selfInOldJoinCooldown",
                         ),
                         DateTimeFormatHelper.secondsToDHMS(
-                            Math.ceil(oldJoinCooldownDifference / 1000)
-                        ).toString()
-                    )
+                            Math.ceil(oldJoinCooldownDifference / 1000),
+                        ).toString(),
+                    ),
                 );
             } else {
                 responses.push(
@@ -131,15 +131,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         localization.getTranslation(
                             interaction.options.getUser("user")
                                 ? "userNotInOldJoinCooldown"
-                                : "selfNotInOldJoinCooldown"
-                        )
-                    )
+                                : "selfNotInOldJoinCooldown",
+                        ),
+                    ),
                 );
             }
 
             const joinCooldownDifference: number =
                 DateTimeFormatHelper.getTimeDifference(
-                    (bindInfo.joincooldown ?? 0) * 1000
+                    (bindInfo.joincooldown ?? 0) * 1000,
                 );
 
             if (joinCooldownDifference > 0) {
@@ -148,12 +148,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         localization.getTranslation(
                             interaction.options.getUser("user")
                                 ? "userInJoinCooldown"
-                                : "selfInJoinCooldown"
+                                : "selfInJoinCooldown",
                         ),
                         DateTimeFormatHelper.secondsToDHMS(
-                            Math.ceil(joinCooldownDifference / 1000)
-                        ).toString()
-                    )
+                            Math.ceil(joinCooldownDifference / 1000),
+                        ).toString(),
+                    ),
                 );
             } else {
                 responses.push(
@@ -161,9 +161,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         localization.getTranslation(
                             interaction.options.getUser("user")
                                 ? "userNotInJoinCooldown"
-                                : "selfNotInJoinCooldown"
-                        )
-                    )
+                                : "selfNotInJoinCooldown",
+                        ),
+                    ),
                 );
             }
 

@@ -25,7 +25,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: MapsearchLocalization = new MapsearchLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     // Documentation: https://docs.qq.com/doc/DS0lDWndpc0FlVU5B.
@@ -34,7 +34,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     if (interaction.options.getString("keyword")) {
         url += `&K=${encodeURIComponent(
-            interaction.options.getString("keyword", true)
+            interaction.options.getString("keyword", true),
         )}`;
     }
 
@@ -54,10 +54,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             `OD:${getInputRange("od")},` +
             `HP:${getInputRange("hp")},` +
             `length:${DateTimeFormatHelper.DHMStoSeconds(
-                interaction.options.getString("minduration") ?? "0"
+                interaction.options.getString("minduration") ?? "0",
             )}~${
                 DateTimeFormatHelper.DHMStoSeconds(
-                    interaction.options.getString("minduration") ?? ""
+                    interaction.options.getString("minduration") ?? "",
                 ) || ""
             },` +
             `BPM:${getInputRange("bpm")}` +
@@ -71,7 +71,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (result.statusCode !== 200) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("requestFailed")
+                localization.getTranslation("requestFailed"),
             ),
         });
     }
@@ -83,7 +83,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (beatmaps.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapsFound")
+                localization.getTranslation("noBeatmapsFound"),
             ),
         });
     }
@@ -98,8 +98,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     embed.setDescription(
         `${bold(
-            localization.getTranslation("beatmapsFound")
-        )}: ${data.results.toLocaleString(BCP47)}`
+            localization.getTranslation("beatmapsFound"),
+        )}: ${data.results.toLocaleString(BCP47)}`,
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -120,7 +120,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         RankedStatus[stat] !== "WIP"
                             ? StringHelper.capitalizeString(
                                   RankedStatus[stat],
-                                  true
+                                  true,
                               )
                             : RankedStatus[stat];
                     break;
@@ -130,42 +130,42 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             embed.addFields({
                 name: `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`,
                 value: `${bold(
-                    localization.getTranslation("download")
+                    localization.getTranslation("download"),
                 )}: ${hyperlink(
                     "osu!",
-                    `https://osu.ppy.sh/d/${d.sid}`
+                    `https://osu.ppy.sh/d/${d.sid}`,
                 )} ${hyperlink(
                     "(no video)",
-                    `https://osu.ppy.sh/d/${d.sid}n`
+                    `https://osu.ppy.sh/d/${d.sid}n`,
                 )} - ${hyperlink(
                     "Chimu",
-                    `https://chimu.moe/en/d/${d.sid}`
+                    `https://chimu.moe/en/d/${d.sid}`,
                 )} - ${hyperlink(
                     "Sayobot",
-                    `https://txy1.sayobot.cn/beatmaps/download/full/${d.sid}`
+                    `https://txy1.sayobot.cn/beatmaps/download/full/${d.sid}`,
                 )} ${hyperlink(
                     "(no video)",
-                    `https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid}`
+                    `https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid}`,
                 )} - ${hyperlink(
                     "Beatconnect",
-                    `https://beatconnect.io/b/${d.sid}/`
+                    `https://beatconnect.io/b/${d.sid}/`,
                 )} - ${hyperlink("Nerina", `https://nerina.pw/d/${d.sid}`)}${
                     d.approved >= RankedStatus.ranked &&
                     d.approved !== RankedStatus.qualified
                         ? ` - ${hyperlink(
                               "Ripple",
-                              `https://storage.ripple.moe/d/${d.sid}`
+                              `https://storage.ripple.moe/d/${d.sid}`,
                           )}`
                         : ""
                 }\n${bold(
-                    localization.getTranslation("lastUpdate")
+                    localization.getTranslation("lastUpdate"),
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(d.lastupdate * 1000),
-                    localization.language
+                    localization.language,
                 )} | ${bold(status)}\n${Symbols.heart} ${bold(
-                    d.favourite_count.toLocaleString(BCP47)
+                    d.favourite_count.toLocaleString(BCP47),
                 )} - ${Symbols.playButton} ${bold(
-                    d.play_count.toLocaleString(BCP47)
+                    d.play_count.toLocaleString(BCP47),
                 )}`,
             });
         }
@@ -178,7 +178,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         1,
         Math.ceil(beatmaps.length / 5),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

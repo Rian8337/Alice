@@ -18,7 +18,7 @@ import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDa
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     if (interaction.options.data.length > 1) {

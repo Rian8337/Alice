@@ -14,7 +14,7 @@ import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: DeployLocalization = new DeployLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const commandName: string = interaction.options.getString("command", true);
@@ -32,7 +32,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         if (!command) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("commandNotFound")
+                    localization.getTranslation("commandNotFound"),
                 ),
             });
         }
@@ -69,7 +69,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         if (!command) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("commandNotFound")
+                    localization.getTranslation("commandNotFound"),
                 ),
             });
         }
@@ -81,15 +81,16 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         };
     }
 
-    await (interaction.options.getBoolean("serveronly")
-        ? interaction.guild!
-        : client.application!
+    await (
+        interaction.options.getBoolean("serveronly")
+            ? interaction.guild!
+            : client.application!
     ).commands.create(data);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("commandDeploySuccessful"),
-            commandName
+            commandName,
         ),
     });
 };

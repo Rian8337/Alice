@@ -10,19 +10,19 @@ import { Collection, Snowflake } from "discord.js";
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const localization: TriviaQuestionsFillInTheBlankLocalization =
         new TriviaQuestionsFillInTheBlankLocalization(
-            await CommandHelper.getLocale(interaction)
+            CommandHelper.getLocale(interaction),
         );
 
     const collection:
         | Collection<Snowflake, TriviaQuestionCachedAnswer>
         | undefined = CacheManager.questionTriviaFillInTheBlankAnswers.get(
-        interaction.channelId!
+        interaction.channelId!,
     );
 
     if (!collection) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noOngoingQuestionInChannel")
+                localization.getTranslation("noOngoingQuestionInChannel"),
             ),
         });
     }
@@ -35,7 +35,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("answerRecorded")
+            localization.getTranslation("answerRecorded"),
         ),
     });
 };

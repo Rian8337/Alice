@@ -6,7 +6,7 @@ import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     ModalCreator.createModal(
@@ -20,8 +20,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .setMaxLength(1750)
             .setLabel(localization.getTranslation("announceModalMessageLabel"))
             .setPlaceholder(
-                localization.getTranslation("announceModalMessagePlaceholder")
-            )
+                localization.getTranslation("announceModalMessagePlaceholder"),
+            ),
     );
 };
 

@@ -15,21 +15,21 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -37,7 +37,9 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!clan.isLeader(interaction.user)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
@@ -50,7 +52,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanPowerNotEnoughToBuyItem"),
-                powerReq.toLocaleString(BCP47)
+                powerReq.toLocaleString(BCP47),
             ),
         });
     }
@@ -60,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (clanRole) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanAlreadyHasClanRole")
+                localization.getTranslation("clanAlreadyHasClanRole"),
             ),
         });
     }
@@ -73,7 +75,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                     _id: 0,
                     alicecoins: 1,
                 },
-            }
+            },
         );
 
     const cost: number = 5000;
@@ -84,9 +86,9 @@ export const run: SlashSubcommand<true>["run"] = async (
                 localization.getTranslation("notEnoughCoins"),
                 StringHelper.formatString(
                     localization.getTranslation("buyShopItem"),
-                    localization.getTranslation("clanRole")
+                    localization.getTranslation("clanRole"),
                 ),
-                cost.toLocaleString(BCP47)
+                cost.toLocaleString(BCP47),
             ),
         });
     }
@@ -97,12 +99,12 @@ export const run: SlashSubcommand<true>["run"] = async (
             content: MessageCreator.createWarn(
                 localization.getTranslation("buyShopItemConfirmation"),
                 localization.getTranslation("clanRole"),
-                cost.toLocaleString(BCP47)
+                cost.toLocaleString(BCP47),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -111,14 +113,14 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     const result: OperationResult = await playerInfo.incrementCoins(
         -cost,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("buyShopItemFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -126,7 +128,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
     const globalClanRole: Role = guild.roles.cache.find(
-        (r) => r.name === "Clans"
+        (r) => r.name === "Clans",
     )!;
 
     clanRole = await guild.roles.create({
@@ -145,7 +147,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         if (guildMember) {
             await guildMember.roles.add(
                 [globalClanRole, clanRole],
-                "Clan leader bought clan role"
+                "Clan leader bought clan role",
             );
         }
     }
@@ -153,7 +155,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("buyShopItemSuccessful"),
-            cost.toLocaleString(BCP47)
+            cost.toLocaleString(BCP47),
         ),
     });
 };

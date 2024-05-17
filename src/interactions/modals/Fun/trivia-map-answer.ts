@@ -9,9 +9,7 @@ import { Collection, Snowflake } from "discord.js";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const localization: TriviaMapAnswerLocalization =
-        new TriviaMapAnswerLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+        new TriviaMapAnswerLocalization(CommandHelper.getLocale(interaction));
 
     const answerCollection:
         | Collection<Snowflake, TriviaMapCachedAnswer>
@@ -20,13 +18,13 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
     if (!answerCollection) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noOngoingTrivia")
+                localization.getTranslation("noOngoingTrivia"),
             ),
         });
     }
 
     const answer: TriviaMapCachedAnswer = answerCollection.get(
-        interaction.user.id
+        interaction.user.id,
     ) ?? {
         user: interaction.user,
         answer: {
@@ -57,7 +55,7 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("answerRecorded")
+            localization.getTranslation("answerRecorded"),
         ),
     });
 };

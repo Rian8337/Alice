@@ -8,7 +8,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const dbManager = DatabaseManager.aliceDb.collections.supportTicketPreset;
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new CreateSupportTicketWithPresetLocalization(
         language,
     );

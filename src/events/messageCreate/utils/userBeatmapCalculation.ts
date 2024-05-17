@@ -6,13 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import {
-    Message,
-    EmbedBuilder,
-    ChannelType,
-    bold,
-    underscore,
-} from "discord.js";
+import { Message, EmbedBuilder, bold, underscore } from "discord.js";
 import {
     MapInfo,
     Modes,
@@ -30,9 +24,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     }
 
     const localization = new UserBeatmapCalculationLocalization(
-        message.channel.type === ChannelType.DM
-            ? await CommandHelper.getLocale(message.author)
-            : await CommandHelper.getLocale(message.channel.id),
+        message.channel.isDMBased()
+            ? CommandHelper.getLocale(message.author)
+            : CommandHelper.getLocale(message.channelId, message.guildId!),
     );
 
     const calcParams = BeatmapDifficultyHelper.getCalculationParamsFromMessage(

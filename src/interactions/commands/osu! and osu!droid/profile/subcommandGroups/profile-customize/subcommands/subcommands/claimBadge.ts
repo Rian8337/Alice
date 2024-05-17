@@ -20,7 +20,7 @@ import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const playerInfoDbManager = DatabaseManager.aliceDb.collections.playerInfo;

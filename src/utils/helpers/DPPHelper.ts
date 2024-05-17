@@ -118,7 +118,7 @@ export abstract class DPPHelper {
             interaction,
             playerInfo,
             ppRank,
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
         const list = [...playerInfo.pp.values()];

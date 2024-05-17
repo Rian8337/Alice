@@ -11,7 +11,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const uid: number = interaction.options.getInteger("uid", true);
@@ -20,12 +20,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         !NumberHelper.isNumberInRange(
             uid,
             Constants.uidMinLimit,
-            Constants.uidMaxLimit
+            Constants.uidMaxLimit,
         )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidUid")
+                localization.getTranslation("invalidUid"),
             ),
         });
     }
@@ -38,21 +38,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!nameChange || nameChange.isProcessed) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("uidHasNoActiveRequest")
+                localization.getTranslation("uidHasNoActiveRequest"),
             ),
         });
     }
 
     const result: OperationResult = await nameChange.deny(
         reason,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("denyFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -60,7 +60,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("denySuccess"),
-            reason
+            reason,
         ),
     });
 };

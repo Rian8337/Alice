@@ -24,7 +24,7 @@ export const run: EventUtil["run"] = async (
 
     // 3 seconds should be enough to get the user's locale
     const localization = new RunContextMenuLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const botOwnerExecution = CommandHelper.isExecutedByBotOwner(interaction);

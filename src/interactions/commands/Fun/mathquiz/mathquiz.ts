@@ -12,13 +12,13 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: MathquizLocalization = new MathquizLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userStillHasActiveGame")
+                localization.getTranslation("userStillHasActiveGame"),
             ),
         });
     }
@@ -30,7 +30,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const mathEquation: MathEquation = MathEquationCreator.createEquation(
         level,
-        operatorAmount
+        operatorAmount,
     );
     const realEquation: string = mathEquation.realEquation;
     const answer: number = mathEquation.answer;
@@ -38,7 +38,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (isNaN(answer)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("equationGeneratorError")
+                localization.getTranslation("equationGeneratorError"),
             ),
         });
     }
@@ -49,7 +49,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             interaction.user.toString(),
             operatorAmount.toString(),
             level.toString(),
-            realEquation
+            realEquation,
         ),
     });
 
@@ -75,7 +75,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 interaction.user.toString(),
                 ((Date.now() - msg.createdTimestamp) / 1000).toString(),
                 realEquation,
-                answer.toString()
+                answer.toString(),
             ),
         });
 
@@ -89,7 +89,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     localization.getTranslation("wrongAnswer"),
                     interaction.user.toString(),
                     realEquation,
-                    answer.toString()
+                    answer.toString(),
                 ),
             });
         }

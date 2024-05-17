@@ -15,14 +15,14 @@ import { GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     const clanName: string = clan?.name ?? "";
@@ -33,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!auction) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("auctionDoesntExist")
+                localization.getTranslation("auctionDoesntExist"),
             ),
         });
     }
@@ -55,29 +55,29 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     auction.auctioneer
                 }\n` +
                 `${bold(
-                    localization.getTranslation("creationDate")
+                    localization.getTranslation("creationDate"),
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(auction.creationdate * 1000),
-                    localization.language
+                    localization.language,
                 )}\n` +
                 `${bold(
-                    localization.getTranslation("expirationDate")
+                    localization.getTranslation("expirationDate"),
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(auction.expirydate * 1000),
-                    localization.language
-                )}`
+                    localization.language,
+                )}`,
         )
         .addFields({
             name: localization.getTranslation("auctionItem"),
             value:
                 `${bold(
-                    localization.getTranslation("auctionPowerup")
+                    localization.getTranslation("auctionPowerup"),
                 )}: ${StringHelper.capitalizeString(auction.powerup)}\n` +
                 `${bold(
-                    localization.getTranslation("auctionAmount")
+                    localization.getTranslation("auctionAmount"),
                 )}: ${auction.amount.toLocaleString(BCP47)}\n` +
                 `${bold(
-                    localization.getTranslation("auctionMinimumBid")
+                    localization.getTranslation("auctionMinimumBid"),
                 )}: ${auction.min_price.toLocaleString(BCP47)} Alice coins`,
         });
 
@@ -92,7 +92,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         if (bid) {
             biddersDescription += `#${i + 1}: ${bid.clan} - ${bold(
-                bid.amount.toLocaleString(BCP47)
+                bid.amount.toLocaleString(BCP47),
             )} Alice coins\n`;
         } else {
             biddersDescription += `#${i + 1}: -\n`;
@@ -102,7 +102,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (bidIndex > 4) {
         biddersDescription += ".\n".repeat(Math.min(bidIndex - 4, 3));
         biddersDescription += `#${bidIndex + 1}: ${clanName} - ${bold(
-            bids[bidIndex].amount.toLocaleString(BCP47)
+            bids[bidIndex].amount.toLocaleString(BCP47),
         )} Alice coins`;
     }
 

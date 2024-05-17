@@ -11,18 +11,18 @@ import { GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -33,14 +33,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     });
 
     embed.setTitle(
-        `${localization.getTranslation("activePowerups")} ${clan.name}`
+        `${localization.getTranslation("activePowerups")} ${clan.name}`,
     );
 
     let desc: string = "";
 
     for (let i = 0; i < clan.active_powerups.length; ++i) {
         desc += `${bold((i + 1).toString())}. ${StringHelper.capitalizeString(
-            clan.active_powerups[i]
+            clan.active_powerups[i],
         )}\n`;
     }
 

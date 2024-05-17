@@ -10,25 +10,25 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     if (
         DateTimeFormatHelper.getTimeDifference(
-            (<GuildMember>interaction.member).joinedAt!
+            (<GuildMember>interaction.member).joinedAt!,
         ) >
         -86400 * 1000 * 7
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userNotInServerForAWeek")
+                localization.getTranslation("userNotInServerForAWeek"),
             ),
         });
     }
 
     CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
-        localization.language
+        localization.language,
     );
 };
 

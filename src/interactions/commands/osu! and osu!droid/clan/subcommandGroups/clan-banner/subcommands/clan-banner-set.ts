@@ -10,23 +10,23 @@ import { Attachment } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const attachment: Attachment = interaction.options.getAttachment(
         "attachment",
-        true
+        true,
     );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -34,21 +34,23 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!clan.hasAdministrativePower(interaction.user)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
 
     const setResult: OperationResult = await clan.setBanner(
         attachment.url,
-        localization.language
+        localization.language,
     );
 
     if (!setResult.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setBannerFailed"),
-                setResult.reason!
+                setResult.reason!,
             ),
         });
     }
@@ -59,14 +61,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setBannerFailed"),
-                setResult.reason!
+                setResult.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("setBannerSuccessful")
+            localization.getTranslation("setBannerSuccessful"),
         ),
     });
 };

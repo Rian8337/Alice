@@ -19,7 +19,7 @@ import { GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PoolLocalization = new PoolLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const id: string = interaction.options.getString("id", true);
@@ -28,13 +28,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const pool: TournamentMappool | null =
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
-            id
+            id,
         );
 
     if (!pool) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("poolNotFound")
+                localization.getTranslation("poolNotFound"),
             ),
         });
     }
@@ -44,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!map) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("mapNotFound")
+                localization.getTranslation("mapNotFound"),
             ),
         });
     }
@@ -56,7 +56,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (scores.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapHasNoScores")
+                localization.getTranslation("beatmapHasNoScores"),
             ),
         });
     }
@@ -75,31 +75,31 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return (
             `${arrow} ${BeatmapManager.getRankEmote(
-                <ScoreRank>score.score.rank
+                <ScoreRank>score.score.rank,
             )} ${arrow} ${(score.score.accuracy.value() * 100).toFixed(2)}%\n` +
             `${arrow} ${bold(
-                score.scoreV2.toLocaleString(BCP47)
+                score.scoreV2.toLocaleString(BCP47),
             )} ScoreV2 (${bold(
                 pool
                     .calculateScorePortionScoreV2(
                         pick,
                         score.score.score,
                         score.score.accuracy.nmiss,
-                        score.score.mods
+                        score.score.mods,
                     )
-                    .toLocaleString(BCP47)
+                    .toLocaleString(BCP47),
             )} score, ${bold(
                 pool
                     .calculateAccuracyPortionScoreV2(
                         pick,
                         score.score.accuracy.value(),
                         score.score.accuracy.nmiss,
-                        score.score.mods
+                        score.score.mods,
                     )
-                    .toLocaleString(BCP47)
+                    .toLocaleString(BCP47),
             )} accuracy)\n` +
             `${arrow} ${score.score.score.toLocaleString(
-                BCP47
+                BCP47,
             )} ScoreV1 ${arrow} ${score.score.combo}x ${arrow} [${
                 score.score.accuracy.n300
             }/${score.score.accuracy.n100}/${score.score.accuracy.n50}/${
@@ -107,7 +107,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             }]\n` +
             `\`${DateTimeFormatHelper.dateToLocaleString(
                 score.score.date,
-                localization.language
+                localization.language,
             )}\``
         );
     };
@@ -121,7 +121,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         topScore.score.mods.length > 0
                             ? ` (${topScore.score.completeModString})`
                             : ""
-                    }`
+                    }`,
                 )}\n` + getScoreDescription(topScore),
         });
 
@@ -131,7 +131,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         const displayedScores: TournamentScore[] = scores.slice(
             5 * pageRemainder,
-            5 + 5 * pageRemainder
+            5 + 5 * pageRemainder,
         );
 
         let i = 20 * actualPage + 5 * pageRemainder;
@@ -157,7 +157,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(scores.length / 5),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

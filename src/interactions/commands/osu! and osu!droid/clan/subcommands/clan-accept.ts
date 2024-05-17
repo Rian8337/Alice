@@ -11,20 +11,20 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const toAccept: User = interaction.options.getUser("user", true);
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -32,7 +32,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!clan.hasAdministrativePower(interaction.user)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
@@ -42,12 +44,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         {
             content: MessageCreator.createWarn(
                 localization.getTranslation("acceptClanInvitationConfirmation"),
-                toAccept.toString()
+                toAccept.toString(),
             ),
         },
         [toAccept.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -56,7 +58,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const firstResult: OperationResult = await clan.addMember(
         toAccept,
-        localization.language
+        localization.language,
     );
 
     if (!firstResult.success) {
@@ -64,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("acceptClanInvitationFailed"),
                 toAccept.toString(),
-                firstResult.reason!
+                firstResult.reason!,
             ),
         });
     }
@@ -76,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 localization.getTranslation("acceptClanInvitationFailed"),
                 toAccept.toString(),
-                finalResult.reason!
+                finalResult.reason!,
             ),
         });
     }
@@ -85,7 +87,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("acceptClanInvitationSuccessful"),
             toAccept.toString(),
-            clan.name
+            clan.name,
         ),
     });
 };

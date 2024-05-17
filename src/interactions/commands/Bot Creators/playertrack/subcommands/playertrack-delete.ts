@@ -13,9 +13,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new PlayertrackLocalization(
-                await CommandHelper.getLocale(interaction)
+                CommandHelper.getLocale(interaction),
             ).getTranslation("noLongerTrackingUid"),
-            uid.toString()
+            uid.toString(),
         ),
     });
 };

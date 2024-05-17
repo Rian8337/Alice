@@ -9,18 +9,18 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const challenge: Challenge | null =
         await DatabaseManager.aliceDb.collections.challenge.getById(
-            interaction.options.getString("id", true)
+            interaction.options.getString("id", true),
         );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeNotFound")
+                localization.getTranslation("challengeNotFound"),
             ),
         });
     }
@@ -28,7 +28,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!challenge.isScheduled) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeIsOngoing")
+                localization.getTranslation("challengeIsOngoing"),
             ),
         });
     }
@@ -42,7 +42,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("deleteChallengeFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -50,7 +50,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("deleteChallengeSuccess"),
-            challenge.challengeid
+            challenge.challengeid,
         ),
     });
 };

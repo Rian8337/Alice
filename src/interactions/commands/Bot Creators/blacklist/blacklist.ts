@@ -17,17 +17,17 @@ import {
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: BlacklistLocalization = new BlacklistLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const beatmapID: number = BeatmapManager.getBeatmapID(
-        interaction.options.getString("beatmap")!
+        interaction.options.getString("beatmap")!,
     )[0];
 
     if (!beatmapID) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapProvided")
+                localization.getTranslation("noBeatmapProvided"),
             ),
         });
     }
@@ -40,7 +40,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             {
                 content: MessageCreator.createWarn(
                     localization.getTranslation("detectedBeatmapId"),
-                    beatmapID.toString()
+                    beatmapID.toString(),
                 ),
             },
             [
@@ -57,7 +57,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 },
             ],
             Config.botOwners,
-            20
+            20,
         );
 
     if (!selectMenuInteraction) {
@@ -68,13 +68,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const beatmapInfo: MapInfo<false> | null = await BeatmapManager.getBeatmap(
         beatmapID,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmapInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             ),
         });
     }
@@ -84,7 +84,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             if (!reason) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
-                        localization.getTranslation("noBlacklistReasonProvided")
+                        localization.getTranslation(
+                            "noBlacklistReasonProvided",
+                        ),
                     ),
                 });
             }
@@ -93,14 +95,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 await WhitelistManager.blacklist(
                     beatmapInfo,
                     reason,
-                    localization.language
+                    localization.language,
                 );
 
             if (!blacklistResult.success) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("blacklistFailed"),
-                        blacklistResult.reason!
+                        blacklistResult.reason!,
                     ),
                 });
             }
@@ -108,7 +110,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("blacklistSuccess"),
-                    beatmapInfo.fullTitle
+                    beatmapInfo.fullTitle,
                 ),
             });
 
@@ -118,14 +120,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             const unblacklistResult: OperationResult =
                 await WhitelistManager.unblacklist(
                     beatmapInfo,
-                    localization.language
+                    localization.language,
                 );
 
             if (!unblacklistResult.success) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation("unblacklistFailed"),
-                        unblacklistResult.reason!
+                        unblacklistResult.reason!,
                     ),
                 });
             }
@@ -133,7 +135,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("unblacklistSuccess"),
-                    beatmapInfo.fullTitle
+                    beatmapInfo.fullTitle,
                 ),
             });
 

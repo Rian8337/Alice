@@ -11,7 +11,7 @@ import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization = new OnboardingShowRecentPlaysLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     await InteractionHelper.deferReply(interaction);

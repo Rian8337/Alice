@@ -19,16 +19,16 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     ) {
         await message.delete();
 
-        const localization: CuteNoLewdLocalization = new CuteNoLewdLocalization(
-            await CommandHelper.getLocale(message.author)
+        const localization = new CuteNoLewdLocalization(
+            CommandHelper.getLocale(message.author),
         );
 
         message.channel
             .send(
                 MessageCreator.createWarn(
                     localization.getTranslation("imageSentTooFast"),
-                    message.author.toString()
-                )
+                    message.author.toString(),
+                ),
             )
             .then((m) => setTimeout(() => m.delete(), 5 * 1000));
 

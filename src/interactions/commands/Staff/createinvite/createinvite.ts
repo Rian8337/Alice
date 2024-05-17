@@ -17,17 +17,17 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CreateinviteLocalization = new CreateinviteLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const maxAge: number = DateTimeFormatHelper.DHMStoSeconds(
-        interaction.options.getString("validduration") ?? "0"
+        interaction.options.getString("validduration") ?? "0",
     );
 
     if (!NumberHelper.isNumeric(maxAge) || maxAge < 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("expiryTimeInvalid")
+                localization.getTranslation("expiryTimeInvalid"),
             ),
         });
     }
@@ -37,7 +37,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (maxUsage < 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("maximumUsageInvalid")
+                localization.getTranslation("maximumUsageInvalid"),
             ),
         });
     }
@@ -75,7 +75,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         value:
                             DateTimeFormatHelper.secondsToDHMS(
                                 maxAge,
-                                localization.language
+                                localization.language,
                             ) || localization.getTranslation("never"),
                         inline: true,
                     },
@@ -86,7 +86,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     {
                         name: localization.getTranslation("inviteLink"),
                         value: invite.url,
-                    }
+                    },
                 );
 
             InteractionHelper.reply(interaction, {

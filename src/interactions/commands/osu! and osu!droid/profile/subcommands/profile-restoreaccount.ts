@@ -15,7 +15,7 @@ import { bold, Collection, EmbedBuilder, GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const bindInfo: UserBind | null =
@@ -26,27 +26,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     previous_bind: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
 
     const retrievedUids: number[] = bindInfo.previous_bind.filter((v) =>
-        NumberHelper.isNumberInRange(v, 405907, 430370, true)
+        NumberHelper.isNumberInRange(v, 405907, 430370, true),
     );
 
     if (retrievedUids.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerCredentialsNotFound")
+                localization.getTranslation("playerCredentialsNotFound"),
             ),
         });
     }
@@ -65,13 +65,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     Username: 1,
                     Password: 1,
                 },
-            }
+            },
         );
 
     if (playerCredentials.size === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerCredentialsNotFound")
+                localization.getTranslation("playerCredentialsNotFound"),
             ),
         });
     }
@@ -85,12 +85,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         .setTitle(localization.getTranslation("playerCredentialsInfo"))
         .setDescription(
             `${bold(
-                localization.getTranslation("doNotShareCredentialsWarning")
+                localization.getTranslation("doNotShareCredentialsWarning"),
             )}\n\n` +
                 StringHelper.formatString(
                     localization.getTranslation("changeCredentialsDirection"),
-                    "https://osudroid.moe/user?action=login"
-                )
+                    "https://osudroid.moe/user?action=login",
+                ),
         );
 
     let i: number = 1;

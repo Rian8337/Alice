@@ -14,7 +14,7 @@ import { GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const type: ChallengeType =
@@ -22,13 +22,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const challenge: Challenge | null =
         await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(
-            type
+            type,
         );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noOngoingChallenge")
+                localization.getTranslation("noOngoingChallenge"),
             ),
         });
     }
@@ -39,13 +39,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     });
 
     const bonusDescription: BonusDescription[] = challenge.getBonusInformation(
-        localization.language
+        localization.language,
     );
 
     if (bonusDescription.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBonuses")
+                localization.getTranslation("noBonuses"),
             ),
         });
     }
@@ -63,7 +63,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         bonusDescription.length,
         60,
-        onPageChange
+        onPageChange,
     );
 };
 

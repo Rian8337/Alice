@@ -19,7 +19,7 @@ import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const bindInfo: UserBind | null =
@@ -33,15 +33,15 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     clan: 1,
                     weightedAccuracy: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -54,20 +54,20 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     EmbedCreator.createInputEmbed(
                         interaction,
                         localization.getTranslation(
-                            "changeInfoBoxTextColorTitle"
+                            "changeInfoBoxTextColorTitle",
                         ),
                         `${localization.getTranslation(
-                            "enterColor"
+                            "enterColor",
                         )}\n\n${localization.getTranslation(
-                            "supportedColorFormat"
+                            "supportedColorFormat",
                         )}`,
-                        localization.language
+                        localization.language,
                     ),
                 ],
             },
             [],
             [interaction.user.id],
-            20
+            20,
         );
 
     if (!color) {
@@ -81,20 +81,20 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         if (
             RGBA.length !== 4 ||
             RGBA.slice(0, 3).some(
-                (v) => !NumberHelper.isNumberInRange(v, 0, 255, true)
+                (v) => !NumberHelper.isNumberInRange(v, 0, 255, true),
             ) ||
             !NumberHelper.isNumberInRange(RGBA[3], 0, 1, true)
         ) {
             return InteractionHelper.update(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("invalidRGBAformat")
+                    localization.getTranslation("invalidRGBAformat"),
                 ),
             });
         }
     } else if (!StringHelper.isValidHexCode(color)) {
         return InteractionHelper.update(interaction, {
             content: MessageCreator.createAccept(
-                localization.getTranslation("invalidHexCode")
+                localization.getTranslation("invalidHexCode"),
             ),
         });
     }
@@ -113,7 +113,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 alicecoins: 1,
                 points: 1,
             },
-        }
+        },
     );
 
     const pictureConfig: ProfileImageConfig =
@@ -128,13 +128,13 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         bindInfo,
         playerInfo,
         true,
-        localization.language
+        localization.language,
     );
 
     if (!image) {
         return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfProfileNotFound")
+                localization.getTranslation("selfProfileNotFound"),
             ),
         });
     }
@@ -145,14 +145,14 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             content: MessageCreator.createWarn(
                 localization.getTranslation("changeInfoTextColorConfirmation"),
                 interaction.user.toString(),
-                color
+                color,
             ),
             files: [image],
             embeds: [],
         },
         [interaction.user.id],
         15,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -162,7 +162,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     if (playerInfo) {
         await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: interaction.user.id },
-            { $set: { "picture_config.textColor": color } }
+            { $set: { "picture_config.textColor": color } },
         );
     } else {
         await DatabaseManager.aliceDb.collections.playerInfo.insert({
@@ -177,7 +177,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("changeInfoTextColorSuccess"),
             interaction.user.toString(),
-            color
+            color,
         ),
     });
 };

@@ -10,18 +10,18 @@ import { BaseMessageOptions } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const challenge: Challenge | null =
         await DatabaseManager.aliceDb.collections.challenge.getById(
-            interaction.options.getString("id", true)
+            interaction.options.getString("id", true),
         );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeNotFound")
+                localization.getTranslation("challengeNotFound"),
             ),
         });
     }
@@ -29,7 +29,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!challenge.link[0]) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noDownloadLink")
+                localization.getTranslation("noDownloadLink"),
             ),
         });
     }
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         await EmbedCreator.createChallengeEmbed(
             challenge,
             challenge.isWeekly ? "#af46db" : "#e3b32d",
-            localization.language
+            localization.language,
         );
 
     InteractionHelper.reply(
@@ -48,7 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         options ?? {
             // TODO: put in localization
             content: MessageCreator.createReject("Embed creation failed."),
-        }
+        },
     );
 };
 

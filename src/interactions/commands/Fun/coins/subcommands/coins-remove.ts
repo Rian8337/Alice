@@ -12,7 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const userToRemove: User = interaction.options.getUser("user", true);
@@ -22,7 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!NumberHelper.isPositive(removeAmount)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("removeAmountInvalid")
+                localization.getTranslation("removeAmountInvalid"),
             ),
         });
     }
@@ -35,27 +35,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     alicecoins: 1,
                 },
-            }
+            },
         );
 
     if (!playerInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("otherUserDoesntHaveCoinsInfo")
+                localization.getTranslation("otherUserDoesntHaveCoinsInfo"),
             ),
         });
     }
 
     const result: OperationResult = await playerInfo.incrementCoins(
         -removeAmount,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("removeCoinFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("removeCoinSuccess"),
             removeAmount.toLocaleString(BCP47),
-            (playerInfo.alicecoins - removeAmount).toLocaleString(BCP47)
+            (playerInfo.alicecoins - removeAmount).toLocaleString(BCP47),
         ),
     });
 };

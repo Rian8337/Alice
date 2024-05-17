@@ -80,18 +80,17 @@ export abstract class CacheManager {
     /**
      * The locales that a user has, mapped by user ID.
      */
-    static readonly userLocale = new LimitedCapacityCollection<
-        Snowflake,
-        Language
-    >(150, 300);
+    static readonly userLocale = new Collection<Snowflake, Language>();
+
+    /**
+     * The locales that a guild has, mapped by guild ID.
+     */
+    static readonly guildLocale = new Collection<Snowflake, Language>();
 
     /**
      * The locales that a guild text channel has, mapped by channel ID.
      */
-    static readonly channelLocale = new LimitedCapacityCollection<
-        Snowflake,
-        Language
-    >(100, 300);
+    static readonly channelLocale = new Collection<Snowflake, Language>();
 
     /**
      * The timers for a multiplayer room, mapped by channel ID.

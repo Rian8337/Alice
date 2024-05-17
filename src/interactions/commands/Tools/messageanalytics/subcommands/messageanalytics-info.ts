@@ -39,12 +39,10 @@ function daysToMilliseconds(days: number): number {
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: MessageanalyticsLocalization =
-        new MessageanalyticsLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+        new MessageanalyticsLocalization(CommandHelper.getLocale(interaction));
 
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
     const dbManager: ChannelActivityCollectionManager =
@@ -61,7 +59,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         if (dateEntries.length !== 3 || dateEntries.some(Number.isNaN)) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("incorrectDateFormat")
+                    localization.getTranslation("incorrectDateFormat"),
                 ),
             });
         }
@@ -74,7 +72,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (date.getTime() < guild.createdTimestamp) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("dateBeforeGuildCreationError")
+                localization.getTranslation("dateBeforeGuildCreationError"),
             ),
         });
     }
@@ -82,7 +80,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (date.getTime() > Date.now()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("dateHasntPassed")
+                localization.getTranslation("dateHasntPassed"),
             ),
         });
     }
@@ -102,7 +100,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         case "weekly":
             activityData = await dbManager.getFromTimestampRange(
                 date.getTime() - daysToMilliseconds(date.getUTCDay()),
-                date.getTime() + daysToMilliseconds(6 - date.getUTCDay())
+                date.getTime() + daysToMilliseconds(6 - date.getUTCDay()),
             );
 
             break;
@@ -111,7 +109,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
             activityData = await dbManager.getFromTimestampRange(
                 date.getTime(),
-                date.getTime() + daysToMilliseconds(30)
+                date.getTime() + daysToMilliseconds(30),
             );
 
             break;
@@ -120,21 +118,21 @@ export const run: SlashSubcommand<true>["run"] = async (
 
             activityData = await dbManager.getFromTimestampRange(
                 date.getTime(),
-                date.getTime() + daysToMilliseconds(1)
+                date.getTime() + daysToMilliseconds(1),
             );
 
             break;
         default:
             activityData = await dbManager.getFromTimestampRange(
                 0,
-                date.getTime()
+                date.getTime(),
             );
     }
 
     if (activityData.size === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noActivityDataOnDate")
+                localization.getTranslation("noActivityDataOnDate"),
             ),
         });
     }
@@ -174,14 +172,14 @@ export const run: SlashSubcommand<true>["run"] = async (
         }
 
         const BCP47: string = LocaleHelper.convertToBCP47(
-            localization.language
+            localization.language,
         );
         const msg: string = `${channel}: ${data.messageCount.toLocaleString(
-            BCP47
+            BCP47,
         )} ${localization.getTranslation(
-            "messageCount"
+            "messageCount",
         )}, ${data.wordsCount.toLocaleString(
-            BCP47
+            BCP47,
         )} ${localization.getTranslation("wordsCount")}\n`;
 
         if ([generalParent, droidParent].includes(channel.parentId!)) {
@@ -215,18 +213,18 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     embed.setTitle(
         `${localization.getTranslation(
-            <keyof MessageanalyticsStrings>type || "overall"
+            <keyof MessageanalyticsStrings>type || "overall",
         )} ${StringHelper.formatString(
             localization.getTranslation("channelActivity"),
-            DateTimeFormatHelper.dateToHumanReadable(date)
-        )}`
+            DateTimeFormatHelper.dateToHumanReadable(date),
+        )}`,
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         const content: ActivityCategory = activityCategories[page - 1];
 
         embed.setDescription(
-            `${bold(content.category)}\n` + content.description
+            `${bold(content.category)}\n` + content.description,
         );
     };
 
@@ -237,7 +235,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         1,
         activityCategories.length,
         30,
-        onPageChange
+        onPageChange,
     );
 };
 

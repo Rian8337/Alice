@@ -12,7 +12,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: PingLocalization = new PingLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const apiReq: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
@@ -23,19 +23,19 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
 
     const pings: [number, number, number] = await Promise.all([
         HelperFunctions.getFunctionExecutionTime(
-            apiReq.sendRequest.bind(apiReq)
+            apiReq.sendRequest.bind(apiReq),
         ),
         HelperFunctions.getFunctionExecutionTime(
             DatabaseManager.elainaDb.instance.command.bind(
-                DatabaseManager.elainaDb.instance
+                DatabaseManager.elainaDb.instance,
             ),
-            { ping: 1 }
+            { ping: 1 },
         ),
         HelperFunctions.getFunctionExecutionTime(
             DatabaseManager.aliceDb.instance.command.bind(
-                DatabaseManager.aliceDb.instance
+                DatabaseManager.aliceDb.instance,
             ),
-            { ping: 1 }
+            { ping: 1 },
         ),
     ]);
 
@@ -60,12 +60,12 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         {
             name: localization.getTranslation("aliceDb"),
             value: `${Math.round(pings[2])}ms`,
-        }
+        },
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("pong")
+            localization.getTranslation("pong"),
         ),
         embeds: [embed],
     });

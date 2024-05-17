@@ -10,18 +10,18 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -30,12 +30,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("leaveClanConfirmation")
+                localization.getTranslation("leaveClanConfirmation"),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -44,14 +44,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const firstResult: OperationResult = await clan.removeMember(
         interaction.user,
-        localization.language
+        localization.language,
     );
 
     if (!firstResult.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("leaveClanFailed"),
-                firstResult.reason!
+                firstResult.reason!,
             ),
         });
     }
@@ -62,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("leaveClanFailed"),
-                finalResult.reason!
+                finalResult.reason!,
             ),
         });
     }
@@ -70,7 +70,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("leaveClanSuccessful"),
-            clan.name
+            clan.name,
         ),
     });
 };

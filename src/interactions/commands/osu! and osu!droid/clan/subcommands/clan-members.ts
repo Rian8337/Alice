@@ -14,7 +14,7 @@ import { GuildMember, EmbedBuilder, bold, userMention } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const dbManager: ClanCollectionManager =
@@ -22,7 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const clan: Clan | null = interaction.options.getString("name")
         ? await dbManager.getFromName(
-              interaction.options.getString("name", true)
+              interaction.options.getString("name", true),
           )
         : await dbManager.getFromUser(interaction.user);
 
@@ -32,8 +32,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     interaction.options.getString("name")
                         ? "clanDoesntExist"
-                        : "selfIsNotInClan"
-                )
+                        : "selfIsNotInClan",
+                ),
             ),
         });
     }
@@ -65,7 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 `${bold(
                     `${5 * (page - 1) + i + 1}. ${userMention(member.id)} (#${
                         member.rank
-                    })`
+                    })`,
                 )}\n` +
                     `${bold(localization.getTranslation("discordId"))}: ${
                         member.id
@@ -76,15 +76,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                             ? `${localization.getTranslation(
                                   member.id === clan.leader
                                       ? "clanMemberRoleLeader"
-                                      : "clanMemberRoleCoLeader"
+                                      : "clanMemberRoleCoLeader",
                               )}`
                             : localization.getTranslation(
-                                  "clanMemberRoleMember"
+                                  "clanMemberRoleMember",
                               )
                     }\n` +
                     `${bold(
-                        localization.getTranslation("clanMemberUpkeepValue")
-                    )}: ${clan.calculateUpkeep(member.id)} Alice coins`
+                        localization.getTranslation("clanMemberUpkeepValue"),
+                    )}: ${clan.calculateUpkeep(member.id)} Alice coins`,
             );
         }
 
@@ -98,7 +98,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(clan.member_list.size / 5),
         90,
-        onPageChange
+        onPageChange,
     );
 };
 

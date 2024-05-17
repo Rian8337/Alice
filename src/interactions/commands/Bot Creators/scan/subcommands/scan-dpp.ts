@@ -12,7 +12,7 @@ import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ScanLocalization = new ScanLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const dbManager: UserBindCollectionManager =

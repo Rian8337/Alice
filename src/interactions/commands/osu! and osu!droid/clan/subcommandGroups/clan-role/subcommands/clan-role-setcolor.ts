@@ -10,7 +10,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const color: string =
@@ -22,7 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidClanRoleHexCode")
+                localization.getTranslation("invalidClanRoleHexCode"),
             ),
         });
     }
@@ -33,20 +33,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanRoleHexCodeIsRestricted")
+                localization.getTranslation("clanRoleHexCodeIsRestricted"),
             ),
         });
     }
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -54,7 +54,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!clan.roleColorUnlocked) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("roleColorIsNotUnlocked")
+                localization.getTranslation("roleColorIsNotUnlocked"),
             ),
         });
     }
@@ -62,7 +62,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!clan.hasAdministrativePower(interaction.user)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
@@ -72,7 +74,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!clanRole) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanDoesntHaveClanRole")
+                localization.getTranslation("clanDoesntHaveClanRole"),
             ),
         });
     }
@@ -81,7 +83,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("changeRoleColorSuccessful")
+            localization.getTranslation("changeRoleColorSuccessful"),
         ),
     });
 };

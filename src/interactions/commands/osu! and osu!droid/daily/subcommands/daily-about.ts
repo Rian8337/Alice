@@ -9,10 +9,10 @@ import { GuildEmoji, GuildMember, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -28,8 +28,8 @@ export const run: SlashSubcommand<true>["run"] = async (
         .setDescription(
             StringHelper.formatString(
                 localization.getTranslation("aboutDescription"),
-                coin.toString()
-            )
+                coin.toString(),
+            ),
         )
         .addFields(
             {
@@ -39,7 +39,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                     coin.toString(),
                     coin.toString(),
                     coin.toString(),
-                    coin.toString()
+                    coin.toString(),
                 ),
             },
             {
@@ -49,7 +49,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                     coin.toString(),
                     coin.toString(),
                     coin.toString(),
-                    coin.toString()
+                    coin.toString(),
                 ),
             },
             {
@@ -60,20 +60,20 @@ export const run: SlashSubcommand<true>["run"] = async (
                 name: localization.getTranslation("aboutQuestion3"),
                 value: StringHelper.formatString(
                     localization.getTranslation("aboutAnswer3"),
-                    coin.toString()
+                    coin.toString(),
                 ),
             },
             {
                 name: localization.getTranslation("aboutQuestion4"),
                 value: StringHelper.formatString(
                     localization.getTranslation("aboutAnswer4"),
-                    coin.toString()
+                    coin.toString(),
                 ),
             },
             {
                 name: localization.getTranslation("aboutQuestion5"),
                 value: localization.getTranslation("aboutAnswer5"),
-            }
+            },
         );
 
     InteractionHelper.reply(interaction, {

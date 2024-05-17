@@ -17,19 +17,17 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: EmojistatisticsLocalization =
-        new EmojistatisticsLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+        new EmojistatisticsLocalization(CommandHelper.getLocale(interaction));
 
     const stats: EmojiStatistics | null =
         await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(
-            interaction.guild!
+            interaction.guild!,
         );
 
     if (!stats) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("serverHasNoData")
+                localization.getTranslation("serverHasNoData"),
             ),
         });
     }
@@ -57,7 +55,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             (currentDate.getUTCFullYear() - dateCreation.getUTCFullYear()) *
                 12 +
                 currentDate.getUTCMonth() -
-                dateCreation.getUTCMonth()
+                dateCreation.getUTCMonth(),
         );
 
         validEmojis.push({
@@ -70,7 +68,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     if (validEmojis.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noValidEmojis")
+                localization.getTranslation("noValidEmojis"),
             ),
         });
     }
@@ -81,7 +79,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     validEmojis.sort((a, b) =>
         sortOption === "overall"
             ? b.count - a.count
-            : b.averagePerMonth - a.averagePerMonth
+            : b.averagePerMonth - a.averagePerMonth,
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -92,16 +90,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         .setAuthor({
             name: StringHelper.formatString(
                 localization.getTranslation("emojiStatisticsForServer"),
-                interaction.guild!.name
+                interaction.guild!.name,
             ),
             iconURL: interaction.guild!.iconURL()!,
         })
         .setDescription(
             `${bold(
-                localization.getTranslation("sortMode")
+                localization.getTranslation("sortMode"),
             )}: ${localization.getTranslation(
-                sortOption === "overall" ? "overall" : "averagePerMonth"
-            )}`
+                sortOption === "overall" ? "overall" : "averagePerMonth",
+            )}`,
         );
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
@@ -121,16 +119,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                         emoji.emoji
                     } \n` +
                     `${bold(
-                        localization.getTranslation("dateCreation")
+                        localization.getTranslation("dateCreation"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         emoji.emoji.createdAt,
-                        localization.language
+                        localization.language,
                     )} \n` +
                     `${bold(
-                        localization.getTranslation("overallUsage")
+                        localization.getTranslation("overallUsage"),
                     )}: ${emoji.count.toLocaleString(BCP47)} \n` +
                     `${bold(
-                        localization.getTranslation("averagePerMonthUsage")
+                        localization.getTranslation("averagePerMonthUsage"),
                     )}: ${emoji.averagePerMonth.toLocaleString(BCP47)} `,
             });
         }
@@ -143,7 +141,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         1,
         Math.ceil(validEmojis.length / 5),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

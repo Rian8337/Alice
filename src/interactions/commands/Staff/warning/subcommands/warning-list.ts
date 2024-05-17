@@ -23,7 +23,7 @@ import {
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
@@ -35,7 +35,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noPermissionToViewWarning")
+                localization.getTranslation("noPermissionToViewWarning"),
             ),
         });
     }
@@ -43,7 +43,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const warnings: Collection<string, Warning> =
         await DatabaseManager.aliceDb.collections.userWarning.getUserWarningsInGuild(
             interaction.guildId!,
-            user.id
+            user.id,
         );
 
     if (warnings.size === 0) {
@@ -52,8 +52,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     user.id === interaction.user.id
                         ? "selfDontHaveWarnings"
-                        : "userDontHaveWarnings"
-                )
+                        : "userDontHaveWarnings",
+                ),
             ),
         });
     }
@@ -67,13 +67,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         .setTitle(
             StringHelper.formatString(
                 localization.getTranslation("warningInfoForUser"),
-                user.tag
-            )
+                user.tag,
+            ),
         )
         .setThumbnail(user.avatarURL()!)
         .setDescription(
             `${bold(
-                localization.getTranslation("totalActivePoints")
+                localization.getTranslation("totalActivePoints"),
             )}: ${warnings
                 .filter((v) => v.isActive)
                 .reduce((a, v) => a + v.points, 0)}\n` +
@@ -81,11 +81,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     warnings.size
                 }\n` +
                 `${bold(
-                    localization.getTranslation("lastWarning")
+                    localization.getTranslation("lastWarning"),
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
                     new Date(warnings.at(0)!.creationDate * 1000),
-                    localization.language
-                )}`
+                    localization.language,
+                )}`,
         );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -100,26 +100,26 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 name: `${i + 1}. ID ${warning.guildSpecificId}`,
                 value:
                     `${bold(
-                        localization.getTranslation("warningIssuer")
+                        localization.getTranslation("warningIssuer"),
                     )}: ${userMention(warning.issuerId)} (${
                         warning.issuerId
                     })\n` +
                     `${bold(
-                        localization.getTranslation("channel")
+                        localization.getTranslation("channel"),
                     )}: ${channelMention(warning.channelId)} (${
                         warning.channelId
                     })\n` +
                     `${bold(
-                        localization.getTranslation("creationDate")
+                        localization.getTranslation("creationDate"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.creationDate * 1000),
-                        localization.language
+                        localization.language,
                     )}\n` +
                     `${bold(
-                        localization.getTranslation("expirationDate")
+                        localization.getTranslation("expirationDate"),
                     )}: ${DateTimeFormatHelper.dateToLocaleString(
                         new Date(warning.expirationDate * 1000),
-                        localization.language
+                        localization.language,
                     )}`,
             });
         }
@@ -134,7 +134,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(warnings.size / 5),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

@@ -14,7 +14,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return;
     }
 
-    const language: Language = await CommandHelper.getLocale(interaction);
+    const language: Language = CommandHelper.getLocale(interaction);
 
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
@@ -23,8 +23,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(language).getTranslation(
-                    "noPermissionToExecuteCommand"
-                )
+                    "noPermissionToExecuteCommand",
+                ),
             ),
         });
     }
@@ -33,13 +33,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const challenge: Challenge | null =
         await DatabaseManager.aliceDb.collections.challenge.getById(
-            interaction.options.getString("challengeid", true)
+            interaction.options.getString("challengeid", true),
         );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeNotFound")
+                localization.getTranslation("challengeNotFound"),
             ),
         });
     }
@@ -47,14 +47,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const result: OperationResult = await challenge.start(
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("startChallengeFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -62,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("startChallengeSuccess"),
-            challenge.challengeid
+            challenge.challengeid,
         ),
     });
 };

@@ -27,7 +27,7 @@ import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new CompareLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const cachedBeatmapHash = BeatmapManager.getChannelLatestBeatmap(

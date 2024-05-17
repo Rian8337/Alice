@@ -23,10 +23,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<false>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const bindInfo: UserBind | null =
@@ -40,15 +40,15 @@ export const run: SlashSubcommand<false>["run"] = async (
                     clan: 1,
                     weightedAccuracy: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.update(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -57,7 +57,7 @@ export const run: SlashSubcommand<false>["run"] = async (
         await DatabaseManager.aliceDb.collections.profileBackgrounds.get(
             "id",
             {},
-            { projection: { _id: 0 } }
+            { projection: { _id: 0 } },
         );
 
     const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
@@ -67,7 +67,7 @@ export const run: SlashSubcommand<false>["run"] = async (
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    localization.getTranslation("chooseBackground")
+                    localization.getTranslation("chooseBackground"),
                 ),
             },
             backgroundList.map((v) => {
@@ -77,7 +77,7 @@ export const run: SlashSubcommand<false>["run"] = async (
                 };
             }),
             [interaction.user.id],
-            30
+            30,
         );
 
     if (!selectMenuInteraction) {
@@ -98,7 +98,7 @@ export const run: SlashSubcommand<false>["run"] = async (
                     alicecoins: 1,
                     points: 1,
                 },
-            }
+            },
         );
 
     const pictureConfig: ProfileImageConfig =
@@ -107,7 +107,7 @@ export const run: SlashSubcommand<false>["run"] = async (
             .picture_config;
 
     const isBackgroundOwned: boolean = !!pictureConfig.backgrounds.find(
-        (v) => v.id === bgId
+        (v) => v.id === bgId,
     );
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
@@ -117,12 +117,12 @@ export const run: SlashSubcommand<false>["run"] = async (
             return InteractionHelper.update(selectMenuInteraction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation(
-                        "coinsToBuyBackgroundNotEnough"
+                        "coinsToBuyBackgroundNotEnough",
                     ),
                     coin.toString(),
                     coin.toString(),
                     coin.toString(),
-                    (playerInfo?.alicecoins ?? 0).toLocaleString(BCP47)
+                    (playerInfo?.alicecoins ?? 0).toLocaleString(BCP47),
                 ),
             });
         }
@@ -140,13 +140,13 @@ export const run: SlashSubcommand<false>["run"] = async (
         bindInfo,
         playerInfo,
         true,
-        localization.language
+        localization.language,
     );
 
     if (!image) {
         return InteractionHelper.update(selectMenuInteraction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfProfileNotFound")
+                localization.getTranslation("selfProfileNotFound"),
             ),
         });
     }
@@ -158,24 +158,24 @@ export const run: SlashSubcommand<false>["run"] = async (
                 isBackgroundOwned
                     ? StringHelper.formatString(
                           localization.getTranslation(
-                              "switchBackgroundConfirmation"
+                              "switchBackgroundConfirmation",
                           ),
-                          interaction.user.toString()
+                          interaction.user.toString(),
                       )
                     : StringHelper.formatString(
                           localization.getTranslation(
-                              "buyBackgroundConfirmation"
+                              "buyBackgroundConfirmation",
                           ),
                           interaction.user.toString(),
-                          coin.toString()
-                      )
+                          coin.toString(),
+                      ),
             ),
             files: [image],
             embeds: [],
         },
         [interaction.user.id],
         15,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -199,7 +199,7 @@ export const run: SlashSubcommand<false>["run"] = async (
                     : undefined,
             },
             $inc: { alicecoins: isBackgroundOwned ? 0 : -500 },
-        }
+        },
     );
 
     InteractionHelper.update(selectMenuInteraction, {
@@ -210,10 +210,10 @@ export const run: SlashSubcommand<false>["run"] = async (
                     : ` ${StringHelper.formatString(
                           localization.getTranslation("aliceCoinAmount"),
                           coin.toString(),
-                          playerInfo!.alicecoins.toLocaleString(BCP47)
+                          playerInfo!.alicecoins.toLocaleString(BCP47),
                       )}`),
             interaction.user.toString(),
-            background.name
+            background.name,
         ),
     });
 };

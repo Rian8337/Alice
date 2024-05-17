@@ -14,7 +14,7 @@ export class UserLocaleCollectionManager extends DatabaseCollectionManager<
     UserLocale
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseUserLocale
+        data: DatabaseUserLocale,
     ) => UserLocale = UserLocale;
 
     override get defaultDocument(): DatabaseUserLocale {
@@ -43,10 +43,12 @@ export class UserLocaleCollectionManager extends DatabaseCollectionManager<
      */
     setUserLocale(
         userId: Snowflake,
-        language: Language
+        language: Language,
     ): Promise<OperationResult> {
-        if (CacheManager.userLocale.has(userId)) {
-            CacheManager.userLocale.set(userId, language);
+        CacheManager.userLocale.set(userId, language);
+
+        if (language === "en") {
+            CacheManager.userLocale.delete(userId);
         }
 
         return this.updateOne(
@@ -56,7 +58,7 @@ export class UserLocaleCollectionManager extends DatabaseCollectionManager<
                     locale: language,
                 },
             },
-            { upsert: true }
+            { upsert: true },
         );
     }
 }

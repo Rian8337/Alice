@@ -14,7 +14,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new NamechangeLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const uid = interaction.options.getInteger("uid", true);

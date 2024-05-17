@@ -6,7 +6,7 @@ import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization = new OnboardingBindAccountActionLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     ModalCreator.createModal(

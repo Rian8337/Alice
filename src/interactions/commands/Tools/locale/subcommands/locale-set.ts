@@ -9,24 +9,25 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { StringSelectMenuInteraction } from "discord.js";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: LocaleLocalization = new LocaleLocalization(
-        await CommandHelper.getLocale(interaction)
+    const localization = new LocaleLocalization(
+        CommandHelper.getLocale(interaction),
     );
 
-    const constantsLocalization: ConstantsLocalization =
-        new ConstantsLocalization(localization.language);
+    const constantsLocalization = new ConstantsLocalization(
+        localization.language,
+    );
 
-    const scope: string = interaction.options.getString("scope", true);
+    const scope = interaction.options.getString("scope", true);
 
-    const selectMenuInteraction: StringSelectMenuInteraction | null =
+    const selectMenuInteraction =
         await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    localization.getTranslation("selectLanguage")
+                    localization.getTranslation("selectLanguage"),
                 ),
             },
             [
@@ -48,14 +49,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 },
             ].sort((a, b) => a.label.localeCompare(b.label)),
             [interaction.user.id],
-            20
+            20,
         );
 
     if (!selectMenuInteraction) {
         return;
     }
 
-    const pickedLanguage: Language = <Language>selectMenuInteraction.values[0];
+    const pickedLanguage = <Language>selectMenuInteraction.values[0];
 
     let result: OperationResult;
 
@@ -72,16 +73,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 return InteractionHelper.update(selectMenuInteraction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
 
+            CacheManager.guildLocale.set(interaction.guildId, pickedLanguage);
+
             result =
                 await DatabaseManager.aliceDb.collections.guildSettings.setServerLocale(
                     interaction.guildId,
-                    pickedLanguage
+                    pickedLanguage,
                 );
 
             break;
@@ -97,8 +100,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 return InteractionHelper.update(selectMenuInteraction, {
                     content: MessageCreator.createReject(
                         constantsLocalization.getTranslation(
-                            Constants.noPermissionReject
-                        )
+                            Constants.noPermissionReject,
+                        ),
                     ),
                 });
             }
@@ -107,7 +110,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 await DatabaseManager.aliceDb.collections.guildSettings.setChannelLocale(
                     interaction.guildId,
                     interaction.channelId,
-                    pickedLanguage
+                    pickedLanguage,
                 );
 
             break;
@@ -115,7 +118,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             result =
                 await DatabaseManager.aliceDb.collections.userLocale.setUserLocale(
                     interaction.user.id,
-                    pickedLanguage
+                    pickedLanguage,
                 );
     }
 
@@ -123,14 +126,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.update(selectMenuInteraction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("setLocaleFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.update(selectMenuInteraction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("setLocaleSuccess")
+            localization.getTranslation("setLocaleSuccess"),
         ),
     });
 };

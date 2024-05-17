@@ -16,7 +16,7 @@ import { ConstantsLocalization } from "@alice-localization/core/constants/Consta
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: SwitchbindLocalization = new SwitchbindLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     if (

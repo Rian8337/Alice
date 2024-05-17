@@ -9,20 +9,20 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
 
     const collection: MusicCollection | null =
         await DatabaseManager.aliceDb.collections.musicCollection.getFromName(
-            name
+            name,
         );
 
     if (!collection) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noCollectionWithName")
+                localization.getTranslation("noCollectionWithName"),
             ),
         });
     }
@@ -30,7 +30,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (collection.owner !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userDoesntOwnCollection")
+                localization.getTranslation("userDoesntOwnCollection"),
             ),
         });
     }
@@ -44,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("deleteCollectionFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -52,7 +52,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("deleteCollectionSuccess"),
-            name
+            name,
         ),
     });
 };

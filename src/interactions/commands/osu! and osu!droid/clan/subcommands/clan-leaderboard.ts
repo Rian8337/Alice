@@ -14,20 +14,20 @@ import { Collection } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const clans: Collection<string, Clan> =
         await DatabaseManager.elainaDb.collections.clan.get(
             "name",
             {},
-            { projection: { _id: 0, name: 1, member_list: 1, power: 1 } }
+            { projection: { _id: 0, name: 1, member_list: 1, power: 1 } },
         );
 
     if (clans.size === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noAvailableClans")
+                localization.getTranslation("noAvailableClans"),
             ),
         });
     }
@@ -37,7 +37,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const page: number = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,
         1,
-        Math.ceil(clans.size / 20)
+        Math.ceil(clans.size / 20),
     );
 
     const onPageChange: OnButtonPageChange = async (options, page) => {
@@ -49,7 +49,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ++i
         ) {
             clanNameLengths.push(
-                StringHelper.getUnicodeStringLength(clans.at(i)!.name.trim())
+                StringHelper.getUnicodeStringLength(clans.at(i)!.name.trim()),
             );
         }
 
@@ -75,12 +75,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     .toString()
                     .padEnd(6)} | ${clan.power
                     .toLocaleString(
-                        LocaleHelper.convertToBCP47(localization.language)
+                        LocaleHelper.convertToBCP47(localization.language),
                     )
                     .padEnd(4)}`;
             } else {
                 output += `${"-".padEnd(4)} | ${"-".padEnd(
-                    longestNameLength
+                    longestNameLength,
                 )} | ${"-".padEnd(6)} | -`;
             }
 
@@ -97,7 +97,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         page,
         Math.ceil(clans.size / 20),
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

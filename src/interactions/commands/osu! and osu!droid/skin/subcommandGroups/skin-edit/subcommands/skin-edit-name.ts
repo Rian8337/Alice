@@ -10,18 +10,18 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: SkinLocalization = new SkinLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const skin: PlayerSkin | null =
         await DatabaseManager.aliceDb.collections.playerSkins.getFromName(
-            interaction.options.getString("name", true)
+            interaction.options.getString("name", true),
         );
 
     if (!skin) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("skinNotFound")
+                localization.getTranslation("skinNotFound"),
             ),
         });
     }
@@ -33,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("skinNotOwnedByUser")
+                localization.getTranslation("skinNotOwnedByUser"),
             ),
         });
     }
@@ -43,7 +43,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (StringHelper.hasUnicode(newName)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidSkinName")
+                localization.getTranslation("invalidSkinName"),
             ),
         });
     }
@@ -51,12 +51,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (
         await DatabaseManager.aliceDb.collections.playerSkins.checkSkinNameAvailability(
             interaction.user,
-            newName
+            newName,
         )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("skinNameNotAvailable")
+                localization.getTranslation("skinNameNotAvailable"),
             ),
         });
     }
@@ -68,21 +68,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 $set: {
                     name: newName,
                 },
-            }
+            },
         );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("editSkinFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("editSkinSuccess")
+            localization.getTranslation("editSkinSuccess"),
         ),
     });
 };

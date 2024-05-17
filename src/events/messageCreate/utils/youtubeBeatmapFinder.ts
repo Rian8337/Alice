@@ -1,10 +1,4 @@
-import {
-    Message,
-    EmbedBuilder,
-    ChannelType,
-    bold,
-    underscore,
-} from "discord.js";
+import { Message, EmbedBuilder, bold, underscore } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -24,9 +18,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     }
 
     const localization = new YoutubeBeatmapFinderLocalization(
-        message.channel.type === ChannelType.DM
-            ? await CommandHelper.getLocale(message.author)
-            : await CommandHelper.getLocale(message.channel.id),
+        message.channel.isDMBased()
+            ? CommandHelper.getLocale(message.author)
+            : CommandHelper.getLocale(message.channelId, message.guildId!),
     );
 
     const ytRegex =

@@ -13,7 +13,7 @@ export const run: SlashSubcommandGroup["run"] = async (client, interaction) => {
 
     if (
         !(<GuildMember>interaction.member).roles.cache.find(
-            (r) => r.name === "Referee"
+            (r) => r.name === "Referee",
         ) &&
         !staffMembers.has(interaction.user.id)
     ) {
@@ -22,8 +22,8 @@ export const run: SlashSubcommandGroup["run"] = async (client, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(
-                    await CommandHelper.getLocale(interaction)
-                ).getTranslation(Constants.noPermissionReject)
+                    CommandHelper.getLocale(interaction),
+                ).getTranslation(Constants.noPermissionReject),
             ),
         });
     }

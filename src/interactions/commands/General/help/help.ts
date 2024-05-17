@@ -42,7 +42,7 @@ function getCommandList(client: Bot): Collection<string, string[]> {
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: HelpLocalization = new HelpLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const commandName: string | null =
@@ -60,7 +60,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         if (!cmd) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("noCommandFound")
+                    localization.getTranslation("noCommandFound"),
                 ),
             });
         }
@@ -121,7 +121,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                 }
 
                 finalMappedArgs.push(
-                    `[ ${precedingKeywords.join(" ")} ${mappedArgs.join(" ")} ]`
+                    `[ ${precedingKeywords.join(" ")} ${mappedArgs.join(" ")} ]`,
                 );
             }
 
@@ -139,12 +139,12 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                     cmd.category +
                     "`\n" +
                     `${localization.getTranslation(
-                        "requiredPermissions"
+                        "requiredPermissions",
                     )}: \`` +
                     PermissionHelper.getPermissionString(
-                        cmd.config.permissions
+                        cmd.config.permissions,
                     ) +
-                    "`"
+                    "`",
             )
             .addFields(
                 {
@@ -158,11 +158,11 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                                             ? ` ${v.arguments
                                                   .map(
                                                       (a) =>
-                                                          `\`${a.name}:${a.value}\``
+                                                          `\`${a.name}:${a.value}\``,
                                                   )
                                                   .join(" ")}`
                                             : ""
-                                    }\n` + v.description
+                                    }\n` + v.description,
                             )
                             .join("\n\n") ||
                         localization.getTranslation("none"),
@@ -172,10 +172,10 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                     name:
                         `${localization.getTranslation("usage")}\n` +
                         `\`<...>\`: ${localization.getTranslation(
-                            "required"
+                            "required",
                         )}\n` +
                         `\`[...]\`: ${localization.getTranslation(
-                            "optional"
+                            "optional",
                         )}\n\n` +
                         `\`${cmd.config.name}${
                             argsString ? ` ${argsString}` : ""
@@ -189,15 +189,15 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                                         v.name +
                                         "`: *" +
                                         CommandHelper.optionTypeToString(
-                                            v.type
+                                            v.type,
                                         ) +
                                         "*\n" +
-                                        v.description
+                                        v.description,
                                 )
                                 .join("\n\n") ||
                         localization.getTranslation("none"),
                     inline: true,
-                }
+                },
             );
 
         InteractionHelper.reply(interaction, { embeds: [embed] });
@@ -210,14 +210,14 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             .setDescription(
                 `${localization.getTranslation("creator")}\n\n` +
                     `${localization.getTranslation("useHelpCommand")}\n` +
-                    localization.getTranslation("issuesContact")
+                    localization.getTranslation("issuesContact"),
             )
             .setThumbnail(client.user.avatarURL()!);
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             embed.addFields({
                 name: `${bold(
-                    localization.getTranslation("category")
+                    localization.getTranslation("category"),
                 )}: ${commandList.keyAt(page - 1)}`,
                 value: commandList
                     .at(page - 1)!
@@ -233,7 +233,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             1,
             commandList.size,
             120,
-            onPageChange
+            onPageChange,
         );
     }
 };

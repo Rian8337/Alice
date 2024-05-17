@@ -9,7 +9,7 @@ import { OperationResult } from "@alice-structures/core/OperationResult";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: SkinLocalization = new SkinLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const name: string = interaction.options.getString("name", true);
@@ -19,7 +19,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (StringHelper.hasUnicode(name)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidSkinName")
+                localization.getTranslation("invalidSkinName"),
             ),
         });
     }
@@ -27,12 +27,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (
         await DatabaseManager.aliceDb.collections.playerSkins.checkSkinNameAvailability(
             interaction.user,
-            name
+            name,
         )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("skinNameNotAvailable")
+                localization.getTranslation("skinNameNotAvailable"),
             ),
         });
     }
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!StringHelper.isValidURL(link)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidSkinLink")
+                localization.getTranslation("invalidSkinLink"),
             ),
         });
     }
@@ -56,14 +56,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("addSkinFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("addSkinSuccess")
+            localization.getTranslation("addSkinSuccess"),
         ),
     });
 };

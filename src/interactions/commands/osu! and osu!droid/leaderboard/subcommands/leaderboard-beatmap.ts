@@ -10,15 +10,15 @@ import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const beatmapID: number = BeatmapManager.getBeatmapID(
-        interaction.options.getString("beatmap") ?? ""
+        interaction.options.getString("beatmap") ?? "",
     )[0];
 
     let hash: string | undefined = BeatmapManager.getChannelLatestBeatmap(
-        interaction.channelId
+        interaction.channelId,
     );
 
     const page: number = interaction.options.getInteger("page") ?? 1;
@@ -26,7 +26,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!beatmapID && !hash) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapFound")
+                localization.getTranslation("noBeatmapFound"),
             ),
         });
     }
@@ -34,7 +34,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!NumberHelper.isPositive(page)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidPage")
+                localization.getTranslation("invalidPage"),
             ),
         });
     }
@@ -53,7 +53,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!hash) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noBeatmapFound")
+                localization.getTranslation("noBeatmapFound"),
             ),
         });
     }

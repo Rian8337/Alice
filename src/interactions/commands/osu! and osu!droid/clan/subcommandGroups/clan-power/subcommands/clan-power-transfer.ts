@@ -14,7 +14,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const from: User = interaction.options.getUser("fromclan", true);
@@ -23,7 +23,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const isChallengePassed: boolean = interaction.options.getBoolean(
         "challengepassed",
-        true
+        true,
     );
 
     const fromClan: Clan | null =
@@ -32,7 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!fromClan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userToTransferFromNotInClan")
+                localization.getTranslation("userToTransferFromNotInClan"),
             ),
         });
     }
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!fromClan.isMatch) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanToTransferFromNotInMatchMode")
+                localization.getTranslation("clanToTransferFromNotInMatchMode"),
             ),
         });
     }
@@ -51,7 +51,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!toClan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userToTransferToNotInClan")
+                localization.getTranslation("userToTransferToNotInClan"),
             ),
         });
     }
@@ -59,7 +59,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!toClan.isMatch) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanToTransferToNotInMatchMode")
+                localization.getTranslation("clanToTransferToNotInMatchMode"),
             ),
         });
     }
@@ -96,8 +96,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("clanHasPowerupActive"),
                 Symbols.downArrow,
                 fromClan.name,
-                powerup
-            )
+                powerup,
+            ),
         );
 
         switch (powerup) {
@@ -137,8 +137,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("clanHasPowerupActive"),
                 Symbols.upArrow,
                 toClan.name,
-                powerup
-            )
+                powerup,
+            ),
         );
 
         switch (powerup) {
@@ -170,7 +170,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const totalGivenPower: number = Math.min(
         fromClan.power,
-        Math.floor(fromClan.power * finalMultiplier)
+        Math.floor(fromClan.power * finalMultiplier),
     );
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
@@ -182,12 +182,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("clanPowerTransferConfirmation"),
                 totalGivenPower.toLocaleString(BCP47),
                 fromClan.name,
-                toClan.name
+                toClan.name,
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -213,7 +213,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanPowerTransferFailed"),
-                fromClanResult.reason!
+                fromClanResult.reason!,
             ),
         });
     }
@@ -224,7 +224,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("clanPowerTransferFailed"),
-                toClanResult.reason!
+                toClanResult.reason!,
             ),
         });
     }
@@ -234,7 +234,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             localization.getTranslation("clanPowerTransferSuccessful"),
             totalGivenPower.toLocaleString(BCP47),
             fromClan.name,
-            toClan.name
+            toClan.name,
         ),
     });
 };

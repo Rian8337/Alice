@@ -25,7 +25,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction,
 ) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const discordid: Snowflake | undefined =

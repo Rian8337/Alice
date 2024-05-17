@@ -10,10 +10,10 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: MatchLocalization = new MatchLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const id: string = interaction.options.getString("id", true);
@@ -24,7 +24,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!match) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("matchDoesntExist")
+                localization.getTranslation("matchDoesntExist"),
             ),
         });
     }
@@ -32,7 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (match.status === "completed") {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("matchHasEnded")
+                localization.getTranslation("matchHasEnded"),
             ),
         });
     }
@@ -46,14 +46,14 @@ export const run: SlashSubcommand<true>["run"] = async (
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("removeMatchFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     if (match.channelId) {
         const channel: Channel | null = await client.channels.fetch(
-            match.channelId
+            match.channelId,
         );
 
         if (channel?.isThread()) {
@@ -65,7 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("removeMatchSuccessful"),
-            match.matchid
+            match.matchid,
         ),
     });
 };

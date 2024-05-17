@@ -19,11 +19,11 @@ import {
 
 export const run: MessageContextMenuCommand["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: TimeoutMessageAuthorLocalization =
         new TimeoutMessageAuthorLocalization(
-            await CommandHelper.getLocale(interaction)
+            CommandHelper.getLocale(interaction),
         );
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
@@ -31,7 +31,7 @@ export const run: MessageContextMenuCommand["run"] = async (
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    localization.getTranslation("selectDuration")
+                    localization.getTranslation("selectDuration"),
                 ),
             },
             [
@@ -59,13 +59,13 @@ export const run: MessageContextMenuCommand["run"] = async (
                 return {
                     label: DateTimeFormatHelper.secondsToDHMS(
                         v,
-                        localization.language
+                        localization.language,
                     ),
                     value: v.toString(),
                 };
             }),
             [interaction.user.id],
-            20
+            20,
         );
 
     if (!selectMenuInteraction) {
@@ -84,12 +84,12 @@ export const run: MessageContextMenuCommand["run"] = async (
                 interaction.targetMessage.author.toString(),
                 DateTimeFormatHelper.secondsToDHMS(
                     duration,
-                    localization.language
-                )
+                    localization.language,
+                ),
             ),
         },
         [interaction.user.id],
-        15
+        15,
     );
 
     if (!confirmation) {
@@ -122,18 +122,18 @@ export const run: MessageContextMenuCommand["run"] = async (
             localization.getTranslation("timeoutReason"),
             loggedContent,
             // interaction.targetMessage.url returns the wrong link, so constructing manually for now.
-            `https://discord.com/channels/${Constants.mainServer}/${channelId}/${messageId}`
+            `https://discord.com/channels/${Constants.mainServer}/${channelId}/${messageId}`,
         ),
         duration,
         localization.language,
-        channelId
+        channelId,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("timeoutFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -141,7 +141,7 @@ export const run: MessageContextMenuCommand["run"] = async (
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("timeoutSuccess"),
-            DateTimeFormatHelper.secondsToDHMS(duration, localization.language)
+            DateTimeFormatHelper.secondsToDHMS(duration, localization.language),
         ),
     });
 };

@@ -11,17 +11,17 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const queue: MusicQueue[] = MusicManager.musicInformations.get(
-        (<GuildMember>interaction.member).voice.channelId!
+        (<GuildMember>interaction.member).voice.channelId!,
     )!.queue;
 
     const position: number = NumberHelper.clamp(
         interaction.options.getInteger("position") ?? 1,
         1,
-        queue.length
+        queue.length,
     );
 
     const title: string | undefined = queue[position - 1]?.information.title;
@@ -29,14 +29,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const result: OperationResult = MusicManager.dequeue(
         (<GuildMember>interaction.member).voice.channel!,
         position,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("removeQueueFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -44,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("removeQueueSuccess"),
-            title
+            title,
         ),
     });
 };

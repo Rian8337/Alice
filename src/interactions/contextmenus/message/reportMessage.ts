@@ -18,12 +18,10 @@ import {
 
 export const run: MessageContextMenuCommand["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: ReportMessageLocalization =
-        new ReportMessageLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+        new ReportMessageLocalization(CommandHelper.getLocale(interaction));
 
     const toReport: GuildMember | null =
         (await interaction.guild?.members
@@ -37,7 +35,7 @@ export const run: MessageContextMenuCommand["run"] = async (
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userNotReportable")
+                localization.getTranslation("userNotReportable"),
             ),
         });
     }
@@ -45,7 +43,7 @@ export const run: MessageContextMenuCommand["run"] = async (
     if (toReport.id === interaction.user.id) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfReportError")
+                localization.getTranslation("selfReportError"),
             ),
         });
     }
@@ -54,12 +52,12 @@ export const run: MessageContextMenuCommand["run"] = async (
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("reportConfirmation")
+                localization.getTranslation("reportConfirmation"),
             ),
         },
         [interaction.user.id],
         15,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -82,13 +80,13 @@ export const run: MessageContextMenuCommand["run"] = async (
                     interaction.channel
                 } (${hyperlink(
                     localization.getTranslation("goToMessage"),
-                    interaction.targetMessage.url
-                )})`
+                    interaction.targetMessage.url,
+                )})`,
         );
 
     const reportChannel: TextChannel = <TextChannel>(
         interaction.guild!.channels.cache.find(
-            (c) => c.name === Config.reportChannel
+            (c) => c.name === Config.reportChannel,
         )
     );
 
@@ -96,7 +94,7 @@ export const run: MessageContextMenuCommand["run"] = async (
         content: MessageCreator.createWarn(
             `${Config.verifyPerm
                 .map((v) => roleMention(v))
-                .join(" ")} user report in ${interaction.channel}`
+                .join(" ")} user report in ${interaction.channel}`,
         ),
         embeds: [embed],
     });
@@ -118,18 +116,18 @@ export const run: MessageContextMenuCommand["run"] = async (
                     interaction.channel
                 } (${hyperlink(
                     localization.getTranslation("goToMessage"),
-                    interaction.targetMessage.url
+                    interaction.targetMessage.url,
                 )})\n\n` +
-                localization.getTranslation("saveEvidence")
+                localization.getTranslation("saveEvidence"),
         );
 
     interaction.user.send({ embeds: [replyEmbed] }).catch(() =>
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createWarn(
                 localization.getTranslation("reporterDmLocked"),
-                interaction.user.toString()
+                interaction.user.toString(),
             ),
-        })
+        }),
     );
 };
 

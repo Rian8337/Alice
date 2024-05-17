@@ -74,7 +74,7 @@ export abstract class ScoreDisplayHelper {
         page: number = 1,
     ): Promise<Message> {
         const localization = this.getLocalization(
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
         const embed = EmbedCreator.createNormalEmbed({
@@ -185,7 +185,7 @@ export abstract class ScoreDisplayHelper {
         await InteractionHelper.deferReply(interaction);
 
         const localization = this.getLocalization(
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
         const beatmapInfo = await BeatmapManager.getBeatmap(hash, {

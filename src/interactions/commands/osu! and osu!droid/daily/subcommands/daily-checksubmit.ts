@@ -12,12 +12,12 @@ import { Filter, FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const challengeId: string = interaction.options.getString(
         "challengeid",
-        true
+        true,
     );
 
     const discordid: Snowflake | undefined =
@@ -30,7 +30,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooManyOptions")
+                localization.getTranslation("tooManyOptions"),
             ),
         });
     }
@@ -60,7 +60,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getOne(
             query,
-            findOptions
+            findOptions,
         );
 
     const completionData: ChallengeCompletionData | undefined =
@@ -71,14 +71,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             content: MessageCreator.createAccept(
                 localization.getTranslation("userHasPlayedChallenge"),
                 challengeId,
-                completionData.highestLevel.toString()
+                completionData.highestLevel.toString(),
             ),
         });
     } else {
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("userHasNotPlayedChallenge"),
-                challengeId
+                challengeId,
             ),
         });
     }

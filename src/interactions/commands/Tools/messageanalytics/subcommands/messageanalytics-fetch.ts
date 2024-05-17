@@ -13,7 +13,7 @@ import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     if (!interaction.inGuild()) {
         return;
@@ -22,9 +22,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction.ephemeral = true;
 
     const localization: MessageanalyticsLocalization =
-        new MessageanalyticsLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+        new MessageanalyticsLocalization(CommandHelper.getLocale(interaction));
 
     const fromDateEntries: number[] = interaction.options
         .getString("fromdate", true)
@@ -34,7 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (fromDateEntries.length !== 3 || fromDateEntries.some(Number.isNaN)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("incorrectDateFormat")
+                localization.getTranslation("incorrectDateFormat"),
             ),
         });
     }
@@ -46,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         0,
         0,
         0,
-        0
+        0,
     );
 
     const toDate: Date = new Date();
@@ -61,7 +59,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         if (toDateEntries.length !== 3 || toDateEntries.some(Number.isNaN)) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("incorrectDateFormat")
+                    localization.getTranslation("incorrectDateFormat"),
                 ),
             });
         }
@@ -69,7 +67,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         toDate.setUTCFullYear(
             toDateEntries[0],
             toDateEntries[1] - 1,
-            toDateEntries[2]
+            toDateEntries[2],
         );
     }
 
@@ -80,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         if (!interaction.channel?.isTextBased()) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("notATextChannel")
+                    localization.getTranslation("notATextChannel"),
                 ),
             });
         }
@@ -88,7 +86,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         if (MessageAnalyticsHelper.isChannelFiltered(interaction.channel)) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("channelIsFiltered")
+                    localization.getTranslation("channelIsFiltered"),
                 ),
             });
         }
@@ -108,14 +106,14 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("messageFetchStarted")
+            localization.getTranslation("messageFetchStarted"),
         ),
     });
 
     const guildMessageAnalyticsData: Collection<number, ChannelActivity> =
         await DatabaseManager.aliceDb.collections.channelActivity.getFromTimestampRange(
             fromDate.getTime(),
-            toDate.getTime()
+            toDate.getTime(),
         );
 
     for (const channel of channelsToFetch) {
@@ -129,17 +127,17 @@ export const run: SlashSubcommand<true>["run"] = async (
             await MessageAnalyticsHelper.getChannelActivity(
                 channel,
                 fromDate.getTime(),
-                toDate.getTime()
+                toDate.getTime(),
             );
 
         consola.info(
             `Channel #${channel.name} has ${messageData.reduce(
                 (a, v) => a + v.messageCount,
-                0
+                0,
             )} messages and ${messageData.reduce(
                 (a, v) => a + v.wordsCount,
-                0
-            )} words`
+                0,
+            )} words`,
         );
 
         for (const [date, activity] of messageData) {
@@ -168,7 +166,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                         channels: [...channelActivity.channels.values()],
                     },
                 },
-                { upsert: true }
+                { upsert: true },
             );
         }
     }
@@ -176,7 +174,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction.channel!.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("messageFetchDone"),
-            interaction.user.toString()
+            interaction.user.toString(),
         ),
     });
 };

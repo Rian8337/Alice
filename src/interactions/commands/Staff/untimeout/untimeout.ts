@@ -11,22 +11,22 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: UntimeoutLocalization = new UntimeoutLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const toUntimeout: GuildMember = await interaction.guild!.members.fetch(
-        interaction.options.getUser("user", true)
+        interaction.options.getUser("user", true),
     );
 
     if (
         !(await TimeoutManager.userCanTimeout(
             <GuildMember>interaction.member,
-            Number.POSITIVE_INFINITY
+            Number.POSITIVE_INFINITY,
         ))
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userCannotUntimeoutError")
+                localization.getTranslation("userCannotUntimeoutError"),
             ),
         });
     }
@@ -40,21 +40,21 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         toUntimeout,
         interaction,
         reason,
-        localization.language
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("untimeoutFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("untimeoutSuccessful")
+            localization.getTranslation("untimeoutSuccessful"),
         ),
     });
 };

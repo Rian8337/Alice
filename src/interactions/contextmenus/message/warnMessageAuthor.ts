@@ -21,12 +21,10 @@ import {
 
 export const run: MessageContextMenuCommand["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
     const localization: WarnMessageAuthorLocalization =
-        new WarnMessageAuthorLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+        new WarnMessageAuthorLocalization(CommandHelper.getLocale(interaction));
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
@@ -35,7 +33,7 @@ export const run: MessageContextMenuCommand["run"] = async (
             interaction,
             {
                 content: MessageCreator.createWarn(
-                    localization.getTranslation("selectPoints")
+                    localization.getTranslation("selectPoints"),
                 ),
             },
             Utils.initializeArray(10, 0).map((_, i) => {
@@ -47,7 +45,7 @@ export const run: MessageContextMenuCommand["run"] = async (
                 };
             }),
             [interaction.user.id],
-            20
+            20,
         );
 
     if (!selectMenuInteraction) {
@@ -62,7 +60,7 @@ export const run: MessageContextMenuCommand["run"] = async (
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("selectDuration")
+                localization.getTranslation("selectDuration"),
             ),
         },
         [
@@ -90,13 +88,13 @@ export const run: MessageContextMenuCommand["run"] = async (
             return {
                 label: DateTimeFormatHelper.secondsToDHMS(
                     v,
-                    localization.language
+                    localization.language,
                 ),
                 value: v.toString(),
             };
         }),
         [interaction.user.id],
-        20
+        20,
     );
 
     if (!selectMenuInteraction) {
@@ -116,12 +114,12 @@ export const run: MessageContextMenuCommand["run"] = async (
                 points.toLocaleString(BCP47),
                 DateTimeFormatHelper.secondsToDHMS(
                     duration,
-                    localization.language
-                )
+                    localization.language,
+                ),
             ),
         },
         [interaction.user.id],
-        15
+        15,
     );
 
     if (!confirmation) {
@@ -156,23 +154,23 @@ export const run: MessageContextMenuCommand["run"] = async (
             localization.getTranslation("warningReason"),
             loggedContent,
             // interaction.targetMessage.url returns the wrong link, so constructing manually for now.
-            `https://discord.com/channels/${Constants.mainServer}/${channelId}/${messageId}`
+            `https://discord.com/channels/${Constants.mainServer}/${channelId}/${messageId}`,
         ),
-        channelId
+        channelId,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warnIssueFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("warnIssueSuccess")
+            localization.getTranslation("warnIssueSuccess"),
         ),
     });
 };

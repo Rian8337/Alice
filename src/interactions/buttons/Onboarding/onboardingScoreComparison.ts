@@ -7,7 +7,7 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { quote } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
-    const language = await CommandHelper.getLocale(interaction);
+    const language = CommandHelper.getLocale(interaction);
     const localization = new OnboardingScoreComparisonLocalization(language);
 
     const embed = EmbedCreator.createNormalEmbed({

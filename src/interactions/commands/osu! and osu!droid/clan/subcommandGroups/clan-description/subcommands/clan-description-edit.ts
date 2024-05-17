@@ -10,31 +10,31 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const description: string = interaction.options.getString(
         "description",
-        true
+        true,
     );
 
     if (description.length >= 2000) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanDescriptionTooLong")
+                localization.getTranslation("clanDescriptionTooLong"),
             ),
         });
     }
 
     const clan: Clan | null =
         await DatabaseManager.elainaDb.collections.clan.getFromUser(
-            interaction.user
+            interaction.user,
         );
 
     if (!clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsNotInClan")
+                localization.getTranslation("selfIsNotInClan"),
             ),
         });
     }
@@ -42,7 +42,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!clan.hasAdministrativePower(interaction.user)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfHasNoAdministrativePermission")
+                localization.getTranslation(
+                    "selfHasNoAdministrativePermission",
+                ),
             ),
         });
     }
@@ -51,12 +53,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("editDescriptionConfirmation")
+                localization.getTranslation("editDescriptionConfirmation"),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -65,14 +67,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const editDescResult: OperationResult = clan.setDescription(
         description,
-        localization.language
+        localization.language,
     );
 
     if (!editDescResult.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("editDescriptionFailed"),
-                editDescResult.reason!
+                editDescResult.reason!,
             ),
         });
     }
@@ -83,14 +85,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("editDescriptionFailed"),
-                finalResult.reason!
+                finalResult.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("editDescriptionSuccessful")
+            localization.getTranslation("editDescriptionSuccessful"),
         ),
     });
 };

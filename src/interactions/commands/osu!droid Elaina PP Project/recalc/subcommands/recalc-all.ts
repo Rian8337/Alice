@@ -13,7 +13,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     interaction,
 ) => {
     const localization = new RecalcLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const dbManager = DatabaseManager.elainaDb.collections.userBind;

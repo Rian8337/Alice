@@ -15,18 +15,18 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const voteInfo: Voting | null =
         await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
-            interaction.channelId
+            interaction.channelId,
         );
 
     if (!voteInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noOngoingVoteInChannel")
+                localization.getTranslation("noOngoingVoteInChannel"),
             ),
         });
     }
@@ -40,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noEndVotePermission")
+                localization.getTranslation("noEndVotePermission"),
             ),
         });
     }
@@ -48,7 +48,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     await voteInfo.end();
 
     let string: string = `${bold(
-        `${localization.getTranslation("topic")}: ${voteInfo.topic}`
+        `${localization.getTranslation("topic")}: ${voteInfo.topic}`,
     )}\n\n`;
 
     for (let i = 0; i < voteInfo.choices.length; ++i) {
@@ -62,7 +62,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content:
             MessageCreator.createAccept(
-                localization.getTranslation("endVoteSuccess")
+                localization.getTranslation("endVoteSuccess"),
             ) + `\n${string}`,
     });
 };

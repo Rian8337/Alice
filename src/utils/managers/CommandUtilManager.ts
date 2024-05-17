@@ -1,10 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildSettingsCollectionManager } from "@alice-database/managers/aliceDb/GuildSettingsCollectionManager";
-import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
 import { OperationResult } from "structures/core/OperationResult";
 import { DisabledCommand } from "structures/moderation/DisabledCommand";
 import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
-import { GuildChannelSettings } from "structures/moderation/GuildChannelSettings";
 import { Language } from "@alice-localization/base/Language";
 import { CommandUtilManagerLocalization } from "@alice-localization/utils/managers/CommandUtilManager/CommandUtilManagerLocalization";
 import { Manager } from "@alice-utils/base/Manager";
@@ -16,6 +14,7 @@ import {
     Snowflake,
     ThreadOnlyChannel,
 } from "discord.js";
+import { CacheManager } from "./CacheManager";
 
 /**
  * A manager for commands and utilities.
@@ -24,51 +23,52 @@ export abstract class CommandUtilManager extends Manager {
     /**
      * The commands that are disabled in channels, mapped by channel ID.
      */
-    static readonly channelDisabledCommands: Collection<
+    static readonly channelDisabledCommands = new Collection<
         Snowflake,
         Collection<string, DisabledCommand>
-    > = new Collection();
+    >();
 
     /**
      * The commands that are disabled in guilds, mapped by guild ID.
      */
-    static readonly guildDisabledCommands: Collection<
+    static readonly guildDisabledCommands = new Collection<
         Snowflake,
         Collection<string, DisabledCommand>
-    > = new Collection();
+    >();
 
     /**
      * The commands that are globally disabled, mapped by their name.
      */
-    static readonly globallyDisabledCommands: Collection<string, number> =
-        new Collection();
+    static readonly globallyDisabledCommands = new Collection<string, number>();
 
     /**
      * The global cooldown for all commands.
      */
-    static globalCommandCooldown: number = 0;
+    static globalCommandCooldown = 0;
 
     /**
      * The event utilities that are disabled in channels, mapped by channel ID.
      */
-    static readonly channelDisabledEventUtils: Collection<
+    static readonly channelDisabledEventUtils = new Collection<
         Snowflake,
         DisabledEventUtil[]
-    > = new Collection();
+    >();
 
     /**
      * The event utilities that are disabled in guilds, mapped by guild ID.
      */
-    static readonly guildDisabledEventUtils: Collection<
+    static readonly guildDisabledEventUtils = new Collection<
         Snowflake,
         DisabledEventUtil[]
-    > = new Collection();
+    >();
 
     /**
      * The event utilities that are globally disabled, mapped by their event.
      */
-    static readonly globallyDisabledEventUtils: Collection<string, string[]> =
-        new Collection();
+    static readonly globallyDisabledEventUtils = new Collection<
+        string,
+        string[]
+    >();
 
     private static get guildSettingsDb(): GuildSettingsCollectionManager {
         return DatabaseManager.aliceDb.collections.guildSettings;
@@ -78,21 +78,22 @@ export abstract class CommandUtilManager extends Manager {
      * Initializes the manager.
      */
     static override async init(): Promise<void> {
-        const guildSettings: Collection<string, GuildSettings> =
-            await this.guildSettingsDb.get(
-                "id",
-                {},
-                {
-                    projection: {
-                        _id: 0,
-                        disabledCommands: 1,
-                        disabledEventUtils: 1,
-                        "channelSettings.id": 1,
-                        "channelSettings.disabledCommands": 1,
-                        "channelSettings.disabledEventUtils": 1,
-                    },
+        const guildSettings = await this.guildSettingsDb.get(
+            "id",
+            {},
+            {
+                projection: {
+                    _id: 0,
+                    disabledCommands: 1,
+                    disabledEventUtils: 1,
+                    preferredLocale: 1,
+                    "channelSettings.id": 1,
+                    "channelSettings.disabledCommands": 1,
+                    "channelSettings.disabledEventUtils": 1,
+                    "channelSettings.preferredLocale": 1,
                 },
-            );
+            },
+        );
 
         for (const guildSetting of guildSettings.values()) {
             this.guildDisabledCommands.set(
@@ -102,6 +103,11 @@ export abstract class CommandUtilManager extends Manager {
             this.guildDisabledEventUtils.set(
                 guildSetting.id,
                 guildSetting.disabledEventUtils,
+            );
+
+            CacheManager.guildLocale.set(
+                guildSetting.id,
+                guildSetting.preferredLocale,
             );
 
             for (const channelSetting of guildSetting.channelSettings.values()) {
@@ -116,7 +122,25 @@ export abstract class CommandUtilManager extends Manager {
                     channelSetting.id,
                     channelSetting.disabledEventUtils,
                 );
+
+                CacheManager.channelLocale.set(
+                    channelSetting.id,
+                    channelSetting.preferredLocale ?? "en",
+                );
             }
+        }
+
+        // Also initialize user locales while we're at it.
+        const userLocales =
+            await DatabaseManager.aliceDb.collections.userLocale.get(
+                "discordId",
+            );
+
+        for (const userLocale of userLocales.values()) {
+            CacheManager.userLocale.set(
+                userLocale.discordId,
+                userLocale.locale,
+            );
         }
     }
 
@@ -133,8 +157,9 @@ export abstract class CommandUtilManager extends Manager {
         event: string,
         utility: string,
     ): Promise<OperationResult> {
-        const channelEventUtilSettings: DisabledEventUtil[] | undefined =
-            this.channelDisabledEventUtils.get(channel.id);
+        const channelEventUtilSettings = this.channelDisabledEventUtils.get(
+            channel.id,
+        );
 
         const disabledEventUtil: DisabledEventUtil = {
             event: event,
@@ -152,7 +177,7 @@ export abstract class CommandUtilManager extends Manager {
 
             channelEventUtilSettings.push({ name: event, event: utility });
 
-            const guildSettings: GuildSettings =
+            const guildSettings =
                 (await this.guildSettingsDb.getGuildSettingWithChannel(
                     channel.id,
                     {
@@ -186,13 +211,15 @@ export abstract class CommandUtilManager extends Manager {
                 { name: event, event: utility },
             ]);
 
-            const guildSettings: GuildSettings | null =
-                await this.guildSettingsDb.getGuildSetting(channel.guildId, {
+            const guildSettings = await this.guildSettingsDb.getGuildSetting(
+                channel.guildId,
+                {
                     projection: {
                         _id: 0,
                         channelSettings: 1,
                     },
-                });
+                },
+            );
 
             if (!guildSettings) {
                 return this.guildSettingsDb.insert({
@@ -207,12 +234,9 @@ export abstract class CommandUtilManager extends Manager {
                 });
             }
 
-            const channelSettings: Collection<Snowflake, GuildChannelSettings> =
-                guildSettings.channelSettings;
+            const channelSettings = guildSettings.channelSettings;
 
-            const channelSetting: GuildChannelSettings = channelSettings.get(
-                channel.id,
-            ) ?? {
+            const channelSetting = channelSettings.get(channel.id) ?? {
                 id: channel.id,
                 disabledCommands: [],
                 disabledEventUtils: [],
@@ -250,7 +274,7 @@ export abstract class CommandUtilManager extends Manager {
         event: string,
         utility: string,
     ): Promise<OperationResult> {
-        const guildEventUtilSettings: DisabledEventUtil[] =
+        const guildEventUtilSettings =
             this.guildDisabledEventUtils.get(guildId) ?? [];
 
         if (
@@ -292,7 +316,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param utility The name of the event utility.
      */
     static disableUtilityGlobally(event: string, utility: string): void {
-        const disabledUtilities: string[] =
+        const disabledUtilities =
             this.globallyDisabledEventUtils.get(event) ?? [];
 
         disabledUtilities.push(utility);
@@ -313,14 +337,15 @@ export abstract class CommandUtilManager extends Manager {
         event: string,
         utility: string,
     ): Promise<OperationResult> {
-        const channelEventUtilSettings: DisabledEventUtil[] | undefined =
-            this.channelDisabledEventUtils.get(channel.id);
+        const channelEventUtilSettings = this.channelDisabledEventUtils.get(
+            channel.id,
+        );
 
         if (!channelEventUtilSettings) {
             return this.createOperationResult(true);
         }
 
-        const settingIndex: number = channelEventUtilSettings.findIndex(
+        const settingIndex = channelEventUtilSettings.findIndex(
             (v) => v.event === event && v.name === utility,
         );
 
@@ -330,7 +355,7 @@ export abstract class CommandUtilManager extends Manager {
 
         channelEventUtilSettings.splice(settingIndex, 1);
 
-        const guildSettings: GuildSettings =
+        const guildSettings =
             (await this.guildSettingsDb.getGuildSettingWithChannel(channel.id, {
                 projection: {
                     _id: 0,
@@ -338,8 +363,7 @@ export abstract class CommandUtilManager extends Manager {
                 },
             }))!;
 
-        const channelSettings: Collection<Snowflake, GuildChannelSettings> =
-            guildSettings.channelSettings;
+        const { channelSettings } = guildSettings;
 
         const disabledEventUtil: DisabledEventUtil = {
             event: event,
@@ -377,14 +401,14 @@ export abstract class CommandUtilManager extends Manager {
         event: string,
         utility: string,
     ): Promise<OperationResult> {
-        const guildEventUtilSettings: DisabledEventUtil[] | undefined =
+        const guildEventUtilSettings =
             this.guildDisabledEventUtils.get(guildId);
 
         if (!guildEventUtilSettings) {
             return this.createOperationResult(true);
         }
 
-        const settingIndex: number = guildEventUtilSettings.findIndex(
+        const settingIndex = guildEventUtilSettings.findIndex(
             (v) => v.event === event && v.name === utility,
         );
 
@@ -416,8 +440,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param utility The name of the event utility.
      */
     static enableUtilityGlobally(event: string, utility: string): void {
-        const disabledUtilities: string[] | undefined =
-            this.globallyDisabledEventUtils.get(event);
+        const disabledUtilities = this.globallyDisabledEventUtils.get(event);
 
         if (disabledUtilities) {
             disabledUtilities.splice(disabledUtilities.indexOf(utility), 1);
@@ -441,8 +464,7 @@ export abstract class CommandUtilManager extends Manager {
         cooldown: number,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: CommandUtilManagerLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (
             cooldown > 0 &&
@@ -454,12 +476,11 @@ export abstract class CommandUtilManager extends Manager {
             );
         }
 
-        const channelDisabledCommands: Collection<string, DisabledCommand> =
+        const channelDisabledCommands =
             this.channelDisabledCommands.get(channel.id) ?? new Collection();
 
         if (channelDisabledCommands.has(commandName)) {
-            const disabledCommand: DisabledCommand =
-                channelDisabledCommands.get(commandName)!;
+            const disabledCommand = channelDisabledCommands.get(commandName)!;
 
             if (disabledCommand.cooldown === cooldown) {
                 return this.createOperationResult(true);
@@ -476,11 +497,11 @@ export abstract class CommandUtilManager extends Manager {
                 channelDisabledCommands,
             );
 
-            const guildSettings: GuildSettings =
-                (await this.guildSettingsDb.getGuildSetting(channel.guildId))!;
+            const guildSettings = (await this.guildSettingsDb.getGuildSetting(
+                channel.guildId,
+            ))!;
 
-            const channelSettings: Collection<Snowflake, GuildChannelSettings> =
-                guildSettings.channelSettings;
+            const { channelSettings } = guildSettings;
 
             if (!channelSettings.has(channel.id)) {
                 return this.guildSettingsDb.updateOne(
@@ -524,8 +545,9 @@ export abstract class CommandUtilManager extends Manager {
                 new Collection([[commandName, disabledCommand]]),
             );
 
-            const guildSettings: GuildSettings | null =
-                await this.guildSettingsDb.getGuildSetting(channel.guildId);
+            const guildSettings = await this.guildSettingsDb.getGuildSetting(
+                channel.guildId,
+            );
 
             if (!guildSettings) {
                 return this.guildSettingsDb.insert({
@@ -584,8 +606,7 @@ export abstract class CommandUtilManager extends Manager {
         cooldown: number,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: CommandUtilManagerLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (
             cooldown > 0 &&
@@ -597,12 +618,10 @@ export abstract class CommandUtilManager extends Manager {
             );
         }
 
-        const guildDisabledCommands: Collection<string, DisabledCommand> =
+        const guildDisabledCommands =
             this.guildDisabledCommands.get(guildId) ?? new Collection();
 
-        const guildDisabledCommand: DisabledCommand = guildDisabledCommands.get(
-            commandName,
-        ) ?? {
+        const guildDisabledCommand = guildDisabledCommands.get(commandName) ?? {
             name: commandName,
             cooldown: cooldown,
         };

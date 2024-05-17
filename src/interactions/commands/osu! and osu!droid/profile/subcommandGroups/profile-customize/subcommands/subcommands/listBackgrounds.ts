@@ -12,7 +12,7 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const backgrounds: Collection<string, ProfileBackground> =
@@ -26,7 +26,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     _id: 0,
                     "picture_config.backgrounds": 1,
                 },
-            }
+            },
         );
 
     const ownedBackgrounds: ProfileBackground[] = (
@@ -35,8 +35,8 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         Object.assign(
             DatabaseManager.aliceDb.collections.profileBackgrounds
                 .defaultInstance,
-            v
-        )
+            v,
+        ),
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -72,7 +72,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         1,
         Math.ceil(backgrounds.size / 10),
         60,
-        onPageChange
+        onPageChange,
     );
 };
 

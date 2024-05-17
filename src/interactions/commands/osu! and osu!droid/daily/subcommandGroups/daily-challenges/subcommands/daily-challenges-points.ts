@@ -10,18 +10,18 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const challenge: Challenge | null =
         await DatabaseManager.aliceDb.collections.challenge.getById(
-            interaction.options.getString("id", true)
+            interaction.options.getString("id", true),
         );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeNotFound")
+                localization.getTranslation("challengeNotFound"),
             ),
         });
     }
@@ -29,7 +29,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!challenge.isScheduled) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeIsOngoing")
+                localization.getTranslation("challengeIsOngoing"),
             ),
         });
     }
@@ -44,14 +44,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     $set: {
                         points: points,
                     },
-                }
+                },
             );
 
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("setPointsFailed"),
-                    result.reason!
+                    result.reason!,
                 ),
             });
         }
@@ -62,8 +62,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             localization.getTranslation("setPointsSuccess"),
             challenge.challengeid,
             points.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
-            )
+                LocaleHelper.convertToBCP47(localization.language),
+            ),
         ),
     });
 };

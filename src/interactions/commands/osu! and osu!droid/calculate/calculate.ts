@@ -35,7 +35,7 @@ import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattrib
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new CalculateLocalization(
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 
     const beatmapID = BeatmapManager.getBeatmapID(

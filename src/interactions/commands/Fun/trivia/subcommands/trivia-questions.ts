@@ -18,13 +18,13 @@ import {
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: TriviaLocalization = new TriviaLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     if (CacheManager.stillHasQuestionTriviaActive.has(interaction.channelId)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("channelHasTriviaQuestionActive")
+                localization.getTranslation("channelHasTriviaQuestionActive"),
             ),
         });
     }
@@ -39,17 +39,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 interaction,
                 {
                     content: MessageCreator.createWarn(
-                        localization.getTranslation("chooseCategory")
+                        localization.getTranslation("chooseCategory"),
                     ),
                 },
                 TriviaHelper.getCategoryChoices(),
                 [interaction.user.id],
-                30
+                30,
             );
 
         if (!selectMenuInteraction) {
             CacheManager.stillHasQuestionTriviaActive.delete(
-                interaction.channelId
+                interaction.channelId,
             );
 
             return;
@@ -64,7 +64,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction,
         category,
         interaction.options.getInteger("type") ?? undefined,
-        localization.language
+        localization.language,
     );
 
     CacheManager.stillHasQuestionTriviaActive.delete(interaction.channelId);
@@ -73,7 +73,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("categoryHasNoQuestionType"),
-                TriviaHelper.getCategoryName(result.category)
+                TriviaHelper.getCategoryName(result.category),
             ),
         });
     }
@@ -94,8 +94,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 `${localization.getTranslation(
                     result.correctAnswers.length === 1
                         ? "oneCorrectAnswer"
-                        : "multipleCorrectAnswers"
-                )} ${bold(result.correctAnswers.join(", "))}.`
+                        : "multipleCorrectAnswers",
+                )} ${bold(result.correctAnswers.join(", "))}.`,
         );
     } else {
         embed.setDescription(
@@ -103,8 +103,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 `${localization.getTranslation(
                     result.correctAnswers.length === 1
                         ? "oneCorrectAnswer"
-                        : "multipleCorrectAnswers"
-                )} ${bold(result.correctAnswers.join(", "))}.`
+                        : "multipleCorrectAnswers",
+                )} ${bold(result.correctAnswers.join(", "))}.`,
         );
     }
 

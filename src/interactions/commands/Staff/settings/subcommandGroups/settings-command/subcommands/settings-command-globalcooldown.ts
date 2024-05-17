@@ -8,15 +8,15 @@ import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     CommandUtilManager.globalCommandCooldown = interaction.options.getNumber(
         "duration",
-        true
+        true,
     );
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             new SettingsLocalization(
-                await CommandHelper.getLocale(interaction)
+                CommandHelper.getLocale(interaction),
             ).getTranslation("setGlobalCommandCooldownSuccess"),
-            CommandUtilManager.globalCommandCooldown.toString()
+            CommandUtilManager.globalCommandCooldown.toString(),
         ),
     });
 };

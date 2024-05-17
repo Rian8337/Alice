@@ -7,7 +7,7 @@ import { ApplicationCommandOptionType, ChannelType } from "discord.js";
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(
         interaction,
-        await CommandHelper.getLocale(interaction),
+        CommandHelper.getLocale(interaction),
     );
 };
 

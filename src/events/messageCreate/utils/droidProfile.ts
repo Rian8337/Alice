@@ -39,7 +39,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         message.channel.send({
             content: MessageCreator.createAccept(
                 new DroidProfileLocalization(
-                    await CommandHelper.getLocale(message.author),
+                    CommandHelper.getLocale(message.author),
                 ).getTranslation("droidProfile"),
                 `${player.username}:\n<${ProfileManager.getProfileLink(uid)}>`,
             ),

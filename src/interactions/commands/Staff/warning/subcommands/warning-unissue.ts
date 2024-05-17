@@ -10,19 +10,19 @@ import { WarningManager } from "@alice-utils/managers/WarningManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const warning: Warning | null =
         await DatabaseManager.aliceDb.collections.userWarning.getByGuildWarningId(
             interaction.guildId!,
-            interaction.options.getInteger("id", true)
+            interaction.options.getInteger("id", true),
         );
 
     if (!warning) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("warningNotFound")
+                localization.getTranslation("warningNotFound"),
             ),
         });
     }
@@ -34,21 +34,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const result: OperationResult = await WarningManager.unissue(
         interaction,
         warning,
-        reason
+        reason,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("warnUnissueFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("warnUnissueSuccess")
+            localization.getTranslation("warnUnissueSuccess"),
         ),
     });
 };

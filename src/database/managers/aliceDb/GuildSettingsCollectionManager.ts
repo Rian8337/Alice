@@ -3,7 +3,6 @@ import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseColl
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
 import { OperationResult } from "structures/core/OperationResult";
 import { DatabaseGuildSettings } from "structures/database/aliceDb/DatabaseGuildSettings";
-import { GuildChannelSettings } from "structures/moderation/GuildChannelSettings";
 import { Language } from "@alice-localization/base/Language";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Snowflake } from "discord.js";
@@ -17,7 +16,7 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
     GuildSettings
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseGuildSettings
+        data: DatabaseGuildSettings,
     ) => GuildSettings = GuildSettings;
 
     override get defaultDocument(): DatabaseGuildSettings {
@@ -37,9 +36,9 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
      * @param options Options for the retrieval of the guild settings.
      * @returns The guild setting, `null` if not found.
      */
-    getGuildSetting(
+    async getGuildSetting(
         guildId: Snowflake,
-        options?: FindOptions<DatabaseGuildSettings>
+        options?: FindOptions<DatabaseGuildSettings>,
     ): Promise<GuildSettings | null> {
         return this.getOne({ id: guildId }, options);
     }
@@ -53,7 +52,7 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
      */
     getGuildSettingWithChannel(
         channelId: Snowflake,
-        options?: FindOptions<DatabaseGuildSettings>
+        options?: FindOptions<DatabaseGuildSettings>,
     ): Promise<GuildSettings | null> {
         return this.getOne({ "channelSettings.id": channelId }, options);
     }
@@ -67,20 +66,21 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
      */
     async setServerLocale(
         guildId: Snowflake,
-        language: Language
+        language: Language,
     ): Promise<OperationResult> {
-        const guildSetting: GuildSettings | null = await this.getGuildSetting(
-            guildId,
-            {
-                projection: {
-                    _id: 0,
-                    preferredLocale: 1,
-                },
-            }
-        );
+        const guildSetting = await this.getGuildSetting(guildId, {
+            projection: {
+                _id: 0,
+                preferredLocale: 1,
+            },
+        });
+
+        CacheManager.guildLocale.set(guildId, language);
 
         if (!guildSetting) {
             if (language === "en") {
+                CacheManager.guildLocale.delete(guildId);
+
                 return this.createOperationResult(true);
             }
 
@@ -100,7 +100,7 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
                 $set: {
                     preferredLocale: language,
                 },
-            }
+            },
         );
     }
 
@@ -115,20 +115,21 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
     async setChannelLocale(
         guildId: Snowflake,
         channelId: Snowflake,
-        language: Language
+        language: Language,
     ): Promise<OperationResult> {
-        const guildSetting: GuildSettings | null = await this.getGuildSetting(
-            guildId,
-            {
-                projection: {
-                    _id: 0,
-                    channelSettings: 1,
-                },
-            }
-        );
+        const guildSetting = await this.getGuildSetting(guildId, {
+            projection: {
+                _id: 0,
+                channelSettings: 1,
+            },
+        });
+
+        CacheManager.channelLocale.set(channelId, language);
 
         if (!guildSetting) {
             if (language === "en") {
+                CacheManager.channelLocale.delete(channelId);
+
                 return this.createOperationResult(true);
             }
 
@@ -145,11 +146,12 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
             });
         }
 
-        const channelSetting: GuildChannelSettings | undefined =
-            guildSetting.channelSettings.get(channelId);
+        const channelSetting = guildSetting.channelSettings.get(channelId);
 
         if (!channelSetting) {
             if (language === "en") {
+                CacheManager.channelLocale.delete(channelId);
+
                 return this.createOperationResult(true);
             }
 
@@ -164,7 +166,7 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
                             preferredLocale: language,
                         },
                     },
-                }
+                },
             );
         }
 
@@ -177,10 +179,6 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
 
         guildSetting.channelSettings.set(channelId, channelSetting);
 
-        if (CacheManager.channelLocale.has(channelId)) {
-            CacheManager.channelLocale.set(channelId, language);
-        }
-
         return DatabaseManager.aliceDb.collections.guildSettings.updateOne(
             { id: guildId },
             {
@@ -191,12 +189,12 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<
             },
             {
                 arrayFilters: [{ "channelFilter.id": channelId }],
-            }
+            },
         );
     }
 
     protected override processFindOptions(
-        options?: FindOptions<DatabaseGuildSettings>
+        options?: FindOptions<DatabaseGuildSettings>,
     ): FindOptions<DatabaseGuildSettings> | undefined {
         if (options?.projection) {
             options.projection.id = 1;

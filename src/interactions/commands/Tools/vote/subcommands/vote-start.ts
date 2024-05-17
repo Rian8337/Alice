@@ -11,7 +11,7 @@ import { bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const xpReq: number | null = interaction.options.getInteger("xpreq");
@@ -19,7 +19,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (xpReq && !NumberHelper.isPositive(xpReq)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("invalidXpReq")
+                localization.getTranslation("invalidXpReq"),
             ),
         });
     }
@@ -39,20 +39,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (choices.length <= 1) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("tooFewChoices")
+                localization.getTranslation("tooFewChoices"),
             ),
         });
     }
 
     const voteInfo: Voting | null =
         await DatabaseManager.aliceDb.collections.voting.getCurrentVoteInChannel(
-            interaction.channelId
+            interaction.channelId,
         );
 
     if (voteInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("ongoingVoteInChannel")
+                localization.getTranslation("ongoingVoteInChannel"),
             ),
         });
     }
@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     });
 
     let string: string = `${bold(
-        `${localization.getTranslation("topic")}: ${topic}`
+        `${localization.getTranslation("topic")}: ${topic}`,
     )}\n\n`;
 
     for (let i = 0; i < choices.length; ++i) {
@@ -80,7 +80,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content:
             MessageCreator.createAccept(
-                localization.getTranslation("voteStartSuccess")
+                localization.getTranslation("voteStartSuccess"),
             ) + `\n${string}`,
     });
 };

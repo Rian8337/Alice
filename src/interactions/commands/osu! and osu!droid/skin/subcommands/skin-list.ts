@@ -13,7 +13,7 @@ import { Collection, EmbedBuilder, GuildMember, User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: SkinLocalization = new SkinLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
@@ -28,13 +28,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     name: 1,
                     description: 1,
                 },
-            }
+            },
         );
 
     if (skins.size === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noSkinSetForUser")
+                localization.getTranslation("noSkinSetForUser"),
             ),
         });
     }
@@ -49,8 +49,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     embed.setTitle(
         StringHelper.formatString(
             localization.getTranslation("userSkinList"),
-            user.toString()
-        )
+            user.toString(),
+        ),
     );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
@@ -60,7 +60,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     name: `${5 * (page - 1) + i + 1}. ${v.name}`,
                     value: v.description,
                 };
-            })
+            }),
         );
     };
 
@@ -71,7 +71,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         1,
         Math.ceil(skins.size / 5),
         90,
-        onPageChange
+        onPageChange,
     );
 };
 

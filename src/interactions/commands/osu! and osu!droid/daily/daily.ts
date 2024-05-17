@@ -8,7 +8,7 @@ import { Constants } from "@alice-core/Constants";
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(
         interaction,
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 };
 

@@ -11,19 +11,19 @@ import { EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const warning: Warning | null =
         await DatabaseManager.aliceDb.collections.userWarning.getByGuildWarningId(
             interaction.guildId!,
-            interaction.options.getInteger("id", true)
+            interaction.options.getInteger("id", true),
         );
 
     if (!warning) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("warningNotFound")
+                localization.getTranslation("warningNotFound"),
             ),
         });
     }
@@ -35,14 +35,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noPermissionToViewWarning")
+                localization.getTranslation("noPermissionToViewWarning"),
             ),
         });
     }
 
     const embed: EmbedBuilder = EmbedCreator.createWarningEmbed(
         warning,
-        localization.language
+        localization.language,
     );
 
     InteractionHelper.reply(interaction, {

@@ -20,18 +20,18 @@ import { BaseMessageOptions, bold, Collection, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: DanCourseLocalization = new DanCourseLocalization(
-        await CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
     const course: DanCourse | null =
         await DatabaseManager.aliceDb.collections.danCourses.getCourse(
-            interaction.options.getString("name", true)
+            interaction.options.getString("name", true),
         );
 
     if (!course) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("courseNotFound")
+                localization.getTranslation("courseNotFound"),
             ),
         });
     }
@@ -44,13 +44,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const firstPageScores: DanCourseLeaderboardScore[] =
         await DatabaseManager.aliceDb.collections.danCourseLeaderboardScores.getLeaderboard(
             course.hash,
-            1
+            1,
         );
 
     if (firstPageScores.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("courseHasNoScores")
+                localization.getTranslation("courseHasNoScores"),
             ),
         });
     }
@@ -78,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         let res: string = ModUtil.droidStringToMods(mods).reduce(
             (a, v) => a + v.acronym,
-            ""
+            "",
         );
 
         if (res) {
@@ -109,7 +109,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const getScoreDescription = (score: DanCourseLeaderboardScore): string => {
         return (
             `${arrow} ${BeatmapManager.getRankEmote(
-                <ScoreRank>score.rank
+                <ScoreRank>score.rank,
             )} ${arrow} ${NumberHelper.round(
                 new Accuracy({
                     n300: score.perfect,
@@ -117,18 +117,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     n50: score.bad,
                     nmiss: score.miss,
                 }).value() * 100,
-                2
+                2,
             )}%\n` +
             `${arrow} ${bold(
-                NumberHelper.round(score.grade, 2).toString()
+                NumberHelper.round(score.grade, 2).toString(),
             )} ${arrow} ${score.score.toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language)
+                LocaleHelper.convertToBCP47(localization.language),
             )} ${arrow} ${score.maxCombo}x ${arrow} [${score.perfect}/${
                 score.good
             }/${score.bad}/${score.miss}]\n` +
             `\`${DateTimeFormatHelper.dateToLocaleString(
                 new Date(score.date),
-                localization.language
+                localization.language,
             )}\``
         );
     };
@@ -141,7 +141,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             scoreCache.get(actualPage) ??
             (await DatabaseManager.aliceDb.collections.danCourseLeaderboardScores.getLeaderboard(
                 course.hash,
-                page
+                page,
             ));
 
         if (!scoreCache.has(actualPage)) {
@@ -158,13 +158,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         embed.setTitle(course.courseName).addFields({
             name: `${bold(localization.getTranslation("topScore"))}`,
             value: `${bold(
-                `${topScore.username}${getModString(topScore)}`
+                `${topScore.username}${getModString(topScore)}`,
             )}\n${getScoreDescription(topScore)}`,
         });
 
         const displayedScores: DanCourseLeaderboardScore[] = scores.slice(
             5 * pageRemainder,
-            5 + 5 * pageRemainder
+            5 + 5 * pageRemainder,
         );
         let i = 10 * actualPage + 5 * pageRemainder;
 
@@ -184,7 +184,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         [interaction.user.id],
         1,
         120,
-        onPageChange
+        onPageChange,
     );
 };
 

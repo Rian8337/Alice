@@ -18,7 +18,7 @@ import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const localization: MapshareSubmissionLocalization =
         new MapshareSubmissionLocalization(
-            await CommandHelper.getLocale(interaction),
+            CommandHelper.getLocale(interaction),
         );
 
     const beatmapId: number = BeatmapManager.getBeatmapID(
