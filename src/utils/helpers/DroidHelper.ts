@@ -120,7 +120,7 @@ export abstract class DroidHelper {
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.user,
             )} WHERE ${
-                typeof uidOrUsername === "number" ? "uid" : "username"
+                typeof uidOrUsername === "number" ? "id" : "username"
             } = $1;`,
             [uidOrUsername],
         );
