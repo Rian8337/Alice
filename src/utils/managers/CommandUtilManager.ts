@@ -14,7 +14,6 @@ import {
     Snowflake,
     ThreadOnlyChannel,
 } from "discord.js";
-import { CacheManager } from "./CacheManager";
 
 /**
  * A manager for commands and utilities.
