@@ -57,7 +57,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE hash = $1 ORDER BY score DESC LIMIT $2 OFFSET $3;`,
+            )} WHERE hash = ? ORDER BY score DESC LIMIT ? OFFSET ?;`,
             [hash, scoresPerPage, (page - 1) * scoresPerPage],
         );
 
@@ -90,7 +90,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE uid = $1 ORDER BY id DESC LIMIT $2 OFFSET $3;`,
+            )} WHERE uid = ? ORDER BY id DESC LIMIT ? OFFSET ?;`,
             [uid, amount, offset],
         );
 
@@ -121,7 +121,7 @@ export abstract class DroidHelper {
                 OfficialDatabaseTables.user,
             )} WHERE ${
                 typeof uidOrUsername === "number" ? "id" : "username"
-            } = $1;`,
+            } = ?;`,
             [uidOrUsername],
         );
 
@@ -144,7 +144,7 @@ export abstract class DroidHelper {
         const rankQuery = await officialPool.query<RowDataPacket[]>(
             `SELECT COUNT(*) + 1 AS rank FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.user,
-            )} WHERE score > $1;`,
+            )} WHERE score > ?;`,
             [score],
         );
 
@@ -175,7 +175,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE uid = $1 AND hash = $2;`,
+            )} WHERE uid = ? AND hash = ?;`,
             [uid, hash],
         );
 
@@ -223,7 +223,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE uid = $1 ORDER BY $2 DESC LIMIT $2 OFFSET $3;`,
+            )} WHERE uid = ? ORDER BY ? DESC LIMIT ? OFFSET ?;`,
             [uid, order, scoresPerPage, (page - 1) * scoresPerPage],
         );
 
