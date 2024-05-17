@@ -57,7 +57,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE hash = ? ORDER BY score DESC LIMIT ? OFFSET ?;`,
+            )} WHERE hash = ? AND score > 0 ORDER BY score DESC LIMIT ? OFFSET ?;`,
             [hash, scoresPerPage, (page - 1) * scoresPerPage],
         );
 
@@ -90,7 +90,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE uid = ? ORDER BY id DESC LIMIT ? OFFSET ?;`,
+            )} WHERE uid = ? AND score > 0 ORDER BY id DESC LIMIT ? OFFSET ?;`,
             [uid, amount, offset],
         );
 
@@ -175,7 +175,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE uid = ? AND hash = ?;`,
+            )} WHERE uid = ? AND hash = ? AND score > 0;`,
             [uid, hash],
         );
 
@@ -223,7 +223,7 @@ export abstract class DroidHelper {
                 databaseColumns?.join() || "*"
             } FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.score,
-            )} WHERE uid = ? ORDER BY ? DESC LIMIT ? OFFSET ?;`,
+            )} WHERE uid = ? AND score > 0 ORDER BY ? DESC LIMIT ? OFFSET ?;`,
             [uid, order, scoresPerPage, (page - 1) * scoresPerPage],
         );
 
