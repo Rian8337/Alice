@@ -155,8 +155,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
         score = recentPlays[index - 1];
     } else {
-        score = (
-            await DroidHelper.getRecentScores(player.id, 1, index - 1, [
+        const recentPlays = await DroidHelper.getRecentScores(
+            player.id,
+            1,
+            index - 1,
+            [
                 "id",
                 "hash",
                 "score",
@@ -169,8 +172,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 "bad",
                 "mark",
                 "date",
-            ])
-        )[0];
+            ],
+        ).then(async (res) =>
+            considerNonOverwrite
+                ? await ScoreHelper.getRecentScores(player.id, res)
+                : res,
+        );
+
+        score = recentPlays[0];
     }
 
     if (!score) {
