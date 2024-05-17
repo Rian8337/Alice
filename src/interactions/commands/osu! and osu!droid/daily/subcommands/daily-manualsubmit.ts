@@ -1,12 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
-import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ChallengeCompletionData } from "structures/challenge/ChallengeCompletionData";
-import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -19,30 +12,19 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { RequestResponse } from "@rian8337/osu-base";
-import {
-    ReplayAnalyzer,
-    ReplayData,
-} from "@rian8337/osu-droid-replay-analyzer";
-import { Player } from "@rian8337/osu-droid-utilities";
-import {
-    Collection,
-    GuildMember,
-    EmbedBuilder,
-    Snowflake,
-    Attachment,
-    bold,
-} from "discord.js";
+import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
+import { GuildMember, bold } from "discord.js";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,
-    interaction
+    interaction,
 ) => {
-    const localization: DailyLocalization = new DailyLocalization(
-        await CommandHelper.getLocale(interaction)
+    const localization = new DailyLocalization(
+        await CommandHelper.getLocale(interaction),
     );
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
@@ -52,38 +34,33 @@ export const run: SlashSubcommand<true>["run"] = async (
                     uid: 1,
                     clan: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
 
     await InteractionHelper.deferReply(interaction);
 
-    const replay: Attachment = interaction.options.getAttachment(
-        "replay",
-        true
-    );
-
-    const replayData: RequestResponse = await RESTManager.request(replay.url);
+    const replay = interaction.options.getAttachment("replay", true);
+    const replayData = await RESTManager.request(replay.url);
 
     if (replayData.statusCode !== 200) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("replayDownloadFail")
+                localization.getTranslation("replayDownloadFail"),
             ),
         });
     }
 
-    const replayAnalyzer: ReplayAnalyzer = new ReplayAnalyzer({ scoreID: 0 });
-
+    const replayAnalyzer = new ReplayAnalyzer({ scoreID: 0 });
     replayAnalyzer.originalODR = replayData.data;
 
     try {
@@ -91,17 +68,17 @@ export const run: SlashSubcommand<true>["run"] = async (
     } catch {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("replayInvalid")
+                localization.getTranslation("replayInvalid"),
             ),
         });
     }
 
-    const data: ReplayData = replayAnalyzer.data!;
+    const data = replayAnalyzer.data!;
 
     if (data.playerName !== bindInfo.username) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("replayDoesntHaveSameUsername")
+                localization.getTranslation("replayDoesntHaveSameUsername"),
             ),
         });
     }
@@ -109,20 +86,20 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (data.replayVersion < 3) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("replayTooOld")
+                localization.getTranslation("replayTooOld"),
             ),
         });
     }
 
-    const challenge: Challenge | null =
+    const challenge =
         await DatabaseManager.aliceDb.collections.challenge.getFromHash(
-            data.hash
+            data.hash,
         );
 
     if (!challenge) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeFromReplayNotFound")
+                localization.getTranslation("challengeFromReplayNotFound"),
             ),
         });
     }
@@ -130,50 +107,42 @@ export const run: SlashSubcommand<true>["run"] = async (
     if (!challenge.isOngoing) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("challengeNotOngoing")
+                localization.getTranslation("challengeNotOngoing"),
             ),
         });
     }
 
-    const completionStatus: OperationResult =
-        await challenge.checkReplayCompletion(
-            replayAnalyzer,
-            localization.language
-        );
+    const completionStatus = await challenge.checkReplayCompletion(
+        replayAnalyzer,
+        localization.language,
+    );
 
     if (!completionStatus.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("challengeNotCompleted"),
-                completionStatus.reason!
+                completionStatus.reason!,
             ),
         });
     }
 
-    const bonusLevel: number = await challenge.calculateBonusLevel(
-        replayAnalyzer
-    );
+    const bonusLevel = await challenge.calculateBonusLevel(replayAnalyzer);
+    const playerInfoDbManager = DatabaseManager.aliceDb.collections.playerInfo;
 
-    const playerInfoDbManager: PlayerInfoCollectionManager =
-        DatabaseManager.aliceDb.collections.playerInfo;
-
-    const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user,
-        {
-            projection: {
-                _id: 0,
-                challenges: 1,
-                points: 1,
-                alicecoins: 1,
-            },
-        }
-    );
+    const playerInfo = await playerInfoDbManager.getFromUser(interaction.user, {
+        projection: {
+            _id: 0,
+            challenges: 1,
+            points: 1,
+            alicecoins: 1,
+        },
+    });
 
     // Ask for verification from staff
-    const staffMembers: Collection<Snowflake, GuildMember> =
+    const staffMembers =
         await PermissionHelper.getMainGuildStaffMembers(client);
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     });
@@ -192,15 +161,15 @@ export const run: SlashSubcommand<true>["run"] = async (
                 ).toFixed(2)}%\n` +
                 `${bold(localization.getTranslation("rank"))}: ${data.rank}\n` +
                 `${bold(
-                    localization.getTranslation("time")
+                    localization.getTranslation("time"),
                 )}: ${DateTimeFormatHelper.dateToLocaleString(
                     data.time,
-                    localization.language
+                    localization.language,
                 )}\n\n` +
                 `${bold(localization.getTranslation("hitGreat"))}: ${
                     data.accuracy.n300
                 } (${data.hit300k} ${localization.getTranslation(
-                    "geki"
+                    "geki",
                 )} + ${localization.getTranslation("katu")})\n` +
                 `${bold(localization.getTranslation("hitGood"))}: ${
                     data.accuracy.n100
@@ -212,21 +181,21 @@ export const run: SlashSubcommand<true>["run"] = async (
                     data.accuracy.nmiss
                 }\n\n` +
                 `${bold(
-                    localization.getTranslation("bonusLevelReached")
-                )}: ${bonusLevel}`
+                    localization.getTranslation("bonusLevelReached"),
+                )}: ${bonusLevel}`,
         );
 
-    const confirmation: boolean = await MessageButtonCreator.createConfirmation(
+    const confirmation = await MessageButtonCreator.createConfirmation(
         interaction,
         {
             content: MessageCreator.createWarn(
-                localization.getTranslation("manualSubmissionConfirmation")
+                localization.getTranslation("manualSubmissionConfirmation"),
             ),
             embeds: [embed],
         },
         [...staffMembers.keys()],
         30,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -234,14 +203,15 @@ export const run: SlashSubcommand<true>["run"] = async (
     }
 
     // Keep track of how many points are gained
-    let pointsGained: number = bonusLevel * 2 + challenge.points;
+    let pointsGained = bonusLevel * 2 + challenge.points;
 
     if (playerInfo) {
-        const challengeData: ChallengeCompletionData =
-            playerInfo.challenges.get(challenge.challengeid) ?? {
-                id: challenge.challengeid,
-                highestLevel: bonusLevel,
-            };
+        const challengeData = playerInfo.challenges.get(
+            challenge.challengeid,
+        ) ?? {
+            id: challenge.challengeid,
+            highestLevel: bonusLevel,
+        };
 
         if (playerInfo.challenges.has(challenge.challengeid)) {
             // Player has completed challenge. Subtract the challenge's original points
@@ -254,7 +224,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
             challengeData.highestLevel = Math.max(
                 bonusLevel,
-                challengeData.highestLevel
+                challengeData.highestLevel,
             );
 
             await playerInfoDbManager.updateOne(
@@ -273,7 +243,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                     arrayFilters: [
                         { "challengeFilter.id": challenge.challengeid },
                     ],
-                }
+                },
             );
         } else {
             playerInfo.challenges.set(challenge.challengeid, challengeData);
@@ -288,14 +258,16 @@ export const run: SlashSubcommand<true>["run"] = async (
                         alicecoins: pointsGained * 2,
                         points: pointsGained,
                     },
-                }
+                },
             );
         }
     } else {
-        const player: Player = (await Player.getInformation(bindInfo.uid))!;
+        const player = (await DroidHelper.getPlayer(bindInfo.uid, [
+            "username",
+        ]))!;
 
         await playerInfoDbManager.insert({
-            uid: player.uid,
+            uid: bindInfo.uid,
             username: player.username,
             discordid: interaction.user.id,
             points: pointsGained,
@@ -310,9 +282,9 @@ export const run: SlashSubcommand<true>["run"] = async (
     }
 
     if (bindInfo.clan) {
-        const clan: Clan =
+        const clan =
             (await DatabaseManager.elainaDb.collections.clan.getFromName(
-                bindInfo.clan
+                bindInfo.clan,
             ))!;
 
         clan.incrementPower(pointsGained);
@@ -320,7 +292,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         await clan.updateClan();
     }
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
@@ -331,8 +303,8 @@ export const run: SlashSubcommand<true>["run"] = async (
             (pointsGained * 2).toLocaleString(BCP47),
             ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(BCP47),
             ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString(
-                BCP47
-            )
+                BCP47,
+            ),
         ),
     });
 };

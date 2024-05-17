@@ -27,6 +27,7 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
 import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
 import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattributes/ResponseDifficultyAttributes";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
 
 /**
  * A helper for droid performance points related things.
@@ -271,7 +272,7 @@ export abstract class DPPHelper {
      */
     static scoreToPPEntry(
         beatmapTitle: string,
-        score: Score,
+        score: Pick<OfficialDatabaseScore, "uid" | "hash"> | Score,
         attributes: CompleteCalculationAttributes<
             DroidDifficultyAttributes,
             DroidPerformanceAttributes

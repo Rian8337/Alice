@@ -1,5 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
@@ -11,6 +12,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
@@ -83,20 +85,26 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     await InteractionHelper.deferReply(interaction);
 
     const discordid = interaction.options.getUser("user")?.id;
-    let uid: number | undefined | null = interaction.options.getInteger("uid");
+    let uid = interaction.options.getInteger("uid");
     const username = interaction.options.getString("username");
 
     const dbManager = DatabaseManager.elainaDb.collections.userBind;
-
-    let bindInfo: UserBind | null | undefined;
-
-    let player: Player | null = null;
+    let bindInfo: UserBind | null = null;
+    let player:
+        | Pick<OfficialDatabaseUser, "id" | "username" | "playcount">
+        | Player
+        | null = null;
 
     switch (true) {
         case !!uid:
-            player = await Player.getInformation(uid!);
+            player = await DroidHelper.getPlayer(uid!, [
+                "id",
+                "username",
+                "playcount",
+            ]);
 
-            uid ??= player?.uid;
+            uid ??=
+                (player instanceof Player ? player.uid : player?.id) ?? null;
 
             break;
         case !!username:
@@ -108,9 +116,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(username);
+            player = await DroidHelper.getPlayer(username, [
+                "id",
+                "username",
+                "playcount",
+            ]);
 
-            uid ??= player?.uid;
+            uid ??=
+                (player instanceof Player ? player.uid : player?.id) ?? null;
 
             break;
         default:
@@ -139,7 +152,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(bindInfo.uid);
+            player = await DroidHelper.getPlayer(bindInfo.uid, [
+                "id",
+                "username",
+                "playcount",
+            ]);
     }
 
     if (!player) {
@@ -150,7 +167,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (player.recentPlays.length === 0) {
+    if (
+        (player instanceof Player ? player.playCount : player.playcount) === 0
+    ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerHasNoRecentPlays"),
@@ -173,7 +192,24 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score = await Score.getFromHash(player.uid, beatmap.hash);
+    const score = await DroidHelper.getScore(
+        player instanceof Player ? player.uid : player.id,
+        beatmap.hash,
+        [
+            "id",
+            "combo",
+            "mark",
+            "mode",
+            "perfect",
+            "good",
+            "bad",
+            "miss",
+            "filename",
+            "hash",
+            "score",
+            "date",
+        ],
+    );
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
@@ -187,16 +223,44 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
+    let realMods: (Mod & IModApplicableToDroid)[];
+    let realForceCS: number | undefined;
+    let realForceAR: number | undefined;
+    let realForceOD: number | undefined;
+    let realForceHP: number | undefined;
+    let realSpeedMultiplier: number;
+    let realOldStatistics: boolean;
+
+    if (score instanceof Score) {
+        realMods = score.mods;
+        realForceCS = score.forceCS;
+        realForceAR = score.forceAR;
+        realForceOD = score.forceOD;
+        realForceHP = score.forceHP;
+        realSpeedMultiplier = score.speedMultiplier;
+        realOldStatistics = score.oldStatistics;
+    } else {
+        const parsedMods = DroidHelper.parseMods(score.mode);
+
+        realMods = parsedMods.mods;
+        realForceCS = parsedMods.forceCS;
+        realForceAR = parsedMods.forceAR;
+        realForceOD = parsedMods.forceOD;
+        realForceHP = parsedMods.forceHP;
+        realSpeedMultiplier = parsedMods.speedMultiplier;
+        realOldStatistics = parsedMods.oldStatistics;
+    }
+
     const simulatedMods = ModUtil.pcStringToMods(modInput ?? "");
 
     if (
         StringHelper.sortAlphabet(
-            score.mods.reduce((a, v) => a + v.acronym, ""),
+            realMods.reduce((a, v) => a + v.acronym, ""),
         ) ===
             StringHelper.sortAlphabet(
                 simulatedMods.reduce((a, v) => a + v.acronym, ""),
             ) &&
-        (speedMultiplierInput ?? 1) === score.speedMultiplier
+        (speedMultiplierInput ?? 1) === realSpeedMultiplier
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -269,12 +333,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const realOD = calculateDroidDifficultyStatistics({
         overallDifficulty: beatmap.od,
         // Do not apply speed-changing mods as they will affect the hit window.
-        mods: ModUtil.removeSpeedChangingMods(score.mods),
+        mods: ModUtil.removeSpeedChangingMods(realMods),
         convertOverallDifficulty: false,
     }).overallDifficulty;
 
     const realHitWindow = new DroidHitWindow(realOD);
-    const realIsPrecise = score.mods.some((m) => m instanceof ModPrecise);
+    const realIsPrecise = realMods.some((m) => m instanceof ModPrecise);
 
     const realHitWindow300 = realHitWindow.hitWindowFor300(realIsPrecise);
     const realHitWindow100 = realHitWindow.hitWindowFor100(realIsPrecise);
@@ -482,7 +546,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 
     // Reprocess rank.
-    let rank: ScoreRank;
+    let newRank: ScoreRank;
     const isHidden = simulatedMods.some(
         (m) => m instanceof ModHidden || m instanceof ModFlashlight,
     );
@@ -490,50 +554,86 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     switch (true) {
         case simulatedAccuracy.value() === 1:
-            rank = isHidden ? "XH" : "X";
+            newRank = isHidden ? "XH" : "X";
             break;
         case hit300Ratio > 0.9 &&
             simulatedAccuracy.n50 / beatmap.objects < 0.01 &&
             simulatedAccuracy.nmiss === 0:
-            rank = isHidden ? "SH" : "S";
+            newRank = isHidden ? "SH" : "S";
             break;
         case (hit300Ratio > 0.8 && simulatedAccuracy.nmiss === 0) ||
             hit300Ratio > 0.9:
-            rank = "A";
+            newRank = "A";
             break;
         case (hit300Ratio > 0.7 && simulatedAccuracy.nmiss === 0) ||
             hit300Ratio > 0.8:
-            rank = "B";
+            newRank = "B";
             break;
         case hit300Ratio > 0.6:
-            rank = "C";
+            newRank = "C";
             break;
         default:
-            rank = "D";
+            newRank = "D";
     }
 
-    // Assign calculated properties to the score object.
-    score.accuracy = simulatedAccuracy;
-    score.combo = simulatedMaxCombo;
-    score.score = simulatedTotalScore;
-    score.speedMultiplier = simulatedSpeedMultiplier;
-    score.mods = <(Mod & IModApplicableToDroid)[]>(
-        simulatedMods.filter((m) => m.isApplicableToDroid())
-    );
-    score.rank = rank;
+    // Assign calculated properties to the score object and construct calculation.
+    let calcParams: PerformanceCalculationParameters;
 
-    // Construct calculation
-    const calcParams = new PerformanceCalculationParameters({
-        accuracy: simulatedAccuracy,
-        combo: simulatedMaxCombo,
-        forceCS: score.forceCS,
-        forceAR: score.forceAR,
-        forceOD: score.forceOD,
-        forceHP: score.forceHP,
-        mods: score.mods,
-        oldStatistics: score.oldStatistics,
-        customSpeedMultiplier: simulatedSpeedMultiplier,
-    });
+    if (score instanceof Score) {
+        score.accuracy = simulatedAccuracy;
+        score.combo = simulatedMaxCombo;
+        score.score = simulatedTotalScore;
+        score.speedMultiplier = simulatedSpeedMultiplier;
+        score.mods = <(Mod & IModApplicableToDroid)[]>(
+            simulatedMods.filter((m) => m.isApplicableToDroid())
+        );
+        score.rank = newRank;
+
+        calcParams = new PerformanceCalculationParameters({
+            accuracy: simulatedAccuracy,
+            combo: simulatedMaxCombo,
+            forceCS: realForceCS,
+            forceAR: realForceAR,
+            forceOD: realForceOD,
+            forceHP: realForceHP,
+            mods: score.mods,
+            oldStatistics: score.oldStatistics,
+            customSpeedMultiplier: simulatedSpeedMultiplier,
+        });
+    } else {
+        const mods = <(Mod & IModApplicableToDroid)[]>(
+            simulatedMods.filter((m) => m.isApplicableToDroid())
+        );
+
+        score.score = simulatedTotalScore;
+        score.combo = simulatedMaxCombo;
+        score.perfect = simulatedAccuracy.n300;
+        score.good = simulatedAccuracy.n100;
+        score.bad = simulatedAccuracy.n50;
+        score.mark = newRank;
+        score.mode = DroidHelper.modsToDatabaseString({
+            mods: mods,
+            forceCS: realForceCS,
+            forceAR: realForceAR,
+            forceOD: realForceOD,
+            forceHP: realForceHP,
+            speedMultiplier: simulatedSpeedMultiplier,
+            oldStatistics: realOldStatistics,
+        });
+        score.miss = simulatedAccuracy.nmiss;
+
+        calcParams = new PerformanceCalculationParameters({
+            accuracy: simulatedAccuracy,
+            combo: simulatedMaxCombo,
+            forceCS: realForceCS,
+            forceAR: realForceAR,
+            forceOD: realForceOD,
+            forceHP: realForceHP,
+            mods: mods,
+            oldStatistics: realOldStatistics,
+            customSpeedMultiplier: simulatedSpeedMultiplier,
+        });
+    }
 
     const droidAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
         beatmap.beatmapId,
@@ -553,7 +653,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
-        player.avatarURL,
+        player instanceof Player
+            ? player.avatarURL
+            : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
         droidAttribs,
         osuAttribs,

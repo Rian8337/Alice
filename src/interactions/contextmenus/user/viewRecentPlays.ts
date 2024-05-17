@@ -1,6 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserContextMenuCommand } from "structures/core/UserContextMenuCommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { ViewRecentPlaysLocalization } from "@alice-localization/interactions/contextmenus/user/viewRecentPlays/ViewRecentPlaysLocalization";
@@ -10,28 +9,27 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
 
 export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
-    const localization: ViewRecentPlaysLocalization =
-        new ViewRecentPlaysLocalization(
-            await CommandHelper.getLocale(interaction)
-        );
+    const localization = new ViewRecentPlaysLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
     if (interaction.targetUser.bot) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.userNotBindedReject
-                )
+                    Constants.userNotBindedReject,
+                ),
             ),
         });
     }
 
-    const isSelfExecution: boolean =
-        interaction.user.id === interaction.targetUser.id;
+    const isSelfExecution = interaction.user.id === interaction.targetUser.id;
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.targetUser,
             {
@@ -39,7 +37,7 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                     _id: 0,
                     uid: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
@@ -48,15 +46,18 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                 new ConstantsLocalization(localization.language).getTranslation(
                     isSelfExecution
                         ? Constants.selfNotBindedReject
-                        : Constants.userNotBindedReject
-                )
+                        : Constants.userNotBindedReject,
+                ),
             ),
         });
     }
 
     await InteractionHelper.deferReply(interaction);
 
-    const player: Player | null = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, [
+        "id",
+        "username",
+    ]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -64,19 +65,56 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
                 localization.getTranslation(
                     isSelfExecution
                         ? "selfProfileNotFound"
-                        : "userProfileNotFound"
-                )
+                        : "userProfileNotFound",
+                ),
             ),
         });
     }
 
-    const recentPlays: (Score | RecentPlay)[] =
-        await ScoreHelper.getRecentScores(player.uid, player.recentPlays);
+    let recentPlays: (
+        | Pick<
+              OfficialDatabaseScore,
+              | "filename"
+              | "mark"
+              | "mode"
+              | "score"
+              | "combo"
+              | "date"
+              | "perfect"
+              | "good"
+              | "bad"
+              | "miss"
+          >
+        | Score
+        | RecentPlay
+    )[];
+
+    if (player instanceof Player) {
+        recentPlays = player.recentPlays;
+    } else {
+        recentPlays = await DroidHelper.getRecentScores(
+            player.id,
+            undefined,
+            undefined,
+            [
+                "filename",
+                "mark",
+                "mode",
+                "score",
+                "combo",
+                "date",
+                "perfect",
+                "good",
+                "bad",
+                "miss",
+            ],
+        );
+    }
 
     if (recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("playerHasNoRecentPlays")
+                localization.getTranslation("playerHasNoRecentPlays"),
             ),
         });
     }
@@ -84,7 +122,7 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
     ScoreDisplayHelper.showRecentPlays(
         interaction,
         player.username,
-        recentPlays
+        recentPlays,
     );
 };
 

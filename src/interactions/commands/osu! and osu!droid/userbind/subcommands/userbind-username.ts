@@ -2,29 +2,24 @@ import { Player } from "@rian8337/osu-droid-utilities";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OperationResult } from "structures/core/OperationResult";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { UserbindLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { Constants } from "@alice-core/Constants";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: UserbindLocalization = new UserbindLocalization(
+    const localization = new UserbindLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
     await InteractionHelper.deferReply(interaction);
 
-    const username: string = interaction.options.getString("username", true);
-
-    const email: string | null = interaction.options.getString("email");
-
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const username = interaction.options.getString("username", true);
+    const email = interaction.options.getString("email");
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     if (!StringHelper.isUsernameValid(username)) {
         return InteractionHelper.reply(interaction, {
@@ -34,7 +29,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const player: Player | null = await Player.getInformation(username);
+    const player = await DroidHelper.getPlayer(username, [
+        "id",
+        "username",
+        "email",
+    ]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -44,10 +43,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const uidBindInfo: UserBind | null = await dbManager.getFromUid(
-        player.uid,
-        { projection: { _id: 0 } },
-    );
+    const uid = player instanceof Player ? player.uid : player.id;
+
+    const uidBindInfo = await dbManager.getFromUid(uid, {
+        projection: { _id: 0 },
+    });
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
@@ -57,18 +57,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const userBindInfo: UserBind | null = await dbManager.getFromUser(
-        interaction.user,
-        {
-            projection: {
-                _id: 0,
-                previous_bind: 1,
-            },
+    const userBindInfo = await dbManager.getFromUser(interaction.user, {
+        projection: {
+            _id: 0,
+            previous_bind: 1,
         },
-    );
+    });
 
     if (userBindInfo) {
-        const isUidBinded: boolean = userBindInfo.isUidBinded(player.uid);
+        const isUidBinded = userBindInfo.isUidBinded(uid);
 
         if (!isUidBinded) {
             if (interaction.guild?.id !== Constants.mainServer) {
@@ -118,10 +115,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             }
         }
 
-        const result: OperationResult = await userBindInfo.bind(
-            player,
-            localization.language,
-        );
+        const result = await userBindInfo.bind(player, localization.language);
 
         if (!result.success) {
             return InteractionHelper.reply(interaction, {
@@ -180,11 +174,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
         }
 
-        const result: OperationResult = await dbManager.insert({
+        const result = await dbManager.insert({
             discordid: interaction.user.id,
-            uid: player.uid,
+            uid: uid,
             username: player.username,
-            previous_bind: [player.uid],
+            previous_bind: [uid],
         });
 
         if (!result.success) {

@@ -13,7 +13,6 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Collection, Snowflake } from "discord.js";
 import { Clan } from "./Clan";
 import { ObjectId, UpdateFilter } from "mongodb";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { consola } from "consola";
 import {
     MapInfo,
@@ -32,6 +31,9 @@ import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendR
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { DatabaseInGamePP } from "@alice-structures/database/aliceDb/DatabaseInGamePP";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
 
 /**
  * Represents a Discord user who has at least one osu!droid account bound.
@@ -125,7 +127,7 @@ export class UserBind extends Manager {
      */
     readonly _id?: ObjectId;
 
-    private get bindDb(): UserBindCollectionManager {
+    private get bindDb() {
         return DatabaseManager.elainaDb.collections.userBind;
     }
 
@@ -284,9 +286,10 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const score = await Score.getFromHash(
+            const score = await DroidHelper.getScore(
                 ppEntry.uid,
                 beatmapInfo.hash,
+                ["id", "uid", "hash"],
             );
 
             if (!score) {
@@ -320,7 +323,7 @@ export class UserBind extends Manager {
                 } else {
                     await DPPProcessorRESTManager.persistOnlineReplay(
                         ppEntry.uid,
-                        score.scoreID,
+                        score instanceof Score ? score.scoreID : score.id,
                     );
                 }
             }
@@ -406,7 +409,7 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const player = await Player.getInformation(uid);
+            const player = await DroidHelper.getPlayer(uid, ["id"]);
             if (!player) {
                 continue;
             }
@@ -602,7 +605,11 @@ export class UserBind extends Manager {
         const newList = new Collection<string, PrototypePPEntry>();
 
         for (const ppEntry of this.pp.values()) {
-            const score = await Score.getFromHash(ppEntry.uid, ppEntry.hash);
+            const score = await DroidHelper.getScore(
+                ppEntry.uid,
+                ppEntry.hash,
+                ["id", "uid", "hash", "mode"],
+            );
 
             if (!score) {
                 continue;
@@ -616,9 +623,10 @@ export class UserBind extends Manager {
                 continue;
             }
 
+            const scoreId = score instanceof Score ? score.scoreID : score.id;
             const liveAttribs =
                 await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                    score.scoreID,
+                    scoreId,
                     Modes.droid,
                     PPCalculationMethod.live,
                 );
@@ -629,7 +637,7 @@ export class UserBind extends Manager {
 
             const rebalAttribs =
                 await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                    score.scoreID,
+                    scoreId,
                     Modes.droid,
                     PPCalculationMethod.rebalance,
                 );
@@ -703,7 +711,7 @@ export class UserBind extends Manager {
             };
 
             consola.info(
-                `${beatmapInfo.fullTitle} ${score.completeModString}: ${prototypeEntry.prevPP} ⮕  ${prototypeEntry.pp}`,
+                `${beatmapInfo.fullTitle} ${score instanceof Score ? score.completeModString : DroidHelper.getCompleteModString(score.mode)}: ${prototypeEntry.prevPP} ⮕  ${prototypeEntry.pp}`,
             );
 
             currentList.set(ppEntry.hash, currentEntry);
@@ -751,28 +759,6 @@ export class UserBind extends Manager {
         let newList = new Collection<string, PPEntry>();
         let playCount = 0;
 
-        const getScores = async (
-            uid: number,
-            page: number,
-        ): Promise<Score[]> => {
-            const apiRequestBuilder = new DroidAPIRequestBuilder()
-                .setEndpoint("scoresearchv2.php")
-                .addParameter("uid", uid)
-                .addParameter("page", page - 1);
-
-            const data = await apiRequestBuilder.sendRequest();
-
-            if (data.statusCode !== 200) {
-                return [];
-            }
-
-            const entries = data.data.toString("utf-8").split("<br>");
-
-            entries.shift();
-
-            return entries.map((v) => new Score().fillInformation(v));
-        };
-
         for (let i = 0; i < this.previous_bind.length; ++i) {
             const uid = this.previous_bind[i];
 
@@ -792,7 +778,7 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const player = await Player.getInformation(uid);
+            const player = await DroidHelper.getPlayer(uid, ["id"]);
             if (!player) {
                 continue;
             }
@@ -810,9 +796,19 @@ export class UserBind extends Manager {
                 );
             }
 
-            let scores: Score[];
+            let scores:
+                | Pick<OfficialDatabaseScore, "id" | "uid" | "hash">[]
+                | Score[];
 
-            while ((scores = await getScores(uid, ++page)).length) {
+            while (
+                (scores = await DroidHelper.getScores(
+                    uid,
+                    ++page,
+                    undefined,
+                    undefined,
+                    ["id", "uid", "hash"],
+                )).length
+            ) {
                 const scoreCount = scores.length;
 
                 if (isDPPRecalc) {
@@ -821,7 +817,10 @@ export class UserBind extends Manager {
                     );
                 }
 
-                let score: Score | undefined;
+                let score:
+                    | Pick<OfficialDatabaseScore, "id" | "uid" | "hash">
+                    | Score
+                    | undefined;
 
                 while ((score = scores.shift())) {
                     const beatmapInfo: MapInfo | null =
@@ -873,7 +872,9 @@ export class UserBind extends Manager {
                         } else {
                             await DPPProcessorRESTManager.persistOnlineReplay(
                                 ppEntry.uid,
-                                score.scoreID,
+                                score instanceof Score
+                                    ? score.scoreID
+                                    : score.id,
                             );
                         }
                     }
@@ -1026,7 +1027,7 @@ export class UserBind extends Manager {
             this.uid = ArrayHelper.getRandomArrayElement(this.previous_bind);
         }
 
-        const player = await Player.getInformation(uid);
+        const player = await DroidHelper.getPlayer(uid, ["username"]);
 
         if (!player) {
             this.previous_bind.push(uid);
@@ -1179,20 +1180,33 @@ export class UserBind extends Manager {
     /**
      * Binds an osu!droid account to this Discord account.
      *
-     * @param player The `Player` instance of the osu!droid account.
+     * @param player The player.
      * @param language The locale of the user who attempted to bind. Defaults to English.
      * @returns An object containing information about the operation.
      */
-    async bind(player: Player, language?: Language): Promise<OperationResult>;
+    async bind(
+        player: Pick<OfficialDatabaseUser, "id" | "username"> | Player,
+        language?: Language,
+    ): Promise<OperationResult>;
 
     async bind(
-        uidOrUsernameOrPlayer: string | number | Player,
+        uidOrUsernameOrPlayer:
+            | string
+            | number
+            | Pick<OfficialDatabaseUser, "id" | "username">
+            | Player,
         language: Language = "en",
     ): Promise<OperationResult> {
         const player =
             uidOrUsernameOrPlayer instanceof Player
                 ? uidOrUsernameOrPlayer
-                : await Player.getInformation(uidOrUsernameOrPlayer);
+                : typeof uidOrUsernameOrPlayer === "string" ||
+                    typeof uidOrUsernameOrPlayer === "number"
+                  ? await DroidHelper.getPlayer(uidOrUsernameOrPlayer, [
+                        "id",
+                        "username",
+                    ])
+                  : uidOrUsernameOrPlayer;
 
         const localization = this.getLocalization(language);
 
@@ -1203,7 +1217,9 @@ export class UserBind extends Manager {
             );
         }
 
-        if (!this.isUidBinded(player.uid)) {
+        const uid = player instanceof Player ? player.uid : player.id;
+
+        if (!this.isUidBinded(uid)) {
             if (this.previous_bind.length >= 2) {
                 return this.createOperationResult(
                     false,
@@ -1211,10 +1227,10 @@ export class UserBind extends Manager {
                 );
             }
 
-            this.previous_bind.push(player.uid);
+            this.previous_bind.push(uid);
         }
 
-        this.uid = player.uid;
+        this.uid = uid;
         this.username = player.username;
 
         return this.bindDb.updateOne(
@@ -1280,7 +1296,9 @@ export class UserBind extends Manager {
         if (this.uid === uid) {
             this.uid = ArrayHelper.getRandomArrayElement(this.previous_bind);
 
-            const player = (await Player.getInformation(this.uid))!;
+            const player = (await DroidHelper.getPlayer(this.uid, [
+                "username",
+            ]))!;
 
             this.username = player.username;
         }

@@ -1,13 +1,11 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
-import { Snowflake } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Recent5Localization } from "@alice-localization/interactions/commands/osu! and osu!droid/recent5/Recent5Localization";
@@ -16,17 +14,19 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: Recent5Localization = new Recent5Localization(
+    const localization = new Recent5Localization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
-    let uid: number | undefined | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
-    const considerNonOverwrite: boolean =
+    const discordid = interaction.options.getUser("user")?.id;
+    let uid = interaction.options.getInteger("uid");
+    const username = interaction.options.getString("username");
+    const considerNonOverwrite =
         interaction.options.getBoolean("considernonoverwrite") ?? true;
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
@@ -41,18 +41,17 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
-
-    let bindInfo: UserBind | null | undefined;
-
-    let player: Player | null = null;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
+    let bindInfo: UserBind | null = null;
+    let player: Pick<OfficialDatabaseUser, "id" | "username"> | Player | null =
+        null;
 
     switch (true) {
         case !!uid:
-            player = await Player.getInformation(uid!);
+            player = await DroidHelper.getPlayer(uid!);
 
-            uid ??= player?.uid;
+            uid ??=
+                (player instanceof Player ? player.uid : player?.id) ?? null;
 
             break;
         case !!username:
@@ -64,9 +63,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(username);
+            player = await DroidHelper.getPlayer(username);
 
-            uid ??= player?.uid;
+            uid ??=
+                (player instanceof Player ? player.uid : player?.id) ?? null;
 
             break;
         default:
@@ -95,7 +95,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(bindInfo.uid);
+            player = await DroidHelper.getPlayer(bindInfo.uid);
     }
 
     if (!player) {
@@ -106,9 +106,52 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const recentPlays: (Score | RecentPlay)[] = considerNonOverwrite
-        ? await ScoreHelper.getRecentScores(player.uid, player.recentPlays)
-        : player.recentPlays;
+    let recentPlays: (
+        | Pick<
+              OfficialDatabaseScore,
+              | "filename"
+              | "mark"
+              | "mode"
+              | "score"
+              | "combo"
+              | "date"
+              | "perfect"
+              | "good"
+              | "bad"
+              | "miss"
+          >
+        | Score
+        | RecentPlay
+    )[];
+
+    if (player instanceof Player) {
+        recentPlays = player.recentPlays;
+    } else {
+        recentPlays = await DroidHelper.getRecentScores(
+            player.id,
+            undefined,
+            undefined,
+            [
+                "filename",
+                "mark",
+                "mode",
+                "score",
+                "combo",
+                "date",
+                "perfect",
+                "good",
+                "bad",
+                "miss",
+            ],
+        );
+    }
+
+    if (considerNonOverwrite) {
+        recentPlays = await ScoreHelper.getRecentScores(
+            player instanceof Player ? player.uid : player.id,
+            recentPlays,
+        );
+    }
 
     if (recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {

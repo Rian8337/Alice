@@ -1,27 +1,23 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { OnboardingAccountBindLocalization } from "@alice-localization/interactions/modals/Onboarding/OnboardingAccountBindLocalization";
 import { ModalCommand } from "@alice-structures/core/ModalCommand";
 import { OperationResult } from "@alice-structures/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
-    const localization: OnboardingAccountBindLocalization =
-        new OnboardingAccountBindLocalization(
-            await CommandHelper.getLocale(interaction),
-        );
+    const localization = new OnboardingAccountBindLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
-    const email: string = interaction.fields.getTextInputValue("email");
-    const username: string = interaction.fields.getTextInputValue("username");
-
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const email = interaction.fields.getTextInputValue("email");
+    const username = interaction.fields.getTextInputValue("username");
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     if (!StringHelper.isUsernameValid(username)) {
         return InteractionHelper.reply(interaction, {
@@ -31,7 +27,11 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player: Player | null = await Player.getInformation(username);
+    const player = await DroidHelper.getPlayer(username, [
+        "id",
+        "username",
+        "email",
+    ]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -41,10 +41,10 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const uidBindInfo: UserBind | null = await dbManager.getFromUid(
-        player.uid,
-        { projection: { _id: 0 } },
-    );
+    const uid = player instanceof Player ? player.uid : player.id;
+    const uidBindInfo = await dbManager.getFromUid(uid, {
+        projection: { _id: 0 },
+    });
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
         return InteractionHelper.reply(interaction, {
@@ -54,18 +54,15 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const userBindInfo: UserBind | null = await dbManager.getFromUser(
-        interaction.user,
-        {
-            projection: {
-                _id: 0,
-                previous_bind: 1,
-            },
+    const userBindInfo = await dbManager.getFromUser(interaction.user, {
+        projection: {
+            _id: 0,
+            previous_bind: 1,
         },
-    );
+    });
 
     if (userBindInfo) {
-        const isUidBinded: boolean = userBindInfo.isUidBinded(player.uid);
+        const isUidBinded = userBindInfo.isUidBinded(uid);
 
         if (!isUidBinded) {
             if (email !== player.email) {
@@ -139,9 +136,9 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
 
         const result: OperationResult = await dbManager.insert({
             discordid: interaction.user.id,
-            uid: player.uid,
+            uid: uid,
             username: player.username,
-            previous_bind: [player.uid],
+            previous_bind: [uid],
         });
 
         if (!result.success) {

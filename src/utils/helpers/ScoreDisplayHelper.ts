@@ -22,9 +22,8 @@ import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
 import { LocaleHelper } from "./LocaleHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MapInfo, Modes } from "@rian8337/osu-base";
+import { Accuracy, Modes } from "@rian8337/osu-base";
 import {
-    CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
@@ -37,6 +36,8 @@ import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { DroidHelper } from "./DroidHelper";
 
 /**
  * A helper for displaying scores to a user.
@@ -53,13 +54,30 @@ export abstract class ScoreDisplayHelper {
     static async showRecentPlays(
         interaction: RepliableInteraction,
         username: string,
-        scores: (Score | RecentPlay)[],
+        scores: (
+            | Pick<
+                  OfficialDatabaseScore,
+                  | "filename"
+                  | "mark"
+                  | "mode"
+                  | "score"
+                  | "combo"
+                  | "date"
+                  | "perfect"
+                  | "good"
+                  | "bad"
+                  | "miss"
+              >
+            | Score
+            | RecentPlay
+        )[],
         page: number = 1,
     ): Promise<Message> {
-        const localization: ScoreDisplayHelperLocalization =
-            this.getLocalization(await CommandHelper.getLocale(interaction));
+        const localization = this.getLocalization(
+            await CommandHelper.getLocale(interaction),
+        );
 
-        const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+        const embed = EmbedCreator.createNormalEmbed({
             author: interaction.user,
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
@@ -79,20 +97,31 @@ export abstract class ScoreDisplayHelper {
                 i < Math.min(scores.length, 5 + 5 * (page - 1));
                 ++i
             ) {
-                const score: Score | RecentPlay = scores[i];
+                const score = scores[i];
+                const accuracy =
+                    score instanceof Score || score instanceof RecentPlay
+                        ? score.accuracy
+                        : new Accuracy({
+                              n300: score.perfect,
+                              n100: score.good,
+                              n50: score.bad,
+                              nmiss: score.miss,
+                          });
 
                 embed.addFields({
                     name: `${i + 1}. ${BeatmapManager.getRankEmote(
-                        <ScoreRank>score.rank,
-                    )} | ${score.title} ${score.completeModString}`,
+                        score instanceof Score || score instanceof RecentPlay
+                            ? <ScoreRank>score.rank
+                            : score.mark,
+                    )} | ${score instanceof Score || score instanceof RecentPlay ? score.title : DroidHelper.cleanupFilename(score.filename)} ${score instanceof Score || score instanceof RecentPlay ? score.completeModString : DroidHelper.getCompleteModString(score.mode)}`,
                     value:
                         `${score.score.toLocaleString(
                             LocaleHelper.convertToBCP47(localization.language),
                         )} / ${score.combo}x / ${(
-                            score.accuracy.value() * 100
-                        ).toFixed(2)}% / [${score.accuracy.n300}/${
-                            score.accuracy.n100
-                        }/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
+                            accuracy.value() * 100
+                        ).toFixed(2)}% / [${accuracy.n300}/${
+                            accuracy.n100
+                        }/${accuracy.n50}/${accuracy.nmiss}]\n` +
                         `\`${DateTimeFormatHelper.dateToLocaleString(
                             score.date,
                             localization.language,
@@ -155,11 +184,13 @@ export abstract class ScoreDisplayHelper {
     ): Promise<void> {
         await InteractionHelper.deferReply(interaction);
 
-        const localization: ScoreDisplayHelperLocalization =
-            this.getLocalization(await CommandHelper.getLocale(interaction));
+        const localization = this.getLocalization(
+            await CommandHelper.getLocale(interaction),
+        );
 
-        const beatmapInfo: MapInfo<false> | null =
-            await BeatmapManager.getBeatmap(hash, { checkFile: false });
+        const beatmapInfo = await BeatmapManager.getBeatmap(hash, {
+            checkFile: false,
+        });
 
         if (beatmapInfo && cacheBeatmapToChannel) {
             BeatmapManager.setChannelLatestBeatmap(
@@ -169,27 +200,28 @@ export abstract class ScoreDisplayHelper {
         }
 
         // Leaderboard cache, mapped by page number
-        const leaderboardCache: Collection<number, Score[]> = new Collection();
+        const leaderboardCache = new Collection<number, Score[]>();
 
         // Calculation cache, mapped by score ID
-        const droidAttribsCache: Collection<
+        const droidAttribsCache = new Collection<
             number,
             CompleteCalculationAttributes<
                 DroidDifficultyAttributes,
                 DroidPerformanceAttributes
             > | null
-        > = new Collection();
-        const osuAttribsCache: Collection<
+        >();
+        const osuAttribsCache = new Collection<
             number,
             CompleteCalculationAttributes<
                 OsuDifficultyAttributes,
                 OsuPerformanceAttributes
             > | null
-        > = new Collection();
+        >();
 
         // Check first page first for score availability
-        const firstPageScores: Score[] =
-            await ScoreHelper.fetchDroidLeaderboard(beatmapInfo?.hash ?? hash!);
+        const firstPageScores = await ScoreHelper.fetchDroidLeaderboard(
+            beatmapInfo?.hash ?? hash!,
+        );
 
         if (!firstPageScores[0]) {
             InteractionHelper.reply(interaction, {
@@ -203,7 +235,7 @@ export abstract class ScoreDisplayHelper {
 
         leaderboardCache.set(1, firstPageScores);
 
-        const arrow: Symbols = Symbols.rightArrowSmall;
+        const arrow = Symbols.rightArrowSmall;
 
         const getCalculationResult = async (
             score: Score,
@@ -219,10 +251,7 @@ export abstract class ScoreDisplayHelper {
                 > | null,
             ]
         > => {
-            const droidAttribs: CompleteCalculationAttributes<
-                DroidDifficultyAttributes,
-                DroidPerformanceAttributes
-            > | null = beatmapInfo
+            const droidAttribs = beatmapInfo
                 ? droidAttribsCache.get(score.scoreID) ??
                   (await DPPProcessorRESTManager.getOnlineScoreAttributes(
                       score.scoreID,
@@ -231,10 +260,7 @@ export abstract class ScoreDisplayHelper {
                   ))
                 : null;
 
-            const osuAttribs: CompleteCalculationAttributes<
-                OsuDifficultyAttributes,
-                OsuPerformanceAttributes
-            > | null = beatmapInfo
+            const osuAttribs = beatmapInfo
                 ? osuAttribsCache.get(score.scoreID) ??
                   (await DPPProcessorRESTManager.getOnlineScoreAttributes(
                       score.scoreID,
@@ -255,16 +281,7 @@ export abstract class ScoreDisplayHelper {
         };
 
         const getScoreDescription = async (score: Score): Promise<string> => {
-            const attribs: [
-                CompleteCalculationAttributes<
-                    DroidDifficultyAttributes,
-                    DroidPerformanceAttributes
-                > | null,
-                CompleteCalculationAttributes<
-                    OsuDifficultyAttributes,
-                    OsuPerformanceAttributes
-                > | null,
-            ] = await getCalculationResult(score);
+            const attribs = await getCalculationResult(score);
 
             return (
                 `${arrow} ${BeatmapManager.getRankEmote(
@@ -292,30 +309,27 @@ export abstract class ScoreDisplayHelper {
             );
         };
 
-        const noModDroidAttribs: CacheableDifficultyAttributes<DroidDifficultyAttributes> | null =
-            beatmapInfo
-                ? await DPPProcessorRESTManager.getDifficultyAttributes(
-                      beatmapInfo.beatmapId,
-                      Modes.droid,
-                      PPCalculationMethod.live,
-                  )
-                : null;
+        const noModDroidAttribs = beatmapInfo
+            ? await DPPProcessorRESTManager.getDifficultyAttributes(
+                  beatmapInfo.beatmapId,
+                  Modes.droid,
+                  PPCalculationMethod.live,
+              )
+            : null;
 
-        const noModOsuAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
-            beatmapInfo
-                ? await DPPProcessorRESTManager.getDifficultyAttributes(
-                      beatmapInfo.beatmapId,
-                      Modes.osu,
-                      PPCalculationMethod.live,
-                  )
-                : null;
+        const noModOsuAttribs = beatmapInfo
+            ? await DPPProcessorRESTManager.getDifficultyAttributes(
+                  beatmapInfo.beatmapId,
+                  Modes.osu,
+                  PPCalculationMethod.live,
+              )
+            : null;
 
         const onPageChange: OnButtonPageChange = async (options, page) => {
-            const actualPage: number = Math.floor((page - 1) / 20);
+            const actualPage = Math.floor((page - 1) / 20);
+            const pageRemainder = (page - 1) % 20;
 
-            const pageRemainder: number = (page - 1) % 20;
-
-            const scores: Score[] =
+            const scores =
                 leaderboardCache.get(actualPage) ??
                 (await ScoreHelper.fetchDroidLeaderboard(
                     beatmapInfo?.hash ?? hash!,
@@ -334,11 +348,11 @@ export abstract class ScoreDisplayHelper {
                   )
                 : { embeds: [EmbedCreator.createNormalEmbed()] };
 
-            const embed: EmbedBuilder = <EmbedBuilder>embedOptions.embeds![0];
+            const embed = <EmbedBuilder>embedOptions.embeds![0];
 
             embed.data.fields!.pop();
 
-            const topScore: Score = leaderboardCache.get(1)![0];
+            const topScore = leaderboardCache.get(1)![0];
 
             if (!embed.data.title) {
                 embed.setTitle(topScore.title);
@@ -365,7 +379,7 @@ export abstract class ScoreDisplayHelper {
                     )}\n` + (await getScoreDescription(topScore)),
             });
 
-            const displayedScores: Score[] = scores.slice(
+            const displayedScores = scores.slice(
                 5 * pageRemainder,
                 5 + 5 * pageRemainder,
             );

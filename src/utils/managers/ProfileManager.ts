@@ -6,6 +6,8 @@ import { ProfileCardCreator } from "@alice-utils/creators/ProfileCardCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Language } from "@alice-localization/base/Language";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 /**
  * A manager for osu!droid accounts' profile.
@@ -37,11 +39,21 @@ export abstract class ProfileManager extends Manager {
      */
     static async getProfileStatistics(
         uid: number,
-        player?: Player,
+        player?:
+            | Pick<
+                  OfficialDatabaseUser,
+                  | "id"
+                  | "username"
+                  | "score"
+                  | "accuracy"
+                  | "playcount"
+                  | "region"
+              >
+            | Player,
         bindInfo?: UserBind | null,
         playerInfo?: PlayerInfo | null,
         detailed: boolean = false,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<Buffer | null> {
         if (bindInfo === undefined) {
             bindInfo =
@@ -54,12 +66,12 @@ export abstract class ProfileManager extends Manager {
                             clan: 1,
                             weightedAccuracy: 1,
                         },
-                    }
+                    },
                 );
         }
 
         if (!player) {
-            const newPlayer: Player | null = await Player.getInformation(uid);
+            const newPlayer = await DroidHelper.getPlayer(uid);
 
             if (!newPlayer) {
                 return null;
@@ -79,7 +91,7 @@ export abstract class ProfileManager extends Manager {
                             alicecoins: detailed ? 1 : undefined,
                             points: detailed ? 1 : undefined,
                         },
-                    }
+                    },
                 );
         }
 
@@ -88,7 +100,7 @@ export abstract class ProfileManager extends Manager {
             detailed,
             bindInfo,
             playerInfo,
-            language
+            language,
         ).generateCard();
     }
 
@@ -115,11 +127,28 @@ export abstract class ProfileManager extends Manager {
     static async getProfileTemplate(
         uid: number,
         bindInfo: UserBind,
-        player?: Player,
-        language: Language = "en"
+        player?:
+            | Pick<
+                  OfficialDatabaseUser,
+                  | "id"
+                  | "username"
+                  | "score"
+                  | "accuracy"
+                  | "playcount"
+                  | "region"
+              >
+            | Player,
+        language: Language = "en",
     ): Promise<Buffer | null> {
         if (!player) {
-            const newPlayer: Player | null = await Player.getInformation(uid);
+            const newPlayer = await DroidHelper.getPlayer(uid, [
+                "id",
+                "username",
+                "score",
+                "accuracy",
+                "playcount",
+                "region",
+            ]);
 
             if (!newPlayer) {
                 return null;
@@ -133,7 +162,7 @@ export abstract class ProfileManager extends Manager {
             false,
             bindInfo,
             undefined,
-            language
+            language,
         ).generateTemplateCard();
     }
 }

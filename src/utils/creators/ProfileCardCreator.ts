@@ -6,15 +6,16 @@ import {
     CanvasRenderingContext2D,
 } from "canvas";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { promises, Stats } from "fs";
+import { promises } from "fs";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { PartialProfileBackground } from "@alice-structures/profile/PartialProfileBackground";
 import { Language } from "@alice-localization/base/Language";
 import { ProfileCardCreatorLocalization } from "@alice-localization/utils/creators/ProfileCardCreator/ProfileCardCreatorLocalization";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 /**
  * A utility to create profile cards.
@@ -23,7 +24,12 @@ export class ProfileCardCreator {
     /**
      * The player.
      */
-    private readonly player: Player;
+    private readonly player:
+        | Pick<
+              OfficialDatabaseUser,
+              "id" | "username" | "score" | "accuracy" | "playcount" | "region"
+          >
+        | Player;
 
     /**
      * Whether to show detailed statistics in the profile card.
@@ -68,7 +74,17 @@ export class ProfileCardCreator {
      * @param playerInfo Information about the bound Discord account of the player.
      */
     constructor(
-        player: Player,
+        player:
+            | Pick<
+                  OfficialDatabaseUser,
+                  | "id"
+                  | "username"
+                  | "score"
+                  | "accuracy"
+                  | "playcount"
+                  | "region"
+              >
+            | Player,
         detailed: boolean,
         bindInfo?: UserBind | null,
         playerInfo?: PlayerInfo | null,
@@ -145,7 +161,7 @@ export class ProfileCardCreator {
         this.initUserProfile();
         await this.drawPlayerAvatar();
         await this.drawFlag();
-        this.drawPlayerRank();
+        await this.drawPlayerRank();
 
         if (!this.detailed && !this.template) {
             // Draw player level for detailed or template profile card in description
@@ -194,7 +210,11 @@ export class ProfileCardCreator {
     private async drawPlayerAvatar(): Promise<void> {
         this.context.save();
 
-        const avatar: Image = await loadImage(this.player.avatarURL);
+        const avatar: Image = await loadImage(
+            this.player instanceof Player
+                ? this.player.avatarURL
+                : DroidHelper.getAvatarURL(this.player.id),
+        );
         this.context.drawImage(avatar, 9, 9, 150, 150);
 
         this.context.restore();
@@ -207,13 +227,16 @@ export class ProfileCardCreator {
         this.context.save();
 
         try {
-            const flagPath: string = `${process.cwd()}/files/flags/${
-                this.player.location
-            }.png`;
-            const flagStats: Stats = await promises.stat(flagPath);
+            const location =
+                this.player instanceof Player
+                    ? this.player.location
+                    : this.player.region.toUpperCase();
+
+            const flagPath = `${process.cwd()}/files/flags/${location}.png`;
+            const flagStats = await promises.stat(flagPath);
 
             if (flagStats.isFile()) {
-                const flagImage: Image = await loadImage(flagPath);
+                const flagImage = await loadImage(flagPath);
                 this.context.drawImage(
                     flagImage,
                     440,
@@ -228,7 +251,7 @@ export class ProfileCardCreator {
                     this.detailed || this.template ? "18px Exo" : "16px Exo";
 
                 this.context.fillText(
-                    this.player.location,
+                    location,
                     440 + flagImage.width / 3,
                     flagImage.height + 15,
                 );
@@ -242,7 +265,12 @@ export class ProfileCardCreator {
     /**
      * Draws the player's rank.
      */
-    private drawPlayerRank(): void {
+    private async drawPlayerRank(): Promise<void> {
+        const rank =
+            this.player instanceof Player
+                ? this.player.rank
+                : (await DroidHelper.getPlayerRank(this.player.id)) ?? 0;
+
         this.context.save();
 
         this.context.globalAlpha = 0.9;
@@ -252,26 +280,22 @@ export class ProfileCardCreator {
         this.context.globalAlpha = 1;
         this.context.font = "bold 24px Exo";
         switch (true) {
-            case this.player.rank === 1:
+            case rank === 1:
                 this.context.fillStyle = "#0009cd";
                 break;
-            case this.player.rank <= 10:
+            case rank <= 10:
                 this.context.fillStyle = "#e1b000";
                 break;
-            case this.player.rank <= 100:
+            case rank <= 100:
                 this.context.fillStyle = "rgba(180, 44, 44, 0.81)";
                 break;
-            case this.player.rank <= 1000:
+            case rank <= 1000:
                 this.context.fillStyle = "#008708";
                 break;
             default:
                 this.context.fillStyle = "#787878";
         }
-        this.context.fillText(
-            `#${this.player.rank.toLocaleString(this.BCP47)}`,
-            12,
-            187,
-        );
+        this.context.fillText(`#${rank.toLocaleString(this.BCP47)}`, 12, 187);
 
         this.context.restore();
     }
@@ -302,10 +326,8 @@ export class ProfileCardCreator {
         this.context.globalAlpha = 1;
 
         // Level progress
-        const level: number = ScoreHelper.calculateProfileLevel(
-            this.player.score,
-        );
-        const progress: number = level - Math.floor(level);
+        const level = ScoreHelper.calculateProfileLevel(this.player.score);
+        const progress = level - Math.floor(level);
         if (progress > 0) {
             this.context.fillStyle = "#e1c800";
             if (this.detailed || this.template) {
@@ -347,8 +369,8 @@ export class ProfileCardCreator {
     private async writePlayerProfile(): Promise<void> {
         this.context.save();
 
-        const x: number = 169;
-        const y: number = this.detailed || this.template ? 84 : 50;
+        const x = 169;
+        const y = this.detailed || this.template ? 84 : 50;
 
         this.context.fillStyle = "#000000";
         this.context.font =
@@ -399,14 +421,14 @@ export class ProfileCardCreator {
         this.context.fillText(
             `${this.localization.getTranslation(
                 "playCount",
-            )}: ${this.player.playCount.toLocaleString(this.BCP47)}`,
+            )}: ${(this.player instanceof Player ? this.player.playCount : this.player.playcount).toLocaleString(this.BCP47)}`,
             x,
             y + yOffset,
         );
         increaseYOffset();
 
         if (this.bindInfo) {
-            const ppRank: number = await this.getPlayerPPRank(this.bindInfo);
+            const ppRank = await this.getPlayerPPRank(this.bindInfo);
             this.context.fillText(
                 `${this.localization.getTranslation(
                     "droidPP",
@@ -458,17 +480,16 @@ export class ProfileCardCreator {
         this.context.fillRect(15, 312, 470, 170);
         this.context.globalAlpha = 1;
 
-        const badges: (PartialProfileBackground | null)[] =
-            this.playerInfo?.picture_config.activeBadges ?? [];
+        const badges = this.playerInfo?.picture_config.activeBadges ?? [];
 
         for (let i = 0; i < badges.length; ++i) {
-            const profileBadge: PartialProfileBackground | null = badges[i];
+            const profileBadge = badges[i];
 
             if (!profileBadge) {
                 continue;
             }
 
-            const badgeImage: Image = await loadImage(
+            const badgeImage = await loadImage(
                 `${process.cwd()}/files/images/badges/${profileBadge.id}.png`,
             );
             if (i / 5 < 1) {
@@ -536,7 +557,7 @@ export class ProfileCardCreator {
     private async drawAliceCoinsInformation(): Promise<void> {
         this.context.save();
 
-        const coinImage: Image = await loadImage(
+        const coinImage = await loadImage(
             `${process.cwd()}/files/images/alicecoin.png`,
         );
 

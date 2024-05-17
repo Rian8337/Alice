@@ -1,4 +1,3 @@
-import { GuildMember, User } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
@@ -6,28 +5,27 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { OperationResult } from "structures/core/OperationResult";
 import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: CoinsLocalization = new CoinsLocalization(
-        await CommandHelper.getLocale(interaction)
+    const localization = new CoinsLocalization(
+        await CommandHelper.getLocale(interaction),
     );
 
-    const toTransfer: User = interaction.options.getUser("user", true);
+    const toTransfer = interaction.options.getUser("user", true);
 
-    const toTransferGuildMember: GuildMember | null = await interaction
+    const toTransferGuildMember = await interaction
         .guild!.members.fetch(toTransfer)
         .catch(() => null);
 
     if (!toTransferGuildMember) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userToTransferNotFound")
+                localization.getTranslation("userToTransferNotFound"),
             ),
         });
     }
@@ -35,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (toTransferGuildMember.user.bot) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userToTransferIsBot")
+                localization.getTranslation("userToTransferIsBot"),
             ),
         });
     }
@@ -43,38 +41,37 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (toTransferGuildMember.id === interaction.user.id) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userToTransferIsSelf")
+                localization.getTranslation("userToTransferIsSelf"),
             ),
         });
     }
 
     if (
         DateTimeFormatHelper.getTimeDifference(
-            <Date>toTransferGuildMember.joinedAt
+            <Date>toTransferGuildMember.joinedAt,
         ) >
         -86400 * 1000 * 7
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userToTransferNotInServerForAWeek")
+                localization.getTranslation(
+                    "userToTransferNotInServerForAWeek",
+                ),
             ),
         });
     }
 
-    const transferAmount: number = interaction.options.getInteger(
-        "amount",
-        true
-    );
+    const transferAmount = interaction.options.getInteger("amount", true);
 
     if (!NumberHelper.isPositive(transferAmount)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("transferAmountInvalid")
+                localization.getTranslation("transferAmountInvalid"),
             ),
         });
     }
 
-    const userPlayerInfo: PlayerInfo | null =
+    const userPlayerInfo =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             interaction.user,
             {
@@ -83,13 +80,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     alicecoins: 1,
                     transferred: 1,
                 },
-            }
+            },
         );
 
     if (!userPlayerInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("userDoesntHaveCoinsInfo")
+                localization.getTranslation("userDoesntHaveCoinsInfo"),
             ),
         });
     }
@@ -98,17 +95,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         !NumberHelper.isNumberInRange(
             transferAmount,
             0,
-            userPlayerInfo.alicecoins
+            userPlayerInfo.alicecoins,
         )
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("notEnoughCoinsToTransfer")
+                localization.getTranslation("notEnoughCoinsToTransfer"),
             ),
         });
     }
 
-    const toTransferPlayerInfo: PlayerInfo | null =
+    const toTransferPlayerInfo =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             toTransferGuildMember.id,
             {
@@ -116,82 +113,85 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     alicecoins: 1,
                 },
-            }
+            },
         );
 
     if (!toTransferPlayerInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("otherUserDoesntHaveCoinsInfo")
+                localization.getTranslation("otherUserDoesntHaveCoinsInfo"),
             ),
         });
     }
 
-    const player: Player | null = await Player.getInformation(
-        userPlayerInfo.uid
-    );
+    const player = await DroidHelper.getPlayer(userPlayerInfo.uid, ["score"]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("cannotFetchPlayerInformation")
+                localization.getTranslation("cannotFetchPlayerInformation"),
             ),
         });
     }
 
+    const rank =
+        player instanceof Player
+            ? player.rank
+            : (await DroidHelper.getPlayerRank(player.score)) ?? 0;
+
     let limit: number;
 
     switch (true) {
-        case player.rank < 10:
+        case rank < 10:
             limit = 2500;
             break;
-        case player.rank < 50:
+        case rank < 50:
             limit = 1750;
             break;
-        case player.rank < 100:
+        case rank < 100:
             limit = 1250;
             break;
-        case player.rank < 500:
+        case rank < 500:
             limit = 500;
             break;
         default:
             limit = 250;
     }
 
-    const transferredAmount: number = userPlayerInfo.transferred;
+    const transferredAmount = userPlayerInfo.transferred;
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
-
-    const confirmation: boolean = await MessageButtonCreator.createConfirmation(
+    const confirmation = await MessageButtonCreator.createConfirmation(
         interaction,
         {
             content: MessageCreator.createWarn(
                 localization.getTranslation("coinTransferConfirmation"),
                 transferAmount.toLocaleString(BCP47),
-                toTransferGuildMember.toString()
+                toTransferGuildMember.toString(),
             ),
         },
         [interaction.user.id],
         15,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
         return;
     }
 
-    const result: OperationResult = await userPlayerInfo.transferCoins(
+    const result = await userPlayerInfo.transferCoins(
         transferAmount,
         player,
         toTransferPlayerInfo,
-        localization.language
+        limit,
+        localization.language,
     );
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("coinTransferFailed"),
-                result.reason!
+                result.reason!,
             ),
         });
     }
@@ -202,7 +202,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             transferAmount.toLocaleString(BCP47),
             toTransferGuildMember.toString(),
             (limit - transferAmount - transferredAmount).toLocaleString(BCP47),
-            (userPlayerInfo.alicecoins - transferAmount).toLocaleString(BCP47)
+            (userPlayerInfo.alicecoins - transferAmount).toLocaleString(BCP47),
         ),
     });
 };

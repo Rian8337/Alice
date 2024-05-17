@@ -1,9 +1,8 @@
-import { bold, EmbedBuilder, GuildMember, Snowflake } from "discord.js";
+import { bold, GuildMember } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
@@ -14,9 +13,11 @@ import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { FindOptions } from "mongodb";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: ProfileLocalization = new ProfileLocalization(
+    const localization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
@@ -32,17 +33,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
-    const uid: number | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
+    const discordid = interaction.options.getUser("user")?.id;
+    const uid = interaction.options.getInteger("uid");
+    const username = interaction.options.getString("username");
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
-
-    let player: Player | null = null;
+    let player:
+        | Pick<
+              OfficialDatabaseUser,
+              "id" | "username" | "score" | "region" | "playcount"
+          >
+        | Player
+        | null = null;
 
     const findOptions: FindOptions<DatabaseUserBind> = {
         projection: {
@@ -52,15 +56,24 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     };
 
     switch (true) {
-        case !!uid:
-            player = await Player.getInformation(uid!);
+        case !!uid: {
+            player = await DroidHelper.getPlayer(uid!, [
+                "id",
+                "username",
+                "score",
+                "region",
+                "playcount",
+            ]);
 
-            if (player?.uid) {
-                bindInfo = await dbManager.getFromUid(player.uid, findOptions);
+            const localUid = player instanceof Player ? player.uid : player?.id;
+
+            if (localUid !== undefined) {
+                bindInfo = await dbManager.getFromUid(localUid, findOptions);
             }
 
             break;
-        case !!username:
+        }
+        case !!username: {
             if (!StringHelper.isUsernameValid(username!)) {
                 return InteractionHelper.reply(interaction, {
                     content: MessageCreator.createReject(
@@ -69,13 +82,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(username);
+            player = await DroidHelper.getPlayer(username);
 
-            if (player?.uid) {
-                bindInfo = await dbManager.getFromUid(player.uid, findOptions);
+            const localUid = player instanceof Player ? player.uid : player?.id;
+
+            if (localUid !== undefined) {
+                bindInfo = await dbManager.getFromUid(localUid, findOptions);
             }
 
             break;
+        }
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(
@@ -84,7 +100,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             );
 
             if (bindInfo?.uid) {
-                player = await Player.getInformation(bindInfo.uid);
+                player = await DroidHelper.getPlayer(bindInfo.uid);
             }
 
             break;
@@ -98,11 +114,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
+
+    const rank =
+        player instanceof Player
+            ? player.rank
+            : (await DroidHelper.getPlayerRank(player.score)) ?? 0;
 
     embed
         .setAuthor({
@@ -111,22 +132,32 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 player.username,
             ),
             iconURL: interaction.user.avatarURL()!,
-            url: ProfileManager.getProfileLink(player.uid).toString(),
+            url: ProfileManager.getProfileLink(
+                player instanceof Player ? player.uid : player.id,
+            ).toString(),
         })
-        .setThumbnail(player.avatarURL)
+        .setThumbnail(
+            player instanceof Player
+                ? player.avatarURL
+                : DroidHelper.getAvatarURL(player.id),
+        )
         .setDescription(
             `[${localization.getTranslation("avatarLink")}](${
-                player.avatarURL
+                player instanceof Player
+                    ? player.avatarURL
+                    : DroidHelper.getAvatarURL(player.id)
             })\n\n` +
-                `${bold(localization.getTranslation("uid"))}: ${player.uid}\n` +
+                `${bold(localization.getTranslation("uid"))}: ${player instanceof Player ? player.uid : player.id}\n` +
                 `${bold(
                     localization.getTranslation("rank"),
-                )}: ${player.rank.toLocaleString(BCP47)}\n` +
+                )}: ${rank.toLocaleString(BCP47)}\n` +
                 `${bold(
                     localization.getTranslation("playCount"),
-                )}: ${player.playCount.toLocaleString(BCP47)}\n` +
+                )}: ${(player instanceof Player ? player.playCount : player.playcount).toLocaleString(BCP47)}\n` +
                 `${bold(localization.getTranslation("country"))}: ${
-                    player.location
+                    player instanceof Player
+                        ? player.location
+                        : player.region.toUpperCase()
                 }\n\n` +
                 `${bold(localization.getTranslation("bindInformation"))}: ${
                     bindInfo

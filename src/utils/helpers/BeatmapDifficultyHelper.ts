@@ -22,6 +22,8 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/DifficultyAttributesCacheManager";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { NumberHelper } from "./NumberHelper";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { DroidHelper } from "./DroidHelper";
 
 /**
  * A helper class for calculating difficulty and performance of beatmaps or scores.
@@ -196,15 +198,47 @@ export abstract class BeatmapDifficultyHelper<
      * @returns Calculation parameters of the score.
      */
     static getCalculationParamsFromScore(
-        score: Score | RecentPlay,
+        score:
+            | Pick<
+                  OfficialDatabaseScore,
+                  "combo" | "mode" | "perfect" | "good" | "bad" | "miss"
+              >
+            | Score
+            | RecentPlay,
     ): PerformanceCalculationParameters {
-        return new PerformanceCalculationParameters({
-            accuracy: score.accuracy,
-            combo: score.combo,
-            customSpeedMultiplier: score.speedMultiplier,
-            mods: score.mods,
-            oldStatistics: score instanceof Score ? score.oldStatistics : false,
-        });
+        if (score instanceof Score || score instanceof RecentPlay) {
+            return new PerformanceCalculationParameters({
+                accuracy: score.accuracy,
+                combo: score.combo,
+                customSpeedMultiplier: score.speedMultiplier,
+                forceCS: score.forceCS,
+                forceAR: score.forceAR,
+                forceOD: score.forceOD,
+                forceHP: score.forceHP,
+                mods: score.mods,
+                oldStatistics:
+                    score instanceof Score ? score.oldStatistics : false,
+            });
+        } else {
+            const parsedMods = DroidHelper.parseMods(score.mode);
+
+            return new PerformanceCalculationParameters({
+                accuracy: new Accuracy({
+                    n300: score.perfect,
+                    n100: score.good,
+                    n50: score.bad,
+                    nmiss: score.miss,
+                }),
+                combo: score.combo,
+                customSpeedMultiplier: parsedMods.speedMultiplier,
+                forceCS: parsedMods.forceCS,
+                forceAR: parsedMods.forceAR,
+                forceOD: parsedMods.forceOD,
+                forceHP: parsedMods.forceHP,
+                mods: parsedMods.mods,
+                oldStatistics: parsedMods.oldStatistics,
+            });
+        }
     }
 
     /**

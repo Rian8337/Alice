@@ -1,12 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
-import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OperationResult } from "structures/core/OperationResult";
-import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { bold, EmbedBuilder } from "discord.js";
+import { bold } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
@@ -18,16 +14,16 @@ import { ScoreRank } from "structures/utils/ScoreRank";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: MatchLocalization = new MatchLocalization(
-        await CommandHelper.getLocale(interaction)
+    const localization = new MatchLocalization(
+        await CommandHelper.getLocale(interaction),
     );
 
-    const id: string | null = interaction.options.getString("id");
+    const id = interaction.options.getString("id");
 
-    const match: TournamentMatch | null = id
+    const match = id
         ? await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id)
         : await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
-              interaction.channelId
+              interaction.channelId,
           );
 
     // Need to make cross-compatibility since this command is also called from match-start
@@ -35,35 +31,35 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction.replied
             ? interaction.channel!.send({
                   content: MessageCreator.createReject(
-                      localization.getTranslation("matchDoesntExist")
+                      localization.getTranslation("matchDoesntExist"),
                   ),
               })
             : InteractionHelper.reply(interaction, {
                   content: MessageCreator.createReject(
-                      localization.getTranslation("matchDoesntExist")
+                      localization.getTranslation("matchDoesntExist"),
                   ),
               });
 
         return;
     }
 
-    const poolId: string = match.matchid.split(".").shift()!;
+    const poolId = match.matchid.split(".").shift()!;
 
-    const pool: TournamentMappool | null =
+    const pool =
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
-            poolId
+            poolId,
         );
 
     if (!pool) {
         interaction.replied
             ? interaction.channel!.send({
                   content: MessageCreator.createReject(
-                      localization.getTranslation("mappoolNotFound")
+                      localization.getTranslation("mappoolNotFound"),
                   ),
               })
             : InteractionHelper.reply(interaction, {
                   content: MessageCreator.createReject(
-                      localization.getTranslation("mappoolNotFound")
+                      localization.getTranslation("mappoolNotFound"),
                   ),
               });
 
@@ -73,22 +69,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const playerList: Player[] = [];
 
     for (const p of match.player) {
-        const player: Player | null = await Player.getInformation(
-            parseInt(p[1])
-        );
+        // Unused command, should probably replace this to also query the database, but low priority
+        const player = await Player.getInformation(parseInt(p[1]));
 
         if (!player) {
             interaction.replied
                 ? interaction.channel!.send({
                       content: MessageCreator.createReject(
                           localization.getTranslation("playerNotFound"),
-                          p[1]
+                          p[1],
                       ),
                   })
                 : InteractionHelper.reply(interaction, {
                       content: MessageCreator.createReject(
                           localization.getTranslation("playerNotFound"),
-                          p[1]
+                          p[1],
                       ),
                   });
 
@@ -99,22 +94,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     // Find latest played beatmap if not set
-    const map: TournamentBeatmap | null = match.getLastPlayedBeatmap(
+    const map = match.getLastPlayedBeatmap(
         pool,
         playerList,
-        interaction.options.getString("pick")?.toUpperCase()
+        interaction.options.getString("pick")?.toUpperCase(),
     );
 
     if (!map) {
         interaction.replied
             ? interaction.channel!.send({
                   content: MessageCreator.createReject(
-                      localization.getTranslation("mapNotFound")
+                      localization.getTranslation("mapNotFound"),
                   ),
               })
             : InteractionHelper.reply(interaction, {
                   content: MessageCreator.createReject(
-                      localization.getTranslation("mapNotFound")
+                      localization.getTranslation("mapNotFound"),
                   ),
               });
 
@@ -126,48 +121,47 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     for (let i = 0; i < playerList.length; ++i) {
         (i % 2 ? team2ScoreList : team1ScoreList).push(
-            playerList[i].recentPlays[0]
+            playerList[i].recentPlays[0],
         );
     }
 
-    const team1ScoreStatus: OperationResult = match.verifyTeamScore(
+    const team1ScoreStatus = match.verifyTeamScore(
         team1ScoreList,
         map,
-        localization.language
+        localization.language,
     );
-    const team2ScoreStatus: OperationResult = match.verifyTeamScore(
+    const team2ScoreStatus = match.verifyTeamScore(
         team2ScoreList,
         map,
-        localization.language
+        localization.language,
     );
 
     const scoreV2List: number[] = [];
 
-    let team1String: string = "";
-    let team2String: string = "";
-    let team1OverallScore: number = 0;
-    let team2OverallScore: number = 0;
+    let team1String = "";
+    let team2String = "";
+    let team1OverallScore = 0;
+    let team2OverallScore = 0;
 
     for (let i = 0; i < playerList.length; ++i) {
-        const score: Score = playerList[i].recentPlays[0];
+        const score = playerList[i].recentPlays[0];
 
-        const teamScoreStatus: OperationResult =
-            i % 2 ? team2ScoreStatus : team1ScoreStatus;
+        const teamScoreStatus = i % 2 ? team2ScoreStatus : team1ScoreStatus;
 
-        const verificationResult: OperationResult = match.verifyScore(
+        const verificationResult = match.verifyScore(
             score,
             map,
             teamScoreStatus.success,
-            localization.language
+            localization.language,
         );
 
         if (verificationResult.success && teamScoreStatus.success) {
-            const scorev2: number = pool.calculateScoreV2(
+            const scorev2 = pool.calculateScoreV2(
                 map.pickId,
                 score.score,
                 score.accuracy.value(),
                 score.accuracy.nmiss,
-                score.mods
+                score.mods,
             );
 
             scoreV2List.push(scorev2);
@@ -175,19 +169,19 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             scoreV2List.push(0);
         }
 
-        const scoreString: string = `${match.player[i][0]} - (${
+        const scoreString = `${match.player[i][0]} - (${
             score.mods.map((v) => v.name).join(", ") || "NoMod"
         }): ${bold(
-            scoreV2List.at(-1)!.toString()
+            scoreV2List.at(-1)!.toString(),
         )} - ${BeatmapManager.getRankEmote(<ScoreRank>score.rank)} - ${(
             score.accuracy.value() * 100
         ).toFixed(2)}% - ${score.accuracy.nmiss} ${Symbols.missIcon}\n`;
-        const failString: string = `${match.player[i][0]} - (N/A): ${bold(
-            "0"
+        const failString = `${match.player[i][0]} - (N/A): ${bold(
+            "0",
         )} - ${bold(
             !teamScoreStatus.success
                 ? teamScoreStatus.reason!
-                : verificationResult.reason!
+                : verificationResult.reason!,
         )}\n`;
 
         if (i % 2 === 0) {
@@ -216,16 +210,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     team1String ||= localization.getTranslation("none");
     team2String ||= localization.getTranslation("none");
 
-    let description: string = StringHelper.formatString(
+    let description = StringHelper.formatString(
         localization.getTranslation("won"),
         team1OverallScore > team2OverallScore
             ? match.team[0][0]
             : match.team[1][0],
         Math.abs(team1OverallScore - team2OverallScore).toLocaleString(
-            LocaleHelper.convertToBCP47(localization.language)
-        )
+            LocaleHelper.convertToBCP47(localization.language),
+        ),
     );
-    let embedColor: number = 0;
+    let embedColor = 0;
 
     if (team1OverallScore > team2OverallScore) {
         embedColor = 16711680;
@@ -235,7 +229,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         description = localization.getTranslation("draw");
     }
 
-    const resultEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const resultEmbed = EmbedCreator.createNormalEmbed({
         timestamp: true,
         color: embedColor,
     });
@@ -255,13 +249,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 name: "=================================",
                 value: bold(description),
-            }
+            },
         );
 
     if (!interaction.replied) {
         await InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
-                localization.getTranslation("matchDataInProcess")
+                localization.getTranslation("matchDataInProcess"),
             ),
         });
     }
@@ -271,27 +265,26 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Blue team wins
     match.team[1][1] += Number(team2OverallScore > team1OverallScore);
 
-    const summaryEmbed: EmbedBuilder =
-        EmbedCreator.createMatchSummaryEmbed(match);
+    const summaryEmbed = EmbedCreator.createMatchSummaryEmbed(match);
 
     for (let i = 0; i < scoreV2List.length; ++i) {
         match.result[i].push(scoreV2List[i]);
     }
 
-    const finalResult: OperationResult = await match.updateMatch();
+    const finalResult = await match.updateMatch();
 
     if (!finalResult.success) {
         return interaction.channel!.send({
             content: MessageCreator.createReject(
                 localization.getTranslation("submitMatchFailed"),
-                finalResult.reason!
+                finalResult.reason!,
             ),
         });
     }
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
-            localization.getTranslation("submitMatchSuccessful")
+            localization.getTranslation("submitMatchSuccessful"),
         ),
         embeds: [resultEmbed, summaryEmbed],
     });

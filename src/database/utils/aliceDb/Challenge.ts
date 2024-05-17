@@ -35,6 +35,7 @@ import {
     ModHalfTime,
     ModUtil,
     Modes,
+    Accuracy,
 } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
@@ -61,6 +62,8 @@ import { DroidPerformanceAttributes } from "@alice-structures/difficultyattribut
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 /**
  * Represents a daily or weekly challenge.
@@ -440,27 +443,47 @@ export class Challenge extends Manager {
      * @returns An object containing information about the operation.
      */
     async checkScoreCompletion(
-        score: Score,
+        score:
+            | Pick<
+                  OfficialDatabaseScore,
+                  | "id"
+                  | "score"
+                  | "mode"
+                  | "combo"
+                  | "mode"
+                  | "perfect"
+                  | "good"
+                  | "bad"
+                  | "miss"
+                  | "mark"
+              >
+            | Score,
         replay?: ReplayAnalyzer,
         language: Language = "en",
     ): Promise<OperationResult> {
         const localization = this.getLocalization(language);
+        const mods =
+            score instanceof Score
+                ? score.mods
+                : DroidHelper.parseMods(score.mode).mods;
 
-        if (!this.isConstrainFulfilled(score.mods)) {
+        if (!this.isConstrainFulfilled(mods)) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("constrainNotFulfilled"),
             );
         }
 
-        if (!this.isModFulfilled(score.mods)) {
+        if (!this.isModFulfilled(mods)) {
             return this.createOperationResult(
                 false,
                 localization.getTranslation("eznfhtUsage"),
             );
         }
 
-        replay ??= new ReplayAnalyzer({ scoreID: score.scoreID });
+        replay ??= new ReplayAnalyzer({
+            scoreID: score instanceof Score ? score.scoreID : score.id,
+        });
         await ReplayHelper.analyzeReplay(replay);
 
         const { data } = replay;
@@ -618,10 +641,39 @@ export class Challenge extends Manager {
      * @param score The score.
      * @returns The bonus level.
      */
-    async calculateBonusLevel(score: Score): Promise<number>;
+    async calculateBonusLevel(
+        score:
+            | Pick<
+                  OfficialDatabaseScore,
+                  | "id"
+                  | "score"
+                  | "combo"
+                  | "perfect"
+                  | "good"
+                  | "bad"
+                  | "miss"
+                  | "mode"
+                  | "mark"
+              >
+            | Score,
+    ): Promise<number>;
 
     async calculateBonusLevel(
-        scoreOrReplay: Score | ReplayAnalyzer,
+        scoreOrReplay:
+            | Pick<
+                  OfficialDatabaseScore,
+                  | "id"
+                  | "score"
+                  | "combo"
+                  | "perfect"
+                  | "good"
+                  | "bad"
+                  | "miss"
+                  | "mode"
+                  | "mark"
+              >
+            | Score
+            | ReplayAnalyzer,
     ): Promise<number> {
         const replay = await ReplayHelper.analyzeReplay(scoreOrReplay);
         const { data } = replay;
@@ -658,13 +710,33 @@ export class Challenge extends Manager {
                 PPCalculationMethod.live,
                 calcParams,
             );
-        } else {
+        } else if (scoreOrReplay instanceof ReplayAnalyzer) {
             const attribs =
                 await this.getReplayCalculationResult(scoreOrReplay);
 
             if (attribs) {
                 [droidAttribs, osuAttribs] = attribs;
             }
+        } else {
+            const calcParams =
+                BeatmapDifficultyHelper.getCalculationParamsFromScore(
+                    scoreOrReplay,
+                );
+
+            droidAttribs =
+                await DPPProcessorRESTManager.getPerformanceAttributes(
+                    this.beatmapid,
+                    Modes.droid,
+                    PPCalculationMethod.live,
+                    calcParams,
+                );
+
+            osuAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
+                this.beatmapid,
+                Modes.osu,
+                PPCalculationMethod.live,
+                calcParams,
+            );
         }
 
         if (!droidAttribs || !osuAttribs) {
@@ -672,9 +744,9 @@ export class Challenge extends Manager {
         }
 
         const scoreV2 =
-            scoreOrReplay instanceof Score
-                ? await this.calculateChallengeScoreV2(scoreOrReplay)
-                : await this.calculateChallengeScoreV2(scoreOrReplay.data!);
+            scoreOrReplay instanceof ReplayAnalyzer
+                ? await this.calculateChallengeScoreV2(scoreOrReplay.data!)
+                : await this.calculateChallengeScoreV2(scoreOrReplay);
 
         const hitErrorInformation = replay.calculateHitError();
 
@@ -689,9 +761,10 @@ export class Challenge extends Manager {
                 switch (bonus.id) {
                     case "score": {
                         const score =
-                            scoreOrReplay instanceof Score
-                                ? scoreOrReplay.score
-                                : scoreOrReplay.data!.score;
+                            scoreOrReplay instanceof ReplayAnalyzer
+                                ? scoreOrReplay.data!.score
+                                : scoreOrReplay.score;
+
                         bonusComplete = score >= +tier.value;
                         break;
                     }
@@ -699,7 +772,15 @@ export class Challenge extends Manager {
                         const accuracy =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy
-                                : scoreOrReplay.data!.accuracy;
+                                : scoreOrReplay instanceof ReplayAnalyzer
+                                  ? scoreOrReplay.data!.accuracy
+                                  : new Accuracy({
+                                        n300: scoreOrReplay.perfect,
+                                        n100: scoreOrReplay.good,
+                                        n50: scoreOrReplay.bad,
+                                        nmiss: scoreOrReplay.miss,
+                                    });
+
                         bonusComplete = accuracy.value() * 100 >= +tier.value;
                         break;
                     }
@@ -707,15 +788,19 @@ export class Challenge extends Manager {
                         const miss =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.nmiss
-                                : scoreOrReplay.data!.accuracy.nmiss;
+                                : scoreOrReplay instanceof ReplayAnalyzer
+                                  ? scoreOrReplay.data!.accuracy.nmiss
+                                  : scoreOrReplay.miss;
+
                         bonusComplete = miss < +tier.value || !miss;
                         break;
                     }
                     case "combo": {
                         const combo =
-                            scoreOrReplay instanceof Score
-                                ? scoreOrReplay.combo
-                                : scoreOrReplay.data!.maxCombo;
+                            scoreOrReplay instanceof ReplayAnalyzer
+                                ? scoreOrReplay.data!.maxCombo
+                                : scoreOrReplay.combo;
+
                         bonusComplete = combo >= +tier.value;
                         break;
                     }
@@ -724,10 +809,10 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "mod": {
-                        const mods =
-                            scoreOrReplay instanceof Score
-                                ? scoreOrReplay.mods
-                                : scoreOrReplay.data!.convertedMods;
+                        const mods = ModUtil.pcStringToMods(
+                            droidAttribs.params.mods,
+                        );
+
                         bonusComplete =
                             StringHelper.sortAlphabet(
                                 mods.reduce((a, v) => a + v.acronym, ""),
@@ -741,7 +826,10 @@ export class Challenge extends Manager {
                         const rank =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.rank
-                                : scoreOrReplay.data!.rank;
+                                : scoreOrReplay instanceof ReplayAnalyzer
+                                  ? scoreOrReplay.data!.rank
+                                  : scoreOrReplay.mark;
+
                         bonusComplete =
                             this.getRankTier(rank) >=
                             this.getRankTier(<string>tier.value);
@@ -759,7 +847,10 @@ export class Challenge extends Manager {
                         const n300 =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n300
-                                : scoreOrReplay.data!.accuracy.n300;
+                                : scoreOrReplay instanceof ReplayAnalyzer
+                                  ? scoreOrReplay.data!.accuracy.n300
+                                  : scoreOrReplay.perfect;
+
                         bonusComplete = n300 >= +tier.value;
                         break;
                     }
@@ -767,7 +858,10 @@ export class Challenge extends Manager {
                         const n100 =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n100
-                                : scoreOrReplay.data!.accuracy.n100;
+                                : scoreOrReplay instanceof ReplayAnalyzer
+                                  ? scoreOrReplay.data!.accuracy.n100
+                                  : scoreOrReplay.good;
+
                         bonusComplete = n100 <= +tier.value;
                         break;
                     }
@@ -775,7 +869,10 @@ export class Challenge extends Manager {
                         const n50 =
                             scoreOrReplay instanceof Score
                                 ? scoreOrReplay.accuracy.n50
-                                : scoreOrReplay.data!.accuracy.n50;
+                                : scoreOrReplay instanceof ReplayAnalyzer
+                                  ? scoreOrReplay.data!.accuracy.n50
+                                  : scoreOrReplay.bad;
+
                         bonusComplete = n50 <= +tier.value;
                         break;
                     }
@@ -963,7 +1060,19 @@ export class Challenge extends Manager {
      * @param hitErrorInformation The hit error information of the score.
      */
     private async verifyPassCompletion(
-        score: Score,
+        score:
+            | Pick<
+                  OfficialDatabaseScore,
+                  | "score"
+                  | "combo"
+                  | "perfect"
+                  | "good"
+                  | "bad"
+                  | "miss"
+                  | "mode"
+                  | "mark"
+              >
+            | Score,
         droidAttribs: CompleteCalculationAttributes<
             DroidDifficultyAttributes,
             DroidPerformanceAttributes
@@ -996,7 +1105,20 @@ export class Challenge extends Manager {
     ): Promise<boolean>;
 
     private async verifyPassCompletion(
-        scoreOrReplay: Score | ReplayAnalyzer,
+        scoreOrReplay:
+            | Pick<
+                  OfficialDatabaseScore,
+                  | "score"
+                  | "combo"
+                  | "perfect"
+                  | "good"
+                  | "bad"
+                  | "miss"
+                  | "mode"
+                  | "mark"
+              >
+            | Score
+            | ReplayAnalyzer,
         droidAttribs: CompleteCalculationAttributes<
             DroidDifficultyAttributes,
             DroidPerformanceAttributes
@@ -1010,46 +1132,62 @@ export class Challenge extends Manager {
         switch (this.pass.id) {
             case "score": {
                 const score =
-                    scoreOrReplay instanceof Score
-                        ? scoreOrReplay.score
-                        : scoreOrReplay.data!.score;
+                    scoreOrReplay instanceof ReplayAnalyzer
+                        ? scoreOrReplay.data!.score
+                        : scoreOrReplay.score;
                 return score >= +this.pass.value;
             }
             case "acc": {
                 const accuracy =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy
-                        : scoreOrReplay.data!.accuracy;
+                        : scoreOrReplay instanceof ReplayAnalyzer
+                          ? scoreOrReplay.data!.accuracy
+                          : new Accuracy({
+                                n300: scoreOrReplay.perfect,
+                                n100: scoreOrReplay.good,
+                                n50: scoreOrReplay.bad,
+                                nmiss: scoreOrReplay.miss,
+                            });
+
                 return accuracy.value() * 100 >= +this.pass.value;
             }
             case "miss": {
                 const miss =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.nmiss
-                        : scoreOrReplay.data!.accuracy.nmiss;
+                        : scoreOrReplay instanceof ReplayAnalyzer
+                          ? scoreOrReplay.data!.accuracy.nmiss
+                          : scoreOrReplay.miss;
+
                 return miss < +this.pass.value || !miss;
             }
             case "combo": {
                 const combo =
-                    scoreOrReplay instanceof Score
-                        ? scoreOrReplay.combo
-                        : scoreOrReplay.data!.maxCombo;
+                    scoreOrReplay instanceof ReplayAnalyzer
+                        ? scoreOrReplay.data!.maxCombo
+                        : scoreOrReplay.combo;
+
                 return combo >= +this.pass.value;
             }
             case "scorev2": {
                 const scoreV2 =
-                    scoreOrReplay instanceof Score
-                        ? await this.calculateChallengeScoreV2(scoreOrReplay)
-                        : await this.calculateChallengeScoreV2(
+                    scoreOrReplay instanceof ReplayAnalyzer
+                        ? await this.calculateChallengeScoreV2(
                               scoreOrReplay.data!,
-                          );
+                          )
+                        : await this.calculateChallengeScoreV2(scoreOrReplay);
+
                 return scoreV2 >= +this.pass.value;
             }
             case "rank": {
                 const rank =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.rank
-                        : scoreOrReplay.data!.rank;
+                        : scoreOrReplay instanceof ReplayAnalyzer
+                          ? scoreOrReplay.data!.rank
+                          : scoreOrReplay.mark;
+
                 return (
                     this.getRankTier(rank) >=
                     this.getRankTier(<string>this.pass.value)
@@ -1063,21 +1201,30 @@ export class Challenge extends Manager {
                 const n300 =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n300
-                        : scoreOrReplay.data!.accuracy.n300;
+                        : scoreOrReplay instanceof ReplayAnalyzer
+                          ? scoreOrReplay.data!.accuracy.n300
+                          : scoreOrReplay.perfect;
+
                 return n300 >= +this.pass.value;
             }
             case "m100": {
                 const n100 =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n100
-                        : scoreOrReplay.data!.accuracy.n100;
+                        : scoreOrReplay instanceof ReplayAnalyzer
+                          ? scoreOrReplay.data!.accuracy.n100
+                          : scoreOrReplay.good;
+
                 return n100 <= +this.pass.value;
             }
             case "m50": {
                 const n50 =
                     scoreOrReplay instanceof Score
                         ? scoreOrReplay.accuracy.n50
-                        : scoreOrReplay.data!.accuracy.n50;
+                        : scoreOrReplay instanceof ReplayAnalyzer
+                          ? scoreOrReplay.data!.accuracy.n50
+                          : scoreOrReplay.bad;
+
                 return n50 <= +this.pass.value;
             }
             case "ur":
@@ -1239,13 +1386,13 @@ export class Challenge extends Manager {
     }
 
     /**
-     * Calculates a replay with respect to the challenge.
+     * Calculates a score or replay with respect to the challenge.
      *
-     * @param replay The replay to calculate.
+     * @param scoreOrReplay The score or replay to calculate.
      * @returns The calculation result.
      */
     private async getReplayCalculationResult(
-        replay: ReplayAnalyzer,
+        scoreOrReplay: OfficialDatabaseScore | ReplayAnalyzer,
     ): Promise<
         | [
               CompleteCalculationAttributes<
@@ -1259,13 +1406,16 @@ export class Challenge extends Manager {
           ]
         | null
     > {
-        const { data } = replay;
-        if (!data) {
-            return null;
-        }
+        let calcParams: PerformanceCalculationParameters;
 
-        const calcParams: PerformanceCalculationParameters =
-            new PerformanceCalculationParameters({
+        if (scoreOrReplay instanceof ReplayAnalyzer) {
+            const { data } = scoreOrReplay;
+
+            if (!data) {
+                return null;
+            }
+
+            calcParams = new PerformanceCalculationParameters({
                 accuracy: data.accuracy,
                 inputAccuracy: data.accuracy.value() * 100,
                 combo: data.maxCombo,
@@ -1277,6 +1427,12 @@ export class Challenge extends Manager {
                 customSpeedMultiplier: data.speedMultiplier,
                 oldStatistics: data.replayVersion <= 3,
             });
+        } else {
+            calcParams =
+                BeatmapDifficultyHelper.getCalculationParamsFromScore(
+                    scoreOrReplay,
+                );
+        }
 
         const droidAttribs =
             await DPPProcessorRESTManager.getPerformanceAttributes(
@@ -1319,23 +1475,53 @@ export class Challenge extends Manager {
      *
      * @param score The score.
      */
-    private async calculateChallengeScoreV2(score: Score): Promise<number>;
+    private async calculateChallengeScoreV2(
+        score:
+            | Pick<
+                  OfficialDatabaseScore,
+                  "score" | "perfect" | "good" | "bad" | "miss" | "mode"
+              >
+            | Score,
+    ): Promise<number>;
 
     private async calculateChallengeScoreV2(
-        scoreOrReplay: Score | ReplayData,
+        scoreOrReplay:
+            | Pick<
+                  OfficialDatabaseScore,
+                  "score" | "perfect" | "good" | "bad" | "miss" | "mode"
+              >
+            | Score
+            | ReplayData,
     ): Promise<number> {
         const beatmapInfo = (await BeatmapManager.getBeatmap(this.beatmapid))!;
 
+        const speedMultiplier =
+            scoreOrReplay instanceof Score ||
+            scoreOrReplay instanceof ReplayData
+                ? scoreOrReplay.speedMultiplier
+                : DroidHelper.parseMods(scoreOrReplay.mode).speedMultiplier;
+
         const maximumScore = beatmapInfo.beatmap.maxDroidScore(
             ModUtil.pcStringToMods(this.constrain),
-            scoreOrReplay.speedMultiplier,
+            speedMultiplier,
         );
+
+        const accuracy =
+            scoreOrReplay instanceof Score ||
+            scoreOrReplay instanceof ReplayData
+                ? scoreOrReplay.accuracy
+                : new Accuracy({
+                      n300: scoreOrReplay.perfect,
+                      n100: scoreOrReplay.good,
+                      n50: scoreOrReplay.bad,
+                      nmiss: scoreOrReplay.miss,
+                  });
 
         const tempScoreV2 =
             (scoreOrReplay.score / maximumScore) * 6e5 +
-            Math.pow(scoreOrReplay.accuracy.value(), 4) * 4e5;
+            Math.pow(accuracy.value(), 4) * 4e5;
 
-        return tempScoreV2 - scoreOrReplay.accuracy.nmiss * 0.003 * tempScoreV2;
+        return tempScoreV2 - accuracy.nmiss * 0.003 * tempScoreV2;
     }
 
     /**

@@ -71,6 +71,8 @@ import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { NormalEmbedOptions } from "@alice-structures/utils/NormalEmbedOptions";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 /**
  * Utility to create message embeds.
@@ -483,7 +485,24 @@ export abstract class EmbedCreator {
      * @returns The embed.
      */
     static async createRecentPlayEmbed(
-        score: Score | RecentPlay,
+        score:
+            | Pick<
+                  OfficialDatabaseScore,
+                  | "id"
+                  | "score"
+                  | "combo"
+                  | "mark"
+                  | "mode"
+                  | "date"
+                  | "filename"
+                  | "hash"
+                  | "perfect"
+                  | "good"
+                  | "bad"
+                  | "miss"
+              >
+            | Score
+            | RecentPlay,
         playerAvatarURL: string,
         embedColor?: ColorResolvable,
         droidAttribs?: CompleteCalculationAttributes<
@@ -508,45 +527,62 @@ export abstract class EmbedCreator {
             ),
         });
 
+        const modString =
+            score instanceof Score || score instanceof RecentPlay
+                ? score.completeModString
+                : DroidHelper.getCompleteModString(score.mode);
+
         embed.setAuthor({
-            name: `${score.title} ${score.completeModString}`,
+            name: `${score instanceof Score || score instanceof RecentPlay ? score.title : DroidHelper.cleanupFilename(score.filename)} ${modString}`,
             iconURL: playerAvatarURL,
         });
 
         if (droidAttribs === undefined && osuAttribs !== null) {
             droidAttribs =
-                score instanceof Score
-                    ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                          score.scoreID,
+                score instanceof RecentPlay
+                    ? score.droidAttribs
+                    : await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                          score instanceof Score ? score.scoreID : score.id,
                           Modes.droid,
                           PPCalculationMethod.live,
-                      )
-                    : score.droidAttribs;
+                      );
         }
 
         if (osuAttribs === undefined && droidAttribs !== null) {
             osuAttribs =
-                score instanceof Score
-                    ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                          score.scoreID,
+                score instanceof RecentPlay
+                    ? score.osuAttribs
+                    : await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                          score instanceof Score ? score.scoreID : score.id,
                           Modes.osu,
                           PPCalculationMethod.live,
-                      )
-                    : score.osuAttribs;
+                      );
         }
 
         let beatmapInformation = `${arrow} ${BeatmapManager.getRankEmote(
-            <ScoreRank>score.rank,
+            score instanceof Score || score instanceof RecentPlay
+                ? <ScoreRank>score.rank
+                : score.mark,
         )} ${arrow} `;
+
+        const accuracy =
+            score instanceof Score || score instanceof RecentPlay
+                ? score.accuracy
+                : new Accuracy({
+                      n300: score.perfect,
+                      n100: score.good,
+                      n50: score.bad,
+                      nmiss: score.miss,
+                  });
 
         if (!droidAttribs || !osuAttribs) {
             beatmapInformation +=
-                `${(score.accuracy.value() * 100).toFixed(2)}%\n` +
+                `${(accuracy.value() * 100).toFixed(2)}%\n` +
                 `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${
                     score.combo
-                }x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${
-                    score.accuracy.n50
-                }/${score.accuracy.nmiss}]`;
+                }x ${arrow} [${accuracy.n300}/${accuracy.n100}/${
+                    accuracy.n50
+                }/${accuracy.nmiss}]`;
 
             embed.setDescription(beatmapInformation);
             return embed;
@@ -558,9 +594,7 @@ export abstract class EmbedCreator {
 
         embed
             .setAuthor({
-                name: `${beatmap.fullTitle} ${
-                    score.completeModString
-                } [${droidAttribs.difficulty.starRating.toFixed(2)}${
+                name: `${beatmap.fullTitle} ${modString} [${droidAttribs.difficulty.starRating.toFixed(2)}${
                     Symbols.star
                 } | ${osuAttribs.difficulty.starRating.toFixed(2)}${
                     Symbols.star
@@ -579,15 +613,15 @@ export abstract class EmbedCreator {
         // Some beatmaps return `null` max combo from osu! API, i.e. /b/1462961.
         const { maxCombo } = droidAttribs.difficulty;
 
-        if (score.accuracy.nmiss > 0 || score.combo < maxCombo) {
+        if (accuracy.nmiss > 0 || score.combo < maxCombo) {
             const calcParams =
                 BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
 
             calcParams.combo = maxCombo;
             calcParams.accuracy = new Accuracy({
-                n300: score.accuracy.n300 + score.accuracy.nmiss,
-                n100: score.accuracy.n100,
-                n50: score.accuracy.n50,
+                n300: accuracy.n300 + accuracy.nmiss,
+                n100: accuracy.n100,
+                n50: accuracy.n50,
                 nmiss: 0,
             });
 
@@ -620,15 +654,37 @@ export abstract class EmbedCreator {
         }
 
         beatmapInformation +=
-            `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
+            `${arrow} ${(accuracy.value() * 100).toFixed(2)}%\n` +
             `${arrow} ${score.score.toLocaleString(BCP47)} ${arrow} ${
                 score.combo
-            }x/${maxCombo}x ${arrow} [${score.accuracy.n300}/${
-                score.accuracy.n100
-            }/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
+            }x/${maxCombo}x ${arrow} [${accuracy.n300}/${
+                accuracy.n100
+            }/${accuracy.n50}/${accuracy.nmiss}]`;
         let hitError: HitErrorInformation | null | undefined;
 
-        if (score instanceof Score) {
+        if (score instanceof RecentPlay) {
+            hitError = score.hitError;
+
+            if (score.sliderTickInformation || score.sliderEndInformation) {
+                beatmapInformation += `\n`;
+
+                if (score.sliderTickInformation) {
+                    beatmapInformation += ` ${arrow} ${
+                        score.sliderTickInformation.obtained
+                    }/${
+                        score.sliderTickInformation.total
+                    } ${localization.getTranslation("sliderTicks")}`;
+                }
+
+                if (score.sliderEndInformation) {
+                    beatmapInformation += ` ${arrow} ${
+                        score.sliderEndInformation.obtained
+                    }/${
+                        score.sliderEndInformation.total
+                    } ${localization.getTranslation("sliderEnds")}`;
+                }
+            }
+        } else {
             const replay = await ReplayHelper.analyzeReplay(score);
             const { data } = replay;
 
@@ -679,28 +735,6 @@ export abstract class EmbedCreator {
 
                 // Get hit error average and UR
                 hitError = replay.calculateHitError()!;
-            }
-        } else {
-            hitError = score.hitError;
-
-            if (score.sliderTickInformation || score.sliderEndInformation) {
-                beatmapInformation += `\n`;
-
-                if (score.sliderTickInformation) {
-                    beatmapInformation += ` ${arrow} ${
-                        score.sliderTickInformation.obtained
-                    }/${
-                        score.sliderTickInformation.total
-                    } ${localization.getTranslation("sliderTicks")}`;
-                }
-
-                if (score.sliderEndInformation) {
-                    beatmapInformation += ` ${arrow} ${
-                        score.sliderEndInformation.obtained
-                    }/${
-                        score.sliderEndInformation.total
-                    } ${localization.getTranslation("sliderEnds")}`;
-                }
             }
         }
 

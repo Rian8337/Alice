@@ -24,10 +24,10 @@ import { Image } from "canvas";
 import { Precision } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { OperationResult } from "structures/core/OperationResult";
-import { UserBind } from "./UserBind";
 import { Language } from "@alice-localization/base/Language";
 import { ClanLocalization } from "@alice-localization/database/utils/elainaDb/Clan/ClanLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 /**
  * Represents a clan.
@@ -141,7 +141,7 @@ export class Clan extends Manager {
     /**
      * The base upkeep value of a clan.
      */
-    readonly upkeepBaseValue: number = 200;
+    readonly upkeepBaseValue = 200;
 
     /**
      * The base upkeep value of a clan member.
@@ -150,14 +150,14 @@ export class Clan extends Manager {
         return Math.floor(this.upkeepBaseValue / this.member_list.size);
     }
 
-    private readonly attachmentChannelId: Snowflake = "878541544817307668";
+    private readonly attachmentChannelId = "878541544817307668";
 
     /**
      * @param data The clan data from database.
      */
     constructor(
         data: DatabaseClan = DatabaseManager.elainaDb?.collections.clan
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 
@@ -180,12 +180,12 @@ export class Clan extends Manager {
         this.roleIconUnlocked = data.roleIconUnlocked;
         this.powerups = ArrayHelper.arrayToCollection(
             data.powerups ?? [],
-            "name"
+            "name",
         );
         this.active_powerups = data.active_powerups ?? [];
         this.member_list = ArrayHelper.arrayToCollection(
             data.member_list ?? [],
-            "id"
+            "id",
         );
     }
 
@@ -196,7 +196,7 @@ export class Clan extends Manager {
      * @returns An object containing information about the operation.
      */
     async notifyLeader(message: string): Promise<OperationResult> {
-        const leader: User = await this.client.users.fetch(this.leader);
+        const leader = await this.client.users.fetch(this.leader);
 
         if (!leader) {
             return this.createOperationResult(false, "clan leader not found");
@@ -232,25 +232,24 @@ export class Clan extends Manager {
      */
     async addMember(
         userID: Snowflake,
-        language?: Language
+        language?: Language,
     ): Promise<OperationResult>;
 
     async addMember(
         userOrId: User | Snowflake,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: ClanLocalization = this.getLocalization(language);
-
-        const id: Snowflake = userOrId instanceof User ? userOrId.id : userOrId;
+        const localization = this.getLocalization(language);
+        const id = userOrId instanceof User ? userOrId.id : userOrId;
 
         if (this.member_list.has(id)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("userInCurrentClan")
+                localization.getTranslation("userInCurrentClan"),
             );
         }
 
-        const toAcceptBindInfo: UserBind | null =
+        const toAcceptBindInfo =
             await DatabaseManager.elainaDb.collections.userBind.getFromUser(
                 id,
                 {
@@ -261,22 +260,22 @@ export class Clan extends Manager {
                         joincooldown: 1,
                         previous_bind: 1,
                     },
-                }
+                },
             );
 
         if (!toAcceptBindInfo) {
             return this.createOperationResult(
                 false,
                 new ConstantsLocalization(language).getTranslation(
-                    Constants.userNotBindedReject
-                )
+                    Constants.userNotBindedReject,
+                ),
             );
         }
 
         if (toAcceptBindInfo.clan) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("userInAnotherClan")
+                localization.getTranslation("userInAnotherClan"),
             );
         }
 
@@ -286,38 +285,56 @@ export class Clan extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("userInCooldownForOldClan")
+                localization.getTranslation("userInCooldownForOldClan"),
             );
         } else if (Date.now() / 1000 < (toAcceptBindInfo.joincooldown ?? 0)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("userInCooldownForClan")
+                localization.getTranslation("userInCooldownForClan"),
             );
         }
 
-        let player: Player | null = await Player.getInformation(
-            toAcceptBindInfo.previous_bind[0]
+        let player = await DroidHelper.getPlayer(
+            toAcceptBindInfo.previous_bind[0],
+            ["score", "id"],
         );
+        let rank =
+            player instanceof Player
+                ? player.rank
+                : player !== null
+                  ? (await DroidHelper.getPlayerRank(player.score)) ?? 0
+                  : 0;
 
         for (const uid of toAcceptBindInfo.previous_bind.slice(1)) {
-            const tempPlayer = await Player.getInformation(uid);
+            const tempPlayer = await DroidHelper.getPlayer(uid, [
+                "score",
+                "id",
+            ]);
 
-            if (tempPlayer && (player?.rank ?? 0) > tempPlayer.rank) {
+            const tempRank =
+                tempPlayer instanceof Player
+                    ? tempPlayer.rank
+                    : tempPlayer != null
+                      ? (await DroidHelper.getPlayerRank(tempPlayer.score)) ?? 0
+                      : 0;
+
+            if (tempPlayer && rank > tempRank) {
                 player = tempPlayer;
+                rank = tempRank;
             }
         }
 
         if (!player) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("userBindedAccountNotFound")
+                localization.getTranslation("userBindedAccountNotFound"),
             );
         }
 
         this.member_list.set(id, {
             id: id,
-            uid: player.uid,
-            rank: player.rank,
+            uid: player instanceof Player ? player.uid : player.id,
+            rank: rank,
             hasPermission: false,
             battle_cooldown: 0,
         });
@@ -330,7 +347,7 @@ export class Clan extends Manager {
                 $set: {
                     clan: this.name,
                 },
-            }
+            },
         );
     }
 
@@ -351,7 +368,7 @@ export class Clan extends Manager {
     async removeMember(
         user: User,
         language?: Language,
-        force?: boolean
+        force?: boolean,
     ): Promise<OperationResult>;
 
     /**
@@ -371,13 +388,13 @@ export class Clan extends Manager {
     async removeMember(
         userID: Snowflake,
         language?: Language,
-        force?: boolean
+        force?: boolean,
     ): Promise<OperationResult>;
 
     async removeMember(
         userOrId: User | Snowflake,
         language: Language = "en",
-        force: boolean = false
+        force: boolean = false,
     ): Promise<OperationResult> {
         const localization: ClanLocalization = this.getLocalization(language);
 
@@ -386,14 +403,14 @@ export class Clan extends Manager {
         if (id === this.leader && !force) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("clanLeaderCannotLeaveClan")
+                localization.getTranslation("clanLeaderCannotLeaveClan"),
             );
         }
 
         if (!this.member_list.delete(id)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("userNotInClan")
+                localization.getTranslation("userNotInClan"),
             );
         }
 
@@ -416,7 +433,7 @@ export class Clan extends Manager {
                     joincooldown: Math.floor(Date.now() / 1000) + 86400 * 3,
                     oldjoincooldown: Math.floor(Date.now() / 1000) + 86400 * 14,
                 },
-            }
+            },
         );
 
         return this.updateClan();
@@ -431,14 +448,14 @@ export class Clan extends Manager {
      */
     async changeLeader(
         newLeader?: Snowflake,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ClanLocalization = this.getLocalization(language);
 
         if (newLeader === this.leader) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("leaderIsTheSame")
+                localization.getTranslation("leaderIsTheSame"),
             );
         }
 
@@ -446,7 +463,7 @@ export class Clan extends Manager {
             if (!this.member_list.has(newLeader)) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("cannotFindNewLeader")
+                    localization.getTranslation("cannotFindNewLeader"),
                 );
             }
 
@@ -468,7 +485,7 @@ export class Clan extends Manager {
         let member: ClanMember = this.member_list.random()!;
 
         const coLeaderExists: boolean = this.member_list.some(
-            (c) => c.hasPermission
+            (c) => c.hasPermission,
         );
 
         while (
@@ -533,7 +550,7 @@ export class Clan extends Manager {
     isCoLeader(userOrId: User | Snowflake): boolean {
         return (
             this.member_list.get(
-                userOrId instanceof User ? userOrId.id : userOrId
+                userOrId instanceof User ? userOrId.id : userOrId,
             )?.hasPermission ?? false
         );
     }
@@ -590,7 +607,7 @@ export class Clan extends Manager {
                     joincooldown: Math.floor(Date.now() / 1000) + 86400 * 3,
                     oldjoincooldown: Math.floor(Date.now() / 1000) + 86400 * 14,
                 },
-            }
+            },
         );
     }
 
@@ -626,7 +643,7 @@ export class Clan extends Manager {
                     active_powerups: this.active_powerups,
                     member_list: [...this.member_list.values()],
                 },
-            }
+            },
         );
     }
 
@@ -640,7 +657,7 @@ export class Clan extends Manager {
         if (this.isMatch === matchMode) {
             return this.createOperationResult(
                 false,
-                `clan is already${matchMode ? "" : " not"} in match mode`
+                `clan is already${matchMode ? "" : " not"} in match mode`,
             );
         }
 
@@ -664,7 +681,7 @@ export class Clan extends Manager {
         }
 
         const mainServer: Guild = await this.client.guilds.fetch(
-            Constants.mainServer
+            Constants.mainServer,
         );
 
         const globalClanRole: Role = await this.getGlobalClanRole();
@@ -699,7 +716,7 @@ export class Clan extends Manager {
         }
 
         const mainServer: Guild = await this.client.guilds.fetch(
-            Constants.mainServer
+            Constants.mainServer,
         );
 
         const globalClanRole: Role = await this.getGlobalClanRole();
@@ -737,7 +754,7 @@ export class Clan extends Manager {
      */
     async getClanRole(): Promise<Role | undefined> {
         const mainServer: Guild = await this.client.guilds.fetch(
-            Constants.mainServer
+            Constants.mainServer,
         );
 
         return mainServer.roles.cache.find((r) => r.name === this.name);
@@ -748,7 +765,7 @@ export class Clan extends Manager {
      */
     async getGlobalClanRole(): Promise<Role> {
         const mainServer: Guild = await this.client.guilds.fetch(
-            Constants.mainServer
+            Constants.mainServer,
         );
 
         return mainServer.roles.cache.find((r) => r.name === "Clans")!;
@@ -759,7 +776,7 @@ export class Clan extends Manager {
      */
     async getClanChannel(): Promise<TextChannel | undefined> {
         const mainServer: Guild = await this.client.guilds.fetch(
-            Constants.mainServer
+            Constants.mainServer,
         );
 
         return <TextChannel | undefined>(
@@ -803,7 +820,7 @@ export class Clan extends Manager {
             this.upkeepBaseValue +
             this.member_list.reduce(
                 (a, v) => a + this.calculateUpkeep(v.id),
-                0
+                0,
             ) +
             distribution.reduce((a, v) => a + v, 0)
         );
@@ -846,7 +863,7 @@ export class Clan extends Manager {
      */
     async setIcon(
         iconURL?: string,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ClanLocalization = this.getLocalization(language);
 
@@ -856,14 +873,14 @@ export class Clan extends Manager {
             if (!(await RESTManager.downloadImage(iconURL))) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("invalidImage")
+                    localization.getTranslation("invalidImage"),
                 );
             }
 
             // Delete original message
             if (this.iconMessage) {
                 const message: Message = await channel.messages.fetch(
-                    this.iconMessage
+                    this.iconMessage,
                 );
 
                 await message.delete();
@@ -871,7 +888,7 @@ export class Clan extends Manager {
 
             const attachment: AttachmentBuilder = new AttachmentBuilder(
                 iconURL,
-                { name: "icon.png" }
+                { name: "icon.png" },
             );
 
             const message: Message = await channel.send({
@@ -883,7 +900,7 @@ export class Clan extends Manager {
             this.iconURL = message.attachments.first()!.url;
         } else {
             const message: Message = await channel.messages.fetch(
-                this.iconMessage
+                this.iconMessage,
             );
 
             await message.delete();
@@ -903,40 +920,39 @@ export class Clan extends Manager {
      */
     async setBanner(
         bannerURL?: string,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ClanLocalization = this.getLocalization(language);
 
         const channel: TextChannel = await this.getAttachmentChannel();
 
         if (bannerURL) {
-            const image: Image | null = await RESTManager.downloadImage(
-                bannerURL
-            );
+            const image: Image | null =
+                await RESTManager.downloadImage(bannerURL);
 
             if (!image) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("invalidImage")
+                    localization.getTranslation("invalidImage"),
                 );
             }
 
             if (
                 !Precision.almostEqualsNumber(
                     image.naturalWidth / image.naturalHeight,
-                    3.6
+                    3.6,
                 )
             ) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("invalidImageRatio")
+                    localization.getTranslation("invalidImageRatio"),
                 );
             }
 
             // Delete original message
             if (this.bannerMessage) {
                 const message: Message = await channel.messages.fetch(
-                    this.bannerMessage
+                    this.bannerMessage,
                 );
 
                 await message.delete();
@@ -944,7 +960,7 @@ export class Clan extends Manager {
 
             const attachment: AttachmentBuilder = new AttachmentBuilder(
                 bannerURL,
-                { name: "banner.png" }
+                { name: "banner.png" },
             );
 
             const message: Message = await channel.send({
@@ -956,7 +972,7 @@ export class Clan extends Manager {
             this.bannerURL = message.attachments.first()!.url;
         } else {
             const message: Message = await channel.messages.fetch(
-                this.bannerMessage
+                this.bannerMessage,
             );
 
             await message.delete();
@@ -976,7 +992,7 @@ export class Clan extends Manager {
      */
     setDescription(
         description?: string,
-        language: Language = "en"
+        language: Language = "en",
     ): OperationResult {
         const localization: ClanLocalization = this.getLocalization(language);
 
@@ -984,7 +1000,7 @@ export class Clan extends Manager {
             if (description.length >= 2000) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("descriptionTooLong")
+                    localization.getTranslation("descriptionTooLong"),
                 );
             }
 
@@ -1008,14 +1024,14 @@ export class Clan extends Manager {
         if (this.power + amount < 0) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("clanPowerNegativeWarning")
+                localization.getTranslation("clanPowerNegativeWarning"),
             );
         }
 
         if (!Number.isFinite(this.power + amount)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("clanPowerInfiniteWarning")
+                localization.getTranslation("clanPowerInfiniteWarning"),
             );
         }
 

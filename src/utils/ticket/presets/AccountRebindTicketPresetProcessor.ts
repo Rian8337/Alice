@@ -17,6 +17,7 @@ import { Constants } from "@alice-core/Constants";
 import { Config } from "@alice-core/Config";
 import { ModalRepliableInteraction } from "@alice-structures/core/ModalRepliableInteraction";
 import { DatabaseSupportTicketPreset } from "@alice-structures/database/aliceDb/DatabaseSupportTicketPreset";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 /**
  * The ticket preset processor for account rebinds.
@@ -33,7 +34,7 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
         const email = interaction.fields.getTextInputValue("email");
         const reason = interaction.fields.getTextInputValue("reason");
 
-        const player = await Player.getInformation(username);
+        const player = await DroidHelper.getPlayer(username, ["id", "email"]);
         if (!player) {
             return this.invalidateModal(
                 interaction,
@@ -48,9 +49,11 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
             );
         }
 
+        const uid = player instanceof Player ? player.uid : player.id;
+
         const bindInfo =
             await DatabaseManager.elainaDb.collections.userBind.getFromUid(
-                player.uid,
+                uid,
                 { projection: { _id: 0, discordid: 1 } },
             );
 
@@ -74,8 +77,8 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
             .catch(() => null);
 
         return {
-            title: `osu!droid Account Rebind (${player.uid})`,
-            description: `I would like to request an osu!droid account rebind with uid ${player.uid} with the following reason:\n\n${reason}`,
+            title: `osu!droid Account Rebind (${uid})`,
+            description: `I would like to request an osu!droid account rebind with uid ${uid} with the following reason:\n\n${reason}`,
             assignees: role?.members.map((v) => v.id),
         };
     }

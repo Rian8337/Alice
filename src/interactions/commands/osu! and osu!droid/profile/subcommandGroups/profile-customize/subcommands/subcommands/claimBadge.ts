@@ -8,7 +8,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { Modes, RankedStatus } from "@rian8337/osu-base";
-import { Player, Score } from "@rian8337/osu-droid-utilities";
+import { Score } from "@rian8337/osu-droid-utilities";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -16,6 +16,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization = new ProfileLocalization(
@@ -101,7 +102,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    const player = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, ["score"]);
 
     if (!player) {
         return InteractionHelper.update(interaction, {
@@ -189,7 +190,11 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             }
 
             for (const uid of bindInfo.previous_bind) {
-                const score = await Score.getFromHash(uid, beatmapInfo.hash);
+                const score = await DroidHelper.getScore(
+                    uid,
+                    beatmapInfo.hash,
+                    ["id"],
+                );
 
                 if (!score) {
                     continue;
@@ -197,7 +202,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
 
                 const attribs =
                     await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                        score.scoreID,
+                        score instanceof Score ? score.scoreID : score.id,
                         Modes.osu,
                         PPCalculationMethod.live,
                     );

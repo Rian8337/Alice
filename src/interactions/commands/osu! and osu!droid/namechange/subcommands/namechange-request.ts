@@ -1,24 +1,22 @@
-import { Player } from "@rian8337/osu-droid-utilities";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { NamechangeLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: NamechangeLocalization = new NamechangeLocalization(
+    const localization = new NamechangeLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
@@ -39,7 +37,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const nameChange: NameChange | null =
+    const nameChange =
         await DatabaseManager.aliceDb.collections.nameChange.getFromUid(
             bindInfo.uid,
         );
@@ -68,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const player: Player | null = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, ["email"]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -78,7 +76,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const email: string = interaction.options.getString("email", true).trim();
+    const email = interaction.options.getString("email", true).trim();
 
     if (email !== player.email) {
         return InteractionHelper.reply(interaction, {
@@ -88,10 +86,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const newUsername: string = interaction.options.getString(
-        "newusername",
-        true,
-    );
+    const newUsername = interaction.options.getString("newusername", true);
 
     if (
         StringHelper.hasUnicode(newUsername) ||
@@ -114,7 +109,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const newPlayer: Player | null = await Player.getInformation(newUsername);
+    const newPlayer = await DroidHelper.getPlayer(newUsername, ["id"]);
 
     if (newPlayer) {
         return InteractionHelper.reply(interaction, {

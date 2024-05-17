@@ -1,4 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import {
     DroidAPIRequestBuilder,
@@ -242,17 +243,22 @@ export abstract class ScoreHelper {
      * Gets the recent scores of a player, combined with scores from the recent
      * plays database when necessary.
      *
-     * A play submitted to the server will be of instance `Score`, while
+     * A play submitted to the server will be of instance `Score` or `OfficialDatabaseScore`, while
      * a play submitted to the recent plays database will be of instance `RecentPlay`.
      *
      * @param uid The uid of the player.
      * @param existingScores Existing scores, usually obtained from an API response, if any.
+     * @param checkOfficialDatabase Whether to check the official database for scores.
      * @returns The recent scores of the player, sorted by submission date descendingly.
      */
-    static async getRecentScores(
+    static async getRecentScores<K extends keyof OfficialDatabaseScore>(
         uid: number,
-        existingScores: Score[] = [],
-    ): Promise<(Score | RecentPlay)[]> {
+        existingScores: (
+            | Pick<OfficialDatabaseScore, K>
+            | Score
+            | RecentPlay
+        )[] = [],
+    ): Promise<(Pick<OfficialDatabaseScore, K> | Score | RecentPlay)[]> {
         return DatabaseManager.aliceDb.collections.recentPlays
             .getFromUid(uid)
             .then((recentPlays) =>

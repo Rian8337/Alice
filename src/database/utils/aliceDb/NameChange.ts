@@ -3,15 +3,17 @@ import { DatabaseNameChange } from "structures/database/aliceDb/DatabaseNameChan
 import { OperationResult } from "structures/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
-import { bold, EmbedBuilder, Snowflake, User } from "discord.js";
+import { bold, Snowflake } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
+import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { Language } from "@alice-localization/base/Language";
 import { NameChangeLocalization } from "@alice-localization/database/utils/aliceDb/NameChange/NameChangeLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 /**
  * Represents an osu!droid name change request.
@@ -24,11 +26,12 @@ export class NameChange extends Manager implements DatabaseNameChange {
     isProcessed: boolean;
     previous_usernames: string[];
     readonly _id?: ObjectId;
-    private player: Player | null = null;
+    private player: Pick<OfficialDatabaseUser, "username"> | Player | null =
+        null;
 
     constructor(
         data: DatabaseNameChange = DatabaseManager.aliceDb?.collections
-            .nameChange.defaultDocument ?? {}
+            .nameChange.defaultDocument ?? {},
     ) {
         super();
 
@@ -48,61 +51,59 @@ export class NameChange extends Manager implements DatabaseNameChange {
      * @returns An object containing information about the operation.
      */
     async accept(language: Language = "en"): Promise<OperationResult> {
-        const localization: NameChangeLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (this.isProcessed) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("requestNotActive")
+                localization.getTranslation("requestNotActive"),
             );
         }
 
-        this.player ??= await Player.getInformation(this.uid);
+        this.player ??= await DroidHelper.getPlayer(this.uid, ["username"]);
 
         if (!this.player) {
             return this.deny("Cannot find player profile");
         }
 
-        const apiRequestBuilder: DroidAPIRequestBuilder =
-            new DroidAPIRequestBuilder()
-                .setEndpoint("user_rename.php")
-                .addParameter("username", this.player.username)
-                .addParameter("newname", this.new_username!);
+        // Still use API for name change to allow logging.
+        const apiRequestBuilder = new DroidAPIRequestBuilder()
+            .setEndpoint("user_rename.php")
+            .addParameter("username", this.player.username)
+            .addParameter("newname", this.new_username!);
 
-        const apiResult: RequestResponse =
-            await apiRequestBuilder.sendRequest();
+        const apiResult = await apiRequestBuilder.sendRequest();
 
         if (apiResult.statusCode !== 200) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("droidServerRequestFailed")
+                localization.getTranslation("droidServerRequestFailed"),
             );
         }
 
-        const content: string = apiResult.data.toString("utf-8");
-        const requestResult: string = content.split(" ").shift()!;
+        const content = apiResult.data.toString("utf-8");
+        const requestResult = content.split(" ").shift()!;
 
         if (requestResult === "FAILED") {
             return this.deny(
                 localization.getTranslation("newUsernameTaken"),
-                language
+                language,
             );
         }
 
         await DatabaseManager.elainaDb.collections.userBind.updateOne(
             { uid: this.uid },
-            { $set: { username: this.new_username! } }
+            { $set: { username: this.new_username! } },
         );
 
         await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { uid: this.uid },
-            { $set: { username: this.new_username! } }
+            { $set: { username: this.new_username! } },
         );
 
         this.isProcessed = true;
 
-        const result: OperationResult =
+        const result =
             await DatabaseManager.aliceDb.collections.nameChange.updateOne(
                 { uid: this.uid },
                 {
@@ -113,7 +114,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
                     $push: {
                         previous_usernames: this.player.username,
                     },
-                }
+                },
             );
 
         await this.notifyAccept();
@@ -142,21 +143,20 @@ export class NameChange extends Manager implements DatabaseNameChange {
      */
     async deny(
         reason?: string,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: NameChangeLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (this.isProcessed) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("requestNotActive")
+                localization.getTranslation("requestNotActive"),
             );
         }
 
         this.isProcessed = true;
 
-        const result: OperationResult =
+        const result =
             await DatabaseManager.aliceDb.collections.nameChange.updateOne(
                 { uid: this.uid },
                 {
@@ -167,7 +167,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
                         new_username: null,
                         isProcessed: true,
                     },
-                }
+                },
             );
 
         if (result.success && reason) {
@@ -182,19 +182,21 @@ export class NameChange extends Manager implements DatabaseNameChange {
      */
     private async notifyAccept(): Promise<void> {
         try {
-            const user: User = await this.client.users.fetch(this.discordid);
+            const user = await this.client.users.fetch(this.discordid);
 
             if (!user) {
                 return;
             }
 
-            const localization: NameChangeLocalization = this.getLocalization(
-                await CommandHelper.getUserPreferredLocale(user)
+            const localization = this.getLocalization(
+                await CommandHelper.getUserPreferredLocale(user),
             );
 
-            this.player ??= (await Player.getInformation(this.uid))!;
+            this.player ??= (await DroidHelper.getPlayer(this.uid, [
+                "username",
+            ]))!;
 
-            const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+            const embed = EmbedCreator.createNormalEmbed({
                 color: 2483712,
                 timestamp: true,
             });
@@ -206,17 +208,17 @@ export class NameChange extends Manager implements DatabaseNameChange {
                         this.player.username
                     }\n` +
                         `${bold(
-                            localization.getTranslation("requestedUsername")
+                            localization.getTranslation("requestedUsername"),
                         )}: ${this.new_username}\n` +
                         `${bold(
-                            localization.getTranslation("creationDate")
+                            localization.getTranslation("creationDate"),
                         )}: ${DateTimeFormatHelper.dateToLocaleString(
                             new Date((this.cooldown - 86400 * 30) * 1000),
-                            localization.language
+                            localization.language,
                         )}\n\n` +
                         `${bold(
-                            localization.getTranslation("status")
-                        )}: ${localization.getTranslation("accepted")}`
+                            localization.getTranslation("status"),
+                        )}: ${localization.getTranslation("accepted")}`,
                 );
 
             user.send({
@@ -224,8 +226,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
                     localization.getTranslation("acceptedNotification"),
                     DateTimeFormatHelper.dateToLocaleString(
                         new Date(this.cooldown * 1000),
-                        localization.language
-                    )
+                        localization.language,
+                    ),
                 ),
                 embeds: [embed],
             });
@@ -240,19 +242,21 @@ export class NameChange extends Manager implements DatabaseNameChange {
      */
     private async notifyDeny(reason: string): Promise<void> {
         try {
-            const user: User = await this.client.users.fetch(this.discordid);
+            const user = await this.client.users.fetch(this.discordid);
 
             if (!user) {
                 return;
             }
 
-            const localization: NameChangeLocalization = this.getLocalization(
-                await CommandHelper.getUserPreferredLocale(user)
+            const localization = this.getLocalization(
+                await CommandHelper.getUserPreferredLocale(user),
             );
 
-            this.player ??= (await Player.getInformation(this.uid))!;
+            this.player ??= (await DroidHelper.getPlayer(this.uid, [
+                "username",
+            ]))!;
 
-            const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+            const embed = EmbedCreator.createNormalEmbed({
                 color: 16711711,
                 timestamp: true,
             });
@@ -264,26 +268,26 @@ export class NameChange extends Manager implements DatabaseNameChange {
                         this.player.username
                     }\n` +
                         `${bold(
-                            localization.getTranslation("requestedUsername")
+                            localization.getTranslation("requestedUsername"),
                         )}: ${this.new_username}\n` +
                         `${bold(
-                            localization.getTranslation("creationDate")
+                            localization.getTranslation("creationDate"),
                         )}: ${DateTimeFormatHelper.dateToLocaleString(
                             new Date((this.cooldown - 86400 * 30) * 1000),
-                            localization.language
+                            localization.language,
                         )}\n\n` +
                         `${bold(
-                            localization.getTranslation("status")
+                            localization.getTranslation("status"),
                         )}: ${localization.getTranslation("denied")}\n` +
                         `${bold(
-                            localization.getTranslation("reason")
-                        )}: ${reason}`
+                            localization.getTranslation("reason"),
+                        )}: ${reason}`,
                 );
 
             user.send({
                 content: MessageCreator.createReject(
                     localization.getTranslation("deniedNotification"),
-                    reason
+                    reason,
                 ),
                 embeds: [embed],
             });

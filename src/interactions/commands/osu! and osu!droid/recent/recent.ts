@@ -1,6 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import {
     ApplicationCommandOptionType,
@@ -11,34 +10,33 @@ import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { GuildMember, EmbedBuilder, Snowflake } from "discord.js";
+import { GuildMember } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { RecentLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/recent/RecentLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MapInfo, Modes } from "@rian8337/osu-base";
+import { Modes } from "@rian8337/osu-base";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: RecentLocalization = new RecentLocalization(
+    const localization = new RecentLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
-    let uid: number | undefined | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
-    const considerNonOverwrite: boolean =
+    const discordid = interaction.options.getUser("user")?.id;
+    let uid = interaction.options.getInteger("uid");
+    const username = interaction.options.getString("username");
+    const considerNonOverwrite =
         interaction.options.getBoolean("considernonoverwrite") ?? true;
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
@@ -53,18 +51,17 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
-
-    let bindInfo: UserBind | null | undefined;
-
-    let player: Player | null = null;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
+    let bindInfo: UserBind | null = null;
+    let player: Pick<OfficialDatabaseUser, "id" | "username"> | Player | null =
+        null;
 
     switch (true) {
         case !!uid:
-            player = await Player.getInformation(uid!);
+            player = await DroidHelper.getPlayer(uid!, ["id", "username"]);
 
-            uid ??= player?.uid;
+            uid ??=
+                (player instanceof Player ? player.uid : player?.id) ?? null;
 
             break;
         case !!username:
@@ -76,9 +73,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(username);
+            player = await DroidHelper.getPlayer(username, ["id", "username"]);
 
-            uid ??= player?.uid;
+            uid ??=
+                (player instanceof Player ? player.uid : player?.id) ?? null;
 
             break;
         default:
@@ -107,7 +105,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(bindInfo.uid);
+            player = await DroidHelper.getPlayer(bindInfo.uid, [
+                "id",
+                "username",
+            ]);
     }
 
     if (!player) {
@@ -118,20 +119,59 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const recentPlays: (Score | RecentPlay)[] = considerNonOverwrite
-        ? await ScoreHelper.getRecentScores(player.uid, player.recentPlays)
-        : player.recentPlays;
+    const index = interaction.options.getInteger("index") ?? 1;
+    let score:
+        | Pick<
+              OfficialDatabaseScore,
+              | "id"
+              | "hash"
+              | "score"
+              | "filename"
+              | "mode"
+              | "combo"
+              | "miss"
+              | "perfect"
+              | "good"
+              | "bad"
+              | "mark"
+              | "date"
+          >
+        | Score
+        | RecentPlay
+        | undefined;
 
-    if (recentPlays.length === 0) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("playerHasNoRecentPlays"),
-            ),
-        });
+    if (player instanceof Player) {
+        const recentPlays = considerNonOverwrite
+            ? await ScoreHelper.getRecentScores(player.uid, player.recentPlays)
+            : player.recentPlays;
+
+        if (recentPlays.length === 0) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("playerHasNoRecentPlays"),
+                ),
+            });
+        }
+
+        score = recentPlays[index - 1];
+    } else {
+        score = (
+            await DroidHelper.getRecentScores(player.id, 1, index - 1, [
+                "id",
+                "hash",
+                "score",
+                "filename",
+                "mode",
+                "combo",
+                "miss",
+                "perfect",
+                "good",
+                "bad",
+                "mark",
+                "date",
+            ])
+        )[0];
     }
-
-    const index: number = interaction.options.getInteger("index") ?? 1;
-    const score: Score | RecentPlay = recentPlays[index - 1];
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
@@ -144,24 +184,23 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     BeatmapManager.setChannelLatestBeatmap(interaction.channelId, score.hash);
 
-    const scoreAttribs: CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
-    > | null =
-        score instanceof Score
-            ? await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                  score.scoreID,
+    const scoreAttribs =
+        score instanceof RecentPlay
+            ? score.droidAttribs ?? null
+            : await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                  score instanceof Score ? score.scoreID : score.id,
                   Modes.droid,
                   PPCalculationMethod.live,
-              )
-            : score.droidAttribs ?? null;
+              );
 
-    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
+    const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
-        player.avatarURL,
+        player instanceof Player
+            ? player.avatarURL
+            : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,
-        score instanceof Score ? undefined : score.osuAttribs ?? null,
+        score instanceof RecentPlay ? score.osuAttribs ?? null : undefined,
         localization.language,
     );
 
@@ -180,8 +219,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             return InteractionHelper.reply(interaction, options);
         }
 
-        const beatmapInfo: MapInfo<true> | null =
-            await BeatmapManager.getBeatmap(score.hash);
+        const beatmapInfo = await BeatmapManager.getBeatmap(score.hash);
 
         if (beatmapInfo?.hasDownloadedBeatmap()) {
             MessageButtonCreator.createRecentScoreButton(

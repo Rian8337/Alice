@@ -13,6 +13,8 @@ import { PlayerInfoLocalization } from "@alice-localization/database/utils/alice
 import { Language } from "@alice-localization/base/Language";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 /**
  * Represents an information about a Discord user regarding the bot (amount of Alice coins and its streak, daily/weekly challenges status, profile picture format, etc).
@@ -201,35 +203,42 @@ export class PlayerInfo extends Manager {
      * @param amount The amount of coins to transfer.
      * @param thisPlayer The `Player` instance of this user.
      * @param to The player to transfer the Alice coins to.
+     * @param limit The limit of coins that can be transferred, if available.
      * @param language The locale of the user who attempted the transfer. Defaults to English.
      * @returns An object containing information about the operation.
      */
     async transferCoins(
         amount: number,
-        thisPlayer: Player,
+        thisPlayer: Pick<OfficialDatabaseUser, "score"> | Player,
         to: PlayerInfo,
+        limit?: number,
         language: Language = "en",
     ): Promise<OperationResult> {
         const localization: PlayerInfoLocalization =
             this.getLocalization(language);
 
-        let limit: number;
+        if (limit === undefined) {
+            const rank =
+                thisPlayer instanceof Player
+                    ? thisPlayer.rank
+                    : (await DroidHelper.getPlayerRank(thisPlayer.score)) ?? 0;
 
-        switch (true) {
-            case thisPlayer.rank < 10:
-                limit = 2500;
-                break;
-            case thisPlayer.rank < 50:
-                limit = 1750;
-                break;
-            case thisPlayer.rank < 100:
-                limit = 1250;
-                break;
-            case thisPlayer.rank < 500:
-                limit = 500;
-                break;
-            default:
-                limit = 250;
+            switch (true) {
+                case rank < 10:
+                    limit = 2500;
+                    break;
+                case rank < 50:
+                    limit = 1750;
+                    break;
+                case rank < 100:
+                    limit = 1250;
+                    break;
+                case rank < 500:
+                    limit = 500;
+                    break;
+                default:
+                    limit = 250;
+            }
         }
 
         if (

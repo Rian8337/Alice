@@ -6,12 +6,13 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { Modes } from "@rian8337/osu-base";
-import { Player } from "@rian8337/osu-droid-utilities";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { InteractionReplyOptions } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
@@ -44,7 +45,11 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, [
+        "id",
+        "username",
+    ]);
+
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -53,7 +58,25 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (player.recentPlays.length === 0) {
+    const recentPlays =
+        player instanceof Player
+            ? player.recentPlays
+            : await DroidHelper.getRecentScores(player.id, 1, undefined, [
+                  "id",
+                  "score",
+                  "filename",
+                  "hash",
+                  "mode",
+                  "combo",
+                  "mark",
+                  "perfect",
+                  "good",
+                  "bad",
+                  "miss",
+                  "date",
+              ]);
+
+    if (recentPlays.length === 0) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerHasNoRecentPlays"),
@@ -61,16 +84,20 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score = player.recentPlays[0];
+    const score = recentPlays[0];
+    const scoreId = score instanceof Score ? score.scoreID : score.id;
+
     const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        score.scoreID,
+        scoreId,
         Modes.droid,
         PPCalculationMethod.live,
     );
 
     const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
-        player.avatarURL,
+        player instanceof Player
+            ? player.avatarURL
+            : DroidHelper.getAvatarURL(player.id),
         interaction.member.displayColor,
         scoreAttribs,
         undefined,
@@ -86,7 +113,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         ephemeral: true,
     };
 
-    if (score.accuracy.nmiss > 0) {
+    if ((score instanceof Score ? score.accuracy.nmiss : score.miss) > 0) {
         const replay = await ReplayHelper.analyzeReplay(score);
 
         if (!replay.data) {

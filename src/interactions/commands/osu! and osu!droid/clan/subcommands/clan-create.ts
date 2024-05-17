@@ -1,8 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -13,18 +10,19 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Player } from "@rian8337/osu-droid-utilities";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: ClanLocalization = new ClanLocalization(
-        await CommandHelper.getLocale(interaction)
+    const localization = new ClanLocalization(
+        await CommandHelper.getLocale(interaction),
     );
 
-    const name: string = interaction.options.getString("name", true);
+    const name = interaction.options.getString("name", true);
 
     if (name.length > 25) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanNameIsTooLong")
+                localization.getTranslation("clanNameIsTooLong"),
             ),
         });
     }
@@ -32,14 +30,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (StringHelper.hasUnicode(name)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanNameHasUnicode")
+                localization.getTranslation("clanNameHasUnicode"),
             ),
         });
     }
 
     await InteractionHelper.deferReply(interaction);
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
@@ -48,15 +46,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     uid: 1,
                     clan: 1,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
-                    Constants.selfNotBindedReject
-                )
+                    Constants.selfNotBindedReject,
+                ),
             ),
         });
     }
@@ -64,12 +62,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (bindInfo.clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("selfIsAlreadyInClan")
+                localization.getTranslation("selfIsAlreadyInClan"),
             ),
         });
     }
 
-    const playerInfo: PlayerInfo | null =
+    const playerInfo =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             interaction.user,
             {
@@ -77,56 +75,55 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     _id: 0,
                     alicecoins: 1,
                 },
-            }
+            },
         );
 
-    const price: number = 7500;
-
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const price = 7500;
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     if (!playerInfo || playerInfo.alicecoins < price) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),
                 localization.getTranslation("createClan"),
-                price.toLocaleString(BCP47)
+                price.toLocaleString(BCP47),
             ),
         });
     }
 
-    const clan: Clan | null =
+    const clan =
         await DatabaseManager.elainaDb.collections.clan.getFromName(name);
 
     if (clan) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("clanNameIsTaken")
+                localization.getTranslation("clanNameIsTaken"),
             ),
         });
     }
 
-    const player: Player | null = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, ["score"]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
-                localization.getTranslation("profileNotFound")
+                localization.getTranslation("profileNotFound"),
             ),
         });
     }
 
-    const confirmation: boolean = await MessageButtonCreator.createConfirmation(
+    const confirmation = await MessageButtonCreator.createConfirmation(
         interaction,
         {
             content: MessageCreator.createWarn(
                 localization.getTranslation("createClanConfirmation"),
                 name,
-                price.toLocaleString(BCP47)
+                price.toLocaleString(BCP47),
             ),
         },
         [interaction.user.id],
         20,
-        localization.language
+        localization.language,
     );
 
     if (!confirmation) {
@@ -134,8 +131,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     await bindInfo.setClan(name);
-
     await playerInfo.incrementCoins(-price, localization.language);
+
+    const rank =
+        player instanceof Player
+            ? player.rank
+            : (await DroidHelper.getPlayerRank(player.score)) ?? 0;
 
     await DatabaseManager.elainaDb.collections.clan.insert({
         leader: interaction.user.id,
@@ -143,8 +144,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         member_list: [
             {
                 id: interaction.user.id,
-                rank: player.rank,
-                uid: player.uid,
+                rank: rank,
+                uid: bindInfo.uid,
                 battle_cooldown: 0,
                 hasPermission: true,
             },
@@ -154,7 +155,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("createClanSuccessful"),
-            name
+            name,
         ),
     });
 };

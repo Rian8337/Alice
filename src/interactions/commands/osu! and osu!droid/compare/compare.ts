@@ -1,6 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import {
     ApplicationCommandOptionType,
@@ -11,29 +10,29 @@ import { SlashCommand } from "structures/core/SlashCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { GuildMember, EmbedBuilder, Snowflake } from "discord.js";
+import { GuildMember } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { CompareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/compare/CompareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { MapInfo, Modes } from "@rian8337/osu-base";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: CompareLocalization = new CompareLocalization(
+    const localization = new CompareLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const cachedBeatmapHash: string | undefined =
-        BeatmapManager.getChannelLatestBeatmap(interaction.channelId);
+    const cachedBeatmapHash = BeatmapManager.getChannelLatestBeatmap(
+        interaction.channelId,
+    );
 
     if (!cachedBeatmapHash) {
         interaction.ephemeral = true;
@@ -57,23 +56,21 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
+    const discordid = interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
+    const username = interaction.options.getString("username");
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
-
-    let player: Player | null = null;
+    let player: Pick<OfficialDatabaseUser, "id" | "username"> | Player | null =
+        null;
 
     switch (true) {
         case !!uid:
-            player = await Player.getInformation(uid!);
+            player = await DroidHelper.getPlayer(uid!, ["id", "username"]);
 
-            uid ??= player?.uid;
+            uid ??= player instanceof Player ? player.uid : player?.id;
 
             break;
         case !!username:
@@ -85,9 +82,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(username);
+            player = await DroidHelper.getPlayer(username, ["id", "username"]);
 
-            uid ??= player?.uid;
+            uid ??= player instanceof Player ? player.uid : player?.id;
 
             break;
         default:
@@ -116,7 +113,10 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(bindInfo.uid);
+            player = await DroidHelper.getPlayer(bindInfo.uid, [
+                "id",
+                "username",
+            ]);
     }
 
     if (!player) {
@@ -127,10 +127,22 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score: Score | null = await Score.getFromHash(
-        player.uid,
-        cachedBeatmapHash,
-    );
+    uid = player instanceof Player ? player.uid : player.id;
+
+    const score = await DroidHelper.getScore(uid, cachedBeatmapHash, [
+        "id",
+        "filename",
+        "hash",
+        "mode",
+        "score",
+        "combo",
+        "mark",
+        "perfect",
+        "good",
+        "bad",
+        "miss",
+        "date",
+    ]);
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
@@ -144,18 +156,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const scoreAttribs: CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
-    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        score.scoreID,
+    const scoreId = score instanceof Score ? score.scoreID : score.id;
+
+    const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+        scoreId,
         Modes.droid,
         PPCalculationMethod.live,
     );
 
-    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
+    const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
-        player.avatarURL,
+        player instanceof Player
+            ? player.avatarURL
+            : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,
         undefined,

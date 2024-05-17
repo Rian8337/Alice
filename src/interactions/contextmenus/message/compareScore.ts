@@ -1,6 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { MessageContextMenuCommand } from "structures/core/MessageContextMenuCommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { CompareScoreLocalization } from "@alice-localization/interactions/contextmenus/message/compareScore/CompareScoreLocalization";
@@ -11,21 +10,19 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Modes } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { EmbedBuilder, GuildMember, InteractionReplyOptions } from "discord.js";
+import { GuildMember, InteractionReplyOptions } from "discord.js";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
 import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
-    const localization: CompareScoreLocalization = new CompareScoreLocalization(
+    const localization = new CompareScoreLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const beatmapId: number | null = BeatmapManager.getBeatmapIDFromMessage(
+    const beatmapId = BeatmapManager.getBeatmapIDFromMessage(
         interaction.targetMessage,
     );
 
@@ -39,7 +36,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
@@ -64,7 +61,10 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const player: Player | null = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, [
+        "id",
+        "username",
+    ]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -84,9 +84,23 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score: Score | null = await Score.getFromHash(
-        player.uid,
+    const score = await DroidHelper.getScore(
+        player instanceof Player ? player.uid : player.id,
         beatmapInfo.hash,
+        [
+            "id",
+            "score",
+            "filename",
+            "hash",
+            "mode",
+            "combo",
+            "mark",
+            "perfect",
+            "good",
+            "bad",
+            "miss",
+            "date",
+        ],
     );
 
     if (!score) {
@@ -102,18 +116,17 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         beatmapInfo.hash,
     );
 
-    const scoreAttribs: CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
-    > | null = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        score.scoreID,
+    const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+        score instanceof Score ? score.scoreID : score.id,
         Modes.droid,
         PPCalculationMethod.live,
     );
 
-    const embed: EmbedBuilder = await EmbedCreator.createRecentPlayEmbed(
+    const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
-        player.avatarURL,
+        player instanceof Player
+            ? player.avatarURL
+            : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,
         undefined,

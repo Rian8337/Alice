@@ -3,6 +3,7 @@ import { OnboardingShowRecentPlaysLocalization } from "@alice-localization/inter
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
 import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
@@ -34,7 +35,10 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, [
+        "id",
+        "username",
+    ]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -45,8 +49,26 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     }
 
     const recentPlays = await ScoreHelper.getRecentScores(
-        player.uid,
-        player.recentPlays,
+        bindInfo.uid,
+        player instanceof Player
+            ? player.recentPlays
+            : await DroidHelper.getRecentScores(
+                  player.id,
+                  undefined,
+                  undefined,
+                  [
+                      "filename",
+                      "mark",
+                      "mode",
+                      "score",
+                      "combo",
+                      "date",
+                      "perfect",
+                      "good",
+                      "bad",
+                      "miss",
+                  ],
+              ),
     );
 
     if (recentPlays.length === 0) {

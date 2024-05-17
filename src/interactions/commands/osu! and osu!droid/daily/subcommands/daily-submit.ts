@@ -1,12 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
-import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ChallengeCompletionData } from "structures/challenge/ChallengeCompletionData";
-import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { ChallengeType } from "structures/challenge/ChallengeType";
@@ -14,17 +7,18 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { Player, Score } from "@rian8337/osu-droid-utilities";
+import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: DailyLocalization = new DailyLocalization(
+    const localization = new DailyLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
-    const type: ChallengeType =
+    const type =
         <ChallengeType>interaction.options.getString("type") ?? "daily";
 
-    const challenge: Challenge | null =
+    const challenge =
         await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(
             type,
         );
@@ -37,13 +31,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
                 projection: {
                     _id: 0,
                     uid: 1,
+                    username: 1,
                     clan: 1,
                 },
             },
@@ -51,17 +46,27 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(Constants.selfNotBindedReject),
+            content: MessageCreator.createReject(
+                new ConstantsLocalization(localization.language).getTranslation(
+                    Constants.selfNotBindedReject,
+                ),
+            ),
         });
     }
 
-    const player: Player | null = await Player.getInformation(bindInfo.uid);
+    const score = await DroidHelper.getScore(bindInfo.uid, challenge.hash, [
+        "id",
+        "mode",
+        "score",
+        "combo",
+        "mark",
+        "perfect",
+        "good",
+        "bad",
+        "miss",
+    ]);
 
-    const score: Score | undefined = player?.recentPlays.find(
-        (s) => s.hash === challenge.hash,
-    );
-
-    if (!player || !score) {
+    if (!score) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("scoreNotFound"),
@@ -71,12 +76,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const completionStatus: OperationResult =
-        await challenge.checkScoreCompletion(
-            score,
-            undefined,
-            localization.language,
-        );
+    const completionStatus = await challenge.checkScoreCompletion(
+        score,
+        undefined,
+        localization.language,
+    );
 
     if (!completionStatus.success) {
         return InteractionHelper.reply(interaction, {
@@ -87,32 +91,29 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const bonusLevel: number = await challenge.calculateBonusLevel(score);
+    const bonusLevel = await challenge.calculateBonusLevel(score);
 
-    const playerInfoDbManager: PlayerInfoCollectionManager =
-        DatabaseManager.aliceDb.collections.playerInfo;
+    const playerInfoDbManager = DatabaseManager.aliceDb.collections.playerInfo;
 
-    const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user,
-        {
-            projection: {
-                _id: 0,
-                alicecoins: 1,
-                points: 1,
-                challenges: 1,
-            },
+    const playerInfo = await playerInfoDbManager.getFromUser(interaction.user, {
+        projection: {
+            _id: 0,
+            alicecoins: 1,
+            points: 1,
+            challenges: 1,
         },
-    );
+    });
 
     // Keep track of how many points are gained
     let pointsGained: number = bonusLevel * 2 + challenge.points;
 
     if (playerInfo) {
-        const challengeData: ChallengeCompletionData =
-            playerInfo.challenges.get(challenge.challengeid) ?? {
-                id: challenge.challengeid,
-                highestLevel: bonusLevel,
-            };
+        const challengeData = playerInfo.challenges.get(
+            challenge.challengeid,
+        ) ?? {
+            id: challenge.challengeid,
+            highestLevel: bonusLevel,
+        };
 
         if (playerInfo.challenges.has(challenge.challengeid)) {
             // Player has completed challenge. Subtract the challenge's original points
@@ -164,8 +165,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         }
     } else {
         await playerInfoDbManager.insert({
-            uid: player.uid,
-            username: player.username,
+            uid: bindInfo.uid,
+            username: bindInfo.username,
             discordid: interaction.user.id,
             points: pointsGained,
             alicecoins: pointsGained * 2,
@@ -179,7 +180,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     if (bindInfo.clan) {
-        const clan: Clan =
+        const clan =
             (await DatabaseManager.elainaDb.collections.clan.getFromName(
                 bindInfo.clan,
             ))!;
@@ -189,7 +190,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         await clan.updateClan();
     }
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

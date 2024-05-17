@@ -1,6 +1,5 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserContextMenuCommand } from "structures/core/UserContextMenuCommand";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { ViewDroidProfileLocalization } from "@alice-localization/interactions/contextmenus/user/viewDroidProfile/ViewDroidProfileLocalization";
@@ -8,18 +7,16 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { Player } from "@rian8337/osu-droid-utilities";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 
 export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
-    const localization: ViewDroidProfileLocalization =
-        new ViewDroidProfileLocalization(
-            await CommandHelper.getLocale(interaction),
-        );
+    const localization = new ViewDroidProfileLocalization(
+        await CommandHelper.getLocale(interaction),
+    );
 
-    const isSelfExecution: boolean =
-        interaction.user.id === interaction.targetUser.id;
+    const isSelfExecution = interaction.user.id === interaction.targetUser.id;
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.targetUser,
             {
@@ -47,7 +44,14 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const player: Player | null = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, [
+        "id",
+        "username",
+        "score",
+        "playcount",
+        "accuracy",
+        "region",
+    ]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -61,8 +65,8 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const profileImage: Buffer = (await ProfileManager.getProfileStatistics(
-        player.uid,
+    const profileImage = (await ProfileManager.getProfileStatistics(
+        bindInfo.uid,
         player,
         bindInfo,
         undefined,
@@ -73,8 +77,8 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("viewingProfile"),
-            `${player.username} (${player.uid})`,
-            ProfileManager.getProfileLink(player.uid).toString(),
+            `${player.username} (${bindInfo.uid})`,
+            ProfileManager.getProfileLink(bindInfo.uid).toString(),
         ),
         files: [profileImage],
     });

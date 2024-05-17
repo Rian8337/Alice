@@ -3,9 +3,9 @@ import { OnboardingPlayerProfileActionLocalization } from "@alice-localization/i
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization = new OnboardingPlayerProfileActionLocalization(
@@ -36,7 +36,14 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const player = await Player.getInformation(bindInfo.uid);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, [
+        "id",
+        "username",
+        "score",
+        "playcount",
+        "accuracy",
+        "region",
+    ]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -47,7 +54,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     }
 
     const profileImage = (await ProfileManager.getProfileStatistics(
-        player.uid,
+        bindInfo.uid,
         player,
         bindInfo,
         undefined,
@@ -59,7 +66,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("viewingProfile"),
             player.username,
-            ProfileManager.getProfileLink(player.uid).toString(),
+            ProfileManager.getProfileLink(bindInfo.uid).toString(),
         ),
         files: [profileImage],
     });

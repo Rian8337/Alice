@@ -1,4 +1,3 @@
-import { Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
@@ -6,16 +5,17 @@ import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { createHash } from "crypto";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: ProfileLocalization = new ProfileLocalization(
+    const localization = new ProfileLocalization(
         await CommandHelper.getLocale(interaction),
     );
 
@@ -34,23 +34,40 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         interaction.options.getBoolean("showhashedemail") ?? false,
     );
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
-    let uid: number | undefined | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
+    const discordid = interaction.options.getUser("user")?.id;
+    let uid = interaction.options.getInteger("uid");
+    const username = interaction.options.getString("username");
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
-
-    let bindInfo: UserBind | null | undefined;
-
-    let player: Player | null = null;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
+    let bindInfo: UserBind | null = null;
+    let player:
+        | Pick<
+              OfficialDatabaseUser,
+              | "id"
+              | "username"
+              | "score"
+              | "playcount"
+              | "accuracy"
+              | "region"
+              | "email"
+          >
+        | Player
+        | null = null;
 
     switch (true) {
         case !!uid:
-            player = await Player.getInformation(uid!);
+            player = await DroidHelper.getPlayer(uid!, [
+                "id",
+                "username",
+                "score",
+                "playcount",
+                "accuracy",
+                "region",
+                "email",
+            ]);
 
-            uid ??= player?.uid;
+            uid ??=
+                (player instanceof Player ? player.uid : player?.id) ?? null;
 
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
@@ -70,9 +87,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await Player.getInformation(username);
+            player = await DroidHelper.getPlayer(username, [
+                "id",
+                "username",
+                "score",
+                "playcount",
+                "accuracy",
+                "region",
+                "email",
+            ]);
 
-            uid ??= player?.uid;
+            uid ??=
+                (player instanceof Player ? player.uid : player?.id) ?? null;
 
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
@@ -97,7 +123,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 },
             );
 
-            uid = bindInfo?.uid;
+            uid = bindInfo?.uid ?? null;
 
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
@@ -114,7 +140,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             }
     }
 
-    player ??= await Player.getInformation(uid);
+    player ??= await DroidHelper.getPlayer(uid, [
+        "id",
+        "username",
+        "score",
+        "playcount",
+        "accuracy",
+        "region",
+        "email",
+    ]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -128,7 +162,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const profileImage: Buffer = (await ProfileManager.getProfileStatistics(
+    const profileImage = (await ProfileManager.getProfileStatistics(
         uid,
         player,
         bindInfo,
@@ -147,8 +181,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("viewingProfileWithEmail"),
-                `${player.username} (${player.uid})`,
-                ProfileManager.getProfileLink(player.uid).toString(),
+                `${player.username} (${uid})`,
+                ProfileManager.getProfileLink(uid).toString(),
                 createHash("md5").update(player.email).digest("hex"),
             ),
             files: [profileImage],
@@ -157,8 +191,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         InteractionHelper.reply(interaction, {
             content: MessageCreator.createAccept(
                 localization.getTranslation("viewingProfile"),
-                `${player.username} (${player.uid})`,
-                ProfileManager.getProfileLink(player.uid).toString(),
+                `${player.username} (${uid})`,
+                ProfileManager.getProfileLink(uid).toString(),
             ),
             files: [profileImage],
         });
