@@ -142,13 +142,17 @@ export abstract class DroidHelper {
         }
 
         const rankQuery = await officialPool.query<RowDataPacket[]>(
-            `SELECT COUNT(*) + 1 AS rank FROM ${constructOfficialDatabaseTable(
+            `SELECT COUNT(*) + 1 FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.user,
             )} WHERE score > ?;`,
             [score],
         );
 
-        return (rankQuery[0] as { rank: number }[]).at(0)?.rank ?? null;
+        return (
+            (rankQuery[0] as { "COUNT(*) + 1": number }[]).at(0)?.[
+                "COUNT(*) + 1"
+            ] ?? null
+        );
     }
 
     /**
