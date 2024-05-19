@@ -21,8 +21,8 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     }
 
     if (clan.member_list.get(member.id)) {
-        const language: Language = await CommandHelper.getUserPreferredLocale(
-            member.id
+        const language: Language = CommandHelper.getUserPreferredLocale(
+            member.id,
         );
         await clan.removeMember(member.id, language, true);
         if (clan.exists) {
@@ -31,8 +31,8 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
             await clan.notifyLeader(
                 StringHelper.formatString(
                     localization.getTranslation("memberKicked"),
-                    member.toString()
-                )
+                    member.toString(),
+                ),
             );
             await clan.updateClan();
         }

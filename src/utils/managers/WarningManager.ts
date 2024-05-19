@@ -169,7 +169,7 @@ export abstract class WarningManager extends PunishmentManager {
 
         const userLocalization: WarningManagerLocalization =
             this.getLocalization(
-                await CommandHelper.getUserPreferredLocale(member.id),
+                CommandHelper.getUserPreferredLocale(member.id),
             );
 
         const userWarningEmbed: EmbedBuilder = new EmbedBuilder()
@@ -359,7 +359,7 @@ export abstract class WarningManager extends PunishmentManager {
 
         const userLocalization: WarningManagerLocalization =
             this.getLocalization(
-                await CommandHelper.getUserPreferredLocale(member.id),
+                CommandHelper.getUserPreferredLocale(member.id),
             );
 
         const userWarningEmbed: EmbedBuilder = new EmbedBuilder()

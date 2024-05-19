@@ -189,7 +189,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
             }
 
             const localization = this.getLocalization(
-                await CommandHelper.getUserPreferredLocale(user),
+                CommandHelper.getUserPreferredLocale(user),
             );
 
             this.player ??= (await DroidHelper.getPlayer(this.uid, [
@@ -249,7 +249,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
             }
 
             const localization = this.getLocalization(
-                await CommandHelper.getUserPreferredLocale(user),
+                CommandHelper.getUserPreferredLocale(user),
             );
 
             this.player ??= (await DroidHelper.getPlayer(this.uid, [

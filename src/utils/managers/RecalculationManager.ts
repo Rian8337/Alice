@@ -85,7 +85,7 @@ export abstract class RecalculationManager extends Manager {
             const calculatedUserMention = userMention(calculatedUser);
             const interaction = this.recalculationQueue.first()!;
             const localization = this.getLocalization(
-                await CommandHelper.getUserPreferredLocale(interaction),
+                CommandHelper.getUserPreferredLocale(interaction),
             );
 
             this.recalculationQueue.delete(calculatedUser);
@@ -181,7 +181,7 @@ export abstract class RecalculationManager extends Manager {
             const calculatedUser = this.prototypeRecalculationQueue.firstKey()!;
             const interaction = this.prototypeRecalculationQueue.first()!;
             const localization = this.getLocalization(
-                await CommandHelper.getUserPreferredLocale(interaction),
+                CommandHelper.getUserPreferredLocale(interaction),
             );
 
             this.prototypeRecalculationQueue.delete(calculatedUser);

@@ -16,190 +16,195 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 export const run: EventUtil["run"] = async (client) => {
     return;
 
-    const interval: NodeJS.Timeout = setInterval(async () => {
-        if (
-            Config.maintenance ||
-            CommandUtilManager.globallyDisabledEventUtils
-                .get("ready")
-                ?.includes("clanWeeklyFeeUpdating")
-        ) {
-            return;
-        }
+    const interval: NodeJS.Timeout = setInterval(
+        async () => {
+            if (
+                Config.maintenance ||
+                CommandUtilManager.globallyDisabledEventUtils
+                    .get("ready")
+                    ?.includes("clanWeeklyFeeUpdating")
+            ) {
+                return;
+            }
 
-        const guild: Guild = await client.guilds.fetch(Constants.mainServer);
-        const globalClanRole: Role | undefined = guild.roles.cache.find(
-            (r) => r.name === "Clans"
-        );
-
-        if (!globalClanRole) {
-            clearInterval(interval);
-            return;
-        }
-
-        const executionTime: number = Math.floor(Date.now() / 1000);
-
-        const clans: Collection<string, Clan> =
-            await DatabaseManager.elainaDb.collections.clan.getClansDueToWeeklyFee(
-                executionTime
+            const guild: Guild = await client.guilds.fetch(
+                Constants.mainServer,
+            );
+            const globalClanRole: Role | undefined = guild.roles.cache.find(
+                (r) => r.name === "Clans",
             );
 
-        let kickedCount: number = 0;
+            if (!globalClanRole) {
+                clearInterval(interval);
+                return;
+            }
 
-        for (const clan of clans.values()) {
-            const upkeepDistribution: number[] =
-                clan.getEqualUpkeepDistribution();
+            const executionTime: number = Math.floor(Date.now() / 1000);
 
-            for (const member of clan.member_list.values()) {
-                if (!clan.exists) {
-                    break;
-                }
+            const clans: Collection<string, Clan> =
+                await DatabaseManager.elainaDb.collections.clan.getClansDueToWeeklyFee(
+                    executionTime,
+                );
 
-                const guildMember: GuildMember | null = await guild.members
-                    .fetch(member.id)
-                    .catch(() => null);
+            let kickedCount: number = 0;
 
-                const language: Language =
-                    await CommandHelper.getUserPreferredLocale(member.id);
+            for (const clan of clans.values()) {
+                const upkeepDistribution: number[] =
+                    clan.getEqualUpkeepDistribution();
 
-                // If the person is not in the server, kick the person
-                if (!guildMember) {
-                    upkeepDistribution.shift();
-                    await clan.removeMember(member.id, language);
-                    ++kickedCount;
-                    continue;
-                }
+                for (const member of clan.member_list.values()) {
+                    if (!clan.exists) {
+                        break;
+                    }
 
-                const bindInfo: UserBind | null =
-                    await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-                        member.id,
-                        {
-                            projection: {
-                                _id: 0,
-                                previous_bind: 1,
-                            },
-                        }
-                    );
+                    const guildMember: GuildMember | null = await guild.members
+                        .fetch(member.id)
+                        .catch(() => null);
 
-                if (!bindInfo) {
-                    upkeepDistribution.shift();
-                    await clan.removeMember(member.id, language);
-                    ++kickedCount;
-                    continue;
-                }
+                    const language: Language =
+                        CommandHelper.getUserPreferredLocale(member.id);
 
-                let highestRank: number = Number.POSITIVE_INFINITY;
-
-                for (const uid of bindInfo.previous_bind) {
-                    const player: Player | null = await Player.getInformation(
-                        uid
-                    );
-
-                    if (!player) {
+                    // If the person is not in the server, kick the person
+                    if (!guildMember) {
+                        upkeepDistribution.shift();
+                        await clan.removeMember(member.id, language);
+                        ++kickedCount;
                         continue;
                     }
 
-                    highestRank = Math.min(player.rank, highestRank);
-                }
-
-                const randomUpkeepDistribution: number =
-                    ArrayHelper.getRandomArrayElement(upkeepDistribution);
-
-                const upkeep: number =
-                    clan.calculateUpkeep(member.id) + randomUpkeepDistribution;
-
-                upkeepDistribution.splice(
-                    upkeepDistribution.indexOf(randomUpkeepDistribution),
-                    1
-                );
-
-                const memberPlayerInfo: PlayerInfo | null =
-                    await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
-                        member.id,
-                        {
-                            projection: {
-                                _id: 0,
-                                alicecoins: 1,
+                    const bindInfo: UserBind | null =
+                        await DatabaseManager.elainaDb.collections.userBind.getFromUser(
+                            member.id,
+                            {
+                                projection: {
+                                    _id: 0,
+                                    previous_bind: 1,
+                                },
                             },
+                        );
+
+                    if (!bindInfo) {
+                        upkeepDistribution.shift();
+                        await clan.removeMember(member.id, language);
+                        ++kickedCount;
+                        continue;
+                    }
+
+                    let highestRank: number = Number.POSITIVE_INFINITY;
+
+                    for (const uid of bindInfo.previous_bind) {
+                        const player: Player | null =
+                            await Player.getInformation(uid);
+
+                        if (!player) {
+                            continue;
                         }
+
+                        highestRank = Math.min(player.rank, highestRank);
+                    }
+
+                    const randomUpkeepDistribution: number =
+                        ArrayHelper.getRandomArrayElement(upkeepDistribution);
+
+                    const upkeep: number =
+                        clan.calculateUpkeep(member.id) +
+                        randomUpkeepDistribution;
+
+                    upkeepDistribution.splice(
+                        upkeepDistribution.indexOf(randomUpkeepDistribution),
+                        1,
                     );
 
-                if (!memberPlayerInfo) {
-                    // Clan member doesn't have any Alice coins info, possibly being banned from the server or the game.
-                    // In that case, simply kick.
-                    await clan.removeMember(member.id, language);
-                    ++kickedCount;
-                    continue;
-                }
+                    const memberPlayerInfo: PlayerInfo | null =
+                        await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
+                            member.id,
+                            {
+                                projection: {
+                                    _id: 0,
+                                    alicecoins: 1,
+                                },
+                            },
+                        );
 
-                const coins: number = memberPlayerInfo.alicecoins;
+                    if (!memberPlayerInfo) {
+                        // Clan member doesn't have any Alice coins info, possibly being banned from the server or the game.
+                        // In that case, simply kick.
+                        await clan.removeMember(member.id, language);
+                        ++kickedCount;
+                        continue;
+                    }
 
-                if (coins < upkeep) {
-                    // Clan member doesn't have enough Alice coins to pay upkeep.
-                    // If the penalized member is the leader, kick a random member.
-                    let userToKick: Snowflake = member.id;
-                    let kickedGuildMember: GuildMember | undefined =
-                        await guild.members.fetch(userToKick).catch(() => {
-                            return undefined;
-                        });
+                    const coins: number = memberPlayerInfo.alicecoins;
 
-                    while (
-                        clan.leader === userToKick &&
-                        clan.member_list.size > 1
-                    ) {
-                        userToKick = clan.member_list.random()!.id;
-                        kickedGuildMember = await guild.members
-                            .fetch(userToKick)
-                            .catch(() => {
+                    if (coins < upkeep) {
+                        // Clan member doesn't have enough Alice coins to pay upkeep.
+                        // If the penalized member is the leader, kick a random member.
+                        let userToKick: Snowflake = member.id;
+                        let kickedGuildMember: GuildMember | undefined =
+                            await guild.members.fetch(userToKick).catch(() => {
                                 return undefined;
                             });
 
-                        if (!kickedGuildMember) {
-                            userToKick = clan.leader;
+                        while (
+                            clan.leader === userToKick &&
+                            clan.member_list.size > 1
+                        ) {
+                            userToKick = clan.member_list.random()!.id;
+                            kickedGuildMember = await guild.members
+                                .fetch(userToKick)
+                                .catch(() => {
+                                    return undefined;
+                                });
+
+                            if (!kickedGuildMember) {
+                                userToKick = clan.leader;
+                            }
                         }
+
+                        if (clan.member_list.size === 1) {
+                            // Clan only exists of the leader. Deduct clan power to the point where the clan will be disbanded.
+                            const result: OperationResult =
+                                clan.incrementPower(-100);
+
+                            if (!result.success) {
+                                await clan.disband();
+                                await clan.notifyLeader(
+                                    "Hey, your clan has been disbanded as your clan power has reached less than 0.",
+                                );
+                                continue;
+                            }
+                        }
+
+                        await clan.removeMember(
+                            userToKick,
+                            await CommandHelper.getLocale(userToKick),
+                        );
+                        ++kickedCount;
+                        continue;
                     }
 
-                    if (clan.member_list.size === 1) {
-                        // Clan only exists of the leader. Deduct clan power to the point where the clan will be disbanded.
-                        const result: OperationResult =
-                            clan.incrementPower(-100);
+                    // Pay for upkeep
+                    await memberPlayerInfo.incrementCoins(-upkeep, language);
+                }
 
-                        if (!result.success) {
-                            await clan.disband();
-                            await clan.notifyLeader(
-                                "Hey, your clan has been disbanded as your clan power has reached less than 0."
-                            );
-                            continue;
-                        }
-                    }
-
-                    await clan.removeMember(
-                        userToKick,
-                        await CommandHelper.getLocale(userToKick)
-                    );
-                    ++kickedCount;
+                if (!clan.exists) {
                     continue;
                 }
 
-                // Pay for upkeep
-                await memberPlayerInfo.incrementCoins(-upkeep, language);
+                clan.weeklyfee += 86400 * 7;
+
+                await clan.updateClan();
+                await clan.notifyLeader(
+                    `Hey, your clan upkeep has been picked up from your members! ${
+                        clan.member_list.size
+                    } member(s) have successfully paid their upkeep. A total of ${kickedCount} member(s) were kicked. Your next clan upkeep will be picked in ${new Date(
+                        clan.weeklyfee * 1000,
+                    ).toUTCString()}.`,
+                );
             }
-
-            if (!clan.exists) {
-                continue;
-            }
-
-            clan.weeklyfee += 86400 * 7;
-
-            await clan.updateClan();
-            await clan.notifyLeader(
-                `Hey, your clan upkeep has been picked up from your members! ${
-                    clan.member_list.size
-                } member(s) have successfully paid their upkeep. A total of ${kickedCount} member(s) were kicked. Your next clan upkeep will be picked in ${new Date(
-                    clan.weeklyfee * 1000
-                ).toUTCString()}.`
-            );
-        }
-    }, 60 * 10 * 1000);
+        },
+        60 * 10 * 1000,
+    );
 };
 
 export const config: EventUtil["config"] = {
