@@ -20,6 +20,10 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     const questionId = parseInt(split[1]);
     const attemptIndex = split[2] ? parseInt(split[2]) : undefined;
 
+    if (attemptIndex !== undefined && player.currentAttempt === undefined) {
+        return;
+    }
+
     const question = CacheManager.anniversaryTriviaQuestions.get(questionId)!;
     const language = CommandHelper.getLocale(interaction);
 
