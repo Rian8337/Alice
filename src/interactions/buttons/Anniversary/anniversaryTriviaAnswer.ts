@@ -35,7 +35,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             { discordId: interaction.user.id },
             {
                 $set: {
-                    "currentAttempt.answers.$[answerFilter].answer": answer,
+                    "currentAttempt.$[answerFilter].answer": answer,
                 },
             },
             {
