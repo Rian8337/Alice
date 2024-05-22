@@ -51,7 +51,11 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             $set: {
                 currentAttempt: [],
             },
+            $setOnInsert: {
+                pastAttempts: [],
+            },
         },
+        { upsert: true },
     );
 
     CacheManager.anniversaryTriviaPlayers.set(interaction.user.id, player);
