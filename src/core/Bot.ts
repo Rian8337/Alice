@@ -30,6 +30,7 @@ import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler"
 import { AutocompleteSubhandler } from "@alice-structures/core/AutocompleteSubhandler";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { AnniversaryTriviaManager } from "@alice-utils/managers/AnniversaryTriviaManager";
 
 /**
  * The starting point of the bot.
@@ -111,6 +112,7 @@ export class Bot extends Client<true> {
         await this.loadEvents();
         await DatabaseManager.init();
         await LocaleHelper.loadLocales();
+        await AnniversaryTriviaManager.init();
 
         await super.login(
             Config.isDebug

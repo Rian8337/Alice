@@ -31,6 +31,8 @@ import { RecentPlaysCollectionManager } from "./managers/aliceDb/RecentPlaysColl
 import { SupportTicketCollectionManager } from "./managers/aliceDb/SupportTicketCollectionManager";
 import { SupportTicketPresetCollectionManager } from "./managers/aliceDb/SupportTicketPresetCollectionManager";
 import { InGamePPCollectionManager } from "./managers/aliceDb/InGamePPCollectionManager";
+import { AnniversaryTriviaPlayerCollectionManager } from "./managers/aliceDb/AnniversaryTriviaPlayerCollectionManager";
+import { AnniversaryTriviaQuestionCollectionManager } from "./managers/aliceDb/AnniversaryTriviaQuestionCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -200,6 +202,16 @@ export class AliceDBCollection {
     readonly inGamePP: InGamePPCollectionManager;
 
     /**
+     * The database collection for anniversary trivia questions.
+     */
+    readonly anniversaryTriviaQuestion: AnniversaryTriviaQuestionCollectionManager;
+
+    /**
+     * The database collection for anniversary trivia players.
+     */
+    readonly anniversaryTriviaPlayer: AnniversaryTriviaPlayerCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -299,5 +311,13 @@ export class AliceDBCollection {
         this.inGamePP = new InGamePPCollectionManager(
             aliceDb.collection("ingamepp"),
         );
+        this.anniversaryTriviaQuestion =
+            new AnniversaryTriviaQuestionCollectionManager(
+                aliceDb.collection("anniversarytriviaquestion"),
+            );
+        this.anniversaryTriviaPlayer =
+            new AnniversaryTriviaPlayerCollectionManager(
+                aliceDb.collection("anniversarytriviaplayer"),
+            );
     }
 }

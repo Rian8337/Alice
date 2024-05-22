@@ -12,6 +12,8 @@ import { LiveDroidDifficultyAttributesCacheManager } from "@alice-utils/difficul
 import { LiveOsuDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/LiveOsuDifficultyAttributesCacheManager";
 import { RebalanceDroidDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/RebalanceDroidDifficultyAttributesCacheManager";
 import { RebalanceOsuDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/RebalanceOsuDifficultyAttributesCacheManager";
+import { AnniversaryTriviaQuestion } from "@alice-database/utils/aliceDb/AnniversaryTriviaQuestion";
+import { AnniversaryTriviaPlayer } from "@alice-database/utils/aliceDb/AnniversaryTriviaPlayer";
 
 /**
  * A manager that holds anything that is cached.
@@ -118,4 +120,20 @@ export abstract class CacheManager {
      * IDs of buttons that will not be listened by the `runButton` event utility.
      */
     static readonly exemptedButtonCustomIds = new Set<string>();
+
+    /**
+     * The anniversary trivia questions.
+     */
+    static readonly anniversaryTriviaQuestions = new Collection<
+        number,
+        AnniversaryTriviaQuestion
+    >();
+
+    /**
+     * The players in the anniversary trivia.
+     */
+    static readonly anniversaryTriviaPlayers = new Collection<
+        string,
+        AnniversaryTriviaPlayer
+    >();
 }
