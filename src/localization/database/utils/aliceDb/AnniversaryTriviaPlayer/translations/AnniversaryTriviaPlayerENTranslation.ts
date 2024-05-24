@@ -9,7 +9,7 @@ export class AnniversaryTriviaPlayerENTranslation extends Translation<Anniversar
         embedQuestionTitle: "Question %s",
         embedQuestionMarkSingular: "mark",
         embedQuestionMarkPlural: "marks",
-        embedQuestionSubmit: "Submit",
+        embedQuestionSubmitAttempt: "Submit Attempt",
         embedQuestionFlagQuestion: "Flag Question",
         embedQuestionUnflagQuestion: "Unflag Question",
     };

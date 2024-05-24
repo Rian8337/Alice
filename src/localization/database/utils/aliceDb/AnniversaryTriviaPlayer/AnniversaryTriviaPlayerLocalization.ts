@@ -6,7 +6,7 @@ export interface AnniversaryTriviaPlayerStrings {
     readonly embedQuestionTitle: string;
     readonly embedQuestionMarkSingular: string;
     readonly embedQuestionMarkPlural: string;
-    readonly embedQuestionSubmit: string;
+    readonly embedQuestionSubmitAttempt: string;
     readonly embedQuestionFlagQuestion: string;
     readonly embedQuestionUnflagQuestion: string;
 }

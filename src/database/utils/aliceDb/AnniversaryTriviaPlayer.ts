@@ -222,7 +222,9 @@ export class AnniversaryTriviaPlayer
                 new ButtonBuilder()
                     .setCustomId("anniversaryTriviaSubmit")
                     .setLabel(
-                        localization.getTranslation("embedQuestionSubmit"),
+                        localization.getTranslation(
+                            "embedQuestionSubmitAttempt",
+                        ),
                     )
                     .setStyle(ButtonStyle.Danger),
             );
