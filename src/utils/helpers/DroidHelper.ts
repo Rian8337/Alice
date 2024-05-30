@@ -302,7 +302,7 @@ export abstract class DroidHelper {
      * @returns The database string.
      */
     static modsToDatabaseString(mods: OfficialDatabaseScoreMods): string {
-        let str = mods.mods.map((v) => v.acronym).join("");
+        let str = mods.mods.map((v) => v.droidString).join("");
 
         if (!mods.oldStatistics) {
             str += "|";
