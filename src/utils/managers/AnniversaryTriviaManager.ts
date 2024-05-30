@@ -17,14 +17,5 @@ export abstract class AnniversaryTriviaManager extends Manager {
         for (const question of questions.values()) {
             CacheManager.anniversaryTriviaQuestions.set(question.id, question);
         }
-
-        const players =
-            await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.get(
-                "discordId",
-            );
-
-        for (const player of players.values()) {
-            CacheManager.anniversaryTriviaPlayers.set(player.discordId, player);
-        }
     }
 }

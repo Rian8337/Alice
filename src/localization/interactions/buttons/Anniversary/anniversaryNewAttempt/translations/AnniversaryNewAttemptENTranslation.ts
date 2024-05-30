@@ -8,6 +8,5 @@ export class AnniversaryNewAttemptENTranslation extends Translation<AnniversaryN
     override readonly translations: AnniversaryNewAttemptStrings = {
         existingAttemptExists:
             "I'm sorry, you already have an existing attempt. Please finish it before starting a new one.",
-        noMoreAttempts: "I'm sorry, you have no more attempts left!",
     };
 }

@@ -20,4 +20,9 @@ export interface DatabaseAnniversaryTriviaPlayer extends BaseDocument {
      * Past attempts.
      */
     readonly pastAttempts: AnniversaryTriviaAttempt[];
+
+    /**
+     * Past attempts from the event duration.
+     */
+    readonly pastEventAttempts: AnniversaryTriviaAttempt[];
 }

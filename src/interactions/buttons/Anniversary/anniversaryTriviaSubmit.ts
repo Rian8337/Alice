@@ -17,15 +17,17 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         CommandHelper.getLocale(interaction),
     );
 
-    const player = CacheManager.anniversaryTriviaPlayers.get(
-        interaction.user.id,
-    );
+    await InteractionHelper.deferReply(interaction);
+
+    const player =
+        await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.getFromId(
+            interaction.user.id,
+            { projection: { _id: 0, currentAttempt: 1 } },
+        );
 
     if (!player?.currentAttempt) {
         return;
     }
-
-    await InteractionHelper.deferReply(interaction);
 
     const confirmation = await MessageButtonCreator.createConfirmation(
         interaction,
@@ -43,7 +45,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         return;
     }
 
-    player.pastAttempts.push({
+    player.pastAttempts.unshift({
         answers: player.currentAttempt.map((v) => {
             return {
                 id: v.id,
@@ -58,6 +60,10 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         submissionDate: interaction.createdAt,
     });
 
+    while (player.pastAttempts.length > 5) {
+        player.pastAttempts.pop();
+    }
+
     player.currentAttempt = undefined;
 
     await InteractionHelper.deferUpdate(interaction);
@@ -66,7 +72,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         { discordId: interaction.user.id },
         {
             $unset: { currentAttempt: "" },
-            $push: { pastAttempts: player.pastAttempts.at(-1) },
+            $set: { pastAttempts: player.pastAttempts },
         },
     );
 

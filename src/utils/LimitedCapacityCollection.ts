@@ -12,12 +12,12 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
     /**
      * The epoch time at which a cache data is added, in milliseconds.
      */
-    private readonly addedTime: Collection<K, number> = new Collection();
+    private readonly addedTime = new Collection<K, number>();
 
     /**
      * The interval at which this limited collection will be sweeped, in seconds.
      */
-    private readonly sweepInterval: number = 600;
+    private readonly sweepInterval = 600;
 
     /**
      * The lifetime of each cache data in this limited collection.
@@ -50,12 +50,8 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
      * were unused for the specified duration.
      */
     private startInterval(): void {
-        if (this.interval) {
-            return;
-        }
-
-        this.interval = setInterval(() => {
-            const executionTime: number = Date.now();
+        this.interval ??= setInterval(() => {
+            const executionTime = Date.now();
 
             this.addedTime.forEach((value, key) => {
                 if (executionTime - value > this.lifetime * 1000) {

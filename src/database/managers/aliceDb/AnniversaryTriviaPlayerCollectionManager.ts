@@ -19,6 +19,7 @@ export class AnniversaryTriviaPlayerCollectionManager extends DatabaseCollection
         return {
             discordId: "",
             pastAttempts: [],
+            pastEventAttempts: [],
         };
     }
 

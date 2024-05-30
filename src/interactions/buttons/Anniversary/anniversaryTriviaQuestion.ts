@@ -1,3 +1,5 @@
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { AnniversaryReviewType } from "@alice-enums/utils/AnniversaryReviewType";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -8,9 +10,12 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const player = CacheManager.anniversaryTriviaPlayers.get(
-        interaction.user.id,
-    );
+    await InteractionHelper.deferUpdate(interaction);
+
+    const player =
+        await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.getFromId(
+            interaction.user.id,
+        );
 
     if (!player) {
         return;
@@ -18,20 +23,22 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 
     const split = interaction.customId.split("#");
     const questionId = parseInt(split[1]);
-    const attemptIndex = split[2] ? parseInt(split[2]) : undefined;
+    const type = (split[2] as AnniversaryReviewType) || undefined;
+    const attemptIndex = split[3] ? parseInt(split[3]) : undefined;
 
     const question = CacheManager.anniversaryTriviaQuestions.get(questionId)!;
     const language = CommandHelper.getLocale(interaction);
 
     InteractionHelper.update(
         interaction,
-        attemptIndex === undefined
+        attemptIndex === undefined || type === undefined
             ? player.toAttemptMessage(interaction.member, question, language)
             : player.toReviewMessage(
                   interaction.member,
                   question,
                   attemptIndex,
                   language,
+                  type,
               ),
     );
 };

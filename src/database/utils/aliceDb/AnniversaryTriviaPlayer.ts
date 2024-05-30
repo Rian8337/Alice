@@ -16,6 +16,8 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { AnniversaryTriviaAttempt } from "@alice-structures/utils/AnniversaryTriviaAttempt";
 import { AnniversaryTriviaManager } from "@alice-utils/managers/AnniversaryTriviaManager";
 import { AnniversaryTriviaCurrentAttemptQuestion } from "@alice-structures/utils/AnniversaryTriviaCurrentAttemptQuestion";
+import { AnniversaryReviewType } from "@alice-enums/utils/AnniversaryReviewType";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 /**
  * Represents a player in the anniversary trivia game.
@@ -27,6 +29,7 @@ export class AnniversaryTriviaPlayer
     readonly discordId: string;
     currentAttempt?: AnniversaryTriviaCurrentAttemptQuestion[];
     readonly pastAttempts: AnniversaryTriviaAttempt[];
+    readonly pastEventAttempts: AnniversaryTriviaAttempt[];
 
     constructor(
         data: DatabaseAnniversaryTriviaPlayer = DatabaseManager.aliceDb
@@ -36,6 +39,7 @@ export class AnniversaryTriviaPlayer
 
         this.discordId = data.discordId;
         this.pastAttempts = data.pastAttempts;
+        this.pastEventAttempts = data.pastEventAttempts;
         this.currentAttempt = data.currentAttempt;
     }
 
@@ -78,21 +82,28 @@ export class AnniversaryTriviaPlayer
      * @param currentQuestion The current question.
      * @param attemptIndex The index of the attempt to review.
      * @param language The language to use for localization.
+     * @param type The type of review.
      */
     toReviewMessage(
         member: GuildMember,
         currentQuestion: AnniversaryTriviaQuestion,
         attemptIndex: number,
         language: Language,
+        type: AnniversaryReviewType,
     ): BaseMessageOptions {
         const localization = this.getLocalization(language);
-        const attempt = this.pastAttempts[attemptIndex - 1];
+        const attempt = (
+            type === AnniversaryReviewType.past
+                ? this.pastAttempts
+                : this.pastEventAttempts
+        )[attemptIndex - 1];
 
         return {
             components: this.createButtons(
                 currentQuestion,
                 language,
                 attemptIndex,
+                type,
             ),
             embeds: [
                 EmbedCreator.createNormalEmbed({
@@ -118,12 +129,34 @@ export class AnniversaryTriviaPlayer
      *
      * @param question The current question.
      * @param language The language to use for localization.
-     * @param attemptIndex The index of the attempt to review.
+     * @returns The buttons.
      */
     private createButtons(
         question: AnniversaryTriviaQuestion,
         language: Language,
+    ): ActionRowBuilder<ButtonBuilder>[];
+
+    /**
+     * Creates buttons for embed.
+     *
+     * @param question The current question.
+     * @param language The language to use for localization.
+     * @param attemptIndex The index of the attempt to review.
+     * @param type The type of review.
+     * @returns The buttons.
+     */
+    private createButtons(
+        question: AnniversaryTriviaQuestion,
+        language: Language,
+        attemptIndex: number,
+        type: AnniversaryReviewType,
+    ): ActionRowBuilder<ButtonBuilder>[];
+
+    private createButtons(
+        question: AnniversaryTriviaQuestion,
+        language: Language,
         attemptIndex?: number,
+        type?: AnniversaryReviewType,
     ): ActionRowBuilder<ButtonBuilder>[] {
         const rows: ActionRowBuilder<ButtonBuilder>[] = [];
 
@@ -132,23 +165,32 @@ export class AnniversaryTriviaPlayer
 
         const userAnswer = (
             attemptIndex
-                ? this.pastAttempts[attemptIndex - 1].answers
+                ? type === AnniversaryReviewType.event
+                    ? this.pastEventAttempts[attemptIndex - 1].answers
+                    : this.pastAttempts[attemptIndex - 1].answers
                 : this.currentAttempt
         )?.find((m) => m.id === question.id);
 
         for (const answer of question.answers) {
-            if (attemptIndex) {
-                answerRow.addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(answer)
-                        .setDisabled(true)
-                        .setLabel(answer)
-                        .setStyle(
-                            userAnswer?.answer === answer
-                                ? ButtonStyle.Success
-                                : ButtonStyle.Primary,
-                        ),
-                );
+            if (attemptIndex && type) {
+                const button = new ButtonBuilder()
+                    .setCustomId(answer)
+                    .setDisabled(true)
+                    .setLabel(answer);
+
+                if (userAnswer && userAnswer.answer === answer) {
+                    if (userAnswer.answer === question.correctAnswer) {
+                        button.setStyle(ButtonStyle.Success);
+                    } else {
+                        button.setStyle(ButtonStyle.Danger);
+                    }
+                } else if (answer === question.correctAnswer) {
+                    button.setStyle(ButtonStyle.Success);
+                } else {
+                    button.setStyle(ButtonStyle.Primary);
+                }
+
+                answerRow.addComponents(button);
             } else {
                 answerRow.addComponents(
                     new ButtonBuilder()
@@ -168,23 +210,47 @@ export class AnniversaryTriviaPlayer
         let questionRow = new ActionRowBuilder<ButtonBuilder>();
 
         for (let i = 0; i < 15; ++i) {
-            const userAnswer = this.currentAttempt?.find((v) => v.id === i + 1);
+            const button = new ButtonBuilder()
+                .setCustomId(
+                    `anniversaryTriviaQuestion#${i + 1}${type ? `#${type}` : ""}${attemptIndex ? `#${attemptIndex}` : ""}`,
+                )
+                .setLabel((i + 1).toString())
+                .setDisabled(i === question.id - 1);
 
-            questionRow.addComponents(
-                new ButtonBuilder()
-                    .setCustomId(
-                        `anniversaryTriviaQuestion#${i + 1}${attemptIndex ? `#${attemptIndex}` : ""}`,
-                    )
-                    .setLabel((i + 1).toString())
-                    .setStyle(
-                        userAnswer?.flagged
-                            ? ButtonStyle.Danger
-                            : userAnswer
-                              ? ButtonStyle.Success
-                              : ButtonStyle.Secondary,
-                    )
-                    .setDisabled(i === question.id - 1),
-            );
+            if (attemptIndex && type) {
+                const question = CacheManager.anniversaryTriviaQuestions.get(
+                    i + 1,
+                )!;
+
+                const userAnswer = (
+                    type === AnniversaryReviewType.event
+                        ? this.pastEventAttempts[attemptIndex - 1].answers
+                        : this.pastAttempts[attemptIndex - 1].answers
+                ).find((v) => v.id === i + 1);
+
+                // Highlight correctly and wrongly answered questions - as well as those that are not answered.
+                button.setStyle(
+                    userAnswer
+                        ? userAnswer.answer === question.correctAnswer
+                            ? ButtonStyle.Success
+                            : ButtonStyle.Danger
+                        : ButtonStyle.Secondary,
+                );
+            } else {
+                const userAnswer = this.currentAttempt?.find(
+                    (v) => v.id === i + 1,
+                );
+
+                button.setStyle(
+                    userAnswer?.flagged
+                        ? ButtonStyle.Danger
+                        : userAnswer
+                          ? ButtonStyle.Success
+                          : ButtonStyle.Secondary,
+                );
+            }
+
+            questionRow.addComponents(button);
 
             if (questionRow.components.length === 5) {
                 rows.push(questionRow);

@@ -4,7 +4,6 @@ import { AnniversaryNewAttemptENTranslation } from "./translations/AnniversaryNe
 
 export interface AnniversaryNewAttemptStrings {
     readonly existingAttemptExists: string;
-    readonly noMoreAttempts: string;
 }
 
 /**

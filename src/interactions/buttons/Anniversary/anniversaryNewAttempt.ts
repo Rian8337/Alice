@@ -16,14 +16,25 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         CommandHelper.getLocale(interaction),
     );
 
+    await InteractionHelper.deferReply(interaction);
+
     const player =
-        CacheManager.anniversaryTriviaPlayers.get(interaction.user.id) ??
+        (await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.getFromId(
+            interaction.user.id,
+            {
+                projection: {
+                    _id: 0,
+                    currentAttempt: 1,
+                },
+            },
+        )) ??
         new AnniversaryTriviaPlayer({
             discordId: interaction.user.id,
+            pastEventAttempts: [],
             pastAttempts: [],
         });
 
-    if (player?.currentAttempt !== undefined) {
+    if (player.currentAttempt !== undefined) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("existingAttemptExists"),
@@ -31,17 +42,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (player.pastAttempts.length === 2) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("noMoreAttempts"),
-            ),
-        });
-    }
-
     player.currentAttempt = [];
-
-    await InteractionHelper.deferReply(interaction);
 
     await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.updateOne(
         {
@@ -53,12 +54,11 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             },
             $setOnInsert: {
                 pastAttempts: [],
+                pastEventAttempts: [],
             },
         },
         { upsert: true },
     );
-
-    CacheManager.anniversaryTriviaPlayers.set(interaction.user.id, player);
 
     const firstQuestion = CacheManager.anniversaryTriviaQuestions.first()!;
 

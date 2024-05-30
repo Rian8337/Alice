@@ -1,5 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { AnniversaryContinueAttemptLocalization } from "@alice-localization/interactions/buttons/Anniversary/anniversaryContinueAttempt/AnniversaryContinueAttemptLocalization";
+import { AnniversaryReviewType } from "@alice-enums/utils/AnniversaryReviewType";
+import { AnniversaryPastEventAttemptLocalization } from "@alice-localization/interactions/buttons/Anniversary/anniversaryPastEventAttempt/AnniversaryPastEventAttemptLocalization";
 import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -11,21 +12,38 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const localization = new AnniversaryContinueAttemptLocalization(
+    const localization = new AnniversaryPastEventAttemptLocalization(
         CommandHelper.getLocale(interaction),
     );
+
+    const attemptIndex = parseInt(interaction.customId.split("#")[1]);
 
     await InteractionHelper.deferReply(interaction);
 
     const player =
         await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.getFromId(
             interaction.user.id,
+            { projection: { _id: 0, pastEventAttempts: 1 } },
         );
 
-    if (!player?.currentAttempt) {
+    if (!player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
-                localization.getTranslation("noExistingAttempt"),
+                localization.getTranslation("noPastAttempts"),
+            ),
+        });
+    }
+
+    if (attemptIndex === 1 && !player.pastEventAttempts[0]) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("noFirstAttempt"),
+            ),
+        });
+    } else if (attemptIndex === 2 && !player.pastEventAttempts[1]) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("noSecondAttempt"),
             ),
         });
     }
@@ -34,10 +52,12 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(
         interaction,
-        player.toAttemptMessage(
+        player.toReviewMessage(
             interaction.member,
             firstQuestion,
+            attemptIndex,
             localization.language,
+            AnniversaryReviewType.event,
         ),
     );
 };

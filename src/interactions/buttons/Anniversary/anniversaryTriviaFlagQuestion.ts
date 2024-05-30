@@ -9,9 +9,13 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const player = CacheManager.anniversaryTriviaPlayers.get(
-        interaction.user.id,
-    );
+    await InteractionHelper.deferUpdate(interaction);
+
+    const player =
+        await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.getFromId(
+            interaction.user.id,
+            { projection: { _id: 0, currentAttempt: 1 } },
+        );
 
     if (!player?.currentAttempt) {
         return;
@@ -28,8 +32,6 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     }
 
     attemptAnswer.flagged = !attemptAnswer.flagged;
-
-    await InteractionHelper.deferUpdate(interaction);
 
     await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.updateOne(
         { discordId: interaction.user.id },
