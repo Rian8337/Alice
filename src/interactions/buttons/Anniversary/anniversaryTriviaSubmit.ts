@@ -22,7 +22,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     const player =
         await DatabaseManager.aliceDb.collections.anniversaryTriviaPlayer.getFromId(
             interaction.user.id,
-            { projection: { _id: 0, currentAttempt: 1 } },
+            { projection: { _id: 0, currentAttempt: 1, pastAttempts: 1 } },
         );
 
     if (!player?.currentAttempt) {
