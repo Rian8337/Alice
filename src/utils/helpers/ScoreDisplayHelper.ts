@@ -108,24 +108,53 @@ export abstract class ScoreDisplayHelper {
                               nmiss: score.miss,
                           });
 
+                let fieldName = `${i + 1}. ${BeatmapManager.getRankEmote(
+                    score instanceof Score || score instanceof RecentPlay
+                        ? <ScoreRank>score.rank
+                        : score.mark,
+                )} | `;
+
+                if (score instanceof Score || score instanceof RecentPlay) {
+                    fieldName += `${score.title} ${score.completeModString}`;
+                } else {
+                    fieldName += `${DroidHelper.cleanupFilename(score.filename)} ${DroidHelper.getCompleteModString(score.mode)}`;
+                }
+
+                let fieldValue =
+                    `${score.score.toLocaleString(
+                        LocaleHelper.convertToBCP47(localization.language),
+                    )} / ${score.combo}x / ${(accuracy.value() * 100).toFixed(
+                        2,
+                    )}% / [${accuracy.n300}/${
+                        accuracy.n100
+                    }/${accuracy.n50}/${accuracy.nmiss}]\n` +
+                    `\`${DateTimeFormatHelper.dateToLocaleString(
+                        score.date,
+                        localization.language,
+                    )}\``;
+
+                if (
+                    score instanceof RecentPlay &&
+                    (score.droidAttribs || score.osuAttribs)
+                ) {
+                    fieldValue += "\n";
+
+                    if (score.droidAttribs) {
+                        fieldValue += `${bold(score.droidAttribs.performance.total.toFixed(2))}dpp`;
+                    }
+
+                    if (score.osuAttribs) {
+                        if (score.droidAttribs) {
+                            fieldValue += " - ";
+                        }
+
+                        fieldValue += `${bold(score.osuAttribs.performance.total.toFixed(2))}pp`;
+                    }
+                }
+
                 embed.addFields({
-                    name: `${i + 1}. ${BeatmapManager.getRankEmote(
-                        score instanceof Score || score instanceof RecentPlay
-                            ? <ScoreRank>score.rank
-                            : score.mark,
-                    )} | ${score instanceof Score || score instanceof RecentPlay ? score.title : DroidHelper.cleanupFilename(score.filename)} ${score instanceof Score || score instanceof RecentPlay ? score.completeModString : DroidHelper.getCompleteModString(score.mode)}`,
-                    value:
-                        `${score.score.toLocaleString(
-                            LocaleHelper.convertToBCP47(localization.language),
-                        )} / ${score.combo}x / ${(
-                            accuracy.value() * 100
-                        ).toFixed(2)}% / [${accuracy.n300}/${
-                            accuracy.n100
-                        }/${accuracy.n50}/${accuracy.nmiss}]\n` +
-                        `\`${DateTimeFormatHelper.dateToLocaleString(
-                            score.date,
-                            localization.language,
-                        )}\``,
+                    name: fieldName,
+                    value: fieldValue,
                 });
             }
         };
