@@ -157,8 +157,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     } else {
         const recentPlays = await DroidHelper.getRecentScores(
             player.id,
-            1,
-            index - 1,
+            undefined,
+            undefined,
             [
                 "id",
                 "hash",
@@ -173,13 +173,21 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 "mark",
                 "date",
             ],
-        ).then(async (res) =>
+        ).then((res) =>
             considerNonOverwrite
-                ? await ScoreHelper.getRecentScores(player.id, res)
+                ? ScoreHelper.getRecentScores(player.id, res)
                 : res,
         );
 
-        score = recentPlays[0];
+        if (recentPlays.length === 0) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("playerHasNoRecentPlays"),
+                ),
+            });
+        }
+
+        score = recentPlays[index - 1];
     }
 
     if (!score) {
