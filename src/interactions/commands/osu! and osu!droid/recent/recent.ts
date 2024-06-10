@@ -229,10 +229,6 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     };
 
-    if (score instanceof RecentPlay) {
-        return InteractionHelper.reply(interaction, options);
-    }
-
     const replay = await ReplayHelper.analyzeReplay(score);
 
     if (!replay.data) {

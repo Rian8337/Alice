@@ -1,5 +1,6 @@
 import { Config } from "@alice-core/Config";
 import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
 import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { readFile } from "fs/promises";
@@ -50,12 +51,24 @@ export abstract class ReplayHelper {
      * @returns The analyzed replay.
      */
     static async analyzeReplay(
-        input: Pick<OfficialDatabaseScore, "id"> | ReplayAnalyzer | Score,
+        input:
+            | Pick<OfficialDatabaseScore, "id">
+            | ReplayAnalyzer
+            | Score
+            | RecentPlay,
     ): Promise<ReplayAnalyzer> {
+        if (input instanceof RecentPlay && !input.scoreId) {
+            return new ReplayAnalyzer({ scoreID: 0 });
+        }
+
         let analyzer: ReplayAnalyzer;
 
         if (input instanceof ReplayAnalyzer) {
             analyzer = input;
+        } else if (input instanceof RecentPlay) {
+            analyzer = new ReplayAnalyzer({
+                scoreID: input.scoreId!,
+            });
         } else {
             analyzer = new ReplayAnalyzer({
                 scoreID: input instanceof Score ? input.scoreID : input.id,
@@ -66,7 +79,9 @@ export abstract class ReplayHelper {
             analyzer.originalODR ??= await this.retrieveFile(
                 input instanceof Score || input instanceof ReplayAnalyzer
                     ? input.scoreID
-                    : input.id,
+                    : input instanceof RecentPlay
+                      ? input.scoreId!
+                      : input.id,
             );
         }
 
