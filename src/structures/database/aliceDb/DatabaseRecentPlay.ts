@@ -133,4 +133,9 @@ export interface DatabaseRecentPlay extends BaseDocument {
         OsuDifficultyAttributes,
         OsuPerformanceAttributes
     >;
+
+    /**
+     * The ID of this play, if it was submitted to the game server.
+     */
+    scoreId?: number;
 }

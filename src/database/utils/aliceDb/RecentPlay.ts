@@ -123,6 +123,11 @@ export class RecentPlay extends Manager {
     >;
 
     /**
+     * The ID of this play, if it was submitted to the game server.
+     */
+    readonly scoreId?: number;
+
+    /**
      * The complete mod string of this play (mods, speed multiplier, and force AR combined).
      */
     get completeModString(): string {
@@ -186,5 +191,6 @@ export class RecentPlay extends Manager {
         this.sliderEndInformation = data.sliderEndInformation;
         this.droidAttribs = data.droidAttribs;
         this.osuAttribs = data.osuAttribs;
+        this.scoreId = data.scoreId;
     }
 }

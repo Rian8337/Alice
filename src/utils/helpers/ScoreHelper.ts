@@ -259,12 +259,24 @@ export abstract class ScoreHelper {
             | RecentPlay
         )[] = [],
     ): Promise<(Pick<OfficialDatabaseScore, K> | Score | RecentPlay)[]> {
-        return DatabaseManager.aliceDb.collections.recentPlays
-            .getFromUid(uid)
-            .then((recentPlays) =>
-                (<(Score | RecentPlay)[]>existingScores)
-                    .concat(recentPlays)
-                    .sort((a, b) => b.date.getTime() - a.date.getTime()),
+        const recentPlays =
+            await DatabaseManager.aliceDb.collections.recentPlays.getFromUid(
+                uid,
             );
+
+        for (const play of recentPlays) {
+            const idx = existingScores.findIndex(
+                (v) => v instanceof Score && v.scoreID === play.scoreId,
+            );
+
+            if (idx !== -1) {
+                // Remove in favor of `RecentPlay`.
+                existingScores.splice(idx, 1);
+            }
+        }
+
+        return (<(Score | RecentPlay)[]>existingScores)
+            .concat(recentPlays)
+            .sort((a, b) => b.date.getTime() - a.date.getTime());
     }
 }
