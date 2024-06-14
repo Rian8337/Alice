@@ -57,6 +57,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                   undefined,
                   undefined,
                   [
+                      "id",
                       "filename",
                       "mark",
                       "mode",
