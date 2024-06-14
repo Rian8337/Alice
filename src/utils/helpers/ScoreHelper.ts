@@ -254,11 +254,19 @@ export abstract class ScoreHelper {
     static async getRecentScores<K extends keyof OfficialDatabaseScore>(
         uid: number,
         existingScores: (
-            | Pick<OfficialDatabaseScore, K | "id">
+            | (Pick<OfficialDatabaseScore, K> &
+                  Pick<OfficialDatabaseScore, "id">)
             | Score
             | RecentPlay
         )[] = [],
-    ): Promise<(Pick<OfficialDatabaseScore, K | "id"> | Score | RecentPlay)[]> {
+    ): Promise<
+        (
+            | (Pick<OfficialDatabaseScore, K> &
+                  Pick<OfficialDatabaseScore, "id">)
+            | Score
+            | RecentPlay
+        )[]
+    > {
         const recentPlays =
             await DatabaseManager.aliceDb.collections.recentPlays.getFromUid(
                 uid,
