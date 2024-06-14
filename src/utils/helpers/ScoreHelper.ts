@@ -254,11 +254,11 @@ export abstract class ScoreHelper {
     static async getRecentScores<K extends keyof OfficialDatabaseScore>(
         uid: number,
         existingScores: (
-            | Pick<OfficialDatabaseScore, K>
+            | Pick<OfficialDatabaseScore, K | "id">
             | Score
             | RecentPlay
         )[] = [],
-    ): Promise<(Pick<OfficialDatabaseScore, K> | Score | RecentPlay)[]> {
+    ): Promise<(Pick<OfficialDatabaseScore, K | "id"> | Score | RecentPlay)[]> {
         const recentPlays =
             await DatabaseManager.aliceDb.collections.recentPlays.getFromUid(
                 uid,
@@ -266,7 +266,12 @@ export abstract class ScoreHelper {
 
         for (const play of recentPlays) {
             const idx = existingScores.findIndex(
-                (v) => v instanceof Score && v.scoreID === play.scoreId,
+                (v) =>
+                    (v instanceof Score
+                        ? v.scoreID
+                        : v instanceof RecentPlay
+                          ? v.scoreId
+                          : v.id) === play.scoreId,
             );
 
             if (idx !== -1) {
