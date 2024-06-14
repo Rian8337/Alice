@@ -506,8 +506,21 @@ export abstract class BeatmapManager extends Manager {
                     `https://beatconnect.io/b/${beatmapInfo.beatmapSetId}/`,
                 )} - ${hyperlink(
                     "Nerina",
-                    `https://nerina.pw/d/${beatmapInfo.beatmapSetId}`,
+                    `https://api.nerinyan.moe/d/${beatmapInfo.beatmapSetId}`,
                 )}${
+                    beatmapInfo.storyboardAvailable
+                        ? ` ${hyperlink("(no storyboard)", `https://api.nerinyan.moe/d/${beatmapInfo.beatmapSetId}?nsb=1`)}`
+                        : ""
+                }${
+                    beatmapInfo.videoAvailable
+                        ? ` ${hyperlink("(no video)", `https://api.nerinyan.moe/d/${beatmapInfo.beatmapSetId}?nv=1`)}`
+                        : ""
+                }${
+                    beatmapInfo.storyboardAvailable &&
+                    beatmapInfo.videoAvailable
+                        ? ` ${hyperlink("(no storyboard, no video)", `https://api.nerinyan.moe/d/${beatmapInfo.beatmapSetId}?nsb=1&nv=1`)}`
+                        : ""
+                }${
                     beatmapInfo.approved >= RankedStatus.ranked &&
                     beatmapInfo.approved !== RankedStatus.qualified
                         ? ` - ${hyperlink(
