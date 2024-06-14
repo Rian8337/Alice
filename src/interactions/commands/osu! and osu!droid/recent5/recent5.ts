@@ -109,6 +109,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     let recentPlays: (
         | Pick<
               OfficialDatabaseScore,
+              | "id"
               | "filename"
               | "mark"
               | "mode"
@@ -132,6 +133,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             undefined,
             undefined,
             [
+                "id",
                 "filename",
                 "mark",
                 "mode",
