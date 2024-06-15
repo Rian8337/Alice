@@ -8,7 +8,6 @@ import {
     ModHardRock,
     ModHidden,
     ModNoFail,
-    RequestResponse,
 } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 
@@ -26,21 +25,19 @@ export abstract class ScoreHelper {
         hash: string,
         page: number = 1,
     ): Promise<Score[]> {
-        const apiRequestBuilder: DroidAPIRequestBuilder =
-            new DroidAPIRequestBuilder()
-                .setEndpoint("scoresearchv2.php")
-                .addParameter("hash", hash)
-                .addParameter("page", Math.max(0, page - 1))
-                .addParameter("order", "score");
+        const apiRequestBuilder = new DroidAPIRequestBuilder()
+            .setEndpoint("scoresearchv2.php")
+            .addParameter("hash", hash)
+            .addParameter("page", Math.max(0, page - 1))
+            .addParameter("order", "score");
 
-        const result: RequestResponse = await apiRequestBuilder.sendRequest();
+        const result = await apiRequestBuilder.sendRequest();
 
         if (result.statusCode !== 200) {
             throw new Error("Droid API request failed");
         }
 
-        const data: string[] = result.data.toString("utf-8").split("<br>");
-
+        const data = result.data.toString("utf-8").split("<br>");
         data.shift();
 
         return data.map((v) => new Score().fillInformation(v));
@@ -101,7 +98,7 @@ export abstract class ScoreHelper {
         mods: Mod[],
         scorePortion: number,
     ): number {
-        const tempScoreV2: number =
+        const tempScoreV2 =
             Math.sqrt(
                 (this.removeScoreMultiplier(score, mods) *
                     (mods.some((m) => m instanceof ModNoFail) ? 2 : 1)) /
@@ -134,8 +131,7 @@ export abstract class ScoreHelper {
         mods: Mod[],
         accuracyPortion: number,
     ): number {
-        const tempScoreV2: number =
-            Math.pow(accuracy, 2) * 1e6 * accuracyPortion;
+        const tempScoreV2 = Math.pow(accuracy, 2) * 1e6 * accuracyPortion;
 
         return Math.max(
             0,
@@ -152,7 +148,7 @@ export abstract class ScoreHelper {
      * @param score The score value.
      * @returns The profile level of the score value.
      */
-    static calculateProfileLevel(score: number): number {
+    static calculateProfileLevel(score: number) {
         const calculateScoreRequirement = (level: number): number => {
             return Math.round(
                 level <= 100
@@ -166,16 +162,16 @@ export abstract class ScoreHelper {
             );
         };
 
-        let level: number = 1;
+        let level = 1;
 
         while (calculateScoreRequirement(level + 1) <= score) {
             ++level;
         }
 
-        const nextLevelReq: number =
+        const nextLevelReq =
             calculateScoreRequirement(level + 1) -
             calculateScoreRequirement(level);
-        const curLevelReq: number = score - calculateScoreRequirement(level);
+        const curLevelReq = score - calculateScoreRequirement(level);
         level += curLevelReq / nextLevelReq;
 
         return level;
