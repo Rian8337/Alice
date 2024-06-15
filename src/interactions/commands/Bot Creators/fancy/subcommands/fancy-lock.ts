@@ -1,24 +1,22 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
-import { User } from "discord.js";
 import { FancyLocalization } from "@alice-localization/interactions/commands/Bot Creators/fancy/FancyLocalization";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: FancyLocalization = new FancyLocalization(
+    const localization = new FancyLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const user: User = interaction.options.getUser("user", true);
+    const user = interaction.options.getUser("user", true);
 
-    const duration: number = CommandHelper.convertStringTimeFormat(
+    const duration = CommandHelper.convertStringTimeFormat(
         interaction.options.getString("duration", true),
     );
 
-    const reason: string = interaction.options.getString("reason", true);
+    const reason = interaction.options.getString("reason", true);
 
     if (!Number.isFinite(duration)) {
         return InteractionHelper.reply(interaction, {
@@ -28,7 +26,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const result: OperationResult = await LoungeLockManager.lock(
+    const result = await LoungeLockManager.lock(
         user.id,
         reason,
         duration,
