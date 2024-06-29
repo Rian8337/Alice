@@ -33,11 +33,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         localization.language,
     );
 
-    if (!result.success) {
+    if (result.failed()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("lockProcessFailed"),
-                result.reason!,
+                result.reason,
             ),
         });
     }
@@ -50,5 +50,5 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 };
 
 export const config: SlashSubcommand["config"] = {
-    permissions: [],
+    permissions: ["BotOwner"],
 };

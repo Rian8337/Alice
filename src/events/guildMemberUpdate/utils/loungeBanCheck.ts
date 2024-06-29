@@ -11,7 +11,7 @@ export const run: EventUtil["run"] = async (_, __, newMember: GuildMember) => {
     }
 
     const role: Role | undefined = newMember.guild.roles.cache.find(
-        (r) => r.name === "Lounge Pass"
+        (r) => r.name === "Lounge Pass",
     );
 
     if (!role) {
@@ -24,7 +24,7 @@ export const run: EventUtil["run"] = async (_, __, newMember: GuildMember) => {
 
     const lockInfo: LoungeLock | null =
         await DatabaseManager.aliceDb.collections.loungeLock.getUserLockInfo(
-            newMember.id
+            newMember.id,
         );
 
     if (!lockInfo) {
@@ -39,7 +39,7 @@ export const run: EventUtil["run"] = async (_, __, newMember: GuildMember) => {
         role,
         `Locked from lounge channel for \`${
             lockInfo.reason ?? "not specified"
-        }\``
+        }\``,
     );
 
     const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
@@ -54,10 +54,12 @@ export const run: EventUtil["run"] = async (_, __, newMember: GuildMember) => {
                 !Number.isFinite(lockInfo.expiration)
                     ? "not expire"
                     : `expire at ${new Date(lockInfo.expiration).toUTCString()}`
-            }.`
+            }.`,
     );
 
-    (<TextChannel>newMember.guild.channels.resolve("783506454966566912")).send({
+    (<TextChannel>(
+        newMember.guild.channels.resolve(Constants.staffChannel)
+    )).send({
         embeds: [embed],
     });
 };

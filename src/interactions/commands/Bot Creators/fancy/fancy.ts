@@ -4,18 +4,40 @@ import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    CommandHelper.runSlashSubcommandFromInteraction(
+    CommandHelper.runSlashSubcommandOrGroup(
         interaction,
         CommandHelper.getLocale(interaction),
     );
 };
 
-export const category: SlashCommand["category"] = CommandCategory.botCreators;
+export const category: SlashCommand["category"] = CommandCategory.tools;
 
 export const config: SlashCommand["config"] = {
     name: "fancy",
-    description: "Allows managing the permissions of lounge channel.",
+    description: "Allows managing the lounge channel.",
     options: [
+        {
+            name: "application",
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            description: "Commands for fancy application.",
+            options: [
+                {
+                    name: "apply",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description: "Applies for fancy role.",
+                },
+                {
+                    name: "cancel",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description: "Cancels your fancy role application.",
+                },
+                {
+                    name: "view",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description: "Views your fancy role application status.",
+                },
+            ],
+        },
         {
             name: "lock",
             type: ApplicationCommandOptionType.Subcommand,
@@ -74,7 +96,7 @@ export const config: SlashCommand["config"] = {
             description: "will lock Rian8337 from the lounge channel.",
         },
     ],
-    permissions: ["BotOwner"],
+    permissions: [],
     replyEphemeral: true,
     scope: "GUILD_CHANNEL",
 };

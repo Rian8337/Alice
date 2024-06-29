@@ -7,6 +7,17 @@ import { FancyKRTranslation } from "./translations/FancyKRTranslation";
 
 export interface FancyStrings {
     readonly durationError: string;
+    readonly activeApplicationNotFound: string;
+    readonly cannotRetrieveTatsuXP: string;
+    readonly tatsuXPRequirementNotMet: string;
+    readonly applicationMessageEmbedTitle: string;
+    readonly applicationMessageEmbedDescription: string;
+    readonly applicationMessageInitiateVote: string;
+    readonly applicationMessageRejectApplication: string;
+    readonly applicationFailed: string;
+    readonly applicationSent: string;
+    readonly applicationCancelFailed: string;
+    readonly applicationCancelSuccess: string;
     readonly lockProcessFailed: string;
     readonly lockProcessSuccessful: string;
     readonly unlockProcessFailed: string;

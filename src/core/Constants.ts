@@ -52,6 +52,11 @@ export class Constants {
     static readonly loungeChannel = "927204556683771945" satisfies Snowflake;
 
     /**
+     * The ID of the staff channel in the main server.
+     */
+    static readonly staffChannel = "783506454966566912" satisfies Snowflake;
+
+    /**
      * The ID of the lounge role in the main server.
      */
     static readonly loungeRole = "667403004118433793" satisfies Snowflake;

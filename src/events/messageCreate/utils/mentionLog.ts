@@ -12,7 +12,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Constants } from "@alice-core/Constants";
 
 const excludedChannels: Snowflake[] = [
-    "783506454966566912",
+    Constants.staffChannel,
     "988135588060364931",
 ];
 
@@ -51,7 +51,7 @@ export const run: EventUtil["run"] = async (client, message: Message) => {
         name: "Channel",
         value: `${message.channel} | ${hyperlink(
             "Go to Message",
-            message.url
+            message.url,
         )}`,
     });
 

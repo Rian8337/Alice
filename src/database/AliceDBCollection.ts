@@ -33,6 +33,7 @@ import { SupportTicketPresetCollectionManager } from "./managers/aliceDb/Support
 import { InGamePPCollectionManager } from "./managers/aliceDb/InGamePPCollectionManager";
 import { AnniversaryTriviaPlayerCollectionManager } from "./managers/aliceDb/AnniversaryTriviaPlayerCollectionManager";
 import { AnniversaryTriviaQuestionCollectionManager } from "./managers/aliceDb/AnniversaryTriviaQuestionCollectionManager";
+import { FancyApplicationCollectionManager } from "./managers/aliceDb/FancyApplicationCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -212,6 +213,11 @@ export class AliceDBCollection {
     readonly anniversaryTriviaPlayer: AnniversaryTriviaPlayerCollectionManager;
 
     /**
+     * The database collection for fancy applications.
+     */
+    readonly fancyApplication: FancyApplicationCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -319,5 +325,8 @@ export class AliceDBCollection {
             new AnniversaryTriviaPlayerCollectionManager(
                 aliceDb.collection("anniversarytriviaplayer"),
             );
+        this.fancyApplication = new FancyApplicationCollectionManager(
+            aliceDb.collection("fancyapplication"),
+        );
     }
 }

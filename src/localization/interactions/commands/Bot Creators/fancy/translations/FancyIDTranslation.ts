@@ -6,7 +6,15 @@ import { FancyStrings } from "../FancyLocalization";
  */
 export class FancyIDTranslation extends Translation<FancyStrings> {
     override readonly translations: FancyStrings = {
-        durationError: "Hei, mohon berikan durasi penguncian yang benar!",
+        durationError: "Hei, mohon berikan durasi yang benar!",
+        cannotRetrieveTatsuXP: "",
+        tatsuXPRequirementNotMet: "",
+        applicationMessageEmbedTitle: "",
+        applicationMessageEmbedDescription: "",
+        applicationMessageInitiateVote: "",
+        applicationMessageRejectApplication: "",
+        applicationFailed: "",
+        applicationSent: "",
         lockProcessFailed:
             "Maaf, aku tidak dapat mengunci pengguna tersebut: %s.",
         unlockProcessFailed:

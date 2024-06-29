@@ -4,10 +4,8 @@ import { Manager } from "@alice-utils/base/Manager";
 import { Collection as DiscordCollection } from "discord.js";
 import {
     Collection as MongoDBCollection,
-    DeleteResult,
     Filter,
     FindOptions,
-    InsertManyResult,
     OptionalUnlessRequiredId,
     UpdateFilter,
     UpdateOptions,
@@ -66,11 +64,7 @@ export abstract class DatabaseCollectionManager<
         query: UpdateFilter<T> | Partial<T>,
         options: UpdateOptions = {},
     ): Promise<OperationResult> {
-        const result: UpdateResult = await this.collection.updateMany(
-            filter,
-            query,
-            options,
-        );
+        const result = await this.collection.updateMany(filter, query, options);
 
         return this.createOperationResult(result.acknowledged);
     }
@@ -122,10 +116,7 @@ export abstract class DatabaseCollectionManager<
                 .toArray()
         );
 
-        const collection: DiscordCollection<
-            NonNullable<T[K]>,
-            C
-        > = new DiscordCollection();
+        const collection = new DiscordCollection<NonNullable<T[K]>, C>();
 
         for (const data of res) {
             collection.set(
@@ -149,7 +140,7 @@ export abstract class DatabaseCollectionManager<
         filter: Filter<T> = {},
         options?: FindOptions<T>,
     ): Promise<C | null> {
-        const res: T | null = await this.collection.findOne(
+        const res = await this.collection.findOne(
             filter,
             this.processFindOptions(options),
         );
@@ -164,7 +155,7 @@ export abstract class DatabaseCollectionManager<
      * @returns An object containing information about the operation.
      */
     async deleteMany(filter: Filter<T>): Promise<OperationResult> {
-        const result: DeleteResult = await this.collection.deleteMany(filter);
+        const result = await this.collection.deleteMany(filter);
 
         return this.createOperationResult(result.acknowledged);
     }
@@ -176,7 +167,7 @@ export abstract class DatabaseCollectionManager<
      * @returns An object containing information about the operation.
      */
     async deleteOne(filter: Filter<T>): Promise<OperationResult> {
-        const result: DeleteResult = await this.collection.deleteOne(filter);
+        const result = await this.collection.deleteOne(filter);
 
         return this.createOperationResult(result.acknowledged);
     }
@@ -187,7 +178,7 @@ export abstract class DatabaseCollectionManager<
      * @param docs The part of documents to insert. Each document will be assigned to the default document with `Object.assign()`.
      */
     async insert(...docs: Partial<T>[]): Promise<OperationResult> {
-        const result: InsertManyResult<T> = await this.collection.insertMany(
+        const result = await this.collection.insertMany(
             docs.map(
                 (v) =>
                     <OptionalUnlessRequiredId<T>>(
