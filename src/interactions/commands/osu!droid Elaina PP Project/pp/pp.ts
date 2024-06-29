@@ -134,34 +134,7 @@ export const config: SlashCommand["config"] = {
                 "Main subcommand group for checking a player's prototype droid pp (dpp) profile.",
             options: [
                 {
-                    name: "export",
-                    type: ApplicationCommandOptionType.Subcommand,
-                    description:
-                        "Exports yours or a player's prototype droid pp (dpp) profile.",
-                    options: [
-                        {
-                            name: "user",
-                            type: ApplicationCommandOptionType.User,
-                            description: "The user to export.",
-                        },
-                        {
-                            name: "uid",
-                            type: ApplicationCommandOptionType.Integer,
-                            description: "The uid of the player.",
-                            minValue: Constants.uidMinLimit,
-                        },
-                        {
-                            name: "username",
-                            type: ApplicationCommandOptionType.String,
-                            description: "The username of the player.",
-                            minLength: 2,
-                            maxLength: 20,
-                            autocomplete: true,
-                        },
-                    ],
-                },
-                {
-                    name: "view",
+                    name: "check",
                     type: ApplicationCommandOptionType.Subcommand,
                     description:
                         "Checks yours or a player's prototype droid pp (dpp) profile.",
@@ -193,6 +166,47 @@ export const config: SlashCommand["config"] = {
                             minValue: 1,
                             maxValue: 15,
                         },
+                        {
+                            name: "rework",
+                            type: ApplicationCommandOptionType.String,
+                            description:
+                                "The rework to check. If unspecified, defaults to the overall rework.",
+                            autocomplete: true,
+                        },
+                    ],
+                },
+                {
+                    name: "export",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description:
+                        "Exports yours or a player's prototype droid pp (dpp) profile.",
+                    options: [
+                        {
+                            name: "user",
+                            type: ApplicationCommandOptionType.User,
+                            description: "The user to export.",
+                        },
+                        {
+                            name: "uid",
+                            type: ApplicationCommandOptionType.Integer,
+                            description: "The uid of the player.",
+                            minValue: Constants.uidMinLimit,
+                        },
+                        {
+                            name: "username",
+                            type: ApplicationCommandOptionType.String,
+                            description: "The username of the player.",
+                            minLength: 2,
+                            maxLength: 20,
+                            autocomplete: true,
+                        },
+                        {
+                            name: "rework",
+                            type: ApplicationCommandOptionType.String,
+                            description:
+                                "The rework to export. If unspecified, defaults to the overall rework.",
+                            autocomplete: true,
+                        },
                     ],
                 },
             ],
@@ -215,29 +229,29 @@ export const config: SlashCommand["config"] = {
                         },
                     ],
                 },
-                // {
-                //     name: "recent",
-                //     type: ApplicationCommandOptionType.Subcommand,
-                //     description: "Submits score(s) from your recent plays.",
-                //     options: [
-                //         {
-                //             name: "amount",
-                //             type: ApplicationCommandOptionType.Integer,
-                //             description:
-                //                 "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1.",
-                //             minValue: 1,
-                //             maxValue: 5,
-                //         },
-                //         {
-                //             name: "offset",
-                //             type: ApplicationCommandOptionType.Integer,
-                //             description:
-                //                 "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50.",
-                //             minValue: 1,
-                //             maxValue: 50,
-                //         },
-                //     ],
-                // },
+                {
+                    name: "recent",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description: "Submits score(s) from your recent plays.",
+                    options: [
+                        {
+                            name: "amount",
+                            type: ApplicationCommandOptionType.Integer,
+                            description:
+                                "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1.",
+                            minValue: 1,
+                            maxValue: 5,
+                        },
+                        {
+                            name: "offset",
+                            type: ApplicationCommandOptionType.Integer,
+                            description:
+                                "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50.",
+                            minValue: 1,
+                            maxValue: 50,
+                        },
+                    ],
+                },
             ],
         },
         {

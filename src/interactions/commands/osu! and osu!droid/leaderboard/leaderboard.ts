@@ -75,6 +75,13 @@ export const config: SlashCommand["config"] = {
                     description: "The page of the leaderboard. Defaults to 1.",
                     minValue: 1,
                 },
+                {
+                    name: "rework",
+                    type: ApplicationCommandOptionType.String,
+                    description:
+                        "The name of the rework to view the leaderboard from. Defaults to overall.",
+                    autocomplete: true,
+                },
             ],
         },
     ],

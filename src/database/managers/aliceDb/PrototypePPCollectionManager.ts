@@ -19,6 +19,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
     protected override readonly utilityInstance: new (
         data: DatabasePrototypePP,
     ) => PrototypePP = PrototypePP;
+
     override get defaultDocument(): DatabasePrototypePP {
         return {
             discordid: "",
@@ -27,6 +28,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
             pp: [],
             pptotal: 0,
             prevpptotal: 0,
+            reworkType: "overall",
             uid: 0,
             username: "",
             scanDone: true,
@@ -38,19 +40,28 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      * Gets the prototype droid performance points (dpp) information of a Discord user.
      *
      * @param user The user.
+     * @param reworkType The rework type.
      */
-    getFromUser(user: User): Promise<PrototypePP | null>;
+    getFromUser(user: User, reworkType: string): Promise<PrototypePP | null>;
 
     /**
      * Gets the prototype droid performance points (dpp) information of a Discord user.
      *
      * @param userId The ID of the user.
+     * @param reworkType The rework type.
      */
-    getFromUser(userId: Snowflake): Promise<PrototypePP | null>;
+    getFromUser(
+        userId: Snowflake,
+        reworkType: string,
+    ): Promise<PrototypePP | null>;
 
-    getFromUser(userOrId: User | Snowflake): Promise<PrototypePP | null> {
+    getFromUser(
+        userOrId: User | Snowflake,
+        reworkType: string,
+    ): Promise<PrototypePP | null> {
         return this.getOne({
             discordid: userOrId instanceof User ? userOrId.id : userOrId,
+            reworkType: reworkType,
         });
     }
 
@@ -58,42 +69,55 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      * Gets the prototype droid performance points (dpp) information of an osu!droid account from its uid.
      *
      * @param uid The uid of the osu!droid account.
+     * @param reworkType The rework type.
      */
-    getFromUid(uid: number): Promise<PrototypePP | null> {
-        return this.getOne({ previous_bind: { $all: [uid] } });
+    getFromUid(uid: number, reworkType: string): Promise<PrototypePP | null> {
+        return this.getOne({
+            previous_bind: { $all: [uid] },
+            reworkType: reworkType,
+        });
     }
 
     /**
      * Gets the prototype droid performance points (dpp) information of an osu!droid account from its username.
      *
      * @param username The username of the osu!droid account.
+     * @param reworkType The rework type.
      */
-    getFromUsername(username: string): Promise<PrototypePP | null> {
-        return this.getOne({ username: username });
+    getFromUsername(
+        username: string,
+        reworkType: string,
+    ): Promise<PrototypePP | null> {
+        return this.getOne({ username: username, reworkType: reworkType });
     }
 
     /**
      * Gets the dpp rank of a specified dpp value.
      *
      * @param totalPP The total PP.
+     * @param reworkType The rework type.
      */
-    async getUserDPPRank(totalPP: number): Promise<number> {
+    async getUserDPPRank(totalPP: number, reworkType: string): Promise<number> {
         return (
             (await this.collection.countDocuments({
                 pptotal: { $gt: totalPP },
+                reworkType: reworkType,
             })) + 1
         );
     }
 
     /**
-     * Gets the DPP leaderboard.
+     * Gets the DPP leaderboard of a rework.
      *
+     * @param reworkType The rework type.
      * @returns The leaderboard, mapped by the player's Discord ID.
      */
-    async getLeaderboard(): Promise<DiscordCollection<Snowflake, PrototypePP>> {
-        const prototypeEntries: DatabasePrototypePP[] = await this.collection
+    async getLeaderboard(
+        reworkType: string,
+    ): Promise<DiscordCollection<Snowflake, PrototypePP>> {
+        const prototypeEntries = await this.collection
             .find(
-                {},
+                { reworkType: reworkType },
                 {
                     projection: {
                         _id: 0,
@@ -121,14 +145,16 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
      * then retrieve player data from bind database to perform recalculation.
      *
      * @param amount The amount of unscanned players to retrieve.
+     * @param reworkType The rework type to filter the players.
      * @returns The players.
      */
     async getUnscannedPlayers(
         amount: number,
+        reworkType: string,
     ): Promise<DiscordCollection<Snowflake, PrototypePP>> {
-        const prototypeEntries: DatabasePrototypePP[] = await this.collection
+        const prototypeEntries = await this.collection
             .find(
-                { scanDone: { $ne: true } },
+                { scanDone: { $ne: true }, reworkType: reworkType },
                 { projection: { _id: 0, discordid: 1, pptotal: 1 } },
             )
             .sort({ pptotal: -1 })
@@ -152,7 +178,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
         searchQuery: string | RegExp,
         amount: number = 25,
     ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
-        const result: DatabasePrototypePP[] = await this.collection
+        const result = await this.collection
             .find(
                 { username: new RegExp(searchQuery, "i") },
                 { projection: { _id: 0, username: 1 } },

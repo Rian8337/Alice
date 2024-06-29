@@ -33,6 +33,7 @@ import { SupportTicketPresetCollectionManager } from "./managers/aliceDb/Support
 import { InGamePPCollectionManager } from "./managers/aliceDb/InGamePPCollectionManager";
 import { AnniversaryTriviaPlayerCollectionManager } from "./managers/aliceDb/AnniversaryTriviaPlayerCollectionManager";
 import { AnniversaryTriviaQuestionCollectionManager } from "./managers/aliceDb/AnniversaryTriviaQuestionCollectionManager";
+import { PrototypePPTypeCollectionManager } from "./managers/aliceDb/PrototypePPTypeCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -125,6 +126,11 @@ export class AliceDBCollection {
      * The database collection for prototype droid performance point (dpp) entries of osu!droid players.
      */
     readonly prototypePP: PrototypePPCollectionManager;
+
+    /**
+     * The database collection for prototype droid performance point (dpp) types.
+     */
+    readonly prototypePPType: PrototypePPTypeCollectionManager;
 
     /**
      * The database collection for guilds' punishment configuration.
@@ -265,6 +271,9 @@ export class AliceDBCollection {
         );
         this.prototypePP = new PrototypePPCollectionManager(
             aliceDb.collection("prototypepp"),
+        );
+        this.prototypePPType = new PrototypePPTypeCollectionManager(
+            aliceDb.collection("prototypepptype"),
         );
         this.guildPunishmentConfig = new GuildPunishmentConfigCollectionManager(
             aliceDb.collection("punishmentconfig"),

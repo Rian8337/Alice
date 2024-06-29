@@ -45,6 +45,13 @@ export const config: SlashCommand["config"] = {
                         "Recalculates a user as prototype droid performance points (dpp).",
                     options: [
                         {
+                            name: "reworktype",
+                            type: ApplicationCommandOptionType.String,
+                            description: "The rework type of the prototype.",
+                            required: true,
+                            autocomplete: true,
+                        },
+                        {
                             name: "user",
                             type: ApplicationCommandOptionType.User,
                             description: "The user to recalculate.",
@@ -71,6 +78,19 @@ export const config: SlashCommand["config"] = {
                     description:
                         "Recalculates all players in the current prototype droid performance points (dpp) system.",
                     options: [
+                        {
+                            name: "reworktype",
+                            type: ApplicationCommandOptionType.String,
+                            description: "The rework type of the prototype.",
+                            required: true,
+                            autocomplete: true,
+                        },
+                        {
+                            name: "reworkname",
+                            type: ApplicationCommandOptionType.String,
+                            description:
+                                "The name of the rework. Required for new reworks.",
+                        },
                         {
                             name: "resetprogress",
                             type: ApplicationCommandOptionType.Boolean,

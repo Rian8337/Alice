@@ -5,6 +5,7 @@ import {
     RecalculationManagerLocalization,
     RecalculationManagerStrings,
 } from "@alice-localization/utils/managers/RecalculationManager/RecalculationManagerLocalization";
+import { RecalculationQueue } from "@alice-structures/dpp/PrototypeRecalculationQueue";
 import { Manager } from "@alice-utils/base/Manager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -32,7 +33,7 @@ export abstract class RecalculationManager extends Manager {
      */
     private static readonly prototypeRecalculationQueue = new Collection<
         Snowflake,
-        CommandInteraction
+        RecalculationQueue
     >();
 
     private static readonly calculationSuccessResponse: keyof RecalculationManagerStrings =
@@ -40,8 +41,8 @@ export abstract class RecalculationManager extends Manager {
     private static readonly calculationFailedResponse: keyof RecalculationManagerStrings =
         "recalculationFailed";
 
-    private static calculationIsProgressing: boolean = false;
-    private static prototypeCalculationIsProgressing: boolean = false;
+    private static calculationIsProgressing = false;
+    private static prototypeCalculationIsProgressing = false;
 
     /**
      * Queues a user for recalculation.
@@ -60,12 +61,17 @@ export abstract class RecalculationManager extends Manager {
      *
      * @param interaction The interaction that queued the user.
      * @param userId The ID of the queued user.
+     * @param reworkType The rework type of the prototype.
      */
     static queuePrototype(
         interaction: CommandInteraction,
         userId: Snowflake,
+        reworkType: string,
     ): void {
-        this.prototypeRecalculationQueue.set(userId, interaction);
+        this.prototypeRecalculationQueue.set(userId, {
+            interaction: interaction,
+            reworkType: reworkType,
+        });
 
         this.beginPrototypeRecalculation();
     }
@@ -179,7 +185,8 @@ export abstract class RecalculationManager extends Manager {
 
         while (this.prototypeRecalculationQueue.size > 0) {
             const calculatedUser = this.prototypeRecalculationQueue.firstKey()!;
-            const interaction = this.prototypeRecalculationQueue.first()!;
+            const queue = this.prototypeRecalculationQueue.first()!;
+            const { interaction, reworkType } = queue;
             const localization = this.getLocalization(
                 CommandHelper.getUserPreferredLocale(interaction),
             );
@@ -233,7 +240,7 @@ export abstract class RecalculationManager extends Manager {
                     continue;
                 }
 
-                const result = await bindInfo.calculatePrototypeDPP();
+                const result = await bindInfo.calculatePrototypeDPP(reworkType);
 
                 if (result.isSuccessful()) {
                     await interaction.channel!.send({

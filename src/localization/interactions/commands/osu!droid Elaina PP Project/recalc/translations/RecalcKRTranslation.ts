@@ -8,6 +8,8 @@ export class RecalcKRTranslation extends Translation<RecalcStrings> {
     override readonly translations: RecalcStrings = {
         tooManyOptions:
             "죄송해요, uid, 유저, 유저네임 중 하나만 사용할 수 있어요! 이것들을 함께 쓸 수 없어요!",
+        reworkNameMissing: "",
+        reworkTypeDoesntExist: "",
         userIsDPPBanned: "죄송해요, 이 유저는 DPP-밴당했어요!",
         userHasRequestedRecalc:
             "죄송해요, 이 유저는 이미 이전에 재계산을 신청했어요!",

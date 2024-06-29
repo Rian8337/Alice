@@ -1,19 +1,22 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/PrototypePPCollectionManager";
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { AttachmentBuilder, Snowflake } from "discord.js";
+import { AttachmentBuilder } from "discord.js";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: PPLocalization = new PPLocalization(
+    const localization = new PPLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    if (interaction.options.data.length > 1) {
+    const discordid = interaction.options.getUser("user")?.id;
+    const uid = interaction.options.getInteger("uid");
+    const username = interaction.options.getString("username");
+
+    if ([discordid, uid, username].filter(Boolean).length > 1) {
         interaction.ephemeral = true;
 
         return InteractionHelper.reply(interaction, {
@@ -23,27 +26,23 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
-    const uid: number | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
-
-    const dbManager: PrototypePPCollectionManager =
-        DatabaseManager.aliceDb.collections.prototypePP;
+    const dbManager = DatabaseManager.aliceDb.collections.prototypePP;
+    const reworkType = interaction.options.getString("reworktype") ?? "overall";
 
     let ppInfo: PrototypePP | null;
 
     switch (true) {
         case !!uid:
-            ppInfo = await dbManager.getFromUid(uid!);
+            ppInfo = await dbManager.getFromUid(uid!, reworkType);
             break;
         case !!username:
-            ppInfo = await dbManager.getFromUsername(username!);
+            ppInfo = await dbManager.getFromUsername(username!, reworkType);
             break;
         default:
             // If no arguments are specified, default to self
             ppInfo = await dbManager.getFromUser(
                 discordid ?? interaction.user.id,
+                reworkType,
             );
     }
 
@@ -102,10 +101,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ).toFixed(2)}\n`;
     }
 
-    const attachment: AttachmentBuilder = new AttachmentBuilder(
-        Buffer.from(csvString),
-        { name: `prototype_${ppInfo.uid}_${new Date().toUTCString()}.csv` },
-    );
+    const attachment = new AttachmentBuilder(Buffer.from(csvString), {
+        name: `prototype_${ppInfo.uid}_${new Date().toUTCString()}.csv`,
+    });
 
     InteractionHelper.reply(interaction, {
         files: [attachment],

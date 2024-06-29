@@ -65,6 +65,11 @@ export class PrototypePP extends Manager {
     scanDone: boolean;
 
     /**
+     * The rework type of the prototype.
+     */
+    reworkType: string;
+
+    /**
      * The BSON object ID of this document in the database.
      */
     readonly _id?: ObjectId;
@@ -86,5 +91,6 @@ export class PrototypePP extends Manager {
         this.previous_bind = data.previous_bind ?? [];
         this.username = data.username;
         this.scanDone = data.scanDone;
+        this.reworkType = data.reworkType;
     }
 }

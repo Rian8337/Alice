@@ -8,6 +8,8 @@ export class RecalcENTranslation extends Translation<RecalcStrings> {
     override readonly translations: RecalcStrings = {
         tooManyOptions:
             "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
+        reworkNameMissing: "I'm sorry, you did not specify a rework name!",
+        reworkTypeDoesntExist: "I'm sorry, this rework type does not exist!",
         userIsDPPBanned: "I'm sorry, this user has been DPP banned!",
         userHasRequestedRecalc:
             "I'm sorry, this user has already requested a recalculation before!",

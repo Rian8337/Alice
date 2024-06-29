@@ -6,22 +6,31 @@ export const run: AutocompleteHandler["run"] = async (_, interaction) => {
     // If other autocomplete option types were to be added in the future, option
     // names need to be considered.
 
-    const focusedValue: string = interaction.options.getFocused();
+    const focused = interaction.options.getFocused(true);
 
-    if (
-        interaction.options.getSubcommandGroup(false) === "prototype" &&
-        interaction.options.getSubcommand(false) === "export"
-    ) {
-        interaction.respond(
-            await DatabaseManager.aliceDb.collections.prototypePP.searchPlayersForAutocomplete(
-                focusedValue
-            )
-        );
+    if (interaction.options.getSubcommandGroup(false) === "prototype") {
+        // There are two possible options for prototype: name and type of rework.
+        switch (focused.name) {
+            case "username":
+                interaction.respond(
+                    await DatabaseManager.aliceDb.collections.prototypePP.searchPlayersForAutocomplete(
+                        focused.value,
+                    ),
+                );
+                break;
+            case "rework":
+                interaction.respond(
+                    await DatabaseManager.aliceDb.collections.prototypePPType.searchReworkTypesForAutocomplete(
+                        focused.value,
+                    ),
+                );
+                break;
+        }
     } else {
         interaction.respond(
             await DatabaseManager.elainaDb.collections.userBind.searchPlayersForAutocomplete(
-                focusedValue
-            )
+                focused.value,
+            ),
         );
     }
 };

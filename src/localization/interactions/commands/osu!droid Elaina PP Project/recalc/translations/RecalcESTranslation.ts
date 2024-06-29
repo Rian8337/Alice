@@ -8,6 +8,8 @@ export class RecalcESTranslation extends Translation<RecalcStrings> {
     override readonly translations: RecalcStrings = {
         tooManyOptions:
             "Lo siento, solo puedes especificar un uid, usuario o nick! No puedes combinarlos!",
+        reworkNameMissing: "",
+        reworkTypeDoesntExist: "",
         userIsDPPBanned:
             "Lo siento, este usuario esta baneado en el sistema de dpp!",
         userHasRequestedRecalc:

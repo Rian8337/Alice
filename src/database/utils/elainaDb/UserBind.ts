@@ -598,8 +598,10 @@ export class UserBind extends Manager {
 
     /**
      * Calculates this player's dpp into the prototype dpp database.
+     *
+     * @param reworkType The rework type of the prototype.
      */
-    async calculatePrototypeDPP(): Promise<OperationResult> {
+    async calculatePrototypeDPP(reworkType: string): Promise<OperationResult> {
         const currentList = new Collection<string, PPEntry>();
         const newList = new Collection<string, PrototypePPEntry>();
 
@@ -732,7 +734,10 @@ export class UserBind extends Manager {
         consola.info(`${currentTotal.toFixed(2)} ⮕  ${newTotal.toFixed(2)}`);
 
         return DatabaseManager.aliceDb.collections.prototypePP.updateOne(
-            { discordid: this.discordid },
+            {
+                discordid: this.discordid,
+                reworkType: reworkType,
+            },
             {
                 $set: {
                     pp: [...newList.values()],

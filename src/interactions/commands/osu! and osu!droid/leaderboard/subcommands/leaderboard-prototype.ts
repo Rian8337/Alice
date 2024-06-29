@@ -5,19 +5,21 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { Collection, Snowflake } from "discord.js";
-import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { LeaderboardLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: LeaderboardLocalization = new LeaderboardLocalization(
+    const localization = new LeaderboardLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const res: Collection<Snowflake, PrototypePP> =
-        await DatabaseManager.aliceDb.collections.prototypePP.getLeaderboard();
+    const reworkType = interaction.options.getString("rework") ?? "overall";
+
+    const res =
+        await DatabaseManager.aliceDb.collections.prototypePP.getLeaderboard(
+            reworkType,
+        );
 
     if (res.size === 0) {
         return InteractionHelper.reply(interaction, {
@@ -27,13 +29,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const page: number = NumberHelper.clamp(
+    const page = NumberHelper.clamp(
         interaction.options.getInteger("page") ?? 1,
         1,
         Math.ceil(res.size / 20),
     );
 
-    const entries: PrototypePP[] = [...res.values()];
+    const entries = [...res.values()];
 
     const onPageChange: OnButtonPageChange = async (options, page) => {
         const usernameLengths: number[] = [];
@@ -48,16 +50,16 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             );
         }
 
-        const longestUsernameLength: number = Math.max(...usernameLengths, 16);
+        const longestUsernameLength = Math.max(...usernameLengths, 16);
 
-        let output: string = `${"#".padEnd(4)} | ${localization
+        let output = `${"#".padEnd(4)} | ${localization
             .getTranslation("username")
             .padEnd(longestUsernameLength)} | ${localization
             .getTranslation("uid")
             .padEnd(6)} | ${localization.getTranslation("pp")}\n`;
 
         for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); ++i) {
-            const player: PrototypePP | undefined = entries[i];
+            const player = entries.at(i);
 
             if (player) {
                 output += `${(i + 1).toString().padEnd(4)} | ${player.username

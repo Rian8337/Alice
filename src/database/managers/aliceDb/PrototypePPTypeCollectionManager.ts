@@ -1,0 +1,60 @@
+import { DatabasePrototypePPType } from "@alice-structures/database/aliceDb/DatabasePrototypePPType";
+import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
+import { PrototypePPType } from "@alice-database/utils/aliceDb/PrototypePPType";
+import { ApplicationCommandOptionChoiceData } from "discord.js";
+
+/**
+ * A manager for the `prototypepptype` collection.
+ */
+export class PrototypePPTypeCollectionManager extends DatabaseCollectionManager<
+    DatabasePrototypePPType,
+    PrototypePPType
+> {
+    protected override readonly utilityInstance: new (
+        data: DatabasePrototypePPType,
+    ) => PrototypePPType = PrototypePPType;
+
+    override get defaultDocument(): DatabasePrototypePPType {
+        return {
+            name: "",
+            type: "",
+        };
+    }
+
+    /**
+     * Checks whether a rework type exists in the database.
+     *
+     * @param reworkType The rework type to check.
+     * @returns Whether the rework type exists in the database.
+     */
+    async reworkTypeExists(reworkType: string): Promise<boolean> {
+        return (await this.getOne({ type: reworkType })) !== null;
+    }
+
+    /**
+     * Searches reworks based on name for autocomplete response.
+     *
+     * @param searchQuery The name to search.
+     * @param amount The maximum amount of reworks to return. Defaults to 25.
+     * @returns The reworks that match the query.
+     */
+    async searchReworkTypesForAutocomplete(
+        searchQuery: string | RegExp,
+        amount: number = 25,
+    ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
+        const result = await this.collection
+            .find(
+                { name: new RegExp(searchQuery, "i") },
+                { projection: { _id: 0, name: 1, type: 1 } },
+            )
+            .limit(amount)
+            .toArray();
+
+        return result.map((v) => {
+            return {
+                name: v.name,
+                value: v.type,
+            };
+        });
+    }
+}

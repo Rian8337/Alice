@@ -56,6 +56,11 @@ export interface DatabasePrototypePP extends BaseDocument {
     username: string;
 
     /**
+     * The rework type of the prototype.
+     */
+    reworkType: string;
+
+    /**
      * Whether this prototype entry has been calculated against the latest changes.
      */
     scanDone: boolean;

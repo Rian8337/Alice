@@ -1,7 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/PrototypePPCollectionManager";
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { RecalcLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/recalc/RecalcLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -13,14 +11,15 @@ export const run: SlashSubcommand<true>["run"] = async (
     client,
     interaction,
 ) => {
-    const localization: RecalcLocalization = new RecalcLocalization(
+    const localization = new RecalcLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const dbManager: PrototypePPCollectionManager =
-        DatabaseManager.aliceDb.collections.prototypePP;
+    const prototypeDbManager = DatabaseManager.aliceDb.collections.prototypePP;
+    const prototypeTypeDbManager =
+        DatabaseManager.aliceDb.collections.prototypePPType;
 
-    let calculatedCount: number = 0;
+    let calculatedCount = 0;
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
@@ -29,15 +28,40 @@ export const run: SlashSubcommand<true>["run"] = async (
     });
 
     if (interaction.options.getBoolean("resetprogress")) {
-        await dbManager.updateMany({}, { $set: { scanDone: false } });
+        await prototypeDbManager.updateMany({}, { $set: { scanDone: false } });
     }
 
     let player: PrototypePP | undefined;
+    const reworkType = interaction.options.getString("reworktype", true);
 
-    while ((player = (await dbManager.getUnscannedPlayers(1)).first())) {
-        consola.info(`Now calculating ID ${player.discordid}`);
+    // If rework doesn't exist in the database, a name must be supplied.
+    if (!(await prototypeTypeDbManager.reworkTypeExists(reworkType))) {
+        const reworkName = interaction.options.getString("reworkname");
 
-        const bindInfo: UserBind | null =
+        if (!reworkName) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("reworkNameMissing"),
+                ),
+            });
+        }
+
+        await prototypeTypeDbManager.insert({
+            name: reworkName,
+            type: reworkType,
+        });
+    }
+
+    while (
+        (player = (
+            await prototypeDbManager.getUnscannedPlayers(1, reworkType)
+        ).first())
+    ) {
+        consola.info(
+            `Now calculating ID ${player.discordid} for rework ${reworkType}`,
+        );
+
+        const bindInfo =
             await DatabaseManager.elainaDb.collections.userBind.getFromUser(
                 player.discordid,
                 {
@@ -55,13 +79,15 @@ export const run: SlashSubcommand<true>["run"] = async (
             );
 
         if (!bindInfo) {
-            await dbManager.deleteOne({ discordid: player.discordid });
+            await prototypeDbManager.deleteOne({ discordid: player.discordid });
             continue;
         }
 
-        await bindInfo.calculatePrototypeDPP();
+        await bindInfo.calculatePrototypeDPP(reworkType);
 
-        consola.info(`${++calculatedCount} players recalculated`);
+        consola.info(
+            `${++calculatedCount} players recalculated for rework ${reworkType}`,
+        );
     }
 
     interaction.channel!.send({
