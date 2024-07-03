@@ -9,6 +9,8 @@ export class RecalcENTranslation extends Translation<RecalcStrings> {
         tooManyOptions:
             "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
         reworkNameMissing: "I'm sorry, you did not specify a rework name!",
+        reworkTypeNotCurrent:
+            "I'm sorry, the specified rework type is not the current rework type!",
         reworkTypeDoesntExist: "I'm sorry, this rework type does not exist!",
         userIsDPPBanned: "I'm sorry, this user has been DPP banned!",
         userHasRequestedRecalc:

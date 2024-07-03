@@ -31,7 +31,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const dbManager = DatabaseManager.elainaDb.collections.userBind;
-    const reworkType = interaction.options.getString("reworktype") ?? "overall";
+    const reworkType =
+        interaction.options.getString("reworktype") ??
+        process.env.CURRENT_REWORK_TYPE!;
 
     if (
         !(await DatabaseManager.aliceDb.collections.prototypePPType.reworkTypeExists(

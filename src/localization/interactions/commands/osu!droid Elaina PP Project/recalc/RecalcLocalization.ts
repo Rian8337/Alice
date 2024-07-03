@@ -7,6 +7,7 @@ import { RecalcKRTranslation } from "./translations/RecalcKRTranslation";
 export interface RecalcStrings {
     readonly tooManyOptions: string;
     readonly reworkNameMissing: string;
+    readonly reworkTypeNotCurrent: string;
     readonly reworkTypeDoesntExist: string;
     readonly userIsDPPBanned: string;
     readonly userHasRequestedRecalc: string;

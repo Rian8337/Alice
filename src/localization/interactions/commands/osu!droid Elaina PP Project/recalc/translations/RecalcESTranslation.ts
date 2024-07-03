@@ -9,6 +9,7 @@ export class RecalcESTranslation extends Translation<RecalcStrings> {
         tooManyOptions:
             "Lo siento, solo puedes especificar un uid, usuario o nick! No puedes combinarlos!",
         reworkNameMissing: "",
+        reworkTypeNotCurrent: "",
         reworkTypeDoesntExist: "",
         userIsDPPBanned:
             "Lo siento, este usuario esta baneado en el sistema de dpp!",

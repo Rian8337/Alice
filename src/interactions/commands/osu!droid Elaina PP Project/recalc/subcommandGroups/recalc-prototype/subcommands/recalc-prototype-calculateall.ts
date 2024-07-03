@@ -24,6 +24,14 @@ export const run: SlashSubcommand<true>["run"] = async (
     let player: PrototypePP | undefined;
     const reworkType = interaction.options.getString("reworktype", true);
 
+    if (reworkType !== process.env.CURRENT_REWORK_TYPE) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("reworkTypeNotCurrent"),
+            ),
+        });
+    }
+
     // If rework doesn't exist in the database, a name must be supplied.
     if (!(await prototypeTypeDbManager.reworkTypeExists(reworkType))) {
         const reworkName = interaction.options.getString("reworkname");
