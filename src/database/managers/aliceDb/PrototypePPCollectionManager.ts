@@ -31,7 +31,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
             reworkType: "overall",
             uid: 0,
             username: "",
-            scanDone: true,
+            scanDone: false,
             previous_bind: [],
         };
     }
