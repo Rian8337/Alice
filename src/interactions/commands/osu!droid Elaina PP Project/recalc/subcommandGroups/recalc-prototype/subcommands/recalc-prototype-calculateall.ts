@@ -21,16 +21,6 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     let calculatedCount = 0;
 
-    await InteractionHelper.reply(interaction, {
-        content: MessageCreator.createAccept(
-            localization.getTranslation("fullRecalcInProgress"),
-        ),
-    });
-
-    if (interaction.options.getBoolean("resetprogress")) {
-        await prototypeDbManager.updateMany({}, { $set: { scanDone: false } });
-    }
-
     let player: PrototypePP | undefined;
     const reworkType = interaction.options.getString("reworktype", true);
 
@@ -50,6 +40,19 @@ export const run: SlashSubcommand<true>["run"] = async (
             name: reworkName,
             type: reworkType,
         });
+
+        // New rework - clone overall reworks to this rework for now. Recalculation will be done later down the line.
+        await prototypeDbManager.cloneOverallToRework(reworkType);
+    }
+
+    await InteractionHelper.reply(interaction, {
+        content: MessageCreator.createAccept(
+            localization.getTranslation("fullRecalcInProgress"),
+        ),
+    });
+
+    if (interaction.options.getBoolean("resetprogress")) {
+        await prototypeDbManager.updateMany({}, { $set: { scanDone: false } });
     }
 
     while (

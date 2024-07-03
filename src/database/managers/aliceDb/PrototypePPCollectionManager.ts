@@ -8,6 +8,7 @@ import {
     User,
 } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { OperationResult } from "@alice-structures/core/OperationResult";
 
 /**
  * A manager for the `prototypepp` collection.
@@ -24,7 +25,6 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
         return {
             discordid: "",
             lastUpdate: Date.now(),
-            playc: 0,
             pp: [],
             pptotal: 0,
             prevpptotal: 0,
@@ -136,6 +136,34 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
             prototypeEntries.map((v) => new PrototypePP(v)),
             "discordid",
         );
+    }
+
+    /**
+     * Clones the rework from "overall" to a new rework type.
+     *
+     * @param reworkType The rework type to clone to.
+     */
+    async cloneOverallToRework(reworkType: string): Promise<OperationResult> {
+        const overallEntries = await this.collection
+            .find(
+                { reworkType: "overall" },
+                {
+                    projection: {
+                        _id: 0,
+                        discordid: 1,
+                        uid: 1,
+                        previous_bind: 1,
+                        username: 1,
+                    },
+                },
+            )
+            .toArray();
+
+        for (const entry of overallEntries) {
+            entry.reworkType = reworkType;
+        }
+
+        return this.insert(...overallEntries);
     }
 
     /**

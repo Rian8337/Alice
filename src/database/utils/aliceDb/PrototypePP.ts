@@ -22,11 +22,6 @@ export class PrototypePP extends Manager {
     lastUpdate: number;
 
     /**
-     * The play count of the user (how many scores the user have submitted into the dpp system).
-     */
-    playc: number;
-
-    /**
      * The prototype droid performance points (dpp) entries of the account, mapped by their hash.
      */
     pp: Collection<string, PrototypePPEntry>;
@@ -83,7 +78,6 @@ export class PrototypePP extends Manager {
         this._id = data._id;
         this.discordid = data.discordid;
         this.lastUpdate = data.lastUpdate;
-        this.playc = data.playc;
         this.pp = ArrayHelper.arrayToCollection(data.pp ?? [], "hash");
         this.pptotal = data.pptotal;
         this.prevpptotal = data.prevpptotal;
