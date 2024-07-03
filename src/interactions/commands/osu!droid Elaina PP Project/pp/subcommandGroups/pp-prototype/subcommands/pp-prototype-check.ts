@@ -108,7 +108,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 "ppProfile",
             )}](https://droidpp.osudroid.moe/prototype/profile/${
                 ppInfo.uid
-            })\n` +
+            }/${reworkType})\n` +
             `${localization.getTranslation("lastUpdate")}: ${bold(
                 `${DateTimeFormatHelper.dateToLocaleString(
                     new Date(ppInfo.lastUpdate),
