@@ -34,7 +34,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const reworkType = interaction.options.getString("reworktype") ?? "overall";
+    const reworkType = interaction.options.getString("rework") ?? "overall";
     const reworkInfo =
         await DatabaseManager.aliceDb.collections.prototypePPType.getFromType(
             reworkType,
