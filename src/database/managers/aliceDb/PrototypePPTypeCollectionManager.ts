@@ -57,4 +57,14 @@ export class PrototypePPTypeCollectionManager extends DatabaseCollectionManager<
             };
         });
     }
+
+    /**
+     * Gets a rework type from its type.
+     *
+     * @param type The type of the rework.
+     * @returns The rework type, `null` if not found.
+     */
+    getFromType(type: string): Promise<PrototypePPType | null> {
+        return this.getOne({ type: type });
+    }
 }

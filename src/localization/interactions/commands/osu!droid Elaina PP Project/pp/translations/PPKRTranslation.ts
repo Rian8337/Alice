@@ -24,11 +24,13 @@ export class PPKRTranslation extends Translation<PPStrings> {
             "죄송해요, 그 유저의 프로토타입 dpp 정보는 이용할 수 없어요!",
         ppProfileTitle: "%s의 PP 프로필",
         prevTotalPP: "이전 총 PP",
+        reworkTypeEmbedDescription: "",
         diff: "차이",
         ppProfile: "PP 프로필",
         lastUpdate: "최근 업데이트",
         commandNotAllowed:
             "죄송해요, 이 명령어는 이 채널에서 사용할 수 없어요.",
+        reworkTypeDoesntExist: "I'm sorry, this rework type does not exist!",
         uidIsBanned:
             "죄송해요, 현재 당신이 바인딩된 osu!droid 계정은 dpp-ban을 당했어요.",
         beatmapNotFound: "저기, 제출할 유효한 비트맵을 주세요!",

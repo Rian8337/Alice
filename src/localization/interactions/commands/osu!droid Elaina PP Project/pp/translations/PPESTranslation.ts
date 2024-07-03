@@ -25,11 +25,13 @@ export class PPESTranslation extends Translation<PPStrings> {
             "Lo siento, la información de prueba del dpp de ese usuario no está disponible!",
         ppProfileTitle: "Perfil de PP de %s",
         prevTotalPP: "PP total anterior",
+        reworkTypeEmbedDescription: "",
         diff: "Diferencia",
         ppProfile: "Perfil de Rendimiento (PP)",
         lastUpdate: "Ultima actualización",
         commandNotAllowed:
             "Lo siento, este comando no esta disponible en este canal.",
+        reworkTypeDoesntExist: "I'm sorry, this rework type does not exist!",
         uidIsBanned:
             "Lo siento, tu cuenta de osu!droid enlazada ha sido restringida de poder obtener dpp.",
         beatmapNotFound:

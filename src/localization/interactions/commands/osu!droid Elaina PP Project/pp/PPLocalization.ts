@@ -19,10 +19,12 @@ export interface PPStrings {
     readonly userInfoNotAvailable: string;
     readonly ppProfileTitle: string;
     readonly prevTotalPP: string;
+    readonly reworkTypeEmbedDescription: string;
     readonly diff: string;
     readonly ppProfile: string;
     readonly lastUpdate: string;
     readonly commandNotAllowed: string;
+    readonly reworkTypeDoesntExist: string;
     readonly uidIsBanned: string;
     readonly beatmapNotFound: string;
     readonly beatmapIsBlacklisted: string;

@@ -25,11 +25,13 @@ export class PPENTranslation extends Translation<PPStrings> {
             "I'm sorry, the user's prototype dpp information is not available!",
         ppProfileTitle: "PP Profile for %s",
         prevTotalPP: "Previous Total PP",
+        reworkTypeEmbedDescription: "Rework Type",
         diff: "Difference",
         ppProfile: "PP Profile",
         lastUpdate: "Last Update",
         commandNotAllowed:
             "I'm sorry, this command is not available in this channel.",
+        reworkTypeDoesntExist: "I'm sorry, this rework type does not exist!",
         uidIsBanned:
             "I'm sorry, your currently bound osu!droid account has been disallowed from submitting dpp.",
         beatmapNotFound: "Hey, please give me a valid beatmap to submit!",

@@ -32,9 +32,23 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const dbManager = DatabaseManager.aliceDb.collections.prototypePP;
-    const reworkType = interaction.options.getString("reworktype") ?? "overall";
+    await InteractionHelper.deferReply(interaction);
 
+    const reworkType = interaction.options.getString("reworktype") ?? "overall";
+    const reworkInfo =
+        await DatabaseManager.aliceDb.collections.prototypePPType.getFromType(
+            reworkType,
+        );
+
+    if (!reworkInfo) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("reworkTypeDoesntExist"),
+            ),
+        });
+    }
+
+    const dbManager = DatabaseManager.aliceDb.collections.prototypePP;
     let ppInfo: PrototypePP | null;
 
     switch (true) {
@@ -76,6 +90,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 userMention(ppInfo.discordid),
             )} (${ppInfo.username})`,
         )}\n` +
+            `${localization.getTranslation("reworkTypeEmbedDescription")}: ${bold(reworkInfo.name)}\n` +
             `${localization.getTranslation("totalPP")}: ${bold(
                 `${ppInfo.pptotal.toFixed(2)} pp (#${(
                     await dbManager.getUserDPPRank(ppInfo.pptotal, reworkType)
