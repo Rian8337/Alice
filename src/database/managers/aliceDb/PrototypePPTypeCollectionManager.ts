@@ -2,6 +2,7 @@ import { DatabasePrototypePPType } from "@alice-structures/database/aliceDb/Data
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { PrototypePPType } from "@alice-database/utils/aliceDb/PrototypePPType";
 import { ApplicationCommandOptionChoiceData } from "discord.js";
+import { FindOptions } from "mongodb";
 
 /**
  * A manager for the `prototypepptype` collection.
@@ -18,6 +19,7 @@ export class PrototypePPTypeCollectionManager extends DatabaseCollectionManager<
         return {
             name: "",
             type: "",
+            description: "",
         };
     }
 
@@ -28,7 +30,12 @@ export class PrototypePPTypeCollectionManager extends DatabaseCollectionManager<
      * @returns Whether the rework type exists in the database.
      */
     async reworkTypeExists(reworkType: string): Promise<boolean> {
-        return (await this.getOne({ type: reworkType })) !== null;
+        return (
+            (await this.getOne(
+                { type: reworkType },
+                { projection: { _id: 0, type: 1 } },
+            )) !== null
+        );
     }
 
     /**
@@ -62,9 +69,13 @@ export class PrototypePPTypeCollectionManager extends DatabaseCollectionManager<
      * Gets a rework type from its type.
      *
      * @param type The type of the rework.
+     * @param options The options for finding the rework type.
      * @returns The rework type, `null` if not found.
      */
-    getFromType(type: string): Promise<PrototypePPType | null> {
-        return this.getOne({ type: type });
+    getFromType(
+        type: string,
+        options?: FindOptions<DatabasePrototypePPType>,
+    ): Promise<PrototypePPType | null> {
+        return this.getOne({ type: type }, this.processFindOptions(options));
     }
 }

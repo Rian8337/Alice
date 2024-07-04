@@ -11,6 +11,7 @@ export class PrototypePPType
 {
     readonly type: string;
     readonly name: string;
+    readonly description: string;
 
     constructor(
         data: DatabasePrototypePPType = DatabaseManager.aliceDb?.collections
@@ -20,5 +21,6 @@ export class PrototypePPType
 
         this.type = data.type;
         this.name = data.name;
+        this.description = data.description;
     }
 }

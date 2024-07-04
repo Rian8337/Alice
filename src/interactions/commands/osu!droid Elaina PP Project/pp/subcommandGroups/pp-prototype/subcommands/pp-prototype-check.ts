@@ -38,6 +38,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const reworkInfo =
         await DatabaseManager.aliceDb.collections.prototypePPType.getFromType(
             reworkType,
+            { projection: { _id: 0, name: 1, type: 1 } },
         );
 
     if (!reworkInfo) {
