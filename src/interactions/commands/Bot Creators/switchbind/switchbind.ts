@@ -1,4 +1,3 @@
-import { GuildMember } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -6,16 +5,13 @@ import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandOptionType } from "discord.js";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { OperationResult } from "structures/core/OperationResult";
 import { SwitchbindLocalization } from "@alice-localization/interactions/commands/Bot Creators/switchbind/SwitchbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
-    const localization: SwitchbindLocalization = new SwitchbindLocalization(
+    const localization = new SwitchbindLocalization(
         CommandHelper.getLocale(interaction),
     );
 
@@ -37,7 +33,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const uid: number = interaction.options.getInteger("uid", true);
+    const uid = interaction.options.getInteger("uid", true);
 
     if (
         !NumberHelper.isNumberInRange(
@@ -52,14 +48,12 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         });
     }
 
-    const user: GuildMember = await (
+    const user = await (
         await client.guilds.fetch(Constants.mainServer)
-    ).members.fetch(interaction.options.getUser("user")!);
+    ).members.fetch(interaction.options.getUser("user", true));
 
-    const bindDb: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
-
-    const bindInfo: UserBind | null = await bindDb.getFromUid(uid);
+    const bindInfo =
+        await DatabaseManager.elainaDb.collections.userBind.getFromUid(uid);
 
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
@@ -69,11 +63,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         });
     }
 
-    const result: OperationResult = await bindInfo.moveBind(
-        uid,
-        user.id,
-        localization.language,
-    );
+    const result = await bindInfo.moveBind(uid, user.id, localization.language);
 
     if (!result.success) {
         return InteractionHelper.reply(interaction, {
