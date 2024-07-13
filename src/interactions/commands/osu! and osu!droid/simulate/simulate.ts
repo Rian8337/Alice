@@ -657,8 +657,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             ? player.avatarURL
             : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
-        droidAttribs,
-        osuAttribs,
+        droidAttribs?.attributes,
+        osuAttribs?.attributes,
     );
 
     InteractionHelper.reply(interaction, {

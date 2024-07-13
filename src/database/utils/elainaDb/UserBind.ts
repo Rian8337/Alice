@@ -306,18 +306,24 @@ export class UserBind extends Manager {
                 continue;
             }
 
+            const { attributes } = attribs;
+
             await HelperFunctions.sleep(0.1);
 
             const [needsPersistence] = DPPHelper.insertScore(newList, [
-                DPPHelper.scoreToPPEntry(beatmapInfo.fullTitle, score, attribs),
+                DPPHelper.scoreToPPEntry(
+                    beatmapInfo.fullTitle,
+                    score,
+                    attributes,
+                ),
             ]);
 
             if (needsPersistence) {
-                if (attribs.localReplayMD5) {
+                if (attributes.localReplayMD5) {
                     await DPPProcessorRESTManager.persistLocalReplay(
                         ppEntry.uid,
                         beatmapInfo.hash,
-                        attribs.localReplayMD5,
+                        attributes.localReplayMD5,
                     );
                 } else {
                     await DPPProcessorRESTManager.persistOnlineReplay(
@@ -467,7 +473,8 @@ export class UserBind extends Manager {
 
                     ++playCount;
 
-                    const { difficulty, performance, params } = attribs;
+                    const { difficulty, performance, params } =
+                        attribs.attributes;
                     const accuracy = new Accuracy(params.accuracy);
 
                     const ppEntry: PPEntry = {
@@ -477,7 +484,7 @@ export class UserBind extends Manager {
                         pp: NumberHelper.round(performance.total, 2),
                         mods: difficulty.mods,
                         accuracy: NumberHelper.round(accuracy.value() * 100, 2),
-                        combo: attribs.params.combo,
+                        combo: params.combo,
                         miss: accuracy.nmiss,
                         speedMultiplier:
                             params.customSpeedMultiplier !== 1
@@ -647,9 +654,9 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const { performance: perfResult, params } = liveAttribs;
+            const { performance: perfResult, params } = liveAttribs.attributes;
             const { performance: rebalPerfResult, params: rebalParams } =
-                rebalAttribs;
+                rebalAttribs.attributes;
 
             const accuracy = new Accuracy(params.accuracy);
 
@@ -658,7 +665,7 @@ export class UserBind extends Manager {
                 hash: beatmapInfo.hash,
                 title: beatmapInfo.fullTitle,
                 pp: NumberHelper.round(perfResult.total, 2),
-                mods: liveAttribs.difficulty.mods,
+                mods: liveAttribs.attributes.difficulty.mods,
                 accuracy: NumberHelper.round(accuracy.value() * 100, 2),
                 combo: params.combo,
                 miss: accuracy.nmiss,
@@ -678,7 +685,7 @@ export class UserBind extends Manager {
                 prevTap: NumberHelper.round(perfResult.tap, 2),
                 prevAccuracy: NumberHelper.round(perfResult.accuracy, 2),
                 prevVisual: NumberHelper.round(perfResult.visual, 2),
-                mods: rebalAttribs.difficulty.mods,
+                mods: rebalAttribs.attributes.difficulty.mods,
                 accuracy: NumberHelper.round(accuracy.value() * 100, 2),
                 combo: params.combo,
                 miss: accuracy.nmiss,
@@ -695,7 +702,8 @@ export class UserBind extends Manager {
                     rebalPerfResult.tapDeviation * 10,
                     2,
                 ),
-                overallDifficulty: rebalAttribs.difficulty.overallDifficulty,
+                overallDifficulty:
+                    rebalAttribs.attributes.difficulty.overallDifficulty,
                 hit300: accuracy.n300,
                 hit100: accuracy.n100,
                 hit50: accuracy.n50,
@@ -704,11 +712,14 @@ export class UserBind extends Manager {
                     rebalPerfResult.flashlightSliderCheesePenalty,
                 visualSliderCheesePenalty:
                     rebalPerfResult.visualSliderCheesePenalty,
-                speedNoteCount: rebalAttribs.difficulty.speedNoteCount,
+                speedNoteCount:
+                    rebalAttribs.attributes.difficulty.speedNoteCount,
                 liveTapPenalty: params.tapPenalty,
                 rebalanceTapPenalty: rebalParams.tapPenalty,
                 averageBPM:
-                    60000 / 4 / rebalAttribs.difficulty.averageSpeedDeltaTime,
+                    60000 /
+                    4 /
+                    rebalAttribs.attributes.difficulty.averageSpeedDeltaTime,
             };
 
             consola.info(
@@ -854,12 +865,14 @@ export class UserBind extends Manager {
                         continue;
                     }
 
+                    const { attributes } = attribs;
+
                     this.playc = ++playCount;
 
                     const ppEntry = DPPHelper.scoreToPPEntry(
                         beatmapInfo.fullTitle,
                         score,
-                        attribs,
+                        attributes,
                     );
 
                     const [needsPersistence] = DPPHelper.insertScore(newList, [
@@ -867,11 +880,11 @@ export class UserBind extends Manager {
                     ]);
 
                     if (needsPersistence) {
-                        if (attribs.localReplayMD5) {
+                        if (attributes.localReplayMD5) {
                             await DPPProcessorRESTManager.persistLocalReplay(
                                 ppEntry.uid,
                                 beatmapInfo.hash,
-                                attribs.localReplayMD5,
+                                attributes.localReplayMD5,
                             );
                         } else {
                             await DPPProcessorRESTManager.persistOnlineReplay(

@@ -99,7 +99,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             ? player.avatarURL
             : DroidHelper.getAvatarURL(player.id),
         interaction.member.displayColor,
-        scoreAttribs,
+        scoreAttribs?.attributes,
         undefined,
         localization.language,
     );

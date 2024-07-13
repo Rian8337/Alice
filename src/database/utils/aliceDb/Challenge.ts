@@ -542,8 +542,8 @@ export class Challenge extends Manager {
 
         const pass = await this.verifyPassCompletion(
             score,
-            droidAttribs,
-            osuAttribs,
+            droidAttribs.attributes,
+            osuAttribs.attributes,
             replay.calculateHitError()!,
         );
 
@@ -698,18 +698,23 @@ export class Challenge extends Manager {
                 );
 
             droidAttribs =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
-                    this.beatmapid,
-                    Modes.droid,
-                    PPCalculationMethod.live,
-                    calcParams,
-                );
-            osuAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
-                this.beatmapid,
-                Modes.osu,
-                PPCalculationMethod.live,
-                calcParams,
-            );
+                (
+                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                        this.beatmapid,
+                        Modes.droid,
+                        PPCalculationMethod.live,
+                        calcParams,
+                    )
+                )?.attributes ?? null;
+            osuAttribs =
+                (
+                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                        this.beatmapid,
+                        Modes.osu,
+                        PPCalculationMethod.live,
+                        calcParams,
+                    )
+                )?.attributes ?? null;
         } else if (scoreOrReplay instanceof ReplayAnalyzer) {
             const attribs =
                 await this.getReplayCalculationResult(scoreOrReplay);
@@ -724,19 +729,24 @@ export class Challenge extends Manager {
                 );
 
             droidAttribs =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
-                    this.beatmapid,
-                    Modes.droid,
-                    PPCalculationMethod.live,
-                    calcParams,
-                );
+                (
+                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                        this.beatmapid,
+                        Modes.droid,
+                        PPCalculationMethod.live,
+                        calcParams,
+                    )
+                )?.attributes ?? null;
 
-            osuAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
-                this.beatmapid,
-                Modes.osu,
-                PPCalculationMethod.live,
-                calcParams,
-            );
+            osuAttribs =
+                (
+                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                        this.beatmapid,
+                        Modes.osu,
+                        PPCalculationMethod.live,
+                        calcParams,
+                    )
+                )?.attributes ?? null;
         }
 
         if (!droidAttribs || !osuAttribs) {
@@ -1458,7 +1468,7 @@ export class Challenge extends Manager {
             return null;
         }
 
-        return [droidAttribs, osuAttribs];
+        return [droidAttribs.attributes, osuAttribs.attributes];
     }
 
     /**

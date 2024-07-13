@@ -70,6 +70,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     Modes.droid,
                     PPCalculationMethod.live,
                     calcParams,
+                    true,
                 );
 
             if (!droidAttribs) {
@@ -91,11 +92,12 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             const calcEmbedOptions = EmbedCreator.createCalculationEmbed(
                 beatmapInfo,
                 calcParams,
-                droidAttribs.difficulty,
-                osuAttribs.difficulty,
-                droidAttribs.performance,
-                osuAttribs.performance,
+                droidAttribs.attributes.difficulty,
+                osuAttribs.attributes.difficulty,
+                droidAttribs.attributes.performance,
+                osuAttribs.attributes.performance,
                 localization.language,
+                Buffer.from(droidAttribs.strainChart),
             );
 
             let string = "";
@@ -104,11 +106,11 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 string += `${localization.getTranslation(
                     "droidStars",
                 )}: ${DPPHelper.getDroidDifficultyAttributesInfo(
-                    droidAttribs.difficulty,
+                    droidAttribs.attributes.difficulty,
                 )}\n${localization.getTranslation(
                     "droidPP",
                 )}: ${DPPHelper.getDroidPerformanceAttributesInfo(
-                    droidAttribs.performance,
+                    droidAttribs.attributes.performance,
                 )}\n`;
             }
 
@@ -116,11 +118,11 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 string += `${localization.getTranslation(
                     "pcStars",
                 )}: ${DPPHelper.getOsuDifficultyAttributesInfo(
-                    osuAttribs.difficulty,
+                    osuAttribs.attributes.difficulty,
                 )}\n${localization.getTranslation(
                     "pcPP",
                 )}: ${DPPHelper.getOsuPerformanceAttributesInfo(
-                    osuAttribs.performance,
+                    osuAttribs.attributes.performance,
                 )}`;
             }
 
@@ -229,9 +231,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 embed.addFields({
                     name: `${underscore(
                         beatmapInfo.version,
-                    )} (${droidDiffAttribs.starRating.toFixed(2)} ${
+                    )} (${droidDiffAttribs.attributes.starRating.toFixed(2)} ${
                         Symbols.star
-                    } | ${osuDiffAttribs.starRating.toFixed(2)} ${
+                    } | ${osuDiffAttribs.attributes.starRating.toFixed(2)} ${
                         Symbols.star
                     })`,
                     value:
@@ -251,8 +253,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                             difficultyStatisticsCalculatorOptions,
                         )}\n` +
                         `${bold(
-                            droidDiffAttribs.starRating.toFixed(2),
-                        )}dpp - ${osuDiffAttribs.starRating.toFixed(2)}pp`,
+                            droidDiffAttribs.attributes.starRating.toFixed(2),
+                        )}dpp - ${osuDiffAttribs.attributes.starRating.toFixed(2)}pp`,
                 });
             }
 

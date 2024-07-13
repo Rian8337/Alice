@@ -282,20 +282,26 @@ export abstract class ScoreDisplayHelper {
         > => {
             const droidAttribs = beatmapInfo
                 ? droidAttribsCache.get(score.scoreID) ??
-                  (await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                      score.scoreID,
-                      Modes.droid,
-                      PPCalculationMethod.live,
-                  ))
+                  (
+                      await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                          score.scoreID,
+                          Modes.droid,
+                          PPCalculationMethod.live,
+                      )
+                  )?.attributes ??
+                  null
                 : null;
 
             const osuAttribs = beatmapInfo
                 ? osuAttribsCache.get(score.scoreID) ??
-                  (await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                      score.scoreID,
-                      Modes.osu,
-                      PPCalculationMethod.live,
-                  ))
+                  (
+                      await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                          score.scoreID,
+                          Modes.osu,
+                          PPCalculationMethod.live,
+                      )
+                  )?.attributes ??
+                  null
                 : null;
 
             if (!droidAttribsCache.has(score.scoreID)) {
@@ -388,9 +394,9 @@ export abstract class ScoreDisplayHelper {
             } else if (noModDroidAttribs && noModOsuAttribs) {
                 embed.setTitle(
                     embed.data.title +
-                        ` [${noModDroidAttribs.starRating.toFixed(2)}${
+                        ` [${noModDroidAttribs.attributes.starRating.toFixed(2)}${
                             Symbols.star
-                        } | ${noModOsuAttribs.starRating.toFixed(2)}${
+                        } | ${noModOsuAttribs.attributes.starRating.toFixed(2)}${
                             Symbols.star
                         }]`,
                 );

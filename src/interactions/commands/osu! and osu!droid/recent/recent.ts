@@ -204,11 +204,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const scoreAttribs =
         score instanceof RecentPlay
             ? score.droidAttribs ?? null
-            : await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                  score instanceof Score ? score.scoreID : score.id,
-                  Modes.droid,
-                  PPCalculationMethod.live,
-              );
+            : (
+                  await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                      score instanceof Score ? score.scoreID : score.id,
+                      Modes.droid,
+                      PPCalculationMethod.live,
+                  )
+              )?.attributes;
 
     const embed = await EmbedCreator.createRecentPlayEmbed(
         score,

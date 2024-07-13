@@ -21,14 +21,16 @@ import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes
 import { PerformanceAttributes } from "@alice-structures/difficultyattributes/PerformanceAttributes";
 import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 import { PPSubmissionOperationResult } from "@alice-structures/dpp/PPSubmissionOperationResult";
+import { DPPProcessorCalculationResponse } from "@alice-structures/utils/DPPProcessorCalculationResponse";
 
 /**
  * A REST manager for the droid performance points processor backend.
  */
 export abstract class DPPProcessorRESTManager extends RESTManager {
-    private static readonly endpoint = Config.isDebug
+    private static readonly endpoint =
+        /* Config.isDebug
         ? "https://droidpp.osudroid.moe/api/dpp/processor/"
-        : "http://localhost:3006/api/dpp/processor/";
+        :  */ "http://localhost:3006/api/dpp/processor/";
 
     /**
      * Retrieves a difficulty attributes from the backend.
@@ -37,14 +39,21 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The difficulty calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty attributes, `null` if the difficulty attributes cannot be retrieved.
      */
-    static async getDifficultyAttributes(
+    static async getDifficultyAttributes<
+        THasStrainChart extends boolean = false,
+    >(
         beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: DifficultyCalculationParameters,
-    ): Promise<CacheableDifficultyAttributes<DroidDifficultyAttributes> | null>;
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CacheableDifficultyAttributes<DroidDifficultyAttributes>,
+        THasStrainChart
+    > | null>;
 
     /**
      * Retrieves a difficulty attributes from the backend.
@@ -53,14 +62,21 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The difficulty calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty attributes, `null` if the difficulty attributes cannot be retrieved.
      */
-    static async getDifficultyAttributes(
+    static async getDifficultyAttributes<
+        THasStrainChart extends boolean = false,
+    >(
         beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: DifficultyCalculationParameters,
-    ): Promise<CacheableDifficultyAttributes<RebalanceDroidDifficultyAttributes> | null>;
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CacheableDifficultyAttributes<RebalanceDroidDifficultyAttributes>,
+        THasStrainChart
+    > | null>;
 
     /**
      * Retrieves a difficulty attributes from the backend.
@@ -69,14 +85,21 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The difficulty calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty attributes, `null` if the difficulty attributes cannot be retrieved.
      */
-    static async getDifficultyAttributes(
+    static async getDifficultyAttributes<
+        THasStrainChart extends boolean = false,
+    >(
         beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: DifficultyCalculationParameters,
-    ): Promise<CacheableDifficultyAttributes<OsuDifficultyAttributes> | null>;
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CacheableDifficultyAttributes<OsuDifficultyAttributes>,
+        THasStrainChart
+    > | null>;
 
     /**
      * Retrieves a difficulty attributes from the backend.
@@ -85,21 +108,34 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The difficulty calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty attributes, `null` if the difficulty attributes cannot be retrieved.
      */
-    static async getDifficultyAttributes(
+    static async getDifficultyAttributes<
+        THasStrainChart extends boolean = false,
+    >(
         beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: DifficultyCalculationParameters,
-    ): Promise<CacheableDifficultyAttributes<RebalanceOsuDifficultyAttributes> | null>;
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CacheableDifficultyAttributes<RebalanceOsuDifficultyAttributes>,
+        THasStrainChart
+    > | null>;
 
-    static async getDifficultyAttributes(
+    static async getDifficultyAttributes<
+        THasStrainChart extends boolean = false,
+    >(
         beatmapIdOrHash: string | number,
         mode: Modes,
         calculationMethod: PPCalculationMethod,
         calculationParams?: DifficultyCalculationParameters,
-    ): Promise<CacheableDifficultyAttributes<RawDifficultyAttributes> | null> {
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CacheableDifficultyAttributes<RawDifficultyAttributes>,
+        THasStrainChart
+    > | null> {
         const url = new URL(`${this.endpoint}get-difficulty-attributes`);
 
         url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
@@ -161,6 +197,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             }
         }
 
+        if (generateStrainChart) {
+            url.searchParams.set("generatestrainchart", "1");
+        }
+
         const result = await this.request(url).catch(() => null);
 
         if (result?.statusCode !== 200) {
@@ -179,16 +219,21 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
-    static async getPerformanceAttributes(
+    static async getPerformanceAttributes<THasStrainChart extends boolean>(
         beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: PerformanceCalculationParameters,
-    ): Promise<CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            DroidDifficultyAttributes,
+            DroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -198,16 +243,21 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
-    static async getPerformanceAttributes(
+    static async getPerformanceAttributes<THasStrainChart extends boolean>(
         beatmapIdOrHash: string | number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: PerformanceCalculationParameters,
-    ): Promise<CompleteCalculationAttributes<
-        RebalanceDroidDifficultyAttributes,
-        RebalanceDroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RebalanceDroidDifficultyAttributes,
+            RebalanceDroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -217,16 +267,21 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
-    static async getPerformanceAttributes(
+    static async getPerformanceAttributes<THasStrainChart extends boolean>(
         beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: PerformanceCalculationParameters,
-    ): Promise<CompleteCalculationAttributes<
-        OsuDifficultyAttributes,
-        OsuPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            OsuDifficultyAttributes,
+            OsuPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -236,26 +291,35 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param calculationParams The performance calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
-    static async getPerformanceAttributes(
+    static async getPerformanceAttributes<THasStrainChart extends boolean>(
         beatmapIdOrHash: string | number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: PerformanceCalculationParameters,
-    ): Promise<CompleteCalculationAttributes<
-        RebalanceOsuDifficultyAttributes,
-        OsuPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RebalanceOsuDifficultyAttributes,
+            OsuPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
-    static async getPerformanceAttributes(
+    static async getPerformanceAttributes<THasStrainChart extends boolean>(
         beatmapIdOrHash: string | number,
         mode: Modes,
         calculationMethod: PPCalculationMethod,
         calculationParams?: PerformanceCalculationParameters,
-    ): Promise<CompleteCalculationAttributes<
-        RawDifficultyAttributes,
-        PerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RawDifficultyAttributes,
+            PerformanceAttributes
+        >,
+        THasStrainChart
     > | null> {
         const url = new URL(`${this.endpoint}get-performance-attributes`);
 
@@ -335,6 +399,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
             }
         }
 
+        if (generateStrainChart) {
+            url.searchParams.set("generatestrainchart", "1");
+        }
+
         const result = await this.request(url).catch(() => null);
 
         if (result?.statusCode !== 200) {
@@ -352,15 +420,20 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param scoreId The ID of the score.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
-    static async getOnlineScoreAttributes(
+    static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
         scoreId: number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
-    ): Promise<CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            DroidDifficultyAttributes,
+            DroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -369,15 +442,20 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param scoreId The ID of the score.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
-    static async getOnlineScoreAttributes(
+    static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
         scoreId: number,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
-    ): Promise<CompleteCalculationAttributes<
-        RebalanceDroidDifficultyAttributes,
-        RebalanceDroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RebalanceDroidDifficultyAttributes,
+            RebalanceDroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -386,15 +464,20 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param scoreId The ID of the score.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
-    static async getOnlineScoreAttributes(
+    static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
         scoreId: number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
-    ): Promise<CompleteCalculationAttributes<
-        OsuDifficultyAttributes,
-        OsuPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            OsuDifficultyAttributes,
+            OsuPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -403,24 +486,33 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param scoreId The ID of the score.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
-    static async getOnlineScoreAttributes(
+    static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
         scoreId: number,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
-    ): Promise<CompleteCalculationAttributes<
-        RebalanceOsuDifficultyAttributes,
-        OsuPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RebalanceOsuDifficultyAttributes,
+            OsuPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
-    static async getOnlineScoreAttributes(
+    static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
         scoreId: number,
         mode: Modes,
         calculationMethod: PPCalculationMethod,
-    ): Promise<CompleteCalculationAttributes<
-        RawDifficultyAttributes,
-        PerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RawDifficultyAttributes,
+            PerformanceAttributes
+        >,
+        THasStrainChart
     > | null> {
         const url = new URL(`${this.endpoint}get-online-score-attributes`);
 
@@ -429,6 +521,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         url.searchParams.set("gamemode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
 
+        if (generateStrainChart) {
+            url.searchParams.set("generatestrainchart", "1");
+        }
+
         const result = await this.request(url).catch(() => null);
 
         if (result?.statusCode !== 200) {
@@ -446,16 +542,23 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param playerId The ID of the player.
      * @param beatmapHash The MD5 hash of the beatmap.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes representing the best difficulty and performance
      * of the player's score in the beatmap, `null` if the attributes cannot be retrieved.
      */
-    static async getBestScorePerformance(
+    static async getBestScorePerformance<
+        THasStrainChart extends boolean = false,
+    >(
         playerId: number,
         beatmapHash: string,
         calculationMethod: PPCalculationMethod.live,
-    ): Promise<CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            DroidDifficultyAttributes,
+            DroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -464,25 +567,38 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param playerId The ID of the player.
      * @param beatmapHash The MD5 hash of the beatmap.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes representing the best difficulty and performance
      * of the player's score in the beatmap, `null` if the attributes cannot be retrieved.
      */
-    static async getBestScorePerformance(
+    static async getBestScorePerformance<
+        THasStrainChart extends boolean = false,
+    >(
         playerId: number,
         beatmapHash: string,
         calculationMethod: PPCalculationMethod.rebalance,
-    ): Promise<CompleteCalculationAttributes<
-        RebalanceDroidDifficultyAttributes,
-        RebalanceDroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RebalanceDroidDifficultyAttributes,
+            RebalanceDroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
-    static async getBestScorePerformance(
+    static async getBestScorePerformance<
+        THasStrainChart extends boolean = false,
+    >(
         playerId: number,
         beatmapHash: string,
         calculationMethod: PPCalculationMethod,
-    ): Promise<CompleteCalculationAttributes<
-        RawDifficultyAttributes,
-        DroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RawDifficultyAttributes,
+            DroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null> {
         const url = new URL(
             `${this.endpoint}get-player-best-score-performance`,
@@ -493,6 +609,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         url.searchParams.set("beatmaphash", beatmapHash);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
 
+        if (generateStrainChart) {
+            url.searchParams.set("generatestrainchart", "1");
+        }
+
         const result = await this.request(url).catch(() => null);
 
         if (result?.statusCode !== 200) {
@@ -513,19 +633,24 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param customSpeedMultiplier The custom speed multiplier used in the replay.
      * @param gamemode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes representing the difficulty and performance
      * of the replay, `null` if the attributes cannot be retrieved.
      */
-    static async calculatePersistedReplay(
+    static async calculatePersistedReplay<THasStrainChart extends boolean>(
         playerId: number,
         beatmapHash: string,
         mods: string,
         customSpeedMultiplier: number,
         gamemode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
-    ): Promise<CompleteCalculationAttributes<
-        DroidDifficultyAttributes,
-        DroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            DroidDifficultyAttributes,
+            DroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -537,19 +662,24 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param customSpeedMultiplier The custom speed multiplier used in the replay.
      * @param gamemode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes representing the difficulty and performance
      * of the replay, `null` if the attributes cannot be retrieved.
      */
-    static async calculatePersistedReplay(
+    static async calculatePersistedReplay<THasStrainChart extends boolean>(
         playerId: number,
         beatmapHash: string,
         mods: string,
         customSpeedMultiplier: number,
         gamemode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
-    ): Promise<CompleteCalculationAttributes<
-        RebalanceDroidDifficultyAttributes,
-        RebalanceDroidPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RebalanceDroidDifficultyAttributes,
+            RebalanceDroidPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -561,19 +691,24 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param customSpeedMultiplier The custom speed multiplier used in the replay.
      * @param gamemode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes representing the difficulty and performance
      * of the replay, `null` if the attributes cannot be retrieved.
      */
-    static async calculatePersistedReplay(
+    static async calculatePersistedReplay<THasStrainChart extends boolean>(
         playerId: number,
         beatmapHash: string,
         mods: string,
         customSpeedMultiplier: number,
         gamemode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
-    ): Promise<CompleteCalculationAttributes<
-        OsuDifficultyAttributes,
-        OsuPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            OsuDifficultyAttributes,
+            OsuPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
     /**
@@ -585,31 +720,40 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
      * @param customSpeedMultiplier The custom speed multiplier used in the replay.
      * @param gamemode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
+     * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes representing the difficulty and performance
      * of the replay, `null` if the attributes cannot be retrieved.
      */
-    static async calculatePersistedReplay(
+    static async calculatePersistedReplay<THasStrainChart extends boolean>(
         playerId: number,
         beatmapHash: string,
         mods: string,
         customSpeedMultiplier: number,
         gamemode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
-    ): Promise<CompleteCalculationAttributes<
-        RebalanceOsuDifficultyAttributes,
-        OsuPerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RebalanceOsuDifficultyAttributes,
+            OsuPerformanceAttributes
+        >,
+        THasStrainChart
     > | null>;
 
-    static async calculatePersistedReplay(
+    static async calculatePersistedReplay<THasStrainChart extends boolean>(
         playerId: number,
         beatmapHash: string,
         mods: string,
         customSpeedMultiplier: number,
         gamemode: Modes,
         calculationMethod: PPCalculationMethod,
-    ): Promise<CompleteCalculationAttributes<
-        RawDifficultyAttributes,
-        PerformanceAttributes
+        generateStrainChart?: THasStrainChart,
+    ): Promise<DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RawDifficultyAttributes,
+            PerformanceAttributes
+        >,
+        THasStrainChart
     > | null> {
         const url = new URL(`${this.endpoint}calculate-persisted-replay`);
 
@@ -623,6 +767,10 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         );
         url.searchParams.set("gamemode", gamemode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
+
+        if (generateStrainChart) {
+            url.searchParams.set("generatestrainchart", "1");
+        }
 
         const result = await this.request(url).catch(() => null);
 

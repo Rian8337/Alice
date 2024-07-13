@@ -211,7 +211,10 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     continue;
                 }
 
-                if (attribs.difficulty.starRating >= badge.requirement) {
+                if (
+                    attribs.attributes.difficulty.starRating >=
+                    badge.requirement
+                ) {
                     canUserClaimBadge = true;
                     break;
                 }

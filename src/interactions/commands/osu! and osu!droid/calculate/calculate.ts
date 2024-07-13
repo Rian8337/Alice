@@ -32,6 +32,7 @@ import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTM
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattributes/ResponseDifficultyAttributes";
+import { DPPProcessorCalculationResponse } from "@alice-structures/utils/DPPProcessorCalculationResponse";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new CalculateLocalization(
@@ -107,9 +108,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     calcParams.recalculateAccuracy(beatmap.objects);
 
-    let droidCalcResult: CompleteCalculationAttributes<
-        DroidDifficultyAttributes | RebalanceDroidDifficultyAttributes,
-        DroidPerformanceAttributes | RebalanceDroidPerformanceAttributes
+    let droidCalcResult: DPPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            DroidDifficultyAttributes | RebalanceDroidDifficultyAttributes,
+            DroidPerformanceAttributes | RebalanceDroidPerformanceAttributes
+        >,
+        true
     > | null;
 
     let osuCalcResult: CompleteCalculationAttributes<
@@ -125,16 +129,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     Modes.droid,
                     PPCalculationMethod.rebalance,
                     calcParams,
+                    true,
                 );
 
             if (droidCalcResult) {
                 osuCalcResult =
-                    await DPPProcessorRESTManager.getPerformanceAttributes(
-                        beatmap.beatmapId,
-                        Modes.osu,
-                        PPCalculationMethod.rebalance,
-                        calcParams,
-                    );
+                    (
+                        await DPPProcessorRESTManager.getPerformanceAttributes(
+                            beatmap.beatmapId,
+                            Modes.osu,
+                            PPCalculationMethod.rebalance,
+                            calcParams,
+                        )
+                    )?.attributes ?? null;
             }
             break;
         default:
@@ -144,16 +151,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     Modes.droid,
                     PPCalculationMethod.live,
                     calcParams,
+                    true,
                 );
 
             if (droidCalcResult) {
                 osuCalcResult =
-                    await DPPProcessorRESTManager.getPerformanceAttributes(
-                        beatmap.beatmapId,
-                        Modes.osu,
-                        PPCalculationMethod.live,
-                        calcParams,
-                    );
+                    (
+                        await DPPProcessorRESTManager.getPerformanceAttributes(
+                            beatmap.beatmapId,
+                            Modes.osu,
+                            PPCalculationMethod.live,
+                            calcParams,
+                        )
+                    )?.attributes ?? null;
             }
     }
 
@@ -168,11 +178,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const calcEmbedOptions = EmbedCreator.createCalculationEmbed(
         beatmap,
         calcParams,
-        droidCalcResult.difficulty,
+        droidCalcResult.attributes.difficulty,
         osuCalcResult.difficulty,
-        droidCalcResult.performance,
+        droidCalcResult.attributes.performance,
         osuCalcResult.performance,
         localization.language,
+        Buffer.from(droidCalcResult.strainChart),
     );
 
     let string = "";
@@ -184,16 +195,16 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 ? DPPHelper.getRebalanceDroidDifficultyAttributesInfo(
                       <
                           ResponseDifficultyAttributes<RebalanceDroidDifficultyAttributes>
-                      >droidCalcResult.difficulty,
+                      >droidCalcResult.attributes.difficulty,
                   )
                 : DPPHelper.getDroidDifficultyAttributesInfo(
-                      droidCalcResult.difficulty,
+                      droidCalcResult.attributes.difficulty,
                   )
         }`;
         string += `\n${localization.getTranslation(
             "rawDroidPp",
         )}: ${DPPHelper.getDroidPerformanceAttributesInfo(
-            droidCalcResult.performance,
+            droidCalcResult.attributes.performance,
         )}\n`;
     }
 

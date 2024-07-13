@@ -243,6 +243,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         scoreId,
         Modes.droid,
         PPCalculationMethod.live,
+        true,
     );
 
     if (!droidAttribs) {
@@ -292,11 +293,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const calcEmbedOptions = EmbedCreator.createCalculationEmbed(
         beatmapInfo,
         BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
-        droidAttribs.difficulty,
-        osuAttribs.difficulty,
-        droidAttribs.performance,
-        osuAttribs.performance,
+        droidAttribs.attributes.difficulty,
+        osuAttribs.attributes.difficulty,
+        droidAttribs.attributes.performance,
+        osuAttribs.attributes.performance,
         localization.language,
+        Buffer.from(droidAttribs.strainChart),
     );
 
     replay.beatmap ??= beatmapInfo.beatmap ?? undefined;

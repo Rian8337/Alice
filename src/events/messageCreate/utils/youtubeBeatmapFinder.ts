@@ -187,9 +187,9 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     embed.addFields({
                         name: `${underscore(
                             beatmapInfo.version,
-                        )} (${droidAttribs.starRating.toFixed(2)} ${
+                        )} (${droidAttribs.attributes.starRating.toFixed(2)} ${
                             Symbols.star
-                        } | ${osuAttribs.starRating.toFixed(2)} ${
+                        } | ${osuAttribs.attributes.starRating.toFixed(2)} ${
                             Symbols.star
                         })`,
                         value:
@@ -206,8 +206,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                                 4,
                             )}\n` +
                             `${bold(
-                                droidAttribs.starRating.toFixed(2),
-                            )}dpp - ${osuAttribs.starRating.toFixed(2)}pp`,
+                                droidAttribs.attributes.starRating.toFixed(2),
+                            )}dpp - ${osuAttribs.attributes.starRating.toFixed(2)}pp`,
                     });
                 }
 

@@ -330,6 +330,7 @@ export abstract class EmbedCreator {
      * @param droidPerfAttribs The osu!droid performance attributes.
      * @param osuPerfAttribs The osu!standard performance attributes.
      * @param language The locale of the user who attempted to create the embed. Defaults to English.
+     * @param strainChart The strain chart of the beatmap, if any.
      * @returns The message options that contains the embed.
      */
     static createCalculationEmbed(
@@ -344,6 +345,7 @@ export abstract class EmbedCreator {
         droidPerfAttribs?: DroidPerformanceAttributes,
         osuPerfAttribs?: OsuPerformanceAttributes,
         language: Language = "en",
+        strainChart?: Buffer,
     ): BaseMessageOptions {
         const localization = this.getLocalization(language);
 
@@ -467,6 +469,15 @@ export abstract class EmbedCreator {
             });
         }
 
+        if (strainChart) {
+            embed.setImage("attachment://strain-chart.png");
+
+            files.push({
+                name: "strain-chart.png",
+                attachment: strainChart,
+            });
+        }
+
         return {
             embeds: [embed],
             files: files,
@@ -541,22 +552,26 @@ export abstract class EmbedCreator {
             droidAttribs =
                 score instanceof RecentPlay
                     ? score.droidAttribs
-                    : await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                          score instanceof Score ? score.scoreID : score.id,
-                          Modes.droid,
-                          PPCalculationMethod.live,
-                      );
+                    : (
+                          await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                              score instanceof Score ? score.scoreID : score.id,
+                              Modes.droid,
+                              PPCalculationMethod.live,
+                          )
+                      )?.attributes;
         }
 
         if (osuAttribs === undefined && droidAttribs !== null) {
             osuAttribs =
                 score instanceof RecentPlay
                     ? score.osuAttribs
-                    : await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                          score instanceof Score ? score.scoreID : score.id,
-                          Modes.osu,
-                          PPCalculationMethod.live,
-                      );
+                    : (
+                          await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                              score instanceof Score ? score.scoreID : score.id,
+                              Modes.osu,
+                              PPCalculationMethod.live,
+                          )
+                      )?.attributes;
         }
 
         let beatmapInformation = `${arrow} ${BeatmapManager.getRankEmote(
@@ -642,9 +657,9 @@ export abstract class EmbedCreator {
                 );
 
             if (droidFcAttribs && osuFcAttribs) {
-                beatmapInformation += `(${droidFcAttribs.performance.total.toFixed(
+                beatmapInformation += `(${droidFcAttribs.attributes.performance.total.toFixed(
                     2,
-                )}DPP, ${osuFcAttribs.performance.total.toFixed(
+                )}DPP, ${osuFcAttribs.attributes.performance.total.toFixed(
                     2,
                 )}PP ${StringHelper.formatString(
                     localization.getTranslation("forFC"),
@@ -837,8 +852,8 @@ export abstract class EmbedCreator {
         const embedOptions = this.createCalculationEmbed(
             beatmapInfo,
             calcParams,
-            droidDiffAttribs,
-            osuDiffAttribs,
+            droidDiffAttribs.attributes,
+            osuDiffAttribs.attributes,
             undefined,
             undefined,
             language,
@@ -871,7 +886,7 @@ export abstract class EmbedCreator {
                         ? "weeklyChallengeTitle"
                         : "dailyChallengeTitle",
                 ),
-                iconURL: `attachment://osu-${osuDiffAttribs.starRating.toFixed(
+                iconURL: `attachment://osu-${osuDiffAttribs.attributes.starRating.toFixed(
                     2,
                 )}.png`,
             })
@@ -885,13 +900,19 @@ export abstract class EmbedCreator {
                 name:
                     `${bold(localization.getTranslation("starRating"))}\n` +
                     `${Symbols.star.repeat(
-                        Math.min(10, Math.floor(droidDiffAttribs.starRating)),
-                    )} ${droidDiffAttribs.starRating.toFixed(
+                        Math.min(
+                            10,
+                            Math.floor(droidDiffAttribs.attributes.starRating),
+                        ),
+                    )} ${droidDiffAttribs.attributes.starRating.toFixed(
                         2,
                     )} ${localization.getTranslation("droidStars")}\n` +
                     `${Symbols.star.repeat(
-                        Math.min(10, Math.floor(osuDiffAttribs.starRating)),
-                    )} ${osuDiffAttribs.starRating.toFixed(
+                        Math.min(
+                            10,
+                            Math.floor(osuDiffAttribs.attributes.starRating),
+                        ),
+                    )} ${osuDiffAttribs.attributes.starRating.toFixed(
                         2,
                     )} ${localization.getTranslation("pcStars")}`,
                 value:
@@ -1082,7 +1103,7 @@ export abstract class EmbedCreator {
     ): Promise<BaseMessageOptions | null> {
         const localization = this.getLocalization(language);
 
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
+        const beatmapInfo = await BeatmapManager.getBeatmap(
             submission.beatmap_id,
             { checkFile: false },
         );
@@ -1101,7 +1122,7 @@ export abstract class EmbedCreator {
                 calcParams,
             );
 
-        const osuDiffAttribs: CacheableDifficultyAttributes<OsuDifficultyAttributes> | null =
+        const osuDiffAttribs =
             await DPPProcessorRESTManager.getDifficultyAttributes(
                 submission.beatmap_id,
                 Modes.osu,
@@ -1116,8 +1137,8 @@ export abstract class EmbedCreator {
         const embedOptions = this.createCalculationEmbed(
             beatmapInfo,
             calcParams,
-            droidDiffAttribs,
-            osuDiffAttribs,
+            droidDiffAttribs.attributes,
+            osuDiffAttribs.attributes,
             undefined,
             undefined,
             language,
@@ -1132,7 +1153,7 @@ export abstract class EmbedCreator {
                     localization.getTranslation("mapShareSubmission"),
                     submission.submitter,
                 ),
-                iconURL: `attachment://osu-${osuDiffAttribs.starRating.toFixed(
+                iconURL: `attachment://osu-${osuDiffAttribs.attributes.starRating.toFixed(
                     2,
                 )}.png`,
             })
@@ -1143,14 +1164,21 @@ export abstract class EmbedCreator {
                         `${Symbols.star.repeat(
                             Math.min(
                                 10,
-                                Math.floor(droidDiffAttribs.starRating),
+                                Math.floor(
+                                    droidDiffAttribs.attributes.starRating,
+                                ),
                             ),
-                        )} ${droidDiffAttribs.starRating.toFixed(
+                        )} ${droidDiffAttribs.attributes.starRating.toFixed(
                             2,
                         )} ${localization.getTranslation("droidStars")}\n` +
                         `${Symbols.star.repeat(
-                            Math.min(10, Math.floor(osuDiffAttribs.starRating)),
-                        )} ${osuDiffAttribs.starRating.toFixed(
+                            Math.min(
+                                10,
+                                Math.floor(
+                                    osuDiffAttribs.attributes.starRating,
+                                ),
+                            ),
+                        )} ${osuDiffAttribs.attributes.starRating.toFixed(
                             2,
                         )} ${localization.getTranslation("pcStars")}`,
                 },
