@@ -48,6 +48,10 @@ export class TimingDistributionChart {
     private readonly barHeight = 150;
     private readonly oneSideBarCount = 50;
 
+    private readonly hitWindow300Color = new RGBColor(102, 204, 255);
+    private readonly hitWindow100Color = new RGBColor(179, 217, 68);
+    private readonly hitWindow50Color = new RGBColor(255, 204, 34);
+
     /**
      * @param beatmap The beatmap that was played.
      * @param mods The mods that was used.
@@ -81,11 +85,12 @@ export class TimingDistributionChart {
             return this.canvas.toBuffer();
         }
 
-        this.canvas = createCanvas(800, 200);
+        this.canvas = createCanvas(800, 220);
 
         this.initBackground();
+        this.drawTitleText();
         this.drawChartBars();
-        this.drawText();
+        this.drawOffsetBarText();
 
         return this.canvas.toBuffer();
     }
@@ -116,6 +121,10 @@ export class TimingDistributionChart {
             return;
         }
 
+        const hitWindow300 = this.hitWindow.hitWindowFor300(this.isPrecise);
+        const hitWindow100 = this.hitWindow.hitWindowFor100(this.isPrecise);
+        const hitWindow50 = this.hitWindow.hitWindowFor50(this.isPrecise);
+
         const hitValues: Record<number, number> = {};
         let maxAccuracy = 0;
 
@@ -133,14 +142,12 @@ export class TimingDistributionChart {
 
             if (
                 object instanceof Slider &&
-                objectData.accuracy ===
-                    Math.floor(this.hitWindow.hitWindowFor50(this.isPrecise)) +
-                        13
+                objectData.accuracy === Math.floor(hitWindow50) + 13
             ) {
                 continue;
             }
 
-            const accuracy: number = Math.trunc(objectData.accuracy);
+            const accuracy = Math.trunc(objectData.accuracy);
 
             hitValues[accuracy] ??= 0;
             ++hitValues[accuracy];
@@ -175,29 +182,35 @@ export class TimingDistributionChart {
 
         this.maxFrequency = Math.max(1, ...frequencies);
 
-        const getHitResultColor = (time: number): RGBColor => {
-            time = Math.abs(time);
-
-            switch (true) {
-                case time <= this.hitWindow.hitWindowFor300(this.isPrecise):
-                    return new RGBColor(102, 204, 255);
-                case time <= this.hitWindow.hitWindowFor100(this.isPrecise):
-                    return new RGBColor(179, 217, 68);
-                default:
-                    return new RGBColor(255, 204, 34);
-            }
-        };
-
         // Now we draw from the left to right.
         for (let i = -this.oneSideBarCount; i <= this.oneSideBarCount; ++i) {
             const frequency = frequencies[i + this.oneSideBarCount];
 
-            this.drawBar(
+            this.drawOffsetBar(
                 frequency,
                 i,
-                getHitResultColor(i * this.chartBarInterval),
+                this.getHitResultColor(i * this.chartBarInterval),
             );
         }
+
+        // Draw hit boundary bars.
+        this.drawBoundaryBar(
+            hitWindow300,
+            Math.floor(hitWindow300 / this.chartBarInterval),
+            this.hitWindow300Color,
+        );
+
+        this.drawBoundaryBar(
+            hitWindow100,
+            Math.floor(hitWindow100 / this.chartBarInterval),
+            this.hitWindow100Color,
+        );
+
+        this.drawBoundaryBar(
+            hitWindow50,
+            Math.floor(hitWindow50 / this.chartBarInterval),
+            this.hitWindow50Color,
+        );
     }
 
     /**
@@ -207,7 +220,7 @@ export class TimingDistributionChart {
      * @param positionIndex The postiion index of the bar.
      * @param color The color of the bar.
      */
-    private drawBar(
+    private drawOffsetBar(
         frequency: number,
         positionIndex: number,
         color: RGBColor,
@@ -270,9 +283,120 @@ export class TimingDistributionChart {
     }
 
     /**
-     * Draws offset texts under bars.
+     * Draws a hit boundary bar.
+     *
+     * @param offset The offset of the boundary bar.
+     * @param positionIndex The index of the boundary bar.
+     * @param color The color of the boundary bar.
      */
-    private drawText(): void {
+    private drawBoundaryBar(
+        offset: number,
+        positionIndex: number,
+        color: RGBColor,
+    ) {
+        if (!this.canvas) {
+            return;
+        }
+
+        const context = this.canvas.getContext("2d");
+        const barYPosition = this.canvas.height - 20;
+
+        // We will draw 2 bars. The first bar is for the positive boundary, the second bar is for the negative boundary.
+        const negativeBarXPosition =
+            this.canvas.width / 2 -
+            (this.barWidth + this.barOffset) * positionIndex -
+            this.barOffset * 1.5;
+
+        const positiveBarXPosition =
+            this.canvas.width / 2 +
+            (this.barWidth + this.barOffset) * positionIndex +
+            this.barOffset * 1.5;
+
+        // If the bars are out of the canvas, we don't draw them.
+        if (
+            negativeBarXPosition < 0 ||
+            positiveBarXPosition > this.canvas.width
+        ) {
+            return;
+        }
+
+        context.save();
+        context.lineCap = "round";
+
+        // Make boundary bar width less than normal bar offset.
+        context.lineWidth = this.barOffset / 2;
+        context.strokeStyle = `rgb(${color})`;
+
+        // Make boundary bars dashed.
+        const dashOffset = this.barHeight / 20;
+        context.setLineDash([dashOffset, dashOffset]);
+
+        // Draw first bar.
+        context.beginPath();
+        context.moveTo(negativeBarXPosition, barYPosition);
+        context.lineTo(negativeBarXPosition, barYPosition - this.barHeight);
+        context.stroke();
+        context.closePath();
+
+        // Draw second bar.
+        context.beginPath();
+        context.moveTo(positiveBarXPosition, barYPosition);
+        context.lineTo(positiveBarXPosition, barYPosition - this.barHeight);
+        context.stroke();
+        context.closePath();
+
+        context.restore();
+        context.setLineDash([]);
+
+        // Draw offset text.
+        context.save();
+
+        context.font = "10px bold Exo";
+        context.fillStyle = "#ffffff";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+
+        context.fillText(
+            "-" + Math.trunc(offset).toString(),
+            negativeBarXPosition,
+            barYPosition - this.barHeight - 10,
+        );
+
+        context.fillText(
+            "+" + Math.trunc(offset).toString(),
+            positiveBarXPosition,
+            barYPosition - this.barHeight - 10,
+        );
+
+        context.restore();
+    }
+
+    /**
+     * Draws the title text.
+     */
+    private drawTitleText(): void {
+        if (!this.canvas) {
+            return;
+        }
+
+        const context = this.canvas.getContext("2d");
+
+        context.save();
+
+        context.font = "14px bold Exo";
+        context.fillStyle = "#ffffff";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+
+        context.fillText("Timing Distribution", this.canvas.width / 2, 15);
+
+        context.restore();
+    }
+
+    /**
+     * Draws texts under offset bars.
+     */
+    private drawOffsetBarText(): void {
         if (!this.canvas) {
             return;
         }
@@ -282,16 +406,10 @@ export class TimingDistributionChart {
 
         context.save();
 
-        // Title
-        context.font = "14px bold Exo";
+        context.font = "10px bold Exo";
         context.fillStyle = "#ffffff";
         context.textAlign = "center";
         context.textBaseline = "middle";
-
-        context.fillText("Timing Distribution", this.canvas.width / 2, 15);
-
-        // Bar text
-        context.font = "10px bold Exo";
 
         for (
             let i = -this.oneSideBarCount;
@@ -313,5 +431,18 @@ export class TimingDistributionChart {
         }
 
         context.restore();
+    }
+
+    private getHitResultColor(time: number): RGBColor {
+        time = Math.abs(time);
+
+        switch (true) {
+            case time <= this.hitWindow.hitWindowFor300(this.isPrecise):
+                return this.hitWindow300Color;
+            case time <= this.hitWindow.hitWindowFor100(this.isPrecise):
+                return this.hitWindow100Color;
+            default:
+                return this.hitWindow50Color;
+        }
     }
 }
