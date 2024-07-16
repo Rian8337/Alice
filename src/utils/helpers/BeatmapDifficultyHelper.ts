@@ -104,12 +104,14 @@ export abstract class BeatmapDifficultyHelper<
                     accPercent = NumberHelper.clamp(newAccPercent, 0, 100);
                 }
             }
+
             if (input.endsWith("m")) {
                 const newCountMiss = parseInt(input);
                 if (!Number.isNaN(newCountMiss)) {
                     countMiss = Math.max(0, newCountMiss);
                 }
             }
+
             if (input.endsWith("x")) {
                 if (input.includes(".")) {
                     const newSpeedMultiplier = parseFloat(input);
@@ -129,9 +131,11 @@ export abstract class BeatmapDifficultyHelper<
                     }
                 }
             }
+
             if (input.startsWith("+")) {
                 mods.push(...ModUtil.pcStringToMods(input.replace("+", "")));
             }
+
             if (input.startsWith("CS")) {
                 const newForceCS = parseFloat(input.substring(2));
                 if (!Number.isNaN(newForceCS)) {
@@ -142,6 +146,7 @@ export abstract class BeatmapDifficultyHelper<
                     );
                 }
             }
+
             if (input.startsWith("AR")) {
                 const newForceAR = parseFloat(input.substring(2));
                 if (!Number.isNaN(newForceAR)) {
@@ -152,6 +157,7 @@ export abstract class BeatmapDifficultyHelper<
                     );
                 }
             }
+
             if (input.startsWith("OD")) {
                 const newForceOD = parseFloat(input.substring(2));
                 if (!Number.isNaN(newForceOD)) {
@@ -162,12 +168,14 @@ export abstract class BeatmapDifficultyHelper<
                     );
                 }
             }
+
             if (input.endsWith("x50")) {
                 const newCount50 = parseInt(input);
                 if (!Number.isNaN(newCount50)) {
                     count50 = Math.max(0, newCount50);
                 }
             }
+
             if (input.endsWith("x100")) {
                 const newCount100 = parseInt(input);
                 if (!Number.isNaN(newCount100)) {
@@ -177,6 +185,7 @@ export abstract class BeatmapDifficultyHelper<
         }
 
         return new PerformanceCalculationParameters({
+            mods: mods,
             accuracy: new Accuracy({
                 n100: count100,
                 n50: count50,
