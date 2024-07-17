@@ -91,13 +91,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             nobjects: beatmap.objects,
         }),
         inputAccuracy: interaction.options.getNumber("accuracy") ?? 100,
-        combo: interaction.options.getInteger("combo")
-            ? MathUtils.clamp(
-                  0,
-                  interaction.options.getInteger("combo", true),
-                  beatmap.maxCombo,
-              )
-            : beatmap.maxCombo,
+        combo:
+            interaction.options.getInteger("combo") && beatmap.maxCombo !== null
+                ? MathUtils.clamp(
+                      0,
+                      interaction.options.getInteger("combo", true),
+                      beatmap.maxCombo,
+                  )
+                : (beatmap.maxCombo ?? undefined),
         forceCS: interaction.options.getNumber("circlesize") ?? undefined,
         forceAR: interaction.options.getNumber("approachrate") ?? undefined,
         forceOD:

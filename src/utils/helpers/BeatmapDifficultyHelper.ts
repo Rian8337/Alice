@@ -462,7 +462,7 @@ export abstract class BeatmapDifficultyHelper<
                 n300: beatmap.objects,
             }),
             inputAccuracy: 100,
-            combo: beatmap.maxCombo,
+            combo: beatmap.maxCombo ?? undefined,
         });
 
         const attributeName =
@@ -588,7 +588,7 @@ export abstract class BeatmapDifficultyHelper<
                 n300: beatmap.objects,
             }),
             inputAccuracy: 100,
-            combo: beatmap.maxCombo,
+            combo: beatmap.maxCombo ?? undefined,
         });
 
         const attributeName =
