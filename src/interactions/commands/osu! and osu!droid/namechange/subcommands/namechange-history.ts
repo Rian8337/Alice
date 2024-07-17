@@ -49,7 +49,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
-    embed.setTitle(localization.getTranslation("nameHistoryForUid"));
+    embed.setTitle(
+        StringHelper.formatString(
+            localization.getTranslation("nameHistoryForUid"),
+            uid.toString(),
+        ),
+    );
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.addFields({
