@@ -66,17 +66,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     let result: OperationResult;
 
     if (accountTransfer) {
-        if (!accountTransfer.transferList.includes(uid)) {
+        if (accountTransfer.transferList.includes(uid)) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
-                    localization.getTranslation("accountNotInTransferList"),
+                    localization.getTranslation("accountAlreadyAddedBySelf"),
                 ),
             });
         }
 
         result = await dbManager.updateOne(
             { discordId: interaction.user.id },
-            { $set: { transferUId: uid } },
+            { $push: { transferList: uid } },
         );
     } else {
         const bindInfo =
