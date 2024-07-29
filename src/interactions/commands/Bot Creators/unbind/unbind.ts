@@ -5,19 +5,16 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandOptionType } from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { OperationResult } from "structures/core/OperationResult";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UnbindLocalization } from "@alice-localization/interactions/commands/Bot Creators/unbind/UnbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: UnbindLocalization = new UnbindLocalization(
+    const localization = new UnbindLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const uid: number = interaction.options.getInteger("uid", true);
+    const uid = interaction.options.getInteger("uid", true);
 
     if (
         !NumberHelper.isNumberInRange(
@@ -32,10 +29,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
-    const bindInfo: UserBind | null = await dbManager.getFromUid(uid, {
+    const bindInfo = await dbManager.getFromUid(uid, {
         projection: { _id: 0, previous_bind: 1, uid: 1 },
     });
 
@@ -47,16 +43,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: OperationResult = await bindInfo.unbind(
-        uid,
-        localization.language,
-    );
+    const result = await bindInfo.unbind(uid, localization.language);
 
-    if (!result.success) {
+    if (result.failed()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("unbindFailed"),
-                result.reason!,
+                result.reason,
             ),
         });
     }

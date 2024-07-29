@@ -1060,17 +1060,30 @@ export class UserBind extends Manager {
         otherPreviousBind.push(uid);
 
         if (this.previous_bind.length === 0) {
-            await this.bindDb.deleteOne({
-                discordid: this.discordid,
-            });
+            await this.bindDb.deleteOne({ discordid: this.discordid });
 
             await DatabaseManager.aliceDb.collections.nameChange.updateOne(
                 { discordid: this.discordid },
+                { $set: { discordid: to } },
+            );
+
+            // Remove the new Discord account's account transfer information.
+            await DatabaseManager.aliceDb.collections.accountTransfer.deleteOne(
+                { discordId: to },
+            );
+
+            await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
+                { discordId: this.discordid },
                 {
-                    $set: {
-                        discordid: to,
+                    $set: { discordId: to },
+                    $push: { transferList: uid },
+                    $setOnInsert: {
+                        transferList: otherPreviousBind,
+                        // Take the smallest uid as transfer target.
+                        transferUid: Math.min(...otherPreviousBind),
                     },
                 },
+                { upsert: true },
             );
 
             if (otherBindInfo?.pp) {
@@ -1117,6 +1130,23 @@ export class UserBind extends Manager {
                 oldPPEntries.size,
                 this.playc - newPPEntries.size,
             );
+
+            await this.removeAccountFromTransfer(uid);
+
+            if (otherPreviousBind.length > 1) {
+                await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
+                    { discordId: to },
+                    {
+                        $push: { transferList: uid },
+                        $setOnInsert: {
+                            transferList: otherPreviousBind,
+                            // Take the smallest uid as transfer target.
+                            transferUid: Math.min(...otherPreviousBind),
+                        },
+                    },
+                    { upsert: true },
+                );
+            }
 
             await this.bindDb.updateOne(
                 { discordid: this.discordid },
@@ -1305,6 +1335,10 @@ export class UserBind extends Manager {
                 }
             }
 
+            await DatabaseManager.aliceDb.collections.accountTransfer.deleteOne(
+                { discordId: this.discordid },
+            );
+
             return this.bindDb.deleteOne({
                 discordid: this.discordid,
             });
@@ -1319,6 +1353,8 @@ export class UserBind extends Manager {
 
             this.username = player.username;
         }
+
+        await this.removeAccountFromTransfer(uid);
 
         return this.bindDb.updateOne(
             { discordid: this.discordid },
@@ -1380,6 +1416,34 @@ export class UserBind extends Manager {
             );
         } else {
             return this.createOperationResult(false, "Metadata update failed");
+        }
+    }
+
+    private async removeAccountFromTransfer(uid: number) {
+        const accountTransfer =
+            await DatabaseManager.aliceDb.collections.accountTransfer.getOne(
+                { discordId: this.discordid },
+                { projection: { _id: 0, discordId: 0 } },
+            );
+
+        if (accountTransfer) {
+            await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
+                { discordId: this.discordid },
+                {
+                    $pull: { transferList: uid },
+                    $set: {
+                        transferUid:
+                            accountTransfer.transferUid === uid
+                                ? // Take the smallest uid as transfer target.
+                                  Math.min(
+                                      ...accountTransfer.transferList.filter(
+                                          (v) => v !== uid,
+                                      ),
+                                  )
+                                : uid,
+                    },
+                },
+            );
         }
     }
 

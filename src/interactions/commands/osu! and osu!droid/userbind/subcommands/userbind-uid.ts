@@ -2,7 +2,6 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OperationResult } from "structures/core/OperationResult";
 import { UserbindLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/userbind/UserbindLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Constants } from "@alice-core/Constants";
@@ -19,7 +18,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const dbManager = DatabaseManager.elainaDb.collections.userBind;
     const uidBindInfo = await dbManager.getFromUid(uid, {
-        projection: { _id: 0 },
+        projection: { _id: 0, discordid: 1 },
     });
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
@@ -125,6 +124,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ),
             });
         } else {
+            await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
+                {
+                    discordId: interaction.user.id,
+                },
+                {
+                    $push: {
+                        transferList: uid,
+                    },
+                    $setOnInsert: {
+                        transferUid: userBindInfo.uid,
+                        transferList: userBindInfo.previous_bind,
+                    },
+                },
+                { upsert: true },
+            );
+
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("newAccountUidBindSuccessful"),
@@ -160,18 +175,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
         }
 
-        const result: OperationResult = await dbManager.insert({
+        const result = await dbManager.insert({
             discordid: interaction.user.id,
             uid: uid,
             username: player.username,
             previous_bind: [uid],
         });
 
-        if (!result.success) {
+        if (result.failed()) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("accountUidBindError"),
-                    result.reason!,
+                    result.reason,
                 ),
             });
         }

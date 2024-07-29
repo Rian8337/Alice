@@ -46,7 +46,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const uid = player instanceof Player ? player.uid : player.id;
 
     const uidBindInfo = await dbManager.getFromUid(uid, {
-        projection: { _id: 0 },
+        projection: { _id: 0, discordid: 1 },
     });
 
     if (uidBindInfo && uidBindInfo.discordid !== interaction.user.id) {
@@ -94,21 +94,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 });
             }
 
-            const confirmation: boolean =
-                await MessageButtonCreator.createConfirmation(
-                    interaction,
-                    {
-                        content: MessageCreator.createWarn(
-                            localization.getTranslation(
-                                "newAccountUsernameBindConfirmation",
-                            ),
-                            username,
+            const confirmation = await MessageButtonCreator.createConfirmation(
+                interaction,
+                {
+                    content: MessageCreator.createWarn(
+                        localization.getTranslation(
+                            "newAccountUsernameBindConfirmation",
                         ),
-                    },
-                    [interaction.user.id],
-                    10,
-                    localization.language,
-                );
+                        username,
+                    ),
+                },
+                [interaction.user.id],
+                10,
+                localization.language,
+            );
 
             if (!confirmation) {
                 return;
@@ -117,12 +116,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         const result = await userBindInfo.bind(player, localization.language);
 
-        if (!result.success) {
+        if (result.failed()) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("accountUsernameBindError"),
                     player.username,
-                    result.reason!,
+                    result.reason,
                 ),
             });
         }
@@ -137,6 +136,22 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ),
             });
         } else {
+            await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
+                {
+                    discordId: interaction.user.id,
+                },
+                {
+                    $push: {
+                        transferList: uid,
+                    },
+                    $setOnInsert: {
+                        transferUid: userBindInfo.uid,
+                        transferList: userBindInfo.previous_bind,
+                    },
+                },
+                { upsert: true },
+            );
+
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation(

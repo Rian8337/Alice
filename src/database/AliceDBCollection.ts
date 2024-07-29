@@ -34,6 +34,7 @@ import { InGamePPCollectionManager } from "./managers/aliceDb/InGamePPCollection
 import { AnniversaryTriviaPlayerCollectionManager } from "./managers/aliceDb/AnniversaryTriviaPlayerCollectionManager";
 import { AnniversaryTriviaQuestionCollectionManager } from "./managers/aliceDb/AnniversaryTriviaQuestionCollectionManager";
 import { PrototypePPTypeCollectionManager } from "./managers/aliceDb/PrototypePPTypeCollectionManager";
+import { AccountTransferCollectionManager } from "./managers/aliceDb/AccountTransferCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -218,6 +219,11 @@ export class AliceDBCollection {
     readonly anniversaryTriviaPlayer: AnniversaryTriviaPlayerCollectionManager;
 
     /**
+     * The database collection for osu!droid account transfers.
+     */
+    readonly accountTransfer: AccountTransferCollectionManager;
+
+    /**
      * @param aliceDb The database that is only used by this bot (my database).
      */
     constructor(aliceDb: Db) {
@@ -328,5 +334,8 @@ export class AliceDBCollection {
             new AnniversaryTriviaPlayerCollectionManager(
                 aliceDb.collection("anniversarytriviaplayer"),
             );
+        this.accountTransfer = new AccountTransferCollectionManager(
+            aliceDb.collection("accounttransfer"),
+        );
     }
 }
