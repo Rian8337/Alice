@@ -207,17 +207,25 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
         amount: number = 25,
     ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
         const result = await this.collection
-            .find(
-                { username: new RegExp(searchQuery, "i") },
-                { projection: { _id: 0, username: 1 } },
-            )
+            .aggregate()
+            .group({
+                _id: { username: "$username" },
+                dups: { $addToSet: "$username" },
+                count: { $sum: 1 },
+            })
+            .match({
+                dups: new RegExp(searchQuery, "i"),
+                count: { $gt: 1 },
+            })
             .limit(amount)
+            .project<{ dups: string }>({ _id: 0, dups: 1 })
+            .unwind({ path: "$dups" })
             .toArray();
 
         return result.map((v) => {
             return {
-                name: v.username,
-                value: v.username,
+                name: v.dups,
+                value: v.dups,
             };
         });
     }
