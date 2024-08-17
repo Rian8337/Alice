@@ -60,7 +60,7 @@ export class EmojiStatisticsCollectionManager extends DatabaseCollectionManager<
     ): Promise<DiscordCollection<Snowflake, EmojiStatistics> | null> {
         return this.get(
             "emojiId",
-            { guildID: guildOrId instanceof Guild ? guildOrId.id : guildOrId },
+            { guildId: guildOrId instanceof Guild ? guildOrId.id : guildOrId },
             this.processFindOptions(options),
         );
     }
