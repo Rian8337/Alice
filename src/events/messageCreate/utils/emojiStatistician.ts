@@ -1,37 +1,33 @@
-import { Collection, GuildEmoji, Message, Snowflake } from "discord.js";
+import { Collection, Message, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
-import { EmojiStat } from "structures/moderation/EmojiStat";
-import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.channel.isDMBased() || message.author.bot) {
         return;
     }
 
-    const emojiMessages: RegExpMatchArray | null = message.content.match(
-        /<a:.+?:\d+>|<:.+?:\d+>/g
-    );
+    const emojiMessages = message.content.match(/<a:.+?:\d+>|<:.+?:\d+>/g);
 
     if (!emojiMessages) {
         return;
     }
 
-    const guildEmojiData: EmojiStatistics | null =
+    const guildEmojiData =
         await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(
-            message.guild!.id
+            message.guild!.id,
         );
 
-    const guildEmojiStats: Collection<Snowflake, EmojiStat> =
-        guildEmojiData?.emojiStats ?? new Collection();
+    const guildEmojiStats = guildEmojiData?.emojiStats ?? new Collection();
 
     for (const emojiMessage of emojiMessages) {
-        const emojiID: Snowflake = <Snowflake>(
+        const emojiID = <Snowflake>(
             (<string>emojiMessage.split(":").pop()).replace(">", "")
         );
 
-        const actualEmoji: GuildEmoji | undefined =
-            message.guild!.emojis.cache.find((e) => e.id === emojiID);
+        const actualEmoji = message.guild!.emojis.cache.find(
+            (e) => e.id === emojiID,
+        );
 
         if (!actualEmoji) {
             return;
@@ -46,7 +42,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     await DatabaseManager.aliceDb.collections.emojiStatistics.updateOne(
         { guildID: message.guild?.id },
         { $set: { emojiStats: [...guildEmojiStats.values()] } },
-        { upsert: true }
+        { upsert: true },
     );
 };
 
