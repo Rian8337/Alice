@@ -1,5 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
 import { ApplicationCommandOptionType, bold } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -7,7 +6,7 @@ import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GuildEmoji, GuildMember, EmbedBuilder } from "discord.js";
+import { GuildEmoji, GuildMember } from "discord.js";
 import { EmojistatisticsLocalization } from "@alice-localization/interactions/commands/Tools/emojistatistics/EmojistatisticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
@@ -16,12 +15,19 @@ import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: EmojistatisticsLocalization =
-        new EmojistatisticsLocalization(CommandHelper.getLocale(interaction));
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
 
-    const stats: EmojiStatistics | null =
+    const localization = new EmojistatisticsLocalization(
+        CommandHelper.getLocale(interaction),
+    );
+
+    await InteractionHelper.deferReply(interaction);
+
+    const stats =
         await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(
-            interaction.guild!,
+            interaction.guild,
         );
 
     if (!stats) {
@@ -38,19 +44,19 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         averagePerMonth: number;
     }[] = [];
 
-    const currentDate: Date = new Date();
+    const currentDate = new Date();
 
     for (const emoji of stats.emojiStats.values()) {
-        const actualEmoji: GuildEmoji | null = await interaction
-            .guild!.emojis.fetch(emoji.id)
+        const actualEmoji = await interaction.guild.emojis
+            .fetch(emoji.id)
             .catch(() => null);
 
         if (!actualEmoji) {
             continue;
         }
 
-        const dateCreation: Date = actualEmoji.createdAt;
-        const months: number = Math.max(
+        const dateCreation = actualEmoji.createdAt;
+        const months = Math.max(
             1,
             (currentDate.getUTCFullYear() - dateCreation.getUTCFullYear()) *
                 12 +
@@ -73,8 +79,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const sortOption: string =
-        interaction.options.getString("sortoption") ?? "overall";
+    const sortOption = interaction.options.getString("sortoption") ?? "overall";
 
     validEmojis.sort((a, b) =>
         sortOption === "overall"
@@ -82,7 +87,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             : b.averagePerMonth - a.averagePerMonth,
     );
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         color: (<GuildMember>interaction.member).displayColor,
     });
 
@@ -102,7 +107,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             )}`,
         );
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         for (
