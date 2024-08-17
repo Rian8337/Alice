@@ -1,7 +1,8 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
 import { DatabaseEmojiStatistics } from "structures/database/aliceDb/DatabaseEmojiStatistics";
-import { Guild, Snowflake } from "discord.js";
+import { Collection as DiscordCollection, Guild, Snowflake } from "discord.js";
+import { FindOptions } from "mongodb";
 
 /**
  * A manager for the `emojistatistics` collection.
@@ -11,13 +12,14 @@ export class EmojiStatisticsCollectionManager extends DatabaseCollectionManager<
     EmojiStatistics
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseEmojiStatistics
+        data: DatabaseEmojiStatistics,
     ) => EmojiStatistics = EmojiStatistics;
 
     override get defaultDocument(): DatabaseEmojiStatistics {
         return {
-            emojiStats: [],
-            guildID: "",
+            guildId: "",
+            emojiId: "",
+            count: 0,
         };
     }
 
@@ -25,26 +27,55 @@ export class EmojiStatisticsCollectionManager extends DatabaseCollectionManager<
      * Gets the emoji statistics of a guild.
      *
      * @param guild The guild.
-     */
-    getGuildStatistics(guild: Guild): Promise<EmojiStatistics | null>;
-
-    /**
-     * Gets the emoji statistics of a guild.
-     *
-     * @param guildId The ID of the guild.
-     */
-    getGuildStatistics(guildId: Snowflake): Promise<EmojiStatistics | null>;
-
-    /**
-     * Gets the emoji statistics of a guild.
-     *
-     * @param guildId The ID of the guild.
+     * @param options Options for finding the statistics.
+     * @returns The emoji statistics of the guild, with each emoji statistics mapped by the emoji's ID.
      */
     getGuildStatistics(
-        guildOrId: Guild | Snowflake
+        guild: Guild,
+        options?: FindOptions<DatabaseEmojiStatistics>,
+    ): Promise<DiscordCollection<Snowflake, EmojiStatistics> | null>;
+
+    /**
+     * Gets the emoji statistics of a guild.
+     *
+     * @param guildId The ID of the guild.
+     * @param options Options for finding the statistics.
+     * @returns The emoji statistics of the guild, with each emoji statistics mapped by the emoji's ID.
+     */
+    getGuildStatistics(
+        guildId: Snowflake,
+        options?: FindOptions<DatabaseEmojiStatistics>,
+    ): Promise<DiscordCollection<Snowflake, EmojiStatistics> | null>;
+
+    /**
+     * Gets the emoji statistics of a guild.
+     *
+     * @param guildId The ID of the guild.
+     * @param options Options for finding the statistics.
+     * @returns The emoji statistics of the guild, with each emoji statistics mapped by the emoji's ID.
+     */
+    getGuildStatistics(
+        guildOrId: Guild | Snowflake,
+        options?: FindOptions<DatabaseEmojiStatistics>,
+    ): Promise<DiscordCollection<Snowflake, EmojiStatistics> | null> {
+        return this.get(
+            "emojiId",
+            { guildID: guildOrId instanceof Guild ? guildOrId.id : guildOrId },
+            this.processFindOptions(options),
+        );
+    }
+
+    /**
+     * Gets the emoji statistics of an emoji.
+     *
+     * @param emojiId The ID of the emoji.
+     * @param options Options for finding the statistics.
+     * @returns The emoji statistics of the emoji, `null` if not found.
+     */
+    getEmojiStatistics(
+        emojiId: Snowflake,
+        options?: FindOptions<DatabaseEmojiStatistics>,
     ): Promise<EmojiStatistics | null> {
-        return this.getOne({
-            guildID: guildOrId instanceof Guild ? guildOrId.id : guildOrId,
-        });
+        return this.getOne({ emojiId }, options);
     }
 }

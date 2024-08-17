@@ -1,41 +1,29 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseEmojiStatistics } from "structures/database/aliceDb/DatabaseEmojiStatistics";
-import { EmojiStat } from "structures/moderation/EmojiStat";
 import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
-import { Collection, Snowflake } from "discord.js";
 
 /**
  * Represents a guild's emoji statistics.
  */
-export class EmojiStatistics extends Manager {
-    /**
-     * The ID of the guild.
-     */
-    guildID: Snowflake;
-
-    /**
-     * Statistics for each guild-specific emoji in the guild.
-     */
-    emojiStats: Collection<Snowflake, EmojiStat>;
-
-    /**
-     * The BSON object ID of this document in the database.
-     */
+export class EmojiStatistics
+    extends Manager
+    implements DatabaseEmojiStatistics
+{
+    readonly guildId: string;
+    readonly emojiId: string;
+    count: number;
     readonly _id?: ObjectId;
 
     constructor(
         data: DatabaseEmojiStatistics = DatabaseManager.aliceDb?.collections
-            .emojiStatistics.defaultDocument ?? {}
+            .emojiStatistics.defaultDocument ?? {},
     ) {
         super();
 
         this._id = data._id;
-        this.guildID = data.guildID;
-        this.emojiStats = ArrayHelper.arrayToCollection(
-            data.emojiStats ?? [],
-            "id"
-        );
+        this.guildId = data.guildId;
+        this.emojiId = data.emojiId;
+        this.count = data.count;
     }
 }

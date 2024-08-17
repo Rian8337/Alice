@@ -6,7 +6,7 @@ import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GuildEmoji, GuildMember } from "discord.js";
+import { GuildEmoji } from "discord.js";
 import { EmojistatisticsLocalization } from "@alice-localization/interactions/commands/Tools/emojistatistics/EmojistatisticsLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
@@ -28,6 +28,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const stats =
         await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(
             interaction.guild,
+            { projection: { guildId: 0 } },
         );
 
     if (!stats) {
@@ -46,9 +47,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const currentDate = new Date();
 
-    for (const emoji of stats.emojiStats.values()) {
+    for (const stat of stats.values()) {
         const actualEmoji = await interaction.guild.emojis
-            .fetch(emoji.id)
+            .fetch(stat.emojiId)
             .catch(() => null);
 
         if (!actualEmoji) {
@@ -66,8 +67,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
         validEmojis.push({
             emoji: actualEmoji,
-            count: emoji.count,
-            averagePerMonth: Math.round(emoji.count / months),
+            count: stat.count,
+            averagePerMonth: Math.round(stat.count / months),
         });
     }
 
@@ -88,7 +89,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     );
 
     const embed = EmbedCreator.createNormalEmbed({
-        color: (<GuildMember>interaction.member).displayColor,
+        color: interaction.member.displayColor,
     });
 
     embed

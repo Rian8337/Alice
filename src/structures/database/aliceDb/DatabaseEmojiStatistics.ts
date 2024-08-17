@@ -1,5 +1,4 @@
 import { Snowflake } from "discord.js";
-import { EmojiStat } from "structures/moderation/EmojiStat";
 import { BaseDocument } from "../BaseDocument";
 
 /**
@@ -9,10 +8,15 @@ export interface DatabaseEmojiStatistics extends BaseDocument {
     /**
      * The ID of the guild.
      */
-    guildID: Snowflake;
+    guildId: Snowflake;
 
     /**
-     * Statistics for each guild-specific emoji in the guild.
+     * The ID of the emoji.
      */
-    emojiStats: EmojiStat[];
+    emojiId: Snowflake;
+
+    /**
+     * The amount of times the emoji has been used.
+     */
+    count: number;
 }

@@ -1,6 +1,7 @@
 import { Collection, Message, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
+import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.channel.isDMBased() || message.author.bot) {
@@ -13,37 +14,45 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const guildEmojiData =
-        await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(
-            message.guild!.id,
-        );
-
-    const guildEmojiStats = guildEmojiData?.emojiStats ?? new Collection();
+    const emojiDataCache = new Collection<Snowflake, EmojiStatistics>();
+    const dbManager = DatabaseManager.aliceDb.collections.emojiStatistics;
 
     for (const emojiMessage of emojiMessages) {
-        const emojiID = <Snowflake>(
+        const emojiId = <Snowflake>(
             (<string>emojiMessage.split(":").pop()).replace(">", "")
         );
 
         const actualEmoji = message.guild!.emojis.cache.find(
-            (e) => e.id === emojiID,
+            (e) => e.id === emojiId,
         );
 
         if (!actualEmoji) {
-            return;
+            continue;
         }
 
-        guildEmojiStats.set(actualEmoji.id, {
-            id: actualEmoji.id,
-            count: (guildEmojiStats.get(actualEmoji.id)?.count ?? 0) + 1,
-        });
+        const emojiData =
+            (await dbManager.getEmojiStatistics(emojiId)) ??
+            new EmojiStatistics({
+                guildId: message.guildId!,
+                emojiId: emojiId,
+                count: 0,
+            });
+
+        ++emojiData.count;
+
+        emojiDataCache.set(emojiId, emojiData);
     }
 
-    await DatabaseManager.aliceDb.collections.emojiStatistics.updateOne(
-        { guildID: message.guild?.id },
-        { $set: { emojiStats: [...guildEmojiStats.values()] } },
-        { upsert: true },
-    );
+    for (const [emojiId, emojiData] of emojiDataCache) {
+        await dbManager.updateOne(
+            { emojiId: emojiId },
+            {
+                $set: { count: emojiData.count },
+                $setOnInsert: { guildId: message.guildId! },
+            },
+            { upsert: true },
+        );
+    }
 };
 
 export const config: EventUtil["config"] = {
