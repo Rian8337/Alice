@@ -1078,7 +1078,6 @@ export class UserBind extends Manager {
                     $set: { discordId: to },
                     $push: { transferList: uid },
                     $setOnInsert: {
-                        transferList: otherPreviousBind,
                         // Take the smallest uid as transfer target.
                         transferUid: Math.min(...otherPreviousBind),
                     },
@@ -1139,7 +1138,6 @@ export class UserBind extends Manager {
                     {
                         $push: { transferList: uid },
                         $setOnInsert: {
-                            transferList: otherPreviousBind,
                             // Take the smallest uid as transfer target.
                             transferUid: Math.min(...otherPreviousBind),
                         },
