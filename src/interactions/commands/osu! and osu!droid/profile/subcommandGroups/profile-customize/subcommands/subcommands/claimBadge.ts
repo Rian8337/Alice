@@ -8,7 +8,6 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { Modes, RankedStatus } from "@rian8337/osu-base";
-import { Score } from "@rian8337/osu-droid-utilities";
 import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
@@ -193,7 +192,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 const score = await DroidHelper.getScore(
                     uid,
                     beatmapInfo.hash,
-                    ["id"],
+                    ["uid", "hash"],
                 );
 
                 if (!score) {
@@ -202,7 +201,8 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
 
                 const attribs =
                     await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                        score instanceof Score ? score.scoreID : score.id,
+                        score.uid,
+                        score.hash,
                         Modes.osu,
                         PPCalculationMethod.live,
                     );

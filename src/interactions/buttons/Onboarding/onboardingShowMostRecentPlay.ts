@@ -63,6 +63,8 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             ? player.recentPlays
             : await DroidHelper.getRecentScores(player.id, 1, undefined, [
                   "id",
+                  "uid",
+                  "hash",
                   "score",
                   "filename",
                   "hash",
@@ -85,10 +87,10 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     }
 
     const score = recentPlays[0];
-    const scoreId = score instanceof Score ? score.scoreID : score.id;
 
     const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        scoreId,
+        score.uid,
+        score.hash,
         Modes.droid,
         PPCalculationMethod.live,
     );

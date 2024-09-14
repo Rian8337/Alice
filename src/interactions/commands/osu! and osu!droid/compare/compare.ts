@@ -11,7 +11,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { GuildMember } from "discord.js";
-import { Player, Score } from "@rian8337/osu-droid-utilities";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { CompareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/compare/CompareLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
@@ -70,7 +70,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         case !!uid:
             player = await DroidHelper.getPlayer(uid!, ["id", "username"]);
 
-            uid ??= player instanceof Player ? player.uid : player?.id ?? null;
+            uid ??=
+                player instanceof Player ? player.uid : (player?.id ?? null);
 
             break;
         case !!username:
@@ -84,7 +85,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             player = await DroidHelper.getPlayer(username, ["id", "username"]);
 
-            uid ??= player instanceof Player ? player.uid : player?.id ?? null;
+            uid ??=
+                player instanceof Player ? player.uid : (player?.id ?? null);
 
             break;
         default:
@@ -131,6 +133,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const score = await DroidHelper.getScore(uid, cachedBeatmapHash, [
         "id",
+        "uid",
         "filename",
         "hash",
         "mode",
@@ -156,10 +159,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const scoreId = score instanceof Score ? score.scoreID : score.id;
-
     const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        scoreId,
+        score.uid,
+        score.hash,
         Modes.droid,
         PPCalculationMethod.live,
     );

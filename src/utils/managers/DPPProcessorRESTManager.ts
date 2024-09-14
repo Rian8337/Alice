@@ -416,14 +416,16 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Gets the difficulty and performance attributes of a score.
      *
-     * @param scoreId The ID of the score.
+     * @param uid The uid of the player in the score.
+     * @param hash The MD5 hash of the beatmap in the score.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
-        scoreId: number,
+        uid: number,
+        hash: string,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
         generateStrainChart?: THasStrainChart,
@@ -438,14 +440,16 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Gets the difficulty and performance attributes of a score.
      *
-     * @param scoreId The ID of the score.
+     * @param uid The uid of the player in the score.
+     * @param hash The MD5 hash of the beatmap in the score.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
-        scoreId: number,
+        uid: number,
+        hash: string,
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
         generateStrainChart?: THasStrainChart,
@@ -460,14 +464,16 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Gets the difficulty and performance attributes of a score.
      *
-     * @param scoreId The ID of the score.
+     * @param uid The uid of the player in the score.
+     * @param hash The MD5 hash of the beatmap in the score.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
-        scoreId: number,
+        uid: number,
+        hash: string,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
         generateStrainChart?: THasStrainChart,
@@ -482,14 +488,16 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     /**
      * Gets the difficulty and performance attributes of a score.
      *
-     * @param scoreId The ID of the score.
+     * @param uid The uid of the player in the score.
+     * @param hash The MD5 hash of the beatmap in the score.
      * @param mode The gamemode to calculate.
      * @param calculationMethod The calculation method to use.
      * @param generateStrainChart Whether to generate a strain chart.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
-        scoreId: number,
+        uid: number,
+        hash: string,
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
         generateStrainChart?: THasStrainChart,
@@ -502,7 +510,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
     > | null>;
 
     static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
-        scoreId: number,
+        uid: number,
+        hash: string,
         mode: Modes,
         calculationMethod: PPCalculationMethod,
         generateStrainChart?: THasStrainChart,
@@ -516,7 +525,8 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         const url = new URL(`${this.endpoint}get-online-score-attributes`);
 
         url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
-        url.searchParams.set("scoreid", scoreId.toString());
+        url.searchParams.set("uid", uid.toString());
+        url.searchParams.set("hash", hash);
         url.searchParams.set("gamemode", mode);
         url.searchParams.set("calculationmethod", calculationMethod.toString());
 

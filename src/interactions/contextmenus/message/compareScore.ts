@@ -9,7 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Modes } from "@rian8337/osu-base";
-import { Player, Score } from "@rian8337/osu-droid-utilities";
+import { Player } from "@rian8337/osu-droid-utilities";
 import { GuildMember, InteractionReplyOptions } from "discord.js";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
@@ -89,6 +89,8 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         beatmapInfo.hash,
         [
             "id",
+            "uid",
+            "hash",
             "score",
             "filename",
             "hash",
@@ -117,7 +119,8 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     );
 
     const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        score instanceof Score ? score.scoreID : score.id,
+        score.uid,
+        score.hash,
         Modes.droid,
         PPCalculationMethod.live,
     );

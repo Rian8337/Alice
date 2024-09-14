@@ -197,6 +197,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         beatmap.hash,
         [
             "id",
+            "uid",
+            "hash",
             "combo",
             "mark",
             "mode",

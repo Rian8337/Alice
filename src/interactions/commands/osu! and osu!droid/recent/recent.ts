@@ -124,6 +124,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         | Pick<
               OfficialDatabaseScore,
               | "id"
+              | "uid"
               | "hash"
               | "score"
               | "filename"
@@ -161,6 +162,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             undefined,
             [
                 "id",
+                "uid",
                 "hash",
                 "score",
                 "filename",
@@ -203,10 +205,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const scoreAttribs =
         score instanceof RecentPlay
-            ? score.droidAttribs ?? null
+            ? (score.droidAttribs ?? null)
             : (
                   await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                      score instanceof Score ? score.scoreID : score.id,
+                      score.uid,
+                      score.hash,
                       Modes.droid,
                       PPCalculationMethod.live,
                   )
@@ -219,7 +222,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,
-        score instanceof RecentPlay ? score.osuAttribs ?? null : undefined,
+        score instanceof RecentPlay ? (score.osuAttribs ?? null) : undefined,
         localization.language,
     );
 

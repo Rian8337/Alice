@@ -76,6 +76,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const score = await DroidHelper.getScore(uid, hash, [
         "id",
+        "uid",
+        "hash",
         "score",
         "combo",
         "mark",
@@ -240,7 +242,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     const droidAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        scoreId,
+        score.uid,
+        score.hash,
         Modes.droid,
         PPCalculationMethod.live,
         true,
@@ -266,7 +269,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     const osuAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
-        scoreId,
+        score.uid,
+        score.hash,
         Modes.osu,
         PPCalculationMethod.live,
     );

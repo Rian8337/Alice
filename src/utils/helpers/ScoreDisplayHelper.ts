@@ -281,27 +281,29 @@ export abstract class ScoreDisplayHelper {
             ]
         > => {
             const droidAttribs = beatmapInfo
-                ? droidAttribsCache.get(score.scoreID) ??
+                ? (droidAttribsCache.get(score.scoreID) ??
                   (
                       await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                          score.scoreID,
+                          score.uid,
+                          score.hash,
                           Modes.droid,
                           PPCalculationMethod.live,
                       )
                   )?.attributes ??
-                  null
+                  null)
                 : null;
 
             const osuAttribs = beatmapInfo
-                ? osuAttribsCache.get(score.scoreID) ??
+                ? (osuAttribsCache.get(score.scoreID) ??
                   (
                       await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                          score.scoreID,
+                          score.uid,
+                          score.hash,
                           Modes.osu,
                           PPCalculationMethod.live,
                       )
                   )?.attributes ??
-                  null
+                  null)
                 : null;
 
             if (!droidAttribsCache.has(score.scoreID)) {

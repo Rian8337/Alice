@@ -500,6 +500,8 @@ export abstract class EmbedCreator {
             | Pick<
                   OfficialDatabaseScore,
                   | "id"
+                  | "uid"
+                  | "hash"
                   | "score"
                   | "combo"
                   | "mark"
@@ -554,7 +556,8 @@ export abstract class EmbedCreator {
                     ? score.droidAttribs
                     : (
                           await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                              score instanceof Score ? score.scoreID : score.id,
+                              score.uid,
+                              score.hash,
                               Modes.droid,
                               PPCalculationMethod.live,
                           )
@@ -567,7 +570,8 @@ export abstract class EmbedCreator {
                     ? score.osuAttribs
                     : (
                           await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                              score instanceof Score ? score.scoreID : score.id,
+                              score.uid,
+                              score.hash,
                               Modes.osu,
                               PPCalculationMethod.live,
                           )

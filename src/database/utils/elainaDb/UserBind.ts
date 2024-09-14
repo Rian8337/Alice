@@ -631,10 +631,10 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const scoreId = score instanceof Score ? score.scoreID : score.id;
             const liveAttribs =
                 await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                    scoreId,
+                    score.uid,
+                    score.hash,
                     Modes.droid,
                     PPCalculationMethod.live,
                 );
@@ -645,7 +645,8 @@ export class UserBind extends Manager {
 
             const rebalAttribs =
                 await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                    scoreId,
+                    score.uid,
+                    score.hash,
                     Modes.droid,
                     PPCalculationMethod.rebalance,
                 );
