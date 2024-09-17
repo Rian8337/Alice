@@ -3,35 +3,29 @@ import {
     AttachmentBuilder,
     ButtonBuilder,
     ButtonStyle,
-    GuildBasedChannel,
     GuildMember,
+    GuildMemberFlags,
     MessageCreateOptions,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: EventUtil["run"] = async (_, member: GuildMember) => {
-    if (member.guild.id !== Constants.mainServer) {
+    if (member.guild.id !== Constants.mainServer || member.user.bot) {
         return;
     }
 
-    const general: GuildBasedChannel | null = await member.guild.channels.fetch(
-        Constants.mainServer,
-    );
+    const general = await member.guild.channels.fetch(Constants.mainServer);
 
     if (!general?.isTextBased()) {
         return;
     }
 
-    const isBinded: boolean =
-        await DatabaseManager.elainaDb.collections.userBind.isUserBinded(
-            member.id,
-        );
+    const rejoined = member.flags.has(GuildMemberFlags.DidRejoin);
 
     const options: MessageCreateOptions = {
-        content: `Welcome ${isBinded ? "back " : ""}to ${
+        content: `Welcome ${rejoined ? "back " : ""}to ${
             member.guild.name
         }, ${member}!`,
         files: [
@@ -41,8 +35,8 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
         ],
     };
 
-    if (!isBinded) {
-        const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder();
+    if (!rejoined) {
+        const row = new ActionRowBuilder<ButtonBuilder>();
 
         row.addComponents(
             new ButtonBuilder()
