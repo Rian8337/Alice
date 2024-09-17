@@ -129,13 +129,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     discordId: interaction.user.id,
                 },
                 {
-                    $push: {
-                        transferList: uid,
-                    },
-                    $setOnInsert: {
-                        transferUid: userBindInfo.uid,
-                        transferList: userBindInfo.previous_bind,
-                    },
+                    $push: { transferList: uid },
+                    $setOnInsert: { transferUid: userBindInfo.uid },
                 },
                 { upsert: true },
             );
