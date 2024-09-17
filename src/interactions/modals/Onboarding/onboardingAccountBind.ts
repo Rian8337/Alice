@@ -1,7 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { OnboardingAccountBindLocalization } from "@alice-localization/interactions/modals/Onboarding/OnboardingAccountBindLocalization";
 import { ModalCommand } from "@alice-structures/core/ModalCommand";
-import { OperationResult } from "@alice-structures/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -73,38 +72,34 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            const confirmation: boolean =
-                await MessageButtonCreator.createConfirmation(
-                    interaction,
-                    {
-                        content: MessageCreator.createWarn(
-                            localization.getTranslation(
-                                "newAccountBindConfirmation",
-                            ),
-                            username,
+            const confirmation = await MessageButtonCreator.createConfirmation(
+                interaction,
+                {
+                    content: MessageCreator.createWarn(
+                        localization.getTranslation(
+                            "newAccountBindConfirmation",
                         ),
-                    },
-                    [interaction.user.id],
-                    10,
-                    localization.language,
-                );
+                        username,
+                    ),
+                },
+                [interaction.user.id],
+                10,
+                localization.language,
+            );
 
             if (!confirmation) {
                 return;
             }
         }
 
-        const result: OperationResult = await userBindInfo.bind(
-            player,
-            localization.language,
-        );
+        const result = await userBindInfo.bind(player, localization.language);
 
-        if (!result.success) {
+        if (result.failed()) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("accountBindError"),
                     player.username,
-                    result.reason!,
+                    result.reason,
                 ),
             });
         }
@@ -117,6 +112,17 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
                 ),
             });
         } else {
+            await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
+                {
+                    discordId: interaction.user.id,
+                },
+                {
+                    $push: { transferList: uid },
+                    $setOnInsert: { transferUid: userBindInfo.uid },
+                },
+                { upsert: true },
+            );
+
             InteractionHelper.reply(interaction, {
                 content: MessageCreator.createAccept(
                     localization.getTranslation("newAccountBindSuccessful"),
@@ -134,18 +140,18 @@ export const run: ModalCommand["run"] = async (_, interaction) => {
             });
         }
 
-        const result: OperationResult = await dbManager.insert({
+        const result = await dbManager.insert({
             discordid: interaction.user.id,
             uid: uid,
             username: player.username,
             previous_bind: [uid],
         });
 
-        if (!result.success) {
+        if (result.failed()) {
             return InteractionHelper.reply(interaction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation("accountBindError"),
-                    result.reason!,
+                    result.reason,
                 ),
             });
         }
