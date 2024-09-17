@@ -5,7 +5,6 @@ import {
     ButtonStyle,
     GuildMember,
     GuildMemberFlags,
-    MessageCreateOptions,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
@@ -22,10 +21,8 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
         return;
     }
 
-    const rejoined = member.flags.has(GuildMemberFlags.DidRejoin);
-
-    const options: MessageCreateOptions = {
-        content: `Welcome ${rejoined ? "back " : ""}to ${
+    general.send({
+        content: `Welcome ${member.flags.has(GuildMemberFlags.DidRejoin) ? "back " : ""}to ${
             member.guild.name
         }, ${member}!`,
         files: [
@@ -33,23 +30,16 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
                 name: "welcomeimage.png",
             }),
         ],
-    };
-
-    if (!rejoined) {
-        const row = new ActionRowBuilder<ButtonBuilder>();
-
-        row.addComponents(
-            new ButtonBuilder()
-                .setCustomId("initialOnboarding")
-                .setEmoji(Symbols.wavingHand)
-                .setStyle(ButtonStyle.Primary)
-                .setLabel("Bot Introduction"),
-        );
-
-        options.components = [row];
-    }
-
-    general.send(options);
+        components: [
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder()
+                    .setCustomId("initialOnboarding")
+                    .setEmoji(Symbols.wavingHand)
+                    .setStyle(ButtonStyle.Primary)
+                    .setLabel("Bot Introduction"),
+            ),
+        ],
+    });
 };
 
 export const config: EventUtil["config"] = {
