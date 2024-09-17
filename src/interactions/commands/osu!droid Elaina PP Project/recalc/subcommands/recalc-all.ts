@@ -8,10 +8,11 @@ import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
 import { consola } from "consola";
 
-export const run: SlashSubcommand<true>["run"] = async (
-    client,
-    interaction,
-) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
+    if (!interaction.channel?.isSendable()) {
+        return;
+    }
+
     const localization = new RecalcLocalization(
         CommandHelper.getLocale(interaction),
     );
@@ -30,7 +31,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     const total = calculatedCount + uncalculatedCount;
     const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
-    const message = await interaction.channel!.send({
+    const message = await interaction.channel.send({
         content: MessageCreator.createWarn(
             localization.getTranslation("fullRecalcTrackProgress"),
             calculatedCount.toLocaleString(BCP47),

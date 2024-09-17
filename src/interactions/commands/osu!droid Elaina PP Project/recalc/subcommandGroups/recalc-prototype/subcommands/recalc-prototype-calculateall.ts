@@ -7,10 +7,11 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import { consola } from "consola";
 
-export const run: SlashSubcommand<true>["run"] = async (
-    client,
-    interaction,
-) => {
+export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
+    if (!interaction.channel?.isSendable()) {
+        return;
+    }
+
     const localization = new RecalcLocalization(
         CommandHelper.getLocale(interaction),
     );
@@ -101,7 +102,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         );
     }
 
-    interaction.channel!.send({
+    interaction.channel.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("fullRecalcSuccess"),
             interaction.user.toString(),

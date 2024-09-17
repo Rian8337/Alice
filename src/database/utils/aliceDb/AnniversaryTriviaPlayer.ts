@@ -199,7 +199,7 @@ export class AnniversaryTriviaPlayer
                         )
                         .setLabel(answer)
                         .setStyle(ButtonStyle.Primary)
-                        .setDisabled(userAnswer?.answer === answer ?? false),
+                        .setDisabled(userAnswer?.answer === answer),
                 );
             }
         }

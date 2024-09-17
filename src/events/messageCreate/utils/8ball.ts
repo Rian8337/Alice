@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, bold } from "discord.js";
+import { Message, bold } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EightBallResponseType } from "@alice-enums/utils/EightBallResponseType";
@@ -6,7 +6,6 @@ import { EventUtil } from "structures/core/EventUtil";
 import { DatabaseEightBallFilter } from "structures/database/aliceDb/DatabaseEightBallFilter";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { EightBallFilter } from "@alice-database/utils/aliceDb/EightBallFilter";
 
 /**
  * Gets the response type to a message.
@@ -17,15 +16,15 @@ import { EightBallFilter } from "@alice-database/utils/aliceDb/EightBallFilter";
  */
 function getResponseType(
     message: Message,
-    filter: DatabaseEightBallFilter
+    filter: DatabaseEightBallFilter,
 ): EightBallResponseType {
     function containsWord(words: string[]): boolean {
         return words.some(
-            (w) => message.content.search(new RegExp(w, "i")) !== -1
+            (w) => message.content.search(new RegExp(w, "i")) !== -1,
         );
     }
 
-    let returnValue: EightBallResponseType = EightBallResponseType.undecided;
+    let returnValue = EightBallResponseType.undecided;
 
     if (Config.botOwners.includes(message.author.id)) {
         switch (true) {
@@ -55,24 +54,25 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             )) ||
         !message.content.endsWith("?") ||
         Config.maintenance ||
-        message.author.bot
+        message.author.bot ||
+        !message.channel.isSendable()
     ) {
         return;
     }
 
-    const res: EightBallFilter = (
+    const res = (
         await DatabaseManager.aliceDb.collections.eightBallFilter.get("name", {
             name: "response",
         })
     ).first()!;
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: message.author,
         color: message.member?.displayColor,
     });
-    const responseType: EightBallResponseType = getResponseType(message, res);
+    const responseType = getResponseType(message, res);
 
-    let answer: string = "";
+    let answer = "";
     switch (responseType) {
         case EightBallResponseType.like:
             answer = "Yes, absolutely.";
@@ -91,7 +91,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     }
 
     embed.setDescription(
-        `${bold("Q")}: ${message.content}\n${bold("A")}: ${answer}`
+        `${bold("Q")}: ${message.content}\n${bold("A")}: ${answer}`,
     );
 
     message.channel.send({
@@ -101,7 +101,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     DatabaseManager.aliceDb.collections.askCount.updateOne(
         { discordid: message.author.id },
         { $inc: { count: 1 } },
-        { upsert: true }
+        { upsert: true },
     );
 };
 

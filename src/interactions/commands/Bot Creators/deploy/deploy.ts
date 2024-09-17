@@ -10,24 +10,27 @@ import { ApplicationCommandData } from "discord.js";
 import { DeployLocalization } from "@alice-localization/interactions/commands/Bot Creators/deploy/DeployLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
-    const localization: DeployLocalization = new DeployLocalization(
+    if (!interaction.channel?.isSendable()) {
+        return;
+    }
+
+    const localization = new DeployLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const commandName: string = interaction.options.getString("command", true);
+    const commandName = interaction.options.getString("command", true);
 
     let data: ApplicationCommandData;
 
-    const type: ApplicationCommandType =
-        interaction.options.getInteger("type") ??
-        ApplicationCommandType.ChatInput;
+    const type = <ApplicationCommandType>(
+        (interaction.options.getInteger("type") ??
+            ApplicationCommandType.ChatInput)
+    );
 
     if (type === ApplicationCommandType.ChatInput) {
-        const command: SlashCommand | undefined =
-            client.interactions.chatInput.get(commandName);
+        const command = client.interactions.chatInput.get(commandName);
 
         if (!command) {
             return InteractionHelper.reply(interaction, {
@@ -60,7 +63,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             defaultMemberPermissions: memberPermissions,
         };
     } else {
-        const command: ContextMenuCommand | undefined = (
+        const command = (
             type === ApplicationCommandType.Message
                 ? client.interactions.contextMenu.message
                 : client.interactions.contextMenu.user
@@ -76,7 +79,6 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
 
         data = {
             name: command.config.name,
-            description: "",
             type: type,
         };
     }

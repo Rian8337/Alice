@@ -14,6 +14,10 @@ import { ScoreRank } from "structures/utils/ScoreRank";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
+    if (!interaction.channel?.isSendable()) {
+        return;
+    }
+
     const localization = new MatchLocalization(
         CommandHelper.getLocale(interaction),
     );
@@ -29,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     // Need to make cross-compatibility since this command is also called from match-start
     if (!match) {
         interaction.replied
-            ? interaction.channel!.send({
+            ? interaction.channel.send({
                   content: MessageCreator.createReject(
                       localization.getTranslation("matchDoesntExist"),
                   ),

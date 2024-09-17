@@ -1,10 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { WarningCollectionManager } from "@alice-database/managers/aliceDb/WarningCollectionManager";
-import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { Warning } from "@alice-database/utils/aliceDb/Warning";
 import { OperationResult } from "structures/core/OperationResult";
 import { Language } from "@alice-localization/base/Language";
-import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
 import { WarningManagerLocalization } from "@alice-localization/utils/managers/WarningManager/WarningManagerLocalization";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -12,7 +10,6 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import {
-    GuildBasedChannel,
     GuildMember,
     EmbedBuilder,
     RepliableInteraction,
@@ -60,7 +57,14 @@ export abstract class WarningManager extends PunishmentManager {
         reason: string,
         channelId: Snowflake = interaction.channelId!,
     ): Promise<OperationResult> {
-        const localization: WarningManagerLocalization = this.getLocalization(
+        if (!interaction.channel?.isSendable()) {
+            return this.createOperationResult(
+                false,
+                "The channel is not sendable.",
+            );
+        }
+
+        const localization = this.getLocalization(
             CommandHelper.getLocale(interaction),
         );
 
@@ -99,10 +103,11 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const guildConfig: GuildPunishmentConfig | null =
-            await this.punishmentDb.getGuildConfig(member.guild);
+        const guildConfig = await this.punishmentDb.getGuildConfig(
+            member.guild,
+        );
 
-        const punishmentManagerLocalization: PunishmentManagerLocalization =
+        const punishmentManagerLocalization =
             this.getPunishmentManagerLocalization(localization.language);
 
         if (!guildConfig) {
@@ -114,8 +119,7 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildBasedChannel | null =
-            await guildConfig.getGuildLogChannel(member.guild);
+        const logChannel = await guildConfig.getGuildLogChannel(member.guild);
 
         if (!logChannel?.isTextBased()) {
             return this.createOperationResult(
@@ -126,14 +130,13 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const warningId: string = await this.warningDb.getNewGlobalWarningId(
+        const warningId = await this.warningDb.getNewGlobalWarningId(
             member.guild.id,
         );
 
-        const logLocalization: WarningManagerLocalization =
-            new WarningManagerLocalization("en");
+        const logLocalization = new WarningManagerLocalization("en");
 
-        const warningEmbed: EmbedBuilder = new EmbedBuilder()
+        const warningEmbed = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL()!,
@@ -167,12 +170,11 @@ export abstract class WarningManager extends PunishmentManager {
                     reason,
             );
 
-        const userLocalization: WarningManagerLocalization =
-            this.getLocalization(
-                CommandHelper.getUserPreferredLocale(member.id),
-            );
+        const userLocalization = this.getLocalization(
+            CommandHelper.getUserPreferredLocale(member.id),
+        );
 
-        const userWarningEmbed: EmbedBuilder = new EmbedBuilder()
+        const userWarningEmbed = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL()!,
@@ -208,9 +210,9 @@ export abstract class WarningManager extends PunishmentManager {
                     reason,
             );
 
-        const currentTime: number = Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now() / 1000);
 
-        const result: OperationResult = await this.warningDb.insert({
+        const result = await this.warningDb.insert({
             globalId: warningId,
             discordId: member.id,
             guildId: interaction.guildId!,
@@ -235,7 +237,7 @@ export abstract class WarningManager extends PunishmentManager {
                     userWarningEmbed,
                 );
             } catch {
-                interaction.channel!.send({
+                interaction.channel.send({
                     content: MessageCreator.createWarn(
                         "A user has been warned, but their DMs are locked.",
                     ),
@@ -260,7 +262,11 @@ export abstract class WarningManager extends PunishmentManager {
         warning: Warning,
         reason: string,
     ): Promise<OperationResult> {
-        const localization: WarningManagerLocalization = this.getLocalization(
+        if (!interaction.inCachedGuild()) {
+            return this.createOperationResult(false, "User is not in a guild.");
+        }
+
+        const localization = this.getLocalization(
             CommandHelper.getLocale(interaction),
         );
 
@@ -278,7 +284,7 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const member: GuildMember | null = await interaction
+        const member = await interaction
             .guild!.members.fetch(warning.discordId)
             .catch(() => null);
 
@@ -289,10 +295,11 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const guildConfig: GuildPunishmentConfig | null =
-            await this.punishmentDb.getGuildConfig(member.guild);
+        const guildConfig = await this.punishmentDb.getGuildConfig(
+            member.guild,
+        );
 
-        const punishmentManagerLocalization: PunishmentManagerLocalization =
+        const punishmentManagerLocalization =
             this.getPunishmentManagerLocalization(localization.language);
 
         if (!guildConfig) {
@@ -304,8 +311,7 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildBasedChannel | null =
-            await guildConfig.getGuildLogChannel(member.guild);
+        const logChannel = await guildConfig.getGuildLogChannel(member.guild);
 
         if (!logChannel?.isTextBased()) {
             return this.createOperationResult(
@@ -316,7 +322,7 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const warningEmbed: EmbedBuilder = new EmbedBuilder()
+        const warningEmbed = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL()!,
@@ -357,12 +363,11 @@ export abstract class WarningManager extends PunishmentManager {
                     reason,
             );
 
-        const userLocalization: WarningManagerLocalization =
-            this.getLocalization(
-                CommandHelper.getUserPreferredLocale(member.id),
-            );
+        const userLocalization = this.getLocalization(
+            CommandHelper.getUserPreferredLocale(member.id),
+        );
 
-        const userWarningEmbed: EmbedBuilder = new EmbedBuilder()
+        const userWarningEmbed = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL()!,
@@ -400,7 +405,7 @@ export abstract class WarningManager extends PunishmentManager {
                     reason,
             );
 
-        const result: OperationResult = await this.warningDb.deleteOne({
+        const result = await this.warningDb.deleteOne({
             globalId: warning.globalId,
         });
 
@@ -440,14 +445,15 @@ export abstract class WarningManager extends PunishmentManager {
         toUserId: Snowflake,
         reason?: string | null,
     ): Promise<OperationResult> {
-        const localization: WarningManagerLocalization = this.getLocalization(
+        const localization = this.getLocalization(
             CommandHelper.getLocale(interaction),
         );
 
-        const guildConfig: GuildPunishmentConfig | null =
-            await this.punishmentDb.getGuildConfig(interaction.guildId!);
+        const guildConfig = await this.punishmentDb.getGuildConfig(
+            interaction.guildId!,
+        );
 
-        const punishmentManagerLocalization: PunishmentManagerLocalization =
+        const punishmentManagerLocalization =
             this.getPunishmentManagerLocalization(localization.language);
 
         if (!guildConfig) {
@@ -459,8 +465,9 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const logChannel: GuildBasedChannel | null =
-            await guildConfig.getGuildLogChannel(interaction.guild!);
+        const logChannel = await guildConfig.getGuildLogChannel(
+            interaction.guild!,
+        );
 
         if (!logChannel?.isTextBased()) {
             return this.createOperationResult(
@@ -471,7 +478,7 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const logEmbed: EmbedBuilder = new EmbedBuilder()
+        const logEmbed = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.avatarURL()!,
@@ -486,10 +493,10 @@ export abstract class WarningManager extends PunishmentManager {
                     )}: ${userMention(toUserId)} (${toUserId})\n\n` +
                     `=========================\n\n` +
                     `${bold(localization.getTranslation("reason"))}:\n` +
-                    reason ?? localization.getTranslation("notSpecified"),
+                    reason,
             );
 
-        const result: OperationResult =
+        const result =
             await DatabaseManager.aliceDb.collections.userWarning.transferWarnings(
                 interaction.guildId!,
                 fromUserId,

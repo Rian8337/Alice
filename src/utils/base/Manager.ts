@@ -67,10 +67,10 @@ export abstract class Manager {
         return {
             success: success,
             reason: reason,
-            isSuccessful() {
+            isSuccessful(): this is OperationResult<true> {
                 return this.success;
             },
-            failed() {
+            failed(): this is OperationResult<false> {
                 return !this.success;
             },
         };
@@ -116,10 +116,10 @@ export abstract class Manager {
         return {
             success: success,
             reason: reason,
-            isSuccessful() {
+            isSuccessful(): this is OperationResult<true> {
                 return this.success;
             },
-            failed() {
+            failed(): this is OperationResult<false> {
                 return !this.success;
             },
         };

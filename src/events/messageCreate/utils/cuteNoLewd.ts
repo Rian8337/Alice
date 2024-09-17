@@ -6,10 +6,14 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { CuteNoLewdLocalization } from "@alice-localization/events/messageCreate/cuteNoLewd/CuteNoLewdLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
-const pictureCooldown: Set<Snowflake> = new Set();
+const pictureCooldown = new Set<Snowflake>();
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
-    if (message.channel.id !== "686948895212961807" || message.author.bot) {
+    if (
+        message.channel.id !== "686948895212961807" ||
+        message.author.bot ||
+        !message.channel.isSendable()
+    ) {
         return;
     }
 

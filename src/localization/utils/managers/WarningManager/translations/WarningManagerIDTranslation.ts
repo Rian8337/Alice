@@ -6,6 +6,8 @@ import { WarningManagerStrings } from "../WarningManagerLocalization";
  */
 export class WarningManagerIDTranslation extends Translation<WarningManagerStrings> {
     override readonly translations: WarningManagerStrings = {
+        channelNotSendable: "",
+        notInServer: "",
         userIsImmune: "",
         userNotFoundInServer: "",
         invalidDuration: "",

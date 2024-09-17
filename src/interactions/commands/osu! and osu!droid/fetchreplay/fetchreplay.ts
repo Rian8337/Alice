@@ -189,7 +189,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         version: 1,
         replaydata: {
             filename: `${data.folderName}\\/${data.fileName}`,
-            playername: data.replayVersion < 3 ? username : data.playerName,
+            playername: data.isReplayV3() ? data.playerName : username,
             replayfile: `${scoreId}.odr`,
             mod: modstring,
             score: score.score,
@@ -203,14 +203,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             misses: accuracy.nmiss,
             accuracy: accuracy.value(),
             time: score.date.getTime(),
-            perfect:
-                data.replayVersion < 3
-                    ? accuracy.nmiss === 0
-                        ? 1
-                        : 0
-                    : data.isFullCombo
-                      ? 1
-                      : 0,
+            perfect: data.isReplayV3()
+                ? data.isFullCombo
+                    ? 1
+                    : 0
+                : accuracy.nmiss === 0
+                  ? 1
+                  : 0,
         },
     };
 
@@ -218,7 +217,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const replayAttachment = new AttachmentBuilder(zip.toBuffer(), {
         name: `${data.fileName.substring(0, data.fileName.length - 4)} [${
-            data.playerName
+            data.isReplayV3() ? data.playerName : username
         }]-${json.replaydata.time}.edr`,
     });
 

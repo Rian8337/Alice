@@ -73,20 +73,20 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const data = replayAnalyzer.data!;
+    const { data } = replayAnalyzer;
+
+    if (!data?.isReplayV3()) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("replayTooOld"),
+            ),
+        });
+    }
 
     if (data.playerName !== bindInfo.username) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("replayDoesntHaveSameUsername"),
-            ),
-        });
-    }
-
-    if (data.replayVersion < 3) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("replayTooOld"),
             ),
         });
     }

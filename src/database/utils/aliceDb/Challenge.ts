@@ -495,12 +495,19 @@ export class Challenge extends Manager {
             );
         }
 
+        if (data.isReplayV4() && data.forceAR !== undefined) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("customARSpeedMulUsage"),
+            );
+        }
+
         if (
-            data.forceCS !== undefined ||
-            data.forceAR !== undefined ||
-            data.forceOD !== undefined ||
-            data.forceHP !== undefined ||
-            (data.speedMultiplier ?? 1) !== 1
+            data.isReplayV5() &&
+            (data.forceCS !== undefined ||
+                data.forceAR !== undefined ||
+                data.forceOD !== undefined ||
+                data.forceHP !== undefined)
         ) {
             return this.createOperationResult(
                 false,
@@ -579,6 +586,13 @@ export class Challenge extends Manager {
 
         const { data } = replay;
 
+        if (!data.isReplayV3()) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("constrainNotFulfilled"),
+            );
+        }
+
         if (!this.isConstrainFulfilled(data.convertedMods)) {
             return this.createOperationResult(
                 false,
@@ -593,11 +607,19 @@ export class Challenge extends Manager {
             );
         }
 
+        if (data.isReplayV4() && data.forceAR !== undefined) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("customARSpeedMulUsage"),
+            );
+        }
+
         if (
-            data.forceCS !== undefined ||
-            data.forceAR !== undefined ||
-            data.forceOD !== undefined ||
-            data.speedMultiplier !== 1
+            data.isReplayV5() &&
+            (data.forceCS !== undefined ||
+                data.forceAR !== undefined ||
+                data.forceOD !== undefined ||
+                data.forceHP !== undefined)
         ) {
             return this.createOperationResult(
                 false,
@@ -770,10 +792,15 @@ export class Challenge extends Manager {
 
                 switch (bonus.id) {
                     case "score": {
-                        const score =
-                            scoreOrReplay instanceof ReplayAnalyzer
-                                ? scoreOrReplay.data!.score
-                                : scoreOrReplay.score;
+                        let score: number;
+
+                        if (scoreOrReplay instanceof ReplayAnalyzer) {
+                            const data = scoreOrReplay.data!;
+
+                            score = data.isReplayV3() ? data.score : 0;
+                        } else {
+                            score = scoreOrReplay.score;
+                        }
 
                         bonusComplete = score >= +tier.value;
                         break;
@@ -806,10 +833,15 @@ export class Challenge extends Manager {
                         break;
                     }
                     case "combo": {
-                        const combo =
-                            scoreOrReplay instanceof ReplayAnalyzer
-                                ? scoreOrReplay.data!.maxCombo
-                                : scoreOrReplay.combo;
+                        let combo: number;
+
+                        if (scoreOrReplay instanceof ReplayAnalyzer) {
+                            const data = scoreOrReplay.data!;
+
+                            combo = data.isReplayV3() ? data.maxCombo : 0;
+                        } else {
+                            combo = scoreOrReplay.combo;
+                        }
 
                         bonusComplete = combo >= +tier.value;
                         break;
@@ -1141,10 +1173,16 @@ export class Challenge extends Manager {
     ): Promise<boolean> {
         switch (this.pass.id) {
             case "score": {
-                const score =
-                    scoreOrReplay instanceof ReplayAnalyzer
-                        ? scoreOrReplay.data!.score
-                        : scoreOrReplay.score;
+                let score: number;
+
+                if (scoreOrReplay instanceof ReplayAnalyzer) {
+                    const data = scoreOrReplay.data!;
+
+                    score = data.isReplayV3() ? data.score : 0;
+                } else {
+                    score = scoreOrReplay.score;
+                }
+
                 return score >= +this.pass.value;
             }
             case "acc": {
@@ -1173,10 +1211,15 @@ export class Challenge extends Manager {
                 return miss < +this.pass.value || !miss;
             }
             case "combo": {
-                const combo =
-                    scoreOrReplay instanceof ReplayAnalyzer
-                        ? scoreOrReplay.data!.maxCombo
-                        : scoreOrReplay.combo;
+                let combo: number;
+
+                if (scoreOrReplay instanceof ReplayAnalyzer) {
+                    const data = scoreOrReplay.data!;
+
+                    combo = data.isReplayV3() ? data.maxCombo : 0;
+                } else {
+                    combo = scoreOrReplay.combo;
+                }
 
                 return combo >= +this.pass.value;
             }
@@ -1421,7 +1464,7 @@ export class Challenge extends Manager {
         if (scoreOrReplay instanceof ReplayAnalyzer) {
             const { data } = scoreOrReplay;
 
-            if (!data) {
+            if (!data?.isReplayV3()) {
                 return null;
             }
 
@@ -1430,12 +1473,14 @@ export class Challenge extends Manager {
                 inputAccuracy: data.accuracy.value() * 100,
                 combo: data.maxCombo,
                 mods: data.convertedMods,
-                forceCS: data.forceCS,
-                forceAR: data.forceAR,
-                forceOD: data.forceOD,
-                forceHP: data.forceHP,
-                customSpeedMultiplier: data.speedMultiplier,
-                oldStatistics: data.replayVersion <= 3,
+                forceCS: data.isReplayV5() ? data.forceCS : undefined,
+                forceAR: data.isReplayV4() ? data.forceAR : undefined,
+                forceOD: data.isReplayV5() ? data.forceOD : undefined,
+                forceHP: data.isReplayV5() ? data.forceHP : undefined,
+                customSpeedMultiplier: data.isReplayV4()
+                    ? data.speedMultiplier
+                    : undefined,
+                oldStatistics: !data.isReplayV3(),
             });
         } else {
             calcParams =
@@ -1506,10 +1551,13 @@ export class Challenge extends Manager {
         const beatmapInfo = (await BeatmapManager.getBeatmap(this.beatmapid))!;
 
         const speedMultiplier =
-            scoreOrReplay instanceof Score ||
-            scoreOrReplay instanceof ReplayData
+            scoreOrReplay instanceof Score
                 ? scoreOrReplay.speedMultiplier
-                : DroidHelper.parseMods(scoreOrReplay.mode).speedMultiplier;
+                : scoreOrReplay instanceof ReplayData
+                  ? scoreOrReplay.isReplayV4()
+                      ? scoreOrReplay.speedMultiplier
+                      : 1
+                  : DroidHelper.parseMods(scoreOrReplay.mode).speedMultiplier;
 
         const maximumScore = beatmapInfo.beatmap.maxDroidScore(
             ModUtil.pcStringToMods(this.constrain),
@@ -1527,8 +1575,15 @@ export class Challenge extends Manager {
                       nmiss: scoreOrReplay.miss,
                   });
 
+        const scoreV1 =
+            scoreOrReplay instanceof ReplayData
+                ? scoreOrReplay.isReplayV3()
+                    ? scoreOrReplay.score
+                    : 0
+                : scoreOrReplay.score;
+
         const tempScoreV2 =
-            (scoreOrReplay.score / maximumScore) * 6e5 +
+            (scoreV1 / maximumScore) * 6e5 +
             Math.pow(accuracy.value(), 4) * 4e5;
 
         return tempScoreV2 - accuracy.nmiss * 0.003 * tempScoreV2;

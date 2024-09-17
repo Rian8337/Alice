@@ -1,7 +1,5 @@
-import { Message, MessageCollector } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MathEquation } from "@alice-structures/utils/MathEquation";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ApplicationCommandOptionType } from "discord.js";
@@ -11,7 +9,7 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: MathquizLocalization = new MathquizLocalization(
+    const localization = new MathquizLocalization(
         CommandHelper.getLocale(interaction),
     );
 
@@ -23,17 +21,17 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const level: number = interaction.options.getInteger("difflevel") ?? 1;
+    const level = interaction.options.getInteger("difflevel") ?? 1;
 
-    const operatorAmount: number =
+    const operatorAmount =
         interaction.options.getInteger("operatoramount") ?? 4;
 
-    const mathEquation: MathEquation = MathEquationCreator.createEquation(
+    const mathEquation = MathEquationCreator.createEquation(
         level,
         operatorAmount,
     );
-    const realEquation: string = mathEquation.realEquation;
-    const answer: number = mathEquation.answer;
+    const realEquation = mathEquation.realEquation;
+    const answer = mathEquation.answer;
 
     if (isNaN(answer)) {
         return InteractionHelper.reply(interaction, {
@@ -43,7 +41,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const msg: Message = await InteractionHelper.reply(interaction, {
+    const msg = await InteractionHelper.reply(interaction, {
         content: MessageCreator.createWarn(
             localization.getTranslation("equationQuestion"),
             interaction.user.toString(),
@@ -53,16 +51,20 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         ),
     });
 
+    if (!msg.channel.isSendable()) {
+        return;
+    }
+
     CacheManager.stillHasMathGameActive.add(interaction.user.id);
 
-    const collector: MessageCollector = msg.channel.createMessageCollector({
-        filter: (m: Message) =>
+    const collector = msg.channel.createMessageCollector({
+        filter: (m) =>
             parseInt(m.content) === answer &&
             m.author.id === interaction.user.id,
         time: 30 * 1000,
     });
 
-    let correct: boolean = false;
+    let correct = false;
 
     collector.once("collect", () => {
         msg.delete();

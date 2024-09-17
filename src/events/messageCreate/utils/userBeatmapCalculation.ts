@@ -19,7 +19,11 @@ import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
-    if (Config.maintenance || message.author.bot) {
+    if (
+        Config.maintenance ||
+        message.author.bot ||
+        !message.channel.isSendable()
+    ) {
         return;
     }
 

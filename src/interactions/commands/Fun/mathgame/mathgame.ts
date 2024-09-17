@@ -2,8 +2,6 @@ import {
     Collection,
     CommandInteraction,
     GuildMember,
-    MessageCollector,
-    EmbedBuilder,
     Snowflake,
     bold,
     userMention,
@@ -61,9 +59,13 @@ function endGame(
     endMessage: string,
     localization: MathgameLocalization,
 ): void {
+    if (!interaction.channel?.isSendable()) {
+        return;
+    }
+
     gameStats.sort((a, b) => b - a);
 
-    const answerString: string = ArrayHelper.collectionToArray(gameStats)
+    const answerString = ArrayHelper.collectionToArray(gameStats)
         .map(
             (v, i) =>
                 `#${i + 1}: ${userMention(v.key)} - ${
@@ -72,12 +74,12 @@ function endGame(
         )
         .join("\n");
 
-    const totalAnswers: number = [...gameStats.values()].reduce(
+    const totalAnswers = [...gameStats.values()].reduce(
         (acc, value) => acc + value,
         0,
     );
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         color: (<GuildMember | null>interaction.member)?.displayColor,
         timestamp: true,
     });
@@ -121,21 +123,21 @@ function endGame(
         mode === "single" ? interaction.user.id : interaction.channelId,
     );
 
-    interaction.channel!.send({
+    interaction.channel.send({
         content: MessageCreator.createAccept(endMessage),
         embeds: [embed],
     });
 }
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: MathgameLocalization = new MathgameLocalization(
+    const localization = new MathgameLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const mode: MathGameType = <MathGameType>(
+    const mode = <MathGameType>(
         (!interaction.inGuild()
             ? "single"
-            : interaction.options.getString("mode") ?? "single")
+            : (interaction.options.getString("mode") ?? "single"))
     );
 
     switch (mode) {
@@ -165,18 +167,21 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             break;
     }
 
-    let operatorAmount: number = 1;
-    let level: number = 1;
-    let fetchAttempt: number = 0;
-    const gameStats: Collection<Snowflake, number> = new Collection();
+    let operatorAmount = 1;
+    let level = 1;
+    let fetchAttempt = 0;
+    const gameStats = new Collection<Snowflake, number>();
     const prevEquations: string[] = [];
 
     generateEquation(
         level,
         operatorAmount,
         async function createCollector(mathEquation) {
-            const realEquation: string = mathEquation.realEquation;
-            const answer: number = mathEquation.answer;
+            if (!interaction.channel?.isSendable()) {
+                return;
+            }
+
+            const { realEquation, answer } = mathEquation;
 
             if (isNaN(answer) || prevEquations.includes(realEquation)) {
                 if (fetchAttempt < 5) {
@@ -188,7 +193,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     );
                 }
 
-                const endString: string = StringHelper.formatString(
+                const endString = StringHelper.formatString(
                     localization.getTranslation("couldNotFetchEquationGameEnd"),
                     (fetchAttempt * 500).toString(),
                 );
@@ -206,7 +211,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             prevEquations.push(realEquation);
 
-            const questionString: string = MessageCreator.createWarn(
+            const questionString = MessageCreator.createWarn(
                 mode === "single"
                     ? StringHelper.formatString(
                           localization.getTranslation("singleGamemodeQuestion"),
@@ -231,8 +236,12 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 });
             }
 
-            interaction.channel!.send(questionString).then((msg) => {
-                const collector: MessageCollector =
+            interaction.channel.send(questionString).then((msg) => {
+                if (!msg.channel.isSendable()) {
+                    return;
+                }
+
+                const collector =
                     mode === "single"
                         ? msg.channel.createMessageCollector({
                               filter: (m) =>
@@ -247,9 +256,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                               dispose: true,
                           });
 
-                let correct: boolean = false;
+                let correct = false;
 
                 collector.on("collect", (m) => {
+                    if (!msg.channel.isSendable()) {
+                        return;
+                    }
+
                     msg.delete();
 
                     correct = true;
@@ -279,7 +292,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                     if (!correct) {
                         msg.delete();
 
-                        const endString: string = StringHelper.formatString(
+                        const endString = StringHelper.formatString(
                             localization.getTranslation("noAnswerGameEnd"),
                             mode === "multi"
                                 ? "Game ended"

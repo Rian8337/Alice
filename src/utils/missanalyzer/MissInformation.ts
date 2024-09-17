@@ -61,9 +61,9 @@ export class MissInformation {
     readonly clockRate: number;
 
     /**
-     * Whether to flip objects vertically before drawing them.
+     * Whether to flip cursors vertically before drawing them.
      */
-    readonly drawFlipped: boolean;
+    readonly drawCursorFlipped: boolean;
 
     /**
      * The verdict for the miss.
@@ -133,7 +133,7 @@ export class MissInformation {
      * @param totalMisses The amount of misses in the score.
      * @param verdict The verdict for the miss.
      * @param clockRate The rate at which the clock progress in the score.
-     * @param drawFlipped Whether to flip objects vertically before drawing them.
+     * @param drawCursorFlipped Whether to flip cursors vertically before drawing them.
      * @param previousObjects The objects prior to the current object.
      * @param previousObjectData The replay object data of past objects.
      * @param cursorGroups The cursor groups to draw.
@@ -151,7 +151,7 @@ export class MissInformation {
         missIndex: number,
         totalMisses: number,
         clockRate: number,
-        drawFlipped: boolean,
+        drawCursorFlipped: boolean,
         previousObjects: PlaceableHitObject[],
         previousObjectData: ReplayObjectData[],
         cursorGroups: CursorOccurrenceGroup[][],
@@ -169,7 +169,7 @@ export class MissInformation {
         this.totalMisses = totalMisses;
         this.verdict = verdict;
         this.clockRate = clockRate;
-        this.drawFlipped = drawFlipped;
+        this.drawCursorFlipped = drawCursorFlipped;
         this.closestCursorPosition = closestCursorPosition;
         this.closestHit = closestHit;
         this.previousObjects = previousObjects;
@@ -404,10 +404,7 @@ export class MissInformation {
 
         const context = this.canvas.getContext("2d");
 
-        const stackOffset = object.getStackOffset(Modes.droid);
-        const startPosition = this.flipVectorVertically(object.position).add(
-            stackOffset,
-        );
+        const startPosition = object.getStackedPosition(Modes.droid);
         const { radius } = object;
         const circleBorder = radius / 8;
         const shadowBlur = radius / 16;
@@ -422,16 +419,7 @@ export class MissInformation {
             context.beginPath();
 
             for (const path of object.path.calculatedPath) {
-                const drawPosition = this.flipVectorVertically(object.position)
-                    .add(
-                        // Because path is an offset of the start position, we are not using
-                        // flipVectorVertically here.
-                        new Vector2(
-                            path.x,
-                            this.drawFlipped ? -path.y : path.y,
-                        ),
-                    )
-                    .add(stackOffset);
+                const drawPosition = startPosition.add(path);
 
                 context.lineTo(drawPosition.x, drawPosition.y);
             }
@@ -470,9 +458,9 @@ export class MissInformation {
                     continue;
                 }
 
-                const drawPosition = this.flipVectorVertically(
-                    nestedObject.position,
-                ).add(stackOffset);
+                const drawPosition = nestedObject.getStackedPosition(
+                    Modes.droid,
+                );
 
                 context.beginPath();
                 context.arc(
@@ -968,7 +956,7 @@ export class MissInformation {
      * @returns The flipped vector.
      */
     private flipVectorVertically(vec: Vector2): Vector2 {
-        return this.drawFlipped
+        return this.drawCursorFlipped
             ? new Vector2(vec.x, Playfield.baseSize.y - vec.y)
             : vec;
     }

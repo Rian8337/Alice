@@ -1,8 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
-import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
 import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -15,15 +12,13 @@ export const run: SlashSubcommand<true>["run"] = async (
     client,
     interaction,
 ) => {
-    const localization: MatchLocalization = new MatchLocalization(
+    const localization = new MatchLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const pick: string = interaction.options
-        .getString("pick", true)
-        .toUpperCase();
+    const pick = interaction.options.getString("pick", true).toUpperCase();
 
-    const match: TournamentMatch | null =
+    const match =
         await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(
             interaction.channelId,
         );
@@ -36,9 +31,9 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const poolId: string = match.matchid.split(".").shift()!;
+    const poolId = match.matchid.split(".").shift()!;
 
-    const pool: TournamentMappool | null =
+    const pool =
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
             poolId,
         );
@@ -51,7 +46,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         });
     }
 
-    const map: TournamentBeatmap | null = pool.getBeatmapFromPick(pick);
+    const map = pool.getBeatmapFromPick(pick);
 
     if (!map) {
         return InteractionHelper.reply(interaction, {
@@ -99,8 +94,16 @@ export const run: SlashSubcommand<true>["run"] = async (
     });
 
     setTimeout(() => {
+        if (!interaction.channel?.isSendable()) {
+            return;
+        }
+
         setTimeout(() => {
-            interaction.channel!.send({
+            if (!interaction.channel?.isSendable()) {
+                return;
+            }
+
+            interaction.channel.send({
                 content: MessageCreator.createAccept(
                     localization.getTranslation("roundEnded"),
                 ),

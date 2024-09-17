@@ -7,15 +7,12 @@ import { CacheManager } from "@alice-utils/managers/CacheManager";
 import {
     Collection,
     GuildMember,
-    Message,
     EmbedBuilder,
     Snowflake,
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
     APIButtonComponentWithCustomId,
-    ActionRow,
-    MessageActionRowComponent,
     TextInputBuilder,
     TextInputStyle,
     bold,
@@ -25,7 +22,6 @@ import {
     MapInfo,
     OsuAPIRequestBuilder,
     OsuAPIResponse,
-    RequestResponse,
 } from "@rian8337/osu-base";
 import { TriviaLocalization } from "@alice-localization/interactions/commands/Fun/trivia/TriviaLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -37,19 +33,19 @@ import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedA
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
-async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
+async function getBeatmaps(fetchAttempt = 0): Promise<MapInfo[]> {
     if (fetchAttempt === 5) {
         return [];
     }
 
-    const dateBaseLimit: number = 1199145600000; // January 1st, 2008 0:00 UTC
+    const dateBaseLimit = 1199145600000; // January 1st, 2008 0:00 UTC
 
-    const finalDate: Date = new Date(
+    const finalDate = new Date(
         dateBaseLimit +
             Math.floor(Math.random() * (Date.now() - dateBaseLimit)),
     );
 
-    const apiRequestBuilder: OsuAPIRequestBuilder = new OsuAPIRequestBuilder()
+    const apiRequestBuilder = new OsuAPIRequestBuilder()
         .setEndpoint("get_beatmaps")
         .addParameter(
             "since",
@@ -62,7 +58,7 @@ async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
         )
         .addParameter("m", 0);
 
-    const result: RequestResponse = await apiRequestBuilder.sendRequest();
+    const result = await apiRequestBuilder.sendRequest();
 
     if (result.statusCode !== 200) {
         return getBeatmaps(++fetchAttempt);
@@ -77,7 +73,7 @@ async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     const beatmapList: MapInfo[] = [];
 
     data.forEach((v) => {
-        const beatmapInfo: MapInfo = MapInfo.from(v);
+        const beatmapInfo = MapInfo.from(v);
 
         if (
             !beatmapList.find(
@@ -101,15 +97,14 @@ function shuffleString(
         readonly indexes: number[];
     }[];
 } {
-    const regex: RegExp = /^[a-zA-Z0-9]+$/;
+    const regex = /^[a-zA-Z0-9]+$/;
     const replacementStr = " `-` ";
-    const splitStr: string[] = str.split("");
+    const splitStr = str.split("");
     const replacedStrings: { char: string; indexes: number[] }[] = [];
 
     while (amount--) {
-        const index: number = Math.floor(Math.random() * str.length);
-
-        const char: string = str.charAt(index).toUpperCase();
+        const index = Math.floor(Math.random() * str.length);
+        const char = str.charAt(index).toUpperCase();
 
         if (!regex.test(char) || replacedStrings.find((r) => r.char === char)) {
             ++amount;
@@ -144,7 +139,7 @@ function createEmbed(
     title: string,
     localization: TriviaLocalization,
 ): EmbedBuilder {
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         color: "#fccf03",
     });
 
@@ -175,7 +170,7 @@ function createEmbed(
 }
 
 function getMatchingCharacterCount(str1: string, str2: string): number {
-    let count: number = 0;
+    let count = 0;
 
     for (let i = 0; i < Math.min(str1.length, str2.length); ++i) {
         if (str1.charAt(i).toLowerCase() === str2.charAt(i).toLowerCase()) {
@@ -187,7 +182,11 @@ function getMatchingCharacterCount(str1: string, str2: string): number {
 }
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: TriviaLocalization = new TriviaLocalization(
+    if (!interaction.channel?.isSendable()) {
+        return;
+    }
+
+    const localization = new TriviaLocalization(
         CommandHelper.getLocale(interaction),
     );
 
@@ -199,10 +198,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    let level: number = 1;
-    const statistics: Collection<Snowflake, MapTriviaPlayer> = new Collection();
+    let level = 1;
+    const statistics = new Collection<Snowflake, MapTriviaPlayer>();
     let beatmapCache: MapInfo[] = [];
-    let hasEnded: boolean = false;
+    let hasEnded = false;
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
@@ -210,19 +209,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ),
     });
 
-    const answerCollection: Collection<Snowflake, TriviaMapCachedAnswer> =
-        new Collection();
+    const answerCollection = new Collection<Snowflake, TriviaMapCachedAnswer>();
 
     CacheManager.mapTriviaAnswers.set(interaction.channelId, answerCollection);
 
-    const answersEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const answersEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
 
     // Run game in constant loop
     while (!hasEnded) {
-        let beatmapInfoIndex: number = beatmapCache.findIndex(
+        let beatmapInfoIndex = beatmapCache.findIndex(
             (v) =>
                 v.plays <= 10000000 - 200 * level ||
                 v.favorites <= 1000000 - 20 * level,
@@ -243,7 +241,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         }
 
         if (beatmapInfoIndex === -1) {
-            await interaction.channel!.send({
+            await interaction.channel.send({
                 content: MessageCreator.createReject(
                     localization.getTranslation("couldNotRetrieveBeatmaps"),
                 ),
@@ -252,17 +250,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             break;
         }
 
-        const beatmapInfo: MapInfo = beatmapCache.splice(
-            beatmapInfoIndex,
-            1,
-        )[0];
+        const beatmapInfo = beatmapCache.splice(beatmapInfoIndex, 1)[0];
 
-        const tempArtist: string = beatmapInfo.artist.replace(/\W|_/g, "");
-        const tempTitle: string = beatmapInfo.title.replace(/\W|_/g, "");
+        const tempArtist = beatmapInfo.artist.replace(/\W|_/g, "");
+        const tempTitle = beatmapInfo.title.replace(/\W|_/g, "");
 
         // Shuffling empty words
         // Shuffle between 25-75% of title and artist
-        const artistBlankAmount: number = Math.max(
+        const artistBlankAmount = Math.max(
             Math.ceil(tempArtist.length / 4),
             Math.floor(
                 Math.min(
@@ -271,7 +266,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ),
             ),
         );
-        const titleBlankAmount: number = Math.max(
+        const titleBlankAmount = Math.max(
             Math.ceil(tempTitle.length / 4),
             Math.floor(
                 Math.min(
@@ -290,7 +285,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             titleBlankAmount,
         );
 
-        const buttons: ButtonBuilder[] = [
+        const buttons = [
             new ButtonBuilder()
                 .setCustomId("answerMapTriviaArtist")
                 .setStyle(ButtonStyle.Primary)
@@ -306,10 +301,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         CacheManager.exemptedButtonCustomIds.add("answerMapTriviaArtist");
         CacheManager.exemptedButtonCustomIds.add("answerMapTriviaTitle");
 
-        const component: ActionRowBuilder<ButtonBuilder> =
-            new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
+        const component = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            buttons,
+        );
 
-        const message: Message = await interaction.channel!.send({
+        const message = await interaction.channel!.send({
             content: MessageCreator.createWarn(
                 localization.getTranslation("guessBeatmap"),
             ),
@@ -325,7 +321,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             components: [component],
         });
 
-        const totalCharCountToReplace: number =
+        const totalCharCountToReplace =
             artistGuessData.replacedStrings.reduce(
                 (a, v) => a + v.indexes.length,
                 0,
@@ -334,12 +330,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 (a, v) => a + v.indexes.length,
                 0,
             );
-        let replacedCharCount: number = 0;
+        let replacedCharCount = 0;
 
-        let editCount: number = 0;
-        const maxEditCount: number = 5;
+        let editCount = 0;
+        const maxEditCount = 5;
 
-        const revealCharInterval: NodeJS.Timeout = setInterval(async () => {
+        const revealCharInterval = setInterval(async () => {
             if (editCount === maxEditCount - 1) {
                 clearInterval(revealCharInterval);
             }
@@ -347,7 +343,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ++editCount;
 
             // Obtain portion of character amount to replace.
-            const charCountToReplace: number = Math.floor(
+            const charCountToReplace = Math.floor(
                 Math.pow(
                     (totalCharCountToReplace * editCount) /
                         (maxEditCount * 1.5),
@@ -381,13 +377,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     return;
                 }
 
-                const replacedStringIndex: number = Math.floor(
+                const replacedStringIndex = Math.floor(
                     Math.random() * data.replacedStrings.length,
                 );
 
                 const selectedData = data.replacedStrings[replacedStringIndex];
 
-                const charIndex: number = Math.floor(
+                const charIndex = Math.floor(
                     Math.random() * selectedData.indexes.length,
                 );
 
@@ -426,8 +422,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         i.customId,
                 ),
             (m) => {
-                const row: ActionRow<MessageActionRowComponent> | undefined =
-                    m.components.find((c) => c.components.length === 1);
+                const row = m.components.find((c) => c.components.length === 1);
 
                 if (!row) {
                     return false;
@@ -445,12 +440,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             collector.on("collect", async (i) => {
                 i.ephemeral = true;
 
-                const playerLocalization: TriviaLocalization =
-                    new TriviaLocalization(CommandHelper.getLocale(i));
+                const playerLocalization = new TriviaLocalization(
+                    CommandHelper.getLocale(i),
+                );
 
-                const answer: TriviaMapCachedAnswer | undefined =
-                    answerCollection.get(i.user.id);
-
+                const answer = answerCollection.get(i.user.id);
                 const textInputBuilders: TextInputBuilder[] = [];
 
                 switch (i.customId) {
@@ -523,7 +517,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             });
 
             collector.once("end", async () => {
-                const beatmapEmbed: EmbedBuilder = createEmbed(
+                const beatmapEmbed = createEmbed(
                     level,
                     beatmapInfo,
                     beatmapInfo.artist,
@@ -558,15 +552,13 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         BeatmapManager.getStatusColor(beatmapInfo.approved),
                     );
 
-                const correctAnswers: Collection<
+                const correctAnswers = new Collection<
                     Snowflake,
                     TriviaMapCachedAnswer
-                > = new Collection();
+                >();
 
                 for (const [, answer] of answerCollection) {
-                    const playerStats: MapTriviaPlayer = statistics.get(
-                        answer.user.id,
-                    ) ?? {
+                    const playerStats = statistics.get(answer.user.id) ?? {
                         id: answer.user.id,
                         score: 0,
                     };
@@ -735,7 +727,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     statistics.sort((a, b) => b.score - a.score);
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         color: "#037ffc",
     });
 
@@ -775,7 +767,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     .join("\n") || localization.getTranslation("none"),
         });
 
-    interaction.channel!.send({
+    interaction.channel.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("gameEnded"),
         ),

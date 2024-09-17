@@ -1,9 +1,10 @@
 import {
     Beatmap,
-    BeatmapConverter,
     calculateDroidDifficultyStatistics,
     DroidHitWindow,
+    IModApplicableToDroid,
     Interpolation,
+    Mod,
     Modes,
     ModHardRock,
     ModPrecise,
@@ -40,6 +41,11 @@ export class MissAnalyzer {
     private readonly data: ReplayData;
 
     /**
+     * The mods used in the replay.
+     */
+    private readonly mods: (Mod & IModApplicableToDroid)[];
+
+    /**
      * The hit window of the replay.
      */
     private readonly hitWindow: DroidHitWindow;
@@ -62,24 +68,34 @@ export class MissAnalyzer {
     /**
      * @param difficultyCalculator The difficulty calculator result of the replay.
      * @param data The data of the replay.
+     * @param mods The mods applied in the replay. Used for old replay versions.
      */
-    constructor(beatmap: Beatmap, data: ReplayData) {
-        this.beatmap = new BeatmapConverter(beatmap).convert({
+    constructor(
+        beatmap: Beatmap,
+        data: ReplayData,
+        mods: (Mod & IModApplicableToDroid)[],
+    ) {
+        const customSpeedMultiplier = data.isReplayV4()
+            ? data.speedMultiplier
+            : 1;
+
+        this.beatmap = beatmap.createPlayableBeatmap({
             mode: Modes.droid,
-            mods: data.convertedMods,
+            mods: mods,
+            customSpeedMultiplier: customSpeedMultiplier,
         });
 
         this.objects = this.beatmap.hitObjects.objects;
         this.data = data;
+        this.mods = mods;
 
-        this.isPrecise = data.convertedMods.some(
-            (m) => m instanceof ModPrecise,
-        );
+        this.isPrecise = mods.some((m) => m instanceof ModPrecise);
         this.hitWindow = new DroidHitWindow(this.beatmap.difficulty.od);
         this.hitWindow50 = this.hitWindow.hitWindowFor50(this.isPrecise);
+
         this.overallSpeedMultiplier = calculateDroidDifficultyStatistics({
-            mods: data.convertedMods,
-            customSpeedMultiplier: data.speedMultiplier,
+            mods: mods,
+            customSpeedMultiplier: customSpeedMultiplier,
         }).overallSpeedMultiplier;
     }
 
@@ -97,9 +113,7 @@ export class MissAnalyzer {
         let missIndex = 0;
         const missInformations: MissInformation[] = [];
 
-        const flipObjects = this.data.convertedMods.some(
-            (m) => m instanceof ModHardRock,
-        );
+        const isHardRock = this.mods.some((m) => m instanceof ModHardRock);
 
         const createMissInformation = (
             objectIndex: number,
@@ -154,7 +168,7 @@ export class MissAnalyzer {
                 missIndex++,
                 this.data.accuracy.nmiss,
                 this.overallSpeedMultiplier,
-                flipObjects,
+                isHardRock,
                 previousObjects.reverse(),
                 previousObjectData.reverse(),
                 cursorGroups,

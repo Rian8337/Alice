@@ -6,6 +6,8 @@ import { WarningManagerIDTranslation } from "./translations/WarningManagerIDTran
 import { WarningManagerKRTranslation } from "./translations/WarningManagerKRTranslation";
 
 export interface WarningManagerStrings {
+    readonly channelNotSendable: string;
+    readonly notInServer: string;
     readonly userIsImmune: string;
     readonly userNotFoundInServer: string;
     readonly invalidDuration: string;

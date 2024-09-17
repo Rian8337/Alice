@@ -1,8 +1,6 @@
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
     InteractionReplyOptions,
-    Message,
-    MessageCollector,
     RepliableInteraction,
     Snowflake,
 } from "discord.js";
@@ -29,25 +27,25 @@ export abstract class MessageInputCreator {
         choices: string[],
         users: Snowflake[],
         duration: number,
-        deleteOnInput: boolean = true
+        deleteOnInput: boolean = true,
     ): Promise<string | undefined> {
-        const message: Message = await InteractionHelper.reply(
-            interaction,
-            options
-        );
+        const message = await InteractionHelper.reply(interaction, options);
 
-        const collector: MessageCollector =
-            message.channel.createMessageCollector({
-                filter: (m: Message) =>
-                    ((choices.length > 0
-                        ? choices.includes(m.content)
-                        : m.content.replace(/\s/g, "").length > 0) ||
-                        m.content.toLowerCase() === "exit") &&
-                    users.includes(m.author.id),
-                time: duration * 1000,
-            });
+        if (!message.channel.isSendable()) {
+            return;
+        }
 
-        collector.once("collect", async (m: Message) => {
+        const collector = message.channel.createMessageCollector({
+            filter: (m) =>
+                ((choices.length > 0
+                    ? choices.includes(m.content)
+                    : m.content.replace(/\s/g, "").length > 0) ||
+                    m.content.toLowerCase() === "exit") &&
+                users.includes(m.author.id),
+            time: duration * 1000,
+        });
+
+        collector.once("collect", async (m) => {
             if (deleteOnInput && m.deletable) {
                 await m.delete();
             }

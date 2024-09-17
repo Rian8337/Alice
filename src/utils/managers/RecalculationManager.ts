@@ -1,5 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Language } from "@alice-localization/base/Language";
 import {
     RecalculationManagerLocalization,
@@ -96,14 +95,18 @@ export abstract class RecalculationManager extends Manager {
 
             this.recalculationQueue.delete(calculatedUser);
 
+            if (!interaction.channel?.isSendable()) {
+                continue;
+            }
+
             try {
-                const bindInfo: UserBind | null =
+                const bindInfo =
                     await DatabaseManager.elainaDb.collections.userBind.getFromUser(
                         calculatedUser,
                     );
 
                 if (!bindInfo) {
-                    await interaction.channel!.send({
+                    await interaction.channel.send({
                         content: MessageCreator.createReject(
                             localization.getTranslation(
                                 this.calculationFailedResponse,
@@ -118,7 +121,7 @@ export abstract class RecalculationManager extends Manager {
                 }
 
                 if (await bindInfo.isDPPBanned()) {
-                    await interaction.channel!.send({
+                    await interaction.channel.send({
                         content: MessageCreator.createReject(
                             localization.getTranslation(
                                 this.calculationFailedResponse,
@@ -135,7 +138,7 @@ export abstract class RecalculationManager extends Manager {
                 const result = await bindInfo.recalculateAllScores();
 
                 if (result.isSuccessful()) {
-                    await interaction.channel!.send({
+                    await interaction.channel.send({
                         content: MessageCreator.createAccept(
                             localization.getTranslation(
                                 this.calculationSuccessResponse,
@@ -145,7 +148,7 @@ export abstract class RecalculationManager extends Manager {
                         ),
                     });
                 } else if (result.failed()) {
-                    await interaction.channel!.send({
+                    await interaction.channel.send({
                         content: MessageCreator.createReject(
                             localization.getTranslation(
                                 this.calculationFailedResponse,
@@ -193,6 +196,10 @@ export abstract class RecalculationManager extends Manager {
 
             this.prototypeRecalculationQueue.delete(calculatedUser);
 
+            if (!interaction.channel?.isSendable()) {
+                continue;
+            }
+
             try {
                 const bindInfo =
                     await DatabaseManager.elainaDb.collections.userBind.getFromUser(
@@ -211,7 +218,7 @@ export abstract class RecalculationManager extends Manager {
                     );
 
                 if (!bindInfo) {
-                    await interaction.channel!.send({
+                    await interaction.channel.send({
                         content: MessageCreator.createReject(
                             localization.getTranslation(
                                 this.calculationFailedResponse,
@@ -226,7 +233,7 @@ export abstract class RecalculationManager extends Manager {
                 }
 
                 if (await bindInfo.isDPPBanned()) {
-                    await interaction.channel!.send({
+                    await interaction.channel.send({
                         content: MessageCreator.createReject(
                             localization.getTranslation(
                                 this.calculationFailedResponse,
@@ -243,7 +250,7 @@ export abstract class RecalculationManager extends Manager {
                 const result = await bindInfo.calculatePrototypeDPP(reworkType);
 
                 if (result.isSuccessful()) {
-                    await interaction.channel!.send({
+                    await interaction.channel.send({
                         content: MessageCreator.createAccept(
                             localization.getTranslation(
                                 this.calculationSuccessResponse,
@@ -253,7 +260,7 @@ export abstract class RecalculationManager extends Manager {
                         ),
                     });
                 } else if (result.failed()) {
-                    await interaction.channel!.send({
+                    await interaction.channel.send({
                         content: MessageCreator.createReject(
                             localization.getTranslation(
                                 this.calculationFailedResponse,
@@ -265,7 +272,7 @@ export abstract class RecalculationManager extends Manager {
                     });
                 }
             } catch (e) {
-                await interaction.channel!.send({
+                await interaction.channel.send({
                     content: MessageCreator.createReject(
                         localization.getTranslation(
                             this.calculationFailedResponse,

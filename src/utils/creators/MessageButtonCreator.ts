@@ -26,7 +26,7 @@ import { ReplayData } from "@rian8337/osu-droid-replay-analyzer";
 import { OnButtonPressed } from "@alice-structures/utils/OnButtonPressed";
 import { OnButtonCollectorEnd } from "@alice-structures/utils/OnButtonCollectorEnd";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { Beatmap } from "@rian8337/osu-base";
+import { Beatmap, IModApplicableToDroid, Mod } from "@rian8337/osu-base";
 import { TimingDistributionChart } from "@alice-utils/timingdistribution/TimingDistributionChart";
 
 /**
@@ -232,6 +232,8 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param options Options of the message.
      * @param beatmap The beatmap shown in the miss analyzer.
      * @param replayData The replay data.
+     * @param mods The mods in the replay. If replay data is from version 3 or later, defaults to the
+     * mods in the replay data. Otherwise, it defaults to No Mod.
      * @returns The message resulted from the interaction's reply.
      */
     static createRecentScoreButton(
@@ -239,6 +241,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         options: InteractionReplyOptions,
         beatmap: Beatmap,
         replayData: ReplayData,
+        mods: (Mod & IModApplicableToDroid)[] = replayData.isReplayV3()
+            ? replayData.convertedMods
+            : [],
     ): Promise<Message> {
         const missAnalyzerButtonId = "analyzeMissesFromRecent";
         const missAnalyzerButton = new ButtonBuilder()
@@ -272,6 +277,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         const missAnalyzer = new MissAnalyzer(
                             beatmap,
                             replayData,
+                            mods,
                         );
                         const missInformations = missAnalyzer.analyze();
 
@@ -372,7 +378,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         const timingDistributionChart =
                             new TimingDistributionChart(
                                 beatmap,
-                                replayData.convertedMods,
+                                mods,
                                 replayData.hitObjectData,
                             );
 

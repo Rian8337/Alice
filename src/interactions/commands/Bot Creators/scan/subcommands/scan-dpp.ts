@@ -1,5 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ScanLocalization } from "@alice-localization/interactions/commands/Bot Creators/scan/ScanLocalization";
@@ -11,14 +10,17 @@ import { Collection, Snowflake } from "discord.js";
 import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: ScanLocalization = new ScanLocalization(
+    if (!interaction.channel?.isSendable()) {
+        return;
+    }
+
+    const localization = new ScanLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
-    let calculatedCount: number = 0;
+    let calculatedCount = 0;
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
@@ -38,7 +40,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             await player.scanDPP();
 
-            const finalPP: number = DPPHelper.calculateFinalPerformancePoints(
+            const finalPP = DPPHelper.calculateFinalPerformancePoints(
                 player.pp,
                 player.playc,
             );
@@ -50,7 +52,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await dbManager.updateMany({}, { $unset: { dppScanComplete: "" } });
 
-    interaction.channel!.send({
+    interaction.channel.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("scanComplete"),
             interaction.user.toString(),
